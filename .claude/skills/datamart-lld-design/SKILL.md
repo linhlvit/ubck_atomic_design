@@ -18,13 +18,13 @@ description: |
 
 # Skill: Thiết kế LLD Datamart
 
-File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A22 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
+File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A23 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
 
 ## Đọc gì, khi nào
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A22 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A23 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
@@ -146,7 +146,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A22 (tóm tắt)
+## Luật A1–A23 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -174,6 +174,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A20 | Cột mới ở Fact/Operational lên flat DDL + DML trong cùng lượt; Gate 4 FAIL không phải "tồn đọng" | 1, 3 | Gate 4 `L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING`, Gate 9 |
 | A21 | Lọc VN-Index trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (Data Modeler chốt 2026-10-21, BA `IndexCode`/`indexname` nhầm), KHÔNG đổi sang `index_nm`; `PARTITION BY` cuối ngày chứa `market_code`; đổi một cột thì grep và sửa đồng loạt | 1, 2 | — (quy trình) |
 | A22 | **Mọi Fact khai báo ĐÚNG 1 cột `key = PK`** (khóa dòng = khóa MERGE/UPSERT, `nullable = false`, đặt đầu bảng): Dạng A (grain = 1 dòng Atomic driving) = id dòng Atomic, `direct`; Dạng B (Fact gộp/pivot) = hash mọi cột grain, `Generated`, description liệt kê cột grain. Flat ClickHouse `ORDER BY` phải chứa PK (ReplacingMergeTree dedup theo ORDER BY). Mô tả grain (yaml/Entities/HLD) nêu tên PK. Fact cũ thiếu PK nằm trong `datamart-review/reference/fact_row_key_baseline.yaml` — Fact MỚI không được thêm vào | 1, 3 | Gate 8 `L2-FACT-NO-ROW-KEY`, `L2-FACT-PK-INVALID`, `L4-FLAT-ORDERBY-MISSING-PK` |
+| A23 | **PK Dimension = id Atomic khi có cột khác carry id đó:** cùng module có cột `direct` mang PK (hoặc FK-target) của entity driving thì PK Dim `etl_logic_type = direct` ← `<driving>.<pk>` (không `Generated`, không hash lại ở Datamart); không có cột carry thì giữ `Generated` (Fact→Dim nối qua `lookup_dim` theo BK). Kiểm tay: BK `*_code` của Dim cùng nguồn với `*_code` mà entity con Atomic mang | 1 | Gate 8 `L2-DIM-PK-GENERATED-CARRIED` |
 
 ---
 

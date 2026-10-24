@@ -59,7 +59,7 @@
 
 | key | etl_logic bắt buộc? |
 |---|---|
-| `PK` | Dimension/Operational/Fact Dạng B: trống — `source_entity = Generated` (surrogate sinh mới, không map Atomic). **Fact Dạng A (A22): bắt buộc `direct` = id dòng Atomic driving** |
+| `PK` | Dimension/Operational/Fact Dạng B: trống — `source_entity = Generated` (surrogate sinh mới, không map Atomic). **Fact Dạng A (A22): bắt buộc `direct` = id dòng Atomic driving.** **Dimension có cột `direct` khác carry id Atomic của entity driving (A23): bắt buộc `direct` = id Atomic driving, không `Generated`** |
 | `BK` | **Bắt buộc đầy đủ** như attribute thường — BK lấy giá trị thật từ Atomic (thường `etl_logic_type = direct` từ driving table). ❌ Không được để trống. |
 | `FK` | Bắt buộc — `lookup_dim`/`lookup_date`/`direct` (khi driving table chính là Dimension đích, xem ví dụ Fact bên dưới) |
 | `DD` | Bắt buộc — map từ Atomic (thường `direct` hoặc `join_atomic`) |

@@ -410,7 +410,7 @@ JOIN <table_b> ON <table_b>.<fk> = <driving>.<col>
 
 ## Quy tắc mapping Atomic
 
-**`source_entity = Generated`** — chỉ dùng cho Surrogate Key (PK Dimension/Operational, PK Fact Dạng B) và Surrogate Dimension Key (FK Fact). PK Fact Dạng A lấy `direct` từ id Atomic driving.
+**`source_entity = Generated`** — chỉ dùng cho Surrogate Key (PK Dimension/Operational, PK Fact Dạng B) và Surrogate Dimension Key (FK Fact). PK Fact Dạng A lấy `direct` từ id Atomic driving; PK Dimension cũng lấy `direct` từ id Atomic driving khi cùng module có cột `direct` khác carry id đó (A23).
 
 **Multi-source** — dùng separator ` / `:
 

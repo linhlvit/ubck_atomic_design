@@ -49,7 +49,13 @@ Bổ sung 2026-10-23 (Fact `fct_securities_company_financial_structure_snpst` QL
   D11 [L4-FLAT-ORDERBY-MISSING-PK] Flat ClickHouse của Fact có PK mà `ORDER BY` không chứa cột PK. ERROR — ReplicatedReplacingMergeTree
                               dedup theo ORDER BY nên các dòng cùng (ngày, 1 dim) bị gộp thành 1 khi merge (mất dữ liệu).
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES) = ERROR; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-10-24 (QLQ `fund_management_company_dim.fmc_id` sinh bằng hash khác id Atomic, trong khi 3 bảng khác carry `fmc_id` Atomic bằng direct):
+  D12 [L2-DIM-PK-GENERATED-CARRIED] PK Dimension là `Generated` nhưng cùng module có cột `direct` mang id Atomic của đúng entity driving
+                              (PK Atomic, hoặc FK Atomic có comment `FK target: <driving>.<pk>`). Các cột đó chỉ join được vào PK Dim nếu
+                              PK Dim = id Atomic → ERROR; sửa: PK Dim `direct` ← `<driving>.<pk>` (luật A23). Dim không có cột carry thì
+                              giữ `Generated` (Fact nối Dim qua lookup BK nên không phụ thuộc cách sinh PK Dim).
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12 = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -429,6 +435,87 @@ def check_flat_orderby_pk(root: Path, module: str):
     return out
 
 
+_RE_DRIVING = re.compile(r"Driving:\s*([a-z0-9_]+)")
+_RE_FK_TARGET = re.compile(r"FK target:\s*([a-z0-9_]+)\.([a-z0-9_]+)")
+_ATOMIC_ID_CACHE: dict = {}
+
+
+def atomic_id_columns(root: Path):
+    """{(atomic_table, atomic_column): (entity mà cột đó mang id, là PK của entity?)}: PK của entity (→ chính nó) và FK có comment `FK target: X.col` (→ X).
+
+    Đọc YAML Atomic chính thức bằng regex (cùng cách `cumulative_snapshot_cols`, không cần PyYAML); cache theo root vì chế độ ALL gọi nhiều lần.
+    """
+    key = str(root)
+    if key in _ATOMIC_ID_CACHE:
+        return _ATOMIC_ID_CACHE[key]
+    res, pk_of = {}, {}
+    for p in sorted((root / "DataModel" / "Atomic").rglob("dm_atm_*.yaml")):
+        txt = p.read_text(encoding="utf-8")
+        head, _, body = txt.partition("\nattributes:")
+        m = re.search(r"physical_name:\s*(\w+)", head)
+        if not m:
+            continue
+        ent = m.group(1)
+        for blk in re.split(r"\r?\n  - name:", body)[1:]:
+            c = re.search(r"physical_name:\s*(\w+)", blk)
+            if not c:
+                continue
+            col = c.group(1)
+            if re.search(r"is_primary_key:\s*true", blk):
+                res[(ent, col)] = (ent, True)
+                pk_of[ent] = col
+                continue
+            fk = _RE_FK_TARGET.search(re.sub(r"\r?\n\s+", " ", blk))
+            if fk:
+                res[(ent, col)] = (fk.group(1), False)
+    _ATOMIC_ID_CACHE[key] = (res, pk_of)
+    return res, pk_of
+
+
+def check_dim_pk_carried(root: Path, module: str):
+    """D12 [L2-DIM-PK-GENERATED-CARRIED]: PK Dim `Generated` mà cột khác của module carry id Atomic của entity driving bằng direct (A23)."""
+    out = []
+    d = root / "Datamart" / "lld" / module
+    if not d.exists():
+        return out
+    id_cols, pk_of = atomic_id_columns(root)
+    dims, carried = {}, {}
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                rows = list(csv.DictReader(fh))
+        except Exception:
+            continue
+        if not rows:
+            continue
+        t = (rows[0].get("datamart_table") or "").strip()
+        e = (rows[0].get("datamart_entity") or "").strip()
+        if t.endswith("_dim") or e.endswith(" Dimension"):
+            pk = next((r for r in rows if (r.get("key") or "").strip() == "PK"), None)
+            if pk and ((pk.get("etl_logic_type") or "").strip().lower() == "generated" or (pk.get("source_entity") or "").strip() == "Generated"):
+                m = _RE_DRIVING.search(pk.get("description") or "")
+                drv = m.group(1) if m else next(((r.get("atomic_table") or "").strip() for r in rows
+                                                 if (r.get("key") or "").strip() == "BK" and (r.get("atomic_table") or "").strip()), "")
+                if drv:
+                    dims[t] = (drv, pk.get("datamart_column"), f.name)
+        for r in rows:
+            if (r.get("etl_logic_type") or "").strip().lower() != "direct":
+                continue
+            hit = id_cols.get(((r.get("atomic_table") or "").strip(), (r.get("atomic_column") or "").strip()))
+            if hit and (r.get("key") or "").strip() != "PK":
+                carried.setdefault(hit[0], []).append((t, r.get("datamart_column"), hit[1]))
+    for t, (drv, pkcol, fname) in sorted(dims.items()):
+        # cột thuộc tính của CHÍNH Dim đó chép id Atomic của nó (VD securities_company_dim.sc_id) không phải FK trỏ vào PK Dim → bỏ qua;
+        # FK tự tham chiếu (VD fund_management_company_dim.parent_fmc_id) vẫn tính vì trỏ sang dòng khác của chính PK Dim.
+        cols = [f"{ct}.{cc}" for ct, cc, is_pk in carried.get(drv, []) if not (ct == t and is_pk)]
+        if cols:
+            out.append(("ERROR", "L2-DIM-PK-GENERATED-CARRIED",
+                        f"{fname} [{t}.{pkcol}] PK là Generated nhưng {len(cols)} cột carry id Atomic của `{drv}` bằng direct "
+                        f"({', '.join(cols[:4])}{'…' if len(cols) > 4 else ''}) — chỉ nối được vào PK Dim nếu PK = id Atomic; "
+                        f"đặt PK direct ← {drv}.{pk_of.get(drv, '<pk>')} (A23)"))
+    return out
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -442,6 +529,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_lld_desc_and_lineage(root, module)
     issues += check_fact_row_key(root, module)
     issues += check_flat_orderby_pk(root, module)
+    issues += check_dim_pk_carried(root, module)
     return issues
 
 

@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A22 — LLD Datamart
+# Luật chống tái diễn A1–A23 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -26,6 +26,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A20 — Cột mới ở Fact/Operational phải lên flat DDL + DML TRONG CÙNG LƯỢT `[L4-FLAT-TABLE-COLUMN-COVERAGE-MISSING]`
 - A21 — Lọc chỉ số trên `market_index_snapshot`: giữ `market_code = 'HOSE'` (đảo quyết định `index_nm`, 2026-10-21) `[process]`
 - A22 — Mọi Fact khai báo khóa dòng (`key = PK`); flat `ORDER BY` chứa PK `[L2-FACT-NO-ROW-KEY]`
+- A23 — PK Dimension = id Atomic khi có cột khác carry id đó `[L2-DIM-PK-GENERATED-CARRIED]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -416,13 +417,39 @@ python .claude/skills/datamart-review/scripts/build_model_yaml.py --check       
 **Đã sửa (QLKD, 2026-10-23):** thêm `rpt_input_val_id` (`sc_report_input_value.sc_rpt_input_val_id`, Dạng A) vào LLD, master, yaml, flat DDL + DML; ORDER BY flat đổi từ
 `(cdr_dt, snpst_dt_dim_id)` sang `(cdr_dt, rpt_input_val_id)`; grain ở yaml/Entities/HLD/flat viết lại. **Chưa sửa:** 81 Fact trong baseline (và 10 Fact chỉ có ở master).
 
+### A23 — PK Dimension = id Atomic khi có cột khác carry id đó `[L2-DIM-PK-GENERATED-CARRIED]`
+
+Sự cố thật (QLQ `fund_management_company_dim.fmc_id`, phát hiện 2026-10-24): PK Dim khai `Generated` (etl_logic trống) nên generator hash lại từ BK (`fmc_code`),
+trong khi Atomic hash `fmc_id` từ khóa nguồn `SECURITIES.ID`. 8 cột khác mang id Atomic sang bằng `direct` — `fund_management_company_dim.parent_fmc_id`,
+`investment_fund_dim.fmc_id`, `opr_fund_management_company_fund_list.fmc_id`, `custodian_bank_id` (2 Dim), `foreign_fund_management_organization_unit_id`
+(staff dim), `opr_investment_fund_representative_board_member_list.investment_fund_id` — nên không bao giờ nối được vào PK Dim. PK Dim sinh mới chỉ an toàn khi
+mọi bảng nối vào nó đều đi qua `lookup_dim` theo BK (Fact → Dim); không còn đúng khi có cột `direct` từ Atomic. Gate cũ không bắt vì không Gate nào đối chiếu
+"PK Dim sinh" với "cột carry id".
+
+**Quy tắc**
+1. Với mỗi Dim có PK `Generated`: cùng module có cột `etl_logic_type = direct` nào mà `atomic_column` là PK của entity driving, hoặc là FK Atomic có comment
+   `FK target: <driving>.<pk>`? (Không tính cột thuộc tính của CHÍNH Dim đó chép id Atomic của nó, VD `securities_company_dim.sc_id`; FK tự tham chiếu như
+   `parent_fmc_id` thì tính.)
+2. **Có** → PK Dim `etl_logic_type = direct`, `etl_logic = <driving>.<pk>`, `source_entity` = tên logic entity Atomic, `atomic_table`/`source_attribute`/`atomic_column`
+   điền đủ; giữ description `PK — Driving: {table}`. KHÔNG hash lại ở Datamart.
+3. **Không** → giữ `Generated`. Fact → Dim nối qua `lookup_dim` theo BK nên không phụ thuộc cách sinh PK Dim.
+4. Sửa đồng loạt per-table, master `datamart_attributes.csv` và `datamart_model.yaml` (`source_atomic_table/column`); `build_model_yaml.py --check` phải khớp.
+5. **Kiểm tay (chưa có Gate):** BK `*_code` của Dim phải cùng giá trị với cột `*_code` mà entity con Atomic mang. Sự cố cùng đợt: Atomic `fmc_code` cha ← `SECURITIES.CODE`
+   (mã ngắn) trong khi 8 entity con ← `SEC_ID` (= `SECURITIES.ID`), nên BK cha/con lệch và KPI so `fmr_submission.fmc_code = fund_management_company.fmc_code` không khớp.
+
+**Lệnh:** `python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict` (D12).
+
+**Đã sửa (QLQ, 2026-10-24):** `fund_management_company_dim`, `investment_fund_dim`, `custodian_bank_dim`, `foreign_fund_management_organization_unit_dim` → PK `direct`
+(per-table + master + yaml). `fund_distribution_agent_dim`, `securities_distribution_agent_dim` (trùng tên PK Atomic nhưng chưa có cột carry) giữ `Generated`.
+Atomic `fmc_code` đổi nguồn `SECURITIES.CODE` → `SECURITIES.ID`; cột `CODE` chuyển vào `pending_design.yaml`. Dev cần đổi code dbt tương ứng.
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
 python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE} --strict
 ```
 
-Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
+Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), PK Dim `Generated` bị cột khác carry id Atomic (A23, D12), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
 0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
