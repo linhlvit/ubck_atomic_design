@@ -18566,7 +18566,9 @@ entities:
   - name: Application Status Code
     physical_name: application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ hiện tại.
-    comment_1st: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+    comment_1st: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+      \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận\
+      \ STATUS_CODE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -18579,11 +18581,15 @@ entities:
       - source_table: VERIFY_APPLICATION_STATUSES
         source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
         business_meaning: Mã trạng thái hồ sơ hiện tại.
-        comment: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+        comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+          \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để xác\
+          \ nhận STATUS_CODE."
   - name: Previous Application Status Code
     physical_name: previous_application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ trước khi xác minh.
-    comment_1st: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+    comment_1st: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+      \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để xác\
+      \ nhận STATUS_CODE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -18596,7 +18602,9 @@ entities:
       - source_table: VERIFY_APPLICATION_STATUSES
         source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
         business_meaning: Mã trạng thái hồ sơ trước khi xác minh.
-        comment: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+        comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+          \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để\
+          \ xác nhận STATUS_CODE."
   - name: Review Reason
     physical_name: review_reason
     business_meaning_1st: Lý do thực hiện thao tác hoặc thay đổi.
@@ -26457,6 +26465,7 @@ entities:
     sources:
     - MRMS
     - NHNCK
+    - SCMS
     - TTHC
     references:
       brd:
@@ -26469,6 +26478,7 @@ entities:
       - BRD-SRC-NHNCK-EDUCATION_LEVELS
       - BRD-SRC-NHNCK-POSITIONS
       - BRD-SRC-NHNCK-SPECIALIZATIONS
+      - BRD-SRC-SCMS-CAT_COMPANY_TYPE
       - BRD-SRC-TTHC-CLASSIFICATION_VALUE
   attributes:
   - name: Classification Code
@@ -26528,6 +26538,12 @@ entities:
         source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE
         business_meaning: Mã giá trị phân loại. Mã chuyên ngành CCHN.
         comment: BK chính (kết hợp Schema Code tạo BK duy nhất).
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
+        source_column: SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE
+        business_meaning: Mã giá trị phân loại. Mã loại hình doanh nghiệp.
+        comment: BK chính (kết hợp Schema Code tạo BK duy nhất).
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -26553,6 +26569,7 @@ entities:
     - NHNCK.EDUCATION_LEVELS
     - NHNCK.POSITIONS
     - NHNCK.SPECIALIZATIONS
+    - SCMS.CAT_COMPANY_TYPE
     conflict_review: null
     source_mappings:
     - source_system: MRMS
@@ -26595,6 +26612,12 @@ entities:
         source_column: null
         business_meaning: Mã loại phân loại.
         comment: Hardcode NHNCK.SPECIALIZATIONS.
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
+        source_column: null
+        business_meaning: Mã loại phân loại.
+        comment: Hardcode SCMS.CAT_COMPANY_TYPE.
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -26614,15 +26637,16 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value:
-    - MRMS - Nhóm chỉ tiêu tài chính rủi ro
-    - NHNCK - Hình thức nộp hồ sơ
-    - NHNCK - Trạng thái hồ sơ của Chứng chỉ hành nghề
+    - MRMS - Danh mục nhóm chỉ tiêu tài chính rủi ro
+    - NHNCK - Danh mục hình thức nộp hồ sơ
+    - NHNCK - Danh mục trạng thái hồ sơ của Chứng chỉ hành nghề
     - NHNCK - Danh mục ngân hàng (dùng cho nộp phí thi)
     - NHNCK - Danh mục phòng ban thuộc đơn vị UBCKNN
     - NHNCK - Danh mục các tài liệu/hồ sơ cần nộp theo thủ tục CCHN
     - NHNCK - Danh mục trình độ học vấn
     - NHNCK - Danh mục chức vụ
     - NHNCK - Danh mục chuyên môn/lĩnh vực hành nghề chứng khoán
+    - SCMS - Danh mục loại hình doanh nghiệp
     conflict_review: null
     source_mappings:
     - source_system: MRMS
@@ -26665,6 +26689,12 @@ entities:
         source_column: null
         business_meaning: Tên loại phân loại.
         comment: Hardcode.
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
+        source_column: null
+        business_meaning: Tên loại phân loại.
+        comment: Hardcode.
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -26689,6 +26719,7 @@ entities:
     - NHNCK_EDUCATION_LEVELS
     - NHNCK_POSITIONS
     - NHNCK_SPECIALIZATIONS
+    - SCMS_CAT_COMPANY_TYPE
     - TTHC_CLASSIFICATION_VALUE
     conflict_review: null
     source_mappings:
@@ -26729,6 +26760,12 @@ entities:
         business_meaning: Mã nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
       - source_table: SPECIALIZATIONS
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
         source_column: null
         business_meaning: Mã nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
@@ -26790,6 +26827,13 @@ entities:
         source_column: NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME
         business_meaning: Tên giá trị phân loại (tiếng Việt).
         comment: null
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
+        source_column: SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_NAME
+        business_meaning: Tên giá trị phân loại (tiếng Việt). Tên loại hình doanh
+          nghiệp.
+        comment: null
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -26844,6 +26888,12 @@ entities:
         business_meaning: Tên giá trị phân loại (tiếng Anh).
         comment: null
       - source_table: SPECIALIZATIONS
+        source_column: null
+        business_meaning: Tên giá trị phân loại (tiếng Anh).
+        comment: null
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
         source_column: null
         business_meaning: Tên giá trị phân loại (tiếng Anh).
         comment: null
@@ -26908,6 +26958,12 @@ entities:
         business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
         comment: Trích dẫn căn cứ pháp lý liên quan đến chuyên ngành. Nguồn lưu NCLOB
           — ETL convert sang string.
+    - source_system: SCMS
+      source_tables:
+      - source_table: CAT_COMPANY_TYPE
+        source_column: null
+        business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+        comment: Chưa map — theo yêu cầu chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME.
     - source_system: TTHC
       source_tables:
       - source_table: CLASSIFICATION_VALUE
@@ -28417,7 +28473,7 @@ entities:
     physical_name: law_result_code
     business_meaning_1st: "Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1:\
       \ Đạt)"
-    comment_1st: SCHEMA_CODE=EXAM_RESULT
+    comment_1st: SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -28431,7 +28487,7 @@ entities:
         source_column: NHNCK.EXAM_DETAILS.LAW_RESULT
         business_meaning: "Kết quả thi pháp luật (-1: Không thi, 0: Không đạt, 1:\
           \ Đạt)"
-        comment: SCHEMA_CODE=EXAM_RESULT
+        comment: SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT
   - name: Specialization Score
     physical_name: specialization_score
     business_meaning_1st: Điểm thi chuyên ngành
@@ -36427,6 +36483,25 @@ entities:
         business_meaning: Ngày công bố thông tin (TVS2601TK-4236), không bắt buộc.
         comment: "BCV: không có term riêng — CBTT = Công bố thông tin, đặt tên theo\
           \ nghĩa nghiệp vụ. Bổ sung theo DDL UAT 1 (2026-10-15)."
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning_1st: Trạng thái gửi và phê duyệt báo cáo.
+    comment_1st: "Scheme: FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0)\
+      \ — ETL cần convert sang string (1→ACTIVE, 0→INACTIVE)."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: RPT_MEMBER
+        source_column: FMS.RPT_MEMBER.RECORD_STATUS
+        business_meaning: Trạng thái gửi và phê duyệt báo cáo.
+        comment: "Scheme: FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0)\
+          \ — ETL cần convert sang string (1→ACTIVE, 0→INACTIVE)."
 - ldm:
     id: ATM-fmr_value
     logical_name_1st: Fund Management Report Value
@@ -50015,7 +50090,8 @@ entities:
   - name: Application Status Code
     physical_name: application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ hiện tại.
-    comment_1st: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+    comment_1st: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+      \ APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận STATUS_CODE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -50028,7 +50104,8 @@ entities:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATION_STATUSES.STATUS_CODE
         business_meaning: Mã trạng thái hồ sơ hiện tại.
-        comment: SCHEMA_CODE=NHNCK.APPLICATION_STATUSES
+        comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+          \ APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận STATUS_CODE."
   - name: Registration Type Code
     physical_name: registration_tp_code
     business_meaning_1st: Nguồn tiếp nhận hồ sơ.

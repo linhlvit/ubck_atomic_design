@@ -455,3 +455,17 @@ attributes:
     comment: "BCV: không có term riêng — CBTT = Công bố thông tin, đặt tên theo nghĩa nghiệp vụ. Bổ sung theo DDL UAT 1 (2026-10-15)."
     classification_context: null
     etl_derived_value: null
+
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning: Trạng thái gửi và phê duyệt báo cáo.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: RPT_MEMBER
+    source_column: FMS.RPT_MEMBER.RECORD_STATUS
+    comment: "Scheme: FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0) — ETL cần convert sang string (1→ACTIVE, 0→INACTIVE)."
+    classification_context: null
+    etl_derived_value: null

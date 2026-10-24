@@ -6633,3 +6633,17 @@ schemes:
     used_in_entities:
       - "Fund Management Report Value"
     values: []
+
+  - scheme_code: "FMS.RPT_MEMBER.RECORD_STATUS"
+    name: "Trạng thái bản ghi báo cáo thành viên FMS: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+    source_type: "etl_derived"
+    source_table: "FMS.RPT_MEMBER.RECORD_STATUS"
+    used_in_entities:
+      - "Fund Management Report Submission"
+    values:
+      - code: "ACTIVE"
+        name: "Đang hoạt động/Hiệu lực"
+        source_value: "1"
+      - code: "INACTIVE"
+        name: "Ngừng hoạt động/Hết hiệu lực"
+        source_value: "0"

@@ -16289,7 +16289,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+    \ VERIFY_APPLICATION_STATUSES.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận\
+    \ STATUS_CODE."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
@@ -16305,7 +16307,9 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+    \ VERIFY_APPLICATION_STATUSES.PREV_STATUS_ID = APPLICATION_STATUSES.ID để xác\
+    \ nhận STATUS_CODE."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application_status_review"
@@ -29050,6 +29054,23 @@ attributes:
   atomic_column: "information_disclosure_dt"
   data_type: "date"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Fund Management Report Submission"
+  atomic_attribute: "Record Status Code"
+  description: "Trạng thái gửi và phê duyệt báo cáo."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "RPT_MEMBER"
+  source_column: "FMS.RPT_MEMBER.RECORD_STATUS"
+  comment: "Scheme: FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0) —\
+    \ ETL cần convert sang string (1→ACTIVE, 0→INACTIVE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "fmr_submission"
+  atomic_column: "record_status_code"
+  data_type: "string"
+- bcv_core_object: "Documentation"
   atomic_entity: "Fund Management Report Value"
   atomic_attribute: "Fund Management Report Value Id"
   description: "Khóa đại diện (surrogate key)."
@@ -32713,7 +32734,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "private_corp_bond_trading_summary"
   atomic_column: "ind_val"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Trading Summary"
   atomic_attribute: "Report Date"
@@ -38530,7 +38551,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
-  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_STATUSES. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES:\
+    \ APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận STATUS_CODE."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_license_application"
@@ -48650,7 +48672,7 @@ attributes:
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng lưu ký,\
     \ giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ. Hash: hash_id('FIMS_BANKMONI',\
-    \ Id)."
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "custodian_bank"
@@ -48702,7 +48724,7 @@ attributes:
   source_column: "FIMS.BANKMONI.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
     \ BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ Code)."
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "custodian_bank"
@@ -50684,7 +50706,7 @@ attributes:
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Individual\". Nhà đầu tư nước ngoài\
     \ (cá nhân/tổ chức) đăng ký hoạt động tại Việt Nam. Hash: hash_id('FIMS_INVESTOR',\
-    \ TransactionCode)."
+    \ TRANSACTIONCODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "foreign_investor"
@@ -51096,7 +51118,7 @@ attributes:
   source_column: "FIMS.INVESTOR.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
     \ INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ Code) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
+    \ CODE) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "foreign_investor"
@@ -55389,7 +55411,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "major_shareholder_ownership"
   atomic_column: "opening_ratio"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(5,2)"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
   atomic_attribute: "Closing Balance Date"
@@ -55440,7 +55462,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "major_shareholder_ownership"
   atomic_column: "closing_ratio"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(5,2)"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
   atomic_attribute: "Note"
@@ -58033,7 +58055,7 @@ attributes:
   source_column: "FIMS.SECURITIESCOMPANY.STATUSID"
   comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
     \ SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ Code)."
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_company"
@@ -69565,7 +69587,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -69583,7 +69605,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -69601,7 +69623,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -69619,7 +69641,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -70268,7 +70290,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -70286,7 +70308,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -70304,7 +70326,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -70322,7 +70344,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -70616,7 +70638,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "repo_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Repo Interest"
@@ -70670,7 +70692,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "coupon_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Coupon Interest"
@@ -71116,7 +71138,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "quoted_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Execution Price"
@@ -71134,7 +71156,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "execution_price"
-  data_type: "decimal(23,4)"
+  data_type: "decimal(23,2)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Yield Rate"
@@ -71152,7 +71174,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "yield_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Discount Rate"
@@ -71170,7 +71192,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "discount_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Order Bond Quantity"
@@ -71532,7 +71554,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "repo_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Repo Interest"
@@ -71586,7 +71608,7 @@ attributes:
   etl_derived_value: null
   atomic_table: "bond_order_book"
   atomic_column: "coupon_rate"
-  data_type: "decimal(7,4)"
+  data_type: "decimal(8,5)"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Coupon Interest"
@@ -75675,7 +75697,7 @@ attributes:
   source_column: null
   comment: "Hardcode."
   classification_context: null
-  etl_derived_value: "MRMS - Nhóm chỉ tiêu tài chính rủi ro"
+  etl_derived_value: "MRMS - Danh mục nhóm chỉ tiêu tài chính rủi ro"
   atomic_table: "cl_value"
   atomic_column: "schema_nm"
   data_type: "string"
@@ -76247,7 +76269,7 @@ attributes:
   source_column: null
   comment: "Hardcode."
   classification_context: null
-  etl_derived_value: "NHNCK - Hình thức nộp hồ sơ"
+  etl_derived_value: "NHNCK - Danh mục hình thức nộp hồ sơ"
   atomic_table: "cl_value"
   atomic_column: "schema_nm"
   data_type: "string"
@@ -76359,7 +76381,7 @@ attributes:
   source_column: null
   comment: "Hardcode."
   classification_context: null
-  etl_derived_value: "NHNCK - Trạng thái hồ sơ của Chứng chỉ hành nghề"
+  etl_derived_value: "NHNCK - Danh mục trạng thái hồ sơ của Chứng chỉ hành nghề"
   atomic_table: "cl_value"
   atomic_column: "schema_nm"
   data_type: "string"
@@ -76761,6 +76783,118 @@ attributes:
   source_column: "NHNCK.BANKS.SHORT_NAME"
   comment: "Theo yêu cầu Data Modeler: map SHORT_NAME (tên viết tắt ngân hàng, VD:\
     \ Vietcombank, VietinBank) vào cl_description."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Code"
+  description: "Mã giá trị phân loại. Mã loại hình doanh nghiệp."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Code"
+  description: "Mã loại phân loại."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: null
+  comment: "Hardcode SCMS.CAT_COMPANY_TYPE."
+  classification_context: null
+  etl_derived_value: "SCMS.CAT_COMPANY_TYPE"
+  atomic_table: "cl_value"
+  atomic_column: "schema_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Name"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: null
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "SCMS - Danh mục loại hình doanh nghiệp"
+  atomic_table: "cl_value"
+  atomic_column: "schema_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_CAT_COMPANY_TYPE'"
+  etl_derived_value: "SCMS_CAT_COMPANY_TYPE"
+  atomic_table: "cl_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name"
+  description: "Tên giá trị phân loại (tiếng Việt). Tên loại hình doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name English"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: null
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm_english"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  source_column: null
+  comment: "Chưa map — theo yêu cầu chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME."
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_value"
@@ -86059,7 +86193,7 @@ attributes:
   source_table: "SECURITIESCOMPANY"
   source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-    \ Id)."
+    \ ID)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -91630,7 +91764,7 @@ attributes:
   source_table: "SECURITIESCOMPANY"
   source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-    \ Id)."
+    \ ID)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Electronic\
     \ Address Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -96107,7 +96241,7 @@ attributes:
   source_table: "SECURITIESCOMPANY"
   source_column: "FIMS.SECURITIESCOMPANY.ID"
   comment: "Surrogate Key của shared entity. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
-    \ Id)."
+    \ ID)."
   classification_context: "Source System Code = 'FIMS_SECURITIESCOMPANY' | Address\
     \ Type Code = 'HEAD_OFFICE'"
   etl_derived_value: null

@@ -1,0 +1,107 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Map trực tiếp vào Fundamental entity dùng chung Classification Value (cl_value) — không tạo Atomic entity riêng, theo yêu cầu Data Modeler 2026-10-24, cùng pattern NHNCK (lld_NHNCK_APPLICATION_STATUSES.yaml) và MRMS. Schema Code = SCMS.CAT_COMPANY_TYPE, là schema_code mà Company Type Code trên lld_SCMS_SC_FIRM_INFO.yaml tham chiếu (SCHEMA_CODE=SCMS.CAT_COMPANY_TYPE). Chỉ map COMPANY_TYPE_CODE và COMPANY_TYPE_NAME theo yêu cầu; các cột còn lại ghi pending_design.yaml. File này là Level 1 LLD; cần chạy Level 2 consolidation gộp vào entity_cl_value.yaml cùng các source khác trước khi generate ra DataModel/Atomic. 4 cột ds_* không thiết kế ở đây — ETL job tự quản lý."
+attributes:
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Mã loại hình doanh nghiệp."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode SCMS.CAT_COMPANY_TYPE."
+  classification_context: null
+  etl_derived_value: "SCMS.CAT_COMPANY_TYPE"
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "SCMS - Danh mục loại hình doanh nghiệp"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_CAT_COMPANY_TYPE"
+  etl_derived_value: "SCMS_CAT_COMPANY_TYPE"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt). Tên loại hình doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Chưa map — theo yêu cầu chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
