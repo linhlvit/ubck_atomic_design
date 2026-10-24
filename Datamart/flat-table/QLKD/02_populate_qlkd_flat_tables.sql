@@ -145,13 +145,14 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 4. FACT: qlkd_fct_securities_company_capital_raising_event_flat
---    Grain Event theo THÁNG: cdr_dt = ngày đầu tháng của tháng chào bán/phát hành (FK event_dt_dim_id = TRUNC(document_dt, 'MM')).
---    [SỬA 2026-10-16 — rà cột ngày] Fact chỉ tính lại THÁNG HIỆN TẠI mỗi lần ETL (LLD: TRUNC(document_dt, 'MM') = TRUNC(ngày ETL, 'MM')),
---    nên flat DELETE + INSERT đúng ngày đầu tháng của ngày ETL (toStartOfMonth). Trước đây so cdr_dt với ngày ETL nguyên ngày → chỉ khớp khi
---    ETL chạy vào mùng 1: flat gần như rỗng, và DELETE không xóa gì nên chạy lại bị nhân đôi dòng.
+--    Grain Event theo THÁNG: cdr_dt = ngày đầu tháng của tháng chào bán/phát hành (FK event_dt_dim_id = TRUNC(COALESCE(document_dt, ngày tạo bản ghi), 'MM')).
+--    [SỬA 2026-10-24 — O_QLKD_54] Fact ETL KHÔNG giới hạn theo tháng chạy (nạp mọi tháng có dữ liệu: nguồn chỉ vài trăm dòng, đợt chào bán có thể được
+--    công bố/bổ sung lùi ngày) nên flat TRUNCATE + INSERT toàn bộ, cùng cách khối 16 (financial_structure) và các Fact báo cáo ở QLQ/PTTT.
+--    Lý do bỏ DELETE ... WHERE cdr_dt IN (toStartOfMonth(:etl_date)) (sửa 2026-10-16): (1) bảng ReplicatedReplacingMergeTree, DELETE theo ngày không xóa
+--    hết dòng cũ (ngày lẻ từ bản ETL trước khi FK về ngày đầu tháng) và INSERT lặp nhiều lần làm truy vấn không FINAL cộng nhân bản (×5 trên UAT);
+--    (2) chỉ refresh tháng chạy làm các tháng quá khứ (VD 11/2025) không bao giờ có trong flat. TRUNCATE xóa sạch cả hai loại dòng, BI không cần FINAL.
 -- ============================================================
-DELETE FROM datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster'
-WHERE cdr_dt IN (toStartOfMonth(:etl_date));
+TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_fct_securities_company_capital_raising_event_flat
 SELECT
     -- From: FACT Fact Securities Company Capital Raising Event
@@ -172,7 +173,6 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.event_dt_dim_id
 LEFT JOIN datamart.offering_form_dim offer_dim
     ON offer_dim.offering_form_dim_id = f.offering_form_dim_id
-WHERE cal.cdr_dt IN (toStartOfMonth(:etl_date))
 ;
 
 
