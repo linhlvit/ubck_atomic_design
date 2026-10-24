@@ -62,7 +62,10 @@ Gate 0 vẫn PASS vì chỉ kiểm cặp `mart_table`/`mart_column`, không ki�
                               YAML Atomic. ERROR (luật A24). Nợ có từ trước nằm trong `reference/dm_logic_column_baseline.yaml` (chỉ in `[i]`, không chặn);
                               mục baseline đã hết vi phạm → WARNING (gỡ tên). Sinh lại baseline: `--print-dm-logic-baseline`.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline) = ERROR; D2, D4 (ngoại lệ YoY),
+  D14 [L1-HLD-MAPPING-ROW-CELLS] Dòng của bảng "Bảng mapping nguồn" (header `| Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |`) không
+                              đúng 4 ô — VD dán cả công thức/ghi chú KPI vào dòng mapping (K_QLQ_35: 7 ô). ERROR.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14 = ERROR; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -92,6 +95,7 @@ from datamart_common import find_project_root, get_available_modules  # noqa: E4
 from datamart_common.module_resolver import resolve_module_path  # noqa: E402
 
 KPI_HEADER = re.compile(r"^\|\s*KPI ID\s*\|.*\|\s*Trạng thái\s*\|\s*$")
+MAP_HEADER = re.compile(r"^\|\s*Tên KPI\s*\|\s*Bảng nguồn.*\|\s*Atomic table\s*\|\s*$")
 KPI_REF = re.compile(r"K_[A-Z0-9]+_\d+")
 
 # Module đã chuyển sang Quy tắc L18 (1 KPI có MEASURE = 1 dòng Detail Mapping). Thêm module vào đây khi
@@ -124,6 +128,22 @@ def check_hld(hld: Path):
             if n != want:
                 kid = ln.split("|")[1].strip()
                 out.append(("ERROR", "L1-HLD-KPI-ROW-CELLS", f"{hld.name}:{i} {kid} có {n} cột, bảng KPI yêu cầu {want}"))
+    # D14 — bảng "Bảng mapping nguồn": mọi dòng đúng số ô của header (4)
+    in_map, want_m = False, 0
+    for i, ln in enumerate(lines, 1):
+        if MAP_HEADER.match(ln):
+            in_map, want_m = True, cells(ln)
+            continue
+        if in_map:
+            if not ln.startswith("|"):
+                in_map = False
+                continue
+            if re.match(r"^\|\s*-{3,}", ln):
+                continue
+            n = cells(ln)
+            if n != want_m:
+                kid = ln.split("|")[1].strip()
+                out.append(("ERROR", "L1-HLD-MAPPING-ROW-CELLS", f"{hld.name}:{i} {kid} có {n} ô, bảng mapping nguồn yêu cầu {want_m} (Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table) — không dán công thức/ghi chú KPI vào dòng mapping"))
     return out
 
 

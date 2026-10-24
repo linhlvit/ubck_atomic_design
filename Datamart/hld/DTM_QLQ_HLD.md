@@ -962,7 +962,7 @@ flowchart LR
 | Tên KPI | Bảng nguồn (BA) | Atomic entity | Atomic table |
 |---|---|---|---|
 | K_QLQ_33, K_QLQ_34 | FMS_UAT.FUNDS, FMS_UAT.FUND_TYPE | Investment Fund | investment_fund |
-| K_QLQ_35 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value *(`fmr_value` — thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value | Giá trị ô báo cáo kỳ mới nhất của đối tượng — sheet `BCTaiSan`, mã chỉ tiêu `2217`, cột "Kỳ báo cáo", `record_tp` = '7' → cột `net_asset_val_amt` trên `Fund Management Company Fund List` | Cột `net_asset_val_amt` (đọc Atomic `fmr_value`/`fmr_submission` + lookup `Fund Management Report Cell Dimension`); khóa dòng/cột là giả định (O_QLQ_31); kỳ mới nhất (O_QLQ_32) | READY |
+| K_QLQ_35 | FMS_UAT.RPT_TEMP<br>FMS_UAT.SHEET<br>FMS_UAT.RPT_VALUES<br>FMS_UAT.RPT_MEMBER<br>FMS_UAT.RPT_PERIOD | Fund Management Report Value + Fund Management Report Submission *(đọc trực tiếp `fmr_value`/`fmr_submission`; kỳ lấy từ `fmr_submission`; thiếu TGT_ID/CODE, xem O_QLQ_27)* | fmr_value / fmr_submission |
 
 ---
 
