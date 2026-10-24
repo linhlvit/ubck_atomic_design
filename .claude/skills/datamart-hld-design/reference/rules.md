@@ -252,7 +252,8 @@ Sự cố thật (QLQ Nhóm 3, 2026-10-24): danh sách yêu cầu nghiệp vụ 
 
 **Quy tắc**
 1. Trước khi chốt danh sách KPI của một Nhóm: liệt kê alias của SELECT cuối trong SQL BA (`"Trạng thái"`, `"Tổng"`, `"NAV/GDP"`…) và danh sách yêu cầu nghiệp vụ user cung cấp (nếu có); mỗi cột phải khớp ≥ 1 KPI.
-2. Cột output không có KPI/dòng BA ⇒ thêm KPI (ID cuối bảng khi dải ID đã dùng hết — `apply_kpi_patch.py`) + mở O_ issue "BA CSV thiếu dòng" để BA bổ sung; không bỏ qua vì "BA không có dòng".
+2. Cột output không có KPI/dòng BA **và có bằng chứng** (alias nằm trong SQL BA chính thức, hoặc danh sách yêu cầu do user/BA cung cấp) ⇒ thêm KPI (ID cuối bảng khi dải ID đã dùng hết — `apply_kpi_patch.py`), ghi nguồn ở Ghi chú
+   + mở O_ issue "BA CSV thiếu dòng" để BA bổ sung; không bỏ qua vì "BA không có dòng". Đây là ngoại lệ có kiểm soát của điều "Cấm thêm KPI không có dòng BA" ở `reference/handoff_checklist.md` — chỉ suy luận nghiệp vụ thì vẫn KHÔNG thêm.
    Nếu việc thêm cần quyết định nghiệp vụ (VD cột "Tổng" có thật sự hiển thị không) ⇒ chỉ mở O_ issue và hỏi, chưa thêm.
 3. Tìm thấy thiếu ở một Nhóm ⇒ rà các Nhóm cùng mẫu (cùng dạng bảng / cùng khung SQL) trước khi kết thúc.
 

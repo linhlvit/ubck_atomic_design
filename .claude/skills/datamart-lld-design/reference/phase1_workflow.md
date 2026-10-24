@@ -1,6 +1,6 @@
 # Phase 1 — Quy trình Attributes CSV — LLD Datamart
 
-Các bước Phase 1 cho từng Nhóm và Checklist Phase 1. Đọc cùng `phase1_attributes.md` (15 cột, `etl_logic_type`, key), `physical_naming.md` (đặt tên physical) và `phase1_selfreview.md` (TC1–TC12, chạy trước khi trình bày từng file).
+Các bước Phase 1 cho từng Nhóm và Checklist Phase 1. Đọc cùng `phase1_attributes.md` (15 cột, `etl_logic_type`, key), `physical_naming.md` (đặt tên physical) và `phase1_selfreview.md` (TC1–TC14, chạy trước khi trình bày từng file).
 
 ## Mục lục
 
@@ -150,6 +150,7 @@ Với mỗi attribute cần map:
 1. **Bảng `partial`:** đọc `Datamart/datamart_model.yaml` → lấy `columns` hiện có làm baseline — chỉ tra entity YAML Atomic cho delta columns mới
 2. **Bảng `new` và delta columns:** Tra `dm_manifest.yaml` → tìm entry theo `physical_name` → đọc file YAML tương ứng trong `DataModel/Atomic/{subfolder}/`
 3. Lấy `attribute.physical_name` xác nhận tên `atomic_column`
+   - **Cột có ở ≥ 2 bảng Atomic cùng nguồn (A25):** `grep -rn "physical_name: {cột}" DataModel/Atomic` — nếu trùng (`period_*`, `record_tp` ở `fmr_value` / `fmr_submission`…) thì chọn bảng ứng với `FROM`/`JOIN` của SQL BA (`ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`), ghi lý do ở `description`; nghi BA ghi sai bảng → mở O_ issue, không tự chọn bảng tiện hơn.
 4. Xác định `etl_logic_type` theo rule trong [`reference/phase1_attributes.md`](phase1_attributes.md)
 5. Viết `etl_logic` đúng format
 
@@ -198,6 +199,9 @@ ATTRIBUTES CHECK:
 □ Driving Table ghi rõ trong description của PK/BK — ngắn gọn "PK — Driving: {table}", không kèm giải thích SCD/grain dài dòng
 □ description KHÔNG chứa KPI_ID hay từ khóa ETL (GROUP BY/pre-aggregate/broadcast/JOIN/WHERE) — xem TC9
 □ Mọi mapping tra từ entity YAML files trong DataModel/Atomic/ — không đoán
+□ A25 (TC13): cột Atomic đọc thuộc đúng entity ứng với bảng `FROM`/`JOIN` của SQL BA — cột trùng tên ở ≥ 2 bảng cùng nguồn (`period_*`, `record_tp`…) đã chọn theo BA và ghi lý do
+□ A26 (TC13): mọi điều kiện/biểu thức của SQL BA (loại kỳ `PERIOD_TYPE`, loại đối tượng `RECORD_TYPE`/`BRANCH_FLAG`, trạng thái, ngày hiệu lực `ID_DATE`/`START_DATE`, `NULLIF`/`*100`/`COALESCE`/`CASE`) có trong `etl_logic` hoặc ghi lệch ở `description` + O_ issue — bảng Operational/Periodic Snapshot chỉ được thay điều kiện slicer thời gian bằng `:etl_date`
+□ A24 (TC14): đổi tên/xóa cột hoặc bảng → đã `grep -rn "<tên cũ>" Datamart/hld Datamart/lld Datamart/flat-table` và sửa Detail Mapping + HLD + yaml + flat trong cùng lượt
 □ etl_logic_type điền mọi row — kể cả pending row, trừ PK (BK vẫn phải điền)
 □ etl_logic (content) trống chỉ khi key = PK hoặc etl_logic_type = pending — BK KHÔNG được để trống
 □ etl_logic có JOIN (join_atomic/lookup_dim/lookup_date): JOIN clause đặt TRƯỚC, cột giá trị SAU dấu → (không được ngược thứ tự)

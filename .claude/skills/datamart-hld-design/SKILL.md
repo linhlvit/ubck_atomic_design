@@ -114,7 +114,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | H14 | Chọn chỉ số trên `market_index_snapshot`: Data Modeler chốt 2026-10-21 — BA `IndexCode`/`indexname = 'VNINDEX'` là BA nhầm, giữ `market_code = 'HOSE'` (KHÔNG đổi sang `index_nm`); cột BA không có ở Atomic thì liệt kê đủ cột entity trước khi kết luận; quyết định của Nhóm này không tự áp sang Nhóm khác | — (quy trình) |
 | H15 | Grain của MỌI Fact ghi trong HLD (bảng grain Section 4, `Entities.csv`, mô tả entity yaml) phải nêu **tên cột PK** và khớp LLD: "1 dòng Atomic X" (Dạng A) hoặc liệt kê cột grain (Dạng B) — A22 `datamart-lld-design`. Đổi grain/khóa = sửa đồng loạt LLD, yaml, Entities, HLD, flat (H11) | Gate 8 `L2-FACT-NO-ROW-KEY` (phía LLD) |
 | H16 | Sửa HLD: câu cũ mâu thuẫn ("PENDING", "TBD", "chưa có", tên cột cũ) phải được sửa tại chỗ hoặc gắn nhãn `*(Lịch sử …)*` trong cùng lượt — không chỉ thêm khối `[CẬP NHẬT]`; bảng "Bảng mapping nguồn" đúng 4 ô, không dán công thức/ghi chú KPI | Gate 8 D14 `L1-HLD-MAPPING-ROW-CELLS` (+ D13 cho `bảng.cột` trong công thức) |
-| H17 | Đối soát alias SELECT cuối của SQL BA và danh sách yêu cầu nghiệp vụ với KPI (không chỉ dòng BA): cột output không có KPI ⇒ thêm KPI + O_ issue "BA CSV thiếu dòng" (cần quyết định nghiệp vụ thì chỉ mở issue, hỏi) | — (`L3-BA-OUTPUT-COLUMN-UNMAPPED`; `datamart-review` Checklist điểm 4) |
+| H17 | Đối soát alias SELECT cuối của SQL BA và danh sách yêu cầu nghiệp vụ với KPI (không chỉ dòng BA): cột output không có KPI mà có bằng chứng (SQL BA / danh sách yêu cầu) ⇒ thêm KPI + O_ issue "BA CSV thiếu dòng" (cần quyết định nghiệp vụ thì chỉ mở issue, hỏi; chỉ suy luận thì không thêm) | — (`L3-BA-OUTPUT-COLUMN-UNMAPPED`; `datamart-review` Checklist điểm 4) |
 
 ---
 

@@ -117,6 +117,12 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 □ KPI coverage BA → HLD: mọi KPI Done/Doing trong BA có KPI_ID trong bảng KPI HLD?
   → Sót KPI → Warning hoặc Critical tuỳ mức độ
 
+□ Cột output của SELECT cuối trong SQL BA + danh sách yêu cầu nghiệp vụ (nếu user cung cấp): mỗi alias có KPI? (H17)
+  → Thiếu → 🔴 Critical (`L3-BA-OUTPUT-COLUMN-UNMAPPED`): thêm KPI nếu có bằng chứng + O_ issue "BA CSV thiếu dòng"; cần quyết định nghiệp vụ → chỉ mở O_ issue
+
+□ Câu cũ mâu thuẫn trong Nhóm (PENDING / TBD / chưa có / HẠ xuống / tên cột cũ) và bảng mapping nguồn đúng 4 ô? (H16, Gate 8 D14)
+  → Còn câu cũ mâu thuẫn trạng thái hiện tại → 🟡 Warning; dòng mapping sai số ô → 🔴 Critical (`L1-HLD-MAPPING-ROW-CELLS`)
+
 □ KPI Pending: tất cả KPI Pending trong BA có dòng trong bảng KPI với cột Trạng thái = PENDING?
   → Thiếu → Warning
   → Bắt buộc ghi rõ nhóm nguyên nhân (1 trong 5 nhóm) và blocker cụ thể tại cột Ghi chú
@@ -181,6 +187,12 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 
 □ Mọi KPI Done trong BA có cột tương ứng trong Attributes?
   → Thiếu cột → Critical
+
+□ Bảng nguồn của cột Atomic (A25): cột đọc có thuộc entity ứng với bảng `FROM`/`JOIN` của SQL BA? Cột trùng tên ở ≥ 2 bảng cùng nguồn (`period_*`, `record_tp` ở `fmr_value` vs `fmr_submission`)?
+  → Đọc nhầm bảng → 🔴 Critical (`L3-SOURCE-TABLE-MISMATCH`)
+
+□ Điều kiện của SQL BA trong `etl_logic` Fact/Operational (A26): loại kỳ, loại đối tượng, trạng thái, ngày hiệu lực, `NULLIF`/`*100`/`COALESCE`/`CASE`, chọn bản ghi theo kỳ — có hoặc ghi lệch + O_ issue? "Active-only" chỉ miễn điều kiện slicer thời gian
+  → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
 
 □ source_entity + atomic_table + atomic_column điền đầy đủ?
   → Trống với etl_logic_type ≠ pending → Warning
@@ -363,6 +375,12 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 
 □ Kiểm tra chỉ tiêu Delete từ BA:
   → Xác nhận TUYỆT ĐỐI không có dòng nào trong Detail Mapping sinh ra từ chỉ tiêu BA có Trạng thái mapping = Delete / DELETED / Xóa
+
+□ `bảng.cột` trong cột `logic` tồn tại (A24): chạy `check_design_lint.py --module {M}` — D13 trả lời sẵn, không rà tay
+  → Cột không tồn tại → 🔴 Critical (`L0-DM-LOGIC-COLUMN-NOT-FOUND`); mục baseline không phải cớ cho KPI của Nhóm đang review
+
+□ Kiểm kê điều kiện SQL BA ở `logic` (A26 / L17(e)): `ON` của LEFT JOIN, CTE, `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`, biểu thức tính
+  → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
 ```
 
 ---

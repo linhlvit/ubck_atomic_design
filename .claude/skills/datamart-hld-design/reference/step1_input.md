@@ -39,6 +39,7 @@
    - `Phân loại = Cơ sở` + `Phái sinh` → KPI chỉ tiêu
    - Ghi nhận `Trạng thái mapping` — phân biệt Done/Doing/Pending
    - ❌ Không bỏ qua dòng `Phân loại = Chiều` — đây là phần của bảng KPI, không chỉ là gợi ý thiết kế
+   - ⛔ **Đối soát CỘT OUTPUT (H17):** trước khi viết bảng KPI, chạy thêm `ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`, liệt kê alias của SELECT cuối trong SQL tham khảo (`"Trạng thái"`, `"Tổng"`, `"NAV/GDP"`…) và danh sách yêu cầu nghiệp vụ user cung cấp (nếu có); mỗi cột phải khớp ≥ 1 KPI. Cột không có dòng BA nhưng có bằng chứng (SQL BA chính thức hoặc danh sách yêu cầu) → thêm KPI, ghi nguồn ở Ghi chú + Open Issue "BA CSV thiếu dòng"; cần quyết định nghiệp vụ (cột có thật sự hiển thị không) → chỉ mở Open Issue và hỏi. Chỉ suy luận nghiệp vụ → KHÔNG thêm.
    - ⛔ **QUY TẮC BẮT BUỘC — CHỈ TIÊU TRẠNG THÁI MAPPING = "Delete":**
      Nếu chỉ tiêu trong file BA có `Trạng thái mapping` là **`Delete`** (hoặc `DELETE`, `Xóa`, `Xoá`, `DELETED`):
      - **TUYỆT ĐỐI KHÔNG ĐƯỢC ĐƯA VÀO THIẾT KẾ** (không đưa vào Section 1 Data Lineage, không cấp KPI ID, không đưa vào bảng KPI Section 2, không tạo Fact/Dimension/Operational trong Section 3/4, và không xuất hiện trong `Entities.csv`).

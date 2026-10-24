@@ -540,6 +540,7 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 **Kiểm tra:**
 - Với mọi chỉ tiêu có SQL tham khảo trong BA: kiểm tra xem mọi điều kiện `WHERE` đã nằm trong `logic` của MEASURE (hoặc dòng `FILTER` với KPI không có MEASURE) hoặc ghi nhận trong ETL chưa.
 - Kiểm tra `mart_column` và `logic` có phản ánh đúng biểu thức trong mệnh đề `SELECT` của SQL tham khảo không.
+- **Kiểm kê điều kiện (A26, bổ sung 2026-10-24):** liệt kê CẢ `ON` của `LEFT JOIN`/CTE, `ROW_NUMBER ... = 1`, loại kỳ (`PERIOD_TYPE`), loại đối tượng (`RECORD_TYPE`, `BRANCH_FLAG`), ngày hiệu lực (`ID_DATE`, `START_DATE`), biểu thức `NULLIF`/`*100`/`COALESCE`/`CASE`. Mỗi điều kiện: có trong `logic` / có trong `etl_logic` Fact-Operational (trích được, A10) / thay thế có chủ ý (ghi `ghi_chu` + O_ issue) / không áp dụng (lý do). Bảng Active-only chỉ được thay điều kiện slicer thời gian bằng `:etl_date`. Sự cố QLQ 2026-10-24: 42 KPI thiếu `PERIOD_TYPE = 3`, hồ sơ chi nhánh lẫn văn phòng đại diện vì thiếu `BRANCH_FLAG = 1`, NAV/GDP thiếu `*100` và `NULLIF`.
 
 ❌ BA SQL có `Board Type NOT IN ('T1','T2','T3','T4','T6','R1')` (khớp lệnh thuần) nhưng Detail Mapping lại map vào `Total Volume` / `SUM(total_vol)` (gộp thỏa thuận) → vi phạm L17.
 ❌ BA SQL có `FloorCode IN ('10','02','04') AND StockType NOT IN (1,4)` nhưng `logic` MEASURE không có `stock_tp_code NOT IN (1,4)` (và không có ghi chú lọc sẵn tại ETL) → vi phạm L17.
@@ -571,7 +572,7 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 
 ```
 □ L1: Mọi SLICER/FILTER Chiều thời gian → logic trỏ đúng physical_table của nhóm đó (không phải bảng nhóm khác)
-□ L2: Mọi physical_table.physical_column trong logic → tồn tại trong Attributes.csv của bảng tương ứng
+□ L2: Mọi physical_table.physical_column trong logic → tồn tại trong Attributes.csv của bảng tương ứng — máy kiểm Gate 8 D13 (A24, `check_design_lint.py`; nợ cũ ở `baseline`), không rà tay
 □ L3: Operational table → không có dòng FILTER cdr_dt_dim (chỉ SLICER date column trực tiếp)
 □ L4: HLD nhóm PENDING hoặc KPI PENDING đơn lẻ → toàn bộ 4 cột mart_table/mart_column/column_role/logic trống; ghi_chu phân loại theo 5 nhóm chuẩn hóa
 □ L5: Nhóm copy từ nhóm khác → scan kpi_name kiểm tra không còn tên ngữ cảnh cũ

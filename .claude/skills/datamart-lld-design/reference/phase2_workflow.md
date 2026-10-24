@@ -14,6 +14,7 @@ Input/Output, cách ghi file, Checklist và SELF-REVIEW Phase 2. Đọc cùng `p
   - TC1b — Bám sát Câu lệnh tham khảo (Reference SQL Alignment Check — Quy tắc L17)
   - TC2 — KPI_ID hợp lệ (thuộc HLD, kể cả Chiều và Pending)
   - TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_name
+  - TC3b — `bảng.cột` trong `logic` tồn tại thật (A24 — Gate 8 D13)
   - TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml
   - GATE CUỐI NHÓM
   - SELF-REVIEW Phase 2 — module-level
@@ -75,6 +76,7 @@ PRE-CHECK (trước khi sinh — bắt buộc, chỉ cho KPI của nhóm đang x
 □ Nếu dòng BA nào (hợp lệ, không phải Delete) chưa có KPI_ID → DỪNG, báo cáo danh sách gap → ❌ KHÔNG sinh block khi chưa có xác nhận của human về cách xử lý gap
 □ Không tự sinh KPI_ID mới trong Phase 2 — KPI_ID mới phải được khai sinh trong HLD trước
 □ Đọc kỹ `Câu lệnh tham khảo`, `Điều kiện chung`, `Bảng nguồn`, `Trường nguồn`, và `Note` của toàn bộ chỉ tiêu nhóm đang xử lý (theo Quy tắc L17) — lấy bằng `python .claude/skills/datamart-review/scripts/ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`. Lưu ý: với QLKD, BA đã gộp 2 cột SQL thành 1 vào 2026-09-18 — cột sống duy nhất là `Câu lệnh tham khảo (SIT)` (cột S)
+□ Liệt kê alias của SELECT cuối trong SQL tham khảo (+ danh sách yêu cầu nghiệp vụ user cung cấp, nếu có) và đối chiếu với KPI của Nhóm (H17): alias không có KPI → DỪNG, báo human (KPI_ID mới khai sinh ở HLD — `apply_kpi_patch.py` — không tự sinh ở Phase 2)
 □ Đếm N_BA(nhóm) (chỉ tính dòng hợp lệ, ĐÃ LOẠI TRỪ dòng Delete) và N_KPI(nhóm) → báo cáo 2 con số → DỪNG chờ human xác nhận trước khi sinh
 
 OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
@@ -85,6 +87,9 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Bám sát Câu lệnh tham khảo (Quy tắc L17):
   - Mọi điều kiện WHERE trong SQL tham khảo (sàn, loại CK, loại bảng lệnh, loại NĐT, cờ hiệu lực...) PHẢI nằm trong `WHERE` của `logic` dòng MEASURE (KPI không có MEASURE: sinh dòng `column_role = FILTER`) HOẶC ghi rõ trong `ghi_chu` là đã lọc sẵn tại ETL Fact.
   - Số đo trong `mart_column` và `logic` phải bám sát biểu thức `SELECT` trong SQL tham khảo: phân biệt rạch ròi Khớp lệnh (`total_matched_*`) vs Thỏa thuận (`total_negotiated_*`) vs Tổng (`total_*`); Mua vs Bán vs Ròng; Rolling window...
+□ Kiểm kê điều kiện SQL BA (A26 / L17(e)) — lập bảng: mọi `WHERE`, `ON` của `LEFT JOIN`, CTE, `ROW_NUMBER ... = 1`, `NULLIF`/`*100`/`COALESCE`/`CASE` của SQL tham khảo → có trong `logic` (trích) / thay thế có chủ ý (`ghi_chu` + O_ issue) / không áp dụng (lý do):
+  - Chỉ điều kiện slicer thời gian (`:filter_month`…) được thay bằng `:etl_date` khi bảng là Operational/Periodic Snapshot không có chiều tháng. `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`/`START_DATE` và biểu thức tính KHÔNG được miễn — kể cả khi bảng nguồn "Active-only"; điều kiện "đã lọc sẵn tại ETL" phải trích được từ `etl_logic` (A10).
+  - SQL BA nghi ngược/sai (CASE đảo chiều, `=` thay `<=`, chia khác đơn vị): giữ thiết kế hợp lý hoặc theo BA, nhưng ghi lệch ở `ghi_chu` và mở O_ issue "Open — chờ BA" ngay trong lượt.
 □ Mốc ngày của KPI (A19, phạm vi Phase 2) — KPI trên `fct_*_snpst`/fact event mà BA lọc theo Từ ngày–Đến ngày hoặc ngày tra cứu:
   - Flow (KL/GT/tổng khoảng) → `SUM(...) WHERE cdr_dt_dim.cdr_dt BETWEEN :from_date AND :to_date`.
   - Stock / giá tại Đến ngày (VCSH, số CP lưu hành, LNST kỳ gần nhất, giá đóng cửa) → as-of Đến ngày (`argMax(..., cdr_dt_dim.cdr_dt)`, cận trên `:to_date`); CẤM `SUM` Stock qua nhiều ngày (cộng lặp ×N).
@@ -107,7 +112,7 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
   trước, KHÔNG tự ý append tiếp theo thứ tự sai đó, báo cho human trước
 □ Sau khi human duyệt block: ghi bằng `python .claude/skills/datamart-review/scripts/apply_patch.py --module {MODULE} --target dm --nhom {N} --from <file rows> --dry-run` → xem diff → chạy lại bỏ `--dry-run` → báo "Đã ghi N dòng nhóm [N] vào Detail Mapping"
 
-SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 5 testcase, báo kết quả):
+SELF-REVIEW Phase 2 — mỗi nhóm (bắt buộc trước khi trình bày — chạy 6 testcase, báo kết quả):
 
 TC1 — Mô tả khớp chỉ tiêu:
 □ Kiểm tra cột `kpi_name` trong Detail Mapping khớp với tên KPI trong HLD bảng KPI (Section 2)
@@ -120,6 +125,7 @@ TC1b — Bám sát Câu lệnh tham khảo (Reference SQL Alignment Check — Qu
   - Kiểm tra các điều kiện lọc trong mệnh đề WHERE đã nằm trong `logic` MEASURE (KPI không có MEASURE: dòng `column_role = FILTER`) hoặc đã ghi nhận lọc sẵn trong ETL Fact chưa.
   - Quy tắc L18: mỗi `kpi_id` có dòng MEASURE chỉ được có đúng 1 dòng (đếm số dòng/kpi_id; có FILTER/GROUP_BY cùng kpi_id → FAIL).
   - Kiểm tra `mart_column` và biểu thức tổng hợp trong `logic` có phản ánh đúng mệnh đề SELECT (khớp lệnh vs thỏa thuận vs tổng; mua vs bán vs ròng; rolling/window...) không.
+  - Kiểm kê điều kiện (A26): bảng kiểm kê ở OUTPUT CHECK không còn dòng "quên"; mọi điều kiện loại kỳ / loại đối tượng / ngày hiệu lực / biểu thức tính nằm ở `logic` hoặc ở `etl_logic` Fact/Operational và trích được.
 □ Báo: ✅ TC1b PASS hoặc ❌ TC1b FAIL: [danh sách kpi_id bị lệch số đo hoặc thiếu filter so với SQL tham khảo]
 □ Nếu FAIL → sửa trước khi trình bày
 
@@ -134,6 +140,17 @@ TC3 — Logic dùng tên physical (snake_case), đủ prefix table_name.column_n
 □ Báo: ✅ TC3 PASS hoặc ❌ TC3 FAIL: [danh sách kpi_id có logic dùng tên logical thay vì physical]
 □ Nếu FAIL → sửa trước khi trình bày
 
+TC3b — `bảng.cột` trong `logic` tồn tại thật (A24 — máy kiểm Gate 8 D13; nâng cấp từ kiểm tay L2):
+
+```bash
+python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE}
+```
+
+□ Đọc mọi dòng `[X] [L0-DM-LOGIC-COLUMN-NOT-FOUND]` thuộc KPI của Nhóm đang làm: cột không có ở Attributes CSV / YAML Atomic → sửa `logic` (hoặc thêm cột vào LLD — A20), KHÔNG thêm vào baseline
+□ Mục `[i] … baseline A24` KHÔNG phải cớ — KPI của Nhóm đang làm phải sạch
+□ Vừa đổi tên/xóa cột hoặc bảng ở LLD → `grep -rn "<tên cũ>" Datamart/hld Datamart/lld Datamart/flat-table` = 0 (trừ phần trong `[...]`)
+□ Báo: ✅ TC3b PASS hoặc ❌ TC3b FAIL: [kpi_id — `bảng.cột`]
+
 TC4 — Trường/bảng trong Detail Mapping tồn tại trong datamart_model.yaml:
 
 ```bash
@@ -146,7 +163,7 @@ và chấp nhận **cả tên logical lẫn tên physical** — thực tế repo
 false positive hàng loạt.
 
 □ FAIL → xác định model thiếu cột (Phase 1 chưa ghi đủ) hay Detail Mapping dùng sai tên → sửa tương ứng
-□ Tất cả 5 TC đều PASS (TC1, TC1b, TC2, TC3, TC4) → trình bày block KPI nhóm N cho human
+□ Tất cả 6 TC đều PASS (TC1, TC1b, TC2, TC3, TC3b, TC4) → trình bày block KPI nhóm N cho human
 □ Sau khi xuất block: DỪNG chờ human duyệt block → append vào Detail Mapping khi được approve
 
 GATE CUỐI NHÓM:

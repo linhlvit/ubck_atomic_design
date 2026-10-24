@@ -1,6 +1,6 @@
-# Phase 1 — SELF-REVIEW TC1–TC12 — LLD Datamart
+# Phase 1 — SELF-REVIEW TC1–TC14 — LLD Datamart
 
-Chạy sau khi sinh xong mỗi file Attributes, trước khi trình bày cho human. Báo đủ 12 dòng PASS/FAIL.
+Chạy sau khi sinh xong mỗi file Attributes, trước khi trình bày cho human. Báo đủ 14 dòng PASS/FAIL.
 
 ## Mục lục
 
@@ -19,10 +19,12 @@ Chạy sau khi sinh xong mỗi file Attributes, trước khi trình bày cho hum
   - TC10 — Đầy đủ trường kỹ thuật SCD4A trên Dimension / Operational (bắt buộc dùng Bash tool)
   - TC11 — Lọc `ds_rcrd_st = 'ACTIVE'` khi JOIN bảng Atomic SCD4A (bắt buộc dùng Bash tool)
   - TC12 — Giới hạn ngày bảng Atomic snapshot/event (A19, bắt buộc dùng Bash tool)
+  - TC13 — Bảng nguồn và điều kiện khớp SQL BA (A25 + A26, bắt buộc, kiểm tay có trích dẫn)
+  - TC14 — `bảng.cột` trong logic/công thức tồn tại thật và không còn tên cũ (A24, bắt buộc dùng Bash tool)
 
 ### Bước 4 — SELF-REVIEW trước khi trình bày kết quả
 
-**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy **đủ 12 testcase**: TC1, TC2, TC2b, TC3 (gồm sub-check TC3b), TC4 (gồm sub-check A/B/C/D), TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12 — báo kết quả đủ 12 dòng PASS/FAIL, không gộp, không bỏ mục:
+**Bắt buộc thực hiện sau khi sinh xong mỗi file, trước khi trình bày cho human duyệt.** Chạy **đủ 14 testcase**: TC1, TC2, TC2b, TC3 (gồm sub-check TC3b), TC4 (gồm sub-check A/B/C/D), TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12, TC13, TC14 — báo kết quả đủ 14 dòng PASS/FAIL, không gộp, không bỏ mục:
 
 **TC1 — Số cột khớp HLD:**
 - Đếm số attribute trong file CSV vừa sinh (theo `datamart_attribute` unique, không đếm multi-source row).
@@ -415,4 +417,26 @@ Nếu FAIL → sửa trước khi trình bày.
   / báo thừa (đã chặn gián tiếp, ghi lý do) / ngoại lệ có truy vết (`[DATE-BOUND-REVIEWED ...]` + Open Issue).
 - Báo: `✅ TC12 PASS: 0 phát hiện` hoặc `❌ TC12 FAIL: [file/cột/mã R1–R6]`. Không được báo PASS khi còn phát hiện chưa phân loại.
 
-> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 12 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
+**TC13 — Bảng nguồn và điều kiện khớp SQL BA (A25 + A26, bắt buộc, kiểm tay có trích dẫn):**
+- Mục đích: không để cột trùng tên ở bảng Atomic khác (`period_*`, `record_tp`…) và không để rớt điều kiện của SQL BA (bài học QLQ 2026-10-24: `PERIOD_TYPE = 3`, `ID_DATE ≤ kỳ`, `BRANCH_FLAG = 1`, `NULLIF`/`*100`). Gate không bắt được vì đây là ngữ nghĩa SQL.
+- Áp dụng cho file Fact/Operational có cột lấy từ báo cáo/KPI có `Câu lệnh tham khảo` BA. File thuần Dimension/Fundamental không có SQL BA: ghi `⏭ TC13 N/A`.
+- Làm: lấy SQL BA bằng `ba_slice.py --module {MODULE} --nhom {N} --with-sql --print`, lập bảng cho từng cột Fact/Operational (hoặc KPI):
+
+  | Điều kiện / bảng / biểu thức của SQL BA | Xử lý (có ở `etl_logic` — trích đoạn / thay thế có chủ ý — `description` + O_ issue / không áp dụng — lý do) |
+  |---|---|
+
+  Liệt kê đủ: `FROM`/`JOIN` (bảng BA → entity Atomic của bảng đó), `WHERE`, `ON` của `LEFT JOIN`, CTE, `ROW_NUMBER ... = 1`, `NULLIF`/`*100`/`COALESCE`/`CASE`.
+- Chỉ điều kiện slicer thời gian (`:filter_month`…) được thay bằng `:etl_date`; `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`/`START_DATE`, biểu thức tính KHÔNG được miễn. SQL BA nghi ngược/sai → ghi chỗ lệch + O_ issue "Open — chờ BA" ngay trong lượt.
+- Báo: `✅ TC13 PASS: N điều kiện, 0 rớt` hoặc `❌ TC13 FAIL: [cột/KPI — điều kiện rớt]`. Không báo PASS khi còn dòng chưa có cột xử lý.
+
+**TC14 — `bảng.cột` trong logic/công thức tồn tại thật và không còn tên cũ (A24, bắt buộc dùng Bash tool):**
+- Mục đích: cột đổi tên/xóa ở LLD không để lại tham chiếu mồ côi trong Detail Mapping / HLD (bài học QLQ 2026-10-24: `cdr_dt_dim.cdr_year`, `investment_fund.fund_tp_code`… sống qua nhiều phiên vì Gate 0 không kiểm cột trong `logic`).
+- Chạy:
+  ```bash
+  python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MODULE}
+  ```
+  Đọc mọi dòng `[X] [L0-DM-LOGIC-COLUMN-NOT-FOUND]` thuộc bảng vừa sửa → sửa `logic`/công thức HLD, hoặc thêm cột vào LLD (A20). Mục `[i] … baseline A24` không phải cớ cho KPI của bảng đang sửa.
+- Nếu file vừa đổi tên/xóa cột hoặc bảng: `grep -rn "<tên cũ>" Datamart/hld Datamart/lld Datamart/flat-table` phải 0 kết quả (trừ phần trong `[...]` ghi chú lịch sử).
+- Báo: `✅ TC14 PASS` hoặc `❌ TC14 FAIL: [KPI — bảng.cột]`.
+
+> **Quy tắc SELF-REVIEW:** Chỉ trình bày file cho human sau khi cả 14 TC (TC1, TC2, TC2b, TC3 gồm cả TC3b, TC4, TC5, TC6, TC7, TC8, TC9, TC10, TC11, TC12, TC13, TC14) đều PASS. Nếu có TC FAIL → sửa → chạy lại TC đó → báo kết quả cuối cùng kèm tóm tắt "Đã sửa X lỗi" trước khi trình bày file.
