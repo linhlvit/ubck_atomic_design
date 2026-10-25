@@ -1,0 +1,111 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Map vào Fundamental entity dùng chung Classification Value (cl_value), không giữ entity riêng — cùng pattern NHNCK/TTHC. Bảng AUDIT.LOOKUP_VALUES chứa nhiều nhóm danh mục (cột LOOKUP_GROUP); mỗi nhóm = 1 scheme (schema_code). Điều kiện lọc áp dụng cho cả bảng nguồn: LOOKUP_GROUP IN ('AF_TARGET_TYPE', 'AF_AUTHORITY', 'POSITION', 'AF_STATUS', 'PROFILE_APPROVAL_STATUS', 'AF_AUDITOR_STATUS', 'AF_INSPECTION_RESULT', 'AF_ACTION_TYPE', 'AF_AUDIT_ACTION', 'AF_INSPECTION_UNIT', 'AF_NEXT_YEAR_PROCESSING'). Mapping LOOKUP_GROUP → schema_code/schema_nm xử lí bằng CASE WHEN ghi ở comment của 2 attribute tương ứng (theo sql.txt, Data Modeler cung cấp); LOOKUP_GROUP không nằm trong CASE → NULL. schema_nm: Data Modeler giao AI điền theo ý nghĩa nhóm; nhóm không rõ nghĩa để trống (không có WHEN): AF_AUDIT_ACTION. Value set khớp chuẩn: scheme đã đăng ký ở classification_schemes.yaml theo SCHEMA_CODE=AUDIT.* — không đăng ký thêm ở lượt này. Cần chạy Level 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml trước khi generate ra DataModel/Atomic. 4 cột ds_* không thiết kế ở đây — ETL job tự quản lý (SCD). Các cột nguồn còn lại ghi trong pending_design.yaml."
+attributes:
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.LOOKUP_CD"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên dạng text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại (scheme). BK phụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT.AF_TARGET_TYPE' WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT.AF_AUTHORITY' WHEN LOOKUP_GROUP = 'POSITION' THEN 'AUDIT.POSITION' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT.AF_STATUS' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT.PROFILE_APPROVAL_STATUS' WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS' THEN 'AUDIT.AF_AUDITOR_STATUS' WHEN LOOKUP_GROUP = 'AF_INSPECTION_RESULT' THEN 'AUDIT.AF_INSPECTION_RESULT' WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE' THEN 'AUDIT.AF_ACTION_TYPE' WHEN LOOKUP_GROUP = 'AF_AUDIT_ACTION' THEN 'AUDIT.AF_AUDIT_ACTION' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT' THEN 'AUDIT.AF_INSPECTION_UNIT' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING' THEN 'AUDIT.AF_NEXT_YEAR_PROCESSING' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT - Danh mục loại đối tượng áp dụng' WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT - Danh mục cơ quan có thẩm quyền' WHEN LOOKUP_GROUP = 'POSITION' THEN 'AUDIT - Danh mục chức vụ' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT - Danh mục trạng thái công ty kiểm toán' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT - Danh mục trạng thái phê duyệt hồ sơ' WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS' THEN 'AUDIT - Danh mục trạng thái kiểm toán viên' WHEN LOOKUP_GROUP = 'AF_INSPECTION_RESULT' THEN 'AUDIT - Danh mục kết quả thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE' THEN 'AUDIT - Danh mục loại hành động' WHEN LOOKUP_GROUP = 'AF_AUDIT_ACTION' THEN 'AUDIT - Danh mục loại hình thức xử lý vi phạm' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT' THEN 'AUDIT - Danh mục đơn vị thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING' THEN 'AUDIT - Danh mục hướng xử lý xem xét năm sau' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=AUDIT_LOOKUP_VALUES"
+  etl_derived_value: "AUDIT_LOOKUP_VALUES"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "AUDIT.LOOKUP_VALUES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

@@ -10,33 +10,97 @@ entity:
   consolidation_status: "approved"
   consolidated_by: null
   consolidated_at: null
-sources: []
+sources:
+- source_system: "MRMS"
+  source_table: "RISK_INDICATOR_CATEGORY"
+  lld_file: "MRMS/lld_MRMS_RISK_INDICATOR_CATEGORY.yaml"
+- source_system: "TTHC"
+  source_table: "CLASSIFICATION_VALUE"
+  lld_file: "TTHC/lld_TTHC_CLASSIFICATION_VALUE.yaml"
+- source_system: "NHNCK"
+  source_table: "DEPARTMENTS"
+  lld_file: "NHNCK/lld_NHNCK_DEPARTMENTS.yaml"
+- source_system: "NHNCK"
+  source_table: "POSITIONS"
+  lld_file: "NHNCK/lld_NHNCK_POSITIONS.yaml"
+- source_system: "NHNCK"
+  source_table: "EDUCATION_LEVELS"
+  lld_file: "NHNCK/lld_NHNCK_EDUCATION_LEVELS.yaml"
+- source_system: "NHNCK"
+  source_table: "APPLICATION_SOURCES"
+  lld_file: "NHNCK/lld_NHNCK_APPLICATION_SOURCES.yaml"
+- source_system: "NHNCK"
+  source_table: "APPLICATION_STATUSES"
+  lld_file: "NHNCK/lld_NHNCK_APPLICATION_STATUSES.yaml"
+- source_system: "NHNCK"
+  source_table: "DOCUMENTS"
+  lld_file: "NHNCK/lld_NHNCK_DOCUMENTS.yaml"
+- source_system: "NHNCK"
+  source_table: "SPECIALIZATIONS"
+  lld_file: "NHNCK/lld_NHNCK_SPECIALIZATIONS.yaml"
+- source_system: "NHNCK"
+  source_table: "BANKS"
+  lld_file: "NHNCK/lld_NHNCK_BANKS.yaml"
+- source_system: "SCMS"
+  source_table: "CAT_COMPANY_TYPE"
+  lld_file: "SCMS/lld_SCMS_CAT_COMPANY_TYPE.yaml"
+- source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  lld_file: "IDS/lld_IDS_LOOKUP_VALUES.yaml"
+- source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  lld_file: "AUDIT/lld_AUDIT_LOOKUP_VALUES.yaml"
 consolidation_notes: []
 attributes:
 - attribute_name: "Classification Code"
   physical_name: "cl_code"
-  data_type: "string"
   description: "Mã giá trị phân loại. BK. Có thể là mã số dạng text (VD: '1','2')\
     \ hoặc text thuần (VD: 'Đại học') tuỳ scheme."
   data_domain: "Classification Value"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   comment: "BK chính. Dùng để lookup trong các entity khác."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: "MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE"
+    TTHC.CLASSIFICATION_VALUE: "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_CODE"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DEPARTMENT_CODE"
+    NHNCK.POSITIONS: "NHNCK.POSITIONS.POSITION_CODE"
+    NHNCK.EDUCATION_LEVELS: "NHNCK.EDUCATION_LEVELS.ID"
+    NHNCK.APPLICATION_SOURCES: "NHNCK.APPLICATION_SOURCES.CODE"
+    NHNCK.APPLICATION_STATUSES: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
+    NHNCK.DOCUMENTS: "NHNCK.DOCUMENTS.DOCUMENT_CODE"
+    NHNCK.SPECIALIZATIONS: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_CODE"
+    NHNCK.BANKS: "NHNCK.BANKS.BANK_CODE"
+    SCMS.CAT_COMPANY_TYPE: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_CD"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_CD"
 - attribute_name: "Schema Code"
   physical_name: "schema_code"
-  data_type: "string"
   description: "Mã loại phân loại (scheme). BK phụ."
   data_domain: "Classification Value"
   nullable: false
-  is_primary_key: false
+  is_primary_key: true
   comment: "BK phụ — kết hợp Schema Code + Classification Code tạo thành BK duy nhất."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: "TTHC.CLASSIFICATION_VALUE.SCHEMA_CODE"
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
 - attribute_name: "Schema Name"
   physical_name: "schema_nm"
-  data_type: "string"
   description: "Tên loại phân loại."
   data_domain: "Text"
   nullable: true
@@ -44,9 +108,22 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: "TTHC.CLASSIFICATION_VALUE.SCHEMA_NM"
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
-  data_type: "string"
   description: "Mã nguồn dữ liệu."
   data_domain: "Classification Value"
   nullable: false
@@ -54,9 +131,22 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: null
+    AUDIT.LOOKUP_VALUES: null
 - attribute_name: "Classification Name"
   physical_name: "cl_nm"
-  data_type: "string"
   description: "Tên giá trị phân loại (tiếng Việt)."
   data_domain: "Text"
   nullable: true
@@ -64,9 +154,22 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: "MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_NAME"
+    TTHC.CLASSIFICATION_VALUE: "TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME"
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DEPARTMENT_NAME"
+    NHNCK.POSITIONS: "NHNCK.POSITIONS.POSITION_NAME"
+    NHNCK.EDUCATION_LEVELS: "NHNCK.EDUCATION_LEVELS.LEVEL_NAME"
+    NHNCK.APPLICATION_SOURCES: "NHNCK.APPLICATION_SOURCES.NAME"
+    NHNCK.APPLICATION_STATUSES: "NHNCK.APPLICATION_STATUSES.STATUS_NAME"
+    NHNCK.DOCUMENTS: "NHNCK.DOCUMENTS.DOCUMENT_NAME"
+    NHNCK.SPECIALIZATIONS: "NHNCK.SPECIALIZATIONS.SPECIALIZATION_NAME"
+    NHNCK.BANKS: "NHNCK.BANKS.BANK_NAME"
+    SCMS.CAT_COMPANY_TYPE: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_NAME"
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_VN"
 - attribute_name: "Classification Name English"
   physical_name: "cl_nm_english"
-  data_type: "string"
   description: "Tên giá trị phân loại (tiếng Anh)."
   data_domain: "Text"
   nullable: true
@@ -74,9 +177,22 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: "NHNCK.BANKS.ENGLISH_BANK_NAME"
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_EN"
 - attribute_name: "Classification Description"
   physical_name: "cl_description"
-  data_type: "string"
   description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
   data_domain: "Text"
   nullable: true
@@ -84,9 +200,22 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: "NHNCK.DEPARTMENTS.DESCRIPTION"
+    NHNCK.POSITIONS: "NHNCK.POSITIONS.DESCRIPTION"
+    NHNCK.EDUCATION_LEVELS: "NHNCK.EDUCATION_LEVELS.DESCRIPTION"
+    NHNCK.APPLICATION_SOURCES: "NHNCK.APPLICATION_SOURCES.DESCRIPTION"
+    NHNCK.APPLICATION_STATUSES: "NHNCK.APPLICATION_STATUSES.DESCRIPTION"
+    NHNCK.DOCUMENTS: "NHNCK.DOCUMENTS.REFERENCE"
+    NHNCK.SPECIALIZATIONS: "NHNCK.SPECIALIZATIONS.REFERENCE"
+    NHNCK.BANKS: "NHNCK.BANKS.SHORT_NAME"
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.DESCRIPTION"
+    AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.DESCRIPTION"
 - attribute_name: "Record Status"
   physical_name: "ds_rcrd_st"
-  data_type: "string"
   description: "Trạng thái hiệu lực bản ghi (ACTIVE/INACTIVE)."
   data_domain: "Classification Value"
   nullable: false
@@ -94,9 +223,22 @@ attributes:
   comment: "Technical field — SCD4A current-state."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: null
+    AUDIT.LOOKUP_VALUES: null
 - attribute_name: "Record Effective Date"
   physical_name: "ds_rcrd_eff_dt"
-  data_type: "date"
   description: "Ngày bản ghi bắt đầu có hiệu lực."
   data_domain: "Date"
   nullable: false
@@ -104,9 +246,22 @@ attributes:
   comment: "Technical field."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: null
+    AUDIT.LOOKUP_VALUES: null
 - attribute_name: "Record End Date"
   physical_name: "ds_rcrd_end_dt"
-  data_type: "date"
   description: "Ngày bản ghi hết hiệu lực (2400-01-01 nếu còn hiệu lực)."
   data_domain: "Date"
   nullable: false
@@ -114,9 +269,22 @@ attributes:
   comment: "Technical field."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: null
+    AUDIT.LOOKUP_VALUES: null
 - attribute_name: "ETL Process Timestamp"
   physical_name: "ds_etl_pcs_tms"
-  data_type: "timestamp"
   description: "Thời điểm ETL xử lý bản ghi."
   data_domain: "Timestamp"
   nullable: false
@@ -124,3 +292,17 @@ attributes:
   comment: "Technical field."
   classification_context: null
   etl_derived_value: null
+  source_mappings:
+    MRMS.RISK_INDICATOR_CATEGORY: null
+    TTHC.CLASSIFICATION_VALUE: null
+    NHNCK.DEPARTMENTS: null
+    NHNCK.POSITIONS: null
+    NHNCK.EDUCATION_LEVELS: null
+    NHNCK.APPLICATION_SOURCES: null
+    NHNCK.APPLICATION_STATUSES: null
+    NHNCK.DOCUMENTS: null
+    NHNCK.SPECIALIZATIONS: null
+    NHNCK.BANKS: null
+    SCMS.CAT_COMPANY_TYPE: null
+    IDS.LOOKUP_VALUES: null
+    AUDIT.LOOKUP_VALUES: null

@@ -26463,12 +26463,16 @@ entities:
     etl_pattern_most: SCD2
     conflict_review: null
     sources:
+    - AUDIT
+    - IDS
     - MRMS
     - NHNCK
     - SCMS
     - TTHC
     references:
       brd:
+      - BRD-SRC-AUDIT-LOOKUP_VALUES
+      - BRD-SRC-IDS-LOOKUP_VALUES
       - BRD-SRC-MRMS-RISK_INDICATOR_CATEGORY
       - BRD-SRC-NHNCK-APPLICATION_SOURCES
       - BRD-SRC-NHNCK-APPLICATION_STATUSES
@@ -26483,8 +26487,9 @@ entities:
   attributes:
   - name: Classification Code
     physical_name: cl_code
-    business_meaning_1st: Mã giá trị phân loại. Mã nhóm chỉ tiêu tài chính rủi ro.
-    comment_1st: BK chính (kết hợp Schema Code tạo BK duy nhất).
+    business_meaning_1st: Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD).
+    comment_1st: BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên
+      dạng text.
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -26492,6 +26497,20 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.LOOKUP_CD
+        business_meaning: Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD).
+        comment: BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên
+          dạng text.
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.LOOKUP_CD
+        business_meaning: Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD).
+        comment: BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên
+          dạng text.
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26553,8 +26572,17 @@ entities:
         comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn thực: ContentItemIndex.ContentItemId."
   - name: Schema Code
     physical_name: schema_code
-    business_meaning_1st: Mã loại phân loại.
-    comment_1st: Hardcode MRMS.RISK_INDICATOR_CATEGORY.
+    business_meaning_1st: Mã loại phân loại (scheme). BK phụ.
+    comment_1st: Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT.AF_TARGET_TYPE'
+      WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT.AF_AUTHORITY' WHEN LOOKUP_GROUP
+      = 'POSITION' THEN 'AUDIT.POSITION' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT.AF_STATUS'
+      WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT.PROFILE_APPROVAL_STATUS'
+      WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS' THEN 'AUDIT.AF_AUDITOR_STATUS' WHEN
+      LOOKUP_GROUP = 'AF_INSPECTION_RESULT' THEN 'AUDIT.AF_INSPECTION_RESULT' WHEN
+      LOOKUP_GROUP = 'AF_ACTION_TYPE' THEN 'AUDIT.AF_ACTION_TYPE' WHEN LOOKUP_GROUP
+      = 'AF_AUDIT_ACTION' THEN 'AUDIT.AF_AUDIT_ACTION' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT'
+      THEN 'AUDIT.AF_INSPECTION_UNIT' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING'
+      THEN 'AUDIT.AF_NEXT_YEAR_PROCESSING' ELSE NULL END.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -26572,6 +26600,67 @@ entities:
     - SCMS.CAT_COMPANY_TYPE
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.LOOKUP_GROUP
+        business_meaning: Mã loại phân loại (scheme). BK phụ.
+        comment: Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT.AF_TARGET_TYPE'
+          WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT.AF_AUTHORITY' WHEN LOOKUP_GROUP
+          = 'POSITION' THEN 'AUDIT.POSITION' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN
+          'AUDIT.AF_STATUS' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT.PROFILE_APPROVAL_STATUS'
+          WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS' THEN 'AUDIT.AF_AUDITOR_STATUS' WHEN
+          LOOKUP_GROUP = 'AF_INSPECTION_RESULT' THEN 'AUDIT.AF_INSPECTION_RESULT'
+          WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE' THEN 'AUDIT.AF_ACTION_TYPE' WHEN LOOKUP_GROUP
+          = 'AF_AUDIT_ACTION' THEN 'AUDIT.AF_AUDIT_ACTION' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT'
+          THEN 'AUDIT.AF_INSPECTION_UNIT' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING'
+          THEN 'AUDIT.AF_NEXT_YEAR_PROCESSING' ELSE NULL END.
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.LOOKUP_GROUP
+        business_meaning: Mã loại phân loại (scheme). BK phụ.
+        comment: Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS.NEWS_APPROVAL_STATUS'
+          WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS.NEWS_TYPE_CD' WHEN LOOKUP_GROUP
+          = 'ENTITY_ROLE_TYPE' THEN 'IDS.ENTITY_ROLE_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE'
+          THEN 'IDS.INSPECTION_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_MODE' THEN 'IDS.INSPECTION_MODE'
+          WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE' THEN 'IDS.PENALIZED_SUBJECT_TYPE'
+          WHEN LOOKUP_GROUP = 'POSITION' THEN 'IDS.POSITION' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE'
+          THEN 'IDS.ENTERPRISE_TYPE' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE'
+          THEN 'IDS.FINANCIAL_STATEMENT_TYPE' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE'
+          THEN 'IDS.SECURITIES_TYPE' WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH' THEN
+          'IDS.EQUITY_LISTING_EXCHANGE_CODE' WHEN LOOKUP_GROUP = 'STATUS_IDS' THEN
+          'IDS.PUBLIC_STATUS' WHEN LOOKUP_GROUP = 'PUBLIC_COMPANY_FORM' THEN 'IDS.PUBLIC_COMPANY_FORM_TYPE'
+          WHEN LOOKUP_GROUP = 'PUBLIC_COM_TYPE' THEN 'IDS.PUBLIC_COMPANY_TYPE' WHEN
+          LOOKUP_GROUP = 'SO_APPROVAL_STATUS' THEN 'IDS.SO_APPROVAL_STATUS' WHEN LOOKUP_GROUP
+          = 'COMPANY_RELATIONSHIP_TYPE' THEN 'IDS.COMPANY_RELATIONSHIP_TYPE' WHEN
+          LOOKUP_GROUP = 'SHAREHOLDER_TYPE' THEN 'IDS.SHAREHOLDER_TYPE' WHEN LOOKUP_GROUP
+          = 'SO_ADMINISTRATIVE_PROCEDURE' THEN 'IDS.SO_ADMINISTRATIVE_PROCEDURE' WHEN
+          LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS' THEN 'IDS.SO_ADMINISTRATIVE_STATUS'
+          WHEN LOOKUP_GROUP = 'SO_TRANSACTION_TYPE' THEN 'IDS.SO_TRANSACTION_TYPE'
+          WHEN LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS.REPORT_CATALOG_TYPE' WHEN LOOKUP_GROUP
+          = 'SUB_NEWS_TYPE' THEN 'IDS.SUB_NEWS_TYPE_CD' WHEN LOOKUP_GROUP = 'FORM_GROUP'
+          THEN 'IDS.FORM_GROUP_TYPE' WHEN LOOKUP_GROUP = 'REPORT_TYPE' THEN 'IDS.REPORT_TYPE'
+          WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE' THEN 'IDS.RELATIONSHIP_TYPE' WHEN
+          LOOKUP_GROUP = 'IDENTITY_TYPE' THEN 'IDS.IDENTITY_TYPE' WHEN LOOKUP_GROUP
+          = 'ENTITY_TYPE' THEN 'IDS.LEGAL_ENTITY_TYPE' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL'
+          THEN 'IDS.EDUCATION_LEVEL' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE' THEN 'IDS.REPORT_ROW/COL_TYPE'
+          WHEN LOOKUP_GROUP = 'REPORT_SCOPE' THEN 'IDS.REPORT_SCOPE_TYPE' WHEN LOOKUP_GROUP
+          = 'REPORT_PERIOD_TYPE' THEN 'IDS.REPORT_PERIOD_TYPE' WHEN LOOKUP_GROUP =
+          'FINANCIAL_STATEMENT_COMPONENT' THEN 'IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE'
+          WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE' THEN 'IDS.RF_C_DATA_TYPE' WHEN LOOKUP_GROUP
+          = 'RF_R_DATA_TYPE' THEN 'IDS.RF_R_DATA_TYPE' WHEN LOOKUP_GROUP = 'SO_OFFERING_METHOD'
+          THEN 'IDS.SO_OFFERING_METHOD' WHEN LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD'
+          THEN 'IDS.SO_DISTRIBUTION_METHOD' WHEN LOOKUP_GROUP = 'SO_SECURITY_TYPE'
+          THEN 'IDS.SO_SECURITY_TYPE' WHEN LOOKUP_GROUP = 'RESTRICTION_TYPE' THEN
+          'IDS.RESTRICTION_TYPE' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE'
+          THEN 'IDS.STOCK_LISTING_ACTION_TYPE' WHEN LOOKUP_GROUP = 'EXCHANGE' THEN
+          'IDS.EXCHANGE_CODE' WHEN LOOKUP_GROUP = 'QUARTER_CODE' THEN 'IDS.PERIOD_QUARTER_TYPE'
+          WHEN LOOKUP_GROUP = 'VIOLATION_STATUS' THEN 'IDS.VIOLATION_SUBMISSION_STATUS'
+          WHEN LOOKUP_GROUP = 'VIOLATION_TYPE' THEN 'IDS.VIOLATION_REPORT_TYPE' WHEN
+          LOOKUP_GROUP = 'VIOLATION_SUBTYPE' THEN 'IDS.VIOLATION_REPORT_SUBTYPE' WHEN
+          LOOKUP_GROUP = 'VIOLATION_TRIGGER_POINT' THEN 'IDS.VIOLATION_TRIGGER_POINT'
+          WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS.DAY_TYPE' ELSE NULL END.
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26631,7 +26720,18 @@ entities:
   - name: Schema Name
     physical_name: schema_nm
     business_meaning_1st: Tên loại phân loại.
-    comment_1st: Hardcode.
+    comment_1st: Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT - Danh
+      mục loại đối tượng áp dụng' WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT -
+      Danh mục cơ quan có thẩm quyền' WHEN LOOKUP_GROUP = 'POSITION' THEN 'AUDIT -
+      Danh mục chức vụ' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT - Danh mục trạng
+      thái công ty kiểm toán' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT
+      - Danh mục trạng thái phê duyệt hồ sơ' WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS'
+      THEN 'AUDIT - Danh mục trạng thái kiểm toán viên' WHEN LOOKUP_GROUP = 'AF_INSPECTION_RESULT'
+      THEN 'AUDIT - Danh mục kết quả thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE'
+      THEN 'AUDIT - Danh mục loại hành động' WHEN LOOKUP_GROUP = 'AF_AUDIT_ACTION'
+      THEN 'AUDIT - Danh mục loại hình thức xử lý vi phạm' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT'
+      THEN 'AUDIT - Danh mục đơn vị thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING'
+      THEN 'AUDIT - Danh mục hướng xử lý xem xét năm sau' ELSE NULL END.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -26649,6 +26749,79 @@ entities:
     - SCMS - Danh mục loại hình doanh nghiệp
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.LOOKUP_GROUP
+        business_meaning: Tên loại phân loại.
+        comment: Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT - Danh
+          mục loại đối tượng áp dụng' WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT
+          - Danh mục cơ quan có thẩm quyền' WHEN LOOKUP_GROUP = 'POSITION' THEN 'AUDIT
+          - Danh mục chức vụ' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT - Danh mục
+          trạng thái công ty kiểm toán' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS'
+          THEN 'AUDIT - Danh mục trạng thái phê duyệt hồ sơ' WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS'
+          THEN 'AUDIT - Danh mục trạng thái kiểm toán viên' WHEN LOOKUP_GROUP = 'AF_INSPECTION_RESULT'
+          THEN 'AUDIT - Danh mục kết quả thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE'
+          THEN 'AUDIT - Danh mục loại hành động' WHEN LOOKUP_GROUP = 'AF_AUDIT_ACTION'
+          THEN 'AUDIT - Danh mục loại hình thức xử lý vi phạm' WHEN LOOKUP_GROUP =
+          'AF_INSPECTION_UNIT' THEN 'AUDIT - Danh mục đơn vị thanh tra/kiểm tra' WHEN
+          LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING' THEN 'AUDIT - Danh mục hướng xử
+          lý xem xét năm sau' ELSE NULL END.
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.LOOKUP_GROUP
+        business_meaning: Tên loại phân loại.
+        comment: Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS -
+          Danh mục trạng thái duyệt tin' WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS
+          - Danh mục loại tin' WHEN LOOKUP_GROUP = 'ENTITY_ROLE_TYPE' THEN 'IDS -
+          Danh mục loại vai trò của thực thể pháp lý' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE'
+          THEN 'IDS - Danh mục loại thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'INSPECTION_MODE'
+          THEN 'IDS - Danh mục hình thức thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE'
+          THEN 'IDS - Danh mục loại đối tượng bị xử phạt' WHEN LOOKUP_GROUP = 'POSITION'
+          THEN 'IDS - Danh mục chức vụ' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE' THEN
+          'IDS - Danh mục loại hình doanh nghiệp' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE'
+          THEN 'IDS - Danh mục loại báo cáo tài chính' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE'
+          THEN 'IDS - Danh mục loại chứng khoán' WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH'
+          THEN 'IDS - Danh mục sàn niêm yết cổ phiếu' WHEN LOOKUP_GROUP = 'STATUS_IDS'
+          THEN 'IDS - Danh mục trạng thái công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COMPANY_FORM'
+          THEN 'IDS - Danh mục hình thức công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COM_TYPE'
+          THEN 'IDS - Danh mục loại công ty đại chúng' WHEN LOOKUP_GROUP = 'SO_APPROVAL_STATUS'
+          THEN 'IDS - Danh mục trạng thái phê duyệt' WHEN LOOKUP_GROUP = 'COMPANY_RELATIONSHIP_TYPE'
+          THEN 'IDS - Danh mục loại quan hệ công ty' WHEN LOOKUP_GROUP = 'SHAREHOLDER_TYPE'
+          THEN 'IDS - Danh mục loại cổ đông' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE'
+          THEN 'IDS - Danh mục thủ tục hành chính chào bán chứng khoán' WHEN LOOKUP_GROUP
+          = 'SO_ADMINISTRATIVE_STATUS' THEN 'IDS - Danh mục trạng thái hành chính'
+          WHEN LOOKUP_GROUP = 'SO_TRANSACTION_TYPE' THEN 'IDS - Danh mục loại giao
+          dịch' WHEN LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS - Danh mục loại báo cáo' WHEN
+          LOOKUP_GROUP = 'SUB_NEWS_TYPE' THEN 'IDS - Danh mục loại tin chi tiết' WHEN
+          LOOKUP_GROUP = 'FORM_GROUP' THEN 'IDS - Danh mục nhóm biểu mẫu' WHEN LOOKUP_GROUP
+          = 'REPORT_TYPE' THEN 'IDS - Danh mục loại báo cáo' WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE'
+          THEN 'IDS - Danh mục loại quan hệ' WHEN LOOKUP_GROUP = 'IDENTITY_TYPE' THEN
+          'IDS - Danh mục loại giấy tờ định danh' WHEN LOOKUP_GROUP = 'ENTITY_TYPE'
+          THEN 'IDS - Danh mục loại hình thực thể pháp lý' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL'
+          THEN 'IDS - Danh mục trình độ học vấn' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE'
+          THEN 'IDS - Danh mục loại hàng trong báo cáo tài chính' WHEN LOOKUP_GROUP
+          = 'REPORT_SCOPE' THEN 'IDS - Danh mục phạm vi báo cáo' WHEN LOOKUP_GROUP
+          = 'REPORT_PERIOD_TYPE' THEN 'IDS - Danh mục loại kỳ báo cáo' WHEN LOOKUP_GROUP
+          = 'FINANCIAL_STATEMENT_COMPONENT' THEN 'IDS - Danh mục thành phần báo cáo
+          tài chính' WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE' THEN 'IDS - Danh mục kiểu
+          dữ liệu của cột trong báo cáo tài chính' WHEN LOOKUP_GROUP = 'RF_R_DATA_TYPE'
+          THEN 'IDS - Danh mục kiểu dữ liệu của hàng trong báo cáo tài chính' WHEN
+          LOOKUP_GROUP = 'SO_OFFERING_METHOD' THEN 'IDS - Danh mục phương thức chào
+          bán' WHEN LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD' THEN 'IDS - Danh mục phương
+          thức phân phối' WHEN LOOKUP_GROUP = 'SO_SECURITY_TYPE' THEN 'IDS - Danh
+          mục loại chứng khoán' WHEN LOOKUP_GROUP = 'RESTRICTION_TYPE' THEN 'IDS -
+          Danh mục loại đối tượng hạn chế' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE'
+          THEN 'IDS - Danh mục loại hành động niêm yết của công ty đại chúng' WHEN
+          LOOKUP_GROUP = 'EXCHANGE' THEN 'IDS - Danh mục sàn giao dịch' WHEN LOOKUP_GROUP
+          = 'QUARTER_CODE' THEN 'IDS - Danh mục quý' WHEN LOOKUP_GROUP = 'VIOLATION_STATUS'
+          THEN 'IDS - Danh mục trạng thái gửi báo cáo vi phạm' WHEN LOOKUP_GROUP =
+          'VIOLATION_TYPE' THEN 'IDS - Danh mục loại báo cáo vi phạm' WHEN LOOKUP_GROUP
+          = 'VIOLATION_SUBTYPE' THEN 'IDS - Danh mục loại hạng mục của báo cáo vi
+          phạm' WHEN LOOKUP_GROUP = 'VIOLATION_TRIGGER_POINT' THEN 'IDS - Danh mục
+          thời điểm kích hoạt vi phạm' WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS -
+          Danh mục loại ngày' ELSE NULL END.
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26710,6 +26883,8 @@ entities:
     nullable_most: false
     is_primary_key_most: false
     etl_derived_value:
+    - AUDIT_LOOKUP_VALUES
+    - IDS_LOOKUP_VALUES
     - MRMS_RISK_INDICATOR_CATEGORY
     - NHNCK_APPLICATION_SOURCES
     - NHNCK_APPLICATION_STATUSES
@@ -26723,6 +26898,18 @@ entities:
     - TTHC_CLASSIFICATION_VALUE
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: null
+        business_meaning: Mã nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26786,6 +26973,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_VN
+        business_meaning: Tên giá trị phân loại (tiếng Việt).
+        comment: null
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.LOOKUP_VALUE_VN
+        business_meaning: Tên giá trị phân loại (tiếng Việt).
+        comment: null
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26851,6 +27050,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_EN
+        business_meaning: Tên giá trị phân loại (tiếng Anh).
+        comment: null
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.LOOKUP_VALUE_EN
+        business_meaning: Tên giá trị phân loại (tiếng Anh).
+        comment: null
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -26906,7 +27117,7 @@ entities:
   - name: Classification Description
     physical_name: cl_description
     business_meaning_1st: Diễn giải chi tiết ý nghĩa giá trị phân loại.
-    comment_1st: Nguồn không có cột mô tả riêng cho nhóm chỉ tiêu.
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -26914,6 +27125,18 @@ entities:
     etl_derived_value: null
     conflict_review: null
     source_mappings:
+    - source_system: AUDIT
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: AUDIT.LOOKUP_VALUES.DESCRIPTION
+        business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+        comment: null
+    - source_system: IDS
+      source_tables:
+      - source_table: LOOKUP_VALUES
+        source_column: IDS.LOOKUP_VALUES.DESCRIPTION
+        business_meaning: Diễn giải chi tiết ý nghĩa giá trị phân loại.
+        comment: null
     - source_system: MRMS
       source_tables:
       - source_table: RISK_INDICATOR_CATEGORY
@@ -45962,7 +46185,7 @@ entities:
           \ Company Report Id."
   - name: Report Style Code
     physical_name: rpt_style_code
-    business_meaning_1st: "Phong cách báo cáo."
+    business_meaning_1st: Phong cách báo cáo.
     comment_1st: null
     data_domain_most: Small Counter
     data_type_most: int
@@ -45975,7 +46198,7 @@ entities:
       source_tables:
       - source_table: FORM_REPORT
         source_column: SCMS.FORM_REPORT.REPORT_STYLE
-        business_meaning: "Phong cách báo cáo."
+        business_meaning: Phong cách báo cáo.
         comment: null
   - name: Disclosure News Type Code
     physical_name: disclosure_news_tp_code
@@ -47348,7 +47571,7 @@ entities:
         comment: null
   - name: Report Style Code
     physical_name: rpt_style_code
-    business_meaning_1st: "Kiểu bố trí sheet."
+    business_meaning_1st: Kiểu bố trí sheet.
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -47361,7 +47584,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET
         source_column: SCMS.FORM_SHEET.REPORT_STYLE
-        business_meaning: "Kiểu bố trí sheet."
+        business_meaning: Kiểu bố trí sheet.
         comment: null
   - name: Sub Title Position
     physical_name: sub_title_position
@@ -47530,7 +47753,7 @@ entities:
         comment: null
   - name: Record Type Code
     physical_name: record_tp_code
-    business_meaning_1st: "Loại sheet."
+    business_meaning_1st: Loại sheet.
     comment_1st: null
     data_domain_most: Small Counter
     data_type_most: int
@@ -47543,7 +47766,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET
         source_column: SCMS.FORM_SHEET.RECORD_TYPE
-        business_meaning: "Loại sheet."
+        business_meaning: Loại sheet.
         comment: null
   - name: Column Order
     physical_name: column_order
@@ -48000,7 +48223,7 @@ entities:
         comment: null
   - name: Style Format Code
     physical_name: style_format_code
-    business_meaning_1st: "Định dạng chữ ký tự."
+    business_meaning_1st: Định dạng chữ ký tự.
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -48013,7 +48236,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_CELL
         source_column: SCMS.FORM_SHEET_CELL.STYLE_FORMAT
-        business_meaning: "Định dạng chữ ký tự."
+        business_meaning: Định dạng chữ ký tự.
         comment: null
   - name: Color
     physical_name: color
@@ -48533,7 +48756,7 @@ entities:
         comment: null
   - name: Name Format Code
     physical_name: nm_format_code
-    business_meaning_1st: "Định dạng tên cột."
+    business_meaning_1st: Định dạng tên cột.
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -48546,7 +48769,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_COLUMN
         source_column: SCMS.FORM_SHEET_COLUMN.NAME_FORMAT
-        business_meaning: "Định dạng tên cột."
+        business_meaning: Định dạng tên cột.
         comment: null
   - name: Color
     physical_name: color
@@ -48939,7 +49162,7 @@ entities:
         comment: null
   - name: Name Format Code
     physical_name: nm_format_code
-    business_meaning_1st: "Định dạng tên hàng."
+    business_meaning_1st: Định dạng tên hàng.
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -48952,7 +49175,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_ROW
         source_column: SCMS.FORM_SHEET_ROW.NAME_FORMAT
-        business_meaning: "Định dạng tên hàng."
+        business_meaning: Định dạng tên hàng.
         comment: null
   - name: Color
     physical_name: color
@@ -49179,7 +49402,7 @@ entities:
         comment: null
   - name: Row Type Code
     physical_name: row_tp_code
-    business_meaning_1st: "Loại hàng dữ liệu."
+    business_meaning_1st: Loại hàng dữ liệu.
     comment_1st: null
     data_domain_most: Small Counter
     data_type_most: int
@@ -49192,7 +49415,7 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_ROW
         source_column: SCMS.FORM_SHEET_ROW.ROW_TYPE
-        business_meaning: "Loại hàng dữ liệu."
+        business_meaning: Loại hàng dữ liệu.
         comment: null
   - name: Background Color
     physical_name: background_color

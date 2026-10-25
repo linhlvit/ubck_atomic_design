@@ -1,0 +1,111 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Map vào Fundamental entity dùng chung Classification Value (cl_value), không giữ entity riêng — cùng pattern NHNCK/TTHC. Bảng IDS.LOOKUP_VALUES chứa nhiều nhóm danh mục (cột LOOKUP_GROUP); mỗi nhóm = 1 scheme (schema_code). Điều kiện lọc áp dụng cho cả bảng nguồn: LOOKUP_GROUP IN ('NEWS_APPROVAL_STATUS', 'NEWS_TYPE', 'ENTITY_ROLE_TYPE', 'INSPECTION_TYPE', 'INSPECTION_MODE', 'PENALIZED_SUBJECT_TYPE', 'POSITION', 'ENTERPRISE_TYPE', 'FINANCIAL_STATEMENT_TYPE', 'SECURITIES_TYPE', 'EQUITY_LISTING_EXCH', 'STATUS_IDS', 'PUBLIC_COMPANY_FORM', 'PUBLIC_COM_TYPE', 'SO_APPROVAL_STATUS', 'COMPANY_RELATIONSHIP_TYPE', 'SHAREHOLDER_TYPE', 'SO_ADMINISTRATIVE_PROCEDURE', 'SO_ADMINISTRATIVE_STATUS', 'SO_TRANSACTION_TYPE', 'RC_TYPE', 'SUB_NEWS_TYPE', 'FORM_GROUP', 'REPORT_TYPE', 'RELATIONSHIP_TYPE', 'IDENTITY_TYPE', 'ENTITY_TYPE', 'EDUCATION_LEVEL', 'REPORT_ROW_TYPE', 'REPORT_SCOPE', 'REPORT_PERIOD_TYPE', 'FINANCIAL_STATEMENT_COMPONENT', 'RF_C_DATA_TYPE', 'RF_R_DATA_TYPE', 'SO_OFFERING_METHOD', 'SO_DISTRIBUTION_METHOD', 'SO_SECURITY_TYPE', 'RESTRICTION_TYPE', 'PUB_COM_LISTING_ACTION_TYPE', 'EXCHANGE', 'QUARTER_CODE', 'VIOLATION_STATUS', 'VIOLATION_TYPE', 'VIOLATION_SUBTYPE', 'VIOLATION_TRIGGER_POINT', 'DAY_TYPE'). Mapping LOOKUP_GROUP → schema_code/schema_nm xử lí bằng CASE WHEN ghi ở comment của 2 attribute tương ứng (theo sql.txt, Data Modeler cung cấp); LOOKUP_GROUP không nằm trong CASE → NULL. schema_nm: Data Modeler giao AI điền theo ý nghĩa nhóm; nhóm không rõ nghĩa để trống (không có WHEN): RF_C_DATA_TYPE, RF_R_DATA_TYPE. Value set khớp chuẩn: scheme đã đăng ký ở classification_schemes.yaml theo SCHEMA_CODE=IDS.* — không đăng ký thêm ở lượt này. Cần chạy Level 2 consolidation (generate_entity_consolidation.py) gộp vào entity_cl_value.yaml trước khi generate ra DataModel/Atomic. 4 cột ds_* không thiết kế ở đây — ETL job tự quản lý (SCD). Các cột nguồn còn lại ghi trong pending_design.yaml."
+attributes:
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.LOOKUP_CD"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên dạng text."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại (scheme). BK phụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS.NEWS_APPROVAL_STATUS' WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS.NEWS_TYPE_CD' WHEN LOOKUP_GROUP = 'ENTITY_ROLE_TYPE' THEN 'IDS.ENTITY_ROLE_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE' THEN 'IDS.INSPECTION_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_MODE' THEN 'IDS.INSPECTION_MODE' WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE' THEN 'IDS.PENALIZED_SUBJECT_TYPE' WHEN LOOKUP_GROUP = 'POSITION' THEN 'IDS.POSITION' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE' THEN 'IDS.ENTERPRISE_TYPE' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE' THEN 'IDS.FINANCIAL_STATEMENT_TYPE' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE' THEN 'IDS.SECURITIES_TYPE' WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH' THEN 'IDS.EQUITY_LISTING_EXCHANGE_CODE' WHEN LOOKUP_GROUP = 'STATUS_IDS' THEN 'IDS.PUBLIC_STATUS' WHEN LOOKUP_GROUP = 'PUBLIC_COMPANY_FORM' THEN 'IDS.PUBLIC_COMPANY_FORM_TYPE' WHEN LOOKUP_GROUP = 'PUBLIC_COM_TYPE' THEN 'IDS.PUBLIC_COMPANY_TYPE' WHEN LOOKUP_GROUP = 'SO_APPROVAL_STATUS' THEN 'IDS.SO_APPROVAL_STATUS' WHEN LOOKUP_GROUP = 'COMPANY_RELATIONSHIP_TYPE' THEN 'IDS.COMPANY_RELATIONSHIP_TYPE' WHEN LOOKUP_GROUP = 'SHAREHOLDER_TYPE' THEN 'IDS.SHAREHOLDER_TYPE' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE' THEN 'IDS.SO_ADMINISTRATIVE_PROCEDURE' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS' THEN 'IDS.SO_ADMINISTRATIVE_STATUS' WHEN LOOKUP_GROUP = 'SO_TRANSACTION_TYPE' THEN 'IDS.SO_TRANSACTION_TYPE' WHEN LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS.REPORT_CATALOG_TYPE' WHEN LOOKUP_GROUP = 'SUB_NEWS_TYPE' THEN 'IDS.SUB_NEWS_TYPE_CD' WHEN LOOKUP_GROUP = 'FORM_GROUP' THEN 'IDS.FORM_GROUP_TYPE' WHEN LOOKUP_GROUP = 'REPORT_TYPE' THEN 'IDS.REPORT_TYPE' WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE' THEN 'IDS.RELATIONSHIP_TYPE' WHEN LOOKUP_GROUP = 'IDENTITY_TYPE' THEN 'IDS.IDENTITY_TYPE' WHEN LOOKUP_GROUP = 'ENTITY_TYPE' THEN 'IDS.LEGAL_ENTITY_TYPE' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL' THEN 'IDS.EDUCATION_LEVEL' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE' THEN 'IDS.REPORT_ROW/COL_TYPE' WHEN LOOKUP_GROUP = 'REPORT_SCOPE' THEN 'IDS.REPORT_SCOPE_TYPE' WHEN LOOKUP_GROUP = 'REPORT_PERIOD_TYPE' THEN 'IDS.REPORT_PERIOD_TYPE' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_COMPONENT' THEN 'IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE' WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE' THEN 'IDS.RF_C_DATA_TYPE' WHEN LOOKUP_GROUP = 'RF_R_DATA_TYPE' THEN 'IDS.RF_R_DATA_TYPE' WHEN LOOKUP_GROUP = 'SO_OFFERING_METHOD' THEN 'IDS.SO_OFFERING_METHOD' WHEN LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD' THEN 'IDS.SO_DISTRIBUTION_METHOD' WHEN LOOKUP_GROUP = 'SO_SECURITY_TYPE' THEN 'IDS.SO_SECURITY_TYPE' WHEN LOOKUP_GROUP = 'RESTRICTION_TYPE' THEN 'IDS.RESTRICTION_TYPE' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE' THEN 'IDS.STOCK_LISTING_ACTION_TYPE' WHEN LOOKUP_GROUP = 'EXCHANGE' THEN 'IDS.EXCHANGE_CODE' WHEN LOOKUP_GROUP = 'QUARTER_CODE' THEN 'IDS.PERIOD_QUARTER_TYPE' WHEN LOOKUP_GROUP = 'VIOLATION_STATUS' THEN 'IDS.VIOLATION_SUBMISSION_STATUS' WHEN LOOKUP_GROUP = 'VIOLATION_TYPE' THEN 'IDS.VIOLATION_REPORT_TYPE' WHEN LOOKUP_GROUP = 'VIOLATION_SUBTYPE' THEN 'IDS.VIOLATION_REPORT_SUBTYPE' WHEN LOOKUP_GROUP = 'VIOLATION_TRIGGER_POINT' THEN 'IDS.VIOLATION_TRIGGER_POINT' WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS.DAY_TYPE' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS - Danh mục trạng thái duyệt tin' WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS - Danh mục loại tin' WHEN LOOKUP_GROUP = 'ENTITY_ROLE_TYPE' THEN 'IDS - Danh mục loại vai trò của thực thể pháp lý' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE' THEN 'IDS - Danh mục loại thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'INSPECTION_MODE' THEN 'IDS - Danh mục hình thức thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE' THEN 'IDS - Danh mục loại đối tượng bị xử phạt' WHEN LOOKUP_GROUP = 'POSITION' THEN 'IDS - Danh mục chức vụ' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE' THEN 'IDS - Danh mục loại hình doanh nghiệp' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE' THEN 'IDS - Danh mục loại báo cáo tài chính' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE' THEN 'IDS - Danh mục loại chứng khoán' WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH' THEN 'IDS - Danh mục sàn niêm yết cổ phiếu' WHEN LOOKUP_GROUP = 'STATUS_IDS' THEN 'IDS - Danh mục trạng thái công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COMPANY_FORM' THEN 'IDS - Danh mục hình thức công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COM_TYPE' THEN 'IDS - Danh mục loại công ty đại chúng' WHEN LOOKUP_GROUP = 'SO_APPROVAL_STATUS' THEN 'IDS - Danh mục trạng thái phê duyệt' WHEN LOOKUP_GROUP = 'COMPANY_RELATIONSHIP_TYPE' THEN 'IDS - Danh mục loại quan hệ công ty' WHEN LOOKUP_GROUP = 'SHAREHOLDER_TYPE' THEN 'IDS - Danh mục loại cổ đông' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE' THEN 'IDS - Danh mục thủ tục hành chính chào bán chứng khoán' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS' THEN 'IDS - Danh mục trạng thái hành chính' WHEN LOOKUP_GROUP = 'SO_TRANSACTION_TYPE' THEN 'IDS - Danh mục loại giao dịch' WHEN LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS - Danh mục loại báo cáo' WHEN LOOKUP_GROUP = 'SUB_NEWS_TYPE' THEN 'IDS - Danh mục loại tin chi tiết' WHEN LOOKUP_GROUP = 'FORM_GROUP' THEN 'IDS - Danh mục nhóm biểu mẫu' WHEN LOOKUP_GROUP = 'REPORT_TYPE' THEN 'IDS - Danh mục loại báo cáo' WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE' THEN 'IDS - Danh mục loại quan hệ' WHEN LOOKUP_GROUP = 'IDENTITY_TYPE' THEN 'IDS - Danh mục loại giấy tờ định danh' WHEN LOOKUP_GROUP = 'ENTITY_TYPE' THEN 'IDS - Danh mục loại hình thực thể pháp lý' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL' THEN 'IDS - Danh mục trình độ học vấn' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE' THEN 'IDS - Danh mục loại hàng trong báo cáo tài chính' WHEN LOOKUP_GROUP = 'REPORT_SCOPE' THEN 'IDS - Danh mục phạm vi báo cáo' WHEN LOOKUP_GROUP = 'REPORT_PERIOD_TYPE' THEN 'IDS - Danh mục loại kỳ báo cáo' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_COMPONENT' THEN 'IDS - Danh mục thành phần báo cáo tài chính' WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE' THEN 'IDS - Danh mục kiểu dữ liệu của cột trong báo cáo tài chính' WHEN LOOKUP_GROUP = 'RF_R_DATA_TYPE' THEN 'IDS - Danh mục kiểu dữ liệu của hàng trong báo cáo tài chính' WHEN LOOKUP_GROUP = 'SO_OFFERING_METHOD' THEN 'IDS - Danh mục phương thức chào bán' WHEN LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD' THEN 'IDS - Danh mục phương thức phân phối' WHEN LOOKUP_GROUP = 'SO_SECURITY_TYPE' THEN 'IDS - Danh mục loại chứng khoán' WHEN LOOKUP_GROUP = 'RESTRICTION_TYPE' THEN 'IDS - Danh mục loại đối tượng hạn chế' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE' THEN 'IDS - Danh mục loại hành động niêm yết của công ty đại chúng' WHEN LOOKUP_GROUP = 'EXCHANGE' THEN 'IDS - Danh mục sàn giao dịch' WHEN LOOKUP_GROUP = 'QUARTER_CODE' THEN 'IDS - Danh mục quý' WHEN LOOKUP_GROUP = 'VIOLATION_STATUS' THEN 'IDS - Danh mục trạng thái gửi báo cáo vi phạm' WHEN LOOKUP_GROUP = 'VIOLATION_TYPE' THEN 'IDS - Danh mục loại báo cáo vi phạm' WHEN LOOKUP_GROUP = 'VIOLATION_SUBTYPE' THEN 'IDS - Danh mục loại hạng mục của báo cáo vi phạm' WHEN LOOKUP_GROUP = 'VIOLATION_TRIGGER_POINT' THEN 'IDS - Danh mục thời điểm kích hoạt vi phạm' WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS - Danh mục loại ngày' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS_LOOKUP_VALUES"
+  etl_derived_value: "IDS_LOOKUP_VALUES"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.LOOKUP_VALUES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

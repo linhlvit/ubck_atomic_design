@@ -7833,10 +7833,10 @@ attributes:
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
   atomic_attribute: "Rating Period Type Code"
-  description: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 và không nhóm nhân tố nào <\
-    \ 65); 2=B (Tổng điểm ≥ 65 và không nhóm nào < 50); 3=C (Tổng điểm ≥ 50 và\
-    \ không nhóm nào < 45); 4=D (Các trường hợp còn lại; hoặc công ty không\
-    \ nộp báo cáo trong kỳ (ép D dù điểm = 0))."
+  description: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 và không nhóm nhân tố nào < 65);\
+    \ 2=B (Tổng điểm ≥ 65 và không nhóm nào < 50); 3=C (Tổng điểm ≥ 50 và không nhóm\
+    \ nào < 45); 4=D (Các trường hợp còn lại; hoặc công ty không nộp báo cáo trong\
+    \ kỳ (ép D dù điểm = 0))."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
@@ -12834,7 +12834,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_TENDER_OFFER"
   source_column: "IDS.COMPANY_TENDER_OFFER.TARGET_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "pc_tender_offer"
@@ -34883,7 +34884,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
   data_type: "timestamp"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Periodic Report"
@@ -46762,7 +46763,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
   data_type: "timestamp"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
@@ -46876,11 +46877,11 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID"
-  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
-    \ WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
-    \ WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SCMS_SC_FIRM_INFO', ENTITY_ID)\
-    \ WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SCMS_SC_FIRM_REP_OFFICE', ENTITY_ID)\
-    \ ELSE NULL END."
+  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH',\
+    \ ENTITY_ID) WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE',\
+    \ ENTITY_ID) WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SCMS_SC_FIRM_INFO',\
+    \ ENTITY_ID) WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SCMS_SC_FIRM_REP_OFFICE',\
+    \ ENTITY_ID) ELSE NULL END."
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_profile_change"
@@ -55765,7 +55766,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.EQUITY_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -55829,7 +55831,8 @@ attributes:
   source_system: "IDS"
   source_table: "COMPANY_PROFILES"
   source_column: "IDS.COMPANY_PROFILES.BOND_LISTING_EXCH"
-  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
+  comment: "SCHEMA_CODE=IDS.EQUITY_LISTING_EXCHANGE_CODE. Values load từ LOOKUP_VALUES\
+    \ (LOOKUP_GROUP='EQUITY_LISTING_EXCH')."
   classification_context: null
   etl_derived_value: null
   atomic_table: "public_company"
@@ -60528,7 +60531,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_insider_related_person"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Major Shareholder Relation"
@@ -60865,7 +60868,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Organization Unit"
@@ -64038,7 +64041,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_shareholder"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company X Classification Securities Company Firm Service\
@@ -76887,6 +76890,337 @@ attributes:
   source_table: "CAT_COMPANY_TYPE"
   source_column: null
   comment: "Chưa map — theo yêu cầu chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Code"
+  description: "Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.LOOKUP_CD"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên\
+    \ dạng text."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Code"
+  description: "Mã loại phân loại (scheme). BK phụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS.NEWS_APPROVAL_STATUS'\
+    \ WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS.NEWS_TYPE_CD' WHEN LOOKUP_GROUP =\
+    \ 'ENTITY_ROLE_TYPE' THEN 'IDS.ENTITY_ROLE_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE'\
+    \ THEN 'IDS.INSPECTION_TYPE' WHEN LOOKUP_GROUP = 'INSPECTION_MODE' THEN 'IDS.INSPECTION_MODE'\
+    \ WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE' THEN 'IDS.PENALIZED_SUBJECT_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'POSITION' THEN 'IDS.POSITION' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE'\
+    \ THEN 'IDS.ENTERPRISE_TYPE' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE' THEN\
+    \ 'IDS.FINANCIAL_STATEMENT_TYPE' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE' THEN 'IDS.SECURITIES_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH' THEN 'IDS.EQUITY_LISTING_EXCHANGE_CODE'\
+    \ WHEN LOOKUP_GROUP = 'STATUS_IDS' THEN 'IDS.PUBLIC_STATUS' WHEN LOOKUP_GROUP\
+    \ = 'PUBLIC_COMPANY_FORM' THEN 'IDS.PUBLIC_COMPANY_FORM_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'PUBLIC_COM_TYPE' THEN 'IDS.PUBLIC_COMPANY_TYPE' WHEN LOOKUP_GROUP = 'SO_APPROVAL_STATUS'\
+    \ THEN 'IDS.SO_APPROVAL_STATUS' WHEN LOOKUP_GROUP = 'COMPANY_RELATIONSHIP_TYPE'\
+    \ THEN 'IDS.COMPANY_RELATIONSHIP_TYPE' WHEN LOOKUP_GROUP = 'SHAREHOLDER_TYPE'\
+    \ THEN 'IDS.SHAREHOLDER_TYPE' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE'\
+    \ THEN 'IDS.SO_ADMINISTRATIVE_PROCEDURE' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_STATUS'\
+    \ THEN 'IDS.SO_ADMINISTRATIVE_STATUS' WHEN LOOKUP_GROUP = 'SO_TRANSACTION_TYPE'\
+    \ THEN 'IDS.SO_TRANSACTION_TYPE' WHEN LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS.REPORT_CATALOG_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'SUB_NEWS_TYPE' THEN 'IDS.SUB_NEWS_TYPE_CD' WHEN LOOKUP_GROUP\
+    \ = 'FORM_GROUP' THEN 'IDS.FORM_GROUP_TYPE' WHEN LOOKUP_GROUP = 'REPORT_TYPE'\
+    \ THEN 'IDS.REPORT_TYPE' WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE' THEN 'IDS.RELATIONSHIP_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'IDENTITY_TYPE' THEN 'IDS.IDENTITY_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'ENTITY_TYPE' THEN 'IDS.LEGAL_ENTITY_TYPE' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL'\
+    \ THEN 'IDS.EDUCATION_LEVEL' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE' THEN 'IDS.REPORT_ROW/COL_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'REPORT_SCOPE' THEN 'IDS.REPORT_SCOPE_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'REPORT_PERIOD_TYPE' THEN 'IDS.REPORT_PERIOD_TYPE' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_COMPONENT'\
+    \ THEN 'IDS.FINANCIAL_STATEMENT_COMPONENT_TYPE' WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE'\
+    \ THEN 'IDS.RF_C_DATA_TYPE' WHEN LOOKUP_GROUP = 'RF_R_DATA_TYPE' THEN 'IDS.RF_R_DATA_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'SO_OFFERING_METHOD' THEN 'IDS.SO_OFFERING_METHOD' WHEN\
+    \ LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD' THEN 'IDS.SO_DISTRIBUTION_METHOD' WHEN\
+    \ LOOKUP_GROUP = 'SO_SECURITY_TYPE' THEN 'IDS.SO_SECURITY_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'RESTRICTION_TYPE' THEN 'IDS.RESTRICTION_TYPE' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE'\
+    \ THEN 'IDS.STOCK_LISTING_ACTION_TYPE' WHEN LOOKUP_GROUP = 'EXCHANGE' THEN 'IDS.EXCHANGE_CODE'\
+    \ WHEN LOOKUP_GROUP = 'QUARTER_CODE' THEN 'IDS.PERIOD_QUARTER_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'VIOLATION_STATUS' THEN 'IDS.VIOLATION_SUBMISSION_STATUS' WHEN LOOKUP_GROUP\
+    \ = 'VIOLATION_TYPE' THEN 'IDS.VIOLATION_REPORT_TYPE' WHEN LOOKUP_GROUP = 'VIOLATION_SUBTYPE'\
+    \ THEN 'IDS.VIOLATION_REPORT_SUBTYPE' WHEN LOOKUP_GROUP = 'VIOLATION_TRIGGER_POINT'\
+    \ THEN 'IDS.VIOLATION_TRIGGER_POINT' WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS.DAY_TYPE'\
+    \ ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "schema_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Name"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'NEWS_APPROVAL_STATUS' THEN 'IDS - Danh\
+    \ mục trạng thái duyệt tin' WHEN LOOKUP_GROUP = 'NEWS_TYPE' THEN 'IDS - Danh mục\
+    \ loại tin' WHEN LOOKUP_GROUP = 'ENTITY_ROLE_TYPE' THEN 'IDS - Danh mục loại vai\
+    \ trò của thực thể pháp lý' WHEN LOOKUP_GROUP = 'INSPECTION_TYPE' THEN 'IDS -\
+    \ Danh mục loại thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'INSPECTION_MODE' THEN\
+    \ 'IDS - Danh mục hình thức thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'PENALIZED_SUBJECT_TYPE'\
+    \ THEN 'IDS - Danh mục loại đối tượng bị xử phạt' WHEN LOOKUP_GROUP = 'POSITION'\
+    \ THEN 'IDS - Danh mục chức vụ' WHEN LOOKUP_GROUP = 'ENTERPRISE_TYPE' THEN 'IDS\
+    \ - Danh mục loại hình doanh nghiệp' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_TYPE'\
+    \ THEN 'IDS - Danh mục loại báo cáo tài chính' WHEN LOOKUP_GROUP = 'SECURITIES_TYPE'\
+    \ THEN 'IDS - Danh mục loại chứng khoán' WHEN LOOKUP_GROUP = 'EQUITY_LISTING_EXCH'\
+    \ THEN 'IDS - Danh mục sàn niêm yết cổ phiếu' WHEN LOOKUP_GROUP = 'STATUS_IDS'\
+    \ THEN 'IDS - Danh mục trạng thái công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COMPANY_FORM'\
+    \ THEN 'IDS - Danh mục hình thức công ty đại chúng' WHEN LOOKUP_GROUP = 'PUBLIC_COM_TYPE'\
+    \ THEN 'IDS - Danh mục loại công ty đại chúng' WHEN LOOKUP_GROUP = 'SO_APPROVAL_STATUS'\
+    \ THEN 'IDS - Danh mục trạng thái phê duyệt' WHEN LOOKUP_GROUP = 'COMPANY_RELATIONSHIP_TYPE'\
+    \ THEN 'IDS - Danh mục loại quan hệ công ty' WHEN LOOKUP_GROUP = 'SHAREHOLDER_TYPE'\
+    \ THEN 'IDS - Danh mục loại cổ đông' WHEN LOOKUP_GROUP = 'SO_ADMINISTRATIVE_PROCEDURE'\
+    \ THEN 'IDS - Danh mục thủ tục hành chính chào bán chứng khoán' WHEN LOOKUP_GROUP\
+    \ = 'SO_ADMINISTRATIVE_STATUS' THEN 'IDS - Danh mục trạng thái hành chính' WHEN\
+    \ LOOKUP_GROUP = 'SO_TRANSACTION_TYPE' THEN 'IDS - Danh mục loại giao dịch' WHEN\
+    \ LOOKUP_GROUP = 'RC_TYPE' THEN 'IDS - Danh mục loại báo cáo' WHEN LOOKUP_GROUP\
+    \ = 'SUB_NEWS_TYPE' THEN 'IDS - Danh mục loại tin chi tiết' WHEN LOOKUP_GROUP\
+    \ = 'FORM_GROUP' THEN 'IDS - Danh mục nhóm biểu mẫu' WHEN LOOKUP_GROUP = 'REPORT_TYPE'\
+    \ THEN 'IDS - Danh mục loại báo cáo' WHEN LOOKUP_GROUP = 'RELATIONSHIP_TYPE' THEN\
+    \ 'IDS - Danh mục loại quan hệ' WHEN LOOKUP_GROUP = 'IDENTITY_TYPE' THEN 'IDS\
+    \ - Danh mục loại giấy tờ định danh' WHEN LOOKUP_GROUP = 'ENTITY_TYPE' THEN 'IDS\
+    \ - Danh mục loại hình thực thể pháp lý' WHEN LOOKUP_GROUP = 'EDUCATION_LEVEL'\
+    \ THEN 'IDS - Danh mục trình độ học vấn' WHEN LOOKUP_GROUP = 'REPORT_ROW_TYPE'\
+    \ THEN 'IDS - Danh mục loại hàng trong báo cáo tài chính' WHEN LOOKUP_GROUP =\
+    \ 'REPORT_SCOPE' THEN 'IDS - Danh mục phạm vi báo cáo' WHEN LOOKUP_GROUP = 'REPORT_PERIOD_TYPE'\
+    \ THEN 'IDS - Danh mục loại kỳ báo cáo' WHEN LOOKUP_GROUP = 'FINANCIAL_STATEMENT_COMPONENT'\
+    \ THEN 'IDS - Danh mục thành phần báo cáo tài chính' WHEN LOOKUP_GROUP = 'RF_C_DATA_TYPE'\
+    \ THEN 'IDS - Danh mục kiểu dữ liệu của cột trong báo cáo tài chính' WHEN LOOKUP_GROUP\
+    \ = 'RF_R_DATA_TYPE' THEN 'IDS - Danh mục kiểu dữ liệu của hàng trong báo cáo\
+    \ tài chính' WHEN LOOKUP_GROUP = 'SO_OFFERING_METHOD' THEN 'IDS - Danh mục phương\
+    \ thức chào bán' WHEN LOOKUP_GROUP = 'SO_DISTRIBUTION_METHOD' THEN 'IDS - Danh\
+    \ mục phương thức phân phối' WHEN LOOKUP_GROUP = 'SO_SECURITY_TYPE' THEN 'IDS\
+    \ - Danh mục loại chứng khoán' WHEN LOOKUP_GROUP = 'RESTRICTION_TYPE' THEN 'IDS\
+    \ - Danh mục loại đối tượng hạn chế' WHEN LOOKUP_GROUP = 'PUB_COM_LISTING_ACTION_TYPE'\
+    \ THEN 'IDS - Danh mục loại hành động niêm yết của công ty đại chúng' WHEN LOOKUP_GROUP\
+    \ = 'EXCHANGE' THEN 'IDS - Danh mục sàn giao dịch' WHEN LOOKUP_GROUP = 'QUARTER_CODE'\
+    \ THEN 'IDS - Danh mục quý' WHEN LOOKUP_GROUP = 'VIOLATION_STATUS' THEN 'IDS -\
+    \ Danh mục trạng thái gửi báo cáo vi phạm' WHEN LOOKUP_GROUP = 'VIOLATION_TYPE'\
+    \ THEN 'IDS - Danh mục loại báo cáo vi phạm' WHEN LOOKUP_GROUP = 'VIOLATION_SUBTYPE'\
+    \ THEN 'IDS - Danh mục loại hạng mục của báo cáo vi phạm' WHEN LOOKUP_GROUP =\
+    \ 'VIOLATION_TRIGGER_POINT' THEN 'IDS - Danh mục thời điểm kích hoạt vi phạm'\
+    \ WHEN LOOKUP_GROUP = 'DAY_TYPE' THEN 'IDS - Danh mục loại ngày' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "schema_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'IDS_LOOKUP_VALUES'"
+  etl_derived_value: "IDS_LOOKUP_VALUES"
+  atomic_table: "cl_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name English"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm_english"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "LOOKUP_VALUES"
+  source_column: "IDS.LOOKUP_VALUES.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Code"
+  description: "Mã giá trị phân loại. Mã giá trị của danh mục (LOOKUP_CD)."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.LOOKUP_CD"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). VARCHAR2 — giữ nguyên\
+    \ dạng text."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Code"
+  description: "Mã loại phân loại (scheme). BK phụ."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT.AF_TARGET_TYPE'\
+    \ WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT.AF_AUTHORITY' WHEN LOOKUP_GROUP\
+    \ = 'POSITION' THEN 'AUDIT.POSITION' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT.AF_STATUS'\
+    \ WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT.PROFILE_APPROVAL_STATUS'\
+    \ WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS' THEN 'AUDIT.AF_AUDITOR_STATUS' WHEN\
+    \ LOOKUP_GROUP = 'AF_INSPECTION_RESULT' THEN 'AUDIT.AF_INSPECTION_RESULT' WHEN\
+    \ LOOKUP_GROUP = 'AF_ACTION_TYPE' THEN 'AUDIT.AF_ACTION_TYPE' WHEN LOOKUP_GROUP\
+    \ = 'AF_AUDIT_ACTION' THEN 'AUDIT.AF_AUDIT_ACTION' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT'\
+    \ THEN 'AUDIT.AF_INSPECTION_UNIT' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING'\
+    \ THEN 'AUDIT.AF_NEXT_YEAR_PROCESSING' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "schema_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Schema Name"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+  comment: "Xử lí CASE WHEN LOOKUP_GROUP = 'AF_TARGET_TYPE' THEN 'AUDIT - Danh mục\
+    \ loại đối tượng áp dụng' WHEN LOOKUP_GROUP = 'AF_AUTHORITY' THEN 'AUDIT - Danh\
+    \ mục cơ quan có thẩm quyền' WHEN LOOKUP_GROUP = 'POSITION' THEN 'AUDIT - Danh\
+    \ mục chức vụ' WHEN LOOKUP_GROUP = 'AF_STATUS' THEN 'AUDIT - Danh mục trạng thái\
+    \ công ty kiểm toán' WHEN LOOKUP_GROUP = 'PROFILE_APPROVAL_STATUS' THEN 'AUDIT\
+    \ - Danh mục trạng thái phê duyệt hồ sơ' WHEN LOOKUP_GROUP = 'AF_AUDITOR_STATUS'\
+    \ THEN 'AUDIT - Danh mục trạng thái kiểm toán viên' WHEN LOOKUP_GROUP = 'AF_INSPECTION_RESULT'\
+    \ THEN 'AUDIT - Danh mục kết quả thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_ACTION_TYPE'\
+    \ THEN 'AUDIT - Danh mục loại hành động' WHEN LOOKUP_GROUP = 'AF_AUDIT_ACTION'\
+    \ THEN 'AUDIT - Danh mục loại hình thức xử lý vi phạm' WHEN LOOKUP_GROUP = 'AF_INSPECTION_UNIT'\
+    \ THEN 'AUDIT - Danh mục đơn vị thanh tra/kiểm tra' WHEN LOOKUP_GROUP = 'AF_NEXT_YEAR_PROCESSING'\
+    \ THEN 'AUDIT - Danh mục hướng xử lý xem xét năm sau' ELSE NULL END."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "schema_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'AUDIT_LOOKUP_VALUES'"
+  etl_derived_value: "AUDIT_LOOKUP_VALUES"
+  atomic_table: "cl_value"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name"
+  description: "Tên giá trị phân loại (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Name English"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_value"
+  atomic_column: "cl_nm_english"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification Value"
+  atomic_attribute: "Classification Description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "AUDIT"
+  source_table: "LOOKUP_VALUES"
+  source_column: "AUDIT.LOOKUP_VALUES.DESCRIPTION"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_value"
