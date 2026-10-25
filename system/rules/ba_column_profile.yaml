@@ -230,11 +230,15 @@ modules:
       feedback_verify_ba_column_profile_live).
 
   VP:
-    delimiter: ";"
-    expect_columns: 27
+    delimiter: ","
+    expect_columns: 25
     stt_column: "TT"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: >-
       Module DUY NHẤT đặt cột số thứ tự là 'TT' thay vì 'STT'.
-      Cột index 26 có tên rỗng.
+      [CẬP NHẬT 2026-10-25 10:58, xác minh qua header sống: 613 bản ghi đều 25 cột, delimiter ',', header dòng 1,
+      legend dòng 2 (ô nhiều dòng trong ngoặc kép), 610 dòng dữ liệu] BA đổi delimiter ';' → ',' và bỏ cột cuối tên rỗng
+      (index 26 cũ). TT index 0, 'Trạng thái mapping' index 13, 'Câu lệnh tham khảo' index 18, 'Update' index 24.
+      Trong cùng buổi sáng file đổi 2 lần (10:52 có cột đầu 'UC' = 26 cột; 10:57 bỏ lại 'UC' = 25 cột) — BA đang sửa trực
+      tiếp, luôn kiểm lại MD5/mtime trước khi ghi thiết kế. Parser tra theo TÊN nên chỉ đổi delimiter + expect_columns.

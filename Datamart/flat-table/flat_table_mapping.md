@@ -15,6 +15,7 @@ Tài liệu mô tả từng bảng flat: nguồn fact/dim, quan hệ FK → PK, 
 - [QLKD](#qlkd)
 - [QLQ](#qlq)
 - [TT](#tt)
+- [VP](#vp)
 
 ---
 
@@ -2292,3 +2293,174 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 | Nhóm 17 — Biểu đồ Thống kê tình hình xử lý đơn thư | 1 |
 | Nhóm 18 — Biểu đồ Cơ cấu theo loại đơn thư | 7 |
 | Nhóm 19 — Danh sách đơn thư chi tiết | 4 |
+
+## VP
+
+**6 bảng flat** (6 fact + 0 operational) · **KPI unique**: Fact Derivative Contract Snapshot 11, Fact Investor Group Trading Snapshot 50, Fact Listed Corporate Bond Snapshot 22, Fact Private Corporate Bond Trading Snapshot 10, Fact Government Bond Trading Snapshot 10, Fact Private Corporate Bond Registration Snapshot 2 (chưa kể Chiều và KPI reuse Fact Market Index Snapshot)
+
+> **[MỚI 2026-10-25]** Thiết kế lại phân hệ VP từ đầu (đợt 1: Nhóm 1–6). Hai flat cũ `vp_fact_otc_bond_snapshot_flat`, `vp_fact_share_auction_snapshot_flat` đã bỏ (DEPRECATED, HLD Section 4). Fact Market Index Snapshot (reuse từ QLKD) dùng bảng flat của QLKD; lịch ngày dùng `datamart.cdr_dt_flat` (Common).
+
+> **[MỚI 2026-10-25 — Lô 1, Nhóm 7–10]** Thêm 2 flat TPDN: `vp_fct_listed_corporate_bond_snpst_flat` (TPDN niêm yết theo mã × ngày; Industry Dimension của GSDC chỉ denormalize `industry_code`, `industry_nm`) và `vp_fct_private_corporate_bond_trading_snpst_flat` (TPDN riêng lẻ, báo cáo HNX09 theo ngày). Cả hai Fact không FK sang Security Trading Snapshot Dimension.
+
+> **[MỚI 2026-10-25 — Lô 2, Nhóm 11–16]** Thêm 2 flat: `vp_fct_government_bond_trading_snpst_flat` (TPCP theo ngày × loại sổ lệnh OUTRIGHT / REPO, Bond Order Book HNX, chỉ lệnh đã thực hiện — Nhóm 14, 15, 16) và `vp_fct_private_corporate_bond_registration_snpst_flat` (TPDN riêng lẻ đăng ký giao dịch theo mã × tháng báo cáo HNX, factless; FK ngày = ngày cuối tháng báo cáo nên chỉ nạp khi `:etl_date` là ngày cuối tháng — Nhóm 11). Flat TPDN riêng lẻ HNX09 (`vp_fct_private_corporate_bond_trading_snpst_flat`) dùng thêm cho Nhóm 11, 12, 13 — không đổi cột. Cả hai Fact mới chỉ join Calendar Date Dimension.
+
+---
+
+### `datamart.vp_fct_derivative_contract_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Derivative Contract Snapshot |
+| **Bảng fact/operational** | `datamart.fct_derivative_contract_snpst` |
+| **PK** | `derivative_contract_snpst_id` (hash(snpst_dt_dim_id, ticker_symbol) — 1 mã hợp đồng × 1 ngày) |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Security Trading Snapshot Dimension | `datamart.security_trading_snpst_dim` | `security_trading_snpst_dim_id` | `security_trading_snpst_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 3 — Phái sinh >> Chỉ tiêu tổng hợp | 10 |
+| Nhóm 4 — Phái sinh >> Giá HĐTL | 1 |
+| Nhóm 5 — Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh | 5 |
+
+---
+
+### `datamart.vp_fct_investor_group_trading_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Investor Group Trading Snapshot |
+| **Bảng fact/operational** | `datamart.fct_investor_group_trading_snpst` |
+| **PK** | `investor_group_trading_snpst_id` (hash(snpst_dt_dim_id, security_symbol_code, market_id_code, investor_group_code)) |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Security Trading Snapshot Dimension | `datamart.security_trading_snpst_dim` | `security_trading_snpst_dim_id` | `security_trading_snpst_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 1 — Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index | 5 |
+| Nhóm 2 — Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index | 5 |
+| Nhóm 3 — Phái sinh >> Chỉ tiêu tổng hợp | 40 |
+| Nhóm 5 — Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh | 5 |
+| Nhóm 6 — Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN | 15 |
+
+### `datamart.vp_fct_listed_corporate_bond_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Listed Corporate Bond Snapshot |
+| **Bảng fact/operational** | `datamart.fct_listed_corporate_bond_snpst` |
+| **PK** | `listed_corporate_bond_snpst_id` (hash(snpst_dt_dim_id, security_symbol_code) — 1 mã trái phiếu (ISIN) × 1 ngày giao dịch) |
+| **Số dim join** | 2 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Industry Dimension | `datamart.industry_dim` | `industry_dim_id` | `industry_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 7 — TPDN niêm yết >> Chỉ tiêu tổng hợp | 16 |
+| Nhóm 8 — TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành | 6 |
+| Nhóm 9 — TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ | 1 |
+| Nhóm 10 — TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành | 3 |
+
+---
+
+### `datamart.vp_fct_private_corporate_bond_trading_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Private Corporate Bond Trading Snapshot |
+| **Bảng fact/operational** | `datamart.fct_private_corporate_bond_trading_snpst` |
+| **PK** | `private_corporate_bond_trading_snpst_id` (hash(snpst_dt_dim_id) — 1 ngày báo cáo HNX09) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 9 — TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ | 1 |
+| Nhóm 11 — TPDN riêng lẻ >> Chỉ tiêu tổng hợp | 10 |
+| Nhóm 12 — TPDN riêng lẻ >> Biểu đồ Diễn biến giao dịch thị trường TPDN riêng lẻ | 1 |
+| Nhóm 13 — TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ | 3 |
+
+---
+
+### `datamart.vp_fct_government_bond_trading_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Government Bond Trading Snapshot |
+| **Bảng fact/operational** | `datamart.fct_government_bond_trading_snpst` |
+| **PK** | `government_bond_trading_snpst_id` (hash(snpst_dt_dim_id, order_book_tp) — 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 14 — TPCP >> Chỉ tiêu tổng hợp | 10 |
+| Nhóm 15 — TPCP >> Biểu đồ Diễn biến giao dịch thị trường | 2 |
+| Nhóm 16 — TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN | 3 |
+
+---
+
+### `datamart.vp_fct_private_corporate_bond_registration_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Private Corporate Bond Registration Snapshot |
+| **Bảng fact/operational** | `datamart.fct_private_corporate_bond_registration_snpst` |
+| **PK** | `private_corporate_bond_registration_snpst_id` (hash(bond_code, rpt_year, rpt_month) — 1 mã trái phiếu × 1 tháng báo cáo; FK ngày = ngày cuối tháng báo cáo) |
+| **Số dim join** | 1 |
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 11 — TPDN riêng lẻ >> Chỉ tiêu tổng hợp | 2 |
+
+---
