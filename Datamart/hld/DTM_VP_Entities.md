@@ -1,120 +1,290 @@
-# DTM_VP_Entities — Danh mục thực thể Datamart Phân hệ VP (Văn phòng / Thống kê điều hành)
+# DTM_VP_Entities — Danh mục thực thể Datamart Phân hệ VP (Thống kê thị trường chứng khoán)
 
-**Phiên bản:** 1.0  
-**Ngày cập nhật:** 2026-10-08  
-**Phạm vi:** Star schema diagram và danh mục thực thể Fact / Dimension phân hệ VP, đồng bộ với `DTM_VP_HLD.md`.
-
----
-
-## 1. Tổng quan kiến trúc mô hình thực thể VP
-
-Phân hệ VP bao gồm 7 bảng Fact và 2 bảng Dimension conformed dùng chung:
-- **Fact Securities Market Index Snapshot** (`fct_scr_mkt_indx_snpst`): Phục vụ Nhóm 1, 2.
-- **Fact Derivatives Trading Snapshot** (`fct_derv_tdg_snpst`): Phục vụ Nhóm 3, 5, 6.
-- **Fact Derivatives Price Snapshot** (`fct_derv_prc_snpst`): Phục vụ Nhóm 4.
-- **Fact Listed Corporate Bond Snapshot** (`fct_lst_crp_bnd_snpst`): Phục vụ Nhóm 7, 9.
-- **Fact Listed Corporate Bond Industry Term Snapshot** (`fct_lst_crp_bnd_indy_trm_snpst`): Phục vụ Nhóm 8, 10.
-- **Fact OTC Bond Snapshot** (`fct_otc_bnd_snpst`): Phục vụ Nhóm 11, 12, 13 (nguồn báo cáo `HNX09` từ `internal_statistical_report`).
-- **Fact Share Auction Snapshot** (`fct_share_auction_snpst`): Phục vụ Nhóm 43 (nguồn báo cáo `HSX03` và `HNX05` từ `internal_statistical_report`).
-- **Calendar Date Dimension** (`cdr_dt_dim`): Conformed dimension ngày tháng dùng chung toàn hệ thống Lakehouse.
-- **Classification Dimension** (`cl_dim`): Conformed dimension phân loại dùng chung.
+**Phiên bản:** 2.2 (thiết kế lại từ đầu; bổ sung Nhóm 7–10 và Nhóm 11–16)  
+**Ngày cập nhật:** 2026-10-25  
+**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2). Đồng bộ với `DTM_VP_HLD.md` Section 3 + Section 4.
 
 ---
 
-## 2. Chi tiết các thực thể Fact cốt lõi
-
-### 2.1 Fact OTC Bond Snapshot (`fct_otc_bnd_snpst`)
-
-Bảng tổng hợp giao dịch thị trường trái phiếu doanh nghiệp riêng lẻ (TPDN riêng lẻ) theo ngày từ báo cáo điện tử HNX09 (nguồn Atomic: `internal_statistical_report`). Phục vụ các chỉ tiêu Nhóm 11, 12, 13 (`K_VP_48` đến `K_VP_57`).
+## Nhóm 1 - Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_OTC_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
 ```
 
-| Tên thực thể | Tên vật lý | Loại | Grain | Nguồn Atomic | Phục vụ KPI |
-|---|---|:---:|---|---|---|
-| Fact OTC Bond Snapshot | `fct_otc_bnd_snpst` | Fact | 1 dòng / ngày giao dịch | `internal_statistical_report` (HNX09) | K_VP_48, K_VP_49, K_VP_50, K_VP_51, K_VP_52, K_VP_53, K_VP_54, K_VP_55, K_VP_56, K_VP_57, K_VP_58, K_VP_59 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Market Index Dimension | Dimension | reuse | Danh mục chỉ số thị trường (VN-Index, HNX-Index, UPCoM-Index) | 1 tổ hợp Market Id + Market Code | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Market Index Snapshot | Fact Snapshot | reuse | Điểm đóng cửa chỉ số thị trường cuối ngày (Nhóm 1, 2) | 1 chỉ số × 1 ngày giao dịch (bản ghi cuối ngày) | K_VP_4,6-8 |
+| Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_5,9-12 |
 
 ---
 
-### 2.2 Fact Share Auction Snapshot (`fct_share_auction_snpst`)
-
-Bảng thống kê kết quả hoạt động đấu giá cổ phần tại Sở GDCK (HOSE & HNX) theo năm và loại hình đấu giá từ báo cáo HSX03 và HNX05 (nguồn Atomic: `internal_statistical_report`). Phục vụ các chỉ tiêu Nhóm 43 (`K_VP_144` đến `K_VP_149`).
+## Nhóm 2 - Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index
 
 ```mermaid
 erDiagram
-    Fact_Share_Auction_Snapshot {
-        string Share_Auction_Snapshot_Id PK
-        int Report_Year FK
-        string Auction_Type_Code
-        string Auction_Type_Name
-        string Exchange_Code
-        int Auction_Session_Count
-        float Winning_Auction_Value
-        string Source_System_Code
-    }
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
 ```
 
-| Tên thực thể | Tên vật lý | Loại | Grain | Nguồn Atomic | Phục vụ KPI |
-|---|---|:---:|---|---|---|
-| Fact Share Auction Snapshot | `fct_share_auction_snpst` | Fact | 1 dòng / năm / loại hình đấu giá / sở tổ chức | `internal_statistical_report` (HSX03, HNX05) | K_VP_144, K_VP_145, K_VP_146, K_VP_147, K_VP_148, K_VP_149 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Market Index Dimension | Dimension | reuse | Danh mục chỉ số thị trường (VN-Index, HNX-Index, UPCoM-Index) | 1 tổ hợp Market Id + Market Code | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Market Index Snapshot | Fact Snapshot | reuse | Điểm đóng cửa chỉ số thị trường cuối ngày (Nhóm 1, 2) | 1 chỉ số × 1 ngày giao dịch (bản ghi cuối ngày) | K_VP_4,6-8 |
+| Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_13-17 |
 
 ---
 
-### 2.3 Fact Securities Market Index Snapshot (`fct_scr_mkt_indx_snpst`)
-
-Bảng tổng hợp giá trị chỉ số thị trường và giao dịch mua/bán ròng theo loại nhà đầu tư theo ngày giao dịch. Phục vụ Nhóm 1, 2.
+## Nhóm 3 - Phái sinh >> Chỉ tiêu tổng hợp
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
 ```
 
-| Tên thực thể | Tên vật lý | Loại | Grain | Nguồn Atomic | Phục vụ KPI |
-|---|---|:---:|---|---|---|
-| Fact Securities Market Index Snapshot | `fct_scr_mkt_indx_snpst` | Fact | 1 dòng / thị trường / ngày giao dịch | `mkt_indx_snpst`, `scr_trd` | K_VP_1 đến K_VP_14 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19-20,29-30,39-40,49-50,59-60 |
+| Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_21-28,31-38,41-48,51-58,61-68 |
 
 ---
 
-### 2.4 Fact Derivatives Trading Snapshot (`fct_derv_tdg_snpst`) & Fact Derivatives Price Snapshot (`fct_derv_prc_snpst`)
-
-Bảng tổng hợp khối lượng giao dịch phái sinh, giá hợp đồng tương lai và giao dịch NĐTNN theo sản phẩm theo ngày giao dịch. Phục vụ Nhóm 3, 4, 5, 6.
+## Nhóm 4 - Phái sinh >> Giá HĐTL
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Trading_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Price_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
 ```
 
-| Tên thực thể | Tên vật lý | Loại | Grain | Nguồn Atomic | Phục vụ KPI |
-|---|---|:---:|---|---|---|
-| Fact Derivatives Trading Snapshot | `fct_derv_tdg_snpst` | Fact | 1 dòng / sản phẩm phái sinh / ngày giao dịch | `scr_tdg_snpst`, `scr_trd` | K_VP_15 đến K_VP_28 |
-| Fact Derivatives Price Snapshot | `fct_derv_prc_snpst` | Fact | 1 dòng / sản phẩm / kỳ hạn / ngày giao dịch | `scr_tdg_snpst` | K_VP_29 đến K_VP_35 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_70 |
 
 ---
 
-### 2.5 Fact Listed Corporate Bond Snapshot (`fct_lst_crp_bnd_snpst`) & Industry Term Snapshot (`fct_lst_crp_bnd_indy_trm_snpst`)
+## Nhóm 5 - Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh
 
-Bảng tổng hợp giao dịch TPDN niêm yết theo ngày, ngành và kỳ hạn phát hành. Phục vụ Nhóm 7, 8, 9, 10.
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19,29,39,49,59 |
+| Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_21,31,41,51,61 |
+
+---
+
+## Nhóm 6 - Phái sinh >> Biểu đồ Khối lượng mua/bán ròng của NĐTNN
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_23,25,27,33,35,37,43,45,47,53,55,57,63,65,67 |
+
+---
+
+## Nhóm 7 - TPDN niêm yết >> Chỉ tiêu tổng hợp
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Industry_Term_Snapshot : " "
-    Classification_Dimension ||--o{ Fact_Listed_Corporate_Bond_Industry_Term_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
 ```
 
-| Tên thực thể | Tên vật lý | Loại | Grain | Nguồn Atomic | Phục vụ KPI |
-|---|---|:---:|---|---|---|
-| Fact Listed Corporate Bond Snapshot | `fct_lst_crp_bnd_snpst` | Fact | 1 dòng / ngày giao dịch | `scr_trd`, `scr_tdg_snpst` | K_VP_36 đến K_VP_41 |
-| Fact Listed Corporate Bond Industry Term Snapshot | `fct_lst_crp_bnd_indy_trm_snpst` | Fact | 1 dòng / ngành cấp 1 / nhóm kỳ hạn / ngày giao dịch | `scr_tdg_snpst`, `scr_trd`, `pblc_co` | K_VP_42 đến K_VP_47 |
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_71-83,112-114 |
 
 ---
 
-## 3. Danh mục bảng Dimension dùng chung
+## Nhóm 8 - TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành
 
-| Tên thực thể | Tên vật lý | Loại | SCD Type | Mô tả | Nguồn Atomic |
-|---|---|:---:|:---:|---|---|
-| Calendar Date Dimension | `cdr_dt_dim` | Dimension | SCD 4A | Chiều ngày lịch giao dịch, cờ ngày giao dịch, năm/quý/tháng/tuần | `cdr_dt` (ECAT) |
-| Classification Dimension | `cl_dim` | Dimension | SCD 4A | Chiều danh mục phân loại ngành nghề kinh doanh, loại hình | `cv` (Atomic) |
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83-88 |
+
+---
+
+## Nhóm 9 - TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_73 |
+| Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id)) | K_VP_89 |
+
+---
+
+## Nhóm 10 - TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_84,86,90 |
+
+---
+
+## Nhóm 11 - TPDN riêng lẻ >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id)) | K_VP_89,91-99 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | new | Số mã TPDN riêng lẻ đăng ký giao dịch theo báo cáo tháng HNX, factless (Nhóm 11) | 1 mã trái phiếu (Bond Code) × 1 tháng báo cáo (PK private_corporate_bond_registration_snpst_id = hash(bond_code, rpt_year, rpt_month)) | K_VP_100-101 |
+
+---
+
+## Nhóm 12 - TPDN riêng lẻ >> Biểu đồ Diễn biến giao dịch thị trường TPDN riêng lẻ
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id)) | K_VP_89 |
+
+---
+
+## Nhóm 13 - TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id)) | K_VP_94,96,98 |
+
+---
+
+## Nhóm 14 - TPCP >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Government Bond Trading Snapshot | Fact Snapshot | new | Khối lượng, giá trị giao dịch và giá trị mua/bán NĐTNN TPCP theo ngày và loại sổ lệnh (Nhóm 14, 15, 16) | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO (PK government_bond_trading_snpst_id = hash(snpst_dt_dim_id, order_book_tp)) | K_VP_102-111 |
+
+---
+
+## Nhóm 15 - TPCP >> Biểu đồ Diễn biến giao dịch thị trường
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Government Bond Trading Snapshot | Fact Snapshot | new | Khối lượng, giá trị giao dịch và giá trị mua/bán NĐTNN TPCP theo ngày và loại sổ lệnh (Nhóm 14, 15, 16) | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO (PK government_bond_trading_snpst_id = hash(snpst_dt_dim_id, order_book_tp)) | K_VP_102,104 |
+
+---
+
+## Nhóm 16 - TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Government Bond Trading Snapshot | Fact Snapshot | new | Khối lượng, giá trị giao dịch và giá trị mua/bán NĐTNN TPCP theo ngày và loại sổ lệnh (Nhóm 14, 15, 16) | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO (PK government_bond_trading_snpst_id = hash(snpst_dt_dim_id, order_book_tp)) | K_VP_106,108,110 |
+
+---
+
+## Bảng PENDING (không thiết kế trong Phase 2)
+
+Không có — mọi Fact/Dimension của Nhóm 1–16 đều có KPI READY.
+
+| Datamart Entity | Lý do PENDING | Issue |
+|---|---|---|
+| — | — | — |
+
+## Bảng DEPRECATED / Bãi bỏ
+
+| Datamart Entity | Căn cứ bãi bỏ | Trạng thái |
+|---|---|---|
+| Fact Securities Market Index Snapshot (`fct_scr_mkt_indx_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+| Fact Derivatives Trading Snapshot (`fct_derv_tdg_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+| Fact Derivatives Price Snapshot (`fct_derv_prc_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+| Fact Listed Corporate Bond Industry Term Snapshot (`fct_lst_crp_bnd_indy_trm_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+| Fact OTC Bond Snapshot (`fct_otc_bnd_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+| Fact Share Auction Snapshot (`fct_share_auction_snpst`) | Thiết kế VP cũ bị thay hoàn toàn theo yêu cầu thiết kế lại phân hệ VP ngày 2026-10-25 — HLD Section 4 | DEPRECATED — dọn 5 tầng ở bước LLD |
+
+Ghi chú: Fact Listed Corporate Bond Snapshot cũ (`fct_lst_crp_bnd_snpst`) không còn ở bảng này — đã được thay bằng bảng mới cùng tên logic `fct_listed_corporate_bond_snpst` (Nhóm 7–10, reuse_status = new; HLD Section 4).

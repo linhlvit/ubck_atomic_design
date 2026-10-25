@@ -100,7 +100,7 @@ KPI_REF = re.compile(r"K_[A-Z0-9]+_\d+")
 
 # Module đã chuyển sang Quy tắc L18 (1 KPI có MEASURE = 1 dòng Detail Mapping). Thêm module vào đây khi
 # chuyển đổi/thiết kế mới; GSDC/GSTT... chưa chuyển nên không có trong tập này.
-L18_MODULES = {"TT", "QLKD"}  # QLKD thêm 2026-10-19 sau khi gộp 113 KPI (FILTER/SLICER -> WHERE/GROUP BY của MEASURE)
+L18_MODULES = {"TT", "QLKD", "VP"}  # QLKD thêm 2026-10-19 sau khi gộp 113 KPI (FILTER/SLICER -> WHERE/GROUP BY của MEASURE); VP thêm 2026-10-25 (thiết kế lại từ đầu theo L18)
 
 
 def cells(line: str) -> int:
@@ -221,9 +221,11 @@ def check_one_row_per_kpi(root: Path, module: str, force: bool = False):
         rows = list(csv.DictReader(fh))
     by = {}
     for i, r in enumerate(rows, 2):
-        by.setdefault((r.get("kpi_id") or "").strip(), []).append((i, r))
+        # Khóa gom = (Nhóm, kpi_id) — 2026-10-25 (VP): KPI dùng lại ở Nhóm khác (Reuse Case 1) có dòng MEASURE riêng
+        # theo từng Nhóm trong Detail Mapping; L18 chỉ cấm nhân dòng TRONG CÙNG 1 Nhóm (FILTER/SLICER đi kèm MEASURE).
+        by.setdefault(((r.get("nhom") or "").strip(), (r.get("kpi_id") or "").strip()), []).append((i, r))
     level = "ERROR" if module.upper() in L18_MODULES else "WARNING"
-    for kpi_id, lst in by.items():
+    for (_nhom, kpi_id), lst in by.items():
         if not any((r.get("column_role") or "").strip() == "MEASURE" for _, r in lst) or len(lst) == 1:
             continue
         roles = {}
