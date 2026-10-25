@@ -45130,7 +45130,7 @@ entities:
         business_meaning: Đường dẫn file Excel import dữ liệu.
         comment: VARCHAR2(2000).
   - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
+    physical_name: src_rcrd_isrt_tms
     business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
       hệ thống nguồn.
     comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
@@ -47348,10 +47348,9 @@ entities:
         comment: null
   - name: Report Style Code
     physical_name: rpt_style_code
-    business_meaning_1st: "Kiểu bố trí sheet: H = Hàng (theo hàng); C = Cột (theo\
-      \ cột); HC = Hàng-Cột; TH = Tổng hợp."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.REPORT_STYLE
-    data_domain_most: Classification Value
+    business_meaning_1st: "Kiểu bố trí sheet."
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -47362,9 +47361,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET
         source_column: SCMS.FORM_SHEET.REPORT_STYLE
-        business_meaning: "Kiểu bố trí sheet: H = Hàng (theo hàng); C = Cột (theo\
-          \ cột); HC = Hàng-Cột; TH = Tổng hợp."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.REPORT_STYLE
+        business_meaning: "Kiểu bố trí sheet."
+        comment: null
   - name: Sub Title Position
     physical_name: sub_title_position
     business_meaning_1st: "Vị trí hiển thị tiêu đề phụ: TREN = Trên tiêu đề chính;\
@@ -47532,11 +47530,10 @@ entities:
         comment: null
   - name: Record Type Code
     physical_name: record_tp_code
-    business_meaning_1st: "Loại sheet: DATA = Sheet dữ liệu chính; SUMMARY = Sheet\
-      \ tổng hợp; HEADER = Sheet tiêu đề."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.RECORD_TYPE
-    data_domain_most: Classification Value
-    data_type_most: string
+    business_meaning_1st: "Loại sheet."
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -47546,9 +47543,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET
         source_column: SCMS.FORM_SHEET.RECORD_TYPE
-        business_meaning: "Loại sheet: DATA = Sheet dữ liệu chính; SUMMARY = Sheet\
-          \ tổng hợp; HEADER = Sheet tiêu đề."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.RECORD_TYPE
+        business_meaning: "Loại sheet."
+        comment: null
   - name: Column Order
     physical_name: column_order
     business_meaning_1st: Thứ tự sắp xếp theo cột (mô tả gốc BRD).
@@ -48004,10 +48000,9 @@ entities:
         comment: null
   - name: Style Format Code
     physical_name: style_format_code
-    business_meaning_1st: "Định dạng chữ ký tự: ID = In đậm; IN = In nghiêng; IH =\
-      \ In hoa; GC = Gạch chân (có thể kết hợp)."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
-    data_domain_most: Classification Value
+    business_meaning_1st: "Định dạng chữ ký tự."
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -48018,9 +48013,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_CELL
         source_column: SCMS.FORM_SHEET_CELL.STYLE_FORMAT
-        business_meaning: "Định dạng chữ ký tự: ID = In đậm; IN = In nghiêng; IH =\
-          \ In hoa; GC = Gạch chân (có thể kết hợp)."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
+        business_meaning: "Định dạng chữ ký tự."
+        comment: null
   - name: Color
     physical_name: color
     business_meaning_1st: Màu chữ (mã màu HEX).
@@ -48539,10 +48533,9 @@ entities:
         comment: null
   - name: Name Format Code
     physical_name: nm_format_code
-    business_meaning_1st: "Định dạng tên cột: ID = In đậm; IN = In nghiêng; IH = In\
-      \ hoa; GC = Gạch chân."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
-    data_domain_most: Classification Value
+    business_meaning_1st: "Định dạng tên cột."
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -48553,9 +48546,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_COLUMN
         source_column: SCMS.FORM_SHEET_COLUMN.NAME_FORMAT
-        business_meaning: "Định dạng tên cột: ID = In đậm; IN = In nghiêng; IH = In\
-          \ hoa; GC = Gạch chân."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
+        business_meaning: "Định dạng tên cột."
+        comment: null
   - name: Color
     physical_name: color
     business_meaning_1st: Màu chữ (mã màu HEX).
@@ -48947,10 +48939,9 @@ entities:
         comment: null
   - name: Name Format Code
     physical_name: nm_format_code
-    business_meaning_1st: "Định dạng tên hàng: ID = In đậm; IN = In nghiêng; IH =\
-      \ In hoa; GC = Gạch chân."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
-    data_domain_most: Classification Value
+    business_meaning_1st: "Định dạng tên hàng."
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -48961,9 +48952,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_ROW
         source_column: SCMS.FORM_SHEET_ROW.NAME_FORMAT
-        business_meaning: "Định dạng tên hàng: ID = In đậm; IN = In nghiêng; IH =\
-          \ In hoa; GC = Gạch chân."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING
+        business_meaning: "Định dạng tên hàng."
+        comment: null
   - name: Color
     physical_name: color
     business_meaning_1st: Màu chữ (mã màu HEX).
@@ -49189,11 +49179,10 @@ entities:
         comment: null
   - name: Row Type Code
     physical_name: row_tp_code
-    business_meaning_1st: "Loại hàng dữ liệu: DU_LIEU = Hàng nhập liệu chính; TONG_CONG\
-      \ = Hàng tổng cộng/tổng hợp; TIEU_DE = Hàng tiêu đề."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET_ROW.ROW_TYPE
-    data_domain_most: Classification Value
-    data_type_most: string
+    business_meaning_1st: "Loại hàng dữ liệu."
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -49203,9 +49192,8 @@ entities:
       source_tables:
       - source_table: FORM_SHEET_ROW
         source_column: SCMS.FORM_SHEET_ROW.ROW_TYPE
-        business_meaning: "Loại hàng dữ liệu: DU_LIEU = Hàng nhập liệu chính; TONG_CONG\
-          \ = Hàng tổng cộng/tổng hợp; TIEU_DE = Hàng tiêu đề."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET_ROW.ROW_TYPE
+        business_meaning: "Loại hàng dữ liệu."
+        comment: null
   - name: Background Color
     physical_name: background_color
     business_meaning_1st: Màu nền của hàng/ô (mã màu HEX hoặc tên).
@@ -58999,7 +58987,7 @@ entities:
         business_meaning: Mô tả lỗi khi gửi CBTT chào bán.
         comment: NVARCHAR2(1000). Mô tả gốc BRD trống.
   - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
+    physical_name: src_rcrd_isrt_tms
     business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
       hệ thống nguồn.
     comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
@@ -59162,11 +59150,11 @@ entities:
   - name: Securities Company Organization Unit Id
     physical_name: sc_ou_id
     business_meaning_1st: ID của đối tượng bị thay đổi.
-    comment_1st: Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH',
-      ENTITY_ID)  WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SC_FIRM_TRANSACTION_OFFICE',
-      ENTITY_ID)  WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SC_FIRM_INFO', ENTITY_ID)   WHEN
-      ENTITY_TYPE = 'VPDD' THEN hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)   ELSE NULL
-      END.
+    comment_1st: Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)
+      WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)
+      WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SCMS_SC_FIRM_INFO', ENTITY_ID)   
+      WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SCMS_SC_FIRM_REP_OFFICE', ENTITY_ID)
+      ELSE NULL END.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -59179,11 +59167,11 @@ entities:
       - source_table: SC_FIRM_PROFILE_CHANGE
         source_column: SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID
         business_meaning: ID của đối tượng bị thay đổi.
-        comment: Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH',
-          ENTITY_ID)  WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SC_FIRM_TRANSACTION_OFFICE',
-          ENTITY_ID)  WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SC_FIRM_INFO',
-          ENTITY_ID)   WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SC_FIRM_REP_OFFICE',
-          ENTITY_ID)   ELSE NULL END.
+        comment: Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)
+          WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)
+          WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SCMS_SC_FIRM_INFO', ENTITY_ID)
+          WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SCMS_SC_FIRM_REP_OFFICE', ENTITY_ID)
+          ELSE NULL END.
   - name: Securities Company Organization Unit Code
     physical_name: sc_ou_code
     business_meaning_1st: Mã của đối tượng bị thay đổi.
@@ -80547,7 +80535,7 @@ entities:
         business_meaning: Ghi chú bổ sung về người nội bộ.
         comment: NCLOB.
   - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
+    physical_name: src_rcrd_isrt_tms
     business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
       hệ thống nguồn.
     comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
@@ -80944,7 +80932,7 @@ entities:
         business_meaning: Ghi chú bổ sung về cổ đông lớn.
         comment: NCLOB.
   - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
+    physical_name: src_rcrd_isrt_tms
     business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
       hệ thống nguồn.
     comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột
@@ -84017,7 +84005,7 @@ entities:
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: VARCHAR2(2000).
   - name: Source Record Insert Timestamp
-    physical_name: src_record_insert_tms
+    physical_name: src_rcrd_isrt_tms
     business_meaning_1st: Thời điểm tạo bản ghi (tự động ghi nhận bởi hệ thống) tại
       hệ thống nguồn.
     comment_1st: TIMESTAMP(6). Thời điểm bản ghi được chèn vào CSDL nguồn SCMS (cột

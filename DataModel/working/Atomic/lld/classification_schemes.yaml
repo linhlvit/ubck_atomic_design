@@ -6192,26 +6192,6 @@ schemes:
     note: "Mô tả nguồn chỉ ghi 'Dọc/Ngang', không xác nhận mã giá trị thực tế lưu\
       \ trong CSDL — cần profile dữ liệu trước go-live để xác nhận source_value."
 
-  - scheme_code: "SCMS_SHEET_REPORT_STYLE"
-    name: "Kiểu bố trí sheet biểu mẫu báo cáo"
-    source_type: "source_table"
-    source_table: "SCMS.FORM_SHEET.REPORT_STYLE"
-    used_in_entities:
-      - "Securities Company Report Sheet"
-    values:
-      - code: "H"
-        label: "Hàng (theo hàng)"
-        source_value: "H"
-      - code: "C"
-        label: "Cột (theo cột)"
-        source_value: "C"
-      - code: "HC"
-        label: "Hàng-Cột"
-        source_value: "HC"
-      - code: "TH"
-        label: "Tổng hợp"
-        source_value: "TH"
-
   - scheme_code: "SCMS_FORM_SHEET_RECORD_STATUS"
     name: "Trạng thái sheet biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"
     source_type: "source_table"
@@ -6258,25 +6238,6 @@ schemes:
         source_value: "PHAI"
     note: "Tên cột nguồn (SUB_TITLE_ENABLED) gây hiểu nhầm là cờ bật/tắt — mô tả gốc\
       \ BRD xác nhận giá trị thực tế là canh lề (GIUA/TRAI/PHAI)."
-
-  - scheme_code: "SCMS_SHEET_RECORD_TYPE"
-    name: "Loại sheet trong biểu mẫu báo cáo"
-    source_type: "source_table"
-    source_table: "SCMS.FORM_SHEET.RECORD_TYPE"
-    used_in_entities:
-      - "Securities Company Report Sheet"
-    values:
-      - code: "DATA"
-        label: "Sheet dữ liệu chính"
-        source_value: "DATA"
-      - code: "SUMMARY"
-        label: "Sheet tổng hợp"
-        source_value: "SUMMARY"
-      - code: "HEADER"
-        label: "Sheet tiêu đề"
-        source_value: "HEADER"
-    note: "Nguồn lưu dạng số (NUMBER(2,0)) — ETL giữ nguyên mapping theo mô tả nguồn\
-      \ (DATA/SUMMARY/HEADER), cần profile để xác nhận mã số cụ thể tương ứng."
 
   - scheme_code: "SCMS_LNK_EVENT_TYPE_FORM_RECORD_STATUS"
     name: "Trạng thái bản ghi liên kết Loại sự vụ - Báo cáo: 1=Đang hoạt động; 0=Ngừng hoạt động"
@@ -6350,25 +6311,6 @@ schemes:
       - code: "INACTIVE"
         label: "Không sử dụng"
         source_value: "0"
-
-  - scheme_code: "SCMS_SHEET_ROW_TYPE"
-    name: "Loại hàng dữ liệu trong sheet biểu mẫu báo cáo"
-    source_type: "source_table"
-    source_table: "SCMS.FORM_SHEET_ROW.ROW_TYPE"
-    used_in_entities:
-      - "Securities Company Report Sheet Row"
-    values:
-      - code: "DU_LIEU"
-        label: "Hàng nhập liệu chính"
-        source_value: "DU_LIEU"
-      - code: "TONG_CONG"
-        label: "Hàng tổng cộng/tổng hợp"
-        source_value: "TONG_CONG"
-      - code: "TIEU_DE"
-        label: "Hàng tiêu đề"
-        source_value: "TIEU_DE"
-    note: "Nguồn lưu dạng số (NUMBER(10,0)) — ETL giữ nguyên mapping theo mô tả nguồn,\
-      \ cần profile để xác nhận mã số cụ thể tương ứng."
 
   - scheme_code: "SCMS_FORM_SHEET_COLUMN_RECORD_STATUS"
     name: "Trạng thái cột trong sheet biểu mẫu: 1=Đang sử dụng; 0=Không sử dụng"

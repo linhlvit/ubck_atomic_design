@@ -34883,7 +34883,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_adhoc_report"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
   data_type: "timestamp"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Periodic Report"
@@ -36697,15 +36697,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet"
   atomic_attribute: "Report Style Code"
-  description: "Kiểu bố trí sheet: H = Hàng (theo hàng); C = Cột (theo cột); HC =\
-    \ Hàng-Cột; TH = Tổng hợp."
-  data_domain: "Classification Value"
+  description: "Kiểu bố trí sheet."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET"
   source_column: "SCMS.FORM_SHEET.REPORT_STYLE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.REPORT_STYLE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet"
@@ -36864,20 +36863,19 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet"
   atomic_attribute: "Record Type Code"
-  description: "Loại sheet: DATA = Sheet dữ liệu chính; SUMMARY = Sheet tổng hợp;\
-    \ HEADER = Sheet tiêu đề."
-  data_domain: "Classification Value"
+  description: "Loại sheet."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET"
   source_column: "SCMS.FORM_SHEET.RECORD_TYPE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.RECORD_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet"
   atomic_column: "record_tp_code"
-  data_type: "string"
+  data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet"
   atomic_attribute: "Column Order"
@@ -37256,15 +37254,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet Cell"
   atomic_attribute: "Style Format Code"
-  description: "Định dạng chữ ký tự: ID = In đậm; IN = In nghiêng; IH = In hoa; GC\
-    \ = Gạch chân (có thể kết hợp)."
-  data_domain: "Classification Value"
+  description: "Định dạng chữ ký tự."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_CELL"
   source_column: "SCMS.FORM_SHEET_CELL.STYLE_FORMAT"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_cell"
@@ -37718,15 +37715,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet Column"
   atomic_attribute: "Name Format Code"
-  description: "Định dạng tên cột: ID = In đậm; IN = In nghiêng; IH = In hoa; GC =\
-    \ Gạch chân."
-  data_domain: "Classification Value"
+  description: "Định dạng tên cột."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_COLUMN"
   source_column: "SCMS.FORM_SHEET_COLUMN.NAME_FORMAT"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_column"
@@ -38075,15 +38071,14 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet Row"
   atomic_attribute: "Name Format Code"
-  description: "Định dạng tên hàng: ID = In đậm; IN = In nghiêng; IH = In hoa; GC\
-    \ = Gạch chân."
-  data_domain: "Classification Value"
+  description: "Định dạng tên hàng."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_ROW"
   source_column: "SCMS.FORM_SHEET_ROW.NAME_FORMAT"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.TEXT_FORMATTING"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_row"
@@ -38301,20 +38296,19 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet Row"
   atomic_attribute: "Row Type Code"
-  description: "Loại hàng dữ liệu: DU_LIEU = Hàng nhập liệu chính; TONG_CONG = Hàng\
-    \ tổng cộng/tổng hợp; TIEU_DE = Hàng tiêu đề."
-  data_domain: "Classification Value"
+  description: "Loại hàng dữ liệu."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_ROW"
   source_column: "SCMS.FORM_SHEET_ROW.ROW_TYPE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET_ROW.ROW_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_row"
   atomic_column: "row_tp_code"
-  data_type: "string"
+  data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet Row"
   atomic_attribute: "Background Color"
@@ -46768,7 +46762,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
   data_type: "timestamp"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
@@ -46882,10 +46876,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.ENTITY_ID"
-  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH',\
-    \ ENTITY_ID)  WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SC_FIRM_TRANSACTION_OFFICE',\
-    \ ENTITY_ID)  WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SC_FIRM_INFO', ENTITY_ID)\
-    \   WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SC_FIRM_REP_OFFICE', ENTITY_ID)  \
+  comment: "Xử lí CASE WHEN ENTITY_TYPE = 'CN' THEN hash_id('SCMS_SC_FIRM_BRANCH', ENTITY_ID)\
+    \ WHEN ENTITY_TYPE = 'PGD' THEN hash_id('SCMS_SC_FIRM_TRANSACTION_OFFICE', ENTITY_ID)\
+    \ WHEN ENTITY_TYPE = 'TRU_SO_CHINH' THEN hash_id('SCMS_SC_FIRM_INFO', ENTITY_ID)\
+    \ WHEN ENTITY_TYPE = 'VPDD' THEN hash_id('SCMS_SC_FIRM_REP_OFFICE', ENTITY_ID)\
     \ ELSE NULL END."
   classification_context: null
   etl_derived_value: null
@@ -60534,7 +60528,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_insider_related_person"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Major Shareholder Relation"
@@ -60871,7 +60865,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Organization Unit"
@@ -64044,7 +64038,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_shareholder"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
   data_type: "timestamp"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company X Classification Securities Company Firm Service\
