@@ -2,7 +2,9 @@
 
 ## Ghi chú thiết kế
 
-19/20 bảng còn lại là `operational` (bảng phẳng theo từng báo cáo — EAV `item_code` hoặc danh sách) theo quyết định thiết kế module TKNB "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension dùng chung". **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Ngoại lệ duy nhất: qua review phát hiện `Market Trading Report (BM030a)` gộp sai 2 grain khác nhau vào cùng 1 bảng EAV (Nhóm 18), và `Foreign Proprietary Trading Report (BM031a)` (Nhóm 23) không tận dụng được Dimension dùng chung đã có sẵn cross-module — cả 2 bảng đã DEPRECATED và **xóa khỏi bảng dưới đây** (theo All-Tier Cleanup Protocol — orphan checker yêu cầu xóa hẳn khỏi Entities.csv/.md, không giữ dòng ghost; lịch sử bãi bỏ vẫn lưu đầy đủ ở Section 4 `DTM_TKNB_HLD.md`), thay bằng 3 Fact + 2 Dimension chuẩn Star Schema (2 Fact mới sở hữu TKNB, 1 Fact + 2 Dimension reuse từ QLKD/GSTT). 19 bảng operational còn lại không có FK/relationship với nhau — mỗi bảng độc lập theo layout báo cáo gốc.
+19/20 bảng còn lại là `operational` (bảng phẳng theo từng báo cáo — EAV `item_code` hoặc danh sách) theo quyết định thiết kế module TKNB "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension dùng chung". **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Ngoại lệ duy nhất: qua review phát hiện `Market Trading Report (BM030a)` gộp sai 2 grain khác nhau vào cùng 1 bảng EAV (Nhóm 18), và `Foreign Proprietary Trading Report (BM031a)` (Nhóm 23) không tận dụng được Dimension dùng chung đã có sẵn cross-module — cả 2 bảng đã DEPRECATED và **xóa khỏi bảng dưới đây** (theo All-Tier Cleanup Protocol — orphan checker yêu cầu xóa hẳn khỏi Entities.csv/.md, không giữ dòng ghost; lịch sử bãi bỏ vẫn lưu đầy đủ ở Section 4 `DTM_TKNB_HLD.md`), thay bằng 3 Fact + 2 Dimension chuẩn Star Schema (2 Fact mới sở hữu TKNB, 1 Fact + 2 Dimension reuse từ QLKD/GSTT). 19 bảng operational còn lại không có FK/relationship với nhau — mỗi bảng độc lập theo layout báo cáo gốc.
+
+**[MỚI 2026-10-25 — đồng bộ pipeline dev `item_rule` → `item_value` → ClickHouse]** 14 bảng Operational EAV của 14 báo cáo dev (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) được thay bằng **1 bảng dùng chung `item_value`** (Report Item Value): cột `report_code`, `report_name`, `item_code`, `item_name`, `item_type`, `calc_date`, `value` DECIMAL(23,2), `ds_etl_pcs_tms`; ETL engine đọc cấu hình `item_rule` (Atomic, nạp từ `full_items.csv`) và ghi kết quả; ClickHouse đẩy theo `report_code` sang bảng flat riêng từng báo cáo. 7 bảng EAV còn lại (HNX04, HSX02, TTLK10, 0513, TK-04.BTC, TK_NienGiam, BM031d) chưa có trong pipeline dev nên giữ nguyên.
 
 ## erDiagram (chỉ 5 entity Star Schema mới — 19 bảng Operational khác không vẽ, không có quan hệ)
 
@@ -113,7 +115,7 @@ erDiagram
     Private_Corporate_Bond_Dimension ||--o{ Fact_Private_Corporate_Bond_International_Offering_Snapshot : "Private_Corporate_Bond_Dimension_Id"
 ```
 
-## Bảng entity tóm tắt (25 bảng: 3 Star Schema mới/reuse + 21 Operational — 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED và xóa khỏi bảng này, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (18 bảng: 10 Dimension/Fact (Star Schema, gồm 3 Dimension reuse) + 8 Operational — **[SỬA 2026-10-25]** 14 bảng Operational EAV của 14 báo cáo dev đã gộp vào 1 bảng `item_value`; 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -130,27 +132,14 @@ erDiagram
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
-| 1 | Stock Trading Report (HNX01) | Operational | new | Báo cáo giao dịch thị trường cổ phiếu HNX theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1–108 |
-| 2 | Gov Bond OTC Trading Report (HNX02) | Operational | new | Báo cáo giao dịch trái phiếu Chính phủ OTC trên HNX (7/165 KPI READY — 3/7 loại hình GD) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_109–273 |
-| 3 | Derivative Trading Report (HNX03) | Operational | new | Báo cáo giao dịch thị trường CKPS (HNX) theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_274–286 |
+| 1 | Report Item Value | Operational | new | Giá trị chỉ tiêu 14 báo cáo TKNB theo cấu hình `item_rule` (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) — thay 14 bảng EAV riêng từng báo cáo | 1 dòng/1 chỉ tiêu (`item_code`)/1 báo cáo (`report_code`)/1 ngày tính (`calc_date`) | K_TKNB_1–108, 109–273, 274–286, 472–496, 497–519, 571–695, 793–820, 1025–1067, 1094–1122, 1174–1186, 1258–1299 (14 báo cáo) |
 | 4 | Market Scale Report (HNX04) | Operational | new | Báo cáo tổng hợp quy mô TTCK HNX | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_290–471 |
-| 5 | Gov Bond Bidding Report (HNX06) | Operational | new | Thống kê hoạt động đấu thầu trái phiếu Chính phủ theo tháng (HNX) — EAV 1 dòng/1 chỉ tiêu | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_472–496 |
-| 6 | Corp Bond Trading Report (HNX07) | Operational | new | Báo cáo giao dịch TPDN niêm yết trên HNX theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_497–519 |
-| 10 | Stock Trading Report (HSX01) | Operational | new | Báo cáo giao dịch thị trường cổ phiếu HOSE theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_571–695 |
 | 11 | Listing Trading Report (HSX02) | Operational | new | Báo cáo niêm yết và giao dịch chứng khoán HOSE kỳ tháng | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_696–792 |
-| 12 | Proprietary Trading Report (HSX04) | Operational | new | Báo cáo giao dịch tự doanh của CTCK trên HOSE theo kỳ | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_793–820 |
 | 14 | CW Outstanding Report (TTLK10) | Operational | new | Danh sách chứng quyền đang lưu hành | 1 dòng/1 mã chứng quyền/1 kỳ báo cáo | K_TKNB_843–845 |
 | 15 | Offering Result Report (0513.H.UBCK.QG) | Operational | new | Báo cáo kết quả thực hiện phát hành chứng khoán | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_846–874 |
 | 16 | Market Summary Report (TK-04.BTC) | Operational | new | Báo cáo tổng hợp TTCK theo quý/lũy kế | 1 dòng/1 chỉ tiêu/1 kỳ gốc (period_marker) | K_TKNB_875–917 |
 | 17 | Market Annual Report (TK_NienGiam) | Operational | new | Niên giám thống kê thị trường chứng khoán theo năm | 1 dòng/1 chỉ tiêu/1 năm báo cáo | K_TKNB_918–1011 |
-| 19 | Gov Bond Trading Report (BM030b) | Operational | new | Thống kê giao dịch toàn thị trường TPCP theo ngày (sổ lệnh OTC HNX) — EAV 1 dòng/1 chỉ tiêu | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1025–1036 |
-| 20 | Corp Bond Trading Report (BM030c) | Operational | new | Thống kê giao dịch toàn thị trường TPDN niêm yết theo ngày (cộng gộp 2 sàn) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1037–1045 |
-| 21 | OTC Corp Bond Trading Report (BM030d) | Operational | new | Thống kê giao dịch thị trường TPDN riêng lẻ theo ngày (báo cáo HNX09 trên ISS) | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1046–1052 |
-| 22 | Fund Cert ETF CW Trading Report (BM030e) | Operational | new | Thống kê giao dịch thị trường CCQ/ETF/CW toàn thị trường theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1053–1067 |
-| 24 | Gov Bond Foreign Proprietary Trading Report (BM031b) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPCP theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1094–1112 |
-| 25 | Corp Bond Foreign Proprietary Trading Report (BM031c) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường TPDN niêm yết theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1113–1122 |
 | 26 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường CCQ/ETF/CW theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1123–1173 |
-| 27 | Derivatives Trading Report (BM030f) | Operational | new | Thống kê giao dịch thị trường CKPS (NĐTNN/tự doanh) theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1174–1186 |
 
 ## Nguồn Atomic theo bảng
 
@@ -166,24 +155,11 @@ erDiagram
 | Fact Security Trading Detail Snapshot | securities_trade / security_trading_snapshot / securities_order / foreign_ownership_information |
 | Fact Derivatives Security Detail Snapshot | securities_trade / security_trading_snapshot / end_of_day_open_interest |
 | Security Trading Snapshot Dimension (reuse GSTT) | security_trading_snapshot |
-| Stock Trading Report (HNX01) | market_index_snapshot / security_trading_snapshot / securities_trade |
-| Gov Bond OTC Trading Report (HNX02) | bond_order_book |
-| Derivative Trading Report (HNX03) | security_trading_snapshot / securities_trade |
+| Report Item Value | securities_trade / market_index_snapshot / security_trading_snapshot / bond_order_book / gov_bond_bidding_result / internal_statistical_report / end_of_day_open_interest |
 | Market Scale Report (HNX04) | securities_trade / security_trading_snapshot |
-| Gov Bond Bidding Report (HNX06) | gov_bond_bidding_result |
-| Corp Bond Trading Report (HNX07) | securities_trade |
-| Stock Trading Report (HSX01) | market_index_snapshot / securities_trade / security_trading_snapshot |
 | Listing Trading Report (HSX02) | market_index_snapshot / securities_trade / security_trading_snapshot |
-| Proprietary Trading Report (HSX04) | securities_trade / security_trading_snapshot |
 | CW Outstanding Report (TTLK10) | sc_disclosure_securities_offering |
 | Offering Result Report (0513.H.UBCK.QG) | pc_securities_offering_result |
 | Market Summary Report (TK-04.BTC) | securities_trade |
 | Market Annual Report (TK_NienGiam) | market_index_snapshot / securities_trade / security_trading_snapshot / public_company / securities_company / fund_management_company |
-| Gov Bond Trading Report (BM030b) | bond_order_book |
-| Corp Bond Trading Report (BM030c) | securities_trade |
-| OTC Corp Bond Trading Report (BM030d) | internal_statistical_report |
-| Fund Cert ETF CW Trading Report (BM030e) | securities_trade / security_trading_snapshot |
-| Gov Bond Foreign Proprietary Trading Report (BM031b) | securities_trade |
-| Corp Bond Foreign Proprietary Trading Report (BM031c) | securities_trade |
 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | securities_trade / security_trading_snapshot |
-| Derivatives Trading Report (BM030f) | securities_trade / security_trading_snapshot |
