@@ -103,13 +103,13 @@ attributes:
 - attribute_name: "Report Group"
   physical_name: "rpt_group"
   description: "Nhóm báo cáo (phân nhóm theo chức năng/đối tượng)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.REPORT_GROUP"
-  comment: "SCHEMA_CODE=SCMS.REPORT_GROUP"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -247,18 +247,17 @@ attributes:
   data_type: "string"
 - attribute_name: "Report Style Code"
   physical_name: "rpt_style_code"
-  description: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1 = Báo cáo đầu\
-    \ ra (xuất dữ liệu)."
-  data_domain: "Classification Value"
+  description: "Phong cách báo cáo."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.FORM_REPORT.REPORT_STYLE"
-  comment: "SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE"
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Disclosure News Type Code"
   physical_name: "disclosure_news_tp_code"
   description: "Loại tin CBTT tạo ra khi gửi báo cáo: 1 = Định kỳ; 2 = Bất thường;\

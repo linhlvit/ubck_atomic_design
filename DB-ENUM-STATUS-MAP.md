@@ -434,7 +434,7 @@ Cột `STATUS`: **0 = INACTIVE, 1 = ACTIVE** — enum `StatusEnum`.
 | 1 | ADMINISTRATIVE |
 | 2 | LEGAL |
 
-### PostCertTrainingResultStatusEnum (Chưa dùng)
+### PostCertTrainingResultStatusEnum (NHNCK.POST_CERT_TRAINING_RESULTS.RESULT_STATUS)
 
 | Value | Constant | Label |
 |------:|----------|-------|

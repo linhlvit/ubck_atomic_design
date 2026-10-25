@@ -5857,7 +5857,7 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING"
   source_column: "FMS.OFFERING.DATA_SOURCE"
-  comment: "SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE"
+  comment: "SCHEMA_CODE=FMS.OFFERING_DATA_SOURCE"
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_securities_offering"
@@ -5986,7 +5986,7 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING"
   source_column: "FMS.OFFERING.BOND_TYPE"
-  comment: "SCHEMA_CODE=FMS_BOND_TYPE"
+  comment: "SCHEMA_CODE=FMS.BOND_TYPE"
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_securities_offering"
@@ -6166,7 +6166,7 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING_PLAN"
   source_column: "FMS.OFFERING_PLAN.METHOD_CODE"
-  comment: "SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD"
+  comment: "SCHEMA_CODE=FMS.STOCK_OFFERING_PLAN_METHOD"
   classification_context: null
   etl_derived_value: null
   atomic_table: "fmc_securities_offering_plan"
@@ -7833,10 +7833,10 @@ attributes:
 - bcv_core_object: "Business Activity"
   atomic_entity: "Member Rating"
   atomic_attribute: "Rating Period Type Code"
-  description: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân tố nào <\
-    \ 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng điểm ≥ 50 **và**\
-    \ không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc** công ty **không\
-    \ nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
+  description: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 và không nhóm nhân tố nào <\
+    \ 65); 2=B (Tổng điểm ≥ 65 và không nhóm nào < 50); 3=C (Tổng điểm ≥ 50 và\
+    \ không nhóm nào < 45); 4=D (Các trường hợp còn lại; hoặc công ty không\
+    \ nộp báo cáo trong kỳ (ép D dù điểm = 0))."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
@@ -17264,7 +17264,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "SPECIALIZATION_COURSE_DETAILS"
   source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE"
-  comment: "SCHEMA_CODE=IDENTIFICATION_DOCUMENT_TYPE"
+  comment: "SCHEMA_CODE=NHNCK.IDENTITY_TYPE"
   classification_context: null
   etl_derived_value: null
   atomic_table: "sp_professional_training_class_enrollment"
@@ -28020,7 +28020,7 @@ attributes:
   source_system: "FMS"
   source_table: "RPT_TEMP"
   source_column: "FMS.RPT_TEMP.SYSTEM_OBJECTS"
-  comment: "SCHEMA_CODE=FMS.SYSTEM_OBJECTS"
+  comment: "SCHEMA_CODE=FMS.SYSTEM_OBJECT"
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_report"
@@ -35403,13 +35403,13 @@ attributes:
   atomic_entity: "Securities Company Report"
   atomic_attribute: "Report Group"
   description: "Nhóm báo cáo (phân nhóm theo chức năng/đối tượng)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_REPORT"
   source_column: "SCMS.FORM_REPORT.REPORT_GROUP"
-  comment: "SCHEMA_CODE=SCMS.REPORT_GROUP"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report"
@@ -35580,20 +35580,19 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report"
   atomic_attribute: "Report Style Code"
-  description: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1 = Báo cáo đầu\
-    \ ra (xuất dữ liệu)."
-  data_domain: "Classification Value"
+  description: "Phong cách báo cáo."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_REPORT"
   source_column: "SCMS.FORM_REPORT.REPORT_STYLE"
-  comment: "SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report"
   atomic_column: "rpt_style_code"
-  data_type: "string"
+  data_type: "int"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report"
   atomic_attribute: "Disclosure News Type Code"
@@ -36050,13 +36049,13 @@ attributes:
   atomic_entity: "Securities Company Report Indicator"
   atomic_attribute: "Data Type Code"
   description: "Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT)."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_INDICATOR_INPUT"
   source_column: "SCMS.FORM_INDICATOR_INPUT.DATA_TYPE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_indicator"
@@ -37557,13 +37556,13 @@ attributes:
   atomic_attribute: "Data Type Code"
   description: "Kiểu dữ liệu ô: TEXT = Văn bản; NUMBER = Số; DATE = Ngày tháng; BOOLEAN\
     \ = Có/Không; SELECT = Chọn từ danh sách; FORMULA = Công thức tính toán."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_CELL"
   source_column: "SCMS.FORM_SHEET_CELL.DATA_TYPE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_cell"
@@ -37946,13 +37945,13 @@ attributes:
   atomic_attribute: "Data Type Code"
   description: "Kiểu dữ liệu cột: TEXT = Văn bản; NUMBER = Số; DATE = Ngày tháng;\
     \ BOOLEAN = Có/Không; SELECT = Chọn từ danh sách."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "FORM_SHEET_COLUMN"
   source_column: "SCMS.FORM_SHEET_COLUMN.DATA_TYPE"
-  comment: "SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
   atomic_table: "sc_report_sheet_column"
@@ -49058,14 +49057,14 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Discretionary Investment Investor"
   atomic_attribute: "Organization Territory Type Code"
-  description: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
+  description: "Loại tổ chức thành viên: 1=Trong nước, 0=Nước ngoài."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
   source_table: "INVES"
   source_column: "FMS.INVES.DORF"
-  comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;2=FOREIGN."
+  comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;0=FOREIGN."
   classification_context: null
   etl_derived_value: null
   atomic_table: "discretionary_investment_investor"
@@ -64704,7 +64703,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "ORGANIZATIONS"
   source_column: "NHNCK.ORGANIZATIONS.SYNC_STATUS"
-  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.SYNC_STATUS"
+  comment: "SCHEMA_CODE=NHNCK.ORGANIZATIONS.STATUS"
   classification_context: null
   etl_derived_value: null
   atomic_table: "securities_organization_reference"

@@ -90,7 +90,7 @@
 | 1 | `APPROVE` | `1, "Chấp thuận"` |
 | 2 | `REJECT` | `2, "Từ chối"` |
 
-## `BondTypeEnum`
+## `BondTypeEnum` (FMS.BOND_TYPE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/BondTypeEnum.java`  
 **Số giá trị:** 3
@@ -386,7 +386,7 @@
 | 12 | `MEMBER_UPDATE_COMPANY_PROFILE` | `12, "Yêu cầu cập nhật thông tin hồ sơ công ty"` |
 | 13 | `IRREGULAR_REPORT_APPROVAL` | `13, "Phê duyệt hồ sơ báo cáo bất thường"` |
 
-## `OfferingDataSourceEnum`
+## `OfferingDataSourceEnum` (FMS.OFFERING_DATA_SOURCE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/OfferingDataSourceEnum.java`  
 **Số giá trị:** 2
@@ -411,7 +411,7 @@
 | 6 | `DOI_TUONG_KHAC` | `"06", "Đối tượng khác"` |
 | 7 | `TRAI_PHIEU_QT` | `"07", "Phát hành trái phiếu ra thị trường quốc tế"` |
 
-## `OfferingTypeEnum`
+## `OfferingTypeEnum` (FMS.OFFERING_TYPE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/OfferingTypeEnum.java`  
 **Số giá trị:** 14
@@ -470,7 +470,7 @@
 | 4 | `CONG_TY_BAO_HIEM` | `4, "Công ty bảo hiểm"` |
 | 5 | `TO_CHUC_KHAC` | `5, "Tổ chức khác"` |
 
-## `PeriodTypeEnum`
+## `PeriodTypeEnum` (FMS.PERIOD_TYPE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/PeriodTypeEnum.java`  
 **Số giá trị:** 7
@@ -505,7 +505,7 @@
 | 1 | `AUDIT_FIRM` | `"AUDIT_FIRM", "Công ty kiểm toán"` |
 | 2 | `AUDITOR` | `"AUDITOR", "Kiểm toán viên"` |
 
-## `ReportGroupsEnum`
+## `ReportGroupsEnum` (FMS.REPORT_GROUP)
 
 **File:** `com/tinhvan/fmsservice/common/enums/ReportGroupsEnum.java`  
 **Số giá trị:** 19
@@ -557,7 +557,7 @@
 | 16 | `AUDIT_SUMMARY` | `16, "Thống kê, tổng hợp Công ty kiểm toán, Kiểm toán viên"` |
 | 17 | `OTHER_SUMMARY` | `17, "Thống kê, tổng hợp khác"` |
 
-## `ReportTypeEnum`
+## `ReportTypeEnum` (FMS.REPORT_TYPE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/ReportTypeEnum.java`  
 **Số giá trị:** 4
@@ -813,7 +813,7 @@
 | 3 | `UNACTIVE` | `2, "Không sử dụng"` |
 | 4 | `PENDING` | `3, "Chờ sử dụng"` |
 
-## `SecuritiesOfferingTypeEnum`
+## `SecuritiesOfferingTypeEnum` (FMS.SECURITIES_OFFERING_TYPE)
 
 **File:** `com/tinhvan/fmsservice/common/enums/SecuritiesOfferingTypeEnum.java`  
 **Số giá trị:** 5
@@ -838,7 +838,7 @@
 | 3 | `DELAY_SENT` | `3, "Gửi muộn"` |
 | 4 | `ERROR` | `4, "Lỗi"` |
 
-## `StockClassEnum`
+## `StockClassEnum` (FMS.STOCK_CLASS)
 
 **File:** `com/tinhvan/fmsservice/common/enums/StockClassEnum.java`  
 **Số giá trị:** 2
@@ -848,7 +848,7 @@
 | 1 | `COMMON` | `"01", "Cổ phiếu phổ thông"` |
 | 2 | `PREFERRED` | `"02", "Cổ phiếu ưu đãi"` |
 
-## `StockOfferingPlanMethodEnum`
+## `StockOfferingPlanMethodEnum` (FMS.STOCK_OFFERING_PLAN_METHOD)
 
 **File:** `com/tinhvan/fmsservice/common/enums/StockOfferingPlanMethodEnum.java`  
 **Số giá trị:** 10
@@ -881,7 +881,7 @@
 | 6 | `FRIDAY` | `5, "Thứ sáu"` |
 | 7 | `SATURDAY` | `6, "Thứ bảy"` |
 
-## `SystemObjectEnum`
+## `SystemObjectEnum` (FMS.SYSTEM_OBJECT)
 
 **File:** `com/tinhvan/fmsservice/common/enums/SystemObjectEnum.java`  
 **Số giá trị:** 15

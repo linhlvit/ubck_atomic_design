@@ -109,14 +109,14 @@ attributes:
   - name: Report Group
     physical_name: rpt_group
     business_meaning: Nhóm báo cáo (phân nhóm theo chức năng/đối tượng).
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: FORM_REPORT
     source_column: SCMS.FORM_REPORT.REPORT_GROUP
-    comment: "SCHEMA_CODE=SCMS.REPORT_GROUP"
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -262,15 +262,15 @@ attributes:
 
   - name: Report Style Code
     physical_name: rpt_style_code
-    business_meaning: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1 = Báo cáo đầu ra (xuất dữ liệu)."
-    data_domain: Classification Value
-    data_type: string
+    business_meaning: "Phong cách báo cáo."
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: SCMS
     source_table: FORM_REPORT
     source_column: SCMS.FORM_REPORT.REPORT_STYLE
-    comment: "SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE"
+    comment: null
     classification_context: null
     etl_derived_value: null
 

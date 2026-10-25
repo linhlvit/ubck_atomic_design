@@ -6880,7 +6880,7 @@ entities:
     physical_name: data_src_code
     business_meaning_1st: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân\
       \ hệ TTHC."
-    comment_1st: SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE
+    comment_1st: SCHEMA_CODE=FMS.OFFERING_DATA_SOURCE
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -6894,7 +6894,7 @@ entities:
         source_column: FMS.OFFERING.DATA_SOURCE
         business_meaning: "Nguồn dữ liệu: MANUAL=Nhập trên FMS, TTHC=Đồng bộ từ phân\
           \ hệ TTHC."
-        comment: SCHEMA_CODE=FMS_OFFERING_DATA_SOURCE
+        comment: SCHEMA_CODE=FMS.OFFERING_DATA_SOURCE
   - name: Affair Code
     physical_name: affair_code
     business_meaning_1st: Mã sự vụ chào bán (mã danh mục loại sự vụ).
@@ -7019,7 +7019,7 @@ entities:
   - name: Bond Type Code
     physical_name: bond_tp_code
     business_meaning_1st: Loại trái phiếu
-    comment_1st: SCHEMA_CODE=FMS_BOND_TYPE
+    comment_1st: SCHEMA_CODE=FMS.BOND_TYPE
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -7032,7 +7032,7 @@ entities:
       - source_table: OFFERING
         source_column: FMS.OFFERING.BOND_TYPE
         business_meaning: Loại trái phiếu
-        comment: SCHEMA_CODE=FMS_BOND_TYPE
+        comment: SCHEMA_CODE=FMS.BOND_TYPE
   - name: Bond Term Years
     physical_name: bond_term_years
     business_meaning_1st: "Kỳ hạn trái phiếu (đơn vị: năm)."
@@ -7238,7 +7238,7 @@ entities:
   - name: Offering Method Code
     physical_name: offering_method_code
     business_meaning_1st: Mã hình thức chào bán (enum StockOfferingPlanMethodEnum).
-    comment_1st: SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD
+    comment_1st: SCHEMA_CODE=FMS.STOCK_OFFERING_PLAN_METHOD
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -7251,7 +7251,7 @@ entities:
       - source_table: OFFERING_PLAN
         source_column: FMS.OFFERING_PLAN.METHOD_CODE
         business_meaning: Mã hình thức chào bán (enum StockOfferingPlanMethodEnum).
-        comment: SCHEMA_CODE=FMS_STOCK_OFFERING_PLAN_METHOD
+        comment: SCHEMA_CODE=FMS.STOCK_OFFERING_PLAN_METHOD
   - name: Planned Quantity
     physical_name: planned_quantity
     business_meaning_1st: Số lượng chứng khoán trong kế hoạch chào bán.
@@ -9220,10 +9220,10 @@ entities:
         comment: null
   - name: Rating Period Type Code
     physical_name: rating_period_tp_code
-    business_meaning_1st: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân\
-      \ tố nào < 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng điểm\
-      \ ≥ 50 **và** không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc** công\
-      \ ty **không nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
+    business_meaning_1st: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 và không nhóm nhân\
+      \ tố nào < 65); 2=B (Tổng điểm ≥ 65 và không nhóm nào < 50); 3=C (Tổng điểm\
+      \ ≥ 50 và không nhóm nào < 45); 4=D (Các trường hợp còn lại; hoặc công\
+      \ ty không nộp báo cáo trong kỳ (ép D dù điểm = 0))."
     comment_1st: SCHEMA_CODE=FMS.RANK_TYPE
     data_domain_most: Classification Value
     data_type_most: string
@@ -9236,10 +9236,10 @@ entities:
       source_tables:
       - source_table: RANK
         source_column: FMS.RANK.RANK_TYPE
-        business_meaning: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 **và** không nhóm nhân\
-          \ tố nào < 65); 2=B (Tổng điểm ≥ 65 **và** không nhóm nào < 50); 3=C (Tổng\
-          \ điểm ≥ 50 **và** không nhóm nào < 45); 4=D (Các trường hợp còn lại; **hoặc**\
-          \ công ty **không nộp báo cáo** trong kỳ (ép D dù điểm = 0))."
+        business_meaning: "Loại xếp hạng: 1=A (Tổng điểm ≥ 80 và không nhóm nhân\
+          \ tố nào < 65); 2=B (Tổng điểm ≥ 65 và không nhóm nào < 50); 3=C (Tổng\
+          \ điểm ≥ 50 và không nhóm nào < 45); 4=D (Các trường hợp còn lại; hoặc\
+          \ công ty không nộp báo cáo trong kỳ (ép D dù điểm = 0))."
         comment: SCHEMA_CODE=FMS.RANK_TYPE
 - ldm:
     id: ATM-member_rating_period
@@ -19763,7 +19763,7 @@ entities:
   - name: Identification Type Code
     physical_name: identification_tp_code
     business_meaning_1st: Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)
-    comment_1st: SCHEMA_CODE=IDENTIFICATION_DOCUMENT_TYPE
+    comment_1st: SCHEMA_CODE=NHNCK.IDENTITY_TYPE
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -19776,7 +19776,7 @@ entities:
       - source_table: SPECIALIZATION_COURSE_DETAILS
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.IDENTITY_TYPE
         business_meaning: Loại giấy tờ định danh tại thời điểm đăng ký (snapshot)
-        comment: SCHEMA_CODE=IDENTIFICATION_DOCUMENT_TYPE
+        comment: SCHEMA_CODE=NHNCK.IDENTITY_TYPE
   - name: Identification Number
     physical_name: identification_nbr
     business_meaning_1st: Số định danh tại thời điểm đăng ký (snapshot)
@@ -36486,7 +36486,7 @@ entities:
   - name: Record Status Code
     physical_name: record_status_code
     business_meaning_1st: Trạng thái gửi và phê duyệt báo cáo.
-    comment_1st: "SCHEMA_CODE=FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0)."
+    comment_1st: SCHEMA_CODE=FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0).
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -36499,7 +36499,7 @@ entities:
       - source_table: RPT_MEMBER
         source_column: FMS.RPT_MEMBER.RECORD_STATUS
         business_meaning: Trạng thái gửi và phê duyệt báo cáo.
-        comment: "SCHEMA_CODE=FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0)."
+        comment: SCHEMA_CODE=FMS.RPT_MEMBER.RECORD_STATUS. Nguồn lưu dạng số NUMBER(10,0).
 - ldm:
     id: ATM-fmr_value
     logical_name_1st: Fund Management Report Value
@@ -39221,7 +39221,7 @@ entities:
     physical_name: stm_object_tp_code
     business_meaning_1st: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP,\
       \ 5=ĐLCN..."
-    comment_1st: SCHEMA_CODE=FMS.SYSTEM_OBJECTS
+    comment_1st: SCHEMA_CODE=FMS.SYSTEM_OBJECT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -39235,7 +39235,7 @@ entities:
         source_column: FMS.RPT_TEMP.SYSTEM_OBJECTS
         business_meaning: "Đối tượng hệ thống áp dụng: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP,\
           \ 5=ĐLCN..."
-        comment: SCHEMA_CODE=FMS.SYSTEM_OBJECTS
+        comment: SCHEMA_CODE=FMS.SYSTEM_OBJECT
   - name: Report Short Code
     physical_name: rpt_short_code
     business_meaning_1st: Mã định danh ngắn gọn của biểu mẫu.
@@ -45770,8 +45770,8 @@ entities:
   - name: Report Group
     physical_name: rpt_group
     business_meaning_1st: Nhóm báo cáo (phân nhóm theo chức năng/đối tượng).
-    comment_1st: SCHEMA_CODE=SCMS.REPORT_GROUP
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -45783,7 +45783,7 @@ entities:
       - source_table: FORM_REPORT
         source_column: SCMS.FORM_REPORT.REPORT_GROUP
         business_meaning: Nhóm báo cáo (phân nhóm theo chức năng/đối tượng).
-        comment: SCHEMA_CODE=SCMS.REPORT_GROUP
+        comment: null
   - name: Disclosure Required Indicator
     physical_name: disclosure_required_ind
     business_meaning_1st: "Có phải công bố thông tin khi nộp báo cáo: 1 = Có; 0 =\
@@ -45962,11 +45962,10 @@ entities:
           \ Company Report Id."
   - name: Report Style Code
     physical_name: rpt_style_code
-    business_meaning_1st: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1\
-      \ = Báo cáo đầu ra (xuất dữ liệu)."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE
-    data_domain_most: Classification Value
-    data_type_most: string
+    business_meaning_1st: "Phong cách báo cáo."
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -45976,9 +45975,8 @@ entities:
       source_tables:
       - source_table: FORM_REPORT
         source_column: SCMS.FORM_REPORT.REPORT_STYLE
-        business_meaning: "Phong cách báo cáo: 0 = Báo cáo đầu vào (nhập liệu); 1\
-          \ = Báo cáo đầu ra (xuất dữ liệu)."
-        comment: SCHEMA_CODE=SCMS.FORM_REPORT.REPORT_STYLE
+        business_meaning: "Phong cách báo cáo."
+        comment: null
   - name: Disclosure News Type Code
     physical_name: disclosure_news_tp_code
     business_meaning_1st: "Loại tin CBTT tạo ra khi gửi báo cáo: 1 = Định kỳ; 2 =\
@@ -46546,8 +46544,8 @@ entities:
   - name: Data Type Code
     physical_name: data_tp_code
     business_meaning_1st: Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT).
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -46559,7 +46557,7 @@ entities:
       - source_table: FORM_INDICATOR_INPUT
         source_column: SCMS.FORM_INDICATOR_INPUT.DATA_TYPE
         business_meaning: Kiểu dữ liệu (TEXT/NUMBER/DATE/BOOLEAN/SELECT).
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
+        comment: null
   - name: Category
     physical_name: category
     business_meaning_1st: Cột category (mô tả gốc BRD trống — xem thêm tài liệu đặc
@@ -46632,8 +46630,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Documentation
     bcv_concept_most: "[Documentation] Regulatory Report"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
+    table_type_most: Fact Append
+    etl_pattern_most: Fact Append
     conflict_review: null
     sources:
     - SCMS
@@ -48339,8 +48337,8 @@ entities:
     business_meaning_1st: "Kiểu dữ liệu ô: TEXT = Văn bản; NUMBER = Số; DATE = Ngày\
       \ tháng; BOOLEAN = Có/Không; SELECT = Chọn từ danh sách; FORMULA = Công thức\
       \ tính toán."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -48354,7 +48352,7 @@ entities:
         business_meaning: "Kiểu dữ liệu ô: TEXT = Văn bản; NUMBER = Số; DATE = Ngày\
           \ tháng; BOOLEAN = Có/Không; SELECT = Chọn từ danh sách; FORMULA = Công\
           \ thức tính toán."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
+        comment: null
   - name: Row Span Number
     physical_name: row_span_nbr
     business_meaning_1st: Số hàng được gộp (rowspan trong HTML/Excel).
@@ -48783,8 +48781,8 @@ entities:
     physical_name: data_tp_code
     business_meaning_1st: "Kiểu dữ liệu cột: TEXT = Văn bản; NUMBER = Số; DATE = Ngày\
       \ tháng; BOOLEAN = Có/Không; SELECT = Chọn từ danh sách."
-    comment_1st: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -48797,7 +48795,7 @@ entities:
         source_column: SCMS.FORM_SHEET_COLUMN.DATA_TYPE
         business_meaning: "Kiểu dữ liệu cột: TEXT = Văn bản; NUMBER = Số; DATE = Ngày\
           \ tháng; BOOLEAN = Có/Không; SELECT = Chọn từ danh sách."
-        comment: SCHEMA_CODE=SCMS.FORM_SHEET.DATA_TYPE
+        comment: null
 - ldm:
     id: ATM-sc_report_sheet_row
     logical_name_1st: Securities Company Report Sheet Row
@@ -63800,8 +63798,8 @@ entities:
         comment: null
   - name: Organization Territory Type Code
     physical_name: organization_territory_tp_code
-    business_meaning_1st: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
-    comment_1st: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;2=FOREIGN."
+    business_meaning_1st: "Loại tổ chức thành viên: 1=Trong nước, 0=Nước ngoài."
+    comment_1st: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;0=FOREIGN."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -63813,8 +63811,8 @@ entities:
       source_tables:
       - source_table: INVES
         source_column: FMS.INVES.DORF
-        business_meaning: "Loại tổ chức thành viên: 1=Trong nước, 2=Nước ngoài."
-        comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;2=FOREIGN."
+        business_meaning: "Loại tổ chức thành viên: 1=Trong nước, 0=Nước ngoài."
+        comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;0=FOREIGN."
   - name: Relationship Description
     physical_name: rltnp_description
     business_meaning_1st: Mô tả quan hệ của nhà đầu tư với công ty QLQ.
