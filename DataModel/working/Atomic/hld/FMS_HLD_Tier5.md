@@ -52,7 +52,7 @@ graph TD
 
 | Source Table | Mô tả | Scheme Code dự kiến | Ghi chú |
 |---|---|---|---|
-| OFFERING_PLAN.METHOD_CODE | Phương thức chào bán của kế hoạch phân bổ | `FMS_STOCK_OFFERING_PLAN_METHOD` | Theo LLD (Offering Method Code). |
+| OFFERING_PLAN.METHOD_CODE | Phương thức chào bán của kế hoạch phân bổ | `FMS.STOCK_OFFERING_PLAN_METHOD` | Theo LLD (Offering Method Code). |
 
 ---
 

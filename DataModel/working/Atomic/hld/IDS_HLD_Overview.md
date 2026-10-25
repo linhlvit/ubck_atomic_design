@@ -193,7 +193,7 @@ erDiagram
 
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
-| `LOOKUP_VALUES` | Master bảng reference data của toàn hệ thống IDS: mọi Classification Value đều load từ đây theo LOOKUP_GROUP | [Classification] Reference Data | Master source cho tất cả Classification Value schemes IDS. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml`. |
+| `LOOKUP_VALUES` | Master bảng reference data của toàn hệ thống IDS: mọi Classification Value đều load từ đây theo LOOKUP_GROUP | [Classification] Reference Data | Master source cho tất cả Classification Value schemes IDS. LLD `lld_IDS_LOOKUP_VALUES.yaml` (2026-10-25) map các LOOKUP_GROUP trong scope vào Fundamental entity `Classification Value` (`cl_value`) với `schema_code = IDS.*`. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml`. |
 
 #### 7d. Junction Tables
 
@@ -205,7 +205,7 @@ Không có junction table.
 |---|---|---|---|
 | 3 | T2 | `Financial Report Data` (DATA) đã điều chỉnh từ T4 → T2 (FK → REPORT_CATALOG T1 + COMPANY_PROFILES T1). Tier4.md ghi nhận điều chỉnh này. | Tier4.md đã xử lý đúng. |
 | 4 | T3 | `SECURITIES_OFFERING_RESULT` Source Change Mode = Update nhưng trước đó đặt Table Type Fact Append. ✅ Data Modeler đã review (file `IDS_7a_Atomic_Entities.xlsx`) và xác nhận Table Type = Fundamental. | Đã xử lý. |
-| 5 | T2 | `LOOKUP_VALUES` xuất hiện đồng thời ở 7c (Classification Value) và 7f (Reference Data). 7c là xử lý đúng — 7f là duplicate sai. Cần xóa dòng `LOOKUP_VALUES` khỏi 7f sau khi người thiết kế xác nhận. | Chờ xác nhận từ người thiết kế. |
+| 5 | T2 | `LOOKUP_VALUES` xuất hiện đồng thời ở 7c (Classification Value) và 7f (Reference Data). 7c là xử lý đúng — 7f là duplicate sai. Đã xóa dòng `LOOKUP_VALUES` khỏi 7f (2026-10-25, Data Modeler xác nhận). LLD `lld_IDS_LOOKUP_VALUES.yaml` map vào Classification Value (`cl_value`). | Đã xử lý. |
 | 6 | T3 | `Violation Report` (đổi tên từ `Public Company Violation Report`, 2026-08-05) lấy từ bảng nguồn `VIOLATION_REPORT`. | Đã xử lý — mục 7a. |
 | 7 | Nhiều Tier | Data Modeler đã review mục 7a qua file `IDS_7a_Atomic_Entities.xlsx` và xác nhận chủ đích đổi Table Type từ `Relative`/`Classification` → `Fundamental` cho ~30 entity Tier 2/3/4 dù các entity này vẫn còn FK đến entity Tier trước (lệch quy tắc chuẩn "FK đến Fundamental ⇒ Relative"). Đây là quyết định có chủ đích của Data Modeler, không phải lỗi thao tác. | Đã áp dụng trong mục 7a — không cần review lại ở các lần sau. |
 | 8 | T2 | `IDENTITY` đã được gộp vào shared entity `Involved Party Alternative Identification` (thêm `IDENTITY` vào source_table), thay vì giữ là entity riêng `Legal Entity Alternative Identification` như trước đây. | Đã xử lý — đã gộp trong mục 7a. |
@@ -253,7 +253,6 @@ Không có junction table.
 | Hệ thống / Phân quyền | `DEPARTMENTS` | Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ). | Operational/system data — không có giá trị nghiệp vụ |
 | Hệ thống / Phân quyền | `SYS_PARAMETERS` | Tham số cấu hình hệ thống IDS. | Operational/system data — không có giá trị nghiệp vụ |
 | Audit Log nguồn | `COMPANY_CHANGE_ROLE_HIS` | Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn. | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
-| Reference Data | `LOOKUP_VALUES` | Master bảng danh mục của toàn hệ thống IDS. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
 | Reference Data | `COUNTRIES` | Danh mục quốc gia. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
 | Reference Data | `PROVINCES` | Danh mục tỉnh/thành phố. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
 | Reference Data | `WARDS` | Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |

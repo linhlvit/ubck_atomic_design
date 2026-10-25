@@ -113,7 +113,7 @@ erDiagram
 
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
-| `LOOKUP_VALUES` | Master bảng reference data của schema AUDIT: mọi Classification Value của `AF_*` load từ đây theo LOOKUP_GROUP (bảng riêng của AUDIT, độc lập `IDS.LOOKUP_VALUES`) | [Classification] Reference Data | Master source cho các Classification Value scheme `AUDIT_*`. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml` (`SCHEMA_CODE=AUDIT.*`). |
+| `LOOKUP_VALUES` | Master bảng reference data của schema AUDIT: mọi Classification Value của `AF_*` load từ đây theo LOOKUP_GROUP (bảng riêng của AUDIT, độc lập `IDS.LOOKUP_VALUES`) | [Classification] Reference Data | Master source cho các Classification Value scheme `AUDIT_*`. LLD `lld_AUDIT_LOOKUP_VALUES.yaml` (2026-10-25) map các LOOKUP_GROUP trong scope vào Fundamental entity `Classification Value` (`cl_value`) với `schema_code = AUDIT.*`. Không tạo Atomic entity — mỗi LOOKUP_GROUP đăng ký thành 1 scheme riêng trong `classification_schemes.yaml` (`SCHEMA_CODE=AUDIT.*`). |
 
 #### 7d. Junction Tables
 
@@ -158,7 +158,6 @@ Không có junction table.
 | Chưa có LLD | HTE_NOTIFICATIONS_RESULT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Hệ thống / Phân quyền | LOGINS | Bảng tài khoản đăng nhập | Operational/system data — không có giá trị nghiệp vụ |
 | Hệ thống / Phân quyền | LOGIN_PERMISSION_BY_CODE | Bảng LOGIN_PERMISSION_BY_CODE | Operational/system data — không có giá trị nghiệp vụ |
-| Chưa có LLD | LOOKUP_VALUES | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | NOTIFICATIONS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | NOTIFICATIONS_DTL | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | NOTIFICATIONS_RESULT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
