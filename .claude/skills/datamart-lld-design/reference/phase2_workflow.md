@@ -90,6 +90,8 @@ OUTPUT CHECK (chỉ kiểm tra block KPI của nhóm đang xử lý):
 □ Kiểm kê điều kiện SQL BA (A26 / L17(e)) — lập bảng: mọi `WHERE`, `ON` của `LEFT JOIN`, CTE, `ROW_NUMBER ... = 1`, `NULLIF`/`*100`/`COALESCE`/`CASE` của SQL tham khảo → có trong `logic` (trích) / thay thế có chủ ý (`ghi_chu` + O_ issue) / không áp dụng (lý do):
   - Chỉ điều kiện slicer thời gian (`:filter_month`…) được thay bằng `:etl_date` khi bảng là Operational/Periodic Snapshot không có chiều tháng. `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`/`START_DATE` và biểu thức tính KHÔNG được miễn — kể cả khi bảng nguồn "Active-only"; điều kiện "đã lọc sẵn tại ETL" phải trích được từ `etl_logic` (A10).
   - SQL BA nghi ngược/sai (CASE đảo chiều, `=` thay `<=`, chia khác đơn vị): giữ thiết kế hợp lý hoặc theo BA, nhưng ghi lệch ở `ghi_chu` và mở O_ issue "Open — chờ BA" ngay trong lượt.
+□ Mã ô eForm (A27): mọi `cell_id` trong `logic` đi cặp với `rpt_code`, đúng dạng `TSxxx`/`KTxxx` lấy từ BA, có trong bộ lọc ô nguồn của bảng; KPI 'Khác' (tổng − thành phần) tính từng CTCK-kỳ rồi cộng — Gate 8 D15 ERROR
+□ Logic phụ thuộc lựa chọn của người dùng (as-of `<= ngày chọn`, 'kỳ gần nhất mỗi đơn vị', khoảng ngày, quý/năm) viết ở `logic` Detail Mapping bằng SLICER/FILTER + window trên cột Fact/Operational — KHÔNG đẩy xuống `etl_logic` (A31)
 □ Mốc ngày của KPI (A19, phạm vi Phase 2) — KPI trên `fct_*_snpst`/fact event mà BA lọc theo Từ ngày–Đến ngày hoặc ngày tra cứu:
   - Flow (KL/GT/tổng khoảng) → `SUM(...) WHERE cdr_dt_dim.cdr_dt BETWEEN :from_date AND :to_date`.
   - Stock / giá tại Đến ngày (VCSH, số CP lưu hành, LNST kỳ gần nhất, giá đóng cửa) → as-of Đến ngày (`argMax(..., cdr_dt_dim.cdr_dt)`, cận trên `:to_date`); CẤM `SUM` Stock qua nhiều ngày (cộng lặp ×N).

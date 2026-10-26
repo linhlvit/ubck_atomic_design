@@ -201,6 +201,9 @@ ATTRIBUTES CHECK:
 □ Mọi mapping tra từ entity YAML files trong DataModel/Atomic/ — không đoán
 □ A25 (TC13): cột Atomic đọc thuộc đúng entity ứng với bảng `FROM`/`JOIN` của SQL BA — cột trùng tên ở ≥ 2 bảng cùng nguồn (`period_*`, `record_tp`…) đã chọn theo BA và ghi lý do
 □ A26 (TC13): mọi điều kiện/biểu thức của SQL BA (loại kỳ `PERIOD_TYPE`, loại đối tượng `RECORD_TYPE`/`BRANCH_FLAG`, trạng thái, ngày hiệu lực `ID_DATE`/`START_DATE`, `NULLIF`/`*100`/`COALESCE`/`CASE`) có trong `etl_logic` hoặc ghi lệch ở `description` + O_ issue — bảng Operational/Periodic Snapshot chỉ được thay điều kiện slicer thời gian bằng `:etl_date`
+□ A27–A29 (TC13): mã ô eForm theo cặp (rpt_code, cell_id) lấy từ BA và có trong bộ lọc ô nguồn (Gate 8 D15); literal `identification_tp_code` trích từ YAML Atomic (D16); mọi 'tạm xem A ≡ B' đã đối chiếu BRD/Source + `check_ba_source_coverage.py` và có O_ issue yêu cầu Atomic
+□ A30: bảng đa nguồn — mọi file cùng bộ cột; PK hash có `src_stm_code`; cột trùng nội dung giữa các file có `description` riêng (Gate 2 PASS)
+□ A31: `etl_logic` không có tham số dashboard (`:p_*`, `:from_date`, `:to_date`…) và nạp đủ lịch sử; description chỉ nêu ý nghĩa + vai trò, không chép CTE/ORDER BY của BA (Gate 8 D17/D18)
 □ A24 (TC14): đổi tên/xóa cột hoặc bảng → đã `grep -rn "<tên cũ>" Datamart/hld Datamart/lld Datamart/flat-table` và sửa Detail Mapping + HLD + yaml + flat trong cùng lượt
 □ etl_logic_type điền mọi row — kể cả pending row, trừ PK (BK vẫn phải điền)
 □ etl_logic (content) trống chỉ khi key = PK hoặc etl_logic_type = pending — BK KHÔNG được để trống

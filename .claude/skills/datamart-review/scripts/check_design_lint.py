@@ -75,7 +75,15 @@ LLD lọc `identification_tp_code = 'NATIONAL_ID'` trong khi Atomic hardcode `ID
   D16 [L0-ATOMIC-LITERAL-MISMATCH] (luật A28) — cặp `identification_tp_code = 'X'` + `src_stm_code = 'Y'` trong `etl_logic` LLD không có trong
                               `classification_context` của YAML Atomic `ip_alternative_identification-*` (giá trị hardcode ở ETL Atomic). ERROR — JOIN ra rỗng nhưng Gate 0 không thấy.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16 = ERROR; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-10-26 (ranh giới ETL ↔ BI — Gemini rà QLKD Nhóm 28–30; quét thêm PTTT thấy 9 ô `etl_logic` dùng tham số dashboard `:p_nam`/`:p_quy`/`:from_date`/`:to_date`/`:p_year`/`:p_month`
+=> bảng chỉ nạp đúng kỳ/khoảng người dùng chọn, mất lịch sử; trong khi Detail Mapping lại không có bộ lọc tương ứng):
+  D17 [L2-ETL-BI-PARAM] (luật A31) — `etl_logic` LLD chứa tham số tầng BI (`:p_*`, `:from_date`, `:to_date`, `:cdr_dt`, `:test_date`, `:report_date`). ETL chỉ được dùng tham số chạy ETL
+                              (`:etl_date`); chọn kỳ/khoảng ngày/as-of theo ngày người dùng chọn là việc của tầng BI (Detail Mapping: SLICER/FILTER). ERROR.
+                              Tham số khác lạ (không `:etl_*`, không nằm trong danh sách BI) chỉ in `[i]` để Data Modeler xác nhận là tham số ETL (VD GSDC `:year_n`, PTTT `:ma_chi_so`).
+  D18 [L2-DESC-BI-LOGIC-LEAK] (luật A31) — `description` LLD nhắc tên CTE của BA (`CTE …`, `latest_per_*`, `ctck_co_hn`) hoặc tham số dashboard (`:p_*`, `:from_date`…): description chỉ nêu ý nghĩa cột + vai trò
+                              (≤ 1 mệnh đề, VD 'trục as-of của KPI …'), KHÔNG chép cơ chế chọn kỳ/ORDER BY/CTE của BA — cơ chế đó thuộc Detail Mapping. WARNING.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17 = ERROR; D18 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -90,6 +98,7 @@ import argparse
 import csv
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 _script_dir = Path(__file__).resolve().parent
@@ -766,10 +775,39 @@ def ident_literal_issues(etl: str, allowed, where: str):
     return out
 
 
+_LITERAL_EXC_FILE = _script_dir.parent / "reference" / "atomic_literal_exceptions.yaml"
+
+
+def load_ident_exceptions():
+    """Ngoại lệ D16 có chủ xử lý (yaml phẳng: `  - SRC_STM_CODE|IDENTIFICATION_TP_CODE  # lý do`) → {src: {tp}}."""
+    res = {}
+    try:
+        text = _LITERAL_EXC_FILE.read_text(encoding="utf-8")
+    except Exception:
+        return res
+    for ln in text.splitlines():
+        s = ln.split("#")[0].strip()
+        if s.startswith("- ") and "|" in s:
+            src, tp = [x.strip() for x in s[2:].split("|")[:2]]
+            res.setdefault(src, set()).add(tp)
+    return res
+
+
 def check_atomic_literals(root: Path, module: str):
-    allowed = atomic_ident_types(root)
+    yaml_types = atomic_ident_types(root)
+    exc = load_ident_exceptions()
+    allowed = {k: set(v) for k, v in yaml_types.items()}
+    stale = []
+    for src, tps in exc.items():
+        for tp in tps:
+            if tp in yaml_types.get(src, set()):
+                stale.append(f"{src}|{tp}")
+        allowed.setdefault(src, set()).update(tps)
     d = root / "Datamart" / "lld" / module
     out = []
+    if stale:
+        out.append(("WARNING", "L0-ATOMIC-LITERAL-EXCEPTION-STALE",
+                    f"{', '.join(stale)} đã có trong classification_context của YAML Atomic — gỡ khỏi reference/atomic_literal_exceptions.yaml"))
     if not (allowed and d.exists()):
         return out
     for f in sorted(d.glob("*.csv")):
@@ -779,6 +817,45 @@ def check_atomic_literals(root: Path, module: str):
                     out += ident_literal_issues(r.get("etl_logic") or "", allowed, f"{f.name} [{r.get('datamart_table')}.{r.get('datamart_column')}]")
         except Exception:
             continue
+    return out
+
+
+# ── D17 / D18 (2026-10-26) — ranh giới ETL ↔ BI ────────────────────────────────────────────
+_RE_BI_PARAM = re.compile(r"(?<![\w:]):(?:p_\w+|from_date|to_date|cdr_dt|test_date|report_date)\b")
+_RE_ANY_PARAM = re.compile(r"(?<![\w:]):([A-Za-z_]\w*)\b")
+_RE_DESC_BI = re.compile(r"\bCTE\b|latest_per_\w+|ctck_co_hn|(?<![\w:]):(?:p_\w+|from_date|to_date|cdr_dt|test_date|report_date)\b")
+
+
+def check_etl_bi_boundary(root: Path, module: str):
+    d = root / "Datamart" / "lld" / module
+    out, other = [], Counter()
+    if not d.exists():
+        return out
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                rows = list(csv.DictReader(fh))
+        except Exception:
+            continue
+        for r in rows:
+            etl, desc = r.get("etl_logic") or "", r.get("description") or ""
+            where = f"{f.name} [{r.get('datamart_table')}.{r.get('datamart_column')}]"
+            m = _RE_BI_PARAM.search(etl)
+            if m:
+                out.append(("ERROR", "L2-ETL-BI-PARAM",
+                            f"{where}: etl_logic dùng tham số tầng BI `{m.group(0)}` — ETL phải nạp đủ lịch sử (không giới hạn kỳ/khoảng ngày), chọn kỳ ở Detail Mapping (SLICER/FILTER). Luật A31."))
+            for tok in set(_RE_ANY_PARAM.findall(etl)):
+                if not tok.startswith("etl_") and not _RE_BI_PARAM.fullmatch(":" + tok):
+                    other[(f.name, tok)] += 1
+            m = _RE_DESC_BI.search(desc)
+            if m:
+                i = m.start()
+                out.append(("WARNING", "L2-DESC-BI-LOGIC-LEAK",
+                            f"{where}: description nhắc cơ chế BA/BI `{m.group(0)}` ('…{desc[max(0, i - 40):i + 50]}…') — description chỉ nêu ý nghĩa + vai trò cột; cơ chế chọn kỳ thuộc Detail Mapping. Luật A31."))
+    if other:
+        tops = ", ".join(f"{k[0].replace('DTM_' + module + '_', '').replace('.csv', '')}:{k[1]}×{n}" for k, n in sorted(other.items())[:6])
+        out.append(("INFO", "L2-ETL-OTHER-PARAM",
+                    f"{len(other)} cặp (bảng, tham số) trong etl_logic không phải `:etl_*` — xác nhận là tham số chạy ETL chứ không phải tham số dashboard: {tops}"))
     return out
 
 
@@ -799,6 +876,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_logic_column_refs(root, module)
     issues += check_cell_ids(root, module)
     issues += check_atomic_literals(root, module)
+    issues += check_etl_bi_boundary(root, module)
     return issues
 
 

@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A26 — LLD Datamart
+# Luật chống tái diễn A1–A31 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -30,6 +30,11 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A24 — `bảng.cột` viết trong `logic` Detail Mapping và công thức HLD phải tồn tại thật `[L0-DM-LOGIC-COLUMN-NOT-FOUND]`
 - A25 — Thuộc tính trùng tên ở nhiều bảng Atomic: bảng nguồn do SQL BA dùng quyết định `[L3-SOURCE-TABLE-MISMATCH]`
 - A26 — Kiểm kê MỌI điều kiện của SQL BA; "Active-only" chỉ miễn điều kiện slicer thời gian `[L3-BA-FILTER-UNMAPPED]`
+- A27 — Mã ô eForm viết theo cặp (`rpt_code`, `cell_id`), mã lấy từ BA và đã được nạp ở nguồn; KPI 'Khác' = tổng − thành phần tính từng CTCK-kỳ `[L3-CELL-ID-NOT-ECODE / L3-CELL-ID-NO-REPORT-CODE / L3-CELL-ID-NOT-LOADED]`
+- A28 — Literal phân loại trong `etl_logic` (`identification_tp_code`, …) lấy từ YAML Atomic, không từ trí nhớ `[L0-ATOMIC-LITERAL-MISMATCH]`
+- A29 — Cấm 'tạm xem A ≡ B' / 'thay thế gần đúng' khi chưa đối chiếu BRD/Source `[check_ba_source_coverage — INFO]`
+- A30 — Operational đa nguồn: cùng bộ cột, PK hash có `src_stm_code`, cột trùng nội dung phải khác `description` `[Gate 2 check_parity]`
+- A31 — Ranh giới ETL ↔ BI: ETL nạp đủ lịch sử theo grain, mọi lựa chọn của người dùng (as-of, kỳ gần nhất, khoảng ngày) ở Detail Mapping; description không chép CTE/ORDER BY của BA `[L2-ETL-BI-PARAM / L2-DESC-BI-LOGIC-LEAK]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -501,6 +506,78 @@ bỏ cả điều kiện loại đối tượng / loại kỳ / ngày hiệu l�
 
 **Máy kiểm:** chưa tự động (điều kiện là ngữ nghĩa SQL). `datamart-review` mục "Checklist rà soát" điểm 2–3 và Lớp 3 L17(e).
 
+### A27 — Mã ô eForm viết theo cặp (`rpt_code`, `cell_id`), mã lấy từ BA, ô phải được nạp ở nguồn `[L3-CELL-ID-NOT-ECODE / L3-CELL-ID-NO-REPORT-CODE / L3-CELL-ID-NOT-LOADED]`
+
+Sự cố thật (QLKD, 2026-10-26, Data Modeler báo K_QLKD_65): 16 KPI Nhóm 9/11/12/15 (K_QLKD_49–52, 60–63, 65, 79–85) READY nhiều tuần với `cell_id IN ('NV003','NV103')`, `('VCSH01','VCSH101')`, `'DT_TONG'`/`'LNST'`… — mã KPI/mã tự đặt bị dùng làm
+mã ô, không khớp ô nào của Atomic nên measure luôn rỗng; 6 KPI Nhóm 8 (K_QLKD_42–47) viết `cell_id IN (mã BCTCHN, mã BCTCRL)` KHÔNG kèm `rpt_code` nên `TS141` (Tiền ở BCTCHN) cũng khớp `TS141` của BCTCRL (Vay ngắn hạn, Nhóm 9) → cộng nhầm.
+Gate 0 chỉ so cặp `mart_table`/`mart_column` và `bảng.cột`, không soi literal trong `logic` nên cả Gate 0–10 PASS.
+
+**Quy tắc**
+1. Mã ô lấy từ BA — bảng `REPORT_CODE | sheetCode | ROWINDEX | COLINDEX | CELLID` trong cột Mô tả hoặc `civ.CELL_ID = '…'` trong SQL tham khảo; dạng `TS001`/`KT006`. Không dùng mã KPI, không đặt mã riêng.
+2. Luôn viết cặp: `(rpt_code = 'BCTCHN' AND report_indicator_dim.cell_id = 'TS365') OR (rpt_code = 'BCTCRL' AND report_indicator_dim.cell_id = 'TS229')`. Mỗi mã ô chỉ có nghĩa trong 1 biểu mẫu và 1 sheet; chưa lọc được sheet
+   (Atomic chưa có mã sheet — O_QLKD_34/42) thì ghi rủi ro trùng sheet ở `ghi_chu` (VD BCTCRL `TS013/015/017/019` vừa là tài sản sheet 06608 vừa là doanh thu sheet 06610).
+3. Mã ô phải nằm trong bộ lọc ô nguồn của bảng (`src_stm_code.etl_logic`, Fact tài chính QLKD: 64 cặp) — thiếu thì thêm cặp vào bộ lọc nguồn (+ dev nạp lại), không để KPI rỗng.
+4. KPI 'Khác' kiểu `tổng − thành phần` (BA: `SUM(tong) − SUM(a) − SUM(b)…`; tổng BCTCRL = `COALESCE(NULLIF(ô chính, 0), ô_text)`): tính RIÊNG từng (CTCK, năm, kỳ) rồi cộng toàn thị trường, dùng `SUM(CASE … ELSE 0)` như BA
+   (CTCK thiếu 1 ô vẫn được tính). Mô tả BA ('lấy giá trị lớn hơn') khác SQL ⇒ theo SQL + O_ issue (A26).
+
+**Máy kiểm:** Gate 8 D15 (`check_design_lint.py`) — ERROR; hàm thuần `cell_id_issues()` có thể test với dữ liệu `git show {rev}:…`.
+
+### A28 — Literal phân loại trong `etl_logic` lấy từ YAML Atomic, không từ trí nhớ `[L0-ATOMIC-LITERAL-MISMATCH]`
+
+Sự cố thật (QLKD, 2026-10-26): `opr_individual_profile.identification_nbr` và `related_party_network.identification_nbr` lọc `ip_alternative_identification.identification_tp_code = 'NATIONAL_ID'` trong khi ETL Atomic hardcode `IDENTIFICATION`
+cho nguồn `SC_FIRM_SENIOR_PERSONNEL` và `SC_FIRM_INSIDER_RELATION` → JOIN rỗng, CCCD luôn NULL. Cùng một nhãn nghiệp vụ 'CCCD' mang giá trị phân loại khác theo nguồn: `IDENTIFICATION` (SENIOR_PERSONNEL, SHAREHOLDER, INSIDER_RELATION,
+FMS INSIDER, IDS IDENTITY), `NATIONAL_ID` (MAJOR_SHAREHOLDER_RELATION, RELATED_PERSON), `BUSINESS_LICENSE` (SC_FIRM_INFO)… Gate 0 chỉ kiểm tên cột, không kiểm giá trị literal. **Ngoại lệ có xác nhận:** literal mà Data Modeler xác nhận ETL sinh nhưng YAML dm_atm chưa khai báo ghi ở `datamart-review/reference/atomic_literal_exceptions.yaml` (hiện: `SCMS_SC_FIRM_SENIOR_PERSONNEL|NATIONAL_ID`, 2026-10-26); lint cảnh báo `L0-ATOMIC-LITERAL-EXCEPTION-STALE` khi YAML đã đủ.
+
+**Quy tắc:** mọi literal lọc theo cột phân loại (`identification_tp_code`, `src_stm_code`, mã scheme) phải trích từ `classification_context` / `etl_derived_value` của YAML Atomic của đúng nguồn:
+`grep -n "classification_context" DataModel/Atomic/**/dm_atm_ip_alternative_identification-{NGUỒN}.yaml`. Không chép literal từ bảng khác, từ ghi chú cũ hay từ trí nhớ.
+
+**Máy kiểm:** Gate 8 D16 — ERROR cho cặp `identification_tp_code` + `src_stm_code`; literal của cột phân loại khác tra tay theo cách trên.
+
+### A29 — Cấm 'tạm xem A ≡ B' / 'thay thế gần đúng' khi chưa đối chiếu BRD/Source `[check_ba_source_coverage — INFO]`
+
+Sự cố thật (QLKD Nhóm 31 → 42, 2026-10-17 đến 26): ghi chú 'tạm xem END_DATE ≡ DISMISSAL_DATE' tồn tại 9 ngày — BRD/Source `SC_FIRM_SENIOR_PERSONNEL` có CẢ HAI cột khác nghĩa ('hết hiệu lực' / 'miễn nhiệm') và Atomic chỉ map
+`DISMISSAL_DATE`. Cùng bảng: BA dùng `sp.NATIONAL_ID` (CCCD/CMND/Hộ chiếu) còn YAML Atomic chỉ có `ID_NUMBER` ('Số CMND (định danh cũ)') — công cụ đối chiếu báo 'chưa map', nhưng Data Modeler xác nhận 2026-10-26 Atomic ĐÃ map `NATIONAL_ID` ở mức thiết kế/ETL (notes working LLD, chưa có attribute trong dm_atm yaml). Bài học: YAML dm_atm có thể chậm hơn thiết kế Atomic, nên 'chưa map' phải được Data Modeler xác nhận TRƯỚC khi ghi O_ issue 'yêu cầu Atomic map'; literal đã xác nhận ghi ở `reference/atomic_literal_exceptions.yaml`.
+BA còn dùng `POSITION_IDS`, `RECORD_STATUS`, `ACTIVE_FLG`, `LOOKUP_VALUES` mà Atomic chưa map (thiết kế dùng `position_nm`, `ds_rcrd_st`, mã chức danh thay thế).
+
+**Quy tắc**
+1. Trước khi thiết kế 1 Nhóm: `python .claude/skills/datamart-review/scripts/check_ba_source_coverage.py -m {M} --nhom {N}` — liệt kê cột nguồn BA mà không YAML Atomic nào map (kết quả INFO: có thể map qua entity khác, kiểm tay).
+2. Muốn viết 'tạm xem A ≡ B', 'thay thế gần đúng', 'xấp xỉ': mở `BRD/Source/{HỆ}/brd_*.yaml` của bảng — A và B cùng tồn tại với mô tả khác nhau ⇒ KHÔNG tương đương.
+3. Vẫn dùng thay thế: ghi vào `description` cột + `ghi_chu` KPI + O_ issue 'yêu cầu Atomic map A' (mục riêng, có tên cột nguồn); KPI chỉ giữ READY khi Data Modeler chấp nhận thay thế (ghi ngày/quyết định), nếu không → PENDING (xem feedback 'PENDING phải tra Atomic').
+
+**Máy kiểm:** `check_ba_source_coverage.py` (thông tin, không nằm trong `run_quality_gates.py` vì có nhiễu ở các Nhóm Data Explorer).
+
+### A30 — Operational đa nguồn: cùng bộ cột, PK hash có `src_stm_code`, cột trùng nội dung phải khác `description` `[Gate 2 check_parity]`
+
+Sự cố thật (QLKD Nhóm 42, 2026-10-26): `opr_individual_listed_company_role` nạp từ 4 nguồn (4 file `{table}_{SRC}.csv`). Gate 2 FAIL vì cột `effective_to_dt` có `etl_logic = NULL` giống hệt ở 2 file (cổ đông CTCK, FMS INSIDER):
+`build_registry.py` gộp dòng trùng nên master chỉ còn 1 dòng NULL, thứ tự master khác thứ tự đọc module, và `check_parity.py` so theo 'dòng cuối thắng' ở cả hai phía → báo lệch.
+
+**Quy tắc**
+1. Mọi file nguồn của 1 bảng có CÙNG danh sách và thứ tự cột; tên file = `Source System Code` của driving table (`classification_context` trong YAML Atomic).
+2. PK `Surrogate Key` = `hash_id('{PREFIX}', {driving}.src_stm_code, {driving}.{code}[, số giấy tờ nếu grain theo cá nhân])` — mã `_code` thô của 2 hệ nguồn có thể trùng; thêm số giấy tờ khi 1 bản ghi nguồn nhân thành nhiều dòng (nhiều giấy tờ).
+3. Cột có `etl_logic` giống hệt ở ≥ 2 file nguồn (NULL, hằng số, nhãn) phải khác nhau ở `description` (nêu nguồn) để không bị gộp rồi lệch Gate 2.
+4. Nhãn literal giữa các nhánh UNION thống nhất (BA ghi lẫn 'CTCK'/'Công ty chứng khoán' ⇒ chuẩn hóa, ghi `ghi_chu` + O_ issue); nhánh bị loại bỏ khỏi bảng thì xóa file (All-Tier Cleanup mục 1–2).
+
+**Máy kiểm:** Gate 2 (`check_parity.py`).
+
+### A31 — Ranh giới ETL ↔ BI: ETL nạp đủ lịch sử, mọi lựa chọn của người dùng nằm ở Detail Mapping `[L2-ETL-BI-PARAM / L2-DESC-BI-LOGIC-LEAK]`
+
+Sự cố thật (2026-10-26): (1) **QLKD Nhóm 28–30** — description của `opr_securities_company_practitioner_profile.end_dt` chép nguyên cơ chế của BA ('CTE latest_per_ctck: ORDER BY END_DATE DESC, FORM_REPORT_ID DESC … <= ngày chọn');
+Gemini rà soát chỉ ra dev ETL đọc câu đó có thể nạp mỗi CTCK đúng 1 dòng mới nhất → mất lịch sử, dashboard chọn lùi quá khứ sẽ rỗng. `etl_logic` thật vẫn đúng (`sc_periodic_report.end_dt` + `end_dt IS NOT NULL`, khử trùng theo kỳ);
+phần 'kỳ gần nhất ≤ ngày chọn của từng CTCK' đã nằm ở Detail Mapping (`end_dt <= cdr_dt_dim.cdr_dt AND end_dt = MAX(end_dt) OVER (PARTITION BY …)`). (2) **PTTT** — 9 ô `etl_logic` của 3 bảng dùng tham số dashboard
+(`fct_corporate_bond_maturity_wall`: `:p_nam`/`:p_quy`; `fct_futures_investor_flow_snpst`: `:from_date`/`:to_date`; `opr_corporate_bond_issuer_credit_monitor`: `:p_year`/`:p_month`) → bảng chỉ có thể nạp đúng 1 quý/1 khoảng/1 tháng người dùng chọn, trong khi
+Detail Mapping không có bộ lọc tương ứng (logic BI chỉ tồn tại trong ETL). Gate 0–10 PASS vì không Gate nào đọc tham số trong `etl_logic`.
+
+**Quy tắc**
+1. **ETL (`etl_logic`)** chỉ được: lọc bản ghi hợp lệ (trạng thái, `IS NOT NULL`); khử trùng TRONG khóa tự nhiên (cùng kỳ — lấy lần nộp/phiên bản cuối); tính cờ/thuộc tính chỉ phụ thuộc dữ liệu cùng khóa (VD `preferred_report_ind` — so BCTCRL với BCTCHN cùng CTCK-kỳ);
+   dùng tham số chạy ETL `:etl_date`. Bảng giữ ĐỦ chuỗi thời gian; cột ngày (`end_dt`, `effective_from/to_dt`, `snpst_dt`) là thuộc tính thường.
+2. **BI (Detail Mapping `logic`)** giữ mọi thứ phụ thuộc lựa chọn của người dùng: as-of (`<= ngày chọn`), 'kỳ gần nhất của từng đơn vị' (`MAX(x) OVER (PARTITION BY đơn_vị)` sau khi đã lọc `<= ngày chọn`), khoảng ngày, quý/năm/mã chỉ số — viết bằng SLICER/FILTER trên cột Fact/Operational.
+3. **Phép thử:** (a) 'đổi ngày/quý người dùng chọn thì `etl_logic` có phải đổi không?' — có ⇒ sai tầng; (b) 'bảng còn đủ dữ liệu để dashboard chọn lùi về quá khứ không?'; (c) cột `description` có nhắc CTE/ORDER BY/`latest_per_*` của BA không?
+   — có ⇒ rút về Detail Mapping/HLD, description chỉ giữ ý nghĩa + vai trò ('trục as-of của KPI Nhóm 28–30').
+4. Snapshot theo ngày chạy ETL (`:etl_date`, VD `opr_corporate_bond_issuer_credit_monitor` PK `issuer_symbol_code + snpst_dt` — mỗi lần chạy thêm 1 snapshot, 'kỳ báo cáo gần nhất tính đến `:etl_date`') là tầng ETL hợp lệ; tham số lạ khác (GSDC `:year_n`, PTTT `:ma_chi_so`)
+   Gate 8 chỉ in `[i]` — Data Modeler xác nhận là tham số chạy ETL (lặp theo năm/mã) chứ không phải tham số dashboard.
+
+**Máy kiểm:** Gate 8 D17 (ERROR) + D18 (WARNING) trong `check_design_lint.py`.
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
@@ -510,6 +587,8 @@ python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MOD
 Đã nằm trong `run_quality_gates.py` (Gate 8). Bắt: `bảng.cột` không tồn tại trong `logic` Detail Mapping / công thức HLD (A24, D13 `L0-DM-LOGIC-COLUMN-NOT-FOUND`, nợ cũ ở `reference/dm_logic_column_baseline.yaml`), dòng "Bảng mapping nguồn" của HLD sai số ô (D14 `L1-HLD-MAPPING-ROW-CELLS`), Fact thiếu khóa dòng PK (A22, D10 `L2-FACT-NO-ROW-KEY`) và flat `ORDER BY` thiếu PK (A22, D11), PK Dim `Generated` bị cột khác carry id Atomic (A23, D12), dòng bảng KPI HLD sai số ô (H13), bảng Datamart
 0 KPI dùng (H12), comment flat SQL dính `:etl_date` (A15), KPI có MEASURE bị nhân dòng (L18, D5 — chỉ ép với
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
+Từ 2026-10-26 Gate 8 thêm D15 (mã ô eForm: `L3-CELL-ID-NOT-ECODE`, `L3-CELL-ID-NO-REPORT-CODE`, `L3-CELL-ID-NOT-LOADED` — A27) và D16 (`L0-ATOMIC-LITERAL-MISMATCH` — A28). Công cụ ngoài Gate: `ba_diff.py` (BA đổi gì), `check_ba_source_coverage.py` (A29).
+Từ 2026-10-26 Gate 8 thêm D17 (`L2-ETL-BI-PARAM` — tham số dashboard trong `etl_logic`, ERROR) và D18 (`L2-DESC-BI-LOGIC-LEAK` — description chép CTE/cơ chế BA, WARNING) — A31.
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
 
 ## Ghi chú lịch sử

@@ -107,7 +107,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | H8 | Loại measure Giá trị / Khối lượng phải khớp Trường nguồn BA | `ba_hld_sync_check.py` S5 `L3-MEASURE-TYPE-MISMATCH` |
 | H9 | Đối soát nội dung từng dòng BA, không chỉ số lượng; xử lý từng cảnh báo S4 | `ba_hld_sync_check.py` S4 `L3-BA-ROW-UNMAPPED` |
 | H10 | Dòng BA mâu thuẫn: Điều kiện chung / Mô tả ưu tiên hơn SQL có Note "cần check"; ghi Open Issue | `check_ba_mapping.py` (ngoài Gate) — một phần |
-| H11 | Cột/công thức dùng chung nhiều Nhóm: đọc BA của mọi Nhóm tiêu thụ trước khi đổi; BA đổi quy tắc thì sửa đồng loạt | — (`L3-SHARED-RULE-DRIFT`) |
+| H11 | Cột/công thức dùng chung nhiều Nhóm: đọc BA của mọi Nhóm tiêu thụ trước khi đổi; BA đổi quy tắc thì sửa đồng loạt — gồm ghi chú Detail Mapping + HLD (khối Nhóm, Section 4/5) + O_ issue (VD yêu cầu giao diện 'T-1' khi BA đổi 'đến ngày T-1' → 'đến ngày được chọn' ở 24 Nhóm) trong CÙNG lượt | `ba_diff.py` (cảnh báo khi cùng loại thay đổi lặp ≥ 3 Nhóm) — một phần (`L3-SHARED-RULE-DRIFT`) |
 | H12 | Nhóm chuyển sang bảng mới: bảng cũ 0 KPI dùng → All-Tier Cleanup, giữ lịch sử ở Section 4 | Gate 8 `L2-TABLE-ZERO-USAGE` |
 | H12b | Trước khi kết luận "thiếu", đọc `ghi_chu` Detail Mapping và Ghi chú HLD của đúng KPI | — (quy trình) |
 | H13 | Dòng KPI đúng 7 ô; giải trình "dòng BA → K_xxx" phải tra lại KPI thật; khối erDiagram trùng tên chép nguyên văn | Gate 8 `L1-HLD-KPI-ROW-CELLS`, Gate 5 #11 |
