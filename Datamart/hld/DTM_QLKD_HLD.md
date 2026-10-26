@@ -2159,6 +2159,8 @@ flowchart LR
 
 > **[SỬA 2026-10-17o — N19 theo BA, phương án B]** KPI đo bổ sung biểu mẫu/ô/kỳ theo SQL BA STT 19: `K_QLKD_102` VCSH (BCTCHN `TS359`, BCTCRL `TS223`/`TS221`, kỳ QUY, trạng thái 1/2, `Preferred Report Indicator = '1'`, khoảng quý, /1e9); `K_QLKD_103` dư nợ margin (BCTHHD_CTCK `TS024`, THANG, /1.000); `K_QLKD_104` tỷ lệ ATTC (BCTLAT `TS006`, THANG); `K_QLKD_105` số nhân viên (BCTHHD_CTCK `TS001` TTC_T, THANG — đã làm 29/09); `K_QLKD_106` vốn điều lệ (BCTHHD_CTCK `TS001` TTC_Q, QUY, /1.000). Trước đây K_102/103/104/106 không lọc biểu mẫu/ô. Còn mở: O_QLKD_47 (đơn vị TS024: Nhóm 16 chia 1e9, Nhóm 19/24 chia 1.000), mã sheet (06620/06608/II.8/06H08/TTC_T/TTC_Q) chưa lọc được (O_QLKD_34/42).
 
+> **[SỬA 2026-10-26 — đồng bộ công thức tách cặp và COALESCE cho K_QLKD_102, O_QLKD_44/O_QLKD_58]** `K_QLKD_102` (VCSH) đồng bộ chuẩn xác công thức CASE BCTCHN (`TS359`) fallback BCTCRL `COALESCE(NULLIF(TS223, 0), TS221)` như `K_QLKD_107` (thay thế dạng lọc IN không tách cặp `(rpt_code, cell_id)` trước đây).
+
 **KPI liên quan:** K_QLKD_100 (Chiều mã CTCK), K_QLKD_101 (Chiều thời gian theo tháng), K_QLKD_102 (VCSH), K_QLKD_103 (Dư nợ margin), K_QLKD_104 (Tỷ lệ ATTC), K_QLKD_105 (Số nhân viên), K_QLKD_106 (Vốn điều lệ)
 
 **Lý do pending:**
@@ -2361,6 +2363,8 @@ flowchart LR
 > **[SỬA 2026-10-17k — K_QLKD_127 trục kỳ theo BA, O_QLKD_45]** BA dòng 137: trục = danh sách kỳ CÓ báo cáo định kỳ (`'T'||PERIOD||'/'||REPORT_YEAR`, `REPORT_PERIOD = 'THANG'`, `RECORD_STATUS IN (1,2)`, năm/kỳ không NULL), không có cận hôm nay. Trục = `Report Year` + `Period Number` của `Fact Securities Company Financial Structure Snapshot` lọc bằng 3 dòng FILTER; thay `Calendar Date Dimension` (trước đây liệt kê cả kỳ không có báo cáo, gán kỳ theo ngày kết thúc kỳ). Lưu ý: BA liệt kê kỳ của mọi báo cáo định kỳ, Mart chỉ có kỳ đã nạp giá trị ô.
 
 > **[SỬA 2026-10-17o — N24 theo BA, phương án B]** `K_QLKD_128` (Margin/VCSH %) là chỉ tiêu PHÁI SINH theo SQL BA STT 24 (dòng 138): `(dư nợ margin tháng / 1.000) / (VCSH quý chứa tháng / 1.000.000.000) × 100` — tử số BCTHHD_CTCK ô `TS024` (II.8, THANG, trạng thái 1/2); mẫu số BCTCHN `TS359` / BCTCRL `TS223`|`TS221` (QUY, trạng thái 1/2, `Preferred Report Indicator = '1'`), ghép theo CTCK + năm + quý = CEIL(tháng/3). Trước đây K_QLKD_128 là MEASURE đọc thẳng `Indicator Val Amt` (không phải tỷ lệ). Còn mở: O_QLKD_47 (đơn vị TS024), mã sheet chưa lọc được (O_QLKD_34/42).
+
+> **[SỬA 2026-10-26 — đồng bộ mẫu số VCSH tách cặp BCTCHN TS359 và BCTCRL COALESCE(NULLIF(TS223,0), TS221) cho K_QLKD_128, O_QLKD_44/O_QLKD_58]** Mẫu số VCSH quý của `K_QLKD_128` được tách cặp chuẩn xác theo CASE BCTCHN (`TS359`) fallback BCTCRL `COALESCE(NULLIF(TS223, 0), TS221)`.
 
 **KPI liên quan:** K_QLKD_127 (Chiều thời gian theo tháng), K_QLKD_128 (Tỷ lệ dư nợ Margin/VCSH)
 
