@@ -103,19 +103,14 @@ erDiagram
 
 ---
 
-## Nhóm 11 — Tăng trưởng số lượng CCQ lưu hành (Fact Investment Fund CCQ Snapshot)
+## Nhóm 11 — Tăng trưởng số lượng CCQ lưu hành (dùng Fact RPT — không còn Fact riêng)
 
-```mermaid
-erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : " "
-    Fund_Type_Dimension ||--o{ Fact_Investment_Fund_CCQ_Snapshot : " "
-```
+> **[SỬA 2026-10-26 — All-Tier Cleanup]** BA chuyển CCQ lưu hành (K_QLQ_70–76) sang engine báo cáo định kỳ `RPT_*` (mã chỉ tiêu `2218`) → `Fact Investment Fund CCQ Snapshot` còn 0 KPI dùng nên đã xóa. K_QLQ_68–76 dùng `Fact Fund Management Report Cell Value` (Cụm 17) và `Fund Type Dimension` (O_QLQ_49).
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Investment Fund CCQ Snapshot | Fact Snapshot | new | Tổng KL CCQ lưu hành theo loại hình quỹ | 1 loại hình quỹ × 1 tháng | K_QLQ_68–76 |
-| Fund Type Dimension | Dimension | new | Loại hình quỹ (SCD4A) | 1 loại hình quỹ (current state) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+| Fact Fund Management Report Cell Value | Fact | reuse | Giá trị ô báo cáo định kỳ `RPT_*` — mã chỉ tiêu `2218` (CCQ lưu hành), kỳ tháng, bản nộp của quỹ | 1 ô × 1 bản nộp | K_QLQ_68–76 |
+| Fund Type Dimension | Dimension | new | Loại hình quỹ (SCD4A) | 1 loại hình quỹ (current state) | K_QLQ_69 |
 
 ---
 
@@ -203,7 +198,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Distribution Agent Fund List | Operational | new | Bảng con drill-down danh sách quỹ đang phân phối (nguồn FMS.AGENCIES) | 1 quỹ × 1 ĐLPP | K_QLQ_159 |
+| Fund Distribution Agent Fund List | Operational | new | Bảng con drill-down danh sách quỹ đang phân phối (nguồn FMS.FUD_AG_AGT, nối ĐLPP theo mã nguồn) | 1 quỹ × 1 ĐLPP | K_QLQ_159 |
 | Fund Distribution Agent Dimension | Dimension | new | ĐLPP nguồn FMS.AGENCIES (SCD4A) — xem O_QLQ_10 | 1 ĐLPP (current state) | — |
 
 ---
