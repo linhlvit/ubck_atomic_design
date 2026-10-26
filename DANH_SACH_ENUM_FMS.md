@@ -396,7 +396,7 @@
 | 1 | `MANUAL` | `"MANUAL", "Nhập trên SCMS"` |
 | 2 | `TTHC` | `"TTHC", "Phân hệ TTHC"` |
 
-## `OfferingTargetEnum`
+## `OfferingTargetEnum` (FMS.OFFERING_TARGET)
 
 **File:** `com/tinhvan/fmsservice/common/enums/OfferingTargetEnum.java`  
 **Số giá trị:** 7
