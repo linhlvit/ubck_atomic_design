@@ -54,29 +54,6 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 3. FACT: qlq_fct_investment_fund_ccq_snpst_flat
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlq_fct_investment_fund_ccq_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlq_fct_investment_fund_ccq_snpst_flat
-SELECT
-    f.snpst_dt_dim_id,
-    f.fund_type_id,
-    f.outstanding_unit_quantity,
-    f.src_stm_code,
-    snpst_cal.cdr_dt              AS snpst_cdr_dt,
-    fund_type_dim.fund_type_code  AS fund_type_code,
-    fund_type_dim.fund_type_nm    AS fund_type_nm,
-    fund_type_dim.open_fund_indicator AS open_fund_indicator
-FROM datamart.fct_investment_fund_ccq_snpst f
-JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-LEFT JOIN datamart.fund_type_dim fund_type_dim
-    ON fund_type_dim.fund_type_id = f.fund_type_id
-WHERE snpst_cal.cdr_dt = :etl_date
-;
-
-
--- ============================================================
 -- 4. FACT: qlq_fct_fund_distribution_agent_snpst_flat
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlq_fct_fund_distribution_agent_snpst_flat ON CLUSTER 'my_cluster';
@@ -337,6 +314,7 @@ SELECT
     f.fund_management_rpt_cell_id,
     f.fund_type_id,
     f.open_fund_tp_code,
+    f.fund_establishment_license_dt,
     f.fmr_val_code,
     f.fmc_code,
     f.investment_fund_code,

@@ -26,6 +26,8 @@ triggers:
    - **GATE 6 (Context Budget — trần 500K token/bước):** Chặn khi một bước thiết kế được dự báo vượt trần ngữ cảnh. Chạy `ctx_budget.py --module [M] --all-steps --strict`. Đây là gate **duy nhất đọc tới file BA**.
    - **GATE 7 (LLD Self-Check module-level — TC4–TC7):** Bốn kiểm tra toàn module trước đây bắt agent nạp cả Detail Mapping (QLKD 552K token × 4 lần). Chạy `lld_selfcheck.py --module [M]`.
    - **GATE 8 (Design Lint — MỚI 2026-09-25):** bắt 3 lỗi không Gate nào khác bắt: dòng bảng KPI HLD sai số ô (`L1-HLD-KPI-ROW-CELLS`), bảng Datamart 0 KPI dùng dù còn đủ 3 tầng (`L2-TABLE-ZERO-USAGE` → All-Tier Cleanup), comment flat SQL dính `:etl_date` (`L4-FLAT-COMMENT-PARAM`); từ 2026-10-01 thêm D5 `L3-KPI-ROW-MULTIPLIED` (Quy tắc L18 — KPI có MEASURE phải đúng 1 dòng Detail Mapping; chỉ ép với module trong `L18_MODULES` của script, hiện là TT và QLKD; `--l18` để đo module khác ở mức WARNING). Chạy `check_design_lint.py --module [M] --strict`. Quy tắc gốc: H10–H13 (`datamart-hld-design`), A12–A15 (`datamart-lld-design`).
+     - **Bổ sung 2026-10-26 (QLKD — 22 KPI đọc sai ô/rỗng, Gate PASS nhiều tuần):** D15 `L3-CELL-ID-NOT-ECODE` / `L3-CELL-ID-NO-REPORT-CODE` / `L3-CELL-ID-NOT-LOADED` (mã ô eForm sai dạng, thiếu `rpt_code`, không có trong bộ lọc ô nguồn — A27) và D16 `L0-ATOMIC-LITERAL-MISMATCH` (literal `identification_tp_code` lệch Atomic — A28).
+     - **Bổ sung 2026-10-26 (ranh giới ETL ↔ BI — QLKD Nhóm 28–30 + PTTT 9 ô):** D17 `L2-ETL-BI-PARAM` (tham số dashboard `:p_*`/`:from_date`/`:to_date`… trong `etl_logic`, ERROR) và D18 `L2-DESC-BI-LOGIC-LEAK` (description chép CTE/cơ chế BA, WARNING) — A31.
    - **LỆNH CẤM:** Nghiêm cấm mọi hành vi tự ý vượt Gate hoặc tuyên bố hoàn thành (Claim Done) khi chưa có lệnh xác nhận từ Human và chưa PASS 100% các công cụ kiểm tra tự động.
 
 ---
@@ -84,7 +86,7 @@ Nếu một bước vượt trần: chia nhỏ theo Nhóm, **không** nén hay b
 | **Reference Integrity (Gate 0)** | mục A1–A4 trong `datamart-lld-design/SKILL.md` | `python scripts/check_references.py --module [M] --strict` |
 | **Cấu trúc HLD Bước 5B (Gate 5)** | Bước 5B trong `datamart-hld-design/SKILL.md` | `python scripts/check_hld_5b.py --module [M]` |
 | **LLD Self-Check TC4–TC7 (Gate 7)** | TC4/TC5/TC6/TC7 trong `datamart-lld-design/SKILL.md` | `python scripts/lld_selfcheck.py --module [M]` |
-| **Design Lint (Gate 8)** | H10–H13 + H16 `datamart-hld-design`, A12–A15 + A22 + A23 + A24 `datamart-lld-design` (Fact thiếu PK / flat ORDER BY thiếu PK / PK Dim `Generated` bị carry id Atomic / `bảng.cột` không tồn tại trong `logic`-công thức HLD, nợ cũ ở `reference/dm_logic_column_baseline.yaml` / dòng mapping nguồn HLD sai số ô) | `python scripts/check_design_lint.py --module [M] --strict` |
+| **Design Lint (Gate 8)** | H10–H13 + H16 `datamart-hld-design`, A12–A15 + A22 + A23 + A24 + A27 + A28 `datamart-lld-design` (mã ô eForm sai/thiếu `rpt_code`/không nạp ở nguồn D15, literal Atomic lệch D16, Fact thiếu PK / flat ORDER BY thiếu PK / PK Dim `Generated` bị carry id Atomic / `bảng.cột` không tồn tại trong `logic`-công thức HLD, nợ cũ ở `reference/dm_logic_column_baseline.yaml` / dòng mapping nguồn HLD sai số ô) | `python scripts/check_design_lint.py --module [M] --strict` |
 | **Checklist Đánh Giá Nhanh 4 Lớp & 8 Gates** | `reference/review_checklist.md` | — |
 
 ---
@@ -194,6 +196,16 @@ Chuẩn hóa **BA Status:** `Done` / `Doing` / `Pending` / `Delete`.
    - Nhóm 4: Cần join phức tạp đa nguồn.
    - Nhóm 5: Datamart chưa thiết kế Fact/Dim.
 
+### Bước 0a: BA vừa đổi gì? — chạy TRƯỚC mọi bước khi `BRD/BA/BA_analyst_{M}.csv` có thay đổi (bổ sung 2026-10-26)
+
+```bash
+python scripts/ba_diff.py --module [MODULE] [--against REV|file] [--nhom N ...] [--sql]   # BA đổi/mới/bỏ dòng nào, theo Nhóm
+python scripts/check_ba_source_coverage.py --module [MODULE] [--nhom N]                   # cột nguồn BA mà Atomic chưa map (INFO, A29)
+```
+
+- Đối chiếu kết quả `ba_diff.py` với tracker của Data Modeler: dòng BA đổi mà tracker không nêu vẫn phải xử lý hoặc hỏi lại. Sự cố QLKD 2026-10-26: tracker nêu 5 mục, BA còn đổi mô tả trục ngày ở 24 Nhóm, SQL Nhóm 15 dòng 89, tách 3 dòng thành 15 dòng ở Nhóm 42 và ~30 Nhóm Data Explorer.
+- Cùng loại thay đổi lặp ở ≥ 3 Nhóm = quy tắc dùng chung (H11): grep và đồng bộ ghi chú Detail Mapping + HLD (khối Nhóm, Section 4, Section 5) và đóng/chỉnh O_ issue (VD yêu cầu giao diện) trong CÙNG lượt.
+
 ### Bước 0b: Kiểm Tra Cấu Trúc HLD & Đối Soát Số Lượng 2 Chế Độ
 1. **Kiểm tra 5 Section HLD:** Bắt buộc có đủ: Section 1 Lineage, Section 2 Tổng quan, Section 3 Mô hình 3 tầng, Section 4 Reuse Analysis, Section 5 Vấn đề mở.
    - Thiếu hẳn Section 4 Reuse Analysis: Đánh giá **🔴 Critical cấp toàn module**.
@@ -288,7 +300,7 @@ KHÔNG chia theo bảng.
    3. **Biểu thức:** `NULLIF`, `*100`, `COALESCE`, `CASE` (kể cả HƯỚNG của `CASE`), chọn bản ghi theo năm/kỳ (`ROW_NUMBER ... = 1`) khớp SQL BA? SQL BA nghi ngược đã mở O_ issue chưa? — A26.
    4. **Cột output:** mỗi alias SELECT cuối + dòng yêu cầu nghiệp vụ user dán có KPI? (cột "Trạng thái", "Tổng"…) — H17.
    5. **Trục thời gian:** KPI RPT lấy kỳ từ bảng nào, loại kỳ nào, cận trên là slicer nào (`:filter_month` vs `:filter_to`)? Bảng không có slicer tháng có ghi nhận quyết định + O_ issue chưa? — A25/A26.
-   6. **Tham chiếu cột:** mọi `bảng.cột` trong `logic`/công thức HLD tồn tại? — Gate 8 D13 (chạy trước, không rà tay); cột đứng một mình tra tay. — A24.
+   6. **Tham chiếu cột:** mọi `bảng.cột` trong `logic`/công thức HLD tồn tại? — Gate 8 D13 (chạy trước, không rà tay); cột đứng một mình tra tay. — A24. Mã ô eForm + literal `identification_tp_code`: Gate 8 D15/D16 (A27/A28). Thay thế gần đúng cột BA↔Atomic: `check_ba_source_coverage.py` (A29).
    7. **Văn bản cũ:** còn câu "PENDING/TBD/chưa có/HẠ xuống/tên cột cũ" mâu thuẫn trạng thái hiện tại trong Nhóm? Dòng mapping nguồn đúng 4 ô? — H16, Gate 8 D14.
    8. **Đồng bộ nhiều tầng:** sau mỗi sửa, LLD per-table ↔ master ↔ yaml ↔ flat DDL/DML ↔ Detail Mapping ↔ HLD (+ `kpi_index.csv`) cùng nội dung? — A20, A4, H4.
 

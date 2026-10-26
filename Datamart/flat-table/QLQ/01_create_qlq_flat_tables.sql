@@ -65,35 +65,6 @@ COMMENT 'Flat table — Fact Investment Fund Count Snapshot × Calendar Date × 
 
 
 -- ============================================================
--- 3. FACT: qlq_fct_investment_fund_ccq_snpst_flat
---    Fact Investment Fund CCQ Snapshot
---    Grain: 1 loại hình quỹ × 1 tháng
---    Joins: Calendar Date (snpst_dt_dim_id) × Fund Type Dimension (fund_type_id)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_ccq_snpst_flat ON CLUSTER 'my_cluster'
-(
-    -- From: FACT Fact Investment Fund CCQ Snapshot
-    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
-    fund_type_id                    String                  COMMENT 'FK loại hình quỹ — Fund Type Dimension',
-    outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Tổng số lượng CCQ đang lưu hành theo loại hình quỹ, hiệu lực tại kỳ',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-
-    -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
-
-    -- From: FUND TYPE DIMENSION
-    fund_type_code                  Nullable(String)        COMMENT 'Mã loại hình quỹ — từ Fund Type Dimension',
-    fund_type_nm                    Nullable(String)        COMMENT 'Tên loại hình quỹ — từ Fund Type Dimension',
-    open_fund_indicator             Nullable(Int64)         COMMENT 'Cờ quỹ mở (1 = quỹ mở, 0 = không) — từ Fund Type Dimension'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), fund_type_id)
-COMMENT 'Flat table — Fact Investment Fund CCQ Snapshot × Calendar Date × Fund Type Dimension'
-;
-
-
--- ============================================================
 -- 4. FACT: qlq_fct_fund_distribution_agent_snpst_flat
 --    Fact Fund Distribution Agent Snapshot
 --    Grain: 1 snapshot toàn thị trường × 1 quý/năm (No Driving Table)
@@ -271,7 +242,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat
     address                          Nullable(String)        COMMENT 'Địa chỉ trụ sở chính',
     active_status_flag               Nullable(Int64)         COMMENT 'Trạng thái hoạt động (1=Đang hoạt động, 0=Ngừng hoạt động)',
     termination_dt                   Nullable(Date)           COMMENT 'Ngày chấm dứt hoạt động',
-    distributing_fund_count          Nullable(Int64)         COMMENT 'Số quỹ đang phân phối của ĐLPP (nối ĐLPP với đại lý theo tên rút gọn hoặc tên đầy đủ như SQL BA, rồi theo quan hệ đại lý–quỹ)',
+    distributing_fund_count          Nullable(Int64)         COMMENT 'Số quỹ đang phân phối của ĐLPP — đếm quỹ chưa xóa trong FUD_AG_AGT có AGEN_ID = DISTRIBUTOR_AGENT.ID như SQL BA (BA 2026-10-26: DISTRIBUTOR_AGENT → FUD_AG_AGT → FUNDS, thay nối theo tên qua AGENCIES/AGEN_FUNDS); nối theo mã nguồn vì khóa đại lý của FUD_AG_AGT trên Atomic băm theo AGENCIES (O_QLQ_21)',
     trading_account_count            Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở trong kỳ',
     trading_account_year_to_dt_count Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở lũy kế từ đầu năm',
     institution_trading_account_count Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư tổ chức trong nước',
@@ -305,7 +276,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_fund_list_fl
     fund_distribution_agent_code     String                  COMMENT 'PK (composite) — mã ĐLPP',
     investment_fund_code             String                  COMMENT 'PK (composite) — mã quỹ đang phân phối',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ đang phân phối',
-    securities_distribution_agent_code           Nullable(String)        COMMENT 'Mã đại lý phân phối (DISTRIBUTOR_AGENT) tương ứng của đại lý — nối theo tên rút gọn hoặc tên đầy đủ như SQL BA (K_QLQ_143); để popup lọc theo ĐLPP chọn ở Danh sách ĐLPP (Nhóm 22). NULL nếu không khớp tên',
+    securities_distribution_agent_code           Nullable(String)        COMMENT 'Mã đại lý phân phối (DISTRIBUTOR_AGENT) — nối theo mã nguồn (FUD_AG_AGT.AGEN_ID = DISTRIBUTOR_AGENT.ID như SQL BA 2026-10-26, K_QLQ_143/159) để popup lọc theo ĐLPP chọn ở Danh sách ĐLPP (Nhóm 22); không NULL vì dòng chỉ lấy đại lý có trong DISTRIBUTOR_AGENT',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -425,6 +396,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_rpt_cell_val_flat ON
     fund_management_rpt_cell_id                      String                     COMMENT 'FK -> Fund Management Report Cell Dimension (ô báo cáo: sheet + cell id)',
     fund_type_id                                     Nullable(String)           COMMENT 'FK -> Fund Type Dimension (loại hình quỹ của bản nộp thuộc đối tượng quỹ; NULL với bản nộp của đối tượng…',
     open_fund_tp_code                                Nullable(String)           COMMENT 'Phân loại quỹ mở: EQUITY/BOND/BALANCED (NULL với quỹ không phải quỹ mở hoặc bản nộp của đối tượng khác)',
+    fund_establishment_license_dt                Nullable(Date)          COMMENT 'Ngày cấp giấy chứng nhận đăng ký lập quỹ (FMS.FUNDS.ID_DATE) của quỹ nộp báo cáo — dùng lọc "quỹ đã được cấp phép đến cuối tháng" như BA (LAST_DAY(FUNDS.ID_DATE) <= tháng, BA 2026-10-26 Nhóm 7/9/11/12); NULL với bản nộp của đối tượng khác hoặc quỹ chưa có ngày cấp phép (BA loại quỹ NULL vì so sánh NULL không đúng)',
     fmr_val_code                                     String                     COMMENT 'Mã giá trị ô báo cáo (RPT_VALUES.ID) — khóa grain của Fact',
     fmc_code                                         Nullable(String)           COMMENT 'Mã CTQLQ nộp báo cáo (bản nộp thuộc đối tượng CTQLQ)',
     investment_fund_code                             Nullable(String)           COMMENT 'Mã quỹ nộp báo cáo (bản nộp thuộc đối tượng quỹ)',

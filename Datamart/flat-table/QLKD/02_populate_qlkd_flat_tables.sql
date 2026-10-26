@@ -76,6 +76,7 @@ SELECT
     f.period_val,
     f.src_stm_code                  AS src_stm_code,
     f.created_dt,
+    f.end_dt,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
@@ -386,16 +387,21 @@ TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_related_party_network_flat
 INSERT INTO datamart.qlkd_opr_individual_related_party_network_flat
 SELECT
     -- From: OPERATIONAL Individual Related Party Network
-    o.sc_insider_related_person_code,
+    o.related_party_network_id,
+    o.individual_identification_nbr,
+    o.individual_full_nm,
     o.sc_senior_personnel_code,
     o.related_person_full_nm,
     o.rltnp,
     o.representative_position,
+    o.related_person_position_nm,
     o.identification_nbr,
     o.shares_count,
     o.ownership_ratio,
-    o.src_stm_code,
-    o.relation_start_dt
+    o.relation_start_dt,
+    o.effective_from_dt,
+    o.effective_to_dt,
+    o.src_stm_code
 
 FROM datamart.opr_individual_related_party_network o
 ;
@@ -408,11 +414,17 @@ TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_individual_listed_company_role_flat O
 INSERT INTO datamart.qlkd_opr_individual_listed_company_role_flat
 SELECT
     -- From: OPERATIONAL Individual Listed Company Role
-    o.sc_insider_related_person_code,
-    o.sc_senior_personnel_code,
-    o.sc_code,
-    o.representative_position,
-    o.shares_count,
+    o.listed_company_role_id,
+    o.individual_identification_nbr,
+    o.individual_full_nm,
+    o.org_code,
+    o.org_nm,
+    o.org_tp_nm,
+    o.role_nm,
+    o.shares_held_qty,
+    o.status_nm,
+    o.effective_from_dt,
+    o.effective_to_dt,
     o.src_stm_code
 
 FROM datamart.opr_individual_listed_company_role o
@@ -428,8 +440,11 @@ SELECT
     -- From: OPERATIONAL Individual Trading Account
     o.sc_shareholder_code,
     o.sc_code,
+    o.sc_short_nm,
+    o.individual_identification_nbr,
     o.trading_account,
     o.shareholder_nm,
+    o.shareholder_tp_code,
     o.src_stm_code,
     o.created_dt
 
@@ -551,6 +566,7 @@ SELECT
     -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
     f.rpt_cell_val_id,
     f.rpt_input_submission_id,
+    f.rpt_input_submission_code,
     f.sc_code,
     f.sc_nm,
     f.rpt_code,
@@ -623,6 +639,7 @@ SELECT
     f.deriv_advisory_practitioner_cnt,
     f.deriv_proprietary_practitioner_cnt,
     f.submission_dt,
+    f.end_dt,
     f.submission_status_code,
     f.src_stm_code
 

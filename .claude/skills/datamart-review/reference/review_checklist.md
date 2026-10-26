@@ -194,6 +194,15 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 □ Điều kiện của SQL BA trong `etl_logic` Fact/Operational (A26): loại kỳ, loại đối tượng, trạng thái, ngày hiệu lực, `NULLIF`/`*100`/`COALESCE`/`CASE`, chọn bản ghi theo kỳ — có hoặc ghi lệch + O_ issue? "Active-only" chỉ miễn điều kiện slicer thời gian
   → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
 
+□ Mã ô eForm trong `logic` (A27): đúng dạng `TSxxx`/`KTxxx`, đi cặp `rpt_code`, có trong bộ lọc ô nguồn — Gate 8 D15 trả lời sẵn; chỉ rà tay ô trùng giữa các sheet cùng biểu mẫu (chưa có mã sheet)
+  → Mã KPI dùng làm mã ô / thiếu `rpt_code` / ô không được nạp → 🔴 Critical (`L3-CELL-ID-NOT-ECODE`, `L3-CELL-ID-NO-REPORT-CODE`, `L3-CELL-ID-NOT-LOADED`)
+
+□ Thay thế gần đúng giữa cột BA và cột Atomic (A29): chạy `check_ba_source_coverage.py -m {M} --nhom {N}`; mỗi 'tạm xem A ≡ B' có bằng chứng BRD/Source + O_ issue 'yêu cầu Atomic map A'
+  → Giả định tương đương không bằng chứng → 🟠 Major; KPI READY dựa trên thay thế chưa được Data Modeler chấp nhận → hạ PENDING
+
+□ Ranh giới ETL ↔ BI (A31): `etl_logic` nạp đủ lịch sử, không tham số dashboard (D17); logic as-of/'kỳ gần nhất'/khoảng ngày nằm ở `logic` Detail Mapping; description không chép CTE/ORDER BY của BA (D18)
+  → Tham số dashboard trong etl_logic / bảng mất lịch sử vì ETL chỉ giữ kỳ chọn → 🔴 Critical (`L2-ETL-BI-PARAM`); description chép cơ chế BA → 🟡 Minor (`L2-DESC-BI-LOGIC-LEAK`)
+
 □ source_entity + atomic_table + atomic_column điền đầy đủ?
   → Trống với etl_logic_type ≠ pending → Warning
 

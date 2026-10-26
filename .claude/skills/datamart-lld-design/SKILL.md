@@ -18,13 +18,13 @@ description: |
 
 # Skill: Thiết kế LLD Datamart
 
-File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A26 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
+File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A31 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
 
 ## Đọc gì, khi nào
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A26 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A31 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
@@ -37,6 +37,15 @@ File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, các
 | Ví dụ | [`examples/etl_logic_correct.md`](examples/etl_logic_correct.md), [`examples/etl_logic_wrong.md`](examples/etl_logic_wrong.md), [`examples/key_constraints.md`](examples/key_constraints.md) | Mẫu đúng/sai `etl_logic`, ràng buộc key theo loại bảng |
 
 Bỏ một Fact/Dim draft ở bất kỳ Phase nào: làm đủ 5 bước All-Tier Cleanup ở cuối `reference/phase3_workflow.md`.
+
+## Đầu phiên — BA vừa đổi, hoặc bắt đầu thiết kế 1 Nhóm (bổ sung 2026-10-26)
+
+```bash
+python .claude/skills/datamart-review/scripts/ba_diff.py -m {MODULE} [--against REV|file] [--nhom N …] [--sql]   # BA đổi gì, theo Nhóm — so với tracker của Data Modeler
+python .claude/skills/datamart-review/scripts/check_ba_source_coverage.py -m {MODULE} --nhom {N}                  # cột BA mà Atomic chưa map (A29)
+```
+
+Dòng BA đổi mà tracker không nêu vẫn phải xử lý hoặc hỏi lại; cùng loại thay đổi lặp ≥ 3 Nhóm là quy tắc dùng chung → H11 (sửa đồng loạt ghi chú DM + HLD + O_ issue). Cột BA chưa có ở Atomic ⇒ A29 trước khi viết bất kỳ 'thay thế gần đúng' nào.
 
 ## Điều kiện tiên quyết
 
@@ -146,7 +155,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A26 (tóm tắt)
+## Luật A1–A31 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -178,6 +187,11 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A24 | **`bảng.cột` viết trong `logic` Detail Mapping và công thức HLD phải tồn tại thật** (Attributes CSV / YAML Atomic): grep trước khi viết; đổi tên/xóa cột ở LLD ⇒ grep tên cũ trong Detail Mapping + HLD + yaml + flat ngay trong lượt đó; tên cũ chỉ được nằm trong `[...]`/`ghi_chu`. Nợ cũ ở `dm_logic_column_baseline.yaml` (cấm thêm) | 1, 2 | Gate 8 D13 `L0-DM-LOGIC-COLUMN-NOT-FOUND` |
 | A25 | **Thuộc tính trùng tên ở nhiều bảng Atomic (`period_*`, `record_tp` có ở `fmr_value` và `fmr_submission`…): bảng nguồn do SQL BA dùng quyết định** — lập cặp (cột BA → bảng `FROM/JOIN` của SQL BA → entity Atomic); nghi BA ghi sai thì mở O_ issue, không tự chọn bảng tiện hơn | 1, 2 | — (đọc tay, `datamart-review` Checklist điểm 1) |
 | A26 | **Kiểm kê MỌI điều kiện của SQL BA** (`WHERE`, `ON` của LEFT JOIN, CTE, `ROW_NUMBER = 1`, `NULLIF`/`*100`/`COALESCE`/`CASE`): mỗi điều kiện = có trong logic / thay thế có chủ ý (ghi + O_ issue) / không áp dụng (ghi lý do). "Active-only" chỉ miễn điều kiện slicer thời gian (`:filter_month` → `:etl_date`); `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`, biểu thức tính KHÔNG được miễn. SQL BA nghi ngược ⇒ ghi lệch + mở O_ issue cùng lượt | 1, 2 | — (đọc tay, Checklist điểm 2–3, L17(e)) |
+| A27 | **Mã ô eForm (`cell_id`) viết theo cặp (`rpt_code`, `cell_id`), mã lấy từ BA (`TSxxx`/`KTxxx`, không phải mã KPI) và phải có trong bộ lọc ô nguồn của bảng:** `cell_id IN (mã HN, mã RL)` không kèm `rpt_code` đọc nhầm biểu mẫu (TS141 = Tiền ở BCTCHN, Vay ngắn hạn ở BCTCRL); KPI 'Khác' = tổng − thành phần tính riêng từng CTCK-kỳ rồi cộng | 2 | Gate 8 D15 `L3-CELL-ID-NOT-ECODE` / `L3-CELL-ID-NO-REPORT-CODE` / `L3-CELL-ID-NOT-LOADED` |
+| A28 | **Literal phân loại trong `etl_logic` (`identification_tp_code`, …) lấy từ YAML Atomic (`classification_context`/`etl_derived_value`) của đúng nguồn, không từ trí nhớ:** SENIOR_PERSONNEL/SHAREHOLDER/INSIDER_RELATION/FMS INSIDER/IDS IDENTITY = `IDENTIFICATION` (SENIOR_PERSONNEL còn `NATIONAL_ID` — ngoại lệ đã xác nhận 2026-10-26 ở `reference/atomic_literal_exceptions.yaml`), MAJOR_SHAREHOLDER_RELATION/RELATED_PERSON = `NATIONAL_ID` | 1 | Gate 8 D16 `L0-ATOMIC-LITERAL-MISMATCH` (chỉ `ip_alternative_identification`) |
+| A29 | **Cấm 'tạm xem A ≡ B' / 'thay thế gần đúng' khi chưa đối chiếu BRD/Source:** `END_DATE` ≠ `DISMISSAL_DATE`; BA dùng `NATIONAL_ID` còn YAML Atomic chỉ có `ID_NUMBER` (CMND cũ) — 'chưa map' phải được Data Modeler xác nhận (2026-10-26: thực ra đã map); `POSITION_IDS`, `RECORD_STATUS`, `LOOKUP_VALUES` chưa map. Chạy `check_ba_source_coverage.py -m {M} --nhom {N}`, ghi `description` + `ghi_chu` + O_ issue 'yêu cầu Atomic map', KPI chỉ giữ READY khi Data Modeler chấp nhận thay thế | 1, 2 | `check_ba_source_coverage.py` (INFO, ngoài Gate) |
+| A30 | **Operational đa nguồn (nhiều file `{table}_{src}`):** mọi file cùng bộ cột và thứ tự; PK `Surrogate Key` hash có `src_stm_code` + mã bản ghi nguồn (mã `_code` thô trùng giữa hệ nguồn); cột có `etl_logic` giống hệt ở ≥ 2 file (NULL, hằng) phải khác `description` — nếu không `build_registry` gộp dòng và Gate 2 'dòng cuối thắng' lệch; nhãn literal giữa các nhánh thống nhất | 1 | Gate 2 `check_parity.py` |
+| A31 | **Ranh giới ETL ↔ BI:** `etl_logic` nạp ĐỦ lịch sử theo grain của bảng (chỉ được lọc bản ghi hợp lệ, khử trùng TRONG khóa tự nhiên, tính cờ chỉ phụ thuộc dữ liệu cùng khóa, dùng tham số chạy ETL `:etl_date`); mọi thứ phụ thuộc lựa chọn của người dùng — as-of `<= ngày chọn`, 'kỳ gần nhất của từng đơn vị', khoảng ngày, quý/năm/mã chỉ số — nằm ở Detail Mapping (SLICER/FILTER + window `MAX(...) OVER (PARTITION BY ...)` trên cột Fact/Operational); `description` chỉ nêu ý nghĩa + vai trò cột (≤ 1 mệnh đề), không chép CTE/ORDER BY của BA | 1, 2 | Gate 8 D17 `L2-ETL-BI-PARAM` (ERROR), D18 `L2-DESC-BI-LOGIC-LEAK` (WARNING) |
 
 ---
 

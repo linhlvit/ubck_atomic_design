@@ -1,0 +1,8 @@
+# Ngoại lệ luật A28 / Gate 8 D16 (`L0-ATOMIC-LITERAL-MISMATCH`) — literal `identification_tp_code` mà LLD Datamart dùng cho 1 nguồn Atomic
+# nhưng YAML `dm_atm_ip_alternative_identification-{NGUỒN}.yaml` (classification_context) CHƯA khai báo.
+# Định dạng phẳng, mỗi dòng:  - SRC_STM_CODE|IDENTIFICATION_TP_CODE   # lý do / ai xác nhận / khi nào gỡ
+# Quy tắc: (1) chỉ thêm khi Data Modeler xác nhận bằng văn bản rằng ETL Atomic thật sự sinh dòng đó (không suy từ trí nhớ — sự cố A28 2026-10-26);
+# (2) ghi rõ ngày + người xác nhận + điều kiện gỡ; (3) lint cảnh báo `L0-ATOMIC-LITERAL-EXCEPTION-STALE` khi YAML Atomic đã có đủ — gỡ mục đó trong cùng lượt.
+
+identification_tp_code:
+  - SCMS_SC_FIRM_SENIOR_PERSONNEL|NATIONAL_ID   # 2026-10-26 Vuong xác nhận Atomic đã map NATIONAL_ID (notes lld_SCMS_SC_FIRM_SENIOR_PERSONNEL_IP_Alt_Identification: "Row 1 — NATIONAL_ID canonical"); dm_atm yaml (14/10) chưa có attribute/classification_context. Gỡ khi YAML có `Identification Type Code = 'NATIONAL_ID'` cho SCMS_SC_FIRM_SENIOR_PERSONNEL. Dùng ở QLKD: opr_individual_profile / listed_company_role / related_party_network (O_QLKD_60(i)).
