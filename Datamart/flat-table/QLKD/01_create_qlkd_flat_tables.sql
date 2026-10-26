@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo đột xuất (VD 2024-Q1, nguồn PERIOD_VALUE) — chỉ bộ ADHOC, bộ PERIODIC để NULL',
     src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
     created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi báo cáo đột xuất (nguồn SC_FIRM_ADHOC_REPORT.CREATED_AT → Atomic sc_adhoc_report.src_record_insert_tms) — ngày phát sinh yêu cầu báo cáo; BA dùng làm mốc phải nộp của báo cáo đột xuất chưa nộp (RECORD_STATUS = 0 AND TRUNC(CREATED_AT) <= ngày) và mốc đầu trục Nhóm 10/38/39. — bộ ADHOC',
+    end_dt                                       Nullable(Date)          COMMENT 'Ngày kết thúc kỳ báo cáo (nguồn SC_FIRM_PERIODIC_REPORT.END_DATE) — chỉ bộ PERIODIC, bộ ADHOC để NULL; mốc đầu trục ngày Nhóm 28–30 (BA 24/10: MIN(END_DATE)).',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
@@ -363,20 +364,25 @@ COMMENT 'Flat table — Operational Individual Profile'
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Related Party Network
-    sc_insider_related_person_code  String                  COMMENT 'PK — mã người liên quan (self-join)',
-    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã nhân sự cao cấp chính — join key self-join',
-    related_person_full_nm          Nullable(String)        COMMENT 'Tên người có liên quan',
-    rltnp                           Nullable(String)        COMMENT 'Mối quan hệ của người có liên quan',
-    representative_position         Nullable(String)        COMMENT 'Vai trò/chức vụ của người có liên quan',
-    identification_nbr              Nullable(String)        COMMENT 'CCCD người liên quan',
-    shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần người liên quan nắm giữ',
-    ownership_ratio                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu cổ phần người liên quan',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
-    relation_start_dt                            Nullable(Date)          COMMENT 'Ngày bắt đầu quan hệ (nguồn SC_FIRM_INSIDER_RELATION.RELATION_START_DATE) — mốc đầu cho trục Chiều thời gian theo Ngày của Nhóm 41/42 (K_QLKD_203; BA dòng 223, 226 Query 2).'
+    related_party_network_id        String                  COMMENT 'PK — hash(src_stm_code + mã quan hệ người liên quan); Grain = 1 người liên quan của 1 cá nhân (nhân sự cấp cao hoặc cổ đông lớn), mỗi nguồn 1 loại quan hệ; khóa MERGE. Thay sc_insider_related_person_code (PK cũ chỉ đúng cho 1',
+    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân CHÍNH (nhân sự cấp cao) — khóa chọn cá nhân trên dashboard (BA: AND sp.NATIONAL_ID = :cccd); đã mã hóa từ nguồn.',
+    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân chính (BA: ho_ten_ca_nhan).',
+    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã nhân sự cao cấp chính (sp) — khóa nối tới cá nhân được chọn.',
+    related_person_full_nm          Nullable(String)        COMMENT 'Tên người có liên quan.',
+    rltnp                           Nullable(String)        COMMENT 'Mối quan hệ của người có liên quan (vợ/chồng/con cái...).',
+    representative_position         Nullable(String)        COMMENT 'Vai trò/chức vụ của người có liên quan.',
+    related_person_position_nm      Nullable(String)        COMMENT 'Chức vụ của người liên quan (BA: chuc_vu — nhánh người nội bộ: tên CAT_POSITION của POSITION_ID của người liên quan trong SC_FIRM_RELATED_PERSON, nối theo CTCK + số giấy tờ đã chuẩn hóa; nhánh cổ đông lớn: nhãn loại cổ đông).',
+    identification_nbr              Nullable(String)        COMMENT 'CCCD người liên quan (BA: cccd_nguoi_lien_quan = r.NATIONAL_ID). [SỬA 2026-10-26] Lọc loại giấy tờ IDENTIFICATION — Atomic ETL hardcode giá trị này cho nguồn SC_FIRM_INSIDER_RELATION (bản cũ lọc NATIONAL_ID nên không bao giờ',
+    shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần người liên quan nắm giữ.',
+    ownership_ratio                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu cổ phần người liên quan.',
+    relation_start_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu quan hệ (nguồn SC_FIRM_INSIDER_RELATION.RELATION_START_DATE) — mốc đầu cho trục Chiều thời gian theo Ngày của Nhóm 41/42 (K_QLKD_203; BA dòng 223, 226 Query 2).',
+    effective_from_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực để as-of (BA: TRUNC(r.CREATED_AT) <= ngày VÀ sp.APPOINTMENT_DATE <= ngày) = lớn hơn của ngày tạo quan hệ và ngày bổ nhiệm cá nhân; NULL nếu thiếu 1 trong 2 (bản ghi bị loại ở as-of như BA).',
+    effective_to_dt                 Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực để as-of (BA: sp.DISMISSAL_DATE IS NULL OR sp.DISMISSAL_DATE > ngày) — ngày miễn nhiệm cá nhân chính.',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (sc_insider_related_person_code)
+ORDER BY (related_party_network_id)
 COMMENT 'Flat table — Operational Individual Related Party Network'
 ;
 
@@ -388,16 +394,22 @@ COMMENT 'Flat table — Operational Individual Related Party Network'
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Listed Company Role
-    sc_insider_related_person_code  String                  COMMENT 'PK — mã vai trò tại tổ chức (Bảng Tác nghiệp)',
-    sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã cá nhân — join key với Operational Individual Profile',
-    sc_code                         Nullable(String)        COMMENT 'Mã tổ chức (CTCK)',
-    representative_position         Nullable(String)        COMMENT 'Vai trò tại tổ chức',
-    shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần nắm giữ',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+    listed_company_role_id          String                  COMMENT 'PK — hash(src_stm_code + fmc_insider_code + số giấy tờ định danh); Grain = 1 vai trò của 1 cá nhân (theo số giấy tờ) tại 1 tổ chức, nguồn INSIDER của FMS (BA khối 1 nhánh 3); khóa MERGE.',
+    individual_identification_nbr   String                  COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard (BA: AND NATIONAL_ID = :cccd); đã mã hóa từ nguồn. Chỉ nạp bản ghi có số giấy tờ (BA: NATIONAL_ID/ID_NUMBER/ID_NO/IDENTITY_NO IS NOT NULL).',
+    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân (BA: ho_ten).',
+    org_code                        Nullable(String)        COMMENT 'Mã tổ chức nơi cá nhân giữ vai trò (CTCK / CTQLQ / công ty đại chúng) — chỉ duy nhất trong cùng loại tổ chức (org_tp_nm); dùng đếm số tổ chức tham gia.',
+    org_nm                          Nullable(String)        COMMENT 'Tên tổ chức hiển thị (BA: ten_to_chuc) — CTCK/CTQLQ: tên viết tắt; công ty đại chúng: mã chứng khoán (EQUITY_TICKER).',
+    org_tp_nm                       String                  COMMENT 'Loại tổ chức (BA: loai_to_chuc; mô tả BA: CTCK, CTĐC, CT QLQ).',
+    role_nm                         Nullable(String)        COMMENT 'Vai trò (BA: CASE INSIDER_TYPE — 1 Cổ đông lớn, 2 Ban điều hành, 3 HĐQT).',
+    shares_held_qty                 Nullable(Int64)         COMMENT 'Số cổ phần nắm giữ (BA: so_cp_nam_giu).',
+    status_nm                       String                  COMMENT 'Trạng thái (BA: trang_thai) — Đang hoạt động / Ngừng hoạt động suy từ trạng thái bản ghi Atomic (ds_rcrd_st); Atomic không map RECORD_STATUS/ACTIVE_FLG của nguồn (O_QLKD_60).',
+    effective_from_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực của vai trò — cận dưới as-of (<= ngày trên trục) và mốc đầu trục ngày Nhóm 41/42.',
+    effective_to_dt                 Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực — cận trên as-of (IS NULL OR > ngày trên trục); NULL nếu nguồn không có ngày kết thúc.',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (sc_insider_related_person_code)
+ORDER BY (listed_company_role_id)
 COMMENT 'Flat table — Operational Individual Listed Company Role'
 ;
 
@@ -409,12 +421,15 @@ COMMENT 'Flat table — Operational Individual Listed Company Role'
 CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Individual Trading Account
-    sc_shareholder_code             String                  COMMENT 'PK — mã cổ đông/chủ TK (Bảng Tác nghiệp)',
-    sc_code                         String                  COMMENT 'Mã CTCK nơi mở tài khoản',
-    trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch',
-    shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
-    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_record_insert_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
+    sc_shareholder_code             String                  COMMENT 'Mã cổ đông (chủ TK) — PK duy nhất (Bảng Tác nghiệp). Driving Table: Securities Company Shareholder (sc_shareholder) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_SC_FIRM_SHAREHOLDER.yaml, chưa approved.',
+    sc_code                         String                  COMMENT 'Mã CTCK nơi mở tài khoản (SC_FIRM_INFO.CODE). BA hiển thị ma_ctck = SHORT_NAME → xem sc_short_nm.',
+    sc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt CTCK nơi mở tài khoản (BA: ma_ctck = SC_FIRM_INFO.SHORT_NAME).',
+    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh của chủ tài khoản (BA: sh.ID_NUMBER) — khóa chọn tài khoản của cá nhân và của người liên quan (khớp identification_nbr của Operational Individual Related Party Network); đã mã hóa từ nguồn.',
+    trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán.',
+    shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản.',
+    shareholder_tp_code             Nullable(String)        COMMENT 'Loại cổ đông (BA: loai_co_dong = SHAREHOLDER_TYPE).',
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    created_dt                      Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_rcrd_isrt_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -540,6 +555,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_report_data_flat
     -- From: OPR_SECURITIES_COMPANY_REPORT_DATA
     rpt_cell_val_id                              String                  COMMENT 'Khóa chính giá trị ô báo cáo tác nghiệp.',
     rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) chứa ô này, dùng để phân biệt các lần nộp của cùng một kỳ báo cáo.',
+    rpt_input_submission_code                    String                  COMMENT 'Mã lần nộp dữ liệu báo cáo (ID nguồn REPORT_INPUT_SUBMISSION — số tăng dần theo lần nộp) dùng để chọn bản nộp MỚI NHẤT của cùng một kỳ báo cáo (BA: ROW_NUMBER/MAX(sub.ID) theo (REF_TYPE, REF_ID)); so sánh sau khi ép sang số nguyên lớn. `rpt_input_submission_id` là id đại diện, không dùng để xếp thứ tự lần nộp.',
     sc_code                                      String                  COMMENT 'Mã CTCK.',
     sc_nm                                        Nullable(String)        COMMENT 'Tên viết tắt hoặc tên đầy đủ của CTCK.',
     rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo (ví dụ: BCTCHN, BCTCRL, THSLCBPHCP...).',
@@ -607,11 +623,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
     sc_nm                                        Nullable(String)        COMMENT 'Tên CTCK.',
     rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo định kỳ chứa số liệu nhân sự: BCTHHD_CTCK (Nhóm 28/29) hoặc BCHDPS (Nhóm 30). Cùng mã ô (VD TS017) mang nghĩa khác nhau giữa các biểu mẫu nên phải là một phần của khóa.',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
-    rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo (NAM, QUY, THANG…) — sc_periodic_report.rpt_period. BA STT 29/30 lọc NAM; Nhóm 28 dùng NAM thay cho điều kiện sheet TTC_N (chưa lọc được sheet).',
+    rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo (NAM, QUY, THANG…) — sc_periodic_report.rpt_period. BA STT 28 lọc THANG (sheet TTC_T, BA 24/10); BA STT 29/30 lọc NAM.',
     period_nbr                                   Int64                   COMMENT 'Kỳ báo cáo.',
-    total_employee_cnt                           Nullable(Int64)         COMMENT 'Tổng số người lao động tại CTCK — BCTHHD_CTCK ô TS017 (BA STT 28 dòng 155; sheet TTC_N, kỳ Năm).',
-    licensed_practitioner_cnt                    Nullable(Int64)         COMMENT 'Số lao động có chứng chỉ hành nghề — BCTHHD_CTCK ô TS018 (BA STT 28 dòng 156).',
-    unlicensed_practitioner_cnt                  Nullable(Int64)         COMMENT 'Số lao động chưa có chứng chỉ hành nghề = TS017 − TS018 của BCTHHD_CTCK (BA STT 28 dòng 157); NULL nếu thiếu 1',
+    total_employee_cnt                           Nullable(Int64)         COMMENT 'Tổng số người lao động tại CTCK — BCTHHD_CTCK ô TS001 của kỳ THANG (BA STT 28 dòng 155, BA 24/10: sheet TTC_T; trước đây TS017 sheet TTC_N kỳ Năm). Chỉ có giá trị ở dòng kỳ THANG (TS001 kỳ QUY là vốn điều lệ).',
+    licensed_practitioner_cnt                    Nullable(Int64)         COMMENT 'Số lao động có chứng chỉ hành nghề — BCTHHD_CTCK ô TS002 của kỳ THANG (BA STT 28 dòng 156, BA 24/10: sheet TTC_T; trước đây TS018).',
+    unlicensed_practitioner_cnt                  Nullable(Int64)         COMMENT 'Số lao động chưa có chứng chỉ hành nghề = TS001 − TS002 của BCTHHD_CTCK kỳ THANG (BA STT 28 dòng 157, BA 24/10); NULL nếu thiếu 1 trong 2 ô.',
     brokerage_practitioner_cnt                   Nullable(Int64)         COMMENT 'Số người hành nghề bộ phận môi giới — BCTHHD_CTCK ô TS107 (BA STT 29 dòng 160; sheet II.1, kỳ Năm).',
     underwriting_practitioner_cnt                Nullable(Int64)         COMMENT 'Số người hành nghề bộ phận bảo lãnh phát hành — BCTHHD_CTCK ô TS115 (BA STT 29 dòng 161).',
     advisory_practitioner_cnt                    Nullable(Int64)         COMMENT 'Số người hành nghề bộ phận tư vấn đầu tư — BCTHHD_CTCK ô TS119 (BA STT 29 dòng 162).',
@@ -619,7 +635,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
     deriv_brokerage_practitioner_cnt             Nullable(Int64)         COMMENT 'Số người hành nghề liên quan CK phái sinh — dịch vụ môi giới — BCHDPS ô TS009 (BA STT 30 dòng 166; sheet 01, k',
     deriv_advisory_practitioner_cnt              Nullable(Int64)         COMMENT 'Số người hành nghề liên quan CK phái sinh — dịch vụ tư vấn — BCHDPS ô TS017 (BA STT 30 dòng 167).',
     deriv_proprietary_practitioner_cnt           Nullable(Int64)         COMMENT 'Số người hành nghề liên quan CK phái sinh — dịch vụ tự doanh — BCHDPS ô TS013 (BA STT 30 dòng 168).',
-    submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo (BA: TRUNC(SENT_AT)) — trục as-of của KPI Nhóm 28–30: lấy báo cáo gần nhất có ngày nộp <= ngà',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo (TRUNC(SENT_AT)) — chỉ dùng khử trùng khi nhiều báo cáo định kỳ cùng khóa. Không còn là trục as-of của KPI Nhóm 28–30 (BA 24/10 đổi sang END_DATE, xem end_dt).',
+    end_dt                                       Nullable(Date)          COMMENT 'Ngày kết thúc kỳ báo cáo (BA 24/10: TRUNC(END_DATE)) — trục as-of của KPI Nhóm 28–30: lấy báo cáo có ngày kết thúc kỳ gần nhất <= ngày chọn của từng CTCK (CTE latest_per_ctck: ORDER BY END_DATE DESC, FORM_REPORT_ID DESC).',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo: 1 = Đã gửi/Đúng hạn, 2 = Đã duyệt/Gửi muộn (BA: RECORD_STATUS IN (1,2)) — cùng từ điển với Fact Securities Company Financial Structure Snapshot.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu. ETL: chỉ BCTHHD_CTCK/BCHDPS, khử trùng bản nộp mới nhất (xem LLD).'
 )
