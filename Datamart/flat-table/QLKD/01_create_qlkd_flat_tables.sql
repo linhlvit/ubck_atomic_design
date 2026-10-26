@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_compliance_repor
     period_nbr                                   Nullable(Int64)         COMMENT 'Số thứ tự kỳ báo cáo (quý 1-4, tháng 1-12) — chỉ bộ PERIODIC, bộ ADHOC để NULL',
     period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo đột xuất (VD 2024-Q1, nguồn PERIOD_VALUE) — chỉ bộ ADHOC, bộ PERIODIC để NULL',
     src_stm_code                        String                  COMMENT 'Mã hệ thống nguồn — SCMS_SC_FIRM_ADHOC_REPORT hoặc SCMS_SC_FIRM_PERIODIC_REPORT',
-    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi báo cáo đột xuất (nguồn SC_FIRM_ADHOC_REPORT.CREATED_AT → Atomic sc_adhoc_report.src_record_insert_tms) — ngày phát sinh yêu cầu báo cáo; BA dùng làm mốc phải nộp của báo cáo đột xuất chưa nộp (RECORD_STATUS = 0 AND TRUNC(CREATED_AT) <= ngày) và mốc đầu trục Nhóm 10/38/39. — bộ ADHOC',
+    created_dt                                   Nullable(Date)          COMMENT 'Ngày tạo bản ghi báo cáo đột xuất (nguồn SC_FIRM_ADHOC_REPORT.CREATED_AT → Atomic sc_adhoc_report.src_rcrd_isrt_tms) — ngày phát sinh yêu cầu báo cáo; BA dùng làm mốc phải nộp của báo cáo đột xuất chưa nộp (RECORD_STATUS = 0 AND TRUNC(CREATED_AT) <= ngày) và mốc đầu trục Nhóm 10/38/39. — bộ ADHOC',
     end_dt                                       Nullable(Date)          COMMENT 'Ngày kết thúc kỳ báo cáo (nguồn SC_FIRM_PERIODIC_REPORT.END_DATE) — chỉ bộ PERIODIC, bộ ADHOC để NULL; mốc đầu trục ngày Nhóm 28–30 (BA 24/10: MIN(END_DATE)).',
 
     -- From: CALENDAR DATE DIMENSION
