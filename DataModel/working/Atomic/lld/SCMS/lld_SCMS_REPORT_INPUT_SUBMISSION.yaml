@@ -170,3 +170,16 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL transform bổ sung, không thuộc schema nguồn."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.REPORT_INPUT_SUBMISSION.DATA_DT"
+  comment: "BCV: không có term riêng. Cột transform thêm (không có trong schema nguồn SCMS.REPORT_INPUT_SUBMISSION) — quyết định Data Modeler 2026-10-27. Dùng làm căn cứ partition / incremental filter."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

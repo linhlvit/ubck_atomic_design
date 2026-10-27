@@ -17354,6 +17354,22 @@ attributes:
   data_type: "string"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
+  atomic_attribute: "Status Code"
+  description: "Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không hoạt động"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "SPECIALIZATION_COURSE_DETAILS"
+  source_column: "NHNCK.SPECIALIZATION_COURSE_DETAILS.STATUS"
+  comment: "SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS"
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sp_professional_training_class_enrollment"
+  atomic_column: "status_code"
+  data_type: "string"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Securities Practitioner Professional Training Class Enrollment"
   atomic_attribute: "Description"
   description: "Mô tả"
   data_domain: "Text"
@@ -36281,6 +36297,25 @@ attributes:
   atomic_column: "period_year"
   data_type: "int"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Report Input Submission"
+  atomic_attribute: "Data Date"
+  description: "Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL transform\
+    \ bổ sung, không thuộc schema nguồn."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "REPORT_INPUT_SUBMISSION"
+  source_column: "SCMS.REPORT_INPUT_SUBMISSION.DATA_DT"
+  comment: "BCV: không có term riêng. Cột transform thêm (không có trong schema nguồn\
+    \ SCMS.REPORT_INPUT_SUBMISSION) — quyết định Data Modeler 2026-10-27. Dùng làm\
+    \ căn cứ partition / incremental filter."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_report_input_submission"
+  atomic_column: "data_dt"
+  data_type: "date"
+- bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Input Value"
   atomic_attribute: "Securities Company Report Input Value Id"
   description: "Khóa đại diện (surrogate key)."
@@ -36469,6 +36504,25 @@ attributes:
   atomic_table: "sc_report_input_value"
   atomic_column: "ref_tp_code"
   data_type: "string"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Company Report Input Value"
+  atomic_attribute: "Data Date"
+  description: "Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL transform\
+    \ bổ sung, không thuộc schema nguồn."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "REPORT_INPUT_CELL_VALUE"
+  source_column: "SCMS.REPORT_INPUT_CELL_VALUE.DATA_DT"
+  comment: "BCV: không có term riêng. Cột transform thêm (không có trong schema nguồn\
+    \ SCMS.REPORT_INPUT_CELL_VALUE) — quyết định Data Modeler 2026-10-27. Dùng làm\
+    \ căn cứ partition / incremental filter."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "sc_report_input_value"
+  atomic_column: "data_dt"
+  data_type: "date"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Report Sheet"
   atomic_attribute: "Securities Company Report Sheet Id"

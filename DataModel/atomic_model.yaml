@@ -19864,6 +19864,25 @@ entities:
         source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.RESULT
         business_meaning: Kết quả đào tạo (-1=Không thi, 0=Không đạt, 1=Đạt)
         comment: SCHEMA_CODE=NHNCK.EXAM_DETAILS.RESULT
+  - name: Status Code
+    physical_name: status_code
+    business_meaning_1st: "Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không\
+      \ hoạt động"
+    comment_1st: SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: SPECIALIZATION_COURSE_DETAILS
+        source_column: NHNCK.SPECIALIZATION_COURSE_DETAILS.STATUS
+        business_meaning: "Trạng thái bản ghi: 1=Đang hoạt động/Hiệu lực, 0=Không\
+          \ hoạt động"
+        comment: SCHEMA_CODE=NHNCK.APPLICATION_SPECIALIZATIONS.STATUS
   - name: Description
     physical_name: description
     business_meaning_1st: Mô tả
@@ -47060,6 +47079,29 @@ entities:
         source_column: SCMS.REPORT_INPUT_SUBMISSION.PERIOD_YEAR
         business_meaning: Năm báo cáo vi phạm.
         comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL
+      transform bổ sung, không thuộc schema nguồn.
+    comment_1st: "BCV: không có term riêng. Cột transform thêm (không có trong schema\
+      \ nguồn SCMS.REPORT_INPUT_SUBMISSION) — quyết định Data Modeler 2026-10-27.\
+      \ Dùng làm căn cứ partition / incremental filter."
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: REPORT_INPUT_SUBMISSION
+        source_column: SCMS.REPORT_INPUT_SUBMISSION.DATA_DT
+        business_meaning: Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL
+          transform bổ sung, không thuộc schema nguồn.
+        comment: "BCV: không có term riêng. Cột transform thêm (không có trong schema\
+          \ nguồn SCMS.REPORT_INPUT_SUBMISSION) — quyết định Data Modeler 2026-10-27.\
+          \ Dùng làm căn cứ partition / incremental filter."
 - ldm:
     id: ATM-sc_report_input_value
     logical_name_1st: Securities Company Report Input Value
@@ -47301,6 +47343,29 @@ entities:
         comment: VARCHAR2(64). Denormalized từ Securities Company Report Input Submission
           (Ref Type Code) xuống cấp cell — không phải FK. Cột phát sinh mới ở nguồn
           (2026-09-15, UAT schema); mô tả gốc BRD trống.
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL
+      transform bổ sung, không thuộc schema nguồn.
+    comment_1st: "BCV: không có term riêng. Cột transform thêm (không có trong schema\
+      \ nguồn SCMS.REPORT_INPUT_CELL_VALUE) — quyết định Data Modeler 2026-10-27.\
+      \ Dùng làm căn cứ partition / incremental filter."
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: REPORT_INPUT_CELL_VALUE
+        source_column: SCMS.REPORT_INPUT_CELL_VALUE.DATA_DT
+        business_meaning: Ngày dữ liệu (data date) của bản ghi. Cột kỹ thuật do ETL
+          transform bổ sung, không thuộc schema nguồn.
+        comment: "BCV: không có term riêng. Cột transform thêm (không có trong schema\
+          \ nguồn SCMS.REPORT_INPUT_CELL_VALUE) — quyết định Data Modeler 2026-10-27.\
+          \ Dùng làm căn cứ partition / incremental filter."
 - ldm:
     id: ATM-sc_report_sheet
     logical_name_1st: Securities Company Report Sheet
