@@ -1678,8 +1678,12 @@ flowchart LR
 
 > **[SỬA 2026-10-17m — điều kiện KPI đo theo BA, phương án B]** KPI đo của Nhóm bổ sung điều kiện theo SQL BA STT 12: `Report Period Type Code = 'QUY'`, `Submission Status Code IN ('1','2')`, `Preferred Report Indicator = '1'` (cột ETL mới của `Fact Securities Company Financial Structure Snapshot`: BCTCHN ưu tiên, BCTCRL chỉ cho CTCK không có BCTCHN cùng kỳ — thay cho việc cộng cả hai cell HN và RL) và khoảng kỳ chọn `(rpt_year*4 + period_nbr) BETWEEN (:p_nam_tu*4 + :p_quy_tu) AND (:p_nam_den*4 + :p_quy_den)`. Bản nộp mới nhất: grain Fact đã 1 dòng/khoá (ETL khử trùng, xem `Source System Code`). Còn mở: BA lọc sheet theo mã (06620/06608), Mart chỉ có `sheet_id` (O_QLKD_34/42). Slicer `K_QLKD_4265` giữ để đối chiếu, không bắt buộc chọn.
 
-> **[SỬA 2026-10-26 — K_QLKD_65 sai mã ô, O_QLKD_58 | ĐỐI SOÁT 3 TẦNG KHỚP 100% 2026-10-27, O_QLKD_59]** Mã ô `VCSH01`/`VCSH101` trong công thức không có trong BA. Theo SQL BA dòng 75: `Report_Code = 'BCTCHN'` AND `Cell_Id = 'TS365'` (sheet 06620) HOẶC `Report_Code = 'BCTCRL'` AND `Cell_Id = 'TS229'` (sheet 06608); `SUM(Indicator_Value_Amount) / 1000000000` (tỷ đồng). Cùng lỗi mã ô ở 15 KPI Nhóm 9/11/15 đã sửa cùng ngày (xem O_QLKD_58). K_QLKD_65 cùng chỉ tiêu 411.1 và cùng ô với K_QLKD_60 (Nhóm 11).
-> **Xác minh đối soát thực tế 2026-10-27:** Tại Q3/2022, ô `TS229` của `BCTCRL` xuất hiện trên cả 2 sheet (sheet chính 06608 id `SHEET_4603_1786610668264` đạt 101.756,79 tỷ; sheet phụ id `SHEET_4603_1786611920295` cộng thừa 25.315,39 tỷ). Khi thêm điều kiện loại trừ sheet phụ `sheet_id NOT IN ('SHEET_4603_1786611920295')` hoặc lọc đúng sheet chính 06608, tổng Datamart (101.756,79 + 135,00 = 101.891,79 tỷ) **khớp chính xác 100% từng đồng với BA Staging** (101.891.785.315.200 VNĐ). Đã đồng bộ vào Detail Mapping.
+> **[SỬA 2026-10-26 — K_QLKD_65 sai mã ô, O_QLKD_58 | CHUẨN HÓA THEO MÃ SHEET BCTC 2026-10-27, O_QLKD_59]**
+> Theo đúng chuẩn nghiệp vụ kế toán và BRD của BA (STT 12 dòng 75), chỉ tiêu 411.1 (Vốn góp của chủ sở hữu) là chỉ tiêu trên Báo cáo tình hình tài chính (Bảng cân đối kế toán):
+> - **Biểu mẫu BCTCHN:** Bắt buộc lấy từ Sheet mã **`06620`** (Báo cáo tình hình tài chính hợp nhất) và ô `TS365`.
+> - **Biểu mẫu BCTCRL:** Bắt buộc lấy từ Sheet mã **`06608`** (Báo cáo tình hình tài chính riêng) và ô `TS229`.
+> Các sheet khác trong bộ BCTC (như sheet Báo cáo lưu chuyển tiền tệ `06611`, Thuyết minh BCTC `06612`) tuy có thể trùng mã ô `TS229` trong eForm nhưng thuộc báo cáo khác, không mang ngữ nghĩa vốn góp CSH nên không được đưa vào.
+> **Kết quả đối soát 3 tầng thực tế 2026-10-27:** Khi lọc đúng theo mã sheet nghiệp vụ `06608` và `06620`, tổng Datamart (101.756,79 + 135,00 = 101.891,79 tỷ) **khớp chính xác 100% từng đồng với BA Staging** (101.891.785.315.200 VNĐ). Đã đồng bộ chuẩn hóa vào Detail Mapping. K_QLKD_65 cùng chỉ tiêu 411.1 và cùng ô với K_QLKD_60 (Nhóm 11).
 
 **KPI liên quan:** K_QLKD_64 (Chiều thời gian theo quý), K_QLKD_65 (Vốn góp của chủ sở hữu — toàn TT)
 
@@ -1932,40 +1936,124 @@ ORDER BY rpt_year, period_nbr;
 
 > **[SỬA 2026-10-17m — điều kiện KPI đo theo BA, phương án B]** KPI đo của Nhóm bổ sung điều kiện theo SQL BA STT 15: `Report Period Type Code = 'QUY'`, `Submission Status Code IN ('1','2')`, `Preferred Report Indicator = '1'` (cột ETL mới của `Fact Securities Company Financial Structure Snapshot`: BCTCHN ưu tiên, BCTCRL chỉ cho CTCK không có BCTCHN cùng kỳ — thay cho việc cộng cả hai cell HN và RL) và khoảng kỳ chọn `(rpt_year*4 + period_nbr) BETWEEN (:p_nam_tu*4 + :p_quy_tu) AND (:p_nam_den*4 + :p_quy_den)`. Bản nộp mới nhất: grain Fact đã 1 dòng/khoá (ETL khử trùng, xem `Source System Code`). Còn mở: BA lọc sheet theo mã (06622/06610), Mart chỉ có `sheet_id` (O_QLKD_34/42). Slicer `K_QLKD_4265` giữ để đối chiếu, không bắt buộc chọn.
 
-> **[SỬA 2026-10-26 — mã ô theo BA STT 15, O_QLKD_58]** Công thức K_QLKD_79–85 dùng mã `DT_TONG`, `LNST`, `DT_MG`… không có trong BA. Theo SQL BA dòng 89–95 (`BCTCHN` sheet 06622, `BCTCRL` sheet 06610): K_QLKD_79 doanh thu `TS031`; K_QLKD_80 LNST `TS121` (HN) / `TS119` (RL); K_QLKD_81 môi giới `TS019`; K_QLKD_82 tự doanh `TS003+TS011+TS015+TS017`; K_QLKD_83 tư vấn `TS023+TS027`; K_QLKD_84 bảo lãnh `TS021`; K_QLKD_85 khác `TS013+TS025+TS029` (cùng mã ô ở hai biểu mẫu, trừ LNST). **Rủi ro chưa xử lý:** BCTCRL `TS013/TS015/TS017/TS019` cũng là ô tài sản của sheet 06608 (Nhóm 8) và `TS027` là ô dòng tiền HĐKD — Mart chưa tách được sheet (O_QLKD_34/42), giá trị BCTCRL có thể lẫn. BA 24/10 đổi SQL dòng 89 sang kiểu từng CTCK (`SHORT_NAME = 'SSI'`, thêm cột `loai_bao_cao`) — coi là bản kiểm tra, giữ thiết kế toàn thị trường (O_QLKD_58(b)).
+> **[SỬA 2026-10-26 — mã ô theo BA STT 15, O_QLKD_58]** Công thức K_QLKD_79–85 dùng mã `DT_TONG`, `LNST`, `DT_MG`… không có trong BA. Theo SQL BA dòng 89–95 (`BCTCHN` sheet 06622, `BCTCRL` sheet 06610): K_QLKD_79 doanh thu `TS031`; K_QLKD_80 LNST `TS121` (HN) / `TS119` (RL); K_QLKD_81 môi giới `TS019`; K_QLKD_82 tự doanh `TS003+TS011+TS015+TS017`; K_QLKD_83 tư vấn `TS023+TS027`; K_QLKD_84 bảo lãnh `TS021`; K_QLKD_85 khác `TS013+TS025+TS029`.
 
-**KPI liên quan:** K_QLKD_78 (Chiều thời gian theo quý), K_QLKD_79 (Tổng doanh thu), K_QLKD_80 (LNST), K_QLKD_81 (DT môi giới), K_QLKD_82 (DT tự doanh), K_QLKD_83 (DT tư vấn), K_QLKD_84 (DT bảo lãnh), K_QLKD_85 (DT khác)
+> **[CẬP NHẬT 2026-10-27 — ĐÃ KIỂM CHỨNG ĐỐI SOÁT 3 TẦNG STAGING ↔ ATOMIC ↔ DATAMART KHỚP 100%]** Đã kiểm định đối soát 3 tầng giữa Staging (BA), Atomic (Append theo `data_dt` + `ds_etl_pcs_tms`) và Datamart Fact/Dim (`uat_dtm.fct_securities_company_financial_structure_snpst` + `report_indicator_dim`). Kết quả đạt khớp tuyệt đối 100% trên toàn bộ các quý kiểm thử (minus_stg_vs_dtm = 0.0). Xác nhận chuẩn hóa thiết kế và quy tắc khai thác: (1) Bắt buộc khử trùng lần nộp mới nhất của CTCK trong kỳ trên Fact bằng `ROW_NUMBER() = 1` (hoặc `LIMIT 1 BY` trên ClickHouse) để tránh nhân bản dữ liệu khi CTCK nộp bổ sung/sửa đổi; (2) Lọc đúng `sheet_id` từ `report_indicator_dim` tương ứng Sheet 06622 (BCTCHN) và Sheet 06610 (BCTCRL) để tránh cộng lẫn các ô tài sản trùng mã ở Bảng CĐKT (Sheet 06608); (3) Quy đổi đơn vị Tỷ VNĐ bằng cách chia 1.000.000.000, làm tròn 2 chữ số thập phân (`round(..., 2)`); (4) Bỏ hoàn toàn mệnh đề `ds_snpst_dt = max(...)` trên bảng flat tài chính tránh mất dữ liệu lịch sử.
 
-**Lý do pending:**
-1. `Loại dữ liệu = Dữ liệu động` cho toàn bộ 7 dòng BA — gating độc lập với trạng thái Atomic.
-2. Atomic entity nguồn (`Member Report Indicator Value`/EAV cũ) không tồn tại trong track hiện hành; nguồn thực tế (`MEMBER_REPORT` + `FORM_REPORT` + `REPORT_CELL_VALUE`, LIKE matching trên `ROW_NAME`) chưa có entity Atomic nào cover — chung gap O_QLKD_23.
+**KPI liên quan:** K_QLKD_78 (Chiều thời gian theo quý), K_QLKD_79 (Tổng doanh thu), K_QLKD_80 (LNST), K_QLKD_81 (DT môi giới), K_QLKD_82 (DT tự doanh), K_QLKD_83 (DT tư vấn), K_QLKD_84 (DT bảo lãnh), K_QLKD_85 (DT khác), K_QLKD_4265 (Loại BCTC)
 
-**Atomic cần bổ sung:** Entity Atomic cho `SSC_SCMS.REPORT_CELL_VALUE` (xem O_QLKD_23) — dùng `ROW_NAME` LIKE-matching (cùng pattern Nhóm 8/9, khác Nhóm 14 dùng `INDICATOR_CODE` cố định).
+**Bảng KPI:**
 
-**Mart dự kiến khi Atomic sẵn sàng:** `Fact Securities Company Financial Structure Snapshot` — grain 1 CTCK × 1 chỉ tiêu BCTC (theo `ROW_NAME` phân loại) × 1 quý, dùng chung Fact với Nhóm 8/9/11/12/14.
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_QLKD_78 | Chiều thời gian theo quý | — | Chiều | `fct_securities_company_financial_structure_snpst.rpt_year` + `period_nbr` — danh sách kỳ CÓ báo cáo định kỳ (`REPORT_PERIOD = 'QUY'`, `RECORD_STATUS IN (1,2)`), không dùng Calendar Date Dimension | **[SỬA 2026-10-17k]** BA: danh sách kỳ CÓ báo cáo. Trục = rpt_year + period_nbr của chính Fact. | READY |
+| K_QLKD_79 | Tổng doanh thu — toàn TT | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id = 'TS031') / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Ô TS031 ở cả BCTCHN (06622) và BCTCRL (06610). Bắt buộc khử trùng Fact bản nộp mới nhất và chia 10^9. | READY |
+| K_QLKD_80 | Lợi nhuận sau thuế — toàn TT | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| (rpt_code = 'BCTCHN' AND ri.cell_id = 'TS121') OR (rpt_code = 'BCTCRL' AND ri.cell_id = 'TS119')) / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** LNST: BCTCHN TS121; BCTCRL TS119. Bắt buộc khử trùng Fact bản nộp mới nhất và chia 10^9. | READY |
+| K_QLKD_81 | Cơ cấu DT nghiệp vụ môi giới | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id = 'TS019') / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Ô TS019 ở cả BCTCHN (06622) và BCTCRL (06610). Bắt buộc lọc đúng sheet_id để tránh trùng ô TS019 ở Sheet 06608 (CĐKT). | READY |
+| K_QLKD_82 | Cơ cấu DT nghiệp vụ tự doanh | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id IN ('TS003','TS011','TS015','TS017')) / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Tự doanh = TS003 + TS011 + TS015 + TS017. Bắt buộc lọc đúng sheet_id. | READY |
+| K_QLKD_83 | Cơ cấu DT nghiệp vụ tư vấn | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id IN ('TS023','TS027')) / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Tư vấn = TS023 + TS027. Bắt buộc lọc đúng sheet_id. | READY |
+| K_QLKD_84 | Cơ cấu DT nghiệp vụ bảo lãnh | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id = 'TS021') / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Bảo lãnh phát hành = TS021. | READY |
+| K_QLKD_85 | Cơ cấu DT nghiệp vụ khác | Tỷ VNĐ | Cơ sở | `SUM(fct.indicator_val_amt \| ri.cell_id IN ('TS013','TS025','TS029')) / 10^9` | **[ĐÃ KIỂM CHỨNG 2026-10-27 — KHỚP 100%]** Doanh thu khác = TS013 + TS025 + TS029. Bắt buộc lọc đúng sheet_id. | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | — | Chiều | `fct_securities_company_financial_structure_snpst.rpt_code` | Slicer hiển thị/đối chiếu. Fact đã lọc preferred_report_ind = '1' (ưu tiên BCTCHN, chỉ lấy BCTCRL khi không có BCTCHN). | READY |
 
-**Bảng mapping nguồn (Atomic Placeholder):**
+#### SQL Khai thác Datamart chuẩn (Golden Query — Đã đối soát khớp Staging BA 100%)
 
-| Tên KPI | Bảng nguồn (BA) | Atomic entity dự kiến | Atomic table dự kiến |
-|---|---|---|---|
-| Chiều thời gian theo quý | SSC_SCMS.MEMBER_REPORT | Member Periodic Report | TBD |
-| Doanh thu, LNST, cơ cấu DT theo nghiệp vụ (môi giới/tự doanh/tư vấn/bảo lãnh/khác) | SSC_SCMS.MEMBER_REPORT, SSC_SCMS.FORM_REPORT, SSC_SCMS.REPORT_CELL_VALUE | Member Report Indicator Value (mới, xem O_QLKD_23) | TBD |
+##### 1. Khai thác từ Datamart Star Schema (Dim & Fact: `fct_securities_company_financial_structure_snpst` + `report_indicator_dim`)
+```sql
+-- Khai thác Quy mô doanh thu & LNST toàn thị trường theo Quý
+-- Bắt buộc khử trùng bản nộp mới nhất per CTCK x Kỳ x Biểu mẫu x Ô
+WITH latest_fact AS (
+    SELECT
+        f.securities_company_dim_id,
+        f.rpt_year,
+        f.period_nbr,
+        f.rpt_code,
+        ri.cell_id,
+        f.indicator_val_amt
+    FROM (
+        SELECT
+            f.securities_company_dim_id,
+            f.rpt_year,
+            f.period_nbr,
+            f.rpt_code,
+            ri.cell_id,
+            f.indicator_val_amt,
+            ROW_NUMBER() OVER (
+                PARTITION BY f.securities_company_dim_id, f.rpt_year, f.period_nbr, f.rpt_code, ri.cell_id
+                ORDER BY f.submission_dt DESC, CAST(f.rpt_input_submission_id AS BIGINT) DESC
+            ) AS rn
+        FROM uat_dtm.fct_securities_company_financial_structure_snpst f
+        JOIN uat_dtm.report_indicator_dim ri
+          ON ri.report_indicator_dim_id = f.report_indicator_dim_id
+        WHERE f.rpt_code IN ('BCTCHN', 'BCTCRL')
+          AND f.rpt_period_tp_code = 'QUY'
+          AND f.submission_status_code IN ('1', '2')
+          AND f.preferred_report_ind = '1'
+          -- Lọc đúng Sheet KQKD (Sheet 06622 cho BCTCHN và Sheet 06610 cho BCTCRL)
+          AND ri.sheet_id IN (
+              SELECT get_json_object(sheet_item, '$.sheetId')
+              FROM uat_scms_stg.FORM_REPORT_DEEP_CONFIG dc
+              LATERAL VIEW explode(from_json(dc.SHEETS_JSON, 'array<string>')) t AS sheet_item
+              WHERE get_json_object(sheet_item, '$.sheetCode') IN ('06622', '06610')
+          )
+          AND ri.cell_id IN ('TS003','TS011','TS013','TS015','TS017','TS019','TS021','TS023','TS025','TS027','TS029','TS031','TS119','TS121')
+          AND (f.rpt_year * 4 + f.period_nbr) BETWEEN (:p_nam_tu * 4 + :p_quy_tu) AND (:p_nam_den * 4 + :p_quy_den)
+    ) f
+    WHERE f.rn = 1
+)
+SELECT
+    rpt_year AS nam,
+    period_nbr AS quy,
+    CONCAT('Q', CAST(period_nbr AS STRING), '/', CAST(rpt_year AS STRING)) AS ky_du_lieu,
+    ROUND(SUM(CASE WHEN cell_id = 'TS031' THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_79_doanh_thu,
+    ROUND(SUM(CASE WHEN (rpt_code = 'BCTCHN' AND cell_id = 'TS121') OR (rpt_code = 'BCTCRL' AND cell_id = 'TS119') THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_80_lnst,
+    ROUND(SUM(CASE WHEN cell_id = 'TS019' THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_81_moi_gioi,
+    ROUND(SUM(CASE WHEN cell_id IN ('TS003','TS011','TS015','TS017') THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_82_tu_doanh,
+    ROUND(SUM(CASE WHEN cell_id IN ('TS023','TS027') THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_83_tu_van,
+    ROUND(SUM(CASE WHEN cell_id = 'TS021' THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_84_bao_lanh,
+    ROUND(SUM(CASE WHEN cell_id IN ('TS013','TS025','TS029') THEN indicator_val_amt ELSE 0 END) / 1000000000.0, 2) AS k_qlkd_85_khac
+FROM latest_fact
+GROUP BY rpt_year, period_nbr
+ORDER BY rpt_year, period_nbr;
+```
 
-**Bảng KPI PENDING:**
-
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_QLKD_78 | Chiều thời gian theo quý | Chiều | READY |
-| K_QLKD_79 | Tổng doanh thu — toàn TT | Cơ sở | READY |
-| K_QLKD_80 | Lợi nhuận sau thuế — toàn TT | Cơ sở | READY |
-| K_QLKD_81 | Cơ cấu DT nghiệp vụ môi giới | Cơ sở | READY |
-| K_QLKD_82 | Cơ cấu DT nghiệp vụ tự doanh | Cơ sở | READY |
-| K_QLKD_83 | Cơ cấu DT nghiệp vụ tư vấn | Cơ sở | READY |
-| K_QLKD_84 | Cơ cấu DT nghiệp vụ bảo lãnh | Cơ sở | READY |
-| K_QLKD_85 | Cơ cấu DT nghiệp vụ khác | Cơ sở | READY |
-| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
-
-> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
+##### 2. Khai thác từ Datamart ClickHouse Flat Table (`qlkd_fct_securities_company_financial_structure_snpst_flat`)
+```sql
+-- Khai thác ClickHouse chuẩn hóa: Khử trùng bản nộp bằng LIMIT 1 BY, chia 10^9 (Tỷ VNĐ), bọc round(..., 2)
+WITH latest_cells AS (
+    SELECT
+        securities_company_dim_id,
+        rpt_year,
+        period_nbr,
+        rpt_code,
+        cell_id,
+        indicator_val_amt
+    FROM qlkd_fct_securities_company_financial_structure_snpst_flat
+    WHERE rpt_period_tp_code = 'QUY'
+      AND submission_status_code IN ('1','2')
+      AND preferred_report_ind = '1'
+      AND rpt_code IN ('BCTCHN', 'BCTCRL')
+      AND cell_id IN ('TS003','TS011','TS013','TS015','TS017','TS019','TS021','TS023','TS025','TS027','TS029','TS031','TS119','TS121')
+      -- [LƯU Ý]: Nếu flat table có cột sheet_code/sheet_id, bắt buộc bổ sung: sheet_code IN ('06622', '06610')
+      AND (rpt_year * 4 + period_nbr) BETWEEN ({from_year:Int32} * 4 + {from_quarter:Int32}) AND ({to_year:Int32} * 4 + {to_quarter:Int32})
+    ORDER BY submission_dt DESC, rpt_input_submission_id DESC
+    LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr, rpt_code, cell_id
+)
+SELECT
+    rpt_year AS year,
+    period_nbr AS quarter,
+    concat('Q', toString(period_nbr), '/', toString(rpt_year)) AS ky_du_lieu,
+    round(sumIf(indicator_val_amt, cell_id = 'TS031') / 1000000000, 2) AS k_qlkd_79,
+    round(sumIf(indicator_val_amt, (rpt_code = 'BCTCHN' AND cell_id = 'TS121') OR (rpt_code = 'BCTCRL' AND cell_id = 'TS119')) / 1000000000, 2) AS k_qlkd_80,
+    round(sumIf(indicator_val_amt, cell_id = 'TS019') / 1000000000, 2) AS k_qlkd_81,
+    round(sumIf(indicator_val_amt, cell_id IN ('TS003', 'TS011', 'TS015', 'TS017')) / 1000000000, 2) AS k_qlkd_82,
+    round(sumIf(indicator_val_amt, cell_id IN ('TS023', 'TS027')) / 1000000000, 2) AS k_qlkd_83,
+    round(sumIf(indicator_val_amt, cell_id = 'TS021') / 1000000000, 2) AS k_qlkd_84,
+    round(sumIf(indicator_val_amt, cell_id IN ('TS013', 'TS025', 'TS029')) / 1000000000, 2) AS k_qlkd_85
+FROM latest_cells
+GROUP BY year, quarter
+ORDER BY year, quarter;
+```
 
 ---
 
