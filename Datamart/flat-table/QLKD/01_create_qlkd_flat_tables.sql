@@ -140,12 +140,12 @@ COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Ca
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_capital_raising_event_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company Capital Raising Event
-    event_dt_dim_id                 String                  COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date)',
+    event_dt_dim_id                 String                  COMMENT 'FK tháng của đợt chào bán/phát hành — TRUNC(COALESCE(document_dt, src_rcrd_isrt_tms), \'MM\')',
     offering_form_dim_id            String                  COMMENT 'FK hình thức tăng vốn',
     proceeds_collected_amt          Nullable(Decimal(23,2)) COMMENT 'Tổng tiền thực tế thu được (SUM theo tháng x hình thức tăng vốn)',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng của đợt chào bán/phát hành (Result Report Date) — từ Calendar Date Dimension',
+    cdr_dt                          Nullable(Date)          COMMENT 'FK tháng của đợt chào bán/phát hành — từ Calendar Date Dimension (TRUNC(COALESCE(document_dt, src_rcrd_isrt_tms), \'MM\'))',
 
     -- From: OFFERING FORM DIMENSION
     capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Type Code (dự phòng Offering Method) — từ Offering Form Dimension',
