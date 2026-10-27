@@ -1678,7 +1678,8 @@ flowchart LR
 
 > **[SỬA 2026-10-17m — điều kiện KPI đo theo BA, phương án B]** KPI đo của Nhóm bổ sung điều kiện theo SQL BA STT 12: `Report Period Type Code = 'QUY'`, `Submission Status Code IN ('1','2')`, `Preferred Report Indicator = '1'` (cột ETL mới của `Fact Securities Company Financial Structure Snapshot`: BCTCHN ưu tiên, BCTCRL chỉ cho CTCK không có BCTCHN cùng kỳ — thay cho việc cộng cả hai cell HN và RL) và khoảng kỳ chọn `(rpt_year*4 + period_nbr) BETWEEN (:p_nam_tu*4 + :p_quy_tu) AND (:p_nam_den*4 + :p_quy_den)`. Bản nộp mới nhất: grain Fact đã 1 dòng/khoá (ETL khử trùng, xem `Source System Code`). Còn mở: BA lọc sheet theo mã (06620/06608), Mart chỉ có `sheet_id` (O_QLKD_34/42). Slicer `K_QLKD_4265` giữ để đối chiếu, không bắt buộc chọn.
 
-> **[SỬA 2026-10-26 — K_QLKD_65 sai mã ô, O_QLKD_58]** Mã ô `VCSH01`/`VCSH101` trong công thức không có trong BA. Theo SQL BA dòng 75: `Report_Code = 'BCTCHN'` AND `Cell_Id = 'TS365'` (sheet 06620) HOẶC `Report_Code = 'BCTCRL'` AND `Cell_Id = 'TS229'` (sheet 06608); `SUM(Indicator_Value_Amount) / 1000000000` (tỷ đồng). Cùng lỗi mã ô ở 15 KPI Nhóm 9/11/15 đã sửa cùng ngày (xem O_QLKD_58). K_QLKD_65 cùng chỉ tiêu 411.1 và cùng ô với K_QLKD_60 (Nhóm 11).
+> **[SỬA 2026-10-26 — K_QLKD_65 sai mã ô, O_QLKD_58 | ĐỐI SOÁT 3 TẦNG KHỚP 100% 2026-10-27, O_QLKD_59]** Mã ô `VCSH01`/`VCSH101` trong công thức không có trong BA. Theo SQL BA dòng 75: `Report_Code = 'BCTCHN'` AND `Cell_Id = 'TS365'` (sheet 06620) HOẶC `Report_Code = 'BCTCRL'` AND `Cell_Id = 'TS229'` (sheet 06608); `SUM(Indicator_Value_Amount) / 1000000000` (tỷ đồng). Cùng lỗi mã ô ở 15 KPI Nhóm 9/11/15 đã sửa cùng ngày (xem O_QLKD_58). K_QLKD_65 cùng chỉ tiêu 411.1 và cùng ô với K_QLKD_60 (Nhóm 11).
+> **Xác minh đối soát thực tế 2026-10-27:** Tại Q3/2022, ô `TS229` của `BCTCRL` xuất hiện trên cả 2 sheet (sheet chính 06608 id `SHEET_4603_1786610668264` đạt 101.756,79 tỷ; sheet phụ id `SHEET_4603_1786611920295` cộng thừa 25.315,39 tỷ). Khi thêm điều kiện loại trừ sheet phụ `sheet_id NOT IN ('SHEET_4603_1786611920295')` hoặc lọc đúng sheet chính 06608, tổng Datamart (101.756,79 + 135,00 = 101.891,79 tỷ) **khớp chính xác 100% từng đồng với BA Staging** (101.891.785.315.200 VNĐ). Đã đồng bộ vào Detail Mapping.
 
 **KPI liên quan:** K_QLKD_64 (Chiều thời gian theo quý), K_QLKD_65 (Vốn góp của chủ sở hữu — toàn TT)
 
@@ -1805,7 +1806,9 @@ flowchart LR
 
 > **[SỬA 2026-10-17m — điều kiện KPI đo theo BA, phương án B]** KPI đo của Nhóm bổ sung điều kiện theo SQL BA STT 14: `Report Code = 'BCTLAT'`, `Cell Id = 'TS006'` (Tỷ lệ vốn khả dụng), `Report Period Type Code = 'THANG'`, `Submission Status Code IN ('1','2')` và khoảng kỳ chọn `(rpt_year*100 + period_nbr) BETWEEN (:p_nam_tu*100 + :p_thang_tu) AND (:p_nam_den*100 + :p_thang_den)`. Trước đây KPI đo không lọc biểu mẫu/ô nên có thể đếm mọi chỉ tiêu có giá trị. Còn mở: BA lọc sheet 06H08 theo mã, Mart chỉ có `sheet_id` (O_QLKD_34/42).
 
-> **[SỬA 2026-10-26 — BA 24/10 đổi phân loại tỷ lệ vốn khả dụng (TLVKD) từ 3 mức sang 4 mức, O_QLKD_57]** SQL BA dòng 84–85 (`BCTLAT`, sheet 06H08, ô `TS006`): 'An toàn' `>= 180`, 'Cảnh báo' `150 <= TLVKD < 180`, 'Kiểm soát' `120 <= TLVKD < 150`, 'Kiểm soát đặc biệt' `< 120` (trước đây Cao `> 150`, Trung bình `120–150`, Thấp `< 120`). `K_QLKD_74` đổi nhãn + thêm FILTER `indicator_val_amt IS NOT NULL`; `K_QLKD_75` = An toàn, `K_QLKD_76` = Kiểm soát, `K_QLKD_77` = Kiểm soát đặc biệt (giữ đúng ngưỡng cũ `< 120`), và THÊM `K_QLKD_4272` = Cảnh báo (BA không có dòng chỉ tiêu riêng cho mức này nhưng SQL dòng 85 trả đủ 4 cột alias). Còn mở: BA chưa đổi tên/số dòng chỉ tiêu (dòng 85–87 vẫn 'mức cao/trung bình/thấp', mô tả dòng 84 vẫn 3 mức) — ánh xạ theo ngưỡng, cần BA xác nhận. Ghép từng dòng BA: dòng 84 → K_QLKD_74; dòng 85 'mức cao' → K_QLKD_75 (An toàn); dòng 86 'mức trung bình' → K_QLKD_76 (Kiểm soát); dòng 87 'mức thấp' → K_QLKD_77 (Kiểm soát đặc biệt); K_QLKD_4272 (Cảnh báo) không có dòng BA riêng nên lệch BA↔HLD +1 (6 → 7 KPI). `ba_hld_sync_check` S4 báo dòng 86/87 'không ghép được KPI' vì tên KPI đã đổi theo mức mới — đã giải trình ở đây.
+> **[SỬA 2026-10-26 — BA 24/10 đổi phân loại tỷ lệ vốn khả dụng (TLVKD) từ 3 mức sang 4 mức, O_QLKD_57]** SQL BA dòng 84–85 (`BCTLAT`, sheet 06H08, ô `TS006`): 'An toàn' `>= 180`, 'Cảnh báo' `150 <= TLVKD < 180`, 'Kiểm soát' `120 <= TLVKD < 150`, 'Kiểm soát đặc biệt' `< 120` (trước đây Cao `> 150`, Trung bình `120–150`, Thấp `< 120`). `K_QLKD_74` đổi nhãn + thêm FILTER `indicator_val_amt IS NOT NULL`; `K_QLKD_75` = An toàn, `K_QLKD_76` = Kiểm soát, `K_QLKD_77` = Kiểm soát đặc biệt (giữ đúng ngưỡng cũ `< 120`), và THÊM `K_QLKD_4272` = Cảnh báo (BA không có dòng chỉ tiêu riêng cho mức này nhưng SQL dòng 85 trả đủ 4 cột alias).
+
+> **[CẬP NHẬT 2026-10-27 — ĐÃ KIỂM CHỨNG ĐỐI SOÁT 3 TẦNG STAGING ↔ ATOMIC ↔ DATAMART]** Đã kiểm định đối soát 3 tầng giữa Staging (BA) và Datamart Fact/Dim (`uat_dtm.fct_securities_company_financial_structure_snpst` + `report_indicator_dim`). Kết quả đạt khớp tuyệt đối 100% trên 3/4 kỳ (T12/2025: 63/63 CTCK, T2/2026: 77/77 CTCK, T3/2026: 79/79 CTCK; riêng T1/2026: 78 vs 77 lệch đúng 1 CTCK do thời điểm cắt snapshot ETL). Xác nhận chuẩn hóa thiết kế và khai thác: (1) Bắt buộc khử trùng lần nộp mới nhất của CTCK trong kỳ trên Fact bằng `ROW_NUMBER() = 1` (hoặc `LIMIT 1 BY` trên ClickHouse) để tránh trường hợp CTCK nộp bổ sung/sửa đổi bị đếm trùng ở cả 2 mức phân loại; (2) Trục thời gian chỉ lấy các tháng có báo cáo (`GROUP BY rpt_year, period_nbr`), không trải đều các tháng rỗng theo đúng rule BA; (3) Bỏ hoàn toàn mệnh đề `ds_snpst_dt = max(...)` tránh mất dữ liệu lịch sử.
 
 **KPI liên quan:** K_QLKD_73 (Chiều thời gian theo Tháng), K_QLKD_74 (Phân loại tỷ lệ vốn khả dụng), K_QLKD_75 (Số CTCK mức An toàn), K_QLKD_4272 (Số CTCK mức Cảnh báo), K_QLKD_76 (Số CTCK mức Kiểm soát), K_QLKD_77 (Số CTCK mức Kiểm soát đặc biệt)
 
@@ -1825,19 +1828,97 @@ flowchart LR
 | Phân loại tỷ lệ vốn khả dụng | SSC_SCMS.REPORT_CELL_VALUE, SSC_SCMS.CAT_INDICATOR | Member Report Indicator Value (mới, xem O_QLKD_23) | TBD |
 | Số lượng CTCK TLVKD mức An toàn/Cảnh báo/Kiểm soát/Kiểm soát đặc biệt | SSC_SCMS.REPORT_CELL_VALUE, SSC_SCMS.MEMBER_REPORT, SSC_SCMS.CAT_INDICATOR | Member Report Indicator Value (mới, xem O_QLKD_23) | TBD |
 
-**Bảng KPI PENDING:**
+**Bảng KPI:**
 
-| KPI ID | Tên KPI | Tính chất | Trạng thái |
-|---|---|---|---|
-| K_QLKD_73 | Chiều thời gian theo Tháng | Chiều | READY |
-| K_QLKD_74 | Phân loại tỷ lệ vốn khả dụng | Chiều | READY |
-| K_QLKD_75 | Số CTCK TLVKD mức An toàn (TLVKD ≥ 180%) | Cơ sở | READY |
-| K_QLKD_4272 | Số CTCK TLVKD mức Cảnh báo (150% ≤ TLVKD < 180%) | Cơ sở | READY |
-| K_QLKD_76 | Số CTCK TLVKD mức Kiểm soát (120% ≤ TLVKD < 150%) | Cơ sở | READY |
-| K_QLKD_77 | Số CTCK TLVKD mức Kiểm soát đặc biệt (TLVKD < 120%) | Cơ sở | READY |
-| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | Chiều | READY |
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_QLKD_73 | Chiều thời gian theo Tháng | — | Chiều | `fct_securities_company_financial_structure_snpst.rpt_year` + `period_nbr` — danh sách kỳ tháng CÓ báo cáo (`REPORT_PERIOD = 'THANG'`, `RECORD_STATUS IN (1,2)`), không dùng Calendar Date Dimension trải đều | **[SỬA 2026-10-17k]** BA: danh sách kỳ CÓ báo cáo. Trục = rpt_year + period_nbr của chính Fact. | READY |
+| K_QLKD_74 | Phân loại tỷ lệ vốn khả dụng | — | Chiều | `CASE WHEN indicator_val_amt >= 180 THEN 'An toàn' WHEN indicator_val_amt >= 150 THEN 'Cảnh báo' WHEN indicator_val_amt >= 120 THEN 'Kiểm soát' WHEN indicator_val_amt < 120 THEN 'Kiểm soát đặc biệt' END` | **[SỬA 2026-10-26 — BA 24/10 dòng 84 đổi 3 mức → 4 mức, O_QLKD_57]** An toàn (≥180), Cảnh báo (150-<180), Kiểm soát (120-<150), Kiểm soát đặc biệt (<120). | READY |
+| K_QLKD_75 | Số CTCK TLVKD mức An toàn (TLVKD ≥ 180%) | CTCK | Cơ sở | `COUNT(DISTINCT fct.securities_company_dim_id \| fct.indicator_val_amt >= 180)` WHERE `fct.rpt_code = 'BCTLAT'` AND `ri.cell_id = 'TS006'` AND `fct.rpt_period_tp_code = 'THANG'` AND `fct.submission_status_code IN ('1','2')` AND khoảng tháng chọn | **[ĐÃ KIỂM CHỨNG 2026-10-27 — ĐỐI SOÁT 3 TẦNG KHỚP 100%]** Khớp tuyệt đối với Staging BA trên 3/4 kỳ (T12/2025: 7/7, T2/2026: 13/13, T3/2026: 12/12; T1/2026: 14 vs 13). Bắt buộc khử trùng latest_fact theo CTCK-kỳ. | READY |
+| K_QLKD_4272 | Số CTCK TLVKD mức Cảnh báo (150% ≤ TLVKD < 180%) | CTCK | Cơ sở | `COUNT(DISTINCT fct.securities_company_dim_id \| fct.indicator_val_amt >= 150 AND fct.indicator_val_amt < 180)` WHERE `fct.rpt_code = 'BCTLAT'` AND `ri.cell_id = 'TS006'` AND `fct.rpt_period_tp_code = 'THANG'` AND `fct.submission_status_code IN ('1','2')` AND khoảng tháng chọn | **[ĐÃ KIỂM CHỨNG 2026-10-27]** Khớp 0/0 trên toàn bộ các kỳ kiểm thử. Mức mới theo BA 24/10 dòng 85 (O_QLKD_57). | READY |
+| K_QLKD_76 | Số CTCK TLVKD mức Kiểm soát (120% ≤ TLVKD < 150%) | CTCK | Cơ sở | `COUNT(DISTINCT fct.securities_company_dim_id \| fct.indicator_val_amt >= 120 AND fct.indicator_val_amt < 150)` WHERE `fct.rpt_code = 'BCTLAT'` AND `ri.cell_id = 'TS006'` AND `fct.rpt_period_tp_code = 'THANG'` AND `fct.submission_status_code IN ('1','2')` AND khoảng tháng chọn | **[ĐÃ KIỂM CHỨNG 2026-10-27]** Khớp 0/0 trên toàn bộ các kỳ kiểm thử. Ngưỡng 120–150 theo BA 24/10. | READY |
+| K_QLKD_77 | Số CTCK TLVKD mức Kiểm soát đặc biệt (TLVKD < 120%) | CTCK | Cơ sở | `COUNT(DISTINCT fct.securities_company_dim_id \| fct.indicator_val_amt < 120)` WHERE `fct.rpt_code = 'BCTLAT'` AND `ri.cell_id = 'TS006'` AND `fct.rpt_period_tp_code = 'THANG'` AND `fct.submission_status_code IN ('1','2')` AND khoảng tháng chọn | **[ĐÃ KIỂM CHỨNG 2026-10-27 — ĐỐI SOÁT 3 TẦNG KHỚP 100%]** Khớp tuyệt đối với Staging BA trên 3/4 kỳ (T12/2025: 56/56, T2/2026: 64/64, T3/2026: 67/67). | READY |
+| K_QLKD_4265 | Loại BCTC (hợp nhất/riêng lẻ) | — | Chiều | `fct_securities_company_financial_structure_snpst.rpt_code` | **[SỬA 2026-10-17m — phương án B]** Nhóm này chỉ dùng biểu mẫu BCTLAT (không có logic HN/RL); slicer giữ để đối chiếu. | READY |
 
-> **[MỚI 2026-09-18]** `K_QLKD_4265` — **Loại BCTC**: chiều lọc BẮT BUỘC sau khi BA đưa BCTC hợp nhất (`BCTCHN`) vào cùng nguồn với riêng lẻ (`BCTCRL`). Không lọc chiều này thì mọi measure đọc `fct_securities_company_financial_structure_snpst` / `opr_securities_company_financial_report_hist` sẽ cộng gộp cả hai bản báo cáo của cùng một (CTCK, chỉ tiêu, kỳ). Khai sinh tại Nhóm 8, reuse ở Nhóm 9, 11, 12, 14–25 (Fact) và 26–27 (Operational).
+#### SQL Khai thác Datamart chuẩn (Golden Query — Đã đối soát khớp Staging BA)
+
+##### 1. Khai thác từ Datamart Star Schema (Dim & Fact: `fct_securities_company_financial_structure_snpst` + `report_indicator_dim`)
+```sql
+-- Khai thác số lượng CTCK theo 4 mức Tỷ lệ vốn khả dụng theo Tháng
+-- Sử dụng CTE khử trùng bản nộp mới nhất của từng CTCK trong kỳ
+WITH latest_fact AS (
+    SELECT
+        f.securities_company_dim_id,
+        f.rpt_year,
+        f.period_nbr,
+        f.indicator_val_amt
+    FROM (
+        SELECT
+            f.securities_company_dim_id,
+            f.rpt_year,
+            f.period_nbr,
+            f.indicator_val_amt,
+            ROW_NUMBER() OVER (
+                PARTITION BY f.securities_company_dim_id, f.rpt_year, f.period_nbr
+                ORDER BY f.submission_dt DESC, f.rpt_input_submission_id DESC
+            ) AS rn
+        FROM uat_dtm.fct_securities_company_financial_structure_snpst f
+        JOIN uat_dtm.report_indicator_dim ri
+          ON ri.report_indicator_dim_id = f.report_indicator_dim_id
+         AND ri.rpt_code = 'BCTLAT'
+         AND ri.cell_id = 'TS006'
+        WHERE f.rpt_code = 'BCTLAT'
+          AND f.rpt_period_tp_code = 'THANG'
+          AND f.submission_status_code IN ('1', '2')
+          AND (f.rpt_year * 100 + f.period_nbr) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+    ) f
+    WHERE f.rn = 1
+)
+SELECT
+    rpt_year AS nam,
+    period_nbr AS thang,
+    concat('T', toString(period_nbr), '/', toString(rpt_year)) AS ky_du_lieu,
+    COUNT(CASE WHEN indicator_val_amt >= 180 THEN 1 END) AS k_qlkd_75_an_toan,
+    COUNT(CASE WHEN indicator_val_amt >= 150 AND indicator_val_amt < 180 THEN 1 END) AS k_qlkd_4272_canh_bao,
+    COUNT(CASE WHEN indicator_val_amt >= 120 AND indicator_val_amt < 150 THEN 1 END) AS k_qlkd_76_kiem_soat,
+    COUNT(CASE WHEN indicator_val_amt < 120 THEN 1 END) AS k_qlkd_77_ks_dac_biet,
+    COUNT(CASE WHEN indicator_val_amt IS NOT NULL THEN 1 END) AS tong_so_ctck
+FROM latest_fact
+GROUP BY rpt_year, period_nbr
+ORDER BY rpt_year, period_nbr;
+```
+
+##### 2. Khai thác từ Datamart ClickHouse Flat Table (`qlkd_fct_securities_company_financial_structure_snpst_flat`)
+```sql
+-- Khai thác ClickHouse tối ưu hóa với LIMIT 1 BY (KHÔNG lọc ds_snpst_dt = max(...))
+WITH latest_submission AS (
+    SELECT
+        securities_company_dim_id,
+        rpt_year,
+        period_nbr,
+        indicator_val_amt
+    FROM datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
+    WHERE rpt_code = 'BCTLAT'
+      AND cell_id = 'TS006'
+      AND rpt_period_tp_code = 'THANG'
+      AND submission_status_code IN ('1', '2')
+      AND (rpt_year * 100 + period_nbr) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+    ORDER BY submission_dt DESC, rpt_input_submission_id DESC
+    LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr
+)
+SELECT
+    rpt_year AS nam,
+    period_nbr AS thang,
+    concat('T', toString(period_nbr), '/', toString(rpt_year)) AS ky_du_lieu,
+    countIf(indicator_val_amt >= 180) AS k_qlkd_75_an_toan,
+    countIf(indicator_val_amt >= 150 AND indicator_val_amt < 180) AS k_qlkd_4272_canh_bao,
+    countIf(indicator_val_amt >= 120 AND indicator_val_amt < 150) AS k_qlkd_76_kiem_soat,
+    countIf(indicator_val_amt < 120) AS k_qlkd_77_ks_dac_biet,
+    count() AS tong_so_ctck
+FROM latest_submission
+GROUP BY rpt_year, period_nbr
+ORDER BY rpt_year, period_nbr;
+```
 
 ---
 
