@@ -146,6 +146,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_capital_raising_
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'FK tháng của đợt chào bán/phát hành — từ Calendar Date Dimension (TRUNC(COALESCE(document_dt, src_rcrd_isrt_tms), \'MM\'))',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
 
     -- From: OFFERING FORM DIMENSION
     capital_raising_form_code       Nullable(String)        COMMENT 'Mã hình thức tăng vốn — ETL-derived CASE WHEN Item Category Code + Offering Type Code (dự phòng Offering Method) — từ Offering Form Dimension',
@@ -185,6 +187,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_market_index_snpst_flat ON CLUSTER 
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày cuối tháng (LAST_DAY) — từ Calendar Date Dimension',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
 
     -- From: MARKET INDEX DIMENSION
     market_id                       Nullable(String)        COMMENT 'Mã thị trường — từ Market Index Dimension',
@@ -503,6 +507,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
     indicator_val_amt                            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
     rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTLAT, BCTHHD_CTCK).',
+    legal_basis                                  Nullable(String)        COMMENT 'Căn cứ pháp lý của biểu mẫu báo cáo (trường LEGAL_BASIS của biểu mẫu, chứa số thông tư áp dụng, VD 121/2020/TT-BTC, 102/2025/TT-BTC). Cùng 1 mã biểu mẫu (VD BCTLAT) có thể có nhiều bản theo từng thông tư; KPI lọc cột này để chọn bản biểu mẫu cần đọc.',
     rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) mà ô này thuộc về — cho biết giá trị lấy từ lần nộp nào của kỳ báo cáo.',
     submission_dt                                Nullable(Date)          COMMENT 'Ngày CTCK nộp báo cáo.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ: 1 = Gửi đúng hạn, 2 = Gửi muộn.',
@@ -511,6 +516,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    snpst_cdr_dt                                 Nullable(Date)          COMMENT 'Ngày snapshot (ngày kết thúc kỳ báo cáo), cùng giá trị cdr_dt; giữ tên snpst_cdr_dt theo quy ước chiều ngày snapshot — từ Calendar Date Dimension',
     year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
     quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
     month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
@@ -534,6 +540,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
 
     -- From: REPORT INDICATOR DIMENSION
     sheet_id                                     Nullable(String)        COMMENT 'Sheet trong biểu mẫu eForm động (sheet_id gốc eForm, chưa có mã sheet — O_QLKD_42) — từ Report Indicator Dimension',
+    sheet_code                                   Nullable(String)        COMMENT 'Mã sheet nghiệp vụ của biểu mẫu eForm (sheetCode trong cấu hình biểu mẫu, VD 06620/06608/TTC_T/TTC_Q); cùng cell_id mang nghĩa khác nhau giữa các sheet nên lọc theo (rpt_code, sheet_code, cell_id) — từ Report Indicator Dimension',
     cell_id                                      Nullable(String)        COMMENT 'Mã ô dữ liệu (cell_id) trong sheet eForm động — chỉ có nghĩa cùng rpt_code + sheet_id — từ Report Indicator Dimension',
     ri_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Report Indicator Dimension'
 )

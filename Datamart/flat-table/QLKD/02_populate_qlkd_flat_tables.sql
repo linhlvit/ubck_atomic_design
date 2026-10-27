@@ -163,6 +163,8 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
+    cal.year                        AS year,
+    cal.month                       AS month,
 
     -- From: OFFERING FORM DIMENSION
     offer_dim.capital_raising_form_code   AS capital_raising_form_code,
@@ -212,6 +214,8 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,
+    cal.year                        AS year,
+    cal.month                       AS month,
 
     -- From: MARKET INDEX DIMENSION
     idx_dim.market_id               AS market_id,
@@ -513,6 +517,7 @@ SELECT
     f.period_nbr,
     f.indicator_val_amt,
     f.rpt_code,
+    f.legal_basis,
     f.rpt_input_submission_id,
     f.submission_dt,
     f.submission_status_code,
@@ -521,6 +526,7 @@ SELECT
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
+    cal.cdr_dt AS snpst_cdr_dt,
     cal.year AS year,
     cal.quarter AS quarter,
     cal.month AS month,
@@ -544,6 +550,7 @@ SELECT
 
     -- From: REPORT INDICATOR DIMENSION
     ri_dim.sheet_id AS sheet_id,
+    ri_dim.sheet_code AS sheet_code,
     ri_dim.cell_id AS cell_id,
     ri_dim.src_stm_code AS ri_dim_src_stm_code
 
