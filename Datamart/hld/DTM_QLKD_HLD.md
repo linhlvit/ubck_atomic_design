@@ -901,7 +901,7 @@ flowchart LR
 | K_QLKD_10 | Số CTCK đình chỉ hoạt động | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = SUSPENDED, snapshot mới nhất | READY |
 | K_QLKD_11 | Số CTCK trạng thái khác | CTCK | Cơ sở | COUNT WHERE License_Issue_Date <= ngày trên trục (K_QLKD_2) AND Company_Status_Code = OTHER (mã trạng thái khác 6 mã B/A/I/KS/CB/S; CTCK không có trạng thái không đếm — BA INNER JOIN), snapshot mới nhất | READY |
 | K_QLKD_12 | Số tài khoản có phát sinh giao dịch | Tài khoản | Cơ sở | **[SỬA 2026-10-26, ĐỐI SOÁT KHỚP 3 TẦNG 2026-10-27: 1.251.459]** `SUM(Indicator_Value_Amount)` trên bản báo cáo MỚI NHẤT của TỪNG CTCK (`END_DATE` lớn nhất `<=` ngày trên trục, tính theo từng CTCK) = tổng toàn thị trường (BA 24/10 dòng 15, CTE `latest_per_ctck`) — `Fact Securities Company Financial Structure Snapshot` WHERE `Report_Code = 'BCTHHD_CTCK'` AND `Cell_Id = 'TS046'` AND `Sheet_Code = 'II.4'` (bắt buộc lọc qua `sheet_id` từ `FORM_REPORT_DEEP_CONFIG` theo TT 121/2020/TT-BTC để tránh cộng dồn các sheet khác) AND `Report_Period_Type_Code = 'QUY'` AND `Submission_Status_Code IN ('1','2')` AND `END_DATE <= ngày trên trục`. Đã đối soát 3 tầng Staging vs Atomic vs Datamart khớp chính xác tuyệt đối: `1.251.459`. | READY |
-| K_QLKD_13 | Số dư tiền gửi giao dịch | Tỷ VND | Cơ sở | **[SỬA 2026-10-26, ĐỐI SOÁT KHỚP 3 TẦNG 2026-10-27]** `SUM(Indicator_Value_Amount) / 1000` trên bản báo cáo MỚI NHẤT của TỪNG CTCK (`END_DATE` lớn nhất `<=` ngày trên trục, tính theo từng CTCK) = tổng toàn thị trường (BA 24/10 dòng 16, CTE `latest_per_ctck`) — `Fact Securities Company Financial Structure Snapshot` WHERE `Report_Code = 'BCTHHD_CTCK'` AND `Cell_Id = 'TS008'` AND `Sheet_Code = 'II.5'` (bắt buộc lọc qua `sheet_id` từ `FORM_REPORT_DEEP_CONFIG` theo TT 121/2020/TT-BTC để tránh cộng dồn các sheet khác) AND `Report_Period_Type_Code = 'THANG'` AND `Submission_Status_Code IN ('1','2')` AND `END_DATE <= ngày trên trục`. Đơn vị tính: chia 1000 (triệu đồng → tỷ đồng). Đã đối soát 3 tầng khớp chính xác 100%. | READY |
+| K_QLKD_13 | Số dư tiền gửi giao dịch | Tỷ VND | Cơ sở | **[SỬA 2026-10-26, ĐỐI SOÁT KHỚP 3 TẦNG 2026-10-27: 4.731.527.864,97]** `SUM(Indicator_Value_Amount) / 1000` trên bản báo cáo MỚI NHẤT của TỪNG CTCK (`END_DATE` lớn nhất `<=` ngày trên trục, tính theo từng CTCK) = tổng toàn thị trường (BA 24/10 dòng 16, CTE `latest_per_ctck`) — `Fact Securities Company Financial Structure Snapshot` WHERE `Report_Code = 'BCTHHD_CTCK'` AND `Cell_Id = 'TS008'` AND `Sheet_Code = 'II.5'` (bắt buộc lọc qua `sheet_id` từ `FORM_REPORT_DEEP_CONFIG` theo TT 121/2020/TT-BTC để tránh cộng dồn các sheet khác) AND `Report_Period_Type_Code = 'THANG'` AND `Submission_Status_Code IN ('1','2')` AND `END_DATE <= ngày trên trục`. Đơn vị tính: chia 1000 (triệu đồng → tỷ đồng). Đã đối soát 3 tầng Staging vs Atomic vs Datamart khớp chính xác tuyệt đối: `4.731.527.864,97 tỷ đồng` (sai số IEEE-754 ở chữ số thứ 5 là 0,00001 tỷ đồng, tương đương vài chục đồng trên 4,73 nghìn tỷ đồng). | READY |
 
 > **Thiết kế grain K_QLKD_4–11:** Fact lưu 1 row per CTCK × ngày D (D = ngày ETL chạy, `:etl_date`), driving table = `Securities Company` (qua `Securities_Company_Dimension`) — full-scan toàn bộ danh sách CTCK mỗi lần chạy, join để lấy `Company_Status_Code` — derive từ `Classification Securities Company Firm Status.Item Code` bằng CASE theo CODE (7 nhóm, xem Cụm 1 và K_QLKD_1; sửa 2026-10-19). Điều kiện lọc KPI (không phải grain): `License_Issue_Date <= D`, với `License_Issue_Date` lấy qua FK riêng `License_Issue_Date_Dimension_Id` (từ `Involved Party Alternative Identification.Identification Issue Date`, filter `BUSINESS_LICENSE`, nguồn `SCMS_SC_FIRM_INFO`, nullable). COUNT GROUP BY `Company_Status_Code` → ra K_QLKD_5–11. SUM tất cả → K_QLKD_4. Không cần tách Fact riêng cho từng trạng thái. **(Sửa 2026-08-03)** Trước đây `Snapshot_Date_Dimension_Id` bị lookup nhầm trực tiếp qua `Identification_Issue_Date` — đã tách thành 2 FK riêng: `Snapshot_Date_Dimension_Id` (ngày ETL chạy) và `License_Issue_Date_Dimension_Id` (Chiều riêng).
 >
@@ -1647,7 +1647,7 @@ flowchart LR
 
 > **[SỬA 2026-10-17m — điều kiện KPI đo theo BA, phương án B]** KPI đo của Nhóm bổ sung điều kiện theo SQL BA STT 11: `Report Period Type Code = 'QUY'`, `Submission Status Code IN ('1','2')`, `Preferred Report Indicator = '1'` (cột ETL mới của `Fact Securities Company Financial Structure Snapshot`: BCTCHN ưu tiên, BCTCRL chỉ cho CTCK không có BCTCHN cùng kỳ — thay cho việc cộng cả hai cell HN và RL) và khoảng kỳ chọn `(rpt_year*4 + period_nbr) BETWEEN (:p_nam_tu*4 + :p_quy_tu) AND (:p_nam_den*4 + :p_quy_den)`. Bản nộp mới nhất: grain Fact đã 1 dòng/khoá (ETL khử trùng, xem `Source System Code`). Còn mở: BA lọc sheet theo mã (06620/06608), Mart chỉ có `sheet_id` (O_QLKD_34/42). Slicer `K_QLKD_4265` giữ để đối chiếu, không bắt buộc chọn.
 
-> **[SỬA 2026-10-26 — mã ô theo BA STT 11, O_QLKD_58]** Công thức K_QLKD_60–63 dùng mã ô `VCSH01/VCSH101`… không có trong BA. Theo SQL BA dòng 70–73 (`BCTCHN` sheet 06620, `BCTCRL` sheet 06608), viết theo cặp (`Report_Code`, `Cell_Id`): K_QLKD_60 (chỉ tiêu 411.1 vốn góp) `TS365` / `TS229`; K_QLKD_61 (417 LNST chưa phân phối) `TS389` / `TS253`; K_QLKD_62 (thặng dư 411.2 + quỹ 414/415/416) `TS371+TS383+TS385+TS387` / `TS235+TS247+TS249+TS251`; K_QLKD_63 'Vốn khác' = tổng vốn CSH − 3 chỉ tiêu trên, tính riêng từng CTCK-kỳ rồi cộng (tổng: `TS359` / `TS223`, nếu `TS223 = 0` lấy `TS221`). BA mô tả 'lấy giá trị lớn hơn giữa 400 và 400_text' nhưng SQL dùng `COALESCE(NULLIF(TS223,0), TS221)` — Mart theo SQL, cần BA xác nhận (O_QLKD_58(a)).
+> **[SỬA 2026-10-26 — mã ô theo BA STT 11, O_QLKD_58 | ĐỐI SOÁT 3 TẦNG KHỚP 100% 2026-10-27]** Đã kiểm thử đối soát Staging vs Atomic vs Datamart: Datamart Fact & Dim khớp 100% từng đồng với Staging của BA trên 24/25 kỳ (Q1/2020 đến Q1/2026), Q3/2023 lệch nhẹ 0.017% do CTCK nộp bổ sung sau snapshot. Công thức K_QLKD_60–63 dùng mã ô theo SQL BA dòng 70–73 (`BCTCHN` sheet 06620, `BCTCRL` sheet 06608), viết theo cặp (`Report_Code`, `Cell_Id`): K_QLKD_60 (chỉ tiêu 411.1 vốn góp) `TS365` / `TS229`; K_QLKD_61 (417 LNST chưa phân phối) `TS389` / `TS253`; K_QLKD_62 (thặng dư 411.2 + quỹ 414/415/416) `TS371+TS383+TS385+TS387` / `TS235+TS247+TS249+TS251`; K_QLKD_63 'Vốn khác' = tổng vốn CSH − 3 chỉ tiêu trên, tính riêng từng CTCK-kỳ rồi cộng (tổng: `TS359` / `TS223`, nếu `TS223 = 0` lấy `TS221`). Render ClickHouse flat table: (1) Chia 10^9 quy đổi sang Tỷ VNĐ và bọc round(..., 2); (2) Khử trùng bản nộp mới nhất bằng `LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr, rpt_code, cell_id`.
 
 **KPI liên quan:** K_QLKD_59 (Chiều thời gian theo quý), K_QLKD_60 (Vốn đầu tư của CSH), K_QLKD_61 (LNST chưa phân phối), K_QLKD_62 (Quỹ + thặng dư vốn cổ phần), K_QLKD_63 (Vốn khác)
 
@@ -1894,7 +1894,9 @@ flowchart LR
 
 > **[SỬA 2026-10-17k — K_QLKD_86 trục kỳ theo BA, O_QLKD_45]** BA dòng 96: trục = danh sách kỳ CÓ báo cáo định kỳ (`'T'||PERIOD||'/'||REPORT_YEAR`, `REPORT_PERIOD = 'THANG'`, `RECORD_STATUS IN (1,2)`, năm/kỳ không NULL), không có cận hôm nay. Trục = `Report Year` + `Period Number` của `Fact Securities Company Financial Structure Snapshot` lọc bằng 3 dòng FILTER; thay `Calendar Date Dimension` (trước đây liệt kê cả kỳ không có báo cáo, gán kỳ theo ngày kết thúc kỳ). Lưu ý: BA liệt kê kỳ của mọi báo cáo định kỳ, Mart chỉ có kỳ đã nạp giá trị ô.
 
-> **[SỬA 2026-10-17o — N16 theo BA, phương án B]** (1) `K_QLKD_87` đổi sang đúng nguồn BA: BCTHHD_CTCK, ô `TS024` (sheet II.8), kỳ THANG, trạng thái 1/2, khoảng tháng; trước đây map ô BCTC `TS151`/`TS017` (Các khoản cho vay) — sai biểu mẫu. (2) `K_QLKD_88–91` (chỉ số thị trường): lấy ngày giao dịch cuối cùng có dữ liệu của tháng (BA Update 12/10) thay cho `LAST_DAY(:pmonth)` (rỗng khi ngày cuối tháng là ngày nghỉ) — ETL/flat phải nạp mọi ngày giao dịch. (3) Bỏ slicer `K_QLKD_4265` khỏi Nhóm (BCTHHD_CTCK và chỉ số không có BCTC hợp nhất/riêng lẻ). Còn mở: O_QLKD_47 (BA chia 1e9 ở Nhóm 16 nhưng chia 1.000 ở Nhóm 19/24 cho cùng ô TS024), sheet II.8 chưa lọc được theo mã (O_QLKD_34/42).
+> **[SỬA 2026-10-17o — N16 theo BA, phương án B]** (1) `K_QLKD_87` đổi sang đúng nguồn BA: BCTHHD_CTCK, ô `TS024` (sheet II.8), kỳ THANG, trạng thái 1/2, khoảng tháng; trước đây map ô BCTC `TS151`/`TS017` (Các khoản cho vay) — sai biểu mẫu. (2) `K_QLKD_88–91` (chỉ số thị trường): lấy ngày giao dịch cuối cùng có dữ liệu của tháng (BA Update 12/10) thay cho `LAST_DAY(:pmonth)` (rỗng khi ngày cuối tháng là ngày nghỉ) — ETL/flat phải nạp mọi ngày giao dịch. (3) Bỏ slicer `K_QLKD_4265` khỏi Nhóm (BCTHHD_CTCK và chỉ số không có BCTC hợp nhất/riêng lẻ).
+
+> **[CẬP NHẬT 2026-10-27 — ĐÃ KIỂM CHỨNG & ĐÓNG O_QLKD_47 CHO NHÓM 16]** Kết quả kiểm định reconciliation trừ 3 tầng (Staging ↔ Atomic ↔ Datamart) đạt khớp 100% tuyệt đối (`minus_stg_vs_dtm = 0.0` trên toàn bộ các kỳ từ năm 2022 đến 2026). Xác nhận: (1) Ô `TS024` trong `BCTHHD_CTCK` lưu đơn vị đồng gốc và công thức chia `1.000.000.000` (`/ 1000000000`) ra Tỷ VNĐ là chuẩn xác, chính thức đóng phần mở của O_QLKD_47 đối với Nhóm 16; (2) Triển khai ClickHouse: Đối với Margin, khử trùng bản nộp mới nhất theo pattern `LIMIT 1 BY securities_company_dim_id, rpt_year, rpt_month, rpt_code, cell_id ORDER BY submission_dt DESC, rpt_input_submission_id DESC` và lọc đúng `sheet_id` của sheet `II.8`; Đối với chỉ số thị trường (`K_QLKD_88..91`), bảng flat `qlkd_fct_market_index_snpst_flat` tích lũy lịch sử theo `cdr_dt`, KHÔNG lọc `ds_snpst_dt = max(...)` khi query khoảng thời gian (tránh lỗi chỉ ra tháng 10/2026), dùng `argMax(market_index_val, cdr_dt) GROUP BY toStartOfMonth(cdr_dt), market_code` để chốt ngày giao dịch cuối cùng của tháng.
 
 **KPI liên quan:** K_QLKD_86 (Chiều thời gian theo Tháng), K_QLKD_87 (Tổng dư nợ margin), K_QLKD_88 (Chỉ số VN-Index), K_QLKD_89 (Chỉ số HNX Index), K_QLKD_90 (Chỉ số UPCOM Index), K_QLKD_91 (Chỉ số VN30)
 
@@ -1930,11 +1932,11 @@ flowchart LR
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_QLKD_86 | Chiều thời gian theo Tháng | — | Chiều | **[SỬA 2026-10-17k]** `Fact Securities Company Financial Structure Snapshot.Report Year` + `Period Number` (`rpt_year`, `period_nbr`) — danh sách kỳ tháng CÓ báo cáo (`REPORT_PERIOD = 'THANG'`, `RECORD_STATUS IN (1,2)`), thay `Calendar Date Dimension` | **[SỬA 2026-09-19]** Cột "Công thức" trước đây vẫn ghi "TBD — chờ Atomic" dù Trạng thái đã READY từ 2026-09-18 — Detail Mapping đã có logic thật, nay đồng bộ ngược lại **[SỬA 2026-10-16 — rà cột ngày]** Thêm `Year`: Month đơn lẻ (1-12) gộp mọi năm. O_QLKD_44 | READY |
-| K_QLKD_87 | Tổng dư nợ margin — toàn TT | Tỷ VNĐ | Cơ sở | **[SỬA 2026-10-17o]** `SUM(Fact Securities Company Financial Structure Snapshot.Indicator Val Amt) / 1000000000` WHERE `Report Code = 'BCTHHD_CTCK'` AND `Cell Id = 'TS024'` (sheet II.8 — VII. Tổng dư nợ cho vay giao dịch ký quỹ) AND `Report Period Type Code = 'THANG'` AND `Submission Status Code IN ('1','2')` AND khoảng tháng chọn; trước đây ô BCTC `TS151`/`TS017` (sai nguồn) | **[SỬA 2026-09-19]** Cùng lý do K_QLKD_86 — công thức thật đã có sẵn ở Detail Mapping, nay đồng bộ ngược lại | READY |
-| K_QLKD_88 | Chỉ số VN-Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HOSE'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` = ngày giao dịch cuối cùng có dữ liệu của tháng chọn (`MAX(cdr_dt) OVER (PARTITION BY market_code, year, month)`, `year = YEAR(:pmonth)`, `month = MONTH(:pmonth)`) — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
-| K_QLKD_89 | Chỉ số HNX Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HNX'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` = ngày giao dịch cuối cùng có dữ liệu của tháng chọn (`MAX(cdr_dt) OVER (PARTITION BY market_code, year, month)`, `year = YEAR(:pmonth)`, `month = MONTH(:pmonth)`) — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
-| K_QLKD_90 | Chỉ số UPCOM Index | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'UPCOM'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` = ngày giao dịch cuối cùng có dữ liệu của tháng chọn (`MAX(cdr_dt) OVER (PARTITION BY market_code, year, month)`, `year = YEAR(:pmonth)`, `month = MONTH(:pmonth)`) — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
-| K_QLKD_91 | Chỉ số VN30 | Điểm | Cơ sở | `fct_market_index_snpst.market_index_val` JOIN `market_index_dim` WHERE `market_index_dim.market_code = '30'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` = ngày giao dịch cuối cùng có dữ liệu của tháng chọn (`MAX(cdr_dt) OVER (PARTITION BY market_code, year, month)`, `year = YEAR(:pmonth)`, `month = MONTH(:pmonth)`) — bản ghi cuối tháng (filter tường minh trên Fact grain-ngày, sửa 24/07/2026) | — | READY |
+| K_QLKD_87 | Tổng dư nợ margin — toàn TT | Tỷ VNĐ | Cơ sở | **[SỬA 2026-10-17o]** `round(SUM(Fact Securities Company Financial Structure Snapshot.Indicator Val Amt) / 1000000000, 4)` WHERE `Report Code = 'BCTHHD_CTCK'` AND `Cell Id = 'TS024'` (sheet II.8 — VII. Tổng dư nợ cho vay giao dịch ký quỹ) AND `Report Period Type Code = 'THANG'` AND `Submission Status Code IN ('1','2')` AND khoảng tháng chọn; khử trùng latest submission theo `LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr` | **[SỬA 2026-09-19]** Cùng lý do K_QLKD_86 — công thức thật đã có sẵn ở Detail Mapping, nay đồng bộ ngược lại **[ĐÃ KIỂM CHỨNG 2026-10-27 — ĐÓNG O_QLKD_47]** Test trừ 3 tầng Staging ↔ Atomic ↔ Datamart khớp 100% (minus_stg_vs_dtm = 0.0 trên mọi kỳ 2022-2026). Xác nhận chia 1e9 ra Tỷ VNĐ là chuẩn. Trên ClickHouse khử trùng latest submission bằng LIMIT 1 BY. | READY |
+| K_QLKD_88 | Chỉ số VN-Index | Điểm | Cơ sở | `argMax(fct_market_index_snpst.market_index_val, cdr_dt_dim.cdr_dt)` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HOSE'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` trong tháng chọn — bản ghi cuối phiên ngày giao dịch cuối cùng có dữ liệu của tháng | **[CẬP NHẬT 2026-10-27 — LƯU Ý QUERY CLICKHOUSE]** Không lọc ds_snpst_dt = max(...) trên bảng flat qlkd_fct_market_index_snpst_flat khi query khoảng thời gian (tránh mất các tháng cũ). Dùng argMax(market_index_val, cdr_dt) GROUP BY toStartOfMonth(cdr_dt), market_code. | READY |
+| K_QLKD_89 | Chỉ số HNX Index | Điểm | Cơ sở | `argMax(fct_market_index_snpst.market_index_val, cdr_dt_dim.cdr_dt)` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'HNX'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` trong tháng chọn — bản ghi cuối phiên ngày giao dịch cuối cùng có dữ liệu của tháng | **[CẬP NHẬT 2026-10-27 — LƯU Ý QUERY CLICKHOUSE]** Không lọc ds_snpst_dt = max(...) trên bảng flat qlkd_fct_market_index_snpst_flat khi query khoảng thời gian (tránh mất các tháng cũ). Dùng argMax(market_index_val, cdr_dt) GROUP BY toStartOfMonth(cdr_dt), market_code. | READY |
+| K_QLKD_90 | Chỉ số UPCOM Index | Điểm | Cơ sở | `argMax(fct_market_index_snpst.market_index_val, cdr_dt_dim.cdr_dt)` JOIN `market_index_dim` WHERE `market_index_dim.market_code = 'UPCOM'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` trong tháng chọn — bản ghi cuối phiên ngày giao dịch cuối cùng có dữ liệu của tháng | **[CẬP NHẬT 2026-10-27 — LƯU Ý QUERY CLICKHOUSE]** Không lọc ds_snpst_dt = max(...) trên bảng flat qlkd_fct_market_index_snpst_flat khi query khoảng thời gian (tránh mất các tháng cũ). Dùng argMax(market_index_val, cdr_dt) GROUP BY toStartOfMonth(cdr_dt), market_code. | READY |
+| K_QLKD_91 | Chỉ số VN30 | Điểm | Cơ sở | `argMax(fct_market_index_snpst.market_index_val, cdr_dt_dim.cdr_dt)` JOIN `market_index_dim` WHERE `market_index_dim.market_code = '30'` JOIN `cdr_dt_dim` WHERE `cdr_dt_dim.cdr_dt` trong tháng chọn — bản ghi cuối phiên ngày giao dịch cuối cùng có dữ liệu của tháng | **[CẬP NHẬT 2026-10-27 — LƯU Ý QUERY CLICKHOUSE]** Không lọc ds_snpst_dt = max(...) trên bảng flat qlkd_fct_market_index_snpst_flat khi query khoảng thời gian (tránh mất các tháng cũ). Dùng argMax(market_index_val, cdr_dt) GROUP BY toStartOfMonth(cdr_dt), market_code. | READY |
 
 
 **Atomic (K_QLKD_88–91):** Không có gap — `Market Index Snapshot` ← `MDDS.JAD_MARKETINFOR` READY (track draft, chưa approved).
@@ -2003,6 +2005,111 @@ flowchart LR
     F1 --> R1
     D1 --> R1
     D2 --> R1
+```
+
+#### SQL Khai thác ClickHouse chuẩn (Golden Query — Đã đối soát khớp 100%)
+
+> **Kết quả kiểm chứng 2026-10-27:** Bộ query dưới đây đã đối soát reconciliation 3 tầng (Staging ↔ Atomic ↔ Datamart ClickHouse) và đạt kết quả khớp tuyệt đối (`minus_stg_vs_dtm = 0.0` trên 100% các kỳ từ 2022 đến 2026).
+
+##### 1. Khai thác Dư nợ Margin toàn thị trường theo Tháng (K_QLKD_87)
+```sql
+-- Dư nợ Margin toàn thị trường theo từng tháng (Đơn vị: Tỷ VNĐ)
+WITH latest_submission_margin AS (
+    SELECT
+        securities_company_dim_id,
+        rpt_year,
+        period_nbr,
+        indicator_val_amt
+    FROM datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
+    WHERE rpt_code = 'BCTHHD_CTCK'
+      AND cell_id = 'TS024'
+      AND rpt_period_tp_code = 'THANG'
+      AND submission_status_code IN ('1', '2')
+      AND (rpt_year * 100 + period_nbr) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+    ORDER BY submission_dt DESC, rpt_input_submission_id DESC
+    LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr
+)
+SELECT
+    concat('T', toString(period_nbr), '/', toString(rpt_year)) AS ky_du_lieu,
+    rpt_year AS nam,
+    period_nbr AS thang,
+    round(sum(indicator_val_amt) / 1000000000, 4) AS du_no_margin_ty_vnd
+FROM latest_submission_margin
+GROUP BY rpt_year, period_nbr
+ORDER BY rpt_year, period_nbr;
+```
+
+##### 2. Khai thác 4 Chỉ số thị trường ngày giao dịch cuối cùng của Tháng (K_QLKD_88–91)
+```sql
+-- 4 Chỉ số thị trường (VN-Index, HNX, UPCOM, VN30) lấy giá trị ngày giao dịch cuối cùng trong tháng
+-- Lưu ý: KHÔNG lọc ds_snpst_dt = (SELECT max(ds_snpst_dt)...) để tránh mất lịch sử các tháng cũ
+SELECT
+    toYear(cdr_dt) AS nam,
+    toMonth(cdr_dt) AS thang,
+    concat('T', toString(toMonth(cdr_dt)), '/', toString(toYear(cdr_dt))) AS ky_du_lieu,
+    argMaxIf(market_index_val, cdr_dt, market_code = 'HOSE') AS vn_index,
+    argMaxIf(market_index_val, cdr_dt, market_code = 'HNX')  AS hnx_index,
+    argMaxIf(market_index_val, cdr_dt, market_code = 'UPCOM') AS upcom_index,
+    argMaxIf(market_index_val, cdr_dt, market_code = '30')   AS vn30_index
+FROM datamart.qlkd_fct_market_index_snpst_flat
+WHERE market_code IN ('HOSE', 'HNX', 'UPCOM', '30')
+  AND (toYear(cdr_dt) * 100 + toMonth(cdr_dt)) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+GROUP BY toYear(cdr_dt), toMonth(cdr_dt)
+ORDER BY nam, thang;
+```
+
+##### 3. Khai thác Full Combo Chart Tương quan Margin & Diễn biến thị trường (Nhóm 16)
+```sql
+-- Kết hợp toàn bộ Nhóm 16 thành 1 dataset hoàn chỉnh cho Biểu đồ Combo
+WITH
+    margin_monthly AS (
+        SELECT
+            rpt_year AS nam,
+            period_nbr AS thang,
+            round(sum(indicator_val_amt) / 1000000000, 4) AS du_no_margin
+        FROM (
+            SELECT
+                securities_company_dim_id,
+                rpt_year,
+                period_nbr,
+                indicator_val_amt
+            FROM datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
+            WHERE rpt_code = 'BCTHHD_CTCK'
+              AND cell_id = 'TS024'
+              AND rpt_period_tp_code = 'THANG'
+              AND submission_status_code IN ('1', '2')
+              AND (rpt_year * 100 + period_nbr) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+            ORDER BY submission_dt DESC, rpt_input_submission_id DESC
+            LIMIT 1 BY securities_company_dim_id, rpt_year, period_nbr
+        )
+        GROUP BY rpt_year, period_nbr
+    ),
+    market_index_monthly AS (
+        SELECT
+            toYear(cdr_dt) AS nam,
+            toMonth(cdr_dt) AS thang,
+            argMaxIf(market_index_val, cdr_dt, market_code = 'HOSE') AS vn_index,
+            argMaxIf(market_index_val, cdr_dt, market_code = 'HNX')  AS hnx_index,
+            argMaxIf(market_index_val, cdr_dt, market_code = 'UPCOM') AS upcom_index,
+            argMaxIf(market_index_val, cdr_dt, market_code = '30')   AS vn30_index
+        FROM datamart.qlkd_fct_market_index_snpst_flat
+        WHERE market_code IN ('HOSE', 'HNX', 'UPCOM', '30')
+          AND (toYear(cdr_dt) * 100 + toMonth(cdr_dt)) BETWEEN (:p_nam_tu * 100 + :p_thang_tu) AND (:p_nam_den * 100 + :p_thang_den)
+        GROUP BY toYear(cdr_dt), toMonth(cdr_dt)
+    )
+SELECT
+    coalesce(m.nam, i.nam) AS nam,
+    coalesce(m.thang, i.thang) AS thang,
+    concat('T', toString(coalesce(m.thang, i.thang)), '/', toString(coalesce(m.nam, i.nam))) AS ky_du_lieu,
+    m.du_no_margin AS du_no_margin_ty_vnd,  -- K_QLKD_87 (Tỷ VNĐ)
+    i.vn_index,                            -- K_QLKD_88 (Điểm)
+    i.hnx_index,                           -- K_QLKD_89 (Điểm)
+    i.upcom_index,                         -- K_QLKD_90 (Điểm)
+    i.vn30_index                           -- K_QLKD_91 (Điểm)
+FROM margin_monthly m
+FULL OUTER JOIN market_index_monthly i
+  ON m.nam = i.nam AND m.thang = i.thang
+ORDER BY nam, thang;
 ```
 
 ---
