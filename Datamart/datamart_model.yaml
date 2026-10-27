@@ -16822,7 +16822,7 @@ entities:
         data_type: "decimal"
         nullable: true
         key: ""
-        description: "Doanh thu (tỷ VNĐ)."
+        description: "Doanh thu (tỷ VNĐ). [SỬA 2026-10-27 — issue BA 27/10 #261–#265, O_QLKD_63] Lọc mã sheet như SQL BA qua `sc_report_deep_config.sheet_code` (bảng tra DISTINCT theo sc_rpt_id + sheet_id để không nhân dòng khi cộng SUM): doanh thu/LNST sheet `06622` (BCTCHN) / `06610` (BCTCRL); tổng tài sản và VCSH đầu/cuối kỳ sheet `06620` (BCTCHN) / `06608` (BCTCRL). Trước đây chỉ lọc (rpt_code, cell_id) nên cùng mã ô ở sheet khác của cùng biểu mẫu bị cộng vào (BA dùng cùng mã ô cho nghĩa khác nhau giữa các sheet). Dev ETL phải đổi theo và nạp lại."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Profit After Tax Amount"
@@ -16831,7 +16831,7 @@ entities:
         data_type: "decimal"
         nullable: true
         key: ""
-        description: "Lợi nhuận sau thuế (tỷ VNĐ)."
+        description: "Lợi nhuận sau thuế (tỷ VNĐ). [SỬA 2026-10-27 — issue BA 27/10 #261–#265, O_QLKD_63] Lọc mã sheet như SQL BA qua `sc_report_deep_config.sheet_code` (bảng tra DISTINCT theo sc_rpt_id + sheet_id để không nhân dòng khi cộng SUM): doanh thu/LNST sheet `06622` (BCTCHN) / `06610` (BCTCRL); tổng tài sản và VCSH đầu/cuối kỳ sheet `06620` (BCTCHN) / `06608` (BCTCRL). Trước đây chỉ lọc (rpt_code, cell_id) nên cùng mã ô ở sheet khác của cùng biểu mẫu bị cộng vào (BA dùng cùng mã ô cho nghĩa khác nhau giữa các sheet). Dev ETL phải đổi theo và nạp lại."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Return On Assets Rate"
@@ -16840,7 +16840,7 @@ entities:
         data_type: "decimal"
         nullable: true
         key: ""
-        description: "Tỷ suất sinh lời trên tổng tài sản ROA (%)."
+        description: "Tỷ suất sinh lời trên tổng tài sản ROA (%). [SỬA 2026-10-27 — issue BA 27/10 #261–#265, O_QLKD_63] Lọc mã sheet như SQL BA qua `sc_report_deep_config.sheet_code` (bảng tra DISTINCT theo sc_rpt_id + sheet_id để không nhân dòng khi cộng SUM): doanh thu/LNST sheet `06622` (BCTCHN) / `06610` (BCTCRL); tổng tài sản và VCSH đầu/cuối kỳ sheet `06620` (BCTCHN) / `06608` (BCTCRL). Trước đây chỉ lọc (rpt_code, cell_id) nên cùng mã ô ở sheet khác của cùng biểu mẫu bị cộng vào (BA dùng cùng mã ô cho nghĩa khác nhau giữa các sheet). Dev ETL phải đổi theo và nạp lại."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Return On Equity Rate"
@@ -16849,7 +16849,7 @@ entities:
         data_type: "decimal"
         nullable: true
         key: ""
-        description: "Tỷ suất sinh lời trên vốn chủ sở hữu ROE (%)."
+        description: "Tỷ suất sinh lời trên vốn chủ sở hữu ROE (%). [SỬA 2026-10-27 — issue BA 27/10 #261–#265, O_QLKD_63] Lọc mã sheet như SQL BA qua `sc_report_deep_config.sheet_code` (bảng tra DISTINCT theo sc_rpt_id + sheet_id để không nhân dòng khi cộng SUM): doanh thu/LNST sheet `06622` (BCTCHN) / `06610` (BCTCRL); tổng tài sản và VCSH đầu/cuối kỳ sheet `06620` (BCTCHN) / `06608` (BCTCRL). Trước đây chỉ lọc (rpt_code, cell_id) nên cùng mã ô ở sheet khác của cùng biểu mẫu bị cộng vào (BA dùng cùng mã ô cho nghĩa khác nhau giữa các sheet). Dev ETL phải đổi theo và nạp lại."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Submission Date"
@@ -16911,7 +16911,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "Khóa chính hồ sơ người hành nghề chứng khoán — 1 CTCK × 1 mã biểu mẫu × 1 kỳ báo cáo (bản nộp mới nhất)."
+        description: "Khóa chính hồ sơ người hành nghề chứng khoán — 1 CTCK × 1 mã biểu mẫu × 1 kỳ báo cáo (bản nộp mới nhất). [SỬA 2026-10-27, O_QLKD_64] Khóa băm thêm `legal_basis` (mỗi biểu mẫu theo từng thông tư là một dòng riêng, không gộp chéo thông tư)."
         source_atomic_table: "sc_periodic_report"
         source_atomic_column: null
       - logical_name: "Securities Company Code"
@@ -16941,6 +16941,15 @@ entities:
         description: "Mã biểu mẫu báo cáo định kỳ chứa số liệu nhân sự: BCTHHD_CTCK (Nhóm 28/29) hoặc BCHDPS (Nhóm 30). Cùng mã ô (VD TS017) mang nghĩa khác nhau giữa các biểu mẫu nên phải là một phần của khóa."
         source_atomic_table: "sc_report"
         source_atomic_column: "sc_report.rpt_code"
+      - logical_name: "Legal Basis"
+        physical_name: "legal_basis"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: "NK"
+        description: "Căn cứ pháp lý của biểu mẫu báo cáo (trường LEGAL_BASIS của biểu mẫu, VD '121/2020/TT-BTC', '102/2025/TT-BTC'). Cùng mã biểu mẫu (BCTHHD_CTCK) có nhiều bản theo từng thông tư; SQL BA Nhóm 28/29 chỉ đọc bản `121/2020/TT-BTC` nên KPI lọc `legal_basis LIKE '%121/2020/TT-BTC%'` ([MỚI 2026-10-27, O_QLKD_64]). Là một phần khóa dòng để không gộp chéo thông tư."
+        source_atomic_table: "sc_report"
+        source_atomic_column: "sc_report.legal_basis"
       - logical_name: "Report Year"
         physical_name: "rpt_year"
         data_domain: "Small Counter"
@@ -16974,7 +16983,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Tổng số người lao động tại CTCK — BCTHHD_CTCK ô TS001 của kỳ THÁNG (BA STT 28 dòng 155, BA 24/10: sheet TTC_T; trước đó TS017 sheet TTC_N kỳ Năm). Chỉ có giá trị ở dòng kỳ THANG vì cùng mã ô TS001 ở kỳ QUY là vốn điều lệ (sheet TTC_Q). Mã sheet chưa lọc được (Atomic chưa có sheet_id → sheet_code, O_QLKD_34/42): rủi ro trùng mã ô giữa các sheet của BCTHHD_CTCK kỳ THANG."
+        description: "Tổng số người lao động tại CTCK — BCTHHD_CTCK ô TS001 của kỳ THÁNG (BA STT 28 dòng 155, BA 24/10: sheet TTC_T; trước đó TS017 sheet TTC_N kỳ Năm). Chỉ có giá trị ở dòng kỳ THANG vì cùng mã ô TS001 ở kỳ QUY là vốn điều lệ (sheet TTC_Q). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `TTC_T` qua `sc_report_deep_config.sheet_code` trong etl_logic — trước đây MAX lấy cả ô cùng mã ở các sheet khác của cùng báo cáo."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Licensed Practitioner Count"
@@ -16983,7 +16992,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lao động có chứng chỉ hành nghề — BCTHHD_CTCK ô TS002 của kỳ THÁNG (BA STT 28 dòng 156, BA 24/10: sheet TTC_T; trước đó TS018 sheet TTC_N kỳ Năm). Mã sheet chưa lọc được (Atomic chưa có sheet_id → sheet_code, O_QLKD_34/42): rủi ro trùng mã ô giữa các sheet của BCTHHD_CTCK kỳ THANG."
+        description: "Số lao động có chứng chỉ hành nghề — BCTHHD_CTCK ô TS002 của kỳ THÁNG (BA STT 28 dòng 156, BA 24/10: sheet TTC_T; trước đó TS018 sheet TTC_N kỳ Năm). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `TTC_T` qua `sc_report_deep_config.sheet_code` trong etl_logic — trước đây MAX lấy cả ô cùng mã ở các sheet khác của cùng báo cáo."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Unlicensed Practitioner Count"
@@ -16992,7 +17001,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lao động chưa có chứng chỉ hành nghề = TS001 − TS002 của BCTHHD_CTCK kỳ THÁNG (BA STT 28 dòng 157, BA 24/10); NULL nếu thiếu 1 trong 2 ô."
+        description: "Số lao động chưa có chứng chỉ hành nghề = TS001 − TS002 của BCTHHD_CTCK kỳ THÁNG (BA STT 28 dòng 157, BA 24/10); NULL nếu thiếu 1 trong 2 ô. [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `TTC_T` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Brokerage Practitioner Count"
@@ -17001,7 +17010,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề bộ phận môi giới — BCTHHD_CTCK ô TS107 (BA STT 29 dòng 160; sheet II.1, kỳ Năm)."
+        description: "Số người hành nghề bộ phận môi giới — BCTHHD_CTCK ô TS107 (BA STT 29 dòng 160; sheet II.1, kỳ Năm). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `II.1` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Underwriting Practitioner Count"
@@ -17010,7 +17019,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề bộ phận bảo lãnh phát hành — BCTHHD_CTCK ô TS115 (BA STT 29 dòng 161)."
+        description: "Số người hành nghề bộ phận bảo lãnh phát hành — BCTHHD_CTCK ô TS115 (BA STT 29 dòng 161). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `II.1` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Advisory Practitioner Count"
@@ -17019,7 +17028,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề bộ phận tư vấn đầu tư — BCTHHD_CTCK ô TS119 (BA STT 29 dòng 162)."
+        description: "Số người hành nghề bộ phận tư vấn đầu tư — BCTHHD_CTCK ô TS119 (BA STT 29 dòng 162). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `II.1` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Proprietary Practitioner Count"
@@ -17028,7 +17037,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề bộ phận tự doanh — BCTHHD_CTCK ô TS111 (BA STT 29 dòng 163)."
+        description: "Số người hành nghề bộ phận tự doanh — BCTHHD_CTCK ô TS111 (BA STT 29 dòng 163). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `II.1` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Deriv Brokerage Practitioner Count"
@@ -17037,7 +17046,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ môi giới — BCHDPS ô TS009 (BA STT 30 dòng 166; sheet 01, kỳ Năm)."
+        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ môi giới — BCHDPS ô TS009 (BA STT 30 dòng 166; sheet 01, kỳ Năm). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `01` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Deriv Advisory Practitioner Count"
@@ -17046,7 +17055,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ tư vấn — BCHDPS ô TS017 (BA STT 30 dòng 167)."
+        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ tư vấn — BCHDPS ô TS017 (BA STT 30 dòng 167). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `01` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Deriv Proprietary Practitioner Count"
@@ -17055,7 +17064,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ tự doanh — BCHDPS ô TS013 (BA STT 30 dòng 168)."
+        description: "Số người hành nghề liên quan CK phái sinh — dịch vụ tự doanh — BCHDPS ô TS013 (BA STT 30 dòng 168). [SỬA 2026-10-27, O_QLKD_63] Lọc sheet `01` qua `sc_report_deep_config.sheet_code` trong etl_logic."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Submission Date"
@@ -17091,7 +17100,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-10-19] Chỉ nạp mã biểu mẫu BCTHHD_CTCK và BCHDPS, báo cáo định kỳ có ngày kết thúc kỳ (end_dt không rỗng; BA 24/10: p.END_DATE IS NOT NULL thay cho p.SENT_AT IS NOT NULL). Khử trùng theo (sc_code, rpt_code, rpt_year, rpt_period_tp_code, period_nbr): mỗi slot (ref_tp_code, ref_id) lấy bản nộp có sc_rpt_input_submission_code lớn nhất (BA: MAX(s2.ID)); nếu nhiều báo cáo định kỳ cùng khóa thì giữ báo cáo có sent_tms lớn nhất (NULL xếp sau cùng) (BA: KEEP DENSE_RANK LAST ORDER BY ngày nộp) — Datamart giữ nguyên grain 1 dòng/khoá. Mã sheet (TTC_N, II.1, 01) chưa lọc được vì Atomic chưa có ánh xạ sheet_id → sheet_code (O_QLKD_34/42, AQ-03) — rủi ro trùng ô giữa các sheet của cùng biểu mẫu."
+        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-10-19] Chỉ nạp mã biểu mẫu BCTHHD_CTCK và BCHDPS, báo cáo định kỳ có ngày kết thúc kỳ (end_dt không rỗng; BA 24/10: p.END_DATE IS NOT NULL thay cho p.SENT_AT IS NOT NULL). Khử trùng theo (sc_code, rpt_code, legal_basis, rpt_year, rpt_period_tp_code, period_nbr): mỗi slot (ref_tp_code, ref_id) lấy bản nộp có sc_rpt_input_submission_code lớn nhất (BA: MAX(s2.ID)); nếu nhiều báo cáo định kỳ cùng khóa thì giữ báo cáo có sent_tms lớn nhất (NULL xếp sau cùng) (BA: KEEP DENSE_RANK LAST ORDER BY ngày nộp) — Datamart giữ nguyên grain 1 dòng/khoá. [SỬA 2026-10-27, O_QLKD_63/64] Mã sheet (TTC_T, II.1, 01) lọc trong etl_logic từng cột đo qua `sc_report_deep_config.sheet_code`; căn cứ pháp lý `legal_basis` giữ làm khóa (KPI Nhóm 28/29 lọc 121/2020/TT-BTC), không khử trùng chéo thông tư."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
 

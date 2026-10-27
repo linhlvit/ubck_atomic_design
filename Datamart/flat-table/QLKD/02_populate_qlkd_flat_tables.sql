@@ -632,6 +632,7 @@ SELECT
     f.sc_code,
     f.sc_nm,
     f.rpt_code,
+    f.legal_basis,
     f.rpt_year,
     f.rpt_period_tp_code,
     f.period_nbr,

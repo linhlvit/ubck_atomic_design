@@ -629,6 +629,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
     sc_code                                      String                  COMMENT 'Mã CTCK.',
     sc_nm                                        Nullable(String)        COMMENT 'Tên CTCK.',
     rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo định kỳ chứa số liệu nhân sự: BCTHHD_CTCK (Nhóm 28/29) hoặc BCHDPS (Nhóm 30). Cùng mã ô (VD TS017) mang nghĩa khác nhau giữa các biểu mẫu nên phải là một phần của khóa.',
+    legal_basis                                  Nullable(String)        COMMENT 'Căn cứ pháp lý của biểu mẫu báo cáo (trường LEGAL_BASIS của biểu mẫu, VD 121/2020/TT-BTC, 102/2025/TT-BTC). Cùng mã biểu mẫu (BCTHHD_CTCK) có nhiều bản theo từng thông tư; SQL BA Nhóm 28/29 chỉ đọc bản `121/2020/TT-BTC` nên KPI lọc `legal_basis LIKE %121/2020/TT-BTC%` ([MỚI 2026-10-27, O_QLKD_64]). Là một phần khóa dòng để không gộp chéo thông tư.',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo.',
     rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo (NAM, QUY, THANG…) — sc_periodic_report.rpt_period. BA STT 28 lọc THANG (sheet TTC_T, BA 24/10); BA STT 29/30 lọc NAM.',
     period_nbr                                   Int64                   COMMENT 'Kỳ báo cáo.',
