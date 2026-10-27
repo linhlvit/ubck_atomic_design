@@ -5,6 +5,7 @@
 -- 19 bảng: 6 fact + 13 operational
 -- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
+-- Sửa 2026-10-27: 4 Fact snapshot (#1, #2, #4, #5) nạp ĐỦ mọi tháng — bỏ điều kiện khóa 1 ngày chạy ETL (O_QLQ_53)
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- ============================================================
 
@@ -26,7 +27,7 @@ SELECT
 FROM datamart.fct_fund_management_company_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+-- [SỬA 2026-10-27, O_QLQ_53] nạp mọi tháng (TRUNCATE + INSERT), không khóa theo ngày chạy ETL
 ;
 
 
@@ -49,7 +50,7 @@ JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.fund_type_dim fund_type_dim
     ON fund_type_dim.fund_type_id = f.fund_type_id
-WHERE snpst_cal.cdr_dt = :etl_date
+-- [SỬA 2026-10-27, O_QLQ_53] nạp mọi tháng (TRUNCATE + INSERT), không khóa theo ngày chạy ETL
 ;
 
 
@@ -65,7 +66,7 @@ SELECT
 FROM datamart.fct_fund_distribution_agent_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+-- [SỬA 2026-10-27, O_QLQ_53] nạp mọi tháng (TRUNCATE + INSERT), không khóa theo ngày chạy ETL
 ;
 
 
@@ -81,7 +82,7 @@ SELECT
 FROM datamart.fct_foreign_fund_management_organization_unit_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+-- [SỬA 2026-10-27, O_QLQ_53] nạp mọi tháng (TRUNCATE + INSERT), không khóa theo ngày chạy ETL
 ;
 
 

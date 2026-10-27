@@ -16216,7 +16216,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sheet_id, cell_id) [SỬA 2026-10-15: trước chỉ theo cell_id nên TS001 của các sheet khác nhau bị gộp]."
+        description: "FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sheet_id, cell_id) [SỬA 2026-10-15: trước chỉ theo cell_id nên TS001 của các sheet khác nhau bị gộp; XÁC MINH & ĐỐI SOÁT 2026-10-27: TS046 và TS008 bắt buộc lọc theo sheet_id tương ứng với sheetCode 'II.4' và 'II.5' (TT 121); TS229 bắt buộc lọc theo sheet_id của sheetCode '06608' (Báo cáo tình hình tài chính riêng), TS365 lọc theo sheetCode '06620' (Báo cáo tình hình tài chính hợp nhất) để tránh cộng dồn các sheet khác của BCTC]."
         source_atomic_table: "sc_report_input_value / sc_report"
         source_atomic_column: "sc_report_input_value.cell_id / sc_report_input_value.sheet_id / sc_report.rpt_code"
       - logical_name: "Report Year"
@@ -16347,7 +16347,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "NK"
-        description: "Định danh sheet GỐC của eForm động (`sc_report_input_value.sheet_id`, chưa phải mã sheet TTC_T/TTC_Q/II.8 — mã sheet nằm ngoài Atomic, O_QLKD_34/42) — rỗng '' nếu nguồn NULL."
+        description: "Định danh sheet GỐC của eForm động (sc_report_input_value.sheet_id, ánh xạ với $.sheetId trong FORM_REPORT_DEEP_CONFIG.SHEETS_JSON — ví dụ sheetCode 'II.4' cho K_QLKD_12, 'II.5' cho K_QLKD_13 theo TT 121/2020/TT-BTC) — rỗng '' nếu nguồn NULL."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.sheet_id"
       - logical_name: "Cell Id"
@@ -16365,7 +16365,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu. Chiều TỌA ĐỘ ô eForm động: 1 dòng = 1 ô duy nhất theo (mã biểu mẫu, sheet, ô). Atomic `sc_report_input_value.sheet_id/cell_id` KHÔNG có FK sang family FORM_SHEET* và cùng `cell_id` mang nghĩa khác nhau giữa biểu mẫu/sheet (VD TS001: 'Tổng số người lao động' ở BCTHHD_CTCK/TTC_T, 'Vốn điều lệ' ở TTC_Q) — nên chiều KHÔNG gán tên/nhóm/đơn vị chỉ tiêu theo cell_id; ngữ nghĩa chỉ tiêu nằm ở bộ lọc rpt_code + sheet_id + cell_id trong Detail Mapping (O_QLKD_42). Thiết kế lại 2026-10-15."
+        description: "Mã hệ thống nguồn dữ liệu. Chiều TỌA ĐỘ ô eForm động: 1 dòng = 1 ô duy nhất theo (mã biểu mẫu, sheet, ô). Atomic sc_report_input_value.sheet_id/cell_id KHÔNG có FK sang family FORM_SHEET* và cùng cell_id mang nghĩa khác nhau giữa biểu mẫu/sheet (VD TS001: 'Tổng số người lao động' ở BCTHHD_CTCK/TTC_T, 'Vốn điều lệ' ở TTC_Q; TS046 ở II.4 là Số TK phát sinh GD còn ở sheet khác là giá trị tiền) — nên chiều KHÔNG gán tên/nhóm/đơn vị chỉ tiêu theo cell_id; ngữ nghĩa chỉ tiêu nằm ở bộ lọc rpt_code + sheet_id + cell_id trong Detail Mapping (O_QLKD_42). Thiết kế lại 2026-10-15; xác minh đối soát 3 tầng khớp 100% ngày 2026-10-27."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
 
@@ -21234,7 +21234,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot thị trường)"
+        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot thị trường — cuối tháng). [SỬA 2026-10-27, O_QLQ_53] Grain 1 dòng/tháng (ngày cuối tháng); mỗi lần chạy nạp ĐỦ mọi tháng từ 01/2000 đến tháng của :etl_date và tính lại toàn bộ — trước đây chỉ 1 dòng = :etl_date nên tháng quá khứ không có số liệu"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
       - logical_name: "Investment Fund Count"
@@ -22108,7 +22108,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
+        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng — cuối tháng). [SỬA 2026-10-27, O_QLQ_53] Grain 1 dòng/tháng (ngày cuối tháng); mỗi lần chạy nạp ĐỦ mọi tháng từ 01/2000 đến tháng của :etl_date và tính lại toàn bộ — trước đây chỉ 1 dòng = :etl_date nên tháng quá khứ không có số liệu"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
       - logical_name: "Fund Type Dimension Id"
@@ -22746,7 +22746,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot quý/năm)"
+        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot cuối tháng; slicer quý/năm chọn dòng của tháng cuối kỳ). [SỬA 2026-10-27, O_QLQ_53] Grain 1 dòng/tháng (ngày cuối tháng); mỗi lần chạy nạp ĐỦ mọi tháng từ 01/2000 đến tháng của :etl_date và tính lại toàn bộ — trước đây chỉ 1 dòng = :etl_date nên tháng quá khứ không có số liệu"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
       - logical_name: "Distribution Agent Count"
@@ -23269,7 +23269,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng)"
+        description: "FK -> Calendar Date Dimension (vai trò: ngày snapshot tháng — cuối tháng). [SỬA 2026-10-27, O_QLQ_53] Grain 1 dòng/tháng (ngày cuối tháng); mỗi lần chạy nạp ĐỦ mọi tháng từ 01/2000 đến tháng của :etl_date và tính lại toàn bộ — trước đây chỉ 1 dòng = :etl_date nên tháng quá khứ không có số liệu"
         source_atomic_table: "cdr_dt_dim"
         source_atomic_column: null
       - logical_name: "Branch Count"
