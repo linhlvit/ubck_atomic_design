@@ -464,11 +464,14 @@ INSERT INTO datamart.qlkd_opr_individual_work_hist_flat
 SELECT
     -- From: OPERATIONAL Individual Work History
     o.sc_senior_personnel_code,
+    o.individual_identification_nbr,
     o.sc_code,
     o.position_nm,
     o.work_start_dt,
+    o.dismissal_dt,
     o.resignation_dt,
     o.employment_status_code,
+    o.personnel_status_code,
     o.src_stm_code
 
 FROM datamart.opr_individual_work_hist o
@@ -552,6 +555,7 @@ SELECT
     ri_dim.sheet_id AS sheet_id,
     ri_dim.sheet_code AS sheet_code,
     ri_dim.cell_id AS cell_id,
+    ri_dim.sc_rpt_id AS sc_rpt_id,
     ri_dim.src_stm_code AS ri_dim_src_stm_code
 
 FROM datamart.fct_securities_company_financial_structure_snpst f

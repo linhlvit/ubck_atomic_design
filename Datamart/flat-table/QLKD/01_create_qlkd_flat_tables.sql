@@ -450,11 +450,14 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTE
 (
     -- From: OPERATIONAL Individual Work History
     sc_senior_personnel_code        String                  COMMENT 'PK — mã lần bổ nhiệm (Bảng Tác nghiệp)',
+    individual_identification_nbr                Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard Lịch sử công tác (BA STT 43: `AND p.NATIONAL_ID = <CCCD>`); đã mã hóa từ nguồn. KHÔNG loại bản ghi thiếu số giấy tờ (BA chỉ lọc CCCD ở mệnh đề chọn cá nhân, subquery BA không lọc). Ưu tiên dòng type `NATIONAL_ID` (`SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID` — BA dùng `p.NATIONAL_ID`; Data Modeler xác nhận Atomic đã map 2026-10-26, O_QLKD_60(i)); nếu không có thì lấy dòng `IDENTIFICATION` (`ID_NUMBER` = CMND cũ). Khuôn theo Operational Individual Listed Company Role.',
     sc_code                         String                  COMMENT 'Mã CTCK công tác',
     position_nm                     Nullable(String)        COMMENT 'Chức vụ tại công ty',
     work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc',
+    dismissal_dt                                 Nullable(Date)          COMMENT 'Ngày miễn nhiệm khỏi chức vụ (NULL = đương nhiệm) — BA STT 43: Đến ngày = `TRUNC(p.DISMISSAL_DATE)`. Khác `resignation_dt` (RESIGNATION_DATE — nghỉ việc tự nguyện, BA STT 43 không dùng).',
     resignation_dt                  Nullable(Date)          COMMENT 'Ngày nghỉ việc (NULL = hiện tại)',
     employment_status_code          Nullable(String)        COMMENT 'Trạng thái công tác (CURRENT/PAST) — derive từ Resignation Date',
+    personnel_status_code                        Nullable(String)        COMMENT 'Trạng thái nhân sự (nguồn PERSONNEL_STATUS): 1 = Đương nhiệm → BA STT 43 hiển thị Hiện tại, giá trị khác → Quá khứ (`CASE WHEN p.PERSONNEL_STATUS = 1`). Khác `employment_status_code` (suy từ `resignation_dt`, BA STT 43 không dùng).',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -501,7 +504,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     rpt_input_val_id                             String                  COMMENT 'PK — id dòng giá trị ô báo cáo đầu vào (Atomic `sc_report_input_value.sc_rpt_input_val_id` = hash_id của ID nguồn SCMS REPORT_INPUT_CELL_VALUE). Grain Fact = 1 dòng Atomic (không gộp): 1 CTCK × 1 kỳ × 1 lần nộp × 1 ô — nên PK này là khóa MERGE/UPSERT duy nhất của Fact. Tọa độ ô (rpt_code, sheet_id, cell_id) tra qua `report_indicator_dim_id`; section_id/row_index không đưa vào Fact vì PK đã định danh từng dòng. [MỚI 2026-10-23] Trước đây Fact không khai báo khóa dòng.',
     snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày kết thúc kỳ báo cáo (end_dt), lookup qua Calendar Date Dimension.',
     securities_company_dim_id                    String                  COMMENT 'FK CTCK nộp báo cáo — lookup qua Securities Company Dimension.',
-    report_indicator_dim_id                      String                  COMMENT 'FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sheet_id, cell_id).',
+    report_indicator_dim_id                      String                  COMMENT 'FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sc_rpt_id, sheet_id, cell_id).',
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo tài chính.',
     rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo: QUY, THANG, NAM.',
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
@@ -542,6 +545,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     sheet_id                                     Nullable(String)        COMMENT 'Sheet trong biểu mẫu eForm động (sheet_id gốc eForm, chưa có mã sheet — O_QLKD_42) — từ Report Indicator Dimension',
     sheet_code                                   Nullable(String)        COMMENT 'Mã sheet nghiệp vụ của biểu mẫu eForm (sheetCode trong cấu hình biểu mẫu, VD 06620/06608/TTC_T/TTC_Q); cùng cell_id mang nghĩa khác nhau giữa các sheet nên lọc theo (rpt_code, sheet_code, cell_id) — từ Report Indicator Dimension',
     cell_id                                      Nullable(String)        COMMENT 'Mã ô dữ liệu (cell_id) trong sheet eForm động — chỉ có nghĩa cùng rpt_code + sheet_id — từ Report Indicator Dimension',
+    sc_rpt_id                                    Nullable(String)        COMMENT 'Id kỹ thuật của BẢN biểu mẫu (FORM_REPORT.ID) — phân biệt các bản cùng rpt_code (nộp lại bằng bản mới/đổi thông tư); khóa nối Report Structure Dimension — từ Report Indicator Dimension',
     ri_dim_src_stm_code                          Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu. — từ Report Indicator Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()

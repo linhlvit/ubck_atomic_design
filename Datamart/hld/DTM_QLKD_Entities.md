@@ -63,7 +63,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company Financial Structure Snapshot | Fact Snapshot | new | Cơ cấu tài sản, nguồn vốn và các chỉ tiêu tài chính định kỳ toàn thị trường và từng CTCK | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_41–52 |
-| Report Indicator Dimension | Dimension | new | Tọa độ ô báo cáo eForm (mã biểu mẫu, sheet, ô) — thiết kế lại 2026-10-15 (O_QLKD_42) | 1 ô duy nhất (rpt_code × sheet_id × cell_id) | — |
+| Report Indicator Dimension | Dimension | new | Tọa độ ô báo cáo eForm (mã biểu mẫu, bản biểu mẫu, sheet, ô) — thiết kế lại 2026-10-15 (O_QLKD_42); thêm `sc_rpt_id` 2026-10-28 | 1 ô duy nhất của 1 bản biểu mẫu (rpt_code × sc_rpt_id × sheet_id × cell_id) | — |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date / Period End Date) | 1 ngày | — |
 
@@ -97,7 +97,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company Financial Structure Snapshot | Fact Snapshot | reuse (Nhóm 8/9) | Chỉ tiêu tài chính giám sát: VCSH, vốn đầu tư CSH, tỷ lệ an toàn tài chính, doanh thu, lợi nhuận, margin, CFO, thị phần | 1 CTCK × 1 kỳ báo cáo × 1 chỉ tiêu tài chính | K_QLKD_59–65, 73–87, 92–99 |
-| Report Indicator Dimension | Dimension | reuse (Nhóm 8/9) | Tọa độ ô báo cáo eForm | 1 ô (rpt_code × sheet_id × cell_id) | — |
+| Report Indicator Dimension | Dimension | reuse (Nhóm 8/9) | Tọa độ ô báo cáo eForm | 1 ô của 1 bản biểu mẫu (rpt_code × sc_rpt_id × sheet_id × cell_id) | — |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
@@ -202,13 +202,13 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_214–217 READY; K_QLKD_213 (Chiều ngày) PENDING |
+| Operational Individual Work History | Tác nghiệp | new | Lịch sử bổ nhiệm — tên công ty, chức vụ, thời gian, trạng thái | 1 lần bổ nhiệm × 1 CTCK × 1 cá nhân | K_QLKD_213–217 READY (K_QLKD_213 = Chiều ngày, READY từ 2026-10-17) |
 
 ### Nhóm 44 — Lịch sử vi phạm & xử phạt cá nhân (K_QLKD_218–223)
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Individual Violation History | Tác nghiệp | new | Quyết định xử phạt hành chính cá nhân — schema INSPECT | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_219–223 READY; K_QLKD_218 (Chiều ngày) PENDING |
+| Operational Individual Violation History | Tác nghiệp | new | Quyết định xử phạt hành chính cá nhân — schema INSPECT | 1 quyết định xử phạt × 1 cá nhân | K_QLKD_218–223 READY (K_QLKD_218 = Chiều ngày, READY từ 2026-10-17) |
 
 ---
 
@@ -225,7 +225,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Securities Company Report Data | Tác nghiệp | new | Dữ liệu từng ô (cell) của các biểu mẫu báo cáo định kỳ eForm động; sửa 02/10/2026: `rpt_code` lấy từ `sc_report.rpt_code` | 1 ô giá trị × 1 dòng dữ liệu × 1 lần nộp × 1 CTCK | 843 READY (chiều kỳ/CTCK), 7198 PENDING (giá trị ô) |
-| Report Structure Dimension | Dimension | new | Cấu trúc biểu mẫu: báo cáo → sheet → hàng/cột → ô → chỉ tiêu (Atomic sc_report*, draft) | 1 ô của 1 sheet (SCD4A) | Chiều Loại/Tên/Mã báo cáo, Mã/Tên sheet READY; Mã/Tên chỉ tiêu PENDING |
+| Report Structure Dimension | Dimension | new | Cấu trúc biểu mẫu: báo cáo → sheet → hàng/cột → ô → chỉ tiêu (Atomic sc_report*, draft) | 1 ô của 1 sheet của 1 bản biểu mẫu (`sc_rpt_id`; SCD4A) | Chiều Loại/Tên/Mã báo cáo, Mã/Tên sheet READY; Mã/Tên chỉ tiêu PENDING |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, sàn niêm yết | 1 CTCK (SCD4A) | Sàn giao dịch |
 | Securities Service Classification Dimension | Dimension | reuse (Nhóm 2/3/4) | Dịch vụ/nghiệp vụ — chiều "Ngành nghề" | 1 dịch vụ (SCD4A) | Ngành nghề |
 
