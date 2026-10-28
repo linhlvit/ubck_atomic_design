@@ -285,6 +285,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fund Management Company Staff Trade Report | Fact (report) | new | Giao dịch của nhân viên CTQLQ trên sổ lệnh HOSE/HNX | 1 dòng khử trùng (như UNION của BA) × nhân viên × ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh | K_QLQ_106–115 (Nhóm 28) |
+| Fund Management Company Employee Investor Account List | Operational | new | Nhân viên CTQLQ × tài khoản giao dịch chứng khoán VSDC (nối CCCD) | 1 nhân viên × 1 tài khoản | K_QLQ_106–107 (Nhóm 28) |
 
 ---
 

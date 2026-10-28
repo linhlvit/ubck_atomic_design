@@ -414,3 +414,21 @@ SELECT
     o.src_stm_code
 FROM datamart.fund_management_company_staff_trade_rpt o
 ;
+
+
+-- ============================================================
+-- 20. OPERATIONAL: qlq_opr_fund_management_company_employee_investor_account_list_flat
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_employee_investor_account_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_fund_management_company_employee_investor_account_list_flat
+SELECT
+    o.fmc_employee_code,
+    o.investor_account_nbr,
+    o.identification_nbr,
+    o.fmc_code,
+    o.fmc_employee_full_nm,
+    o.account_open_dt,
+    o.account_update_dt,
+    o.src_stm_code
+FROM datamart.opr_fund_management_company_employee_investor_account_list o
+;

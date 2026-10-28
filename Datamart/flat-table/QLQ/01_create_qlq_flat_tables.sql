@@ -2,7 +2,7 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 19 bảng: 7 fact + 12 operational
+-- 19 bảng thực tế (thêm #20 qlq_opr_fund_management_company_employee_investor_account_list_flat, Nhóm 28, 2026-10-28; số thứ tự #n giữ theo lịch sử, #n bãi bỏ không đánh lại)
 -- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- ============================================================
@@ -531,4 +531,29 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(trade_dt)
 ORDER BY (trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code)
 COMMENT 'Flat table — Fund Management Company Staff Trade Report (Fact report, append)'
+;
+
+
+-- ============================================================
+-- 20. OPERATIONAL: qlq_opr_fund_management_company_employee_investor_account_list_flat
+--    Operational Fund Management Company Employee Investor Account List
+--    Grain: 1 nhân viên CTQLQ × 1 tài khoản giao dịch chứng khoán VSDC (nối CCCD; open_investors UNION updated_investors)
+--    [MỚI 2026-10-28 — O_QLQ_55] Nhóm 28: K_QLQ_106 (CCCD), K_QLQ_107 (số tài khoản) READY
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_employee_investor_account_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Fund Management Company Employee Investor Account List
+    fmc_employee_code                String                  COMMENT 'PK (composite) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID)',
+    investor_account_nbr             String                  COMMENT 'PK (composite) — số tài khoản giao dịch chứng khoán VSDC',
+    identification_nbr               String                  COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106)',
+    fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ nơi nhân viên làm việc',
+    fmc_employee_full_nm             Nullable(String)        COMMENT 'Họ tên nhân viên CTQLQ',
+    account_open_dt                  Nullable(Date)          COMMENT 'Ngày mở tài khoản đầu tiên trên VSDC — để BI lọc khoảng ngày',
+    account_update_dt                Nullable(Date)          COMMENT 'Ngày cập nhật thông tin tài khoản gần nhất trên VSDC — để BI lọc khoảng ngày',
+    src_stm_code                     String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (fmc_employee_code, investor_account_nbr)
+COMMENT 'Flat table — Operational Fund Management Company Employee Investor Account List'
 ;
