@@ -5,6 +5,8 @@ bìa, chữ ký, kiến trúc hệ thống, API, Web App mockup và styling chu�
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import io
 import os
 import re
@@ -28,7 +30,9 @@ if hasattr(sys.stderr, "reconfigure"):
 REPO_ROOT = Path(__file__).resolve().parents[4]
 SKILL_DIR = REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs"
 OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
-MASTER_DOCX_PATH = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.0_20260429.docx"
+DEFAULT_INPUT_DOCX_PATH = REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.1_20260828.docx"
+DEFAULT_OUTPUT_DOCX_PATH = REPO_ROOT / "docs" / "output" / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.2_20261028.docx"
+MASTER_DOCX_PATH = DEFAULT_INPUT_DOCX_PATH
 
 # Ensure mmdc in PATH
 npm_appdata = Path(os.environ.get("APPDATA", "C:/Users/ADMIN/AppData/Roaming")) / "npm"
@@ -343,17 +347,35 @@ def add_text_run(p, text, font_name="Times New Roman", font_size=Pt(12), bold=Fa
     return run
 
 
-def update_master_q5_document():
-    print(f"=== BẮT ĐẦU CẬP NHẬT TÀI LIỆU CHUẨN UBCKNN Q5 ===")
-    print(f"Template gốc: {MASTER_DOCX_PATH} ({MASTER_DOCX_PATH.stat().st_size:,} bytes)")
+def update_master_q5_document(
+    input_docx: Path | str | None = None,
+    output_docx: Path | str | None = None
+) -> Path:
+    input_docx_path = Path(input_docx).resolve() if input_docx else DEFAULT_INPUT_DOCX_PATH.resolve()
+    output_docx_path = Path(output_docx).resolve() if output_docx else DEFAULT_OUTPUT_DOCX_PATH.resolve()
 
-    if not MASTER_DOCX_PATH.exists():
-        raise FileNotFoundError(f"Không tìm thấy template chuẩn tại {MASTER_DOCX_PATH}")
+    if not input_docx_path.exists():
+        raise FileNotFoundError(f"Không tìm thấy template chuẩn tại {input_docx_path}")
+
+    if input_docx_path == output_docx_path:
+        raise ValueError(
+            f"Lỗi an toàn: Tệp đầu ra ({output_docx_path}) trùng với tệp mẫu gốc. "
+            "Tuyệt đối không được phép ghi đè template gốc!"
+        )
+
+    # 1. Đo lường SHA-256 ban đầu của template gốc
+    input_bytes = input_docx_path.read_bytes()
+    sha_before = hashlib.sha256(input_bytes).hexdigest()
+
+    print(f"=== BẮT ĐẦU CẬP NHẬT TÀI LIỆU CHUẨN UBCKNN Q5 ===")
+    print(f"Template gốc: {input_docx_path} ({len(input_bytes):,} bytes)")
+    print(f"SHA-256 gốc (trước khi thực hiện): {sha_before}")
+    print(f"Tệp đích dự kiến: {output_docx_path}")
 
     temp_img_dir = OUTPUT_DIR / "temp_q5_images"
     temp_img_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Parse toàn bộ 10 module PTTK
+    # 2. Parse toàn bộ 10 module PTTK
     all_module_elements = []
     total_diagrams = 0
     for mod_code, mod_idx, mod_name in MODULES:
@@ -367,12 +389,11 @@ def update_master_q5_document():
 
     print(f"\nTổng số lưu đồ đã sinh và sẵn sàng chèn: {total_diagrams}/90 diagrams.")
 
-    # 2. Đọc file DOCX gốc vào memory để tránh bị lock khi đọc
-    with open(MASTER_DOCX_PATH, "rb") as f:
-        doc_stream = io.BytesIO(f.read())
+    # 3. Đọc file DOCX gốc vào memory từ input_bytes để bảo toàn và tránh lock
+    doc_stream = io.BytesIO(input_bytes)
     doc = docx.Document(doc_stream)
 
-    # 3. Định vị vị trí 3.1 trong tài liệu gốc
+    # 4. Định vị vị trí 3.1 trong tài liệu gốc
     p_etl_idx = None
     p_api_idx = None
 
@@ -397,7 +418,7 @@ def update_master_q5_document():
 
     target_anchor = doc.paragraphs[p_api_idx]
 
-    # 4. Chèn toàn bộ nội dung mới của 10 phân hệ trước target_anchor với styling chuẩn mực
+    # 5. Chèn toàn bộ nội dung mới của 10 phân hệ trước target_anchor với styling chuẩn mực
     print("Đang chèn 10 phân hệ Datamart chuẩn hóa vào Section 3.1...")
     
     for mod_code, elems in all_module_elements:
@@ -472,28 +493,45 @@ def update_master_q5_document():
                 if desc_body:
                     add_text_run(p, desc_body, font_size=Pt(12), bold=False)
 
-    # 5. Xóa các paragraph cũ từ p_etl_idx + 1 đến p_api_idx - 1
+    # 6. Xóa các paragraph cũ từ p_etl_idx + 1 đến p_api_idx - 1
     print("Đang xóa các đoạn văn bản cũ của 3.1 cũ...")
     paragraphs_to_remove = doc.paragraphs[p_etl_idx + 1 : p_api_idx]
     for p in paragraphs_to_remove:
         p._p.getparent().remove(p._p)
 
-    # 6. Lưu file kết quả
-    out_docx_1 = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.0_20260429.docx"
-    out_docx_fallback = OUTPUT_DIR / "UBCKNN_Q5_Tai_lieu_phan_tich_thiet_ke_v1.1_20260429.docx"
-    
-    saved_target = out_docx_1
-    try:
-        doc.save(str(out_docx_1))
-        print(f"\nSaved: {out_docx_1} ({out_docx_1.stat().st_size:,} bytes)")
-    except PermissionError:
-        doc.save(str(out_docx_fallback))
-        saved_target = out_docx_fallback
-        print(f"\n[INFO] File {out_docx_1.name} đang mở trong Word. Đã lưu sang bản cập nhật: {out_docx_fallback.name} ({out_docx_fallback.stat().st_size:,} bytes)")
+    # 7. Lưu file kết quả ra đường dẫn mới riêng biệt
+    output_docx_path.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(str(output_docx_path))
+    print(f"\nSaved output document: {output_docx_path} ({output_docx_path.stat().st_size:,} bytes)")
+
+    # 8. Xác nhận tính toàn vẹn của template gốc
+    sha_after = hashlib.sha256(input_docx_path.read_bytes()).hexdigest()
+    if sha_before != sha_after:
+        raise RuntimeError(
+            f"VIOLATION: SHA-256 của template gốc đã bị thay đổi! (Trước: {sha_before}, Sau: {sha_after})"
+        )
+    print(f"SHA-256 gốc (sau khi chạy - BẢO TOÀN 100%): {sha_after}")
 
     print(f"\n=== HOÀN TẤT CẬP NHẬT TÀI LIỆU CHUẨN Q5 ===")
-    print(f"File xuất bản: {saved_target} ({saved_target.stat().st_size:,} bytes)")
+    print(f"File xuất bản: {output_docx_path} ({output_docx_path.stat().st_size:,} bytes)")
+    return output_docx_path
 
 
 if __name__ == "__main__":
-    update_master_q5_document()
+    parser = argparse.ArgumentParser(
+        description="Cập nhật và render Mục 3.1 Datamart vào tài liệu thiết kế phân tích hệ thống Q5."
+    )
+    parser.add_argument(
+        "--input-docx",
+        type=Path,
+        default=DEFAULT_INPUT_DOCX_PATH,
+        help="Đường dẫn tới file Word mẫu gốc (.docx)"
+    )
+    parser.add_argument(
+        "--output-docx",
+        type=Path,
+        default=DEFAULT_OUTPUT_DOCX_PATH,
+        help="Đường dẫn tới file Word kết quả đầu ra (.docx)"
+    )
+    args = parser.parse_args()
+    update_master_q5_document(args.input_docx, args.output_docx)
