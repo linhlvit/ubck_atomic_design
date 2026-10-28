@@ -16285,10 +16285,10 @@ entities:
       - logical_name: "Indicator Value Amount"
         physical_name: "indicator_val_amt"
         data_domain: "Amount"
-        data_type: "decimal"
+        data_type: "decimal(25,2)"
         nullable: true
         key: ""
-        description: "Giá trị chỉ tiêu tài chính (chuyển đổi từ text cell_val sang số)."
+        description: "Giá trị chỉ tiêu tài chính (chuyển đổi từ text cell_val sang số; không chuyển được → NULL). [SỬA 2026-10-28 — đồng bộ code dev] TRY_CAST sang DECIMAL(25,2) (trước: TO_NUMBER … DEFAULT NULL ON CONVERSION ERROR, flat Decimal(23,2))."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Report Code"
@@ -16939,7 +16939,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-09-18] BA bỏ `FETCH FIRST 1 ROW ONLY` nên nguồn này trả về moi version cua biểu mẫu. ETL PHẢI khử trùng theo (sc_code, rpt_year, rpt_period, rpt_code), giữ bản nộp moi nhat theo submission_dt — Datamart giữ nguyên grain 1 dong/khoa."
+        description: "Mã hệ thống nguồn dữ liệu. [RÀNG BUỘC ETL 2026-09-18] BA bỏ `FETCH FIRST 1 ROW ONLY` nên nguồn này trả về moi version cua biểu mẫu. ETL PHẢI khử trùng theo (sc_code, rpt_year, rpt_period, rpt_code), giữ bản nộp có mã nộp (sc_rpt_input_submission_code, ép BIGINT) lớn nhất trên mỗi (ref_tp_code, ref_id, rpt_code) — như SQL BA (bản nộp có ID lớn nhất) và code dev của Fact Securities Company Financial Structure Snapshot (đồng bộ 2026-10-28, O_QLKD_65) — Datamart giữ nguyên grain 1 dong/khoa."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.src_stm_code"
       - logical_name: "Preferred Report Indicator"

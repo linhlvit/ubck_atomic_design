@@ -509,7 +509,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo tài chính.',
     rpt_period_tp_code                           String                  COMMENT 'Loại kỳ báo cáo: QUY, THANG, NAM.',
     period_nbr                                   Int64                   COMMENT 'Số thứ tự kỳ báo cáo (1-4 cho Quý, 1-12 cho Tháng).',
-    indicator_val_amt                            Nullable(Decimal(23,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
+    indicator_val_amt                            Nullable(Decimal(25,2)) COMMENT 'Giá trị chỉ tiêu tài chính (chuyển đổi từ text item_val sang số).',
     rpt_code                                     Nullable(String)        COMMENT 'Mã biểu mẫu báo cáo (BCTCHN, BCTCRL, BCTLAT, BCTHHD_CTCK).',
     legal_basis                                  Nullable(String)        COMMENT 'Căn cứ pháp lý của biểu mẫu báo cáo (trường LEGAL_BASIS của biểu mẫu, chứa số thông tư áp dụng, VD 121/2020/TT-BTC, 102/2025/TT-BTC). Cùng 1 mã biểu mẫu (VD BCTLAT) có thể có nhiều bản theo từng thông tư; KPI lọc cột này để chọn bản biểu mẫu cần đọc.',
     rpt_input_submission_id                      String                  COMMENT 'Khóa lần nộp dữ liệu báo cáo đầu vào (eForm) mà ô này thuộc về — cho biết giá trị lấy từ lần nộp nào của kỳ báo cáo.',

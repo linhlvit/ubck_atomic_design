@@ -177,7 +177,7 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 27
+    expect_columns: 28
     ma_column: "PIC"
     sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
@@ -199,6 +199,10 @@ modules:
       [CẬP NHẬT 2026-10-22 16:49, xác minh qua header sống: 8164 dòng đều 27 cột, delimiter ',', header dòng 1, legend dòng 2]
       BA BỎ LẠI cột đầu 'UC' (index 0) → 27 cột; STT về index 0, PIC index 1, 'Trạng thái mapping' index 13, 'Câu lệnh tham khảo (SIT)'
       index 18, 'Trạng thái' index 19. Số dòng không đổi (8164). Parser tra theo TÊN nên chỉ đổi expect_columns 28 → 27.
+      [CẬP NHẬT 2026-10-28 19:33, xác minh qua header sống: 8102 dòng đều 28 cột, delimiter ',', header dòng 1, legend dòng 2]
+      BA THÊM LẠI cột đầu 'UC' (index 0) → 28 cột; STT index 1, PIC index 2, 'Trạng thái mapping' index 14,
+      'Câu lệnh tham khảo (SIT)' index 19, 'Trạng thái' index 20, 'Loại dữ liệu' 26, 'Kết quả SIT' 27. Parser tra theo TÊN nên chỉ đổi
+      expect_columns 27 → 28 (lần thứ 3 BA bật/tắt cột UC: 14/10 thêm, 22/10 bỏ, 28/10 thêm).
 
   TKNB:
     expect_columns: 29
@@ -231,7 +235,7 @@ modules:
 
   VP:
     delimiter: ","
-    expect_columns: 25
+    expect_columns: 26
     stt_column: "TT"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
@@ -242,3 +246,6 @@ modules:
       (index 26 cũ). TT index 0, 'Trạng thái mapping' index 13, 'Câu lệnh tham khảo' index 18, 'Update' index 24.
       Trong cùng buổi sáng file đổi 2 lần (10:52 có cột đầu 'UC' = 26 cột; 10:57 bỏ lại 'UC' = 25 cột) — BA đang sửa trực
       tiếp, luôn kiểm lại MD5/mtime trước khi ghi thiết kế. Parser tra theo TÊN nên chỉ đổi delimiter + expect_columns.
+      [CẬP NHẬT 2026-10-28, xác minh qua header sống: 601 bản ghi đều 26 cột, delimiter ',', header dòng 1, legend dòng 2] BA THÊM LẠI cột đầu 'UC' (index 0)
+      → 26 cột; 'TT' index 1, 'Trạng thái mapping' index 14, 'Câu lệnh tham khảo' index 19, 'Update' index 25. Nhóm 32–37 mapping xong (61 dòng, toàn 'Done').
+      Parser tra theo TÊN nên chỉ đổi expect_columns 25 → 26.
