@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A31 — LLD Datamart
+# Luật chống tái diễn A1–A35 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -35,6 +35,10 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A29 — Cấm 'tạm xem A ≡ B' / 'thay thế gần đúng' khi chưa đối chiếu BRD/Source `[check_ba_source_coverage — INFO]`
 - A30 — Operational đa nguồn: cùng bộ cột, PK hash có `src_stm_code`, cột trùng nội dung phải khác `description` `[Gate 2 check_parity]`
 - A31 — Ranh giới ETL ↔ BI: ETL nạp đủ lịch sử theo grain, mọi lựa chọn của người dùng (as-of, kỳ gần nhất, khoảng ngày) ở Detail Mapping; description không chép CTE/ORDER BY của BA `[L2-ETL-BI-PARAM / L2-DESC-BI-LOGIC-LEAK]`
+- A32 — Bộ ba (rpt_code, sheet_code, cell_id): KPI đọc ô eForm phải lọc cả sheet; Operational EAV có cột `sheet_code`; không có 'ngoại lệ vì khớp số' (D19)
+- A33 — Idiom ClickHouse trong Detail Mapping: `lowerUTF8`, nhãn cột khớp prefix `' >> '`, `LIMIT 1 BY`; phát hiện ở 1 Nhóm thì quét cả Nhóm cùng sheet; SQL dev dán 2 lần mâu thuẫn → hỏi (D20/D21)
+- A34 — Sửa 1 KPI thì quét câu cũ mâu thuẫn ở DM + HLD kể cả Open Items (`apply_open_item.py`); AI không ghi suy luận như dữ kiện (D22)
+- A35 — Vận hành phiên: mở đúng thư mục để nạp hook/skill/CLAUDE.md, ngưỡng 6 Nhóm, `--baseline` gate, phiên song song
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -591,6 +595,59 @@ Từ 2026-10-26 Gate 8 thêm D15 (mã ô eForm: `L3-CELL-ID-NOT-ECODE`, `L3-CELL
 Từ 2026-10-26 Gate 8 thêm D17 (`L2-ETL-BI-PARAM` — tham số dashboard trong `etl_logic`, ERROR) và D18 (`L2-DESC-BI-LOGIC-LEAK` — description chép CTE/cơ chế BA, WARNING) — A31.
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
 
+### A32 — Bộ ba (`rpt_code`, `sheet_code`, `cell_id`): KPI đọc ô eForm phải lọc cả sheet `[L3-CELL-ID-NO-SHEET-CODE]`
+
+Sự cố thật (2026-10-28, QLKD): K_QLKD_12/13 (Nhóm 1), K_QLKD_102 (Nhóm 19), K_QLKD_107 (Nhóm 20) và K_QLKD_4283–4285 (Nhóm 31) lọc `cell_id` mà không lọc `sheet_code` dù BA có `jt.sheetCode = 'II.4'/'II.5'/'06620'/'06608'/'II.2'`. Cùng mã ô `TSxxx` mang nghĩa
+khác nhau giữa các sheet của CÙNG biểu mẫu (TS046 ở sheet II.4; ô trùng ở sheet khác của BCTHHD_CTCK) nên số cộng nhầm sheet. Gate 0–10 PASS nhiều tuần: D15 chỉ buộc cặp (rpt_code, cell_id). Bảng Operational `opr_securities_company_report_data` còn không có cột `sheet_code`
+(chỉ `sheet_id` — id thô, KHÔNG bằng mã sheet) nên Detail Mapping ghi 'chưa lọc được' và câu đó sống thêm cả tuần.
+
+**Quy tắc**
+1. KPI đọc ô eForm ở module có cột `sheet_code` (Dim `report_indicator_dim`, Operational `*_report_data`) viết **bộ ba** (rpt_code, sheet_code, cell_id); mã sheet lấy từ `jt.sheetCode = '…'` (hoặc bảng `REPORT_CODE | sheetCode | …`) của SQL BA, không từ trí nhớ.
+2. Bảng Operational EAV/ô nào KPI phải lọc sheet → thêm cột `sheet_code` (nullable, KHÔNG vào khóa; `LEFT JOIN (SELECT dc.sc_rpt_id, dc.sheet_id, MAX(dc.sheet_code) … GROUP BY …)` vì Atomic `sc_report_deep_config` còn cột `cell_id`, join thẳng nhân dòng) và đồng bộ flat cùng lượt (A20).
+3. **Không giữ 'ngoại lệ vì đối soát khớp số'** (K_QLKD_102 từng ghi 'ô id cao, khớp số, không phụ thuộc sheet_code'): khớp số trên 1 tập dữ liệu không chứng minh ô không trùng sheet; BA lọc sheet thì Detail Mapping lọc sheet.
+4. Khi thêm `sheet_code` cho 1 KPI: quét **cả module** cùng lượt (KPI nào có `cell_id` mà thiếu `sheet_code`) — đừng sửa đúng KPI user nêu rồi dừng. Phụ thuộc ETL nạp `sheet_code` → ghi `[YÊU CẦU DEV]` vào `ghi_chu` (KPI rỗng tới khi nạp).
+
+**Máy kiểm:** Gate 8 D19 (ERROR; chỉ module có cột `sheet_code`).
+
+### A33 — Idiom ClickHouse trong Detail Mapping + SQL dev dán nhiều lần cho cùng một Nhóm `[L3-CH-LOWER-NONASCII / L3-CH-LABEL-EXACT]`
+
+Sự cố thật (2026-10-28, QLQ): (1) `LOWER(fmr_nm) LIKE '%hoạt động%'` — `lower` của ClickHouse chỉ hạ chữ ASCII → dùng `lowerUTF8`. (2) `column_label_nm = 'Kỳ báo cáo'` so khớp chính xác chỉ lấy **18 quỹ ETF** (nhãn cột quỹ mở/quỹ thành viên có khoảng trắng thừa, quỹ đóng có dạng
+'… >> Kỳ báo cáo'); khớp theo phần đầu trước ` >> ` lấy 127–131 quỹ/tháng. Cùng lỗi nằm ở Nhóm 6, 7, 8, 9, 11, 12 (sheet BCTaiSan/BCDanhMucDauTu, `record_tp = '7'`) và còn ở Nhóm 1, 17–21, 24 (sheet khác, chưa kiểm). (3) User dán nhầm SQL cũ 2 lần cho Nhóm 7 — bản dán sau
+đảo ngược đúng điều bản dán trước (và Nhóm 6 sáng cùng ngày) đã kiểm.
+
+**Quy tắc**
+1. Detail Mapping kiểu ClickHouse: `lowerUTF8` (không `LOWER`) với mẫu có dấu; nhãn cột khớp theo `trimBoth(splitByString(' >> ', ifNull(column_label_nm, ''))[1])` sau khi truy vấn đếm exact vs prefix (`datamart-review/reference/clickhouse_idioms.md`) cho thấy prefix > exact; khử trùng bản nộp mới nhất bằng `ORDER BY submitted_dt DESC LIMIT 1 BY …` (không `ROW_NUMBER() … = 1` trong WHERE).
+2. **Phát hiện ở 1 Nhóm → quét mọi Nhóm cùng sheet/`record_tp` trong CÙNG lượt** (dm_edit.py `--regex` nhiều Nhóm), báo Nhóm chưa kiểm kèm truy vấn chẩn đoán; không dừng ở Nhóm user nêu.
+3. **SQL dev/BA dán 2 lần cho cùng Nhóm mà khác nhau ở điều kiện đã được sửa gần đây (hoặc mâu thuẫn Nhóm anh em)** → DỪNG, hỏi bản nào mới nhất trước khi ghi; không ghi bản mâu thuẫn rồi 'ghi chú chờ xác nhận'.
+4. Hệ số đơn vị / điều kiện mà dev viết 'BA cũng làm vậy' → đối chiếu BA hiện hành bằng `ba_slice.py --with-sql`; BA không có thì ghi rõ 'BA chưa có' trong `ghi_chu` (không viết 'khớp BA').
+
+**Máy kiểm:** Gate 8 D20, D21 (WARNING; chỉ module có Detail Mapping kiểu ClickHouse).
+
+### A34 — Sửa 1 KPI thì quét câu cũ mâu thuẫn ở DM + HLD (kể cả Open Items); AI không ghi suy luận như dữ kiện `[L2-STALE-SHEET-CLAIM]`
+
+Sự cố thật (2026-10-28): sau khi thêm `sheet_code` cho K_QLKD_12/13/102/107/4283–4285, 6 chỗ HLD vẫn nói 'chưa lọc được theo mã sheet' / 'Mart chỉ có sheet_id' (HLD Nhóm 12, 20, 31; Open Items O_QLKD_48/58/61) — 2 chỗ do chính phiên sửa bỏ sót; Gate 8 mới (D22) mới bắt được.
+Cùng ngày: một 'nhận định' của AI (giá trị GDP 256 khác xa quy mô thực) suýt vào HLD như dữ kiện.
+
+**Quy tắc**
+1. Sau khi đổi 1 quy tắc/điều kiện: grep `ghi_chu` Detail Mapping + HLD (khối Nhóm **và** Section 4/5) tìm câu đối lập ('chưa …', 'không đổi', 'giữ nguyên', 'chỉ có …', 'CÒN MỞ') rồi sửa hoặc gắn 'trước đây' / `[ĐÃ ĐÓNG]`.
+2. Dòng Open Items (Section 5) và đoạn Section 4 nằm ngoài khối Nhóm → dùng `apply_open_item.py` (dry-run mặc định, backup, giữ EOL, `--old` đúng 1 lần, số `|` không đổi; `--add-row` thêm dòng mới); không Edit tay, không script ad-hoc.
+3. HLD/Detail Mapping chỉ ghi **dữ kiện có nguồn** (user, dev, BA, Atomic, dữ liệu đã chạy). Suy luận của AI đưa vào báo cáo chat; nếu buộc phải ghi thì gắn rõ 'nhận định của người soạn, chờ xác nhận'.
+
+**Máy kiểm:** Gate 8 D22 (WARNING).
+
+### A35 — Vận hành phiên: nạp đúng hook/skill/CLAUDE.md, ngưỡng 6 Nhóm, baseline gate, phiên song song
+
+Sự cố thật (2026-10-28): phiên mở ở **thư mục cha** `C:\Workspace\Design_DW` (không phải git repo) → `.claude/settings.json` của `ubck_atomic_design` và các skill `datamart-*` KHÔNG nạp: hook `dm_guard` R3 không chặn `| tail`, danh sách skill không có `datamart-*`, `CLAUDE.md` của repo không được đọc
+(chỉ nạp khi đã đụng file trong repo). Hệ quả cùng phiên: 9 Nhóm có thay đổi thiết kế (QLQ 7/8/9/11/12 + QLKD 1/19/20/31) mà không dừng ở Nhóm thứ 6; không dùng `--save-baseline` nên phải đoán Gate 0 FAIL do ai; một lệnh `grep -r` quét cả `BRD/BA/Old versions/`.
+
+**Quy tắc**
+1. Mở phiên ở `ubck_atomic_design/` (hoặc có `.claude/settings.json` + `.claude/skills` ở thư mục mở phiên — xem `C:\Workspace\Design_DW\CLAUDE.md`). Đầu phiên **kiểm hook đã nạp**: gõ thử lệnh bị R3 chặn (`… apply_patch.py --help | tail -1`) — không bị chặn nghĩa là hook CHƯA nạp, dừng và báo user.
+2. Đọc `CLAUDE.md` của repo + SKILL của skill liên quan TRƯỚC khi sửa thiết kế (không dựa riêng vào MEMORY).
+3. Đếm Nhóm có thay đổi thiết kế trong phiên; tới Nhóm thứ 6 → dừng, tóm tắt, hỏi tiếp/mở phiên mới (CLAUDE.md 'Ngưỡng cấp phiên').
+4. Đầu phiên `check_references.py --save-baseline` (Gate 0) rồi `--baseline` các lần sau; báo Gate FAIL theo **delta so với baseline** để tách lỗi của mình khỏi lỗi phiên song song.
+5. Phiên song song trên cùng working tree: `git status` đầu/cuối phiên; `build_kpi_index/registry/flat` sinh lại gồm cả thay đổi chưa commit của phiên kia — chỉ stage file của mình; không sửa/commit file module khác.
+
+---
 ## Ghi chú lịch sử
 
 Lô 9 luật đầu tiên (A1–A9) — ghi chú gốc:

@@ -14,6 +14,9 @@ Biến các QUY TẮC CỨNG trong CLAUDE.md thành chốt chặn máy (không p
   R4  `git checkout -- / git restore / git reset --hard / git stash` chạm file thiết kế → ASK.
       Sự cố thật: QLQ 2026-10-14 "khôi phục" nhầm Detail Mapping bị user chủ động cắt.
   R5  Cờ phá chốt chặn (--allow-shrink / --allow-drop / --fix-order) → ASK.
+  R6  Đọc/grep `BRD/BA/Old versions/` (BA bản cũ — CLAUDE.md/MEMORY: chỉ dùng BA hiện hành) → ASK. Gồm Read/Grep/Glob có đường dẫn vào đó và
+      `grep -r`/`rg`/`find` quét `.`/`BRD` mà không loại trừ thư mục này (2026-10-28: `grep -rln … .` quét cả BA cũ mà lệnh không hề nhắc tới
+      'Old versions'). User chỉ đích danh 1 file cũ thì bấm Allow.
 
 Tắt tạm (human chủ động): đặt biến môi trường DM_GUARD=off trước khi mở phiên.
 Input: JSON PreToolUse trên stdin. Output: JSON hookSpecificOutput.permissionDecision (deny/ask) hoặc im lặng.
@@ -47,6 +50,14 @@ RE_GIT_RESTORE = re.compile(
     rf"\bgit\s+(checkout\s+(\S+\s+)?--\s+[^\n;&]*{DESIGN_PATHS}|restore\s+[^\n;&]*{DESIGN_PATHS}"
     rf"|reset\s+--hard|stash(\s|$)|checkout\s+--\s+\.|clean\s+-[a-z]*f)", re.I)
 RE_BYPASS_FLAG = re.compile(r"\.py\b[^\n;&]*\s--(allow-shrink|allow-drop|fix-order)\b", re.I)
+RE_OLD_VERSIONS = re.compile(r"BRD/BA/Old[ _]versions", re.I)
+RE_RECURSIVE_SEARCH = re.compile(r"(?:\bgrep\s+-[A-Za-z]*[rR][A-Za-z]*|\brg\b|\bfind\b)", re.I)
+RE_BROAD_TARGET = re.compile(r"(?:^|\s)(?:\./?|BRD/?|\./BRD/?|BRD/BA/?)(?:\s|$)")
+RE_EXCLUDES_OLD = re.compile(r"Old versions|--exclude-dir|--glob\s+['\"]?!|-g\s+['\"]?!|-not\s+-path|-prune", re.I)
+
+
+_MSG_R6 = ("[dm_guard R6] `BRD/BA/Old versions/` là BA bản cũ — chỉ dùng BA hiện hành (`BRD/BA/BA_analyst_*.csv`). Chỉ đọc khi user chỉ đích danh file đó. "
+          "Nếu đang grep cả repo: thêm `--exclude-dir=\"Old versions\"` (grep) hoặc `-g '!**/Old versions/**'` (rg), hoặc trỏ đường dẫn vào Datamart/ hay BRD/BA/BA_analyst_*.csv.")
 
 
 def _decide(decision: str, reason: str) -> None:
@@ -88,6 +99,8 @@ def main() -> None:
         if not path:
             return
         rel = _rel(path)
+        if tool == "Read" and RE_OLD_VERSIONS.search(rel):
+            _decide("ask", _MSG_R6)
         hit = _protected(rel)
         if not hit:
             return
@@ -106,8 +119,17 @@ def main() -> None:
                 f"(nguyên khối Nhóm) hoặc apply_kpi_patch.py (thêm 1 KPI) với --dry-run trước. "
                 f"Lý do: sửa tay file lớn từng sinh Nhóm trùng / phá thứ tự TC6 / mất dòng.")
 
+    if tool in ("Grep", "Glob"):
+        blob = " ".join(str(ti.get(k) or "") for k in ("path", "glob", "pattern")).replace("\\", "/")
+        if RE_OLD_VERSIONS.search(blob):
+            _decide("ask", _MSG_R6)
+        return
+
     if tool in ("Bash", "PowerShell"):
         cmd = ti.get("command") or ""
+        cmd_n = cmd.replace("\\", "/")
+        if RE_OLD_VERSIONS.search(cmd_n) or (RE_RECURSIVE_SEARCH.search(cmd_n) and RE_BROAD_TARGET.search(cmd_n) and not RE_EXCLUDES_OLD.search(cmd_n)):
+            _decide("ask", _MSG_R6)
         if RE_TRUNCATE.search(cmd):
             _decide("deny",
                     "[dm_guard R3] Không cắt output gate/analyzer/apply_patch bằng tail/head — bảng delta và "

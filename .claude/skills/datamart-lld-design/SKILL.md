@@ -24,7 +24,7 @@ File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, các
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A31 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A35 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
@@ -155,7 +155,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A31 (tóm tắt)
+## Luật A1–A35 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -192,6 +192,10 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A29 | **Cấm 'tạm xem A ≡ B' / 'thay thế gần đúng' khi chưa đối chiếu BRD/Source:** `END_DATE` ≠ `DISMISSAL_DATE`; BA dùng `NATIONAL_ID` còn YAML Atomic chỉ có `ID_NUMBER` (CMND cũ) — 'chưa map' phải được Data Modeler xác nhận (2026-10-26: thực ra đã map); `POSITION_IDS`, `RECORD_STATUS`, `LOOKUP_VALUES` chưa map. Chạy `check_ba_source_coverage.py -m {M} --nhom {N}`, ghi `description` + `ghi_chu` + O_ issue 'yêu cầu Atomic map', KPI chỉ giữ READY khi Data Modeler chấp nhận thay thế | 1, 2 | `check_ba_source_coverage.py` (INFO, ngoài Gate) |
 | A30 | **Operational đa nguồn (nhiều file `{table}_{src}`):** mọi file cùng bộ cột và thứ tự; PK `Surrogate Key` hash có `src_stm_code` + mã bản ghi nguồn (mã `_code` thô trùng giữa hệ nguồn); cột có `etl_logic` giống hệt ở ≥ 2 file (NULL, hằng) phải khác `description` — nếu không `build_registry` gộp dòng và Gate 2 'dòng cuối thắng' lệch; nhãn literal giữa các nhánh thống nhất | 1 | Gate 2 `check_parity.py` |
 | A31 | **Ranh giới ETL ↔ BI:** `etl_logic` nạp ĐỦ lịch sử theo grain của bảng (chỉ được lọc bản ghi hợp lệ, khử trùng TRONG khóa tự nhiên, tính cờ chỉ phụ thuộc dữ liệu cùng khóa, dùng tham số chạy ETL `:etl_date`); mọi thứ phụ thuộc lựa chọn của người dùng — as-of `<= ngày chọn`, 'kỳ gần nhất của từng đơn vị', khoảng ngày, quý/năm/mã chỉ số — nằm ở Detail Mapping (SLICER/FILTER + window `MAX(...) OVER (PARTITION BY ...)` trên cột Fact/Operational); `description` chỉ nêu ý nghĩa + vai trò cột (≤ 1 mệnh đề), không chép CTE/ORDER BY của BA | 1, 2 | Gate 8 D17 `L2-ETL-BI-PARAM` (ERROR), D18 `L2-DESC-BI-LOGIC-LEAK` (WARNING) |
+| A32 | **Bộ ba (`rpt_code`, `sheet_code`, `cell_id`):** KPI đọc ô eForm lọc cả sheet (mã từ `jt.sheetCode` của SQL BA); Operational EAV thêm cột `sheet_code` (nullable, không vào khóa); không có ngoại lệ 'khớp số'; sửa 1 KPI thì quét cả module. Gate 8 D19. |
+| A33 | **Idiom ClickHouse:** `lowerUTF8` (không `LOWER`), nhãn cột khớp prefix `' >> '` sau truy vấn đếm (`datamart-review/reference/clickhouse_idioms.md`), `LIMIT 1 BY` thay `ROW_NUMBER()`; phát hiện ở 1 Nhóm → quét mọi Nhóm cùng sheet/`record_tp`; SQL dev dán 2 lần mâu thuẫn → hỏi bản nào mới. Gate 8 D20/D21. |
+| A34 | **Quét câu cũ mâu thuẫn** ở `ghi_chu` DM + HLD kể cả Open Items (ghi bằng `apply_open_item.py`); AI không ghi suy luận như dữ kiện. Gate 8 D22. |
+| A35 | **Vận hành phiên:** mở đúng thư mục để nạp hook/skill/CLAUDE.md (kiểm hook bằng lệnh bị R3 chặn), dừng ở Nhóm thứ 6, `--save-baseline`/`--baseline`, phiên song song chỉ stage file của mình. |
 
 ---
 

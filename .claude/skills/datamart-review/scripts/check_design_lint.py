@@ -83,7 +83,20 @@ Bổ sung 2026-10-26 (ranh giới ETL ↔ BI — Gemini rà QLKD Nhóm 28–30; 
   D18 [L2-DESC-BI-LOGIC-LEAK] (luật A31) — `description` LLD nhắc tên CTE của BA (`CTE …`, `latest_per_*`, `ctck_co_hn`) hoặc tham số dashboard (`:p_*`, `:from_date`…): description chỉ nêu ý nghĩa cột + vai trò
                               (≤ 1 mệnh đề, VD 'trục as-of của KPI …'), KHÔNG chép cơ chế chọn kỳ/ORDER BY/CTE của BA — cơ chế đó thuộc Detail Mapping. WARNING.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17 = ERROR; D18 = WARNING; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-10-28 (phiên QLQ Nhóm 7/8/9/11/12 + QLKD Nhóm 1/19/20/31 — 4 loại lỗi Gate 0–10 PASS mà user phải tự phát hiện):
+  D19 [L3-CELL-ID-NO-SHEET-CODE] (luật A32) — KPI lọc `cell_id` ở module có cột `sheet_code` (Dim/Operational tọa độ ô eForm) mà không dòng nào của KPI có
+                              điều kiện `sheet_code`: cùng mã ô TSxxx mang nghĩa khác nhau giữa các sheet của CÙNG biểu mẫu (TS046 ở sheet II.4, ô trùng ở sheet khác)
+                              → cộng/chọn nhầm sheet. ERROR. (D15 chỉ buộc cặp rpt_code x cell_id, không buộc sheet.)
+  D20 [L3-CH-LOWER-NONASCII]  (A33) — Detail Mapping kiểu ClickHouse (có `toLastDayOfMonth`/`LIMIT 1 BY`/`lowerUTF8`…) dùng `LOWER(x) LIKE '<chữ có dấu>'`:
+                              `lower` của ClickHouse chỉ hạ chữ ASCII → dùng `lowerUTF8`. WARNING (gom theo module, liệt kê KPI).
+  D21 [L3-CH-LABEL-EXACT]     (A33) — cùng điều kiện D20, KPI so khớp `column_label_nm = '<nhãn>'` chính xác: nhãn cột thật có khoảng trắng thừa / dạng
+                              '... >> Kỳ báo cáo' (QLQ BCTaiSan: so khớp chính xác chỉ lấy 18/131 quỹ). WARNING — chạy truy vấn đếm exact vs prefix
+                              (reference/clickhouse_idioms.md) rồi đổi sang `trimBoth(splitByString(' >> ', ifNull(column_label_nm, ''))[1]) = '<nhãn>'`.
+  D22 [L2-STALE-SHEET-CLAIM]  (A34) — ghi chú Detail Mapping / HLD còn nói "chưa lọc được theo mã sheet", "Mart chỉ có sheet_id", "KPI này không lọc sheet"
+                              trong khi module đã có cột `sheet_code` — câu cũ đứng cạnh thiết kế mới (cùng họ H16). WARNING; bỏ qua câu có nhãn lịch sử
+                              ("trước đây", "[SỬA", "đã đóng").
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19 = ERROR; D18, D20, D21, D22 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -739,6 +752,129 @@ def check_cell_ids(root: Path, module: str):
     return cell_id_issues(kl, loaded_cells(root, module))
 
 
+# ── D19–D22 (2026-10-28) ──────────────────────────────────────────────────────
+_RE_SHEET_COND = re.compile(r"sheet_code\s*(?:=|IN\b|LIKE\b)", re.I)
+_RE_CH_MARKER = re.compile(r"toLastDayOfMonth|toStartOfMonth|lowerUTF8|LIMIT\s+1\s+BY|splitByString|\bargMin\(")
+_RE_LOWER_LIKE = re.compile(r"\blower\(\s*[\w.]+\s*\)\s+LIKE\s+'([^']*)'", re.I)
+_RE_LABEL_EXACT = re.compile(r"column_label_nm\s*=\s*'([^']*)'")
+_RE_STALE_SHEET = re.compile(
+    r"chưa lọc được[^.|;\n]{0,50}sheet|Mart chỉ có `?sheet_id|chưa có mã sheet|Atomic chưa có mã sheet|"
+    r"không phụ thuộc `?sheet_code|KPI này không lọc sheet", re.I)
+_RE_STALE_EXEMPT = re.compile(r"trước đây|lịch sử|đã đóng|đã sửa|\[SỬA|\[ĐÃ|\bcũ\b", re.I)
+
+
+def module_has_sheet_code(root: Path, module: str) -> bool:
+    """Module có cột LLD `sheet_code` (Dim `report_indicator_dim` / Operational `*_report_data`) → KPI lọc cell_id phải lọc cả sheet."""
+    d = root / "Datamart" / "lld" / module
+    if not d.exists():
+        return False
+    for f in sorted(d.glob("*.csv")):
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                for r in csv.DictReader(fh):
+                    if (r.get("datamart_column") or "").strip() == "sheet_code":
+                        return True
+        except Exception:
+            continue
+    return False
+
+
+def sheet_code_issues(kpi_logics, has_sheet_code: bool):
+    """D19 — kpi_logics: {kpi_id: [logic đã bỏ [...]]}. Hàm thuần (dùng cho test)."""
+    if not has_sheet_code:
+        return []
+    out = []
+    for kpi, logics in sorted(kpi_logics.items()):
+        txt = " ".join(logics)
+        cells = [c for m in _RE_CELL_LIT.finditer(txt) for c in re.findall(r"'([^']+)'", m.group(1))]
+        if cells and not _RE_SHEET_COND.search(txt):
+            out.append(("ERROR", "L3-CELL-ID-NO-SHEET-CODE",
+                        f"{kpi}: lọc `cell_id` {sorted(set(cells))[:4]} nhưng không dòng nào của KPI có điều kiện `sheet_code` — cùng mã ô mang nghĩa khác nhau giữa các sheet của "
+                        "cùng biểu mẫu (VD TS046 ở sheet II.4). Luật A32: viết bộ ba (rpt_code, sheet_code, cell_id), mã sheet lấy từ `jt.sheetCode = '…'` của SQL BA."))
+    return out
+
+
+def ch_idiom_issues(kpi_logics):
+    """D20/D21 — kpi_logics: {kpi_id: [logic đã bỏ [...]]}; chỉ áp khi module viết Detail Mapping kiểu ClickHouse. Hàm thuần."""
+    if not any(_RE_CH_MARKER.search(l) for ls in kpi_logics.values() for l in ls):
+        return []
+    lower_bad, label_exact = {}, {}
+    for kpi, logics in sorted(kpi_logics.items()):
+        txt = " ".join(logics)
+        for m in _RE_LOWER_LIKE.finditer(txt):
+            if any(ord(c) > 127 for c in m.group(1)):
+                lower_bad.setdefault(kpi, m.group(1))
+        m = _RE_LABEL_EXACT.search(txt)
+        if m:
+            label_exact.setdefault(kpi, m.group(1))
+    out = []
+
+    def _fmt(d):
+        ks = list(d)
+        return ", ".join(ks[:8]) + (f" … (+{len(ks) - 8})" if len(ks) > 8 else "")
+
+    if lower_bad:
+        out.append(("WARNING", "L3-CH-LOWER-NONASCII",
+                    f"{len(lower_bad)} KPI dùng `LOWER(x) LIKE '<chữ có dấu>'` trong Detail Mapping kiểu ClickHouse (`lower` chỉ hạ chữ ASCII → "
+                    f"'HOẠT ĐỘNG' không khớp '%hoạt động%'): {_fmt(lower_bad)}. Luật A33: dùng `lowerUTF8`."))
+    if label_exact:
+        out.append(("WARNING", "L3-CH-LABEL-EXACT",
+                    f"{len(label_exact)} KPI so khớp chính xác `column_label_nm = '<nhãn>'` ({_fmt(label_exact)}): nhãn cột thật có thể có khoảng trắng thừa hoặc dạng "
+                    "'... >> <nhãn>' (QLQ BCTaiSan: so khớp chính xác chỉ lấy 18/131 quỹ). Luật A33: chạy truy vấn đếm exact vs prefix (reference/clickhouse_idioms.md), "
+                    "khớp theo `trimBoth(splitByString(' >> ', ifNull(column_label_nm, ''))[1])` nếu prefix > exact."))
+    return out
+
+
+def check_sheet_and_idioms(root: Path, module: str):
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if not (dm and Path(dm).exists()):
+        return []
+    kl = {}
+    with open(dm, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            kl.setdefault((r.get("kpi_id") or "").strip(), []).append(_RE_BRACKET_NOTE.sub(" ", r.get("logic") or ""))
+    return sheet_code_issues(kl, module_has_sheet_code(root, module)) + ch_idiom_issues(kl)
+
+
+def stale_sheet_claims(texts):
+    """D22 — texts: [(nơi, văn bản)]. Trả [(nơi, đoạn trích)] cho câu 'chưa lọc được sheet…' không mang nhãn lịch sử. Hàm thuần."""
+    hits = []
+    for where, txt in texts:
+        for m in _RE_STALE_SHEET.finditer(txt):
+            ctx = txt[max(0, m.start() - 110):m.end() + 40]
+            if _RE_STALE_EXEMPT.search(ctx):
+                continue
+            hits.append((where, txt[max(0, m.start() - 30):m.end() + 30].replace("\n", " ")))
+            break
+    return hits
+
+
+def check_stale_sheet_claims(root: Path, module: str):
+    if not module_has_sheet_code(root, module):
+        return []
+    texts = []
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if dm and Path(dm).exists():
+        seen = set()
+        with open(dm, encoding="utf-8-sig", newline="") as fh:
+            for r in csv.DictReader(fh):
+                k = (r.get("kpi_id") or "").strip()
+                if k not in seen:
+                    seen.add(k)
+                    texts.append((f"DM {k}", r.get("ghi_chu") or ""))
+    hld = resolve_module_path(root, module, "hld")
+    if hld and Path(hld).exists():
+        for i, line in enumerate(Path(hld).read_text(encoding="utf-8-sig").splitlines(), 1):
+            texts.append((f"HLD dòng {i}", line))
+    hits = stale_sheet_claims(texts)
+    if not hits:
+        return []
+    ex = "; ".join(f"{w}: …{q}…" for w, q in hits[:6])
+    return [("WARNING", "L2-STALE-SHEET-CLAIM",
+             f"{len(hits)} chỗ còn nói 'chưa lọc được theo mã sheet'/'Mart chỉ có sheet_id'/'không lọc sheet' trong khi module đã có cột `sheet_code` — câu lỗi thời cạnh thiết kế mới "
+             f"(luật A34: sửa/đánh dấu 'trước đây' cùng lượt thêm sheet_code): {ex}" + (" …" if len(hits) > 6 else ""))]
+
+
 _RE_IDENT_PAIR = [
     re.compile(r"identification_tp_code\s*=\s*'([^']+)'\s+AND\s+(?:\w+\.)?src_stm_code\s*=\s*'([^']+)'"),
     re.compile(r"(?:\w+\.)?src_stm_code\s*=\s*'([^']+)'\s+AND\s+(?:\w+\.)?identification_tp_code\s*=\s*'([^']+)'"),
@@ -875,6 +1011,8 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_dim_pk_carried(root, module)
     issues += check_logic_column_refs(root, module)
     issues += check_cell_ids(root, module)
+    issues += check_sheet_and_idioms(root, module)
+    issues += check_stale_sheet_claims(root, module)
     issues += check_atomic_literals(root, module)
     issues += check_etl_bi_boundary(root, module)
     return issues
