@@ -1,0 +1,344 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_MASTER"
+  atomic_entity: "Compliance Report"
+  entity_physical_name: "compliance_report"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Grain: 1 dòng = 1 báo cáo tuân thủ đã nộp của 1 kỳ. Table Type = Relative theo quyết định Data Modeler (chưa có FK Atomic nào — HLD TMS Tier 1 T1-07). TEMPLATE_ID map 1:1 thành cột thường, không FK, theo quyết định Data Modeler (T1-01). Bộ audit chỉ có 7/9 cột chuẩn (thiếu STATUS, VERSION) nên không loại trừ — thiết kế như attribute thường, chờ xác nhận (T1-02). SUBMITTER_*/APPROVER_* giữ denormalized (T1-03). Physical name tính theo quy tắc B (Report→rpt) nhưng chưa chạy transform_physical_names.py."
+attributes:
+- attribute_name: "Compliance Report Id"
+  physical_name: "compliance_rpt_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('TMS_COMPLIANCE_REPORT_MASTER', CODE). BCV: [Documentation] Regulatory Report."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Compliance Report Code"
+  physical_name: "compliance_rpt_code"
+  description: "BK chính. PK nguồn (UUID) — bảng nguồn không có mã nghiệp vụ riêng; Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.ID"
+  comment: "BK chính. PK nguồn (VARCHAR2(36) UUID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=TMS_COMPLIANCE_REPORT_MASTER"
+  etl_derived_value: "TMS_COMPLIANCE_REPORT_MASTER"
+  data_type: "string"
+- attribute_name: "Report Template Source Id"
+  physical_name: "rpt_template_src_id"
+  description: "Mã mẫu báo cáo tuân thủ (UUID của COMPLIANCE_REPORT_TEMPLATE ở nguồn). Map 1:1 dạng cột thường, không tạo FK."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.TEMPLATE_ID"
+  comment: "Không phải FK/Surrogate Key — giữ nguyên giá trị nguồn theo quyết định Data Modeler. COMPLIANCE_REPORT_TEMPLATE ngoài scope."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Value"
+  physical_name: "rpt_period_val"
+  description: "Giá trị kỳ (VD: tuần 5, tháng 1)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_VALUE"
+  comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period Year"
+  physical_name: "rpt_period_year"
+  description: "Năm báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_YEAR"
+  comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch 4 chữ số."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period Label"
+  physical_name: "rpt_period_label"
+  description: "Nhãn hiển thị kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.REPORT_PERIOD_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitter Id"
+  physical_name: "submitter_id"
+  description: "ID người nộp báo cáo (ID người dùng hệ thống nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_ID"
+  comment: "Denormalized — không tạo FK (grain = 1 báo cáo, không phải Involved Party). HLD T1-03."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitter Name"
+  physical_name: "submitter_nm"
+  description: "Tên người nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitter Title"
+  physical_name: "submitter_title"
+  description: "Chức vụ người nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TITLE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submitter Type Code"
+  physical_name: "submitter_tp_code"
+  description: "Loại người nộp báo cáo (nguồn không có mô tả)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Timestamp"
+  physical_name: "submission_tms"
+  description: "Thời gian hệ thống tiếp nhận báo cáo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.SUBMISSION_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Auto Check Status Code"
+  physical_name: "auto_check_status_code"
+  description: "Kết quả kiểm tra tự động: 0 = Không đạt, 1 = Đạt, NULL = Chưa kiểm tra."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Auto Check Reason"
+  physical_name: "auto_check_reason"
+  description: "Lý do kiểm tra tự động không đạt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Auto Check Timestamp"
+  physical_name: "auto_check_tms"
+  description: "Thời gian hoàn thành kiểm tra tự động."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Approval Status Code"
+  physical_name: "approval_status_code"
+  description: "Trạng thái phê duyệt: 0 = Chờ duyệt, 1 = Đã duyệt, 2 = Bị từ chối."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Approval Timestamp"
+  physical_name: "approval_tms"
+  description: "Thời gian phê duyệt hoặc từ chối."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "Approver Id"
+  physical_name: "approver_id"
+  description: "ID người phê duyệt (ID người dùng hệ thống nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_ID"
+  comment: "Denormalized — không tạo FK. HLD T1-03."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver Name"
+  physical_name: "approver_nm"
+  description: "Tên người phê duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Approver Title"
+  physical_name: "approver_title"
+  description: "Chức vụ người phê duyệt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_TITLE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Rejection Reason"
+  physical_name: "rejection_reason"
+  description: "Lý do từ chối báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.REJECTION_REASON"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Resubmit From Date"
+  physical_name: "resubmit_from_dt"
+  description: "Ngày bắt đầu cho phép nộp lại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.RESUBMIT_FROM_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Resubmit To Date"
+  physical_name: "resubmit_to_dt"
+  description: "Ngày kết thúc cho phép nộp lại."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.RESUBMIT_TO_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Draft Revision"
+  physical_name: "draft_revision"
+  description: "Số lần chỉnh sửa bản nháp báo cáo (nguồn không có mô tả)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_MASTER.DRAFT_REVISION"
+  comment: "Nguồn lưu dạng NUMBER(10,0) — ETL cast sang integer. Nguồn không mô tả ý nghĩa — cần xác nhận."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

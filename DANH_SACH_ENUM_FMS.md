@@ -111,7 +111,7 @@
 | 1 | `NUMERIC` | `0, "Cảnh báo so sánh số liệu"` |
 | 2 | `ABNORMAL_CONTENT` | `1, "Cảnh báo nội dung bất thường"` |
 
-## `CompanyTypeEnum`
+## `CompanyTypeEnum` (FMS.COMPANY_TYPE)
 
 **File:** `com/tinhvan/fmsservice/distributoragent/domain/enums/CompanyTypeEnum.java`  
 **Số giá trị:** 4

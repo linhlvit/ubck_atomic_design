@@ -74,9 +74,7 @@ attributes:
   - "SCMS.SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_ADMIN_SANCTION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
-    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,27 +97,14 @@ attributes:
   physical_name: "sanction_form_tp_code"
   description: "Hình thức xử lý hành chính: CANH_CAO=Cảnh cáo; PHAT_TIEN=Phạt tiền;\
     \ DINH_CHI=Đình chỉ; TUOC_GIAY_PHEP=Tước giấy phép."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADMIN_SANCTION.FORM_TYPE"
-  comment: "Scheme: SCMS_ADMIN_SANCTION_TYPE. NVARCHAR2(50)."
-  classification_context: "SCMS_ADMIN_SANCTION_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Record Status Code"
-  physical_name: "record_status_code"
-  description: "Trạng thái bản ghi: 1=Đang hoạt động; 0=Ngừng hoạt động."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADMIN_SANCTION.RECORD_STATUS"
-  comment: "Scheme: SCMS_USAGE_STATUS. NUMBER(1)."
-  classification_context: "SCMS_USAGE_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Amount"
@@ -136,19 +121,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Content"
-  physical_name: "content"
-  description: "Nội dung chi tiết biện pháp xử lý hành chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADMIN_SANCTION.CONTENT"
-  comment: "NCLOB. Large text — lưu nguyên vẹn."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Decision Content"
   physical_name: "decision_content"
   description: "Nội dung quyết định xử phạt liên quan."
@@ -171,7 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ADMIN_SANCTION.DECISION_DATE"
-  comment: "DATE."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -224,19 +196,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_ADMIN_SANCTION.PROCESSING_UNIT"
   comment: "NVARCHAR2(200)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Attachment Path"
-  physical_name: "attachment_path"
-  description: "Đường dẫn file đính kèm biện pháp xử lý."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_ADMIN_SANCTION.ATTACHMENT_PATH"
-  comment: "VARCHAR2(500)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

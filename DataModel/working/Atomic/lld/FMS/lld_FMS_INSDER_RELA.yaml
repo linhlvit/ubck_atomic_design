@@ -17,8 +17,9 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Tách IP Postal Address + IP Alt Identification (NATIONAL_ID mặc định). CREATED_BY,\
-    \ MODIFY_BY, DELETED, DATA_MIGRATION document trong pending_design.yaml."
+  notes: "Địa chỉ + giấy tờ định danh giữ denormalized trên entity chính (không tách IP\
+    \ Postal Address / IP Alt Identification). CREATED_BY, MODIFY_BY, DELETED, DATA_MIGRATION\
+    \ document trong pending_design.yaml."
 attributes:
 - attribute_name: "Fund Management Company Insider Related Person Id"
   physical_name: "fmc_insider_related_person_id"
@@ -85,19 +86,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Relationship Type Code"
-  physical_name: "rltnp_tp_code"
-  description: "FK -> RELATION: Loại quan hệ."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INSDER_RELA.RELA_ID"
-  comment: "Scheme: FMS_RELATION_TYPE (tái sử dụng — đã đăng ký Tier 1)."
-  classification_context: "FMS_RELATION_TYPE"
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Related Person Full Name"
   physical_name: "related_person_full_nm"
   description: "Tên hiển thị chính."
@@ -108,6 +96,71 @@ attributes:
   source_columns:
   - "FMS.INSDER_RELA.ITEM_NAME"
   comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Person Identification Number"
+  physical_name: "related_person_identification_nbr"
+  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RELA.ID_NO"
+  comment: "Chuyển từ shared entity IP Alt Identification về entity chính. Nguồn không có cột phân biệt loại giấy tờ nên không có Identification Type Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Person Identification Issue Date"
+  physical_name: "related_person_identification_issue_dt"
+  description: "Ngày cấp CMND/CCCD/Hộ chiếu."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RELA.ID_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Related Person Identification Issue Place"
+  physical_name: "related_person_identification_issue_place"
+  description: "Nơi cấp giấy tờ định danh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RELA.ID_PLACE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Related Person Address Value"
+  physical_name: "related_person_adr_val"
+  description: "Địa chỉ trụ sở."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RELA.ADDRESS"
+  comment: "Chuyển từ shared entity IP Postal Address về entity chính (địa chỉ chung, không phân loại)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Relationship Type Code"
+  physical_name: "rltnp_tp_code"
+  description: "FK -> RELATION: Loại quan hệ."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.INSDER_RELA.RELA_ID"
+  comment: "SCHEMA_CODE=FMS.RELATION."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

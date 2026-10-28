@@ -73,9 +73,7 @@ attributes:
   - "SCMS.SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID"
   comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
     \ SC_FIRM_OWNERSHIP_RELATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
-    \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE) — đã sửa sang\
-    \ crosswalk 2026-07-27."
+    \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -98,14 +96,14 @@ attributes:
   physical_name: "ownership_relation_tp_code"
   description: "Loại quan hệ sở hữu: SO_HUU_TREN_5=Sở hữu trên 5%; CONG_TY_CON=Công\
     \ ty con; CONG_TY_LIEN_KET=Công ty liên kết; CONG_TY_ME=Công ty mẹ."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_OWNERSHIP_RELATION.RELATION_TYPE"
-  comment: "Scheme: SCMS_OWNERSHIP_RELATION_TYPE. VARCHAR2(100)."
-  classification_context: "SCMS_OWNERSHIP_RELATION_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Company Name"
@@ -123,30 +121,17 @@ attributes:
   data_type: "string"
 - attribute_name: "Enterprise Type Id"
   physical_name: "enterprise_tp_id"
-  description: "FK đến loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
-  data_domain: "Surrogate Key"
+  description: "Id loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
-  comment: "Pending — FK target ENTERPRISE_TYPE nằm ngoài scope. NUMBER(10)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Enterprise Type Code"
-  physical_name: "enterprise_tp_code"
-  description: "Mã loại hình doanh nghiệp của tổ chức có quan hệ sở hữu."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_OWNERSHIP_RELATION.ENTERPRISE_TYPE_ID"
-  comment: "Pending — Pair with Enterprise Type Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Country Id"
   physical_name: "country_id"
   description: "FK đến quốc gia đăng ký của tổ chức có quan hệ sở hữu."
@@ -159,10 +144,7 @@ attributes:
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_OWNERSHIP_RELATION.COUNTRY_ID\
     \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
-    \ NATIONALITY_CODE) | Cột nguồn tên COUNTRY_ID nhưng crosswalk trỏ tới danh mục\
-    \ quốc tịch (CAT_NATIONALITY) theo xác nhận Data Modeler 2026-07-29 — SCMS không\
-    \ có bảng danh mục quốc gia riêng (CAT_COUNTRY không tồn tại trong khảo sát nguồn).\
-    \ Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    \ NATIONALITY_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

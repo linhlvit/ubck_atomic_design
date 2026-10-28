@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_FUND_TYPE, nay deprecated). Không có cột CODE riêng — dùng ID làm BK (cùng pattern JOBS/MB_FUND). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION, IS_OPEN_FUND; RECORD_STATUS, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ FUNDS.FTYPE_ID (Investment Fund) đổi sang cặp FK Id + Code."
+  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_FUND_TYPE, nay deprecated). Không có cột CODE riêng — dùng ID làm BK (cùng pattern JOBS/MB_FUND). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION, IS_OPEN_FUND; RECORD_STATUS, DELETED, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ FUNDS.FTYPE_ID (Investment Fund) đổi sang cặp FK Id + Code. [MỚI 2026-10-27] Thêm CODE (DDL UAT mới) map 1-1 thành Sync Code (Text); BK giữ nguyên ID. [SỬA 2026-10-27] Đổi BK từ ID sang CODE (DDL UAT mới: CODE = mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS): Fund Type Code ← FUND_TYPE.CODE, Id = hash_id('FMS_FUND_TYPE', CODE). ID nguồn thành PK kỹ thuật, không map (pending_design). Bỏ attribute Sync Code thêm cùng ngày vì trùng Code. Consumer FUNDS.FTYPE_ID và RPT_TEMP.FTYPE_ID đã chuyển sang ETL crosswalk lấy CODE. Cần profile: CODE phải NOT NULL/unique trước go-live (nguồn khai báo nullable)."
 attributes:
 - attribute_name: "Classification FMS Fund Type Id"
   physical_name: "cl_fms_fund_tp_id"
@@ -27,20 +27,20 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', ID). BCV: \"[Common] Fund Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ — mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản..."
+  comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', CODE). BCV: \"[Common] Fund Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ — mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản..."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification FMS Fund Type Code"
   physical_name: "cl_fms_fund_tp_code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  description: "Mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.FUND_TYPE.ID"
-  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  - "FMS.FUND_TYPE.CODE"
+  comment: "BK chính — mã loại hình quỹ eCAT (CODE). Nguồn khai báo nullable — cần profile NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

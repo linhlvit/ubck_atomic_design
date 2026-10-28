@@ -62,17 +62,17 @@ attributes:
   data_type: "string"
 - attribute_name: "Inspection Object Type Code"
   physical_name: "inspection_object_tp_code"
-  description: "Loại đối tượng thanh tra: 1=QLQ, 2=QĐT, 3=BKGS, 4=ĐLPP, 5=Khác."
-  data_domain: "Classification Value"
+  description: "Loại đối tượng thanh tra: 1-QLQ, 2-QĐT, 3-BKGS, 4-ĐLPP, 5-Khác"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_ROUND.OBJECT_TYPE"
-  comment: "SCHEMA_CODE=FMS.OBJECT_TYPE"
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Other Object Name"
   physical_name: "other_object_nm"
   description: "Tên đối tượng thanh tra khác (khi OBJECT_TYPE=5=Khác)."
@@ -180,13 +180,13 @@ attributes:
 - attribute_name: "Inspection Kind Code"
   physical_name: "inspection_kind_code"
   description: "Hình thức thanh tra: 1=Thanh tra định kỳ, 2=Đột xuất, 3=Kiểm tra."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.INSPECTION_ROUND.INSPECTION_KIND"
-  comment: "Scheme: FMS_INSPECTION_KIND (đã đăng ký)."
-  classification_context: "FMS_INSPECTION_KIND"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"

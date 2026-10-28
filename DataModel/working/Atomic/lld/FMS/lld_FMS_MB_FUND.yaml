@@ -69,8 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.MB_FUND.FUND_ID"
-  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS',\
-    \ FUND_ID)."
+  comment: "FK target: investment_fund.investment_fund_id. Hash: hash_id('FMS_FUNDS', FUND_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -99,8 +98,7 @@ attributes:
   - "FMS.MB_FUND.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: MB_FUND.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME) | Chưa xác nhận value\
-    \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -167,24 +165,10 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.MB_FUND.DORF"
-  comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE. ETL derived: 1=DOMESTIC;2=FOREIGN."
+  comment: "SCHEMA_CODE=FMS.ORGANIZATION_TERRITORY_TYPE"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Active Status Flag"
-  physical_name: "active_status_flag"
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu\
-    \ lực."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.MB_FUND.RECORD_STATUS"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
 - attribute_name: "Member Code"
   physical_name: "member_code"
   description: "Mã số thành viên quỹ (member ID do hệ thống cấp)."
@@ -306,18 +290,16 @@ attributes:
 - attribute_name: "Member Type Code"
   physical_name: "member_tp_code"
   description: "Loại thành viên quỹ: 1=Cá nhân trong nước, 2=Tổ chức trong nước..."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.MB_FUND.MB_TYPE"
-  comment: "Scheme: FMS_FUND_MEMBER_TYPE. [PROPOSE NEW SCHEME] chưa có trong HLD 6d\
-    \ — bổ sung classification_schemes.yaml. Mô tả nguồn dùng '...' — chỉ 2 giá trị\
-    \ đầu xác nhận, cần profile dữ liệu bổ sung."
-  classification_context: "FMS_FUND_MEMBER_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Representative Position Title"
   physical_name: "representative_position_title"
   description: "Chức vụ người đại diện của thành viên tổ chức."

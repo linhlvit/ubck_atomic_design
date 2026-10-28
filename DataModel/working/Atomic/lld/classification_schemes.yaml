@@ -527,9 +527,6 @@ schemes:
       - code: "PERMANENT"
         name: "Nơi thường trú"
         source_table: null
-      - code: "REGISTERED"
-        name: "Địa chỉ đăng ký kinh doanh"
-        source_table: null
       - code: "REP_OFFICE"
         name: "Địa chỉ văn phòng đại diện (trong nước)"
         source_table: null
@@ -1888,6 +1885,24 @@ schemes:
     source_table: "THANHTRA.PETITION"
     used_in_entities:
       - "Petition"
+    values: []
+
+  - scheme_code: "ANTI_DOCUMENT_TYPE"
+    name: "Loại văn bản phòng chống tham nhũng/rửa tiền: SENT (văn bản đi), RECEIVED (văn bản đến)"
+    source_type: "source_table"
+    source_table: "THANHTRA.ANTI_CORRUPTION_DOCUMENT"
+    used_in_entities:
+      - "Anti Corruption Document"
+      - "Anti Money Laundering Document"
+    values: []
+
+  - scheme_code: "DOCUMENT_QUARTER"
+    name: "Quý ban hành văn bản PCTN/PCRT: QUARTER_1, QUARTER_2, QUARTER_3, QUARTER_4"
+    source_type: "source_table"
+    source_table: "THANHTRA.ANTI_CORRUPTION_DOCUMENT"
+    used_in_entities:
+      - "Anti Corruption Document"
+      - "Anti Money Laundering Document"
     values: []
 
   - scheme_code: "SECURITY_MEASURE_TYPE"
@@ -4641,6 +4656,38 @@ schemes:
       - "Geographic Area Old"
     values: []
 
+  - scheme_code: "TMS_REPORT_PERIOD_TYPE"
+    name: "Kỳ báo cáo tuân thủ: DAILY, WEEKLY, MONTHLY, YEARLY"
+    source_type: "source_table"
+    source_table: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_TYPE"
+    used_in_entities:
+      - "Compliance Report"
+    values: []
+
+  - scheme_code: "TMS_AUTO_CHECK_STATUS"
+    name: "Kết quả kiểm tra tự động báo cáo tuân thủ: 0=Không đạt, 1=Đạt, NULL=Chưa kiểm tra"
+    source_type: "source_table"
+    source_table: "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS"
+    used_in_entities:
+      - "Compliance Report"
+    values: []
+
+  - scheme_code: "TMS_COMPLIANCE_APPROVAL_STATUS"
+    name: "Trạng thái phê duyệt báo cáo tuân thủ: 0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối"
+    source_type: "source_table"
+    source_table: "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS"
+    used_in_entities:
+      - "Compliance Report"
+    values: []
+
+  - scheme_code: "TMS_SUBMITTER_TYPE"
+    name: "Loại người nộp báo cáo tuân thủ (chưa có mô tả nguồn — cần profile)"
+    source_type: "modeler_defined"
+    source_table: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE"
+    used_in_entities:
+      - "Compliance Report"
+    values: []
+
   - scheme_code: "TMS_COMPANY_EVENT_TYPE"
     name: "Loại sự kiện tổ chức niêm yết — GSGD (cần profile, cột free text)"
     source_type: "source_table"
@@ -6576,3 +6623,12 @@ schemes:
       - code: "INACTIVE"
         name: "Ngừng hoạt động/Hết hiệu lực"
         source_value: "0"
+
+  - scheme_code: "FMS.RELATION"
+    name: "Danh mục loại quan hệ — values from RELATION (schema_code literal trên cl_value)"
+    source_type: "source_table"
+    source_table: "FMS.RELATION"
+    used_in_entities:
+      - "Fund Management Company Insider Related Person"
+    values: []
+    reactivated_note: "Đăng ký mới 2026-10-28 — FMS.RELATION map vào Classification Value theo yêu cầu Data Modeler, cl_code = ID (không có cột CODE riêng). Khác scheme FMS_RELATION_TYPE (FK-reference cũ, chưa có entity tiêu thụ trong LLD FMS hiện tại)."

@@ -6,12 +6,16 @@
 >
 > **File chi tiết theo tầng:**
 > - [FIMS_HLD_Tier1.md](FIMS_HLD_Tier1.md) — Independent Entities: Classification FIMS Company Type, Classification FIMS Investor Type, Classification FIMS Status, Classification Foreign Investor Reporting Entity, Custodian Bank, Foreign Investor, Foreign Investor Report, Securities Company (+ 3 shared entity IP Postal Address / IP Electronic Address / IP Alt Identification). Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f.
-> - [FIMS_HLD_Tier2.md](FIMS_HLD_Tier2.md) — FK đến Tier 1: Foreign Investor Report Structure
+> - [FIMS_HLD_Tier2.md](FIMS_HLD_Tier2.md) — FK đến Tier 1: Foreign Investor Report Structure, Foreign Investor Securities Holding, Trading Authorization
 > - [FIMS_HLD_Tier3.md](FIMS_HLD_Tier3.md) — FK đến Tier 2: Foreign Investor Report Value
 >
 > **Cập nhật 2026-09-30 — nhóm Báo cáo động:** `Reporting Template` (RPTTEMP) và `Report Import Value` (RPTVALUES) được thay bằng 4 entity `Foreign Investor Report`, `Foreign Investor Report Structure`, `Foreign Investor Report Value`, `Classification Foreign Investor Reporting Entity`. Nhóm này đi qua luồng đặc biệt STG → parse → ODS → ATM (xem ghi chú cuối mục 7a), không map 1:1 từ staging.
 >
-> **Cập nhật 2026-10-21 — đồng bộ theo LLD:** `Market Participant Organization` được thay bằng `Securities Company` (SECURITIESCOMPANY) và `Custodian Bank` (BANKMONI); STATUS/INVESTORTYPE/COMPANYTYPE đã nâng thành entity `Classification FIMS ...`. Các entity chưa có LLD (Reporting Period, Reporting Obligation Type, Warning Parameter/Condition, Trading Representative, Securities Closing Price, Foreign FM Branch Organization, Info Disclosure Representative/Authorization/Announcement, Market Participant Key Person, Member Periodic Report, Foreign Investor Securities Account, Report Processing Activity Log, Market Participant Conduct Violation, Trading Authorization) đã gỡ khỏi HLD; bảng nguồn chuyển vào 7f nhóm `Chưa có LLD`. Không còn junction table.
+> **Cập nhật 2026-10-21 — đồng bộ theo LLD:** `Market Participant Organization` được thay bằng `Securities Company` (SECURITIESCOMPANY) và `Custodian Bank` (BANKMONI); STATUS/INVESTORTYPE/COMPANYTYPE đã nâng thành entity `Classification FIMS ...`. Các entity chưa có LLD (Reporting Period, Reporting Obligation Type, Warning Parameter/Condition, Trading Representative, Securities Closing Price, Foreign FM Branch Organization, Info Disclosure Representative/Authorization/Announcement, Market Participant Key Person, Member Periodic Report, Foreign Investor Securities Account, Report Processing Activity Log, Market Participant Conduct Violation) đã gỡ khỏi HLD; bảng nguồn chuyển vào 7f nhóm `Chưa có LLD`. Không còn junction table.
+>
+> **Cập nhật 2026-10-28 — CATEGORIESSTOCK:** thiết kế lại thành entity `Foreign Investor Securities Holding` (Tier 2, [Arrangement] Investment Arrangement, Fact Append) theo yêu cầu Data Modeler; `SECURITIESACCOUNT` vẫn ở 7f nhóm `Chưa có LLD`.
+>
+> **Cập nhật 2026-10-28 — TRADINGAUTHORIZATION:** `Trading Authorization` (T2, [Arrangement] Authority Arrangement) đổi Fundamental → Relative; `TRADINGAUTHORIZATIONINVES` không gộp nữa và không thiết kế Atomic (giữ ở 7f).
 
 ---
 
@@ -32,6 +36,8 @@
 | 1 | Involved Party | Shared Entity | Shared Entity | BANKMONI, INVESTOR, SECURITIESCOMPANY | Update | Địa chỉ/liên lạc/giấy tờ định danh của Involved Party (shared entity) | Involved Party Postal Address | Fundamental | Shared entity — tách từ Address của Foreign Investor, Securities Company, Custodian Bank (Tier = tier của host entity). |
 | 1 | Involved Party | [Involved Party] Broker Dealer | Organization | SECURITIESCOMPANY | Update | Danh sách công ty chứng khoán — đối tượng thành viên thị trường | Securities Company | Fundamental | Broker Dealer — cùng entity với `SCMS.SC_FIRM_INFO` (thay quyết định gộp Market Participant Organization cũ, 2026-10-05). BK `sc_code` = Id nguồn. Tách IP Postal Address + IP Electronic Address + IP Alt Identification. FK đến Classification FIMS Status. |
 | 2 | Documentation | [Documentation] Form Document | Form Document | SHEET (qua ODS `FIR_STRUCTURE`) | Update (ODS ghi đè toàn bộ mỗi lần chạy) | Cấu hình ô chỉ tiêu của sheet (JSON CellsMeta/SectionsMeta/DataLabel) | Foreign Investor Report Structure | Relative | Form Document — cây chỉ tiêu (1 ô template trong 1 sheet). ODS sinh bằng **parse JSON** `CellsMeta`/`SectionsMeta`/`DataLabel` của SHEET (+ cấu hình đè `fims_row_overrides/`), không phải JOIN. BK = `sheet_id ‖ indicator_uid`. FK đến Foreign Investor Report. |
+| 2 | Arrangement | [Arrangement] Investment Arrangement | Investment Arrangement | CATEGORIESSTOCK | Update | Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK | Foreign Investor Securities Holding | Fact Append | (1) Term candidate `Investment Arrangement` (BCV Arrangement) — thỏa thuận đầu tư của Involved Party (term `Trading Account Arrangement`/`Investment Arrangement` mang các thuộc tính tài khoản/vị thế đầu tư); candidate `Financial Market Position` (Accounting) bị loại theo quyết định Data Modeler 2026-10-28 (concept phải là Arrangement). (2) Cấu trúc trường: INVESID (FK INVESTOR), SECID (FK SECURITIESCOMPANY), QUANTITY (số lượng nắm giữ), RATE (% so với tổng lưu hành), DELETED + 4 cột audit kỹ thuật, ISSYNCED — mô tả mối quan hệ đầu tư giữa NĐT NN và CTCK kèm số lượng/tỷ lệ nắm giữ; không có số tài khoản (thuộc SECURITIESACCOUNT) và không có mã chứng khoán. (3) Chọn `Investment Arrangement`; Table Type = Fact Append (quyết định Data Modeler 2026-10-28): mỗi lần ETL ghi 1 dòng chụp số lượng/tỷ lệ hiện tại, insert-only, giữ lịch sử trên Atomic (thay vai trò CATEGORIESSTOCKHIS ngoài scope). Grain = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. FK đến Foreign Investor + Securities Company (đều T1) → Tier 2. Domain Prefix rỗng (`Foreign Investor` không thuộc danh sách curated). Thay quyết định cũ (gộp vào `Foreign Investor Securities Account`, T3-06) vì entity đó đã gỡ khỏi HLD 2026-10-21. |
+| 2 | Arrangement | [Arrangement] Authority Arrangement | Authority Arrangement | TRADINGAUTHORIZATION | Update | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Trading Authorization | Relative | (1) Term candidate `Authority Arrangement` (BCV Arrangement, id 6846) — "Identifies an Involved Party Arrangement which specifies the manner in which" một Involved Party được ủy quyền hành động thay mặt Involved Party khác. (2) Cấu trúc trường: INVESTORID/FUNDCOMID/SECCOMID (bên ủy quyền), TRADINGREPRESENTATIVEID (người được ủy quyền), AUTHORIZATIONTYPEID, STATUS, SDATE/EDATE (thời hạn hiệu lực), FILENAME/FILEDATA/NOTE — mô tả một thỏa thuận ủy quyền có thời hạn và trạng thái. (3) Chọn `Authority Arrangement`. Grain = 1 hợp đồng ủy quyền giao dịch. Nguồn Update → SCD2 (Relative) — Data Modeler đổi từ Fundamental sang Relative 2026-10-28. FK đến Foreign Investor + Securities Company (T1) → Tier 2; FK Trading Representative để pending (entity đã gỡ khỏi HLD 2026-10-21). TRADINGAUTHORIZATIONINVES không còn gộp vào entity này và không thiết kế Atomic (Data Modeler 2026-10-28, giữ ở 7f). |
 | 3 | Documentation | [Documentation] Regulatory Information | Regulatory Information | RPTVALUES (qua ODS `FIR_VALUE`) | Update (ODS tích lũy theo `ngay_nop`) | Dữ liệu giá trị từng ô trong báo cáo thành viên (bảng phân vùng theo năm) | Foreign Investor Report Value | Classification | Regulatory Information — "Reported Information that is required to be filed with regulatory bodies". Grain = 1 ô × 1 lần nộp × 1 dòng động. ODS dựng từ `RPTMEMBER ⋈ RPTVALUES` (`RPTVALUES.MEBID = RPTMEMBER.ID`, trạng thái đã nộp 2/3/5), tra `TgtId` → `indicator_uid` và FK đối tượng → `object_type/object_id`. BK = `report_log_id ‖ sheet_id ‖ indicator_uid ‖ row_order`; cơ chế Upsert theo BK. Thay entity cũ `Report Import Value`. |
 | 3 | Documentation | [Documentation] Regulatory Information | Regulatory Information | RPTMEMBER (qua ODS `FIR_VALUE`) | Update | Lần nộp báo cáo của thành viên | Foreign Investor Report Value | Classification | RPTMEMBER cung cấp thông tin lần nộp denormalize trên từng ô: report_log_id (= RPTMEMBER.ID), kỳ, hạn nộp, trạng thái trễ hạn, đối tượng nộp. |
 
@@ -110,6 +116,10 @@ graph TD
     %% Tier 2
     FIRSTR["**Foreign Investor Report Structure**\n(SHEET parse JSON qua ODS FIR_STRUCTURE)\n(T2)"]:::atomic
 
+    FINVHLD["**Foreign Investor Securities Holding**\n(CATEGORIESSTOCK)\n(T2)"]:::atomic
+
+    TAUTH["**Trading Authorization**\n(TRADINGAUTHORIZATION)\n(T2)"]:::atomic
+
     %% Tier 3
     FIRVAL["**Foreign Investor Report Value**\n(RPTMEMBER ⋈ RPTVALUES qua ODS FIR_VALUE)\n(T3)"]:::atomic
 
@@ -136,6 +146,10 @@ graph TD
 
     %% Tier 2
     FIRSTR -->|Foreign Investor Report FK| FIR
+    FINVHLD -->|Foreign Investor FK| FINV
+    FINVHLD -->|Securities Company FK| SECCO
+    TAUTH -->|Foreign Investor FK| FINV
+    TAUTH -->|Securities Company FK| SECCO
 
     %% Tier 3
     FIRVAL -->|Foreign Investor Report Structure FK| FIRSTR
@@ -191,6 +205,8 @@ Không có junction table.
 | 6 | T2 | `data_explorer_id` (ODS `item_id`) là MD5 của `report_code + legal_basis + sheet_name + row_path + column_path` → đổi khi `row_path` bị sửa qua `fims_row_overrides/`. Không dùng làm BK; BK là `sheet_id ‖ indicator_uid`. `mirror_of_uid` lọc tại bước ODS → ATM (không map). | SCD2 sẽ ghi nhận version mới khi `data_explorer_id`/`row_path` đổi. |
 | 7 | Tất cả | Nhóm Báo cáo động **không thiết kế technical fields `ds_*`** trong LLD (quyết định Data Modeler 2026-09-30) — khác quy định chung `atomic-lld-design/reference/technical_fields.md` (2026-09-07). `value_nbr`/`late_duration` (DOUBLE nguồn) tạm dùng domain `Currency Amount` — `[PROPOSE NEW DOMAIN]` Numeric Value `decimal(38,10)`. | Cần reviewer xác nhận ngoại lệ technical fields + domain đề xuất. |
 | 8 | T1 | `Custodian Bank` / `Securities Company` (2026-10-05): BK dùng `Id` nguồn (không có mã nghiệp vụ); FIMS và FMS/SCMS cùng có ngân hàng lưu ký / CTCK nhưng hash khác nhau (`FIMS_BANKMONI` vs `FMS_BANK_MONI`; `FIMS_SECURITIESCOMPANY` vs `SCMS_SC_FIRM_INFO`) nên không tự dedupe. Xem Tier1.md T1-10, T1-11. | Cần crosswalk theo ShortName/RegNo nếu muốn hợp nhất. |
+| 9 | T2 | `CATEGORIESSTOCK` (đảo quyết định gỡ 2026-10-21, theo yêu cầu Data Modeler 2026-10-28) thiết kế thành entity riêng `Foreign Investor Securities Holding` ([Arrangement] Investment Arrangement, **Fact Append** theo quyết định Data Modeler 2026-10-28) vì `SECURITIESACCOUNT` chưa có entity để gộp. (0) Nguồn `Update` nhưng Atomic `Fact Append` — mỗi lần ETL append 1 dòng cho mọi cặp hay chỉ khi QUANTITY/RATE đổi? (a) Kiểu FK lệch: `CATEGORIESSTOCK.SECID` = NVARCHAR2(100) trong khi `SECURITIESCOMPANY.ID` = NUMBER(18,2) và `SECURITIESACCOUNT.SECID` = NUMBER(18,0) — SECID thực chứa Id số hay mã CTCK? (b) Bảng không có mã chứng khoán: QUANTITY/RATE là tổng tại CTCK hay theo từng mã? (c) Cặp (INVESID, SECID) có duy nhất không (bỏ qua DELETED=1)? | (0) quyết định BK/dedup + cột ngày ghi nhận; (a) quyết định cách tra Id `Securities Company` trong ETL, có thể phải ép kiểu; (b) nếu theo từng mã thì thiếu cột chứng khoán, grain đổi; (c) ảnh hưởng BK — nếu không duy nhất dùng ID nguồn làm BK. Domain Prefix rỗng (`Foreign Investor` không thuộc danh sách curated `rule_domain_prefix_abbreviations.csv`); `entity_physical_name` = `foreign_investor_securities_holding`. |
+| 10 | T2/T3 | `TRADINGAUTHORIZATION` thiết kế lại theo Data Modeler 2026-10-28: (a) Table Type Fundamental → Relative; (b) `TRADINGAUTHORIZATIONINVES` không gộp nữa và không thiết kế Atomic (giữ ở 7f); (c) đưa `TRADINGAUTHORIZATION` khỏi 7f nhóm `Chưa có LLD`. FK `TRADINGREPRESENTATIVEID` chưa có entity đích (pending). | Xem Tier 2 T2-08. Cặp (Update, Relative) khớp bảng cross-check Change Mode. |
 
 ---
 
@@ -275,11 +291,9 @@ Không có junction table.
 | Chưa có LLD | CDTWARN | Danh sách điều kiện cảnh báo giám sát (ngưỡng min/max cho từng tham số) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | CLOSING_PRICE_SECURITIES | Giá đóng cửa chứng khoán theo phiên, nhận từ HOSE/HNX/UPCOM hoặc nhập tay | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | SECURITIESACCOUNT | Danh sách tài khoản giao dịch chứng khoán của NĐT nước ngoài | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | CATEGORIESSTOCK | Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | RPTPROCESS | Lịch sử xử lý báo cáo của chuyên viên UBCKNN (duyệt/từ chối/yêu cầu gửi lại) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | VIOLT | Danh sách vi phạm điều kiện cảnh báo của thành viên thị trường | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | AUTHOANNOUNCE | Danh sách ủy quyền CBTT — thành viên thị trường ủy quyền cho đại diện CBTT | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | TRADINGAUTHORIZATION | Danh sách ủy quyền giao dịch cho đại diện giao dịch | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | ANNOUNCE | Tin công bố thông tin (CBTT) của thành viên thị trường | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | FUNDCOMBUSINES | Liên kết FUNDCOMPANY ↔ BUSINESS (nghiệp vụ KD của QLQ) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | SECCOMBUSINES | Liên kết SECURITIESCOMPANY ↔ BUSINESS (nghiệp vụ KD của CTCK) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
@@ -356,7 +370,19 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 **Luồng dữ liệu:** STG `SHEET` → parse JSON `CellsMeta`/`SectionsMeta`/`DataLabel` (+ `fims_row_overrides/`) → ODS `FIR_STRUCTURE` → ATM SCD2.
 
 
-### 10. Foreign Investor Report Value
+### 10. Foreign Investor Securities Holding
+**Tier:** 2 | **Source:** `CATEGORIESSTOCK` | **BCV Concept:** [Arrangement] Investment Arrangement | **BCO:** Arrangement | **Table Type:** Fact Append
+**Domain Prefix:** (none)
+**Description:** Thỏa thuận đầu tư/sở hữu chứng khoán của nhà đầu tư nước ngoài tại một công ty chứng khoán — 1 dòng = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Ghi nhận số lượng chứng khoán nắm giữ và tỷ lệ nắm giữ so với tổng số lượng lưu hành; insert-only, giữ lịch sử các lần ghi nhận. FK đến Foreign Investor và Securities Company.
+
+
+### 11. Trading Authorization
+**Tier:** 2 | **Source:** `TRADINGAUTHORIZATION` | **BCV Concept:** [Arrangement] Authority Arrangement | **BCO:** Arrangement | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Hợp đồng ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho người đại diện giao dịch hành động thay mặt. Ghi nhận loại đối tượng áp dụng, công ty quản lý quỹ/công ty chứng khoán liên quan, loại hình ủy quyền, trạng thái, thời hạn hiệu lực và tệp đính kèm.
+
+
+### 12. Foreign Investor Report Value
 **Tier:** 3 | **Source:** `RPTMEMBER, RPTVALUES` (qua ODS `FIR_VALUE`) | **BCV Concept:** [Documentation] Regulatory Information | **BCO:** Documentation | **Table Type:** Classification
 **Domain Prefix:** Foreign Investor Report
 **Description:** Giá trị thật đã nộp của từng ô chỉ tiêu trong 1 lần nộp báo cáo — 1 dòng = 1 ô × 1 lần nộp × 1 dòng động. Ghi nhận lần nộp, kỳ, hạn nộp, trạng thái trễ hạn, đối tượng nộp, giá trị gốc/số/chữ và các cờ chẩn đoán dữ liệu thật. FK đến Foreign Investor Report Structure và Foreign Investor Report. Cơ chế Upsert theo BK. Thay entity cũ Report Import Value (2026-09-30).

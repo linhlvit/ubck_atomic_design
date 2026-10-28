@@ -336,11 +336,6 @@ entries:
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: FIMS
-  source_table: CATEGORIESSTOCK
-  description: Số lượng và tỷ lệ sở hữu chứng khoán hiện tại của NĐT NN tại 1 CTCK
-  group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
-- source_system: FIMS
   source_table: CDTWARN
   description: Danh sách điều kiện cảnh báo giám sát (ngưỡng min/max cho từng tham
     số)
@@ -411,11 +406,6 @@ entries:
 - source_system: FIMS
   source_table: TLPROFILES
   description: Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường
-  group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
-- source_system: FIMS
-  source_table: TRADINGAUTHORIZATION
-  description: Danh sách ủy quyền giao dịch cho đại diện giao dịch
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: FIMS
@@ -2706,11 +2696,6 @@ entries:
   group: Audit Log nguồn
   reason: Form Metadata — cấu trúc báo cáo, không có instance data nghiệp vụ
 - source_system: THANHTRA
-  source_table: ANTI_CORRUPTION_DOCUMENT
-  description: Tài liệu phòng chống tham nhũng
-  group: Audit Log nguồn
-  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
-- source_system: THANHTRA
   source_table: ANTI_CORRUPTION_PERIODIC_REPORT
   description: Báo cáo phòng chống tham nhũng định kỳ
   group: Audit Log nguồn
@@ -2721,16 +2706,11 @@ entries:
   group: Audit Log nguồn
   reason: Form Metadata — cấu trúc báo cáo
 - source_system: THANHTRA
-  source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
-  description: Tài liệu phòng chống rửa tiền
-  group: Audit Log nguồn
-  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic
-- source_system: THANHTRA
   source_table: ANTI_MONEY_LAUNDERING_DOSSIER
   description: Bộ hồ sơ PCRT — gom nhóm nhiều văn bản
   group: Audit Log nguồn
-  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic (nhất quán với
-    ANTI_MONEY_LAUNDERING_DOCUMENT)
+  reason: Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic; DOSSIER_ID
+    trên ANTI_MONEY_LAUNDERING_DOCUMENT không map (quyết định Data Modeler)
 - source_system: THANHTRA
   source_table: ANTI_MONEY_LAUNDERING_REPORT
   description: Báo cáo phòng chống rửa tiền

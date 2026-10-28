@@ -4,7 +4,9 @@
 >
 > **Trạng thái:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** ("LLD đã đủ cho dự án, HLD có mà LLD chưa làm là sai"). TMS **không có LLD** (không có thư mục `lld/TMS/`, không có trong `manifest.yaml`), nên toàn bộ 12 Atomic entity từng thiết kế ở HLD đã gỡ; 14 bảng nguồn thuộc phạm vi cũ chuyển vào mục 7f nhóm `Chưa có LLD`. Các bảng TMS khác (ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình...) chưa được đánh giá scope.
 >
-> **File chi tiết theo tầng:** [TMS_HLD_Tier1.md](TMS_HLD_Tier1.md), [TMS_HLD_Tier2.md](TMS_HLD_Tier2.md), [TMS_HLD_Tier3.md](TMS_HLD_Tier3.md) — đều không có entity Atomic trong scope.
+> **[CẬP NHẬT 2026-10-28]** Thiết kế bổ sung 1 entity mới theo yêu cầu Data Modeler: `COMPLIANCE_REPORT_MASTER` → `Compliance Report` (Tier 1). LLD chưa làm — xem [TMS_HLD_Tier1.md](TMS_HLD_Tier1.md) mục 6f T1-05.
+>
+> **File chi tiết theo tầng:** [TMS_HLD_Tier1.md](TMS_HLD_Tier1.md) (1 entity), [TMS_HLD_Tier2.md](TMS_HLD_Tier2.md), [TMS_HLD_Tier3.md](TMS_HLD_Tier3.md) — Tier 2, 3 không có entity Atomic trong scope.
 
 ---
 
@@ -12,16 +14,20 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
+| T1 | Documentation | [Documentation] Regulatory Report | Compliance Report Management | COMPLIANCE_REPORT_MASTER | Update | Báo cáo tuân thủ đã nộp theo kỳ: PERIOD_TYPE/VALUE/YEAR, người nộp, kiểm tra tự động (AUTO_CHECK_*), phê duyệt/từ chối (APPROVAL_*), cho phép nộp lại (RESUBMIT_*), TEMPLATE_ID (map 1:1 cột thường, không FK) | Compliance Report | Relative | (1) Regulatory Report — BCV: "Regulatory Information which is a report on regulations". (2) Bảng: 1 dòng = 1 báo cáo tuân thủ của 1 kỳ, có vòng nộp → kiểm tra tự động → duyệt/từ chối → nộp lại. (3) Regulatory Report khớp báo cáo định kỳ nộp cho cơ quan quản lý; Table Type = Relative theo quyết định Data Modeler dù chưa có FK Atomic (TEMPLATE_ID map 1:1 cột thường, xem 7e #1). Chi tiết xem TMS_HLD_Tier1.md. |
 
-Không có entity Atomic trong scope — chưa có LLD.
-
-**Tổng: 0 Atomic entities.**
+**Tổng: 1 Atomic entity** (T1: 1)
 
 ---
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
-Không có entity Atomic trong scope — chưa có LLD.
+```mermaid
+graph TD
+    subgraph T1["Tier 1 — Independent Entities"]
+        CR["Compliance Report"]
+    end
+```
 
 ---
 
@@ -47,6 +53,10 @@ Không có entity Atomic trong scope — chưa có LLD.
 | CASE_APPROVAL_STEP.STEP_CODE / NEXT_STEP_CODE | Mã bước duyệt | Classification Value | Scheme: `GSGD_APPROVAL_STEP_CODE`. |
 | CASE_APPROVAL_STEP.STATUS / CASE_FILE_WORKFLOW.STATUS | Trạng thái bước duyệt/quy trình | Classification Value | Scheme: `GSGD_APPROVAL_STEP_STATUS` (dùng chung — value set có thể khác nhau, cần profile riêng). |
 | ACCOUNT_GROUP_MEMBER.STATUS | Trạng thái tài khoản trong nhóm | Classification Value | Scheme: `GSGD_ACCOUNT_STATUS`. |
+| COMPLIANCE_REPORT_MASTER.PERIOD_TYPE | Kỳ báo cáo tuân thủ: DAILY/WEEKLY/MONTHLY/YEARLY | Classification Value | Scheme: `TMS_REPORT_PERIOD_TYPE`. |
+| COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS | Kết quả kiểm tra tự động (0=Không đạt, 1=Đạt, NULL=Chưa kiểm tra) | Classification Value | Scheme: `TMS_AUTO_CHECK_STATUS`. |
+| COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS | Trạng thái phê duyệt báo cáo (0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối) | Classification Value | Scheme: `TMS_COMPLIANCE_APPROVAL_STATUS`. |
+| COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE | Loại người nộp báo cáo (chưa có mô tả nguồn) | Classification Value | Scheme: `TMS_SUBMITTER_TYPE` (modeler_defined — cần profile). |
 
 ---
 
@@ -58,7 +68,12 @@ Không có junction table.
 
 #### 7e. Điểm cần xác nhận
 
-Không có — chưa có entity Atomic trong scope.
+| # | Tier | Câu hỏi | Ảnh hưởng |
+|---|---|---|---|
+| 1 | T1 | `COMPLIANCE_REPORT_MASTER.TEMPLATE_ID` (FK curated đến `COMPLIANCE_REPORT_TEMPLATE`) map 1:1 thành cột thường `Report Template Source Id`, không tạo FK theo quyết định Data Modeler (xem Tier1 T1-01) | Mất ràng buộc tới template trên Atomic; đổi sang FK Id + Code nếu sau này đưa template vào scope |
+| 2 | T1 | Bộ audit bảng nguồn chỉ có 7/9 cột chuẩn (thiếu `STATUS`, `VERSION`) — chưa tự loại trừ (Tier1 T1-02) | Xác nhận khi làm LLD |
+| 3 | T1 | Bảng con `COMPLIANCE_REPORT_FORM`/`COMPLIANCE_REPORT_DATA` chưa đánh giá scope (Tier1 T1-04) | Chờ quyết định |
+| 4 | T1 | Chưa có LLD cho TMS — entity mới mới ở mức HLD (Tier1 T1-05) | Cần `/atomic-lld-design` |
 
 ---
 
@@ -82,7 +97,7 @@ Không có — chưa có entity Atomic trong scope.
 | Chưa có LLD | ACCOUNT_GROUP_MEMBER | Quan hệ thành viên giữa tài khoản và nhóm giám sát | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | ACCOUNT_RELATIONSHIP | Mối quan hệ giữa 2 tài khoản NĐT trong giám sát | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 
-*(Các bảng TMS khác ngoài 15 bảng phạm vi cũ — ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình... — chưa được đánh giá scope.)*
+*(Các bảng TMS khác ngoài 15 bảng phạm vi cũ — ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT* (trừ COMPLIANCE_REPORT_MASTER — đã vào scope 2026-10-28), CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình... — chưa được đánh giá scope.)*
 
 ---
 
@@ -91,4 +106,7 @@ Không có — chưa có entity Atomic trong scope.
 > Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
-Không có entity Atomic trong scope — chưa có LLD.
+### 1. Compliance Report
+**Tier:** 1 | **Source:** `COMPLIANCE_REPORT_MASTER` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Báo cáo tuân thủ đã nộp theo từng kỳ (ngày/tuần/tháng/năm), ghi nhận người nộp, kết quả kiểm tra tự động, vòng phê duyệt hoặc từ chối và khoảng thời gian được phép nộp lại.

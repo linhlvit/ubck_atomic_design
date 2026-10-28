@@ -23,7 +23,7 @@ metadata:
     \ 2026-10-06: BK = hash từ ID (RAW(16)), các cột NCLOB/CLOB JSON map Text (string).\
     \ CREATED_BY/MODIFY_BY/DELETED document trong pending_design.yaml. Table Type\
     \ = Fundamental: chỉ FK đến Classification FMS Fund Type (danh mục), không FK\
-    \ đến entity nghiệp vụ."
+    \ đến entity nghiệp vụ. [SỬA 2026-10-27] FTYPE_ID → FUND_TYPE nay crosswalk lấy CODE (BK mới của FUND_TYPE) thay vì hash theo ID."
 attributes:
 - attribute_name: "Fund Management Report Id"
   physical_name: "fmr_id"
@@ -154,8 +154,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.RPT_TEMP.FTYPE_ID"
-  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
-    \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang FMS.FUND_TYPE: RPT_TEMP.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -167,9 +166,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.RPT_TEMP.FTYPE_ID"
-  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
-    \ FMS Fund Type Id."
+  - "FMS.FUND_TYPE.CODE"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Fund Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

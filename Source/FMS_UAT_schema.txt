@@ -1132,6 +1132,7 @@ PARENT_ISSUE_DATE             DATE                YES
 ACTIVITY_PERIOD               NVARCHAR2(200)      YES                                      Thời hạn hoạt động (text tự do)
 PROVINCE_ID                   VARCHAR2(256)       YES                                      TVS2601TK-3439: Tinh/thanh pho (PROVINCE.ID)
 WARD_ID                       VARCHAR2(256)       YES                                      TVS2601TK-3439: Xa/phuong (WARD.ID)
+AUTHORIZED_ACTIVITY           VARCHAR2(2000)      YES                                      
 
 
 BANG: FTOR_SCALE
@@ -1343,6 +1344,7 @@ ITEM_NAME                     NVARCHAR2(2000)     YES                           
 DESCRIPTION                   NVARCHAR2(2000)     YES                                      Mô tả chi tiết
 DELETED                       NUMBER(1,0)         NO                                       Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động
 IS_OPEN_FUND                  NUMBER(1,0)         NO                                       Đánh dấu loại hình quỹ là quỹ mở
+CODE                          NVARCHAR2(100)      YES                                      Mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS
 
 
 BANG: GROUPS
@@ -1937,7 +1939,7 @@ CONTENT_TEXT                  CLOB                YES
 ATTACHMENT_URLS_JSON          CLOB                YES                                      
 REQUESTED_BY                  VARCHAR2(200)       YES                                      
 REQUESTED_AT                  TIMESTAMP(6)        YES                                      
-RECORD_STATUS                 VARCHAR2(30)        NO                                       PENDING | RESPONDED
+RECORD_STATUS                 VARCHAR2(30)        NO                                       PENDING | RESPONDED — RESPONDED khi mọi phía bắt buộc đã phản hồi
 RESULT_CODE                   VARCHAR2(40)        YES                                      ACCURATE | INACCURATE | UNABLE_TO_CONFIRM
 CORRECTED_WORK_HISTORY_JSON   CLOB                YES                                      
 REASON_TEXT                   VARCHAR2(2000)      YES                                      
@@ -1965,6 +1967,8 @@ COMMITTEE_RESULT_CODE         VARCHAR2(40)        YES
 COMMITTEE_REASON_TEXT         VARCHAR2(2000)      YES                                      
 COMMITTEE_RESPONDED_BY        VARCHAR2(200)       YES                                      
 COMMITTEE_RESPONDED_AT        TIMESTAMP(6)        YES                                      
+APPRAISAL_REQUESTED_AT        TIMESTAMP(6)        YES                                      Ngày Ủy ban gửi yêu cầu (F-02 appraisalRequestedAt)
+RESPONSE_DEADLINE             DATE                YES                                      Hạn công ty phản hồi (F-02 responseDeadline) — chỉ hiển thị
 
 
 BANG: NHN_ORG_WARNING_SNAPSHOT
@@ -3217,6 +3221,8 @@ BRANCH_DIRECTOR               NUMBER(1,0)         YES                           
 DIRECTOR_APPOINT_LICENSE_NO   VARCHAR2(500)       YES                                      Số GP/QĐ bổ nhiệm Giám đốc chi nhánh
 DIRECTOR_APPROVAL_DATE        DATE                YES                                      Ngày phê duyệt bổ nhiệm Giám đốc chi nhánh
 LICENSE_END_DATE              DATE                YES                                      Ngày miễn nhiệm (khi là Trưởng đại diện / người đại diện VPĐD).
+BIRTH                         DATE                YES                                      
+POSIT_JOB                     VARCHAR2(200)       YES                                      
 
 
 BANG: STF_FG_BRCH_HISTORY

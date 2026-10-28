@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "IP Postal Address của Securities Company Ownership Relation (tổ chức có\
-    \ quan hệ sở hữu với CTCK). 1 row — REGISTERED_ADDRESS → type REGISTERED (địa\
+    \ quan hệ sở hữu với CTCK). 1 row — REGISTERED_ADDRESS → type ADDRESS (địa\
     \ chỉ đăng ký kinh doanh). Không có Province/District/Ward FK trong nguồn. Format\
     \ đồng bộ theo chuẩn NHNCK."
 attributes:
@@ -62,16 +62,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
-  description: "Loại địa chỉ: REGISTERED=Địa chỉ đăng ký kinh doanh của tổ chức có\
-    \ quan hệ sở hữu."
+  description: "Loại địa chỉ: ADDRESS=Địa chỉ."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode REGISTERED — chỉ có 1 cột REGISTERED_ADDRESS."
-  classification_context: "IP_ADDR_TYPE=REGISTERED"
-  etl_derived_value: "REGISTERED"
+  comment: "Scheme: IP_ADDR_TYPE. ETL hardcode ADDRESS — chỉ có 1 cột REGISTERED_ADDRESS."
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
+  etl_derived_value: "ADDRESS"
   data_type: "string"
 - attribute_name: "Address Value"
   physical_name: "adr_val"
@@ -83,6 +82,6 @@ attributes:
   source_columns:
   - "SCMS.SC_FIRM_OWNERSHIP_RELATION.REGISTERED_ADDRESS"
   comment: "VARCHAR2(500). Không có Province/District/Ward FK trong nguồn."
-  classification_context: "IP_ADDR_TYPE=REGISTERED"
+  classification_context: "IP_ADDR_TYPE=ADDRESS"
   etl_derived_value: null
   data_type: "string"

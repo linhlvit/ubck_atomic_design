@@ -14,6 +14,8 @@
 | T1 | Communication | [Communication] Feedback | Petition Management | PETITION | Update | Đơn thư công dân/tổ chức: PETITION_CATEGORY(FEEDBACK_SUGGESTION/COMPLAINT/DENUNCIATION), self-ref đơn trùng, STATUS | Petition | Fundamental | (1) Feedback — BCV: "a Communication to offer a compliment or a complaint". Complaint — BCV sub-type: "indicate dissatisfaction". (2) Bảng: PETITION_CATEGORY(3 values), SENDER_NAME/ADDRESS, self-ref ORIGINAL_PETITION_ID, STATUS. (3) Dùng Feedback (parent) thay Complaint vì FEEDBACK_SUGGESTION không phải "dissatisfaction" — Feedback bao hàm cả 3 loại đơn thư. |
 | T1 | Business Direction | [Business Direction] Law | Legal Reference | LEGAL_DOCUMENT | Update | Danh mục văn bản pháp luật làm căn cứ xử phạt: CODE(VBPL-XXXX), NAME, ISSUED_DATE, STATUS(ACTIVE/INACTIVE) | Legal Document | Fundamental | (1) Law — BCV: "a Business Direction defining binding rules legally enforceable; failure to comply may result in penalty". (2) Bảng: CODE(VBPL-XXXX), NAME, ISSUED_DATE, STATUS lifecycle. (3) Chọn Law: bảng lưu văn bản pháp luật làm căn cứ xử phạt. Có ISSUED_DATE + STATUS lifecycle → Fundamental (không phải Classification Value thuần túy). |
 | T1 | Business Direction | [Business Direction] Law | Regulatory Catalog | PENALTY_TYPE | Update | Danh mục hình thức xử phạt hành chính: CATEGORY(PRIMARY/SUPPLEMENTARY/REMEDIAL), STATUS(ACTIVE/INACTIVE), LEGAL_BASIS | Classification THANHTRA Penalty Type | Classification | (1) Law — BCV: "defines binding rules legally enforceable". (2) Bảng: CODE(UNIQUE), NAME, CATEGORY(3 values), STATUS lifecycle, LEGAL_BASIS. (3) Không thuần Code+Name vì có CATEGORY, STATUS, LEGAL_BASIS → Fundamental. Law phù hợp vì các hình thức xử phạt được pháp luật quy định. |
+| T1 | Documentation | [Documentation] Documentation Item | Anti-Corruption Management | ANTI_CORRUPTION_DOCUMENT | Update | Văn bản PCTN đi/đến: DOCUMENT_TYPE(SENT/RECEIVED), DOCUMENT_NUMBER, ISSUED_DATE, SUMMARY, DOCUMENT_YEAR, QUARTER, RECEIVING_UNIT | Anti Corruption Document | Relative | (1) Documentation Item — BCV: "a Documentation Item identifies a piece of documentation"; Form Document không khớp vì không có cấu trúc biểu mẫu. (2) Bảng: sổ văn bản PCTN, 1 dòng = 1 văn bản, DOCUMENT_TYPE(SENT/RECEIVED), DOCUMENT_NUMBER, ISSUED_DATE, SUMMARY, DOCUMENT_YEAR, QUARTER, RECEIVING_UNIT; không FK nghiệp vụ. (3) Documentation Item (general) vì cùng bảng chứa cả văn bản đi và đến. Chi tiết xem THANHTRA_HLD_Tier1.md. |
+| T1 | Documentation | [Documentation] Documentation Item | Anti-Money Laundering Management | ANTI_MONEY_LAUNDERING_DOCUMENT | Update | Văn bản PCRT đi/đến: cấu trúc đồng nhất ANTI_CORRUPTION_DOCUMENT; cột DOSSIER_ID không map lên Atomic | Anti Money Laundering Document | Relative | (1) Documentation Item — BCV: cùng mô tả. (2) Bảng: 8 cột nghiệp vụ trùng ANTI_CORRUPTION_DOCUMENT + DOSSIER_ID (inferred, nullable). (3) Tách entity riêng vì PCTN/PCRT là 2 lĩnh vực khác nhau. Theo quyết định Data Modeler: không map DOSSIER_ID, bảng ANTI_MONEY_LAUNDERING_DOSSIER giữ ngoài scope. Chi tiết xem THANHTRA_HLD_Tier1.md. |
 | T2 | Business Activity | [Business Activity] Business Review | Inspection | INSPECTION_TEAM | Update | Hồ sơ đoàn thanh tra: CODE(HSTT-YYYY-XXX), FK→ANNUAL_PLAN(nullable), FORM_TYPE(PERIODIC/UNSCHEDULED), DECISION_NUMBER | Inspection Team | Fundamental | (1) Business Review — BCV: "a Business Activity in which business operations are studied and compared to business objectives". (2) Bảng: CODE(HSTT-YYYY-XXX), FK→INSPECTION_ANNUAL_PLAN(nullable), PLAN_YEAR, FORM_TYPE, DECISION_NUMBER(UNIQUE), rich inspection details, VERIFICATION_MINUTES_SIGN_DATE. (3) Business Review là BCV term phù hợp nhất cho hoạt động thanh tra (review operations vs objectives). Không có "Regulatory Inspection" trong BCV. |
 | T2 | Business Activity | [Business Activity] Business Review | Examination | EXAMINATION_TEAM | Update | Hồ sơ đoàn kiểm tra: CODE(HSKT-YYYY-XXX), FK→ANNUAL_PLAN(nullable), UNIT_ID/UNIT_NAME, FORM_TYPE | Examination Team | Fundamental | (1) Business Review — BCV: cùng mô tả. (2) Bảng: CODE(HSKT-YYYY-XXX), FK→EXAMINATION_ANNUAL_PLAN(nullable), UNIT_ID, UNIT_NAME, FORM_TYPE, DECISION_NUMBER(UNIQUE). (3) Business Review khớp. Tách 2 entity vì Inspection và Examination khác thẩm quyền. |
 | T2 | Business Activity | [Business Activity] Business Review | Inspection Target | INSPECTION_ANNUAL_PLAN_TARGET | Update | Danh sách đối tượng thanh tra trong kế hoạch năm: TARGET_TYPE(3 values), TARGET_NAME | Inspection Annual Plan Target | Fundamental | (1) Business Plan — entity này mở rộng kế hoạch với danh sách mục tiêu. (2) Bảng: FK→INSPECTION_ANNUAL_PLAN, TARGET_TYPE(SECURITIES_COMPANY/FUND_MANAGEMENT_COMPANY/PUBLIC_COMPANY), TARGET_NAME. (3) Relative của TT Inspection Annual Plan, tên chứa parent ✓. |
@@ -40,7 +42,7 @@
 | T6 | Event | [Event] Event | Penalty Subject Behavior Supplementary | PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY | Update | Hình thức xử phạt bổ sung theo hành vi (bảng mới): FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, FK→PENALTY_TYPE | Penalty Decision Subject Behavior X Penalty Type Relationship | Relative | Domain Prefix rỗng (entity link). Cross-tier FK →T1 Penalty Type. Chi tiết xem THANHTRA_HLD_Tier6.md. |
 | T7 | Event | [Event] Event | Circumstance | PENALTY_DECISION_CIRCUMSTANCE | Update | Tình tiết tăng nặng/giảm nhẹ: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT | Penalty Decision Circumstance | Fundamental | (1) Event — BCV: "a happening about which the Financial Institution wishes to keep information". Đồng concept với chuỗi parent Penalty Decision. (2) Bảng: FK→PENALTY_DECISION_SUBJECT_BEHAVIOR, CIRCUMSTANCE_TYPE(AGGRAVATING/MITIGATING), CONTENT(CLOB) — ghi nhận từng tình tiết tăng nặng/giảm nhẹ ảnh hưởng mức phạt. (3) `[Event] Event` theo LLD. Tên entity theo LLD: "Penalty Decision Circumstance" (prefix "Penalty Decision" của nhóm). |
 
-**Tổng: 30 Atomic entities** (T1: 5, T2: 5, T3: 9, T4: 6, T5: 2, T6: 2, T7: 1)
+**Tổng: 32 Atomic entities** (T1: 7, T2: 5, T3: 9, T4: 6, T5: 2, T6: 2, T7: 1)
 
 ---
 
@@ -54,6 +56,8 @@ graph TD
         PET["Petition"]
         LD["Legal Document"]
         PT["Penalty Type"]
+        ACD["Anti Corruption Document"]
+        AMLD["Anti Money Laundering Document"]
     end
 
     subgraph T2["Tier 2 — FK to Tier 1"]
@@ -164,6 +168,8 @@ Không có junction table.
 | 2 | T4 | Penalty Decision dùng BCV [Event] — không có term cụ thể cho "administrative penalty decision" | Cần review với Data Architect |
 | 3 | T4 | Inspection Post Processing — tên không chứa đủ "TT Inspection Conclusion" (chỉ có "TT Inspection"). Đề xuất đổi thành "TT Inspection Conclusion Post Processing" | Xác nhận với team Design |
 | 4 | T6 | DDL UAT cập nhật thêm bảng con PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY nhưng KHÔNG đánh dấu DEPRECATED cột `SUPPLEMENTARY_PENALTY` (CLOB, free-text) hiện có trên PENALTY_DECISION_SUBJECT_BEHAVIOR — khác với case T2 ở trên (nguồn không xác nhận superseded). Xem T6-03. | Giữ nguyên `SUPPLEMENTARY_PENALTY` trên Atomic (chưa loại bỏ), thiết kế bảng con song song — cần Data Modeler xác nhận có trùng lặp/mâu thuẫn dữ liệu không khi thiết kế LLD. |
+| 5 | T1 | ANTI_MONEY_LAUNDERING_DOCUMENT.DOSSIER_ID (FK suy luận → ANTI_MONEY_LAUNDERING_DOSSIER) không map lên Atomic theo quyết định Data Modeler; DOSSIER giữ ngoài scope (xem Tier1 T1-03) | Mất liên kết văn bản ↔ bộ hồ sơ trên Atomic; bổ sung sau nếu có yêu cầu khai thác |
+| 6 | T1 | RECEIVING_UNIT (text tự do) trên 2 bảng *_DOCUMENT — chỉ có nghĩa với văn bản đi? (xem Tier1 T1-04) | Chờ BA xác nhận |
 
 ---
 
@@ -199,10 +205,8 @@ Không có junction table.
 | Audit Log nguồn | ADHOC_ANTI_CORRUPTION_REPORT | Báo cáo phòng chống tham nhũng ad-hoc | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
 | Audit Log nguồn | ANTI_CORRUPTION_PERIODIC_REPORT | Báo cáo phòng chống tham nhũng định kỳ | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
 | Audit Log nguồn | ANTI_CORRUPTION_REPORT_OUTLINE | Outline cấu trúc báo cáo chống tham nhũng | Form Metadata — cấu trúc báo cáo |
-| Audit Log nguồn | ANTI_CORRUPTION_DOCUMENT | Tài liệu phòng chống tham nhũng | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
 | Audit Log nguồn | ANTI_MONEY_LAUNDERING_REPORT | Báo cáo phòng chống rửa tiền | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
-| Audit Log nguồn | ANTI_MONEY_LAUNDERING_DOCUMENT | Tài liệu phòng chống rửa tiền | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic |
-| Audit Log nguồn | ANTI_MONEY_LAUNDERING_DOSSIER | Bộ hồ sơ PCRT — gom nhóm nhiều văn bản | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic (nhất quán với ANTI_MONEY_LAUNDERING_DOCUMENT) |
+| Audit Log nguồn | ANTI_MONEY_LAUNDERING_DOSSIER | Bộ hồ sơ PCRT — gom nhóm nhiều văn bản | Báo cáo tổng hợp nguồn — không phải entity nghiệp vụ Atomic; DOSSIER_ID trên ANTI_MONEY_LAUNDERING_DOCUMENT không map (quyết định Data Modeler) |
 | Operational / System | OFFICIAL_LETTER_TYPE | Danh mục loại công văn hệ thống | Operational/system data — không có giá trị nghiệp vụ |
 | Operational / System | PRIVATE_CATALOG_ITEM | Danh mục private do user định nghĩa trong hệ thống | Operational/system data — configuration metadata |
 | Operational / System | CODE_SEQUENCE_COUNTER | Bộ đếm sinh mã tự động | Operational/system data — không có giá trị nghiệp vụ |
@@ -227,7 +231,17 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 > Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
-### 1. Classification THANHTRA Penalty Type
+### 1. Anti Corruption Document
+**Tier:** 1 | **Source:** `ANTI_CORRUPTION_DOCUMENT` | **BCV Concept:** [Documentation] Documentation Item | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Sổ văn bản phòng chống tham nhũng đi và đến của UBCKNN, ghi nhận số hiệu, ngày ban hành, trích yếu, năm, quý ban hành và đơn vị nhận của từng văn bản.
+
+### 1b. Anti Money Laundering Document
+**Tier:** 1 | **Source:** `ANTI_MONEY_LAUNDERING_DOCUMENT` | **BCV Concept:** [Documentation] Documentation Item | **BCO:** Documentation | **Table Type:** Relative
+**Domain Prefix:** (none)
+**Description:** Sổ văn bản phòng chống rửa tiền đi và đến của UBCKNN, cấu trúc tương tự văn bản phòng chống tham nhũng, kèm mã bộ hồ sơ phòng chống rửa tiền (nếu có) mà văn bản thuộc về.
+
+### 2. Classification THANHTRA Penalty Type
 **Tier:** 1 | **Source:** `PENALTY_TYPE` | **BCV Concept:** [Business Direction] Law | **BCO:** Business Direction | **Table Type:** Classification
 **Description:** Danh mục hình thức xử phạt hành chính được pháp luật quy định, phân loại thành hình phạt chính, hình phạt bổ sung và biện pháp khắc phục, có trạng thái hiệu lực.
 

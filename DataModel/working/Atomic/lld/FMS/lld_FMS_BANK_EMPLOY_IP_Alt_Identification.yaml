@@ -2,13 +2,13 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "FMS"
-  source_table: "INSDER_RELA"
+  source_table: "BANK_EMPLOY"
   atomic_entity: "Involved Party Alternative Identification"
   entity_physical_name: "ip_alternative_identification"
   bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
   table_type: "Fundamental"
-  group: "T6"
+  group: "T5"
   design_status: "draft"
   version: "1.0"
   designed_by: null
@@ -17,34 +17,34 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Nguồn không có cột phân biệt loại giấy tờ — hardcode NATIONAL_ID mặc định.\
+  notes: "Nguồn không có cột phân biệt loại giấy tờ — hardcode IDENTIFICATION mặc định.\
     \ Document pending_design.yaml."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
-  description: "FK đến Fund Management Company Insider Related Person."
+  description: "FK đến Custodian Bank Employee."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.INSDER_RELA.ID"
-  comment: "FK target: fmc_insider_related_person.fmc_insider_related_person_id. Shared\
-    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_INSDER_RELA', ID)."
+  - "FMS.BANK_EMPLOY.ID"
+  comment: "FK target: custodian_bank_employee.custodian_bank_employee_id. Shared\
+    \ entity — không có PK surrogate riêng. Hash: hash_id('FMS_BANK_EMPLOY', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
-  description: "Mã người liên quan cổ đông nội bộ."
+  description: "Mã nhân sự ngân hàng lưu ký."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.INSDER_RELA.ID"
-  comment: "Lookup pair: fmc_insider_related_person.fmc_insider_related_person_code.\
-    \ Pair with Involved Party Id."
+  - "FMS.BANK_EMPLOY.ID"
+  comment: "Lookup pair: custodian_bank_employee.custodian_bank_employee_code. Pair\
+    \ with Involved Party Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57,8 +57,8 @@ attributes:
   status: "draft"
   source_columns: []
   comment: null
-  classification_context: "SOURCE_SYSTEM=FMS_INSDER_RELA"
-  etl_derived_value: "FMS_INSDER_RELA"
+  classification_context: "SOURCE_SYSTEM=FMS_BANK_EMPLOY"
+  etl_derived_value: "FMS_BANK_EMPLOY"
   data_type: "string"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
@@ -68,22 +68,22 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại\
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại\
     \ giấy tờ."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
-  description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
+  description: "Số CMND/CCCD/Hộ chiếu."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.INSDER_RELA.ID_NO"
+  - "FMS.BANK_EMPLOY.ID_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -94,21 +94,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.INSDER_RELA.ID_DATE"
+  - "FMS.BANK_EMPLOY.ID_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Identification Issue Place"
-  physical_name: "identification_issue_place"
-  description: "Nơi cấp giấy tờ định danh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FMS.INSDER_RELA.ID_PLACE"
-  comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: null
-  data_type: "string"

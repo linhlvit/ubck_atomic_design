@@ -6,51 +6,56 @@ brd_ref: BRD-SRC-FMS-FUND_TYPE
 columns:
 - name: ID
   data_type: RAW(16)
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16))"
+  description: Khóa chính của bản ghi (UUID dạng RAW(16))
   key: PK
   fk_note: null
 - name: DATE_CREATED
   data_type: DATE
-  description: "Thời điểm tạo bản ghi"
+  description: Thời điểm tạo bản ghi
   key: null
   fk_note: null
 - name: CREATED_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người tạo bản ghi"
+  description: Tài khoản người tạo bản ghi
   key: null
   fk_note: null
 - name: DATE_MODIFIED
   data_type: DATE
-  description: "Thời điểm cập nhật bản ghi lần cuối"
+  description: Thời điểm cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: MODIFY_BY
   data_type: NVARCHAR2(200)
-  description: "Tài khoản người cập nhật bản ghi lần cuối"
+  description: Tài khoản người cập nhật bản ghi lần cuối
   key: null
   fk_note: null
 - name: RECORD_STATUS
   data_type: NUMBER(1,0)
-  description: "Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực"
+  description: 'Trạng thái: 1=Đang hoạt động/Hiệu lực, 0=Ngừng hoạt động/Hết hiệu lực'
   key: null
   fk_note: null
 - name: ITEM_NAME
   data_type: NVARCHAR2(2000)
-  description: "Tên hiển thị chính"
+  description: Tên hiển thị chính
   key: null
   fk_note: null
 - name: DESCRIPTION
   data_type: NVARCHAR2(2000)
-  description: "Mô tả chi tiết"
+  description: Mô tả chi tiết
   key: null
   fk_note: null
 - name: DELETED
   data_type: NUMBER(1,0)
-  description: "Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động"
+  description: 'Cờ xóa mềm: 1=Đã xóa, 0=Còn hoạt động'
   key: null
   fk_note: null
 - name: IS_OPEN_FUND
   data_type: NUMBER(1,0)
-  description: "Đánh dấu loại hình quỹ là quỹ mở"
+  description: Đánh dấu loại hình quỹ là quỹ mở
+  key: null
+  fk_note: null
+- name: CODE
+  data_type: NVARCHAR2(100)
+  description: Mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS
   key: null
   fk_note: null

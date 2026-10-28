@@ -7,9 +7,9 @@ metadata:
   entity_physical_name: "trading_authorization"
   bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Authority Arrangement"
-  table_type: "Fundamental"
-  group: "T3"
-  design_status: "approved"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "draft"
   version: "1.0"
   designed_by: null
   designed_at: null
@@ -17,12 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Gộp thêm TRADINGAUTHORIZATIONINVES (quan hệ 1:1 với TRADINGAUTHORIZATION,\
-    \ không phải junction nhiều-nhiều) — quyết định Data Modeler 2026-07-20, thay\
-    \ thế quyết định denormalize ARRAY trước đây (FIMS_HLD_Overview.md mục 7d). InvestorId\
-    \ map thành cặp FK Authorized Investor Id/Code. Cột trùng lặp (Id/TradingAuthorizationId)\
-    \ và Deleted/CreatedBy của TRADINGAUTHORIZATIONINVES document trong pending_design.yaml\
-    \ theo Bước 3j; DateCreated map vào Authorized Investor Data Date (bảng Append)."
+  notes: "[SỬA 2026-10-28] Theo yêu cầu Data Modeler: (1) KHÔNG gộp TRADINGAUTHORIZATIONINVES nữa — đảo quyết định 2026-07-20, bỏ 3 attribute Authorized Investor Id/Code/Data Date; INVES không thiết kế Atomic (Data Modeler 2026-10-28, ngoài scope). (2) Table Type Fundamental → Relative (SCD2; nguồn Update), thêm technical fields ds_etl_pcs_tms/ds_rcrd_eff_dt/ds_rcrd_end_dt. (3) Group T3 → T2: entity Trading Representative đã gỡ khỏi HLD 2026-10-21 nên FK Trading Representative để status pending. FK Securities Company sửa theo quyết định 2026-10-05 (entity Securities Company gộp từ FIMS.SECURITIESCOMPANY, BK = ID, hash FIMS_SECURITIESCOMPANY) thay cho crosswalk SCMS cũ. Design_status đưa về draft để review/approve lại."
 attributes:
 - attribute_name: "Trading Authorization Id"
   physical_name: "trading_authorization_id"
@@ -68,17 +63,16 @@ attributes:
   physical_name: "stm_object_tp_code"
   description: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC, 5=Sở GD, 7=CN\
     \ QLQ NN."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.SystemObject"
-  comment: "Scheme: FIMS_SYSTEM_OBJECT_TYPE. Tái sử dụng scheme đã đăng ký (PARAWARN.SystemObject)\
-    \ — cùng bộ giá trị. Bổ sung Trading Authorization vào used_in_entities."
-  classification_context: "FIMS_SYSTEM_OBJECT_TYPE"
+  comment: null
+  classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Fund Management Company Id"
   physical_name: "fmc_id"
   description: "FK đến Fund Management Company: QLQ nơi người hành nghề làm việc."
@@ -119,11 +113,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.SecComId"
-  comment: "FK target: Securities Company.Securities Company Id. Nguồn lưu ID kỹ thuật\
-    \ của SCMS.SC_FIRM_INFO — ETL join SecComId → SCMS.SC_FIRM_INFO.ID để lấy CODE\
-    \ rồi hash_id('SCMS_SC_FIRM_INFO', CODE). Quyết định Data Modeler 2026-07-20 —\
-    \ thay thế placeholder Market Participant Organization/FIMS.SECURITIESCOMPANY\
-    \ trước đây."
+  comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', SecComId). Entity Securities Company (FIMS.SECURITIESCOMPANY) có BK = Id nguồn nên SecComId hash trực tiếp — thay crosswalk SCMS.SC_FIRM_INFO cũ (quyết định 2026-10-05)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -136,8 +126,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.SecComId"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Securities\
-    \ Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -150,7 +139,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.InvestorId"
-  comment: "FK target: Foreign Investor.Foreign Investor Id. Nguồn lưu ID kỹ thuật\
+  comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật\
     \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
     \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
@@ -165,7 +154,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.InvestorId"
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Foreign\
+  comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign\
     \ Investor Id."
   classification_context: null
   etl_derived_value: null
@@ -173,45 +162,16 @@ attributes:
 - attribute_name: "Authorization Type Code"
   physical_name: "authorization_tp_code"
   description: "FK -> loại hình ủy quyền giao dịch (LO)."
-  data_domain: "Classification Value"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId"
-  comment: "Scheme: FIMS_LO_TYPE. [PROPOSE NEW SCHEME] — bảng LO chưa xác định rõ\
-    \ trong HLD (xem FIMS_HLD_Tier3.md mục T3-02). Tạm xử lý Classification Value\
-    \ chờ xác nhận; nếu LO là entity nghiệp vụ thật, cần đổi sang cặp Id+Code và review\
-    \ lại tier."
-  classification_context: "FIMS_LO_TYPE"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Activity Status Code"
-  physical_name: "activity_status_code"
-  description: "Trạng thái bản ghi (tra cứu danh mục STATUS tương ứng)."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.Status"
-  comment: "Scheme: FIMS_ACTIVITY_STATUS. Bổ sung Trading Authorization vào used_in_entities."
-  classification_context: "FIMS_ACTIVITY_STATUS"
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Attachment File Name"
-  physical_name: "attachment_file_nm"
-  description: "Tên file đính kèm."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.FileName"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
 - attribute_name: "Effective Start Date"
   physical_name: "effective_start_dt"
   description: "Ngày bắt đầu hiệu lực hợp đồng ủy quyền."
@@ -254,77 +214,13 @@ attributes:
 - attribute_name: "Trading Representative Id"
   physical_name: "trading_representative_id"
   description: "FK đến TRADINGREPRESENTATIVE — Người đại diện giao dịch được ủy quyền."
-  data_domain: "Surrogate Key"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
-  comment: "FK target: Trading Representative.Trading Representative Id. Hash: hash_id('FIMS_TRADINGREPRESENTATIVE',\
-    \ ID)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Trading Representative Code"
-  physical_name: "trading_representative_code"
-  description: "Mã người đại diện giao dịch được ủy quyền."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
-  comment: "Lookup pair: Trading Representative.Trading Representative Code. Pair\
-    \ with Trading Representative Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Authorized Investor Id"
-  physical_name: "authorized_investor_id"
-  description: "FK đến Foreign Investor: nhà đầu tư nước ngoài trong bản ghi ủy quyền\
-    \ giao dịch (TRADINGAUTHORIZATIONINVES)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATIONINVES.InvestorId"
-  comment: "FK target: Foreign Investor.Foreign Investor Id. TRADINGAUTHORIZATIONINVES\
-    \ là quan hệ 1:1 với TRADINGAUTHORIZATION (không phải junction nhiều-nhiều — quyết\
-    \ định Data Modeler 2026-07-20, thay thế quyết định denormalize ARRAY trước đây\
-    \ tại FIMS_HLD_Overview.md mục 7d). Nguồn lưu ID kỹ thuật của INVESTOR — ETL join\
-    \ InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode rồi hash_id('FIMS_INVESTOR',\
-    \ TransactionCode)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Authorized Investor Code"
-  physical_name: "authorized_investor_code"
-  description: "Mã giao dịch NĐT NN (VSDC) trong bản ghi ủy quyền giao dịch (TRADINGAUTHORIZATIONINVES)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATIONINVES.InvestorId"
-  comment: "Lookup pair: Foreign Investor.Foreign Investor Code. Pair with Authorized\
-    \ Investor Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Authorized Investor Data Date"
-  physical_name: "authorized_investor_data_dt"
-  description: "Ngày dữ liệu bản ghi ủy quyền NĐT NN (TRADINGAUTHORIZATIONINVES) —\
-    \ dùng cho filter logic incremental extract."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "FIMS.TRADINGAUTHORIZATIONINVES.DateCreated"
-  comment: "TRADINGAUTHORIZATIONINVES là bảng Append (chỉ có DateCreated/CreatedBy,\
-    \ không có DateModified/ModifyBy) — DateCreated map vào Data Date theo quyết định\
-    \ cụm trường kỹ thuật FIMS 2026-07-20, thay vì loại bỏ như bảng Update."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
+  data_type: "int"

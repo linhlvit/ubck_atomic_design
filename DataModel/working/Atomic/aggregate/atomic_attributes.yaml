@@ -27987,8 +27987,9 @@ attributes:
   source_system: "FMS"
   source_table: "RPT_TEMP"
   source_column: "FMS.RPT_TEMP.FTYPE_ID"
-  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
-    \ FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang\
+    \ FMS.FUND_TYPE: RPT_TEMP.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE',\
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_report"
@@ -28003,9 +28004,10 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "RPT_TEMP"
-  source_column: "FMS.RPT_TEMP.FTYPE_ID"
+  source_column: "FMS.FUND_TYPE.CODE"
   comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
-    \ FMS Fund Type Id."
+    \ FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Classification FMS Fund Type Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "fund_management_report"
@@ -50443,6 +50445,23 @@ attributes:
   atomic_column: "cl_fms_event_tp_code"
   data_type: "string"
 - bcv_core_object: "Involved Party"
+  atomic_entity: "Foreign Fund Management Organization Unit"
+  atomic_attribute: "Authorized Activity"
+  description: "Nội dung hoạt động được cấp phép (map 1-1 từ nguồn; nguồn không có\
+    \ mô tả cột)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "FOR_BRCH"
+  source_column: "FMS.FOR_BRCH.AUTHORIZED_ACTIVITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "foreign_fm_ou"
+  atomic_column: "authorized_activity"
+  data_type: "string"
+- bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
   atomic_attribute: "Foreign Fund Management Organization Unit Staff Id"
   description: "Khóa đại diện (surrogate key)."
@@ -50741,6 +50760,39 @@ attributes:
   atomic_table: "foreign_fm_ou_staff"
   atomic_column: "director_appointment_approval_dt"
   data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Foreign Fund Management Organization Unit Staff"
+  atomic_attribute: "Birth Date"
+  description: "Ngày sinh (map 1-1 từ nguồn; nguồn không có mô tả cột)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STF_FG_BRCH"
+  source_column: "FMS.STF_FG_BRCH.BIRTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "birth_dt"
+  data_type: "date"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Foreign Fund Management Organization Unit Staff"
+  atomic_attribute: "Position Job Name"
+  description: "Chức danh/vị trí công việc (map 1-1 từ nguồn POSIT_JOB; nguồn không\
+    \ có mô tả cột)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "STF_FG_BRCH"
+  source_column: "FMS.STF_FG_BRCH.POSIT_JOB"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "foreign_fm_ou_staff"
+  atomic_column: "position_job_nm"
+  data_type: "string"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Foreign Investor"
   atomic_attribute: "Foreign Investor Id"
@@ -54342,8 +54394,9 @@ attributes:
   source_system: "FMS"
   source_table: "FUNDS"
   source_column: "FMS.FUNDS.FTYPE_ID"
-  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE',\
-    \ FTYPE_ID)."
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang\
+    \ FMS.FUND_TYPE: FUNDS.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE',\
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   atomic_table: "investment_fund"
@@ -54352,15 +54405,16 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Investment Fund"
   atomic_attribute: "Classification FMS Fund Type Code"
-  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — chính là ID nguồn)."
+  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — CODE nguồn)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
   source_table: "FUNDS"
-  source_column: "FMS.FUNDS.FTYPE_ID"
+  source_column: "FMS.FUND_TYPE.CODE"
   comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification\
-    \ FMS Fund Type Id."
+    \ FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi\
+    \ tiết xem comment Classification FMS Fund Type Id."
   classification_context: null
   etl_derived_value: null
   atomic_table: "investment_fund"
@@ -73513,7 +73567,7 @@ attributes:
   source_system: "FMS"
   source_table: "FUND_TYPE"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', ID). BCV: \"[Common] Fund\
+  comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', CODE). BCV: \"[Common] Fund\
     \ Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ —\
     \ mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ\
     \ bất động sản..."
@@ -73525,14 +73579,15 @@ attributes:
 - bcv_core_object: "Common"
   atomic_entity: "Classification FMS Fund Type"
   atomic_attribute: "Classification FMS Fund Type Code"
-  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  description: "Mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "FMS"
   source_table: "FUND_TYPE"
-  source_column: "FMS.FUND_TYPE.ID"
-  comment: "BK chính. PK nguồn — không có cột mã nghiệp vụ riêng."
+  source_column: "FMS.FUND_TYPE.CODE"
+  comment: "BK chính — mã loại hình quỹ eCAT (CODE). Nguồn khai báo nullable — cần\
+    \ profile NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   atomic_table: "cl_fms_fund_type"

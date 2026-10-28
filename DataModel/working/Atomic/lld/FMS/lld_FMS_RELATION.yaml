@@ -1,0 +1,108 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "RELATION"
+  atomic_entity: "Classification Value"
+  entity_physical_name: "cl_value"
+  bcv_core_object: "Common"
+  bcv_concept: "[Classification] Common"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "draft"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Map vào entity dùng chung Classification Value (cl_value) theo yêu cầu Data Modeler, mirror pattern lld_NHNCK_EDUCATION_LEVELS.yaml. Chỉ map 3 cột ID, ITEM_NAME, DESCRIPTION. Nguồn KHÔNG có cột CODE riêng — cl_code = ID (RAW(16)) theo yêu cầu tường minh Data Modeler, chệch rule 3e chung (PK kỹ thuật không map vào BK); ETL convert RAW(16) sang string (hex) nhất quán giữa bảng này và các FK trỏ tới (INSDER_RELA.RELA_ID). Scheme/Schema Code: FMS.RELATION. Các cột còn lại (PERSONAL_TYPE, RECORD_STATUS, DELETED, DATA_MIGRATION, audit) không map — document trong pending_design.yaml. Level 1 LLD; cần Level 2 consolidation vào entity_cl_value.yaml. 4 cột ds_* do ETL tự quản lý."
+attributes:
+- attribute_name: "Classification Code"
+  physical_name: "cl_code"
+  description: "Mã giá trị phân loại. Khóa chính của bản ghi (UUID dạng RAW(16))."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "FMS.RELATION.ID"
+  comment: "BK chính (kết hợp Schema Code tạo BK duy nhất). Nguồn lưu RAW(16) — ETL convert sang string (hex), cần thống nhất cách convert với FK trỏ tới. Dùng ID (PK kỹ thuật) làm mã phân loại theo yêu cầu tường minh Data Modeler — chệch rule 3e chung."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Schema Code"
+  physical_name: "schema_code"
+  description: "Mã loại phân loại."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode FMS.RELATION."
+  classification_context: null
+  etl_derived_value: "FMS.RELATION"
+  data_type: "string"
+- attribute_name: "Schema Name"
+  physical_name: "schema_nm"
+  description: "Tên loại phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Hardcode."
+  classification_context: null
+  etl_derived_value: "FMS - Danh mục loại quan hệ"
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_RELATION"
+  etl_derived_value: "FMS_RELATION"
+  data_type: "string"
+- attribute_name: "Classification Name"
+  physical_name: "cl_nm"
+  description: "Tên giá trị phân loại (tiếng Việt). Tên loại quan hệ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RELATION.ITEM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Name English"
+  physical_name: "cl_nm_english"
+  description: "Tên giá trị phân loại (tiếng Anh)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Classification Description"
+  physical_name: "cl_description"
+  description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.RELATION.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

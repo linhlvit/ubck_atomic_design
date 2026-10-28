@@ -25,7 +25,7 @@ metadata:
     \ brd_FMS_FNDSBMN.yaml, không có junction nào khác FK đến BANK_MONI ngoài SECURITIES/VIOLT)\
     \ — không thiết kế custodian_banks ARRAY, giữ nguyên FK đơn Custodian Bank Id/Code\
     \ từ cột BANK_ID trên chính FUNDS. Cần xác nhận lại HLD 7d. CREATED_BY, MODIFY_BY,\
-    \ FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml."
+    \ FILE_NAME/FILE_DATA, DELETED, DATA_MIGRATION, ID_DB_OLD document trong pending_design.yaml. [SỬA 2026-10-27] FTYPE_ID → FUND_TYPE nay crosswalk lấy CODE (BK mới của FUND_TYPE) thay vì hash theo ID."
 attributes:
 - attribute_name: "Investment Fund Id"
   physical_name: "investment_fund_id"
@@ -208,20 +208,20 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.FUNDS.FTYPE_ID"
-  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE', FTYPE_ID)."
+  comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang FMS.FUND_TYPE: FUNDS.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification FMS Fund Type Code"
   physical_name: "cl_fms_fund_tp_code"
-  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — chính là ID nguồn)."
+  description: "Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — CODE nguồn)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.FUNDS.FTYPE_ID"
-  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id."
+  - "FMS.FUND_TYPE.CODE"
+  comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Fund Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
