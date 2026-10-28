@@ -494,6 +494,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_macro_indicator_snpst_flat ON CLUST
     period_tp_code                               String                  COMMENT 'Mã loại kỳ báo cáo: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm',
     period_label                                 Nullable(String)        COMMENT 'Nhãn hiển thị kỳ báo cáo (VD: 2026-03, 2026-Q1, 2026)',
     indicator_val                                Decimal(23,4)           COMMENT 'Giá trị chỉ tiêu vĩ mô tại kỳ báo cáo này',
+    unit_tp_code                                 Nullable(String)        COMMENT '[MỚI 2026-10-28, O_VP_41] Mã đơn vị của giá trị chỉ tiêu (MRMS UNIT_TYPE: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính) — cần để quy đổi giá trị về cùng đơn vị (VD GDP về VND: mã 3 ×1.000.000.000, mã 8 ×1). Mã 23 (Triệu VND) xuất hiện trong câu lệnh BA VP nhưng không có trong danh sách mô tả của Atomic — O_VP_41.',
     prev_period_val                              Nullable(Decimal(23,4)) COMMENT 'Giá trị chỉ tiêu vĩ mô ở kỳ báo cáo liền trước (t-1)',
     pct_change                                   Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % so với kỳ liền trước ((t - t-1) / t-1 * 100)',
     yoy_pct_change                               Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % cùng kỳ năm trước (YoY)',

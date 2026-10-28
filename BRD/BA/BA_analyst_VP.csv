@@ -12,7 +12,7 @@ Trùng: Trong phạm vi ban của mình làm đã có tính thông tin này rồ
 uat_hose_stg.trade_book (t), 
 uat_hnx_stg.trade_book (h)","m.tradingdate, 
 h.trade_date, 
-t.trade_date",,"-- THỐNG KÊ THỊ TRƯỜNG >> CỔ PHIẾU >> CHỈ LẤY CỔ PHIẾU
+t.trade_date",,"-- THỐNG KÊ THỊ TRƯỜNG >> CỔ PHIẾU (Gồm CP, CCQ)
 /* Tham số tra cứu:
  * Sàn: HOSE / HNX / UPCOM / Toàn thị trường
  * Loại kỳ: D/M/Q/Y
@@ -79,19 +79,19 @@ params AS (
   ) 
   WHERE rn_eop = 1
 )
--- Danh sách cổ phiếu: Lấy bản ghi cuối ngày 
-, stock_daily_eod AS (
-  SELECT tradingdate, symbol, symbolisin
+-- Danh sách cổ phiếu: Lấy bản ghi cuối (Các thông tin mã, loại chứng khoán không đổi)
+, stock_portfolio AS (
+  SELECT symbol, symbolisin, stocktype
   FROM (
     SELECT 
-      s.tradingdate, 
       s.symbol, 
       s.symbolisin, 
-      ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn 
+      s.stocktype,
+      ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) rn 
     FROM uat_mdds_stg.jad_stockinfor s 
     CROSS JOIN params p
     WHERE s.tradingdate BETWEEN p.period_from_startdate AND p.period_to_enddate
-      AND s.stocktype = '2' -- Cổ phiếu
+      AND s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
   ) 
   WHERE rn = 1
 )
@@ -118,7 +118,7 @@ params AS (
         SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END) AS tudoanh_mua_gt,
         SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END) AS tudoanh_ban_gt
     FROM uat_hose_stg.trade_book t 
-    JOIN stock_daily_eod s ON t.symbol = s.symbol AND t.trade_date = s.tradingdate
+    JOIN stock_portfolio s ON t.symbol = s.symbol
     CROSS JOIN params p
     WHERE t.market_id = 'STK'
       AND t.trade_date BETWEEN p.period_from_startdate AND p.period_to_enddate
@@ -133,7 +133,7 @@ params AS (
         SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('P','E','A') THEN h.trade_quantity * h.trade_price END) AS tudoanh_mua_gt,
         SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('P','E','A') THEN h.trade_quantity * h.trade_price END) AS tudoanh_ban_gt
     FROM uat_hnx_stg.trade_book h  
-    JOIN stock_daily_eod s ON h.issue_code = s.symbolisin AND TO_DATE(h.trade_date, 'yyyyMMdd') = s.tradingdate
+    JOIN stock_portfolio s ON h.issue_code = s.symbolisin
     CROSS JOIN params p
     WHERE h.market_id IN ('STX', 'UPX')
       AND h.trade_date BETWEEN DATE_FORMAT(p.period_from_startdate, 'yyyyMMdd') AND DATE_FORMAT(p.period_to_enddate, 'yyyyMMdd') -- Lọc trade_date kiểu string dạng yyyyMMdd
@@ -186,44 +186,6 @@ FROM (
   GROUP BY tp.period_fromdate
 ) x
 GROUP BY period_fromdate
-;
-
--- Dữ liệu biểu đồ --> Cách lấy khác 
-SELECT 
-  p.market_id,
-  CASE p.period_type
-    WHEN 'D' THEN date_format(COALESCE(t.period_fromdate, i.period_fromdate), 'yyyy-MM-dd')
-    WHEN 'M' THEN date_format(COALESCE(t.period_fromdate, i.period_fromdate), 'yyyy-MM')
-    WHEN 'Q' THEN CONCAT(CAST(year(COALESCE(t.period_fromdate, i.period_fromdate)) AS string), '-Q', CAST(CAST(FLOOR((month(COALESCE(t.period_fromdate, i.period_fromdate)) - 1) / 3) + 1 AS int) AS string))
-    WHEN 'Y' THEN CAST(year(COALESCE(t.period_fromdate, i.period_fromdate)) AS string)
-  END period_code,   
-  COALESCE(t.period_fromdate, i.period_fromdate) AS period_fromdate,
-  t.ndtnn_rong_gt, 
-  t.tudoanh_rong_gt,
-  i.vnindex, 
-  i.hnxindex,
-  i.upcomindex
-FROM (
-  SELECT 
-    tp.period_fromdate, 
-    SUM(tp.ndtnn_rong_gt) AS ndtnn_rong_gt, 
-    SUM(tp.tudoanh_rong_gt) AS tudoanh_rong_gt
-  FROM trade_period tp
-  WHERE :market_id = MAP('STX','HNX', 'UPX','UPCOM', 'STK','HOSE')[tp.market_id] OR :market_id = 'Toàn thị trường'
-  GROUP BY tp.period_fromdate
-) t 
-FULL OUTER JOIN (
-  SELECT * 
-  FROM (
-    SELECT period_fromdate, marketcode, marketindex 
-    FROM index_period ip
-    WHERE ip.marketcode = :market_id OR :market_id = 'Toàn thị trường'
-  )  
-  PIVOT (
-    MAX(marketindex) FOR marketcode IN ('HOSE' AS vnindex, 'HNX' AS hnxindex, 'UPCOM' AS upcomindex)
-  )
-) i ON t.period_fromdate = i.period_fromdate
-CROSS JOIN params p
 ;",Tham số lọc,,Dữ liệu tĩnh,,,Done mapping
 1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,Sàn,"Sàn giao dịch: HOSE, HNX, UPCOM, Toàn thị trường",Dashboard,Chiều,TB,Sàn,"MDDS, HNX, HOSE",X,X,,Done,,"uat_mdds_stg.jad_marketinfor (m),  
 uat_hose_stg.trade_book (t), 
@@ -247,20 +209,27 @@ m.indexname","Tên chỉ số: m.indexname
 1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,Giá trị chỉ số,Giá đóng cửa của chỉ số tại ngày cuối kỳ (Đơn vị tính: Điểm).,Dashboard,Chỉ tiêu cơ sở,TB,"Sàn, Chỉ số, Ngày",MDDS,X,X,,Done,Thông tin thị trường (Chỉ số index),uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode IN ('HOSE', 'HNX', 'UPCOM')
 m.tradingdate BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,Số thời điểm - Tại ngày cuối kỳ,,Dữ liệu tĩnh,,,
-1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) trong kỳ.
+1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) trong kỳ.
 - Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán
 - Nhận diện giao dịch của NĐTNN trên sổ lệnh: Ký tự thứ 4 của số tài khoản giao dịch = E/F
 E - Tự doanh của CTCK TV nước ngoài/thành viên lưu ký nước ngoài
-F - Môi giới cho nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu phái sinh,TB,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm","HNX, HOSE",X,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
-uat_hnx_stg.trade_book (h)","h.trade_price, h.trade_quantity, 
-t.execution_value","- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+F - Môi giới cho nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu phái sinh,TB,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, HOSE, MDDS",X,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
+uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity, 
+t.execution_value","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t), uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+s.symbol = h.issue_code
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Công thức: 
 GTGD NĐTNN Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
 GTGD NĐTNN Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
-- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX', 'UPX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -277,8 +246,14 @@ Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OV
 1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,Giá trị chỉ số - UPCoM-Index,Giá đóng cửa của chỉ số UPCoM-Index tại ngày cuối kỳ.,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Chỉ số, Ngày",MDDS,,X,,Done,Thông tin thị trường (Chỉ số index),uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode IN ('UPCOM')
 m.tradingdate BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,Số thời điểm - Tại ngày cuối kỳ,,Dữ liệu tĩnh,Giá trị chỉ số,,
-1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - HOSE,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn HOSE trong kỳ.
-- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm","HNX, HOSE",,X,,Done,Sổ lệnh (Trade Book HOSE),uat_hose_stg.trade_book (t),t.execution_value,"- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - HOSE,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn HOSE trong kỳ.
+- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, HOSE, MDDS",,X,,Done,Sổ lệnh (Trade Book HOSE),"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -286,8 +261,14 @@ Công thức:
 GTGD NĐTNN Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
 GTGD NĐTNN Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
 - GT mua/bán ròng NĐTNN = GT NĐTNN mua - GT NĐTNN bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng NĐTNN,,
-1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - HNX,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn HNX trong kỳ.
-- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,Sổ lệnh (Trade Book HNX),uat_hnx_stg.trade_book (h),"h.trade_price, h.trade_quantity","- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - HNX,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn HNX trong kỳ.
+- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, MDDS",,X,,Done,Sổ lệnh (Trade Book HNX),"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = h.issue_code
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -295,8 +276,14 @@ Công thức:
 GTGD NĐTNN Mua: SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('E','F') THEN h.trade_price * h.trade_quantity END)
 GTGD NĐTNN Bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('E','F') THEN h.trade_price * h.trade_quantity END)
 - GT mua/bán ròng NĐTNN = GT NĐTNN mua - GT NĐTNN bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng NĐTNN,,
-1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - UPCoM,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn UPCoM trong kỳ.
-- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,Sổ lệnh (Trade Book HNX),uat_hnx_stg.trade_book (h),"h.trade_price, h.trade_quantity","- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - UPCoM,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn UPCoM trong kỳ.
+- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, MDDS",,X,,Done,Sổ lệnh (Trade Book HNX),"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = h.issue_code
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('UPX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -304,17 +291,24 @@ Công thức:
 GTGD NĐTNN Mua: SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('E','F') THEN h.trade_price * h.trade_quantity END)
 GTGD NĐTNN Bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('E','F') THEN h.trade_price * h.trade_quantity END)
 - GT mua/bán ròng NĐTNN = GT NĐTNN mua - GT NĐTNN bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng NĐTNN,,
-1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - Toàn thị trường,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) trong kỳ.
-- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm","HNX, HOSE",,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
-uat_hnx_stg.trade_book (h)","h.trade_price, h.trade_quantity, 
-t.execution_value","- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+1,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng NĐTNN và chỉ số Index,GT mua/bán ròng NĐTNN - Toàn thị trường,"Tổng GT mua/bán ròng NĐTNN trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) trong kỳ.
+- Công thức: GT mua/bán ròng NĐTNN = GT NĐTNN mua − GT NĐTNN bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, HOSE, MDDS",,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
+uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity, 
+t.execution_value","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t), uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+s.symbol = h.issue_code
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Công thức: 
 GTGD NĐTNN Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
 GTGD NĐTNN Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('E','F') THEN t.execution_value END)
-- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX', 'UPX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN ngay_dau_ky AND ngay_cuoi_ky
@@ -353,21 +347,28 @@ m.indexname","Tên chỉ số: m.indexname
 2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,Giá trị chỉ số,Giá đóng cửa của chỉ số tại ngày cuối kỳ (Đơn vị tính: Điểm).,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Chỉ số, Ngày",MDDS,,X,,Done,Thông tin thị trường (Chỉ số Index),uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode IN ('HOSE', 'HNX', 'UPCOM')
 m.tradingdate BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,Số thời điểm - Tại ngày cuối kỳ,,Dữ liệu tĩnh,,,
-2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) trong kỳ:
+2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) trong kỳ:
 - Công thức: GT mua/bán ròng NĐTNN = GTGD tự doanh mua - GTGD tự doanh bán
 - Nhận diện giao dịch khối Tự doanh trên sổ lệnh: Ký tự thứ 4 của số tài khoản giao dịch = P/E/A 
 P - Tự doanh của CTCK TV trong nước
 E - Tự doanh của CTCK TV nước ngoài
-A - Tự doanh của thành viên lưu ký trong nước (Hiện tại nhóm TK này không được giao dịch cổ phiếu, chỉ giao dịch trái phiếu, phái sinh)",Dashboard,Chỉ tiêu cơ sở,TB,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm","MDDS, HNX, HOSE",X,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
-uat_hnx_stg.trade_book (h)","h.trade_price, h.trade_quantity, 
-t.execution_value","- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+A - Tự doanh của thành viên lưu ký trong nước (Hiện tại nhóm TK này không được giao dịch cổ phiếu, chỉ giao dịch trái phiếu, phái sinh)",Dashboard,Chỉ tiêu cơ sở,TB,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","MDDS, HNX, HOSE",X,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
+uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity, 
+t.execution_value","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t), uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+s.symbol = h.issue_code
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Công thức: 
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
-- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX', 'UPX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -384,8 +385,14 @@ Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OV
 2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,Giá trị chỉ số - UPCoM-Index,Giá đóng cửa của chỉ số UPCoM-Index tại ngày cuối kỳ.,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Chỉ số, Ngày",MDDS,,X,,Done,Thông tin thị trường (Chỉ số Index),uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode IN ('UPCOM')
 m.tradingdate BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Lấy dữ liệu tại thời điểm cuối cùng trong kỳ: (ROW_NUMBER() OVER(PARTITION BY marketcode ORDER BY tradingdate DESC, indextime DESC, sequence DESC)) = 1",,Số thời điểm - Tại ngày cuối kỳ,,Dữ liệu tĩnh,Giá trị chỉ số,,
-2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - HOSE,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn HOSE trong kỳ.
-- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm",HOSE,,X,,Done,Sổ lệnh (Trade Book HOSE),uat_hose_stg.trade_book (t),t.execution_value,"- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - HOSE,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn HOSE trong kỳ.
+- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HOSE, MDDS",,X,,Done,Sổ lệnh (Trade Book HOSE),"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -393,8 +400,14 @@ Công thức:
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
 - GT mua/bán ròng Tự doanh = GT Tự doanh mua - GT Tự doanh bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng tự doanh,,
-2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - HNX,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn HNX trong kỳ.
-- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,Sổ lệnh (Trade Book HNX),uat_hnx_stg.trade_book (h),"h.trade_price, h.trade_quantity","- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - HNX,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn HNX trong kỳ.
+- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, MDDS",,X,,Done,Sổ lệnh (Trade Book HNX),"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = h.issue_code
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -402,8 +415,14 @@ Công thức:
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
 - GT mua/bán ròng Tự doanh = GT Tự doanh mua - GT Tự doanh bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng tự doanh,,
-2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - UPCOM,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của sàn UPCoM trong kỳ.
-- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,Sổ lệnh (Trade Book HNX),uat_hnx_stg.trade_book (h),"h.trade_price, h.trade_quantity","- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - UPCOM,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của sàn UPCoM trong kỳ.
+- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, MDDS",,X,,Done,Sổ lệnh (Trade Book HNX),"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h): 
+s.symbol = h.issue_code
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('UPX') -- STX=HNX / UPX=UPCOM
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
@@ -411,20 +430,27 @@ Công thức:
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
 - GT mua/bán ròng Tự doanh = GT Tự doanh mua - GT Tự doanh bán",,Số tổng trong kỳ,,Dữ liệu tĩnh,GT mua/bán ròng tự doanh,,
-2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - Toàn thị trường,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền) của tất cả các sàn trong kỳ.
-- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm","HNX, HOSE",,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
-uat_hnx_stg.trade_book (h)","h.trade_price, h.trade_quantity, 
-t.execution_value","- Giao dịch cổ phiếu trên HOSE: Bảng uat_hose_stg.trade_book (t)
+2,,Dashboard Thống kê thị trường >> Cổ phiếu >> Biều đồ Giá trị mua/bán ròng Tự doanh và chỉ số Index,GT mua/bán ròng Tự doanh - Toàn thị trường,"Tổng GT mua/bán ròng Tự doanh trên Thị trường cổ phiếu (Bao gồm cổ phiếu, Chứng chỉ quỹ) của tất cả các sàn trong kỳ.
+- Công thức: GT mua/bán ròng Tự doanh = GT Tự doanh mua − GT Tự doanh bán",Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường (Cổ phiếu), Sàn, Ngày/Tháng/Quý/Năm, Loại chứng khoán","HNX, HOSE, MDDS",,X,,Done,"Sổ lệnh (Trade Book HOSE, HNX)","uat_hose_stg.trade_book (t), 
+uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","h.trade_price, h.trade_quantity, 
+t.execution_value","- Bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype IN ('2','3','6') -- Cổ phiếu, Chứng chỉ quỹ
+Lấy bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t), uat_hnx_stg.trade_book (h): 
+s.symbol = t.symbol
+s.symbol = h.issue_code
+- Giao dịch trên HOSE: Bảng uat_hose_stg.trade_book (t)
 Điều kiện:
 t.market_id = 'STK'
 t.trade_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 Công thức: 
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('P','E','A') THEN t.execution_value END)
-- Giao dịch cổ phiếu trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
+- Giao dịch trên HNX/UPCOM: Bảng uat_hnx_stg.trade_book (h)
 Điều kiện:
 h.market_id IN ('STX', 'UPX') -- STX=HNX / UPX=UPCOM
-to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
+to_date(h.trade_date,'yyyyMMdd') BETWEEN ngay_dau_ky AND ngay_cuoi_ky
 Công thức:
 GTGD Tự doanh Mua: SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
 GTGD Tự doanh Bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('P','E','A') THEN h.trade_price * h.trade_quantity END)
@@ -2328,7 +2354,7 @@ AND f.date_type = 'DAILY'
 AND MAKE_DATE(f.report_year, f.report_month, f.report_day) BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 AND f.submit_source = 'ICP' -- Chỉ lấy nguồn từ Sở, không lấy CDW (CSDLTT), KDL (Kho dữ liệu)",,,,Dữ liệu động,,,
 13,,Dashboard Thống kê thị trường >> TPDN riêng lẻ >> Giá trị mua/bán ròng NĐTNN trên thị trường TPDN riêng lẻ,GTGD mua/bán ròng NĐTNN,Σ (GTGD NĐTNN mua − GTGD NĐTNN bán) giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày/Tháng/Quý/Năm,TKNB,,X,X,Done,#NAME?,uat_iss_ods.flat_report (f),f.field_value,"Tính theo công thức cột ""Mô tả""",,,,Dữ liệu động,,,
-14,,Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp,Kỳ,"Kỳ gồm:
+14,,Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp,Kỳ,"Tại kỳ. Gồm các loại kỳ:
 - Ngày
 - Tháng
 - Quý
@@ -2501,7 +2527,7 @@ r.first_settlement_value","Tính theo công thức cột ""Mô tả""",,,,Chưa 
 14,,Dashboard Thống kê thị trường >> TPCP >> Chỉ tiêu tổng hợp,Giá trị mua/bán ròng NĐTNN - So sánh với kỳ trước,(Giá trị mua/bán ròng NĐTNN kỳ này - Giá trị mua/bán ròng NĐTNN kỳ trước) / Giá trị mua/bán ròng NĐTNN kỳ trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày/Tháng/Quý/Năm,HNX,,X,X,Done,Dữ liệu về giao dịch TPCP từ HNX,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value,
 r.first_settlement_value","Tính theo công thức cột ""Mô tả""",,,,Chưa có CSDL - Map biểu mẫu,,Map biểu mẫu,
-15,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường,Kỳ,"Từ kỳ - Đến kỳ, gồm các loại kỳ:
+15,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường,Kỳ,"Từ kỳ - Đến kỳ. Gồm các loại kỳ:
 - Ngày
 - Tháng
 - Quý
@@ -2587,7 +2613,7 @@ r.volume",SUM(o.volumne) + SUM(r.volume),,,,,,,
 15,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Diễn biến giao dịch thị trường,GTGD TPCP,Σ GTGD TPCP trong kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,Ngày/Tháng/Quý/Năm,HNX,,X,X,Done,Dữ liệu về giao dịch TPCP từ HNX,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value,
 r.first_settlement_value",SUM(o.trading_value) + SUM(r.first_settlement_value),,,,Chưa có CSDL - Map biểu mẫu,,Map biểu mẫu,
-16,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN,Kỳ,"Từ kỳ - Đến kỳ, gồm các loại kỳ:
+16,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN,Kỳ,"Từ kỳ - Đến kỳ. Gồm các loại kỳ:
 - Ngày
 - Tháng
 - Quý
@@ -2605,7 +2631,11 @@ r.first_settlement_value","- GT NĐTNN bán = SUM(CASE WHEN SUBSTR(o.selling_acc
 16,,Dashboard Thống kê thị trường >> TPCP >> Biểu đồ Giá trị mua/bán ròng NĐTNN,GTGD mua/bán ròng NĐTNN,GTGD mua NĐTNN - GTGD bán NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu phái sinh,TB,"Loại CK / Thị trường, Ngày",HNX,X,X,,Done,Dữ liệu về giao dịch TPCP từ HNX,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value,
 r.first_settlement_value","Tính theo công thức cột ""Mô tả""",,,,Chưa có CSDL - Map biểu mẫu,,Map biểu mẫu,
-17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Loại chứng khoán,Cổ phiếu / TPCP / TPDN niêm yết / TPDN riêng lẻ / Chứng chỉ quỹ / ETF / Chứng quyền,Dashboard,Chiều,TB,Loại chứng khoán,"MDDS, CSDLTT",X,X,,,"- Thông tin thị trường
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Kỳ,"Tại kỳ. Gồm các loại kỳ:
+- Ngày
+- Tháng
+- Quý
+- Năm",Dashboard,Chiều,TB,Loại chứng khoán,"MDDS, HNX, HOSE",X,X,,,"- Thông tin thị trường
 - Dữ liệu TPCP
 - Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
 HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
@@ -2617,7 +2647,19 @@ ETF: STOCKTYPE = '3' AND FUNDTYPE = 'E'
 Chứng quyền: STOCKTYPE = '4' AND FLOORCODE = '10'
 - TPDN riêng lẻ: HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
 - TPCP: HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""",,Tham số lọc,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
-17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết hiện tại,Σ số mã CK đang niêm yết,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin thị trường
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Loại chứng khoán,Cổ phiếu / TPCP / TPDN niêm yết / TPDN riêng lẻ / Chứng chỉ quỹ / ETF / Chứng quyền,Dashboard,Chiều,TB,Loại chứng khoán,"MDDS, HNX, HOSE",X,X,,,"- Thông tin thị trường
+- Dữ liệu TPCP
+- Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
+HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
+HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""","MDDS.JAD_STOCKINFOR.STOCKTYPE, FUNDTYPE, FLOORCODE","- Cổ phiếu / TPDN niêm yết / Chứng chỉ quỹ / ETF / Chứng quyền: Bảng MDDS.JAD_STOCKINFOR 
+Cổ phiếu: STOCKTYPE = '2'
+TPDN niêm yết: STOCKTYPE = '1'
+Chứng chỉ quỹ: STOCKTYPE = '3' AND FUNDTYPE = 'M'
+ETF: STOCKTYPE = '3' AND FUNDTYPE = 'E'
+Chứng quyền: STOCKTYPE = '4' AND FLOORCODE = '10'
+- TPDN riêng lẻ: HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
+- TPCP: HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""",,Tham số lọc,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết/ĐKGD,Σ số mã CK đang niêm yết/ĐKGD đến ngày cuối kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, HNX, HOSE",X,X,,,"- Thông tin thị trường
 - Dữ liệu TPCP
 - Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
 HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
@@ -2633,7 +2675,7 @@ Loại chứng khoán:
   + Chứng quyền: STOCKTYPE = '4' AND FLOORCODE = '10'
 - TPDN riêng lẻ: HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
 - TPCP: HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
-17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết hiện tại - % thay đổi so kỳ trước,% thay đổi = (Giá trị kỳ này − Giá trị kỳ trước) / Giá trị kỳ trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày","MDDS, CSDLTT",,X,X,,"- Thông tin thị trường
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết/ĐKGD - % thay đổi so kỳ trước,(Giá trị kỳ này − Giá trị kỳ trước) / Giá trị kỳ trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày","MDDS, HNX, HOSE",,X,X,,"- Thông tin thị trường
 - Dữ liệu TPCP
 - Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
 HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
@@ -2649,7 +2691,7 @@ Loại chứng khoán:
   + Chứng quyền: STOCKTYPE = '4' AND FLOORCODE = '10'
 - TPDN riêng lẻ: HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
 - TPCP: HNX - ""BM 23_Dữ liệu về danh sách TPCP niêm yết""",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
-17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết/ĐKGD mới,Count số mã niêm yết/ĐKGD mới,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,Số mã niêm yết/ĐKGD mới,Đếm số mã niêm yết/ĐKGD mới trong kỳ,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết
 - Dữ liệu TPCP
 - Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
 HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
@@ -2686,7 +2728,7 @@ HNX - ""BM 30_Thống kê thay đổi trạng thái đăng ký giao dịch""
 HNX - ""BM 25_Dữ liệu về niêm yết bổ sung TPCP""","HOSE - BM 18, HNX - BM 32 >> Cột ""Mã CK""
 HNX - BM 30 >> Cột ""Mã trái phiếu""
 HNX - BM 25 >> Cột ""Mã trái phiếu""","- Cổ phiếu / TPDN niêm yết / Chứng chỉ quỹ / ETF / Chứng quyền: 
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết"", HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
+HNX - ""Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết"", HOSE - ""Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
 COUNT(""Mã CK"")
 Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
 Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
@@ -2758,7 +2800,7 @@ Tháng báo cáo trong kỳ
 COUNT(""Mã trái phiếu"")
 Tháng báo cáo trong kỳ
 ""Trạng thái"" IN ('Đáo hạn')",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
-17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,KL niêm yết/ĐKGD hiện tại,Σ KL CK đang niêm yết,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin thị trường
+17,,Dashboard Thống kê thị trường >> Niêm yết >> Chỉ tiêu tổng hợp,KL niêm yết/ĐKGD,Σ KL CK đang niêm yết,Dashboard,Chỉ tiêu cơ sở,TB,"Loại chứng khoán, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin thị trường
 - Dữ liệu TPCP
 - Dữ liệu TPDN riêng lẻ","uat_mdds_stg.JAD_STOCKINFOR
 HNX - ""BM 29_Quy mô đăng ký giao dịch và khối lượng đang lưu hành""
@@ -6604,7 +6646,7 @@ h.market_id IN ('HCX')
 to_date(h.trade_date,'yyyyMMdd') BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 GTGD NĐTNN bán: SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('E','F') THEN h.trade_price * h.trade_quantity END)",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
 37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - TPDN niêm yết,GT mua NĐTNN - GT bán NĐTNN giao dịch TPDN Niêm yết,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,- Sổ lệnh giao dịch (trade book),uat_hnx_stg.trade_book (h),"h.trade_price, h.trade_quantity","Tính theo công thức tại cột ""Mô tả""",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - TPDN riêng lẻ,Σ GT mua NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),tk.field_value,"- Công thức: SUM(CASE WHEN f.data_type IN ('CURRENCY', 'PERCENTAGE', 'NUMBER') THEN TRY_CAST(f.field_value AS DECIMAL(38,15)) END)
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - TPDN riêng lẻ,Σ GT mua NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),tk.field_value,"- Công thức: SUM(CASE WHEN f.data_type IN ('CURRENCY', 'PERCENTAGE', 'NUMBER') THEN TRY_CAST(f.field_value AS DECIMAL(38,15)) END)
 - Điều kiện:
 f.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
 AND f.report_code = 'HNX09' AND f.sheet_name = 'sheet 1'
@@ -6613,7 +6655,7 @@ AND f.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ T
 AND f.date_type = 'DAILY'
 AND MAKE_DATE(f.report_year, f.report_month, f.report_day) BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 AND f.submit_source = 'ICP' -- Chỉ lấy nguồn từ Sở, không lấy CDW (CSDLTT), KDL (Kho dữ liệu)",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - TPDN riêng lẻ,Σ GT bán NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),f.field_value,"- Công thức: SUM(CASE WHEN f.data_type IN ('CURRENCY', 'PERCENTAGE', 'NUMBER') THEN TRY_CAST(f.field_value AS DECIMAL(38,15)) END)
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - TPDN riêng lẻ,Σ GT bán NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),f.field_value,"- Công thức: SUM(CASE WHEN f.data_type IN ('CURRENCY', 'PERCENTAGE', 'NUMBER') THEN TRY_CAST(f.field_value AS DECIMAL(38,15)) END)
 - Điều kiện:
 f.submit_status IN ('SUBMITTED', 'LATE_SUBMITTED')
 AND f.report_code = 'HNX09' AND f.sheet_name = 'sheet 1'
@@ -6622,32 +6664,32 @@ AND f.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ T
 AND f.date_type = 'DAILY'
 AND MAKE_DATE(f.report_year, f.report_month, f.report_day) BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]
 AND f.submit_source = 'ICP' -- Chỉ lấy nguồn từ Sở, không lấy CDW (CSDLTT), KDL (Kho dữ liệu)",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - TPDN riêng lẻ,GT mua NĐTNN - GT bán NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),f.field_value,"Tính theo công thức tại cột ""Mô tả""",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - TPCP,Σ GT mua NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - TPDN riêng lẻ,GT mua NĐTNN - GT bán NĐTNN giao dịch TPDN riêng lẻ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,uat_iss_ods.flat_report (f),f.field_value,"Tính theo công thức tại cột ""Mô tả""",,,,,,,
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - TPCP,Σ GT mua NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value, r.first_settlement_value,","- GT NĐTNN mua = SUM(CASE WHEN SUBSTR(o.buying_account_no,4,1) IN ('E','F') THEN o.trading_value END) + SUM(CASE WHEN SUBSTR(r.buying_account_no,4,1) IN ('E','F') THEN r.first_settlement_value END)
 - Điều kiện: 
 order_status = 'ĐTH'
 trading_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - TPCP,Σ GT bán NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - TPCP,Σ GT bán NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value, r.first_settlement_value,","- GT NĐTNN bán = SUM(CASE WHEN SUBSTR(o.selling_account_no,4,1) IN ('E','F') THEN o.trading_value END) + SUM(CASE WHEN SUBSTR(r.selling_account_no,4,1) IN ('E','F') THEN r.first_settlement_value END)
 - Điều kiện: 
 order_status = 'ĐTH'
 trading_date BETWEEN [Ngày đầu kỳ] AND [Ngày cuối kỳ]",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - TPCP,GT mua NĐTNN - GT bán NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - TPCP,GT mua NĐTNN - GT bán NĐTNN giao dịch TPCP,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","o.trading_value, r.first_settlement_value,","Tính theo công thức tại cột ""Mô tả""",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - Tổng TP,Σ GT mua NĐTNN giao dịch trái phiếu gồm: TPCP + TPDN niêm yết + TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT mua NĐTNN - Tổng TP,Σ GT mua NĐTNN giao dịch trái phiếu gồm: TPCP + TPDN niêm yết + TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
 uat_iss_ods.flat_report (f),
 uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","h.trade_quantity * h.trade_price,
 f.field_value,
 o.trading_value, r.first_settlement_value,","Tính theo công thức tại cột ""Mô tả""",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - Tổng TP,Σ GT bán NĐTNN giao dịch trái phiếu gồm: TPCP + TPDN niêm yết + TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT bán NĐTNN - Tổng TP,Σ GT bán NĐTNN giao dịch trái phiếu gồm: TPCP + TPDN niêm yết + TPDN riêng lẻ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
 uat_iss_ods.flat_report (f),
 uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","h.trade_quantity * h.trade_price,
 f.field_value,
 o.trading_value, r.first_settlement_value,","Tính theo công thức tại cột ""Mô tả""",,,,,,,
-,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - Tổng TP,GT mua NĐTNN - GT bán NĐTNN giao dịch TP,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
+37,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN,GT ròng NĐTNN - Tổng TP,GT mua NĐTNN - GT bán NĐTNN giao dịch TP,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm",HNX,,X,,Done,,"uat_hnx_stg.trade_book (h),
 uat_iss_ods.flat_report (f),
 uat_hnx_stg.outright_order_book (o), 
 uat_hnx_stg.repo_order_book (r)","h.trade_quantity * h.trade_price,
@@ -7493,44 +7535,67 @@ Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK
 Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
 Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
 Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('04')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,Sàn,"Sàn: HOSE, HNX, UPCOM",Dashboard,Chiều,Trùng,Sàn,MDDS,,X,X,,- Thông tin thị trường,uat_mdds_stg.JAD_STOCKINFOR,MDDS.JAD_STOCKINFOR.FLOORCODE,"MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE",,,,Dữ liệu tĩnh,,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,SL mã cổ phiếu hủy niêm yết/hủy ĐKGD,Số mã cổ phiếu bị hủy niêm yết/hủy ĐKGD.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"MDDS, CSDLTT",,X,X,,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Mã CK""","COUNT(""Mã CK"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết/ĐKGD,Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK hủy niêm yết""","SUM(""Số lượng CK hủy niêm yết"")
-ĐK:
-Cột ""Số lượng CK hủy niêm yết"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết/ĐKGD - HOSE,Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK hủy niêm yết""","SUM(""Số lượng CK hủy niêm yết"")
-ĐK:
-Cột ""Số lượng CK hủy niêm yết"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('10')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết/ĐKGD - HNX,Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK hủy niêm yết""","SUM(""Số lượng CK hủy niêm yết"")
-ĐK:
-Cột ""Số lượng CK hủy niêm yết"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết/ĐKGD - UPCOM,Σ KL cổ phiếu hủy niêm yết/hủy ĐKGD từng sàn theo kỳ.,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK hủy niêm yết""","SUM(""Số lượng CK hủy niêm yết"")
-ĐK:
-Cột ""Số lượng CK hủy niêm yết"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('04')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,Kỳ (Năm),Từ năm - Đến năm,Dashboard,Chiều,TB,Năm,HNX,,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b)","a.report_year, 
+b.report_year","a.report_year BETWEEN [Từ năm] AND [Đến năm]
+b.report_year BETWEEN [Từ năm] AND [Đến năm]",,,,Dữ liệu tĩnh,,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,SL mã cổ phiếu hủy niêm yết/ĐKGD,Số lượng mã cổ phiếu bị hủy niêm yết/hủy ĐKGD trên tất cả các sàn.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"HNX, MDDS",,X,X,Done,"- Thông tin thị trường
+- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b)","n.ticker_symbol, 
+o.ticker_symbol","* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol
+s.symbol = b.ticker_symbol
+- Bảng uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b):
+DATE_FORMAT(a.last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+DATE_FORMAT(b.last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
+exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
+* SL mã cổ phiếu hủy niêm yết/hủy ĐKGD = COUNT(a.ticker_symbol) + COUNT(a.ticker_symbol)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết trên HOSE,Σ KL cổ phiếu hủy niêm yết trên HOSE,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s),  
+uat_hose_stg.listing_status_change (b)",o.delisted_shares,"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = b.ticker_symbol
+- Bảng uat_hose_stg.listing_status_change (a)
+DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
+exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
+* KL cổ phiếu hủy niêm yết trên HOSE = SUM(b.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết trên HNX,Σ KL cổ phiếu hủy niêm yết trên HNX,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a)",o.delisted_shares,"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+s.floorcode = '02' --> HNX
+Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol
+- Bảng uat_hnx_stg.listing_status_change (a)
+DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
+exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
+* KL cổ phiếu hủy niêm yết trên HNX = SUM(a.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy ĐKGD trên UPCoM,Σ KL cổ phiếu hủy ĐKGD trên UPCoM,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a)",o.delisted_shares,"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+s.floorcode = '04' --> HNX
+Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol
+- Bảng uat_hnx_stg.listing_status_change (a)
+DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
+exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
+* KL cổ phiếu hủy niêm yết trên UPCoM = SUM(a.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
 52,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Đơn vị tính,"Quy đổi đơn vị tính của các chỉ tiêu tiền tệ: 
 Đồng
 Triệu đồng
@@ -8522,20 +8587,20 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'",,,,"Chưa có CSDL - Map biểu mẫu, Dữ liệu tĩnh",,,
 54,,Data Explorer Tài khoản giao dịch,Thị trường,"Gồm có:
 ▪ Cơ sở
-▪ Phái sinh",Data Explorer,Chiều,TB,Thị trường,"MSS, CSDLTT",,X,X,,,N/A,N/A,N/A,,"Chiều phân loại thị trường, không có trường nguồn mapping",,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
+▪ Phái sinh",Data Explorer,Chiều,TB,Thị trường,VSDC,,X,X,,,N/A,N/A,N/A,,"Chiều phân loại thị trường, không có trường nguồn mapping",,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
 54,,Data Explorer Tài khoản giao dịch,Loại NĐT,"Gồm có:
 ▪ Cá nhân
-▪ Tổ chức",Data Explorer,Chiều,TB,Loại NĐT,"MSS, CSDLTT",,X,X,,,"VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","VSDC >> BM 5, BM 6 >> Cột ""Loại hình""","- Thị trường cơ sở -> Loại NĐT:  
+▪ Tổ chức",Data Explorer,Chiều,TB,Loại NĐT,VSDC,,X,X,,,"VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","VSDC >> BM 5, BM 6 >> Cột ""Loại hình""","- Thị trường cơ sở -> Loại NĐT:  
 Cá nhân: ""Loại hình"" = 'Cá nhân'
 Tổ chức: ""Loại hình"" = 'Tổ chức'
 - Thị trường phái sinh: N/A",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
 54,,Data Explorer Tài khoản giao dịch,Trong nước/Nước ngoài,"Gồm có:
 ▪ Trong nước
-▪ Nước ngoài",Data Explorer,Chiều,TB,Trong nước/Nước ngoài,"MSS, CSDLTT",,X,X,,,"VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","VSDC >> BM 5, BM 6 >> Cột ""Quốc tịch""","- Thị trường cơ sở -> Phân loại Trong nước/Nước ngoài: 
+▪ Nước ngoài",Data Explorer,Chiều,TB,Trong nước/Nước ngoài,VSDC,,X,X,,,"VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","VSDC >> BM 5, BM 6 >> Cột ""Quốc tịch""","- Thị trường cơ sở -> Phân loại Trong nước/Nước ngoài: 
 Trong nước: ""Quốc tịch"" = 'Việt Nam""
 Nước ngoài: ""Quốc tịch"" <> 'Việt Nam""
 - Thị trường phái sinh: N/A",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản,Count TK còn hoạt động (chưa đóng) tính đến ngày cuối kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày","MSS, CSDLTT",,X,X,,,"MSS.INVESTOR_ACCOUNT
+54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản,Count TK còn hoạt động (chưa đóng) tính đến ngày cuối kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày",VSDC,,X,X,,,"MSS.INVESTOR_ACCOUNT
 VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""
 VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
 VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""
@@ -8556,7 +8621,7 @@ Loại NĐT:
   Tổ chức nước ngoài: Cột ""Số lượng cuối kỳ >> Nước ngoài >> TC""
 ĐK: Lấy theo tháng báo cáo
 Công thức: SUM tất cả dòng",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản mới,Count TK mới: Theo ngày mở TK trong kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm","MSS, CSDLTT",,X,X,,,"MSS.INVESTOR_ACCOUNT
+54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản mới,Count TK mới: Theo ngày mở TK trong kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm",VSDC,,X,X,,,"MSS.INVESTOR_ACCOUNT
 VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản""
 VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
 VSDC >> BM 5 >> Cột ""Phát sinh trong kỳ >> Mở mới""","- Thị trường cơ sở: Bảng MSS.INVESTOR_ACCOUNT, Báo cáo VSDC BM 5
@@ -8565,7 +8630,7 @@ Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""
 - Thị trường phái sinh: Báo cáo VSDC BM 45
 ĐK: Lấy theo tháng báo cáo
 Công thức: SUM tất cả dòng",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản đóng,Count TK đóng: Theo ngày đóng TK trong kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm","MSS, CSDLTT",,X,X,,,"MSS.INVESTOR_ACCOUNT
+54,,Data Explorer Tài khoản giao dịch,Số lượng tài khoản đóng,Count TK đóng: Theo ngày đóng TK trong kỳ,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Thị trường, Loại NĐT, Trong nước/Nước ngoài, Ngày/Tháng/Quý/Năm",VSDC,,X,X,,,"MSS.INVESTOR_ACCOUNT
 VSDC >> ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""
 VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
 VSDC >> BM 6 >> Cột ""Mã TKGD""
@@ -8575,829 +8640,954 @@ Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""
 - Thị trường phái sinh: Báo cáo VSDC BM 45
 ĐK: Lấy theo tháng báo cáo
 Công thức: SUM tất cả dòng",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Ngày báo cáo,Tham số lọc dữ liệu: Ngày báo cáo,Báo cáo,Chiều,TB,Ngày,,,X,,,,,,,,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex,Chỉ số VNIndex ngày báo cáo,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex - % so với cuối tháng trước,% thay đổi so với ngày cuối tháng trước,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex - % so với cuối năm trước,% thay đổi so với ngày cuối năm trước,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index,Chỉ số HNX-Index ngày báo cáo,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index - % so với cuối tháng trước,% thay đổi so với ngày cuối tháng trước,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index - % so với cuối năm trước,% thay đổi so với ngày cuối năm trước,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Vốn hóa thị trường cổ phiếu,"Vốn hóa HNX, HOSE = Giá đóng cửa * Khối lượng lưu hành
+55,,Báo cáo VP_TK02 – TTCK bất thường,Ngày báo cáo,Tham số lọc dữ liệu: Ngày báo cáo,Báo cáo,Chiều,TB,Ngày,"MDDS, HNX, HOSE, VSDC, QLRR",,X,,Done,,"uat_mdds_stg.jad_marketinfor (m), 
+uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.outstanding_shares (os), 
+uat_mrms_stg.risk_indicator_value (v), 
+uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r),
+uat_hnx_stg.gov_bond_listed_list (g),
+uat_vsdc_stg.end_of_day_open_interest (oi), 
+uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","m.tradingdate,
+s.tradingdate,
+os.transaction_date,
+v.period_year,
+h.trade_date, 
+t.trade_date
+o.trading_date, r.trading_date, 
+g.report_month, g.report_year, 
+oi.report_date, 
+o.open_date, c.close_date","Từ ngày báo cáo tính ra các mốc thời gian tính chỉ tiêu:
+- Ngày giao dịch gần nhất <= ngày báo cáo
+- Ngày giao dịch liền sau ngày báo cáo
+- Ngày đầu tháng, đầu năm của ngày báo cáo
+- Ngày đầu, ngày cuối tháng trước, Ngày giao dịch cuối cùng của tháng trước, Ngày giao dịch liền sau ngày cuối năm trước
+- Ngày đầu, ngày cuối năm trước, Ngày giao dịch cuối cùng của năm trước
+- Ngày đầu, ngày cuối tháng cùng kỳ năm trước","-- VP02 - BÁO CÁO TÌNH HÌNH THỊ TRƯỜNG CHỨNG KHOÁN: TÍNH TẠI 1 NGÀY BÁO CÁO
+/* Tham số tra cứu:
+ * :report_date  Ngày báo cáo (yyyy-MM-dd)
+ * Nhóm: 1. Thị trường cổ phiếu | 2. Thị trường trái phiếu | 3.1. Phái sinh (HĐTL VN30) | 3.2. Chứng quyền | 4. NĐTNN
+ * Quy tắc tính:
+ *  - Ngày dữ liệu (d_cur) = ngày giao dịch gần nhất <= ngày báo cáo; cuối tháng trước (d_pm), cuối năm trước (d_py) = ngày giao dịch cuối cùng <= 31 của tháng/năm trước.
+ *  - Lịch ngày giao dịch lấy từ sổ lệnh HNX trade_book + mdds
+ *  - Bình quân tháng/năm = Tổng giá trị (khối lượng) / số phiên giao dịch của thị trường trong kỳ.
+ *      + Tháng báo cáo: từ ngày 01 của tháng đến ngày báo cáo; so sánh với CẢ THÁNG TRƯỚC và CẢ THÁNG CÙNG KỲ NĂM TRƯỚC (01 đến cuối tháng).
+ *      + Năm báo cáo: từ 01/01 đến ngày báo cáo; so sánh với CẢ NĂM TRƯỚC (01/01 - 31/12).
+ *  - Phân loại CK: bản ghi cuối ngày của jad_stockinfor (stocktype 2 = CP, 3/6 = CCQ, floorcode 10 + stocktype 4 = CW, floorcode 03 + stocktype 4 + underlyingsymbol VN30 = HĐTL VN30).
+ *  - NĐTNN: SUBSTR(số tài khoản, 4, 1) IN ('E','F').
+ *  - Giá trị tiền tệ tính bằng VND.
+ */
+WITH
+-- 1. Tham số -> Lấy ra các mốc thời gian
+-- 1.1. Ngày báo cáo -> các mốc tháng, năm
+params AS (
+  SELECT
+    report_date,
+    month_start,
+    ADD_MONTHS(month_start, -1) AS pm_start, -- Ngày đầu tháng trước
+    DATE_SUB(month_start, 1) AS pm_end, -- Ngày cuối tháng trước
+    year_start,
+    ADD_MONTHS(year_start, -12) AS py_start, -- Ngày đầu năm trước
+    DATE_SUB(year_start, 1) AS py_end, -- Ngày cuối năm trước
+    ADD_MONTHS(month_start, -12) AS lym_start, -- Ngày đầu tháng cùng kỳ năm trước (cùng tháng của năm trước)
+    LAST_DAY(ADD_MONTHS(month_start, -12)) AS lym_end, -- Ngày cuối tháng cùng kỳ năm trước
+    YEAR(report_date) - 1 AS gdp_year -- Năm lấy GDP
+  FROM (
+    SELECT
+      CAST(:report_date AS DATE) AS report_date,
+      CAST(DATE_TRUNC('MONTH', :report_date) AS DATE) AS month_start, -- Ngày đầu tháng
+      CAST(DATE_TRUNC('YEAR', :report_date) AS DATE) AS year_start -- Ngày đầu năm
+  )
+)
+-- 1.2. Lịch ngày giao dịch
+----  Cần lấy thêm ngày giao dịch liền sau ngày BC (dùng để lấy VWAP tính vốn hóa UPCOM)
+, cal AS (
+  SELECT DISTINCT TO_DATE(h.trade_date, 'yyyyMMdd') AS tradingdate
+  FROM uat_hnx_stg.trade_book h
+  CROSS JOIN params p
+  WHERE h.trade_date >= DATE_FORMAT(p.py_start, 'yyyyMMdd')
+    AND h.trade_date <= DATE_FORMAT(ADD_MONTHS(p.report_date, 1), 'yyyyMMdd')
+  UNION  
+  SELECT DISTINCT m.tradingdate
+  FROM uat_mdds_stg.jad_marketinfor m
+  CROSS JOIN params p
+  WHERE m.tradingdate >= p.py_start AND m.tradingdate <= ADD_MONTHS(p.report_date, 1)
+)
+-- 1.3. Các ngày dữ liệu cần lấy + số phiên giao dịch từng kỳ
+----> Ngày tính niêm yết, vốn hóa: lấy ngày giao dịch từ lịch cal (d_cur, d_py) và ngày liền sau (d_next, d_py_next)
+, key_dates AS (
+  SELECT
+    p.report_date,
+    MAX(CASE WHEN c.tradingdate <= p.report_date THEN c.tradingdate END) AS d_cur, -- Ngày dữ liệu gần nhất <= ngày báo cáo
+    MIN(CASE WHEN c.tradingdate > p.report_date THEN c.tradingdate END) AS d_next, -- Ngày giao dịch liền sau ngày báo cáo (NULL nếu ngày báo cáo là ngày giao dịch mới nhất)
+    MAX(CASE WHEN c.tradingdate <= p.pm_end THEN c.tradingdate END) AS d_pm, -- Ngày giao dịch cuối tháng trước
+    MAX(CASE WHEN c.tradingdate <= p.py_end THEN c.tradingdate END) AS d_py, -- Ngày giao dịch cuối năm trước
+    MIN(CASE WHEN c.tradingdate > p.py_end THEN c.tradingdate END) AS d_py_next, -- Ngày giao dịch liền sau cuối năm trước (chứa VWAP của d_py)
+    SUM(CASE WHEN c.tradingdate BETWEEN p.month_start AND p.report_date THEN 1 ELSE 0 END) AS n_m, -- Số phiên tháng báo cáo
+    SUM(CASE WHEN c.tradingdate BETWEEN p.pm_start AND p.pm_end THEN 1 ELSE 0 END) AS n_pm, -- Số phiên tháng trước
+    SUM(CASE WHEN c.tradingdate BETWEEN p.lym_start AND p.lym_end THEN 1 ELSE 0 END) AS n_lym, -- Số phiên tháng cùng kỳ năm trước
+    SUM(CASE WHEN c.tradingdate BETWEEN p.year_start AND p.report_date THEN 1 ELSE 0 END) AS n_y, -- Số phiên năm báo cáo (YTD)
+    SUM(CASE WHEN c.tradingdate BETWEEN p.py_start AND p.py_end THEN 1 ELSE 0 END) AS n_py -- Số phiên năm trước
+  FROM cal c
+  CROSS JOIN params p
+  GROUP BY p.report_date
+)
+-- 2.1. Chỉ số VN-Index, HNX-Index: Lấy bản ghi cuối ngày tại ngày báo cáo, cuối tháng trước, cuối năm trước
+, index_eod AS (
+  SELECT marketcode, tradingdate, marketindex
+  FROM (
+    SELECT
+      m.marketcode, m.tradingdate, m.marketindex,
+      ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC) AS rn
+    FROM uat_mdds_stg.jad_marketinfor m
+    CROSS JOIN key_dates k
+    WHERE m.marketcode IN ('HOSE', 'HNX') -- HOSE = VNIndex, HNX = HNX-Index
+      AND m.tradingdate IN (k.report_date, k.d_pm, k.d_py) -- Ngày báo cáo, Ngày giao dịch cuối tháng trước, Ngày giao dịch cuối năm trước
+  )
+  WHERE rn = 1
+)
+----> Xoay dữ liệu chỉ số từ hàng thành cột
+, idx AS (
+  SELECT
+    MAX(CASE WHEN i.marketcode = 'HOSE' AND i.tradingdate = k.d_cur THEN i.marketindex END) AS vnindex_cur,
+    MAX(CASE WHEN i.marketcode = 'HOSE' AND i.tradingdate = k.d_pm THEN i.marketindex END) AS vnindex_pm,
+    MAX(CASE WHEN i.marketcode = 'HOSE' AND i.tradingdate = k.d_py THEN i.marketindex END) AS vnindex_py,
+    MAX(CASE WHEN i.marketcode = 'HNX' AND i.tradingdate = k.d_cur THEN i.marketindex END) AS hnxindex_cur,
+    MAX(CASE WHEN i.marketcode = 'HNX' AND i.tradingdate = k.d_pm THEN i.marketindex END) AS hnxindex_pm,
+    MAX(CASE WHEN i.marketcode = 'HNX' AND i.tradingdate = k.d_py THEN i.marketindex END) AS hnxindex_py
+  FROM index_eod i
+  CROSS JOIN key_dates k
+)
+-- 2.2. Danh sách mã chứng khoán: lấy bản ghi cuối ngày trong jad_stockinfor, thời gian từ đầu năm trước đến ngày giao dịch liền sau ngày báo cáo
+, stock_eod AS (
+  SELECT
+    tradingdate, symbol, symbolisin, floorcode, stocktype, closeprice, vwap, reference, contractmultiplier,
+    CASE
+      WHEN stocktype = '1' THEN 'TPDNNY' -- TPDN niêm yết
+      WHEN stocktype = '2' THEN 'CP' -- Cổ phiếu
+      WHEN stocktype IN ('3', '6') THEN 'CCQ' -- Chứng chỉ quỹ (gồm ETF)
+      WHEN floorcode = '10' AND stocktype = '4' THEN 'CW' -- Chứng quyền
+      WHEN floorcode = '03' AND stocktype = '4' AND underlyingsymbol = 'VN30' THEN 'HDTL_VN30' -- Phái sinh - HĐTL VN30
+      WHEN floorcode = '03' AND stocktype = '4' AND underlyingsymbol = 'VN100' THEN 'HDTL_VN100' -- Phái sinh - HĐTL VN100
+      WHEN floorcode = '03' AND stocktype = '4' AND productgrpid = 'FBX' THEN 'HDTL_TPCP' -- Phái sinh - HĐTL TPCP
+    END AS loai_ck -- Phân loại chứng khoán
+  FROM (
+    SELECT
+      s.tradingdate, s.symbol, s.symbolisin, s.floorcode, s.stocktype, s.underlyingsymbol, s.productgrpid, CAST(s.contractmultiplier AS DOUBLE) contractmultiplier,
+      s.closeprice, s.vwap, s.reference,
+      ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) AS rn
+    FROM uat_mdds_stg.jad_stockinfor s
+    CROSS JOIN params p
+    CROSS JOIN key_dates kd
+    WHERE s.tradingdate BETWEEN p.py_start AND COALESCE(kd.d_next, p.report_date) -- Đến ngày giao dịch liền sau ngày báo cáo (nếu chưa có thì đến ngày báo cáo)
+  )
+  WHERE rn = 1 -- Bản ghi cuối mỗi ngày
+)
+----> Lấy danh sách chứng khoán với thông tin master data
+, stock_list AS (
+  SELECT symbol, symbolisin, loai_ck, contractmultiplier
+  FROM (
+    SELECT
+      symbol, symbolisin, loai_ck, contractmultiplier,
+      ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY tradingdate DESC) rn
+    FROM stock_eod
+  ) 
+  WHERE rn = 1
+)
+-- 2.3. Chỉ tiêu Giao dịch
+---- Tổng giao dịch theo loại CK x kỳ: tháng báo cáo (m), tháng trước (pm), tháng cùng kỳ năm trước (lym), năm báo cáo đến ngày báo cáo (y), năm trước (py)
+---- gt = GTGD, kl = KLGD, ndtnn_rong = GT NĐTNN mua - bán (chỉ tính của tháng, năm báo cáo)
+, trade_period AS (
+  -- 2.3.1. HOSE: Cổ phiếu, CCQ, Chứng quyền
+  SELECT /*+ BROADCAST(s) */
+    s.loai_ck,
+    SUM(CASE WHEN t.trade_date BETWEEN p.month_start AND p.report_date THEN t.execution_value ELSE 0 END) AS gt_m,
+    SUM(CASE WHEN t.trade_date BETWEEN p.pm_start AND p.pm_end THEN t.execution_value ELSE 0 END) AS gt_pm,
+    SUM(CASE WHEN t.trade_date BETWEEN p.lym_start AND p.lym_end THEN t.execution_value ELSE 0 END) AS gt_lym,
+    SUM(CASE WHEN t.trade_date BETWEEN p.year_start AND p.report_date THEN t.execution_value ELSE 0 END) AS gt_y,
+    SUM(CASE WHEN t.trade_date BETWEEN p.py_start AND p.py_end THEN t.execution_value ELSE 0 END) AS gt_py,
+    SUM(CASE WHEN t.trade_date BETWEEN p.month_start AND p.report_date THEN t.execution_volume ELSE 0 END) AS kl_m,
+    SUM(CASE WHEN t.trade_date BETWEEN p.pm_start AND p.pm_end THEN t.execution_volume ELSE 0 END) AS kl_pm,
+    SUM(CASE WHEN t.trade_date BETWEEN p.lym_start AND p.lym_end THEN t.execution_volume ELSE 0 END) AS kl_lym,
+    SUM(CASE WHEN t.trade_date BETWEEN p.year_start AND p.report_date THEN t.execution_volume ELSE 0 END) AS kl_y,
+    SUM(CASE WHEN t.trade_date BETWEEN p.py_start AND p.py_end THEN t.execution_volume ELSE 0 END) AS kl_py,
+    SUM(CASE WHEN t.trade_date BETWEEN p.month_start AND p.report_date 
+      THEN (CASE WHEN SUBSTR(t.buy_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END) 
+            - (CASE WHEN SUBSTR(t.sell_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END) 
+      ELSE 0 
+    END) AS ndtnn_rong_m,
+    SUM(CASE WHEN t.trade_date BETWEEN p.year_start AND p.report_date 
+      THEN (CASE WHEN SUBSTR(t.buy_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END) 
+            - (CASE WHEN SUBSTR(t.sell_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END) 
+      ELSE 0 
+    END) AS ndtnn_rong_y
+  FROM uat_hose_stg.trade_book t
+  JOIN stock_list s ON t.symbol = s.symbol
+  CROSS JOIN params p
+  WHERE t.market_id = 'STK'
+    AND t.trade_date BETWEEN p.py_start AND p.report_date
+    --AND s.loai_ck IN ('CP', 'CCQ', 'CW')
+  GROUP BY s.loai_ck
+  UNION ALL
+  -- 2.3.2. HNX + UPCoM: Cổ phiếu, CCQ, HĐTL VN30 (DVX); join với stock_list theo mã ISIN
+  ---- Nếu là Phái sinh (DVX) có hệ số nhân contractmultiplier <> 1, loại khác = 1 (lấy nvl để tránh trường hợp bị lỗi giá trị s.contractmultiplier null) --> Tính dư GTGD danh nghĩa của Phái sinh do cùng câu lấy dữ liệu, còn báo cáo không cần
+  SELECT /*+ BROADCAST(s) */
+    s.loai_ck,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.month_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) AS gt_m,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.pm_start, 'yyyyMMdd') AND DATE_FORMAT(p.pm_end, 'yyyyMMdd') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) AS gt_pm,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.lym_start, 'yyyyMMdd') AND DATE_FORMAT(p.lym_end, 'yyyyMMdd') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) AS gt_lym,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.year_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) AS gt_y,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.py_start, 'yyyyMMdd') AND DATE_FORMAT(p.py_end, 'yyyyMMdd') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) AS gt_py,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.month_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') THEN h.trade_quantity ELSE 0 END) AS kl_m,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.pm_start, 'yyyyMMdd') AND DATE_FORMAT(p.pm_end, 'yyyyMMdd') THEN h.trade_quantity ELSE 0 END) AS kl_pm,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.lym_start, 'yyyyMMdd') AND DATE_FORMAT(p.lym_end, 'yyyyMMdd') THEN h.trade_quantity ELSE 0 END) AS kl_lym,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.year_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') THEN h.trade_quantity ELSE 0 END) AS kl_y,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.py_start, 'yyyyMMdd') AND DATE_FORMAT(p.py_end, 'yyyyMMdd') THEN h.trade_quantity ELSE 0 END) AS kl_py,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.month_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') 
+      THEN (CASE WHEN SUBSTR(h.buy_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+            - (CASE WHEN SUBSTR(h.sell_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+      ELSE 0 
+    END) AS ndtnn_rong_m,
+    SUM(CASE WHEN h.trade_date BETWEEN DATE_FORMAT(p.year_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd') 
+      THEN (CASE WHEN SUBSTR(h.buy_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+            - (CASE WHEN SUBSTR(h.sell_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+      ELSE 0 
+    END) AS ndtnn_rong_y
+  FROM uat_hnx_stg.trade_book h
+  JOIN stock_list s ON h.issue_code = s.symbolisin
+  CROSS JOIN params p
+  WHERE h.market_id IN ('STX', 'UPX', 'DVX') -- Chỉ lấy CP, Phái sinh, không lấy TPDN niêm yết
+    AND h.trade_date BETWEEN DATE_FORMAT(p.py_start, 'yyyyMMdd') AND DATE_FORMAT(p.report_date, 'yyyyMMdd')
+    --AND s.loai_ck IN ('CP', 'CCQ', 'HDTL_VN30')
+  GROUP BY s.loai_ck
+  UNION ALL
+  -- 2.3.3. Trái phiếu = TPCP (trái phiếu chính phủ):
+  ---- HNX: TPCP - sổ lệnh Outright + Repo (GT Repo = giá trị thanh toán lần 1), chỉ lấy lệnh đã thực hiện (ĐTH)
+  SELECT
+    'TPCP' AS loai_ck,
+    SUM(CASE WHEN o.trading_date BETWEEN p.month_start AND p.report_date THEN o.gt ELSE 0 END) AS gt_m,
+    SUM(CASE WHEN o.trading_date BETWEEN p.pm_start AND p.pm_end THEN o.gt ELSE 0 END) AS gt_pm,
+    SUM(CASE WHEN o.trading_date BETWEEN p.lym_start AND p.lym_end THEN o.gt ELSE 0 END) AS gt_lym,
+    SUM(CASE WHEN o.trading_date BETWEEN p.year_start AND p.report_date THEN o.gt ELSE 0 END) AS gt_y,
+    SUM(CASE WHEN o.trading_date BETWEEN p.py_start AND p.py_end THEN o.gt ELSE 0 END) AS gt_py,
+    SUM(CASE WHEN o.trading_date BETWEEN p.month_start AND p.report_date THEN o.kl ELSE 0 END) AS kl_m,
+    SUM(CASE WHEN o.trading_date BETWEEN p.pm_start AND p.pm_end THEN o.kl ELSE 0 END) AS kl_pm,
+    SUM(CASE WHEN o.trading_date BETWEEN p.lym_start AND p.lym_end THEN o.kl ELSE 0 END) AS kl_lym,
+    SUM(CASE WHEN o.trading_date BETWEEN p.year_start AND p.report_date THEN o.kl ELSE 0 END) AS kl_y,
+    SUM(CASE WHEN o.trading_date BETWEEN p.py_start AND p.py_end THEN o.kl ELSE 0 END) AS kl_py,
+    SUM(CASE WHEN o.trading_date BETWEEN p.month_start AND p.report_date
+      THEN (CASE WHEN SUBSTR(o.buy_acct, 4, 1) IN ('E', 'F') THEN o.gt ELSE 0 END)
+            - (CASE WHEN SUBSTR(o.sell_acct, 4, 1) IN ('E', 'F') THEN o.gt ELSE 0 END)
+      ELSE 0
+    END) AS ndtnn_rong_m,
+    SUM(CASE WHEN o.trading_date BETWEEN p.year_start AND p.report_date
+      THEN (CASE WHEN SUBSTR(o.buy_acct, 4, 1) IN ('E', 'F') THEN o.gt ELSE 0 END)
+            - (CASE WHEN SUBSTR(o.sell_acct, 4, 1) IN ('E', 'F') THEN o.gt ELSE 0 END)
+      ELSE 0
+    END) AS ndtnn_rong_y
+  FROM (
+    SELECT o.trading_date, o.volume AS kl, o.trading_value AS gt, o.buying_account_no AS buy_acct, o.selling_account_no AS sell_acct
+    FROM uat_hnx_stg.outright_order_book o
+    CROSS JOIN params p
+    WHERE o.order_status = 'ĐTH'
+      AND o.trading_date BETWEEN p.py_start AND p.report_date
+    UNION ALL
+    SELECT r.trading_date, r.volume AS kl, r.first_settlement_value AS gt, r.buying_account_no AS buy_acct, r.selling_account_no AS sell_acct
+    FROM uat_hnx_stg.repo_order_book r
+    CROSS JOIN params p
+    WHERE r.order_status = 'ĐTH'
+      AND r.trading_date BETWEEN p.py_start AND p.report_date
+  ) o
+  CROSS JOIN params p
+)
+----> Chuyển loại CK thành cột
+, trade_agg AS (
+  SELECT * FROM (
+    SELECT
+      CASE WHEN loai_ck IN ('CP','CCQ') THEN 'CP_CCQ' ELSE loai_ck END AS grp, -- gộp CP + CCQ
+      gt_m, gt_pm, gt_lym, gt_y, gt_py,
+      kl_m, kl_pm, kl_lym, kl_y, kl_py,
+      ndtnn_rong_m, ndtnn_rong_y
+    FROM trade_period
+  )
+  PIVOT (
+    SUM(gt_m) AS gt_m, SUM(gt_pm) AS gt_pm, SUM(gt_lym) AS gt_lym, SUM(gt_y) AS gt_y, SUM(gt_py) AS gt_py,
+    SUM(kl_m) AS kl_m, SUM(kl_pm) AS kl_pm, SUM(kl_lym) AS kl_lym, SUM(kl_y) AS kl_y, SUM(kl_py) AS kl_py,
+    SUM(ndtnn_rong_m) AS ndtnn_rong_m, SUM(ndtnn_rong_y) AS ndtnn_rong_y
+    FOR grp IN ('CP_CCQ' AS cp_ccq, 'TPCP' AS tpcp, 'CW' AS cw, 'HDTL_VN30' AS ps_hdtl_vn30)
+  )
+)
+-- 2.4. Chỉ tiêu vốn hóa, số mã niêm yết/ĐKGD
+---- Cổ phiếu, CCQ niêm yết/ĐKGD tại ngày dữ liệu d_cur (CUR) và cuối năm trước (PY): KL lưu hành, Số mã NY/ĐKGD
+---- HOSE, HNX (floorcode 02, 10): Giá đóng cửa
+---- UPCoM (floorcode 04): Giá trung bình (VWAP) ngày T được Sở gửi trong tín hiệu MDDS (d - security definition) ngày T+1; nếu VWAP = 0 (mã trắng thanh khoản) thì lấy giá tham chiếu ngày T
+---- Nếu ngày BC là ngày giao dịch mới nhất thì CHƯA có số liệu vốn hóa UPCoM (NULL)
+, equity_data AS (
+  SELECT
+    x.pt, x.tradingdate, x.symbol, x.floorcode, x.stocktype, x.loai_ck, x.price, x.closeprice, x.reference, x.d_next, x.vwap,
+    x.listedshare, -- Khối lượng niêm yết
+    os.outstanding_shares AS kllh_cp, -- Khối lượng lưu hành
+    CASE WHEN x.stocktype = '2' THEN x.price * os.outstanding_shares END AS von_hoa_cophieu, -- Vốn hóa (cổ phiếu)
+    -- GT niêm yết (CP, CCQ) = KL niêm yết x Mệnh giá (CP/CCQ 10000vnd)
+    CASE 
+      WHEN x.stocktype IN ('2','3','6') THEN x.listedshare * 10000 
+    END AS gt_niemyet
+  FROM (
+    SELECT -- Kỳ báo cáo
+      'CUR' AS pt, s.tradingdate, s.symbol, s.floorcode, s.stocktype, s.loai_ck,
+      CASE 
+        WHEN s.floorcode = '04' THEN 
+          (CASE 
+            WHEN n.vwap IS NULL THEN NULL -- VWAP mã trên UPCoM chưa có dữ liệu T+1 → không tính vốn hóa UPCoM
+            ELSE COALESCE(NULLIF(n.vwap, 0), s.reference) -- VWAP = 0 (mã trắng thanh khoản) --> lấy tham chiếu ngày T
+          END)
+        ELSE s.closeprice 
+      END AS price,
+      s.closeprice, s.reference, s.listedshare, 
+      k.d_next, n.vwap
+    FROM stock_eod s
+    CROSS JOIN key_dates k
+    LEFT JOIN stock_eod n ON n.symbol = s.symbol AND n.tradingdate = k.d_next -- Lấy giá VWAP ngày T Sở gửi ngày T+1 để tính vốn hóa upcom
+    WHERE s.tradingdate = k.d_cur
+      AND s.floorcode IN ('02','04','10') AND s.stocktype IN ('2', '3', '6') -- CP, CCQ
+    UNION ALL
+    SELECT -- Năm trước
+      'PY' AS pt, s.tradingdate, s.symbol, s.floorcode, s.stocktype, s.loai_ck,
+      CASE 
+        WHEN s.floorcode = '04' THEN 
+          (CASE 
+            WHEN n.vwap IS NULL THEN NULL -- VWAP mã trên UPCoM chưa có dữ liệu T+1 → không tính vốn hóa UPCoM
+            ELSE COALESCE(NULLIF(n.vwap, 0), s.reference) -- VWAP = 0 (mã trắng thanh khoản) --> lấy tham chiếu ngày T
+          END)
+        ELSE s.closeprice END AS price,
+      s.closeprice, s.reference, s.listedshare, 
+      k.d_py_next, n.vwap
+    FROM stock_eod s
+    CROSS JOIN key_dates k
+    LEFT JOIN stock_eod n ON n.symbol = s.symbol AND n.tradingdate = k.d_py_next -- Lấy giá VWAP ngày T Sở gửi ngày T+1 để tính vốn hóa upcom
+    WHERE s.tradingdate = k.d_py
+      AND s.floorcode IN ('02','04','10') AND s.stocktype IN ('2', '3', '6') -- CP, CCQ
+  ) x
+  LEFT JOIN uat_vsdc_stg.outstanding_shares os ON os.transaction_date = x.tradingdate AND os.ticker_symbol = x.symbol -- Khối lượng lưu hành CP/CCQ cuối ngày để tính vốn hóa
+)
+-- Tính vốn hóa, GT niêm yết, Số mã NY/ĐKGD
+, equity_agg AS (
+  SELECT
+    pt,
+    SUM(von_hoa_cophieu) AS von_hoa_cophieu, 
+    SUM(CASE WHEN stocktype IN ('2', '3', '6') THEN gt_niemyet ELSE 0 END) AS gt_niemyet_cp_ccq,
+    COUNT(CASE WHEN floorcode IN ('02', '10') AND stocktype IN ('2', '3', '6') THEN symbol END) AS so_ma_cp_ccq_hnx_hose, -- CP, CCQ niêm yết HNX, HOSE
+    COUNT(CASE WHEN floorcode = '04' AND stocktype = '2' THEN symbol END) AS so_ma_cp_upcom -- CP ĐKGD UPCoM
+  FROM equity_data
+  GROUP BY pt
+)
+-- 2.4.1. TPCP niêm yết: danh sách TPCP niêm yết thống kê hàng tháng (gov_bond_listed_list)
+---- CUR (Đến ngày báo cáo): Lấy tháng của ngày báo cáo; PY (Cuối năm trước): Lấy tháng 12 năm trước. Nếu ngày báo cáo < ngày cuối tháng của dữ liệu thì CHƯA có số liệu (NULL)
+---- GT niêm yết = KL niêm yết x mệnh giá 100.000 VND
+, gb_listed AS (
+  SELECT
+    t.pt,
+    COUNT(DISTINCT g.bond_code) AS so_ma_tpcp,
+    SUM(g.listed_volume * 100000) AS gt_niemyet_tpcp
+  FROM (
+    SELECT 'CUR' AS pt, LAST_DAY(p.report_date) AS d_end FROM params p
+    UNION ALL
+    SELECT 'PY' AS pt, p.py_end AS d_end FROM params p
+  ) t
+  CROSS JOIN params p
+  JOIN uat_hnx_stg.gov_bond_listed_list g
+    ON CAST(g.report_year AS INT) = YEAR(t.d_end)
+   AND CAST(g.report_month AS INT) = MONTH(t.d_end)
+  WHERE p.report_date >= t.d_end
+  -- AND g.ds_snpst_dt = ...
+  GROUP BY t.pt
+)
+-- 2.5. Khối lượng mở (OI) HĐTL VN30: Tại d_cur, cuối tháng trước, cuối năm trước
+, oi AS (
+  SELECT
+    SUM(CASE WHEN oi.report_date = k.d_cur THEN oi.open_interest_volume END) AS oi_cur,
+    SUM(CASE WHEN oi.report_date = k.d_pm THEN oi.open_interest_volume END) AS oi_pm,
+    SUM(CASE WHEN oi.report_date = k.d_py THEN oi.open_interest_volume END) AS oi_py
+  FROM uat_vsdc_stg.end_of_day_open_interest oi
+  CROSS JOIN key_dates k
+  JOIN stock_eod s ON oi.report_date = s.tradingdate AND oi.contract_code = s.symbol AND s.loai_ck = 'HDTL_VN30'
+  WHERE oi.report_date IN (k.d_cur, k.d_pm, k.d_py)
+)
+-- 2.6. GDP năm trước (năm báo cáo - 1)
+---- Quy đổi về VND: unit_code 3 = Tỷ VND, 8 = VND, 23 = Triệu VND
+---- Nếu không có GDP năm thì lấy tổng GDP quý
+, gdp AS (
+  SELECT period_year, gdp_py
+  FROM (
+    SELECT
+      v.period_type,
+      v.period_year,
+      SUM(TRY_CAST(v.value AS DOUBLE) * MAP('3',1000000000,'8',1,'23',1000000)[v.unit_code]) AS gdp_py,
+      COUNT(1) sl_ky,
+      ROW_NUMBER() OVER(ORDER BY v.period_type DESC) rn -- Thứ tự ưu tiên kỳ Năm > Quý
+    FROM uat_mrms_stg.risk_indicator_value v
+    LEFT JOIN uat_mrms_stg.risk_indicator i ON i.id = v.indicator_id
+    CROSS JOIN params p
+    WHERE i.indicator_code = 'GDP_VN'
+      AND v.period_type IN ('3','4') -- GDP theo quý hoặc năm
+      AND v.period_year = p.gdp_year 
+      AND v.deleted = '0'
+      AND v.ds_snpst_dt = '2026-10-23'
+      AND i.ds_snpst_dt = '2026-10-23'
+      GROUP BY v.period_type, v.period_year
+  ) WHERE rn = 1
+  AND (period_type = '4' OR (period_type = '3' AND sl_ky = 4))
+)
+-- 2.7. Số lượng tài khoản NĐT hoạt động tính đến ngày báo cáo/ngày cuối năm trước (Ngày D)
+---- Tài khoản mở/đóng nhiều lần: còn mở tại ngày D khi lần mở gần nhất (<= D) MỚI HƠN lần đóng gần nhất (<= D)
+---- Mở và đóng cùng ngày bỏ qua do trạng thái mở/đóng của TK không đổi so với trạng thái trước ngày đó
+, acc_agg AS (
+  SELECT
+    -- Bước 3: Đếm tài khoản hoạt động: Có ngày mở <= Ngày D và (chưa từng đóng hoặc ngày mở gần nhất > ngày đóng gần nhất trước Ngày D)
+    COUNT(CASE WHEN open_cur IS NOT NULL AND (close_cur IS NULL OR open_cur > close_cur) THEN 1 END) AS tk_cur,
+    COUNT(CASE WHEN open_py  IS NOT NULL AND (close_py  IS NULL OR open_py  > close_py)  THEN 1 END) AS tk_py
+  FROM (
+    -- Bước 2: Mỗi tài khoản lấy ngày ""chỉ mở"" gần nhất và ngày ""chỉ đóng"" gần nhất <= Ngày D. Ngày có cả mở và đóng (has_open AND has_close) bỏ qua (không làm thay đổi trạng thái).
+    SELECT
+      d.trading_account_no,
+      MAX(CASE WHEN d.has_open  AND NOT d.has_close AND d.event_date <= p.report_date THEN d.event_date END) AS open_cur,  -- Ngày chỉ mở gần nhất <= ngày báo cáo
+      MAX(CASE WHEN d.has_close AND NOT d.has_open  AND d.event_date <= p.report_date THEN d.event_date END) AS close_cur, -- Ngày chỉ đóng gần nhất <= ngày báo cáo
+      MAX(CASE WHEN d.has_open  AND NOT d.has_close AND d.event_date <= p.py_end      THEN d.event_date END) AS open_py,   -- Ngày chỉ mở gần nhất <= ngày cuối năm trước
+      MAX(CASE WHEN d.has_close AND NOT d.has_open  AND d.event_date <= p.py_end      THEN d.event_date END) AS close_py   -- Ngày chỉ đóng gần nhất <= ngày cuối năm trước
+    FROM (
+      -- Bước 1: Gộp event theo tài khoản + ngày: ngày có event mở không (has_open), có event đóng không (has_close)
+      ---- Gộp để nhiều bản ghi cùng loại trong 1 ngày chỉ còn 1 dòng -> nhận diện được ngày trùng mở/đóng
+      SELECT
+        e.trading_account_no, 
+        e.event_date, 
+        BOOL_OR(e.event_type = 'OPEN')  AS has_open,
+        BOOL_OR(e.event_type = 'CLOSE') AS has_close
+      FROM (
+        -- Danh sách event mở/đóng tài khoản <= ngày báo cáo
+        SELECT o.trading_account_no, o.open_date AS event_date, 'OPEN' AS event_type
+        FROM uat_vsdc_stg.open_investors o
+        WHERE o.open_date <= :report_date
+        UNION ALL
+        SELECT c.trading_account_no, close_date AS event_date, 'CLOSE' AS event_type
+        FROM uat_vsdc_stg.closed_investors c
+        WHERE c.close_date <= :report_date
+      ) e
+      GROUP BY e.trading_account_no, e.event_date
+    ) d
+    CROSS JOIN params p
+    GROUP BY d.trading_account_no
+  ) a
+)
+-- 2.8. Gom các giá trị về 1 dòng; bình quân = tổng / số phiên của kỳ
+, w AS (
+  SELECT
+    idx.vnindex_cur, idx.vnindex_pm, idx.vnindex_py, idx.hnxindex_cur, idx.hnxindex_pm, idx.hnxindex_py,
+    ec.von_hoa_cophieu AS von_hoa_cophieu_cur, -- Ngày báo cáo là ngày giao dịch mới nhất (chưa có T+1 để lấy VWAP UPCoM) -> chưa tính vốn hóa
+    ep.von_hoa_cophieu AS von_hoa_cophieu_py,
+    ec.so_ma_cp_ccq_hnx_hose AS so_ma_cp_ccq_hnx_hose_cur, 
+    ec.so_ma_cp_upcom AS so_ma_cp_upcom_cur,
+    ec.gt_niemyet_cp_ccq AS gt_niemyet_cp_ccq_cur, 
+    ep.gt_niemyet_cp_ccq AS gt_niemyet_cp_ccq_py,
+    gc.so_ma_tpcp AS so_ma_tpcp_cur,
+    gc.gt_niemyet_tpcp AS gt_niemyet_tpcp_cur,
+    gp.gt_niemyet_tpcp AS gt_niemyet_tpcp_py,
+    oi.oi_cur, oi.oi_pm, oi.oi_py,
+    gdp.gdp_py,
+    ta.cp_ccq_gt_m / NULLIF(ss.n_m, 0) AS cp_ccq_gt_bq_m,
+    ta.cp_ccq_gt_pm / NULLIF(ss.n_pm, 0) AS cp_ccq_gt_bq_pm,
+    ta.cp_ccq_gt_lym / NULLIF(ss.n_lym, 0) AS cp_ccq_gt_bq_lym,
+    ta.cp_ccq_gt_y / NULLIF(ss.n_y, 0) AS cp_ccq_gt_bq_y,
+    ta.cp_ccq_gt_py / NULLIF(ss.n_py, 0) AS cp_ccq_gt_bq_py,
+    ta.tpcp_gt_m / NULLIF(ss.n_m, 0) AS tpcp_gt_bq_m,
+    ta.tpcp_gt_pm / NULLIF(ss.n_pm, 0) AS tpcp_gt_bq_pm,
+    ta.tpcp_gt_lym / NULLIF(ss.n_lym, 0) AS tpcp_gt_bq_lym,
+    ta.tpcp_gt_y / NULLIF(ss.n_y, 0) AS tpcp_gt_bq_y,
+    ta.tpcp_gt_py / NULLIF(ss.n_py, 0) AS tpcp_gt_bq_py,
+    ta.cw_gt_m / NULLIF(ss.n_m, 0) AS cw_gt_bq_m,
+    ta.cw_gt_pm / NULLIF(ss.n_pm, 0) AS cw_gt_bq_pm,
+    ta.cw_gt_lym / NULLIF(ss.n_lym, 0) AS cw_gt_bq_lym,
+    ta.cw_gt_y / NULLIF(ss.n_y, 0) AS cw_gt_bq_y,
+    ta.cw_gt_py / NULLIF(ss.n_py, 0) AS cw_gt_bq_py,
+    ta.cw_kl_m / NULLIF(ss.n_m, 0) AS cw_kl_bq_m,
+    ta.cw_kl_pm / NULLIF(ss.n_pm, 0) AS cw_kl_bq_pm,
+    ta.cw_kl_lym / NULLIF(ss.n_lym, 0) AS cw_kl_bq_lym,
+    ta.cw_kl_y / NULLIF(ss.n_y, 0) AS cw_kl_bq_y,
+    ta.cw_kl_py / NULLIF(ss.n_py, 0) AS cw_kl_bq_py,
+    ta.ps_hdtl_vn30_kl_m / NULLIF(ss.n_m, 0) AS ps_hdtl_vn30_kl_bq_m,
+    ta.ps_hdtl_vn30_kl_pm / NULLIF(ss.n_pm, 0) AS ps_hdtl_vn30_kl_bq_pm,
+    ta.ps_hdtl_vn30_kl_lym / NULLIF(ss.n_lym, 0) AS ps_hdtl_vn30_kl_bq_lym,
+    ta.ps_hdtl_vn30_kl_y / NULLIF(ss.n_y, 0) AS ps_hdtl_vn30_kl_bq_y,
+    ta.ps_hdtl_vn30_kl_py / NULLIF(ss.n_py, 0) AS ps_hdtl_vn30_kl_bq_py,
+    ta.cp_ccq_ndtnn_rong_m AS cp_ccq_ndtnn_rong_m,
+    ta.tpcp_ndtnn_rong_m AS tpcp_ndtnn_rong_m,
+    ta.cp_ccq_ndtnn_rong_y AS cp_ccq_ndtnn_rong_y,
+    ta.tpcp_ndtnn_rong_y AS tpcp_ndtnn_rong_y,
+    a.tk_cur, a.tk_py 
+  FROM trade_agg ta
+  CROSS JOIN key_dates ss
+  CROSS JOIN idx
+  CROSS JOIN oi
+  CROSS JOIN acc_agg a 
+  LEFT JOIN gdp ON 1 = 1
+  LEFT JOIN (SELECT * FROM equity_agg WHERE pt = 'CUR') ec ON 1 = 1
+  LEFT JOIN (SELECT * FROM equity_agg WHERE pt = 'PY') ep ON 1 = 1
+  LEFT JOIN (SELECT * FROM gb_listed WHERE pt = 'CUR') gc ON 1 = 1 -- TPCP
+  LEFT JOIN (SELECT * FROM gb_listed WHERE pt = 'PY') gp ON 1 = 1  -- TPCP
+)
+-- 2.9. Dữ liệu lên dashboard: mỗi dòng 1 chỉ tiêu
+SELECT
+  p.report_date,
+  k.d_cur AS ngay_du_lieu, -- Ngày dữ liệu thực tế (ngày giao dịch gần nhất <= ngày báo cáo)
+  x.nhom_stt,
+  x.nhom,
+  x.metric_code,
+  x.metric_name,
+  x.gia_tri,
+  x.don_vi
+FROM params p
+CROSS JOIN key_dates k
+CROSS JOIN (
+  SELECT STACK(52,
+    1, '1', '1. Thị trường cổ phiếu', 'cp_vnindex', 'Chỉ số VN-Index ngày báo cáo', CAST(w.vnindex_cur AS DOUBLE), 'Điểm',
+    2, '1', '1. Thị trường cổ phiếu', 'cp_vnindex_pct_cuoithangtruoc', 'Chỉ số VN-Index - % so với cuối tháng trước', CAST((w.vnindex_cur - w.vnindex_pm) / NULLIF(ABS(w.vnindex_pm), 0) * 100 AS DOUBLE), '%',
+    3, '1', '1. Thị trường cổ phiếu', 'cp_vnindex_pct_cuoinamtruoc', 'Chỉ số VN-Index - % so với cuối năm trước', CAST((w.vnindex_cur - w.vnindex_py) / NULLIF(ABS(w.vnindex_py), 0) * 100 AS DOUBLE), '%',
+    4, '1', '1. Thị trường cổ phiếu', 'cp_hnxindex', 'Chỉ số HNX-Index ngày báo cáo', CAST(w.hnxindex_cur AS DOUBLE), 'Điểm',
+    5, '1', '1. Thị trường cổ phiếu', 'cp_hnxindex_pct_cuoithangtruoc', 'Chỉ số HNX-Index - % so với cuối tháng trước', CAST((w.hnxindex_cur - w.hnxindex_pm) / NULLIF(ABS(w.hnxindex_pm), 0) * 100 AS DOUBLE), '%',
+    6, '1', '1. Thị trường cổ phiếu', 'cp_hnxindex_pct_cuoinamtruoc', 'Chỉ số HNX-Index - % so với cuối năm trước', CAST((w.hnxindex_cur - w.hnxindex_py) / NULLIF(ABS(w.hnxindex_py), 0) * 100 AS DOUBLE), '%',
+    7, '1', '1. Thị trường cổ phiếu', 'cp_vonhoa', 'Vốn hóa thị trường cổ phiếu', CAST(w.von_hoa_cophieu_cur AS DOUBLE), 'VND',
+    8, '1', '1. Thị trường cổ phiếu', 'cp_vonhoa_pct_cuoinamtruoc', 'Vốn hóa thị trường cổ phiếu - % so với cuối năm trước', CAST((w.von_hoa_cophieu_cur - w.von_hoa_cophieu_py) / NULLIF(ABS(w.von_hoa_cophieu_py), 0) * 100 AS DOUBLE), '%',
+    9, '1', '1. Thị trường cổ phiếu', 'cp_vonhoa_gdp_pct', 'Tỷ lệ vốn hóa/GDP năm', CAST(w.von_hoa_cophieu_cur / NULLIF(w.gdp_py, 0) * 100 AS DOUBLE), '%',
+    10, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_thang', 'Cổ phiếu, CCQ - GTGD bình quân tháng báo cáo', CAST(w.cp_ccq_gt_bq_m AS DOUBLE), 'VND',
+    11, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_thang_pct', 'Cổ phiếu, CCQ - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.cp_ccq_gt_bq_m - w.cp_ccq_gt_bq_pm) / NULLIF(ABS(w.cp_ccq_gt_bq_pm), 0) * 100 AS DOUBLE), '%',
+    12, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_thang_pct_cungky', 'Cổ phiếu, CCQ - GTGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.cp_ccq_gt_bq_m - w.cp_ccq_gt_bq_lym) / NULLIF(ABS(w.cp_ccq_gt_bq_lym), 0) * 100 AS DOUBLE), '%',
+    13, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_nam', 'Cổ phiếu, CCQ - GTGD bình quân năm báo cáo', CAST(w.cp_ccq_gt_bq_y AS DOUBLE), 'VND',
+    14, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_nam_pct', 'Cổ phiếu, CCQ - GTGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.cp_ccq_gt_bq_y - w.cp_ccq_gt_bq_py) / NULLIF(ABS(w.cp_ccq_gt_bq_py), 0) * 100 AS DOUBLE), '%',
+    15, '1', '1. Thị trư",,,,,,
+ 'cp_soma_cp_ccq_hnx_hose', 'Cổ phiếu, CCQ - Số mã niêm yết trên HNX, HOSE', CAST(w.so_ma_cp_ccq_hnx_hose_cur AS DOUBLE), 'Mã',,,,,,,,,,,,,,,,,,,
+ '1', '1. Thị trường cổ phiếu', 'cp_soma_cp_upcom', 'Cổ phiếu - Số mã cổ phiếu ĐKGD trên UPCoM', CAST(w.so_ma_cp_upcom_cur AS DOUBLE), 'Mã',,,,,,,,,,,,,,,,,,,
+ '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD', CAST(w.gt_niemyet_cp_ccq_cur AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,
+ '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_pct_cuoinamtruoc', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với cuối năm trước', CAST((w.gt_niemyet_cp_ccq_cur - w.gt_niemyet_cp_ccq_py) / NULLIF(ABS(w.gt_niemyet_cp_ccq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,
+ '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_gdp_pct', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với GDP năm', CAST(w.gt_niemyet_cp_ccq_cur / NULLIF(w.gdp_py, 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang', 'TPCP - GTGD bình quân tháng báo cáo', CAST(w.tpcp_gt_bq_m AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang_pct', 'TPCP - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.tpcp_gt_bq_m - w.tpcp_gt_bq_pm) / NULLIF(ABS(w.tpcp_gt_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang_pct_cungky', 'TPCP - GTGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.tpcp_gt_bq_m - w.tpcp_gt_bq_lym) / NULLIF(ABS(w.tpcp_gt_bq_lym), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_nam', 'TPCP - GTGD bình quân năm báo cáo', CAST(w.tpcp_gt_bq_y AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_nam_pct', 'TPCP - GTGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.tpcp_gt_bq_y - w.tpcp_gt_bq_py) / NULLIF(ABS(w.tpcp_gt_bq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_soma_niemyet', 'TPCP - Số mã trái phiếu niêm yết', CAST(w.so_ma_tpcp_cur AS DOUBLE), 'Mã',,,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gt_niemyet', 'TPCP - Giá trị niêm yết trái phiếu', CAST(w.gt_niemyet_tpcp_cur AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gt_niemyet_pct_cuoinamtruoc', 'TPCP - Giá trị niêm yết trái phiếu - % so với cuối năm trước', CAST((w.gt_niemyet_tpcp_cur - w.gt_niemyet_tpcp_py) / NULLIF(ABS(w.gt_niemyet_tpcp_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '2', '2. Thị trường trái phiếu', 'tpcp_gt_niemyet_gdp_pct', 'TPCP - Giá trị niêm yết trái phiếu - % so với GDP năm', CAST(w.gt_niemyet_tpcp_cur / NULLIF(w.gdp_py, 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_klgd_bq_thang', 'HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo', CAST(w.ps_hdtl_vn30_kl_bq_m AS DOUBLE), 'Hợp đồng',,,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_klgd_bq_thang_pct', 'HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.ps_hdtl_vn30_kl_bq_m - w.ps_hdtl_vn30_kl_bq_pm) / NULLIF(ABS(w.ps_hdtl_vn30_kl_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_klgd_bq_thang_pct_cungky', 'HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.ps_hdtl_vn30_kl_bq_m - w.ps_hdtl_vn30_kl_bq_lym) / NULLIF(ABS(w.ps_hdtl_vn30_kl_bq_lym), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_klgd_bq_nam', 'HĐTL VN30 - KLGD bình quân năm báo cáo (từ đầu năm đến ngày báo cáo)', CAST(w.ps_hdtl_vn30_kl_bq_y AS DOUBLE), 'Hợp đồng',,,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_klgd_bq_nam_pct', 'HĐTL VN30 - KLGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.ps_hdtl_vn30_kl_bq_y - w.ps_hdtl_vn30_kl_bq_py) / NULLIF(ABS(w.ps_hdtl_vn30_kl_bq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_oi', 'HĐTL VN30 - Khối lượng mở (OI) ngày báo cáo', CAST(w.oi_cur AS DOUBLE), 'Hợp đồng',,,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_oi_pct_cuoithangtruoc', 'HĐTL VN30 - Khối lượng mở (OI) - % so với cuối tháng trước', CAST((w.oi_cur - w.oi_pm) / NULLIF(ABS(w.oi_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '3', '3.1. Thị trường chứng khoán phái sinh', 'ps_oi_pct_cuoinamtruoc', 'HĐTL VN30 - Khối lượng mở (OI) - % so với cuối năm trước', CAST((w.oi_cur - w.oi_py) / NULLIF(ABS(w.oi_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_klgd_bq_thang', 'CW - KLGD bình quân tháng báo cáo', CAST(w.cw_kl_bq_m AS DOUBLE), 'Chứng quyền',,,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_klgd_bq_thang_pct', 'CW - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.cw_kl_bq_m - w.cw_kl_bq_pm) / NULLIF(ABS(w.cw_kl_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_klgd_bq_thang_pct_cungky', 'CW - KLGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.cw_kl_bq_m - w.cw_kl_bq_lym) / NULLIF(ABS(w.cw_kl_bq_lym), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_gtgd_bq_thang', 'CW - GTGD bình quân tháng báo cáo', CAST(w.cw_gt_bq_m AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_gtgd_bq_thang_pct', 'CW - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.cw_gt_bq_m - w.cw_gt_bq_pm) / NULLIF(ABS(w.cw_gt_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_gtgd_bq_thang_pct_cungky', 'CW - GTGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.cw_gt_bq_m - w.cw_gt_bq_lym) / NULLIF(ABS(w.cw_gt_bq_lym), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_klgd_bq_nam', 'CW - KLGD bình quân năm báo cáo (từ đầu năm đến ngày báo cáo)', CAST(w.cw_kl_bq_y AS DOUBLE), 'Chứng quyền',,,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_klgd_bq_nam_pct', 'CW - KLGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.cw_kl_bq_y - w.cw_kl_bq_py) / NULLIF(ABS(w.cw_kl_bq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_gtgd_bq_nam', 'CW - GTGD bình quân năm báo cáo (từ đầu năm đến ngày báo cáo)', CAST(w.cw_gt_bq_y AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '4', '3.2. Chứng quyền', 'cw_gtgd_bq_nam_pct', 'CW - GTGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.cw_gt_bq_y - w.cw_gt_bq_py) / NULLIF(ABS(w.cw_gt_bq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ '5', '4. Hoạt động NĐT', 'ndtnn_rong_cp_ccq_thang', 'GT NĐTNN mua/bán ròng cổ phiếu, CCQ tháng báo cáo', CAST(w.cp_ccq_ndtnn_rong_m AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,
+ '5', '4. Hoạt động NĐT', 'ndtnn_rong_tpcp_thang', 'GT NĐTNN mua/bán ròng trái phiếu (TPCP) tháng báo cáo', CAST(w.tpcp_ndtnn_rong_m AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '5', '4. Hoạt động NĐT', 'ndtnn_rong_cp_ccq_nam', 'GT NĐTNN mua/bán ròng cổ phiếu, CCQ năm báo cáo', CAST(w.cp_ccq_ndtnn_rong_y AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,
+ '5', '4. Hoạt động NĐT', 'ndtnn_rong_tpcp_nam', 'GT NĐTNN mua/bán ròng trái phiếu (TPCP) năm báo cáo', CAST(w.tpcp_ndtnn_rong_y AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
+ '6', '4. Hoạt động NĐT', 'tk_luyke_thang', 'Số lượng tài khoản của NĐT tính đến cuối tháng', CAST(w.tk_cur AS DOUBLE), 'TK',,,,,,,,,,,,,,,,,,,
+ '6', '4. Hoạt động NĐT', 'tk_luyke_nam_pct', 'Số lượng tài khoản của NĐT - % so với cuối năm trước', CAST((w.tk_cur - w.tk_py) / NULLIF(ABS(w.tk_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+ nhom_stt, nhom, metric_code, metric_name, gia_tri, don_vi),,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+,,Dữ liệu tĩnh,,,,,,,,,,,,,,,,,,,,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex,Điểm Chỉ số VNIndex ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode = 'HOSE'
+m.tradingdate = [Ngày báo cáo]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex - % so với cuối tháng trước,% thay đổi VNIndex so với ngày cuối tháng trước = (Chỉ số VNIndex ngày báo cáo - Chỉ số VNIndex cuối tháng trước) / Chỉ số VNIndex cuối tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"- Tháng trước: 
+m.marketcode = 'HOSE'
+m.tradingdate = [Ngày giao dịch cuối cùng tháng trước]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1
+- Tính theo công thức tại cột ""MÔ tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số VNIndex - % so với cuối năm trước,% thay đổi VNIndex so với ngày cuối năm trước = (Chỉ số VNIndex ngày báo cáo - Chỉ số VNIndex cuối năm trước) / Chỉ số VNIndex cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"- Năm trước: 
+m.marketcode = 'HOSE'
+m.tradingdate = [Ngày giao dịch cuối cùng Năm trước]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1
+- Tính theo công thức tại cột ""MÔ tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index,Điểm Chỉ số HNX-Index ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"m.marketcode = 'HNX'
+m.tradingdate = [Ngày báo cáo]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index - % so với cuối tháng trước,% thay đổi HNX-Index so với ngày cuối tháng trước = (Chỉ số HNX-Index ngày báo cáo - Chỉ số HNX-Index cuối tháng trước) / Chỉ số HNX-Index cuối tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"- Tháng trước: 
+m.marketcode = 'HNX'
+m.tradingdate = [Ngày giao dịch cuối cùng tháng trước]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1
+- Tính theo công thức tại cột ""MÔ tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Chỉ số HNX-Index - % so với cuối năm trước,% thay đổi HNX-Index so với ngày cuối năm trước = (Chỉ số HNX-Index ngày báo cáo - Chỉ số HNX-Index cuối năm trước) / Chỉ số HNX-Index cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Chỉ số",MDDS,,,,Done,,uat_mdds_stg.jad_marketinfor (m),m.marketindex,"- Năm trước: 
+m.marketcode = 'HNX'
+m.tradingdate = [Ngày giao dịch cuối cùng Năm trước]
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY m.marketcode, m.tradingdate ORDER BY m.indextime DESC, m.`sequence` DESC)) = 1
+- Tính theo công thức tại cột ""MÔ tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Vốn hóa thị trường cổ phiếu (Nghìn tỷ đồng),"Vốn hóa HNX, HOSE = Giá đóng cửa * Khối lượng lưu hành
 Vốn hóa UPCoM = Giá trung bình (VWAP) * Khối lượng lưu hành
 Trong đó: 
-  +) Vốn hóa tính tại ngày gần nhất <= ngày báo cáo
-  +) Giá trung bình (VWAP): Lấy từ dữ liệu MDDS Sở gửi tại ngày liền sau ngày báo cáo. Nếu VWAP = 0 thì lấy giá tham chiếu của ngày gần nhất <= ngày báo cáo",,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị chỉ số,Giá trị chỉ số cuối phiên,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Chỉ số, Ngày",MDDS,,X,,,- Thông tin thị trường,,,,,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị chỉ số - % thay đổi so với cuối tháng trước,(Index ngày báo cáo - Index ngày cuối tháng trước) / Index ngày cuối tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,X,X,,- Thông tin thị trường,uat_mdds_stg.jad_marketinfor (m),,,,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị chỉ số - % thay đổi so với cuối năm trước,(Index ngày báo cáo - Index ngày cuối năm trước) / Index ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Chỉ số, Ngày",MDDS,,X,X,,- Thông tin thị trường,uat_mdds_stg.jad_marketinfor (m),,,,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,"Mức vốn hóa thị trường cổ phiếu 3 sàn HOSE, HNX và UPCOM (nghìn tỷ đồng)",Σ (Giá * KL cổ phiếu lưu hành),Báo cáo,Chỉ tiêu cơ sở,Trùng,Ngày,"MDDS, CSDLTT",,X,,,"- Thông tin thị trường
-- Báo cáo về khối lượng chứng khoán đang lưu hành","uat_mdds_stg.JAD_STOCKINFOR
-VSDC >> ""BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành""","MDDS.JAD_STOCKINFOR.CLOSEPRICE
-VSDC >> BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""","- VSDC >> BM 1: Ngày = Ngày báo cáo
-- MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-- MDDS.JAD_STOCKINFOR Lấy bản ghi cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-- Loại CK = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-- JOIN JAD_STOCKINFOR, BM 1 cùng Ngày, Mã chứng khoán",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi vốn hóa Cổ phiếu so với cuối năm trước,(Vốn hóa_t − Vốn hóa 31/12 năm trước) / Vốn hóa 31/12 năm trước,Báo cáo,Chỉ tiêu phái sinh,Trùng,Ngày,"MDDS, CSDLTT",,X,X,,"- Thông tin thị trường
-- Báo cáo về khối lượng chứng khoán đang lưu hành","uat_mdds_stg.JAD_STOCKINFOR
-VSDC >> ""BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành""","MDDS.JAD_STOCKINFOR.CLOSEPRICE
-VSDC >> BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""","- VSDC >> BM 1: Ngày = Ngày báo cáo, Ngày cuối năm trước TRUNC(:report_date, 'YYYY') - 1
-- MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo, Ngày cuối năm trước TRUNC(:report_date, 'YYYY') - 1
-- MDDS.JAD_STOCKINFOR Lấy bản ghi cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-- Loại CK = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-- JOIN JAD_STOCKINFOR, BM 1 cùng Ngày, Mã chứng khoán",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Tỷ lệ vốn hóa Cổ phiếu/GDP (%),Vốn hóa cổ phiếu / GDP * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,Ngày/Năm,"MDDS, CSDLTT, QLRR",,X,,,"- Thông tin thị trường
-- Báo cáo về khối lượng chứng khoán đang lưu hành
-- Chỉ tiêu tài chính vĩ mô","uat_mdds_stg.JAD_STOCKINFOR
-VSDC - ""BM 1_Báo cáo về khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE","MDDS.JAD_STOCKINFOR.CLOSEPRICE
-VSDC - BM 1 >> Cột ""Khối lượng chứng khoán đang lưu hành""
-QLRR.RISK_INDICATOR_VALUE.VALUE","- Vốn hóa:
-VSDC >> BM 1: Ngày = Ngày báo cáo
-MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-MDDS.JAD_STOCKINFOR Lấy bản ghi cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-Loại CK = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-JOIN JAD_STOCKINFOR, BM 1 cùng Ngày, Mã chứng khoán
-- GDP:
-Giá trị: RISK_INDICATOR_VALUE.VALUE * decode(RISK_INDICATOR_VALUE.UNIT_CODE, '1', 1, '3', 1000000000)
-Điều kiện:
-RISK_INDICATOR.INDICATOR_CODE = 'GDP_VN'
-RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.INDICATOR_ID
-RISK_INDICATOR_VALUE.PERIOD_TYPE = '4' AND RISK_INDICATOR_VALUE.PERIOD_YEAR = {Năm gần nhất <= Ngày cuối kỳ báo cáo}",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Năm gần nhất có số liệu GDP,Năm gần nhất có số liệu GDP,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,QLRR,,,,,- Chỉ tiêu tài chính vĩ mô,"QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE",QLRR.RISK_INDICATOR_VALUE.PERIOD_YEAR,"RISK_INDICATOR.INDICATOR_CODE = 'GDP_VN'
-RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.INDICATOR_ID
-RISK_INDICATOR_VALUE.PERIOD_TYPE = '4' AND RISK_INDICATOR_VALUE.PERIOD_YEAR = {Năm gần nhất <= Ngày cuối kỳ báo cáo}",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị giao dịch bình quân trong tháng (tỷ đồng) của cổ phiếu,Σ GTGD MTD / số phiên,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,CSDLTT,,X,X,,- Sổ lệnh,"CSDLTT.TRADE_HOSE
-CSDLTT.TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- Cổ phiếu:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong tháng báo cáo
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi so với GTGD bình quân tháng trước - Cổ phiếu,(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,CSDLTT,,X,X,,- Sổ lệnh,"CSDLTT.TRADE_HOSE
-CSDLTT.TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- Cổ phiếu:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong tháng báo cáo, tháng báo cáo - 1
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị bình quân (tỷ đồng) tính từ đầu năm đến ngày báo cáo của cổ phiếu - Cổ phiếu,Σ GTGD MTD / số phiên,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Ngày",CSDLTT,,X,X,,- Sổ lệnh,"CSDLTT.TRADE_HOSE
-CSDLTT.TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- Cổ phiếu:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong năm báo cáo
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi so với GTGD bình quân năm trước - Cổ phiếu,(GTGD TB năm báo cáo − GTGD TB năm trước) / GTGD TB năm trước,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Ngày",CSDLTT,,X,X,,- Sổ lệnh,"CSDLTT.TRADE_HOSE
-CSDLTT.TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- Cổ phiếu:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong năm báo cáo, năm báo cáo - 1
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,"Số mã cổ phiếu, CCQ niêm yết trên 2 Sở GDCK tính đến cuối tháng","Tổng số mã Cổ phiếu, CCQ đang niêm yết trên HOSE, HNX tại ngày cuối tháng báo cáo",Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại CK / Thị trường, Sàn, Ngày",MDDS,,X,,,- Thông tin thị trường,uat_mdds_stg.JAD_STOCKINFOR,MDDS.JAD_STOCKINFOR.SYMBOL,"- ĐK:
-STOCKTYPE IN ('2', '3') -- Cổ phiếu, CCQ
-FLORRCODE IN ('02', '10') -- HNX, HOSE
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-COUNT(SYMBOL)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Số mã cổ phiếu ĐKGD trên UPCOM tính đến cuối tháng,Số mã cổ phiếu ĐKGD trên UPCOM tính tại ngày cuối tháng báo cáo,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại CK / Thị trường, Sàn, Ngày",MDDS,,X,,,- Thông tin thị trường,uat_mdds_stg.JAD_STOCKINFOR,MDDS.JAD_STOCKINFOR.SYMBOL,"- ĐK:
-STOCKTYPE IN ('2') -- Cổ phiếu
-FLORRCODE IN ('04') -- UPCoM
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-COUNT(SYMBOL)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,"Tổng giá trị niêm yết, ĐKGD (nghìn tỷ đồng) - Cổ phiếu",GT niêm yết/ĐKGD cổ phiếu = Mệnh giá * KL cổ phiếu niêm yết,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại CK / Thị trường, Sàn, Ngày","MDDS, CSDLTT",X,X,,,"- Thông tin thị trường
-- VSDC - Báo cáo Thông tin khối lượng chứng khoán cuối ngày - Tổng Khối lượng chứng khoán phát hành","uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""","- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('2', '3') 
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,"% thay đổi giá trị niêm yết, ĐKGD so với cuối năm trước - Cổ phiếu",(GT niêm yết/ĐKGD cổ phiếu tại ngày báo cáo - GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước) / GT niêm yết/ĐKGD cổ phiếu tại 31/12 năm trước,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Sàn, Ngày","MDDS, CSDLTT",,X,X,,,"uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""","- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo, 31/12 năm trước
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('2', '3') 
-TRADINGDATE = Ngày báo cáo, 31/12 năm trước
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Tỷ lệ giá trị niêm yết/GDP năm - Cổ phiếu,GT niêm yết/ĐKGD cổ phiếu / GDP * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Loại CK / Thị trường, Sàn, Ngày","MDDS, CSDLTT, QLRR",,X,,,,"uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""
-QLRR.RISK_INDICATOR_VALUE.VALUE","* Giá trị niêm yết:
-- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('2', '3') 
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)
-* GDP:
-Giá trị: RISK_INDICATOR_VALUE.VALUE * decode(RISK_INDICATOR_VALUE.UNIT_CODE, '1', 1, '3', 1000000000)
-Điều kiện:
-RISK_INDICATOR.INDICATOR_CODE = 'GDP_VN'
-RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.INDICATOR_ID
-RISK_INDICATOR_VALUE.PERIOD_TYPE = '4' AND RISK_INDICATOR_VALUE.PERIOD_YEAR = {Năm gần nhất <= Ngày cuối kỳ báo cáo}",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị giao dịch bình quân (tỷ đồng) trong tháng - TPDN niêm yết,Σ GTGD TPDN niêm yết / số phiên trong tháng báo cáo,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,MSS,,X,,,"- Sổ lệnh giao dịch (trade_book)
-- Thông tin thị trường ",CSDLTT.TRADE_HNX,"TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- TPDN niêm yết:
-TRADE_HNX.""Market ID"" IN ('HCX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong tháng báo cáo
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""","-- TPDN niêm yết
-WITH CORPBOND_TRADE AS (
-  -- Dữ liệu giao dịch TPDN niêm yết: chỉ có trên HOSE
-  SELECT 
-    ""Trade Date"" TRADEDATE,
-    NVL(SUM(""Execution - Volume""), 0) KLGD,
-    NVL(SUM(""Execution - Value""), 0) GTGD
-  FROM TRADE_HOSE
-  WHERE ""Market ID"" = 'BDO' -- TPDN niêm yết
-    AND ""Trade Date"" >= ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ""Trade Date"" <= TO_DATE(:todate,'DD/MM/YYYY')
-  GROUP BY ""Trade Date""
-),
-SUMMARY AS (
-  SELECT
-    -- Tháng báo cáo
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANG,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN GTGD
-      END
-    ), 0) AS GTGD_THANG,
-    -- Tháng trước (So sánh cùng kỳ)
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANGTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN GTGD
-      END
-    ), 0) AS GTGD_THANGTRUOC,
-    --Tính từ đầu năm đến ngày báo cáo
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAM,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN GTGD
-      END
-    ), 0) AS GTGD_NAM,
-    --Cùng kỳ năm trước
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAMTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN GTGD
-      END
-    ), 0) AS GTGD_NAMTRUOC
-  FROM CORPBOND_TRADE
-)
-SELECT
-  -- GTGD bình quân trong tháng (tỷ đồng)
-  ROUND(GTGD_THANG / NULLIF(PHIEN_THANG,0) / 1000000000, 0) AS GTGD_THANG_BQ,
-  -- % thay đổi so với GTGD bình quân tháng trước
-  ROUND(
-    (GTGD_THANG / NULLIF(PHIEN_THANG,0) - GTGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0))
-    / NULLIF(GTGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0), 0) * 100, 2) GTGD_THANG_SOSANH,
-  -- GTGD bình quân tính từ đầu năm đến ngày báo cáo (tỷ đồng)
-  ROUND(GTGD_NAM / NULLIF(PHIEN_NAM,0) / 1000000000, 0) AS GTGD_NAM_BQ,
-  -- % thay đổi so với GTGD bình quân năm trước
-  ROUND(
-    (GTGD_NAM / NULLIF(PHIEN_NAM,0) - GTGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0))
-    / NULLIF(GTGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0), 0) * 100, 2) GTGD_NAM_SOSANH
-FROM SUMMARY;",,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi so với GTGD bình quân với tháng trước - TPDN niêm yết,(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,MSS,,X,X,,- Sổ lệnh giao dịch (trade_book),CSDLTT.TRADE_HNX,"TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- TPDN niêm yết:
-TRADE_HNX.""Market ID"" IN ('HCX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong tháng báo cáo, tháng báo cáo - 1
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị giao dịch bình quân (tỷ đồng) tính từ đầu năm đến ngày báo cáo - TPDN niêm yết,Σ GTGD / số phiên YTD,Báo cáo,Chỉ tiêu phái sinh,Trùng,Năm,MSS,,X,X,,- Sổ lệnh giao dịch (trade_book),CSDLTT.TRADE_HNX,"TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- TPDN niêm yết:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong năm báo cáo
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi so với GTGD bình quân với năm trước - TPDN niêm yết,(GTGD TB tháng báo cáo − GTGD TB tháng trước) / GTGD TB tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,Năm,MSS,,X,X,,- Sổ lệnh giao dịch (trade_book),CSDLTT.TRADE_HNX,"TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","- TPDN niêm yết:
-TRADE_HOSE.""Market ID"" IN ('STK')
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX')
-- ĐK: 
-TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date"" trong năm báo cáo, năm báo cáo - 1
-- Công thức:
-GTGD = (SUM(TRADE_HOSE.""Execution - Value"") + SUM(TRADE_HNX.""Trade price"" * TRADE_HNX.""Trade quantity""))
-Số phiên = COUNT DISTINCT TRADE_HOSE.""Trade Date"", TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Giá trị niêm yết (tỷ đồng) đến cuối tháng - TPDN niêm yết,GT niêm yết trái phiếu doanh nghiệp = Mệnh giá * KL TP niêm yết,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại CK / Thị trường, Ngày","MDDS, CSDLTT",,X,,,"- Thông tin thị trường
-- Dữ liệu từ Sở","uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""","- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('1') --> TPDN niêm yết
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% thay đổi giá trị niêm yết so với cuối năm trước - TPDN niêm yết,(GT niêm yết tại ngày báo cáo - GT niêm yết tại ngày 31/12 năm trước) / GT niêm yết tại ngày 31/12 năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Ngày","MDDS, CSDLTT",,X,X,,"- Thông tin thị trường
-- Dữ liệu từ Sở","uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""","- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo, 31/12 năm trước
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('1') --> TPDN niêm yết
-TRADINGDATE = Ngày báo cáo, 31/12 năm trước
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Tỷ lệ giá trị niêm yết/GDP năm - TPDN niêm yết,GT niêm yết tại ngày báo cáo / GDP năm báo cáo * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Ngày","MDDS, CSDLTT, QLRR",,X,,,"- Thông tin thị trường
-- Dữ liệu từ Sở","uat_mdds_stg.JAD_STOCKINFOR
-HNX >> ""BM 39_Danh sách cổ phiếu niêm yết/đăng ký giao dịch, trái phiếu doanh nghiệp niêm yết""
-HOSE >> ""BM 15_ Danh sách mã cổ phiếu niêm yết""
-QLRR.RISK_INDICATOR
-QLRR.RISK_INDICATOR_VALUE","MDDS.JAD_STOCKINFOR.LISTEDSHARE
-HNX >> BM 39 >> Cột ""Mệnh giá""
-HNX >> BM 15 >> Cột ""Mệnh giá""
-QLRR.RISK_INDICATOR_VALUE.VALUE","* Giá trị niêm yết:
-- Điều kiện JOIN MDDS.JAD_STOCKINFOR vs BM HNX, HOSE: MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã chứng khoán"", MDDS.JAD_STOCKINFOR.TRADINGDATE = Ngày báo cáo
-- Điều kiện bảng MDDS.JAD_STOCKINFOR: 
-STOCKTYPE IN ('1') --> TPDN niêm yết
-TRADINGDATE = Ngày báo cáo
-Lấy bản ghi cuối ngày của mỗi mã chứng khoán (order by TRADINGTIME desc)
-- Công thức:
-SUM(""Mệnh giá"" * MDDS.JAD_STOCKINFOR.LISTEDSHARE)
-* GDP:
-Giá trị: RISK_INDICATOR_VALUE.VALUE * decode(RISK_INDICATOR_VALUE.UNIT_CODE, '1', 1, '3', 1000000000)
-Điều kiện:
-RISK_INDICATOR.INDICATOR_CODE = 'GDP_VN'
-RISK_INDICATOR_VALUE.INDICATOR_ID = RISK_INDICATOR.INDICATOR_ID
-RISK_INDICATOR_VALUE.PERIOD_TYPE = '4' AND RISK_INDICATOR_VALUE.PERIOD_YEAR = {Năm gần nhất <= Ngày cuối kỳ báo cáo}",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - Khối lượng giao dịch bình quân trong tháng (hợp đồng/phiên),Σ KLGD / số phiên trong tháng,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Tháng","MDDS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HNX
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","-- Giao dịch trên HNX (Phái sinh chỉ giao dịch trên HNX):
-CSDLTT.TRADE_HNX.""Market ID"" = 'DVX' 
--- Danh sách chứng khoán trên Thị trường phái sinh, Sản phẩm HĐTL VN30
-MDDS.JAD_STOCKINFOR.FLOORCODE = '03' AND STOCKTYPE = '4' 
--- Số phiên trong tháng lấy ngày giao dịch (Lưu ý: Đếm cả phiên không có giao dịch HĐTL chỉ số VN30): 
-CSDLTT.TRADE_HNX.""Trade date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY'), 
--- Công thức: 
-KLGD: SUM(CSDLTT.TRADE_HNX.""Trade quantity"")
-Số phiên: COUNT DISTINCT CSDLTT.TRADE_HNX.""Trade date""","WITH TRADE_DATA AS (
-  -- Dữ liệu giao dịch phái sinh: chỉ có trên HNX
-  SELECT 
-    ""Issue Code"" SYMBOL,
-    TO_DATE(""Trade date"", 'YYYYMMDD') TRADEDATE,
-    SUM(""Trade quantity"") KLGD
-  FROM CSDLTT.TRADE_HNX
-  WHERE ""Market ID"" IN ('DVX') -- Thị trường phái sinh
-    AND TO_DATE(""Trade date"", 'YYYYMMDD') >= ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND TO_DATE(""Trade date"", 'YYYYMMDD') <= TO_DATE(:todate,'DD/MM/YYYY')
-  GROUP BY ""Issue Code"", TO_DATE(""Trade date"", 'YYYYMMDD')
-),
-TRADE_SESSION AS (
-  --Danh sách phiên (ngày) giao dịch
-  SELECT DISTINCT TRADEDATE 
-  FROM TRADE_DATA
-),
-STOCK_INFO AS (
-  -- Danh sách CK Phái sinh: Snapshot bản ghi mới nhất theo ngày, chỉ lấy HĐTL chỉ số VN30
-  SELECT *
-  FROM (
-    SELECT
-      ""symbol"",
-      STOCKTYPE,
-      FLOORCODE,
-      ""tradingdate"",
-      ROW_NUMBER() OVER (PARTITION BY ""symbol"", ""tradingdate"" ORDER BY ""ts"" DESC) rn
-    FROM JAD_STOCKINFOR
-    WHERE FLOORCODE = '03' -- Thị trường phái sinh
-      AND STOCKTYPE = '4' -- HĐTL
-      AND UNDERLYINGSYMBOL = 'VN30' -- Tài sản cơ sở: Chỉ số VN30
-      AND ""tradingdate"" >= ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ""tradingdate"" <= TO_DATE(:todate,'DD/MM/YYYY')
-  )
-  WHERE rn = 1
-),
-DVX_TRADE AS (
-  -- Tính KLGD HĐTL VN30 theo ngày
-  SELECT
-    TS.TRADEDATE,
-    NVL(D.KLGD,0) KLGD,
-    NVL(D.GTGD,0) GTGD
-  FROM TRADE_SESSION TS
-  LEFT JOIN (
-    SELECT
-      t.TRADEDATE,
-      SUM(t.KLGD) KLGD,
-      SUM(t.GTGD) GTGD
-    FROM TRADE_DATA t
-    JOIN STOCK_INFO s ON s.""symbol"" = t.SYMBOL AND s.""tradingdate"" = t.TRADEDATE
-    GROUP BY t.TRADEDATE
-  ) D ON TS.TRADEDATE = D.TRADEDATE
-),
-SUMMARY AS (
-  -- Tính tổng KLGD tháng/năm báo cáo & số phiên giao dịch
-  SELECT
-    -- Tháng báo cáo
-    COUNT( 
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANG,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN KLGD
-      END
-    ), 0) AS KLGD_THANG,
-    -- Tháng trước (So sánh cùng kỳ)
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANGTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN KLGD
-      END
-    ), 0) AS KLGD_THANGTRUOC,
-    --Tính từ đầu năm đến ngày báo cáo
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAM,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN KLGD
-      END
-    ), 0) AS KLGD_NAM,
-    --Cùng kỳ năm trước
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAMTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN KLGD
-      END
-    ), 0) AS KLGD_NAMTRUOC
-  FROM DVX_TRADE
-)
--- Tính chỉ tiêu trên dashboard
-SELECT
-  -- Khối lượng giao dịch bình quân trong tháng (chứng quyền/phiên)
-  ROUND(KLGD_THANG / NULLIF(PHIEN_THANG,0), 0) AS KLGD_THANG_BQ,
-  -- % thay đổi so với KLGD bình quân tháng trước
-  ROUND(
-    (KLGD_THANG / NULLIF(PHIEN_THANG,0) - KLGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0))
-    / NULLIF(KLGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0), 0) * 100, 2) KLGD_THANG_SOSANH,
-  -- Khối lượng giao dịch bình quân tính từ đầu năm đến ngày báo cáo (chứng quyền/phiên)
-  ROUND(KLGD_NAM / NULLIF(PHIEN_NAM,0), 0) AS KLGD_NAM_BQ,
-  -- % thay đổi so với KLGD bình quân năm trước
-  ROUND(
-    (KLGD_NAM / NULLIF(PHIEN_NAM,0) - KLGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0))
-    / NULLIF(KLGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0), 0) * 100, 2) KLGD_NAM_SOSANH
-FROM SUMMARY;",,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - % thay đổi so với KLGD bình quân tháng trước,(KLGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Tháng","MDDS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HNX
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","-- Giao dịch trên HNX (Phái sinh chỉ giao dịch trên HNX):
-CSDLTT.TRADE_HNX.""Market ID"" = 'DVX' 
--- Danh sách chứng khoán trên Thị trường phái sinh, Sản phẩm HĐTL VN30
-MDDS.JAD_STOCKINFOR.FLOORCODE = '03' AND STOCKTYPE = '4' 
--- Cùng kỳ tháng trước: 
-CSDLTT.TRADE_HNX.""Trade date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
--- Công thức: 
-KLGD: SUM(CSDLTT.TRADE_HNX.""Trade quantity"")
-Số phiên: COUNT DISTINCT CSDLTT.TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - Khối lượng giao dịch bình quân (hợp đồng/phiên) tính từ đầu năm đến ngày báo cáo,Σ KLGD / số phiên YTD,Báo cáo,Chỉ tiêu cơ sở,TB,"Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Năm","MDDS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HNX
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","CSDLTT.TRADE_HNX.""Market ID"" = 'DVX' --Giao dịch trên HNX (Phái sinh chỉ giao dịch trên HNX)
-MDDS.JAD_STOCKINFOR.FLOORCODE = '03' AND STOCKTYPE = '4' -- Thị trường phái sinh, Sản phẩm HĐTL VN30
-Tính từ đầu năm đến ngày báo cáo: ""Trade date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
--- Công thức: 
-KLGD: SUM(CSDLTT.TRADE_HNX.""Trade quantity"")
-Số phiên: COUNT DISTINCT CSDLTT.TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - % thay đổi so với KLGD bình quân năm trước,(KLGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán / Thị trường, Sản phẩm phái sinh, Năm","MDDS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HNX
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HNX.""Trade quantity""
-TRADE_HNX.""Trade date""","CSDLTT.TRADE_HNX.""Market ID"" = 'DVX' --Giao dịch trên HNX (Phái sinh chỉ giao dịch trên HNX)
-MDDS.JAD_STOCKINFOR.FLOORCODE = '03' AND STOCKTYPE = '4' -- Thị trường phái sinh, Sản phẩm HĐTL VN30
-Cùng kỳ năm trước: ""Trade date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
--- Công thức: 
-KLGD: SUM(CSDLTT.TRADE_HNX.""Trade quantity"")
-Số phiên: COUNT DISTINCT CSDLTT.TRADE_HNX.""Trade date""",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - Khối lượng mở (OI),Σ OI tính tại ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại CK / Thị trường, Sản phẩm phái sinh, Ngày","MDDS, CSDLTT",,X,,,VSDC - Báo cáo về khối lượng mở cuối ngày,"uat_mdds_stg.JAD_STOCKINFOR
-VSDC >> ""BM 2_Báo cáo về khối lượng mở cuối ngày""","VSDC >> BM 2 >> Cột ""Khối lượng hợp đồng mở OI""","- Sản phẩm HĐTL VN30: Bảng MDDS.JAD_STOCKINFOR
-FLOORCODE = '03' AND STOCKTYPE = '4'
-TRADINGDATE = Ngày báo cáo
-Lấy dữ liệu cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-- Map giữa Bảng MDDS.JAD_STOCKINFOR và BM 2: 
-MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã hợp đồng""
-- Công thức: SUM(""Khối lượng hợp đồng mở OI"")",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - % thay đổi OI so với cuối tháng trước,(OI tại ngày báo cáo - OI tại ngày cuối tháng trước) / OI tại ngày cuối tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Sản phẩm phái sinh, Ngày","MDDS, CSDLTT",,X,X,,VSDC - Báo cáo về khối lượng mở cuối ngày,"uat_mdds_stg.JAD_STOCKINFOR
-VSDC >> ""BM 2_Báo cáo về khối lượng mở cuối ngày""","VSDC >> BM 2 >> Cột ""Khối lượng hợp đồng mở OI""","- Sản phẩm HĐTL VN30: Bảng MDDS.JAD_STOCKINFOR
-FLOORCODE = '03' AND STOCKTYPE = '4'
-TRADINGDATE = Ngày báo cáo, Ngày cuối tháng trước
-Lấy dữ liệu cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-- Map giữa Bảng MDDS.JAD_STOCKINFOR và BM 2: 
-MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã hợp đồng""
-- Công thức: SUM(""Khối lượng hợp đồng mở OI"")",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Phái sinh - HTĐL VN30 - % thay đổi OI so với cuối năm trước,(OI tại ngày báo cáo - OI tại ngày cuối năm trước) / OI tại ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Loại CK / Thị trường, Sản phẩm phái sinh, Ngày","MDDS, CSDLTT",,X,X,,VSDC - Báo cáo về khối lượng mở cuối ngày,"uat_mdds_stg.JAD_STOCKINFOR
-VSDC >> ""BM 2_Báo cáo về khối lượng mở cuối ngày""","VSDC >> BM 2 >> Cột ""Khối lượng hợp đồng mở OI""","- Sản phẩm HĐTL VN30: Bảng MDDS.JAD_STOCKINFOR
-FLOORCODE = '03' AND STOCKTYPE = '4'
-TRADINGDATE = Ngày báo cáo, 31/12 năm trước
-Lấy dữ liệu cuối ngày của từng mã chứng khoán (order by TRADINGTIME desc)
-- Map giữa Bảng MDDS.JAD_STOCKINFOR và BM 2: 
-MDDS.JAD_STOCKINFOR.SYMBOL = ""Mã hợp đồng""
-- Công thức: SUM(""Khối lượng hợp đồng mở OI"")",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - Khối lượng giao dịch bình quân trong tháng (chứng quyền/phiên),Σ KLGD / số phiên trong tháng,Báo cáo,Chỉ tiêu cơ sở,TB,Tháng,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Volume""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu):
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Số phiên trong tháng lấy ngày giao dịch (Đếm cả phiên không có giao dịch chứng quyền): 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY'), 
--- Công thức: 
-SUM(CSDLTT.TRADE_HOSE.""Execution - Volume"") / COUNT(DISTINCT CSDLTT.TRADE_HOSE.""Trade Date"")","WITH TRADE_DATA AS (
-  -- Dữ liệu giao dịch chứng quyền: chỉ có trên HOSE
-  SELECT 
-    ""Symbol"" SYMBOL,
-    ""Trade Date"" TRADEDATE,
-    SUM(""Execution - Volume"") KLGD,
-    SUM(""Execution - Value"") GTGD
-  FROM CSDLTT.TRADE_HOSE
-  WHERE ""Market ID"" = 'STO'
-    AND ""Trade Date"" >= ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ""Trade Date"" <= TO_DATE(:todate,'DD/MM/YYYY')
-  GROUP BY ""Symbol"", ""Trade Date""
-),
-STOCK_INFO AS (
-  -- Danh sách chứng quyền: Snapshot bản ghi mới nhất theo ngày
-  SELECT *
-  FROM (
-    SELECT
-      ""symbol"",
-      STOCKTYPE,
-      FLOORCODE,
-      ""tradingdate"",
-      ROW_NUMBER() OVER (PARTITION BY ""symbol"",""tradingdate"" ORDER BY ""ts"" DESC) rn
-    FROM MDDS.JAD_STOCKINFOR
-    WHERE FLOORCODE = '10'
-      AND STOCKTYPE = '4'
-      AND ""tradingdate"" >= ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ""tradingdate"" <= TO_DATE(:todate,'DD/MM/YYYY')
-  )
-  WHERE rn = 1
-),
-TRADE_SESSION AS (
-  --Danh sách phiên (ngày) giao dịch: Không lọc chứng quyền để lấy đủ số phiên (loại trừ trường hợp có ngày không có giao dịch chứng quyền)
-  SELECT DISTINCT TRADEDATE 
-  FROM TRADE_DATA
-),
-CW_TRADE AS (
-  -- Chỉ lấy chứng quyền
-  SELECT
-    TS.TRADEDATE,
-    NVL(D.KLGD,0) KLGD,
-    NVL(D.GTGD,0) GTGD
-  FROM TRADE_SESSION TS
-  LEFT JOIN (
-    SELECT
-      t.TRADEDATE,
-      SUM(t.KLGD) KLGD,
-      SUM(t.GTGD) GTGD
-    FROM TRADE_DATA t
-    JOIN STOCK_INFO s ON s.""symbol"" = t.SYMBOL AND s.""tradingdate"" = t.TRADEDATE
-    GROUP BY t.TRADEDATE
-  ) D ON TS.TRADEDATE = D.TRADEDATE
-),
-CALC AS (
-  SELECT
-    -- Tháng báo cáo
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANG,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN KLGD
-      END
-    ), 0) AS KLGD_THANG,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN GTGD
-      END
-    ), 0) AS GTGD_THANG,
-    -- Tháng trước (So sánh cùng kỳ)
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_THANGTRUOC,
-    SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN KLGD
-      END
-    ) AS KLGD_THANGTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)
-        THEN GTGD
-      END
-    ), 0) AS GTGD_THANGTRUOC,
-    --Tính từ đầu năm đến ngày báo cáo
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAM,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')
-        THEN KLGD
-      END
-    ), 0) AS KLGD_NAM,
-    --Cùng kỳ năm trước
-    COUNT(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN TRADEDATE
-      END
-    ) AS PHIEN_NAMTRUOC,
-    NVL(SUM(
-      CASE
-        WHEN TRADEDATE BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)
-        THEN KLGD
-      END
-    ), 0) AS KLGD_NAMTRUOC
-  FROM CW_TRADE
-)
-SELECT
-  -- Khối lượng giao dịch bình quân trong tháng (chứng quyền/phiên)
-  ROUND(KLGD_THANG / NULLIF(PHIEN_THANG,0), 0) AS KLGD_THANG_BQ,
-  -- % thay đổi so với KLGD bình quân tháng trước
-  ROUND(
-    (KLGD_THANG / NULLIF(PHIEN_THANG,0) - KLGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0))
-    / NULLIF(KLGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0), 0) * 100, 2) KLGD_THANG_SOSANH,
-  -- Khối lượng giao dịch bình quân tính từ đầu năm đến ngày báo cáo (chứng quyền/phiên)
-  ROUND(KLGD_NAM / NULLIF(PHIEN_NAM,0), 0) AS KLGD_NAM_BQ,
-  -- % thay đổi so với KLGD bình quân năm trước
-  ROUND(
-    (KLGD_NAM / NULLIF(PHIEN_NAM,0) - KLGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0))
-    / NULLIF(KLGD_NAMTRUOC / NULLIF(PHIEN_NAMTRUOC,0), 0) * 100, 2) KLGD_NAM_SOSANH,
-  -- Giá trị giao dịch bình quân trong tháng (tỷ đồng/phiên)
-  ROUND(GTGD_THANG / NULLIF(PHIEN_THANG,0) / 1000000000, 2) AS GTGD_THANG_BQ_TYDONG,
-  -- % thay đổi so với GTGD bình quân tháng trước
-  ROUND(
-    (GTGD_THANG / NULLIF(PHIEN_THANG,0) - GTGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0))
-    / NULLIF(GTGD_THANGTRUOC / NULLIF(PHIEN_THANGTRUOC,0), 0) * 100, 2) GTGD_THANG_SOSANH
-FROM CALC;","Số phiên tính toàn bộ ngày giao dịch, trường hợp ngày không phát sinh giao dịch CW vẫn được tính vào bình quân với KLGD, GTGD = 0.",,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - % thay đổi so với KLGD bình quân tháng trước,(KLGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Volume""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Cùng kỳ tháng trước: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - Khối lượng giao dịch bình quân tính từ đầu năm đến ngày báo cáo (chứng quyền/phiên),Σ KLGD / số phiên YTD,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Volume""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Tính từ đầu năm đến ngày báo cáo: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - % thay đổi so với KLGD bình quân năm trước,(KLGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,Năm,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Volume""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Cùng kỳ năm trước: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - Giá trị giao dịch bình quân trong tháng (tỷ đồng/phiên),Σ GTGD / số phiên trong tháng,Báo cáo,Chỉ tiêu cơ sở,TB,Tháng,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền:
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Số phiên trong tháng lấy ngày giao dịch (Đếm cả phiên không có giao dịch chứng quyền): 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM') AND TO_DATE(:todate,'DD/MM/YYYY'), 
--- Công thức: 
-SUM(CSDLTT.TRADE_HOSE.""Execution - Value"") / COUNT(DISTINCT CSDLTT.TRADE_HOSE.""Trade Date"")",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - % thay đổi so với GTGD bình quân tháng trước,(GTGD bình quân tháng báo cáo - KLGD bình quân tháng trước) / KLGD bình quân tháng trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,Tháng,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""","--  Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu):
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền:
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Cùng kỳ tháng trước: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'MM'), -1) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -1)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - Giá trị giao dịch bình quân trong năm (tỷ đồng/phiên),Σ GTGD / số phiên trong năm,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Tính từ đầu năm đến ngày báo cáo: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY') AND TO_DATE(:todate,'DD/MM/YYYY')",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Chứng quyền - % thay đổi so với GTGD bình quân năm trước,(GTGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,Trùng,Năm,"MSS, CSDLTT",,X,X,,"- Sổ lệnh (trade_book)
-- Thông tin thị trường -> Danh sách chứng khoán","CSDLTT.TRADE_HOSE
-uat_mdds_stg.JAD_STOCKINFOR","TRADE_HOSE.""Execution - Value""
-TRADE_HOSE.""Trade Date""","-- Giao dịch trên HOSE (Chứng quyền giao dịch cùng bảng Cổ phiếu)
-CSDLTT.TRADE_HOSE.""Market ID"" = 'STO' 
--- Loại CK = Chứng quyền
-MDDS.JAD_STOCKINFOR.FLOORCODE = '10' và STOCKTYPE = '4' 
--- Cùng kỳ năm trước: 
-CSDLTT.TRADE_HOSE.""Trade Date"" BETWEEN ADD_MONTHS(TRUNC(TO_DATE(:todate,'DD/MM/YYYY'),'YYYY'), -12) AND ADD_MONTHS(TO_DATE(:todate,'DD/MM/YYYY'), -12)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Tổng TK NĐT,Count số lượng tài khoản,Báo cáo,Chỉ tiêu cơ sở,Trùng,Ngày,"MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL
-- Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,"Thông tin tài khoản đang lưu DB ở 2 nguồn: MSS và CSDLTT
-- MSS có số TK, địa chỉ
-- CSDLTT có Số ĐKSH, Ngày cấp, Nơi cấp, Ngày mở, Ngày đóng",,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,% tăng trưởng SL TK NĐT,(SL TK ngày báo cáo − SL TK tại ngày cuối năm trước) / SL TK tại ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,Ngày,"MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL
-- Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,"Thông tin tài khoản đang lưu DB ở 2 nguồn: MSS và CSDLTT
-- MSS có số TK, địa chỉ
-- CSDLTT có Số ĐKSH, Ngày cấp, Nơi cấp, Ngày mở, Ngày đóng",,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,GTNN ròng cổ phiếu,GT mua NĐTNN − GT bán NĐTNN cổ phiếu,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại NĐT, Loại CK, Ngày",CSDLTT,,X,,,- Sổ lệnh (trade_book),"TRADE_HOSE, TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""","-- Cổ phiếu:
-TRADE_HOSE.""Market ID"" = 'STO' --Cổ phiếu trên HOSE
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX') --Cổ phiếu trên HNX, UPCoM
--- Giao dịch NĐTNN - HOSE:
-TRADE_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán","SELECT
-  SUM(CASE WHEN TRADEDATE = TO_DATE(:TODATE, 'DD/MM/YYYY') AND MARKETID = 'CP' THEN GT_NN ELSE 0 END) AS GT_NN_CP_NGAY_BAO_CAO,
-  SUM(CASE WHEN MARKETID = 'CP' THEN GT_NN ELSE 0 END) AS GT_NN_CP_TU_DAU_NAM,
-  SUM(CASE WHEN TRADEDATE = TO_DATE(:TODATE, 'DD/MM/YYYY') AND MARKETID = 'TPDNNY' THEN GT_NN ELSE 0 END) AS GT_NN_TP_NGAY_BAO_CAO,
-  SUM(CASE WHEN MARKETID = 'TPDNNY' THEN GT_NN ELSE 0 END) AS GT_NN_TP_TU_DAU_NAM
-FROM (
-  SELECT
-    -- Dữ liệu tính từ đầu năm đến ngày báo cáo
-    ""Trade Date"" AS TRADEDATE,
-    DECODE(""Market ID"", 'STO', 'CP', 'BDO', 'TPDNNY') MARKETID,
-    SUM(DECODE(""Buy - Foreigner Investor type"", '00', 0, ""Execution - Value"")) - SUM(DECODE(""Sell - Foreigner Investor type"", '00', 0, ""Execution - Value"")) AS GT_NN
-  FROM MSS_TRADE_HOSE
-  WHERE ""Market ID"" IN ('STO', 'BDO') -- STO: Cổ phiếu, BDO: TPDN niêm yết
-    AND ""Trade Date"" BETWEEN TRUNC(TO_DATE(:TODATE, 'DD/MM/YYYY'), 'YYYY') AND TO_DATE(:TODATE, 'DD/MM/YYYY')
-  GROUP BY ""Trade Date"", DECODE(""Market ID"", 'STO', 'CP', 'BDO', 'TPDNNY')
-  UNION ALL
-  SELECT
-    TO_DATE(""Trade date"", 'YYYYMMDD') AS TRADEDATE,
-    DECODE(""Market ID"", 'STX', 'CP', 'UPX', 'CP', 'HCX', 'TPDNNY') MARKETID,
-    SUM(DECODE(""Buy Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) - SUM(DECODE(""Sell Foreign Investor Type Code"", '00', 0, ""Trade price"" * ""Trade quantity"")) AS GT_NN
-  FROM MSS_TRADE_HNX
-  WHERE ""Market ID"" IN ('STX', 'UPX', 'HCX') -- STX/UPX: Cổ phiếu, HCX: TPDN niêm yết
-    AND TO_DATE(""Trade date"", 'YYYYMMDD') BETWEEN TRUNC(TO_DATE(:TODATE, 'DD/MM/YYYY'), 'YYYY') AND TO_DATE(:TODATE, 'DD/MM/YYYY')
-  GROUP BY ""Trade date"", DECODE(""Market ID"", 'STX', 'CP', 'UPX', 'CP', 'HCX', 'TPDNNY')
-)",,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,GTNN ròng cổ phiếu YTD,GT mua NĐTNN − GT bán NĐTNN cổ phiếu YTD,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại NĐT, Loại CK, Ngày",CSDLTT,,X,,,- Sổ lệnh (trade_book),"TRADE_HOSE, TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""","-- Cổ phiếu:
-TRADE_HOSE.""Market ID"" = 'STO' --Cổ phiếu trên HOSE
-TRADE_HNX.""Market ID"" IN ('STX', 'UPX') --Cổ phiếu trên HNX, UPCoM
--- Giao dịch NĐTNN - HOSE:
-TRADE_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,GTNN ròng trái phiếu,GT mua NĐTNN − GT bán NĐTNN trái phiếu doanh nghiệp niêm yết,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại NĐT, Loại CK, Ngày",CSDLTT,,X,,,- Sổ lệnh (trade_book),"TRADE_HOSE, TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""","-- Trái phiếu:
-TRADE_HOSE.""Market ID"" = 'BDO' --TPDN niêm yết trên HOSE
-TRADE_HNX.""Market ID"" = 'HCX' --TPDN niêm yết trên HNX
--- Giao dịch NĐTNN - HOSE:
-TRADE_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,GTNN ròng trái phiếu YTD,GT mua NĐTNN − GT bán NĐTNN trái phiếu doanh nghiệp niêm yết YTD,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Loại NĐT, Loại CK, Ngày",CSDLTT,,X,,,- Sổ lệnh (trade_book),"TRADE_HOSE, TRADE_HNX","TRADE_HOSE.""Execution - Value""
-TRADE_HNX.""Trade price""
-TRADE_HNX.""Trade quantity""","-- Trái phiếu:
-TRADE_HOSE.""Market ID"" = 'BDO' --TPDN niêm yết trên HOSE
-TRADE_HNX.""Market ID"" = 'HCX' --TPDN niêm yết trên HNX
--- Giao dịch NĐTNN - HOSE:
-TRADE_HOSE.""Buy - Foreigner Investor type"" <> '00' --Mua
-TRADE_HOSE.""Sell - Foreigner Investor type"" <> '00' --Bán
--- Giao dịch NĐTNN - HNX/UPCOM:
-TRADE_HNX.""Buy Foreign Investor Type Code"" <> '00' --Mua
-TRADE_HNX.""Sell Foreign Investor Type Code"" <> '00' --Bán",,,,Dữ liệu tĩnh,,,
+  +) Vốn hóa tính tại ngày giao dịch gần nhất <= ngày báo cáo
+  +) Giá trung bình (VWAP): VWAP ngày T được Sở gửi trong tín hiệu MDDS (d - security definition) ngày T+1. Nếu VWAP = 0 thì lấy giá tham chiếu ngày T.
+Lưu ý: Nếu ngày báo cáo = ngày giao dịch mới nhất thì chưa có số liệu giá VWAP nên vốn hóa UPCOM không có số liệu.",Báo cáo,Chỉ tiêu cơ sở,TB,Ngày,"MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.outstanding_shares (os)","s.closeprice, s.vwap, s.reference, 
+os.outstanding_shares","* Bảng uat_mdds_stg.jad_stockinfor (s):
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC)) = 1
+s.stocktype = '2' --> Cổ phiếu
+- Lấy giá vwap tính vốn hóa UPCoM: 
+s.tradingdate = [Ngày giao dịch liền sau ngày báo cáo]
+s.floorcode = '04' --> UPCoM
+- Lấy reference (giá tham chiếu), closeprice (giá đóng cửa): 
+s.tradingdate = [Ngày giao dịch gần nhất <= Ngày báo cáo] 
+- Khối lượng lưu hành: Bảng uat_vsdc_stg.outstanding_shares (os)
+Link với bảng uat_mdds_stg.jad_stockinfor (s): os.transaction_date = s.tradingdate AND os.ticker_symbol = x.symbol
+- Tính vốn hóa theo công thức cột ""Mô tả"":
+Vốn hóa = os.outstanding_shares * Price
+Price = (CASE 
+  WHEN floorcode = '04' THEN (CASE WHEN vwap IS NULL THEN NULL ELSE COALESCE(NULLIF(vwap, 0), reference) END) /*Giá CP để tính vốn hóa UPCOM*/
+  ELSE s.closeprice /*Giá CP để tính vốn hóa HNX/HOSE*/
+END)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Vốn hóa thị trường cổ phiếu - % so với cuối năm trước,"% thay đổi vốn hóa so với ngày cuối năm trước = (Vốn hóa ngày báo cáo - Vốn hóa ngày cuối năm trước) / Vốn hóa ngày cuối năm trước * 100
+Vốn hóa ngày cuối năm trước tính tại ngày giao dịch cuối cùng của năm trước.",Báo cáo,Chỉ tiêu phái sinh,TB,Ngày,"MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.outstanding_shares (os)","s.closeprice, s.vwap, s.reference, 
+os.outstanding_shares","- Tính theo công thức cột ""Mô tả""
+- Lấy giá vwap tính vốn hóa UPCoM: 
+s.tradingdate = [Ngày giao dịch liền sau ngày cuối cùng năm trước]
+s.floorcode = '04' --> UPCoM
+- Lấy reference (giá tham chiếu), closeprice (giá đóng cửa): 
+s.tradingdate = [Ngày giao dịch cuối cùng năm trước]",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,GDP năm,Lấy GDP năm gần nhất = Năm báo cáo - 1,Báo cáo,Chỉ tiêu cơ sở,TB,Ngày,"MDDS, VSDC, QLRR",,,,Done,,"uat_mrms_stg.risk_indicator_value (v), uat_mrms_stg.risk_indicator (i)",v.value,"- GDP: Bảng uat_mrms_stg.risk_indicator_value (v), uat_mrms_stg.risk_indicator (i): i.id = v.indicator_id
+AND i.indicator_code = 'GDP_VN'
+AND v.period_type IN ('3','4') --> 3 Quý, 4 Năm
+AND v.period_year = p.gdp_year 
+AND v.deleted = '0'
+Ưu tiên GDP năm > quý: (ROW_NUMBER() OVER(ORDER BY v.period_type DESC)) = 1
+Nếu lấy quý thì cần đủ 4 quý: period_type = '4' OR (period_type = '3' AND COUNT(1) = 4)
+Giá trị GDP Quy đổi về đơn vị VND: SUM(TRY_CAST(v.value AS DOUBLE) * MAP('3',1000000000,'8',1,'23',1000000)[v.unit_code])",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Tỷ lệ vốn hóa/GDP năm,"Vốn hóa tính đến ngày báo cáo / GDP năm * 100
+Lấy GDP năm gần nhất = Năm báo cáo - 1",Báo cáo,Chỉ tiêu phái sinh,Trùng,Ngày,"MDDS, VSDC, QLRR",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.outstanding_shares (os), 
+uat_mrms_stg.risk_indicator_value (v), uat_mrms_stg.risk_indicator (i)","s.closeprice, s.vwap, s.reference, 
+os.outstanding_shares, 
+v.value","Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo (Tỷ đồng)","Loại chứng khoán = Cổ phiếu + Chứng chỉ quỹ: 
+GTGD bình quân / số phiên tháng báo cáo
+Trong đó, Số phiên = Số ngày giao dịch trong tháng tính từ đầu tháng đến ngày báo cáo.
+Đơn vị tính trên báo cáo: Tỷ đồng",Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Bảng uat_mdds_stg.jad_stockinfor (s):
+stocktype IN ('2', '3', '6') --> Cổ phiếu, CCQ
+Lấy dữ liệu danh mục - Bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link bảng uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h) / uat_hose_stg.trade_book (t):
+t.symbol = s.symbol
+h.issue_code = s.symbolisin
+- Bảng uat_hose_stg.trade_book (t):
+t.market_id = 'STK'
+t.trade_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Bảng uat_hnx_stg.trade_book (t):
+t.market_id IN ('STX', 'UPX')
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Số phiên = COUNT(trade_date) --> Dữ liệu không đủ ngày giao dịch nên lấy thêm ở bảng của mdds
+- Giá trị giao dịch = SUM(t.execution_value) + SUM(h.trade_quantity * h.trade_price)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo - % thay đổi so với bình quân tháng trước","Loại chứng khoán = Cổ phiếu + Chứng chỉ quỹ: 
+(GTGD bình quân / phiên tháng báo cáo - GTGD bình quân / phiên tháng trước) / GTGD bình quân / phiên tháng trước * 100
+Trong đó, GTGD bình quân / phiên năm trước tính từ ngày đầu tháng đến ngày cuối tháng trước",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Tháng trước: 
+t.trade_date BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước","Loại chứng khoán = Cổ phiếu + Chứng chỉ quỹ: 
+(GTGD bình quân / phiên tháng báo cáo - GTGD bình quân / phiên cùng tháng năm trước) / GTGD bình quân / phiên cùng tháng năm trước * 100
+Trong đó, GTGD bình quân / phiên cùng tháng năm trước tính từ ngày đầu tháng đến ngày cuối tháng",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Cùng tháng năm trước: 
+t.trade_date BETWEEN [Ngày đầu tháng cùng kỳ năm trước] AND [Ngày cuối tháng cùng kỳ năm trước]
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng cùng kỳ năm trước] AND [Ngày cuối tháng cùng kỳ năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Giá trị giao dịch bình quân năm báo cáo","Loại chứng khoán = Cổ phiếu + Chứng chỉ quỹ: 
+GTGD bình quân / số phiên năm báo cáo
+Trong đó, Số phiên = Số ngày giao dịch trong năm tính từ đầu năm đến ngày báo cáo.",Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Năm báo cáo: 
+t.trade_date BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Giá trị giao dịch bình quân năm báo cáo - % thay đổi so với bình quân năm trước","Loại chứng khoán = Cổ phiếu + Chứng chỉ quỹ: 
+(GTGD bình quân / phiên tháng báo cáo - GTGD bình quân / phiên năm trước) / GTGD bình quân / phiên năm trước * 100
+Trong đó, GTGD bình quân / phiên năm trước tính từ ngày đầu năm đến ngày cuối năm trước",Báo cáo,Chỉ tiêu phái sinh,TB,"Năm, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Năm trước: 
+t.trade_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Số mã niêm yết trên HNX, HOSE","Số lượng mã Cổ phiếu + Chứng chỉ quỹ trên HNX, HOSE tính đến ngày báo cáo",Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.symbol,"* Bảng uat_mdds_stg.jad_stockinfor (s):
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC)) = 1
+s.stocktype IN ('2','3','6') --> Cổ phiếu, CCQ
+s.floorcode IN ('02','10') --> HNX, HOSE
+s.tradingdate = [Ngày báo cáo]
+Số mã CP, CCQ = COUNT(s.symbol)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Cổ phiếu - Số mã cổ phiếu ĐKGD trên UPCoM,Số lượng mã Cổ phiếu + Chứng chỉ quỹ trên UPCoM tính đến ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.symbol,"* Bảng uat_mdds_stg.jad_stockinfor (s):
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC)) = 1
+s.stocktype IN ('2') --> Cổ phiếu
+s.floorcode IN ('04') --> UPCOM
+s.tradingdate = [Ngày báo cáo]
+Số mã CP = COUNT(s.symbol)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD (Nghìn tỷ đồng)","Giá trị niêm yết, ĐKGD Cổ phiếu & Chứng chỉ quỹ tính đến ngày giao dịch gần nhất với ngày báo cáo
+Công thức: Giá trị niêm yết, ĐKGD = Khối lượng niêm yết * Mệnh giá
+Mệnh giá của Cổ phiếu, CCQ là 10000đ",Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.listedshare,"* Bảng uat_mdds_stg.jad_stockinfor (s):
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC)) = 1
+s.stocktype IN ('2','3','6') --> Cổ phiếu, CCQ
+s.tradingdate = [Ngày báo cáo]
+Giá trị niêm yết/ĐKGD = s.listedshare * 10000",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với cuối năm trước","% so với cuối năm trước = (Giá trị niêm yết, ĐKGD tính đến ngày báo cáo - Giá trị niêm yết, ĐKGD tính đến ngày cuối năm trước) / Giá trị niêm yết, ĐKGD tính đến ngày cuối năm trước * 100 ",Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Loại chứng khoán",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.listedshare,"s.tradingdate = [Ngày giao dịch cuối cùng năm trước]
+Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD""
+% so với năm trước: Tính theo công thức cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với GDP năm","Tỷ lệ Giá trị niêm yết, ĐKGD / GDP năm = (Giá trị niêm yết, ĐKGD tính đến ngày báo cáo / GDP năm gần nhất) * 100",Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán","MDDS, QLRR",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_mrms_stg.risk_indicator_value (v), uat_mrms_stg.risk_indicator (i)","s.listedshare, 
+v.value","Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - GTGD bình quân tháng báo cáo (Tỷ đồng),"GTGD bình quân tháng báo cáo = Tổng GTGD TPCP tháng / số phiên tính đến ngày báo cáo
+Trong đó: GTGD TPCP = GTGD Outright + Repo, với Repo là GT thanh toán lần 1",Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r), 
+uat_hnx_stg.trade_book (h), uat_mdds_stg.jad_marketinfor (m)","o.trading_value, 
+r.first_settlement_value, 
+h.trade_date, m.tradingdate","- Điều kiện thời gian:
+o.trading_date / r.trading_date / h.trade_date / m.trading_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Bảng uat_hnx_stg.outright_order_book (o), uat_hnx_stg.repo_order_book (r): order_status = 'ĐTH'
+GTGD TPCP = SUM(o.trading_value) + SUM(r.first_settlement_value)
+Số phiên: Do không đủ dữ liệu sổ lệnh TPCP nên tính COUNT(DISTINCT NVL(h.trade_date, m.trading_date))",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước,% so với bình quân tháng trước = (GTGD TPCP bình quân tháng báo cáo - GTGD TPCP bình quân tháng trước) / GTGD TPCP bình quân tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r), 
+uat_hnx_stg.trade_book (h), uat_mdds_stg.jad_marketinfor (m)","o.trading_value, 
+r.first_settlement_value, 
+h.trade_date, m.tradingdate","- Tháng trước:
+o.trading_date / r.trading_date / h.trade_date / m.trading_date BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""TPCP - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - GTGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước,"% so với bình quân tháng trước = (GTGD TPCP bình quân tháng báo cáo - GTGD TPCP bình quân tháng cùng kỳ năm trước) / GTGD TPCP bình quân tháng cùng kỳ năm trước * 100
+Trong đó, GTGD bình quân tháng cùng kỳ năm trước tính từ ngày đầu tháng đến ngày cuối tháng",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r), 
+uat_hnx_stg.trade_book (h), uat_mdds_stg.jad_marketinfor (m)","o.trading_value, 
+r.first_settlement_value, 
+h.trade_date, m.tradingdate","- Tháng cùng kỳ năm trước:
+o.trading_date / r.trading_date / h.trade_date / m.trading_date BETWEEN [Ngày đầu tháng cùng kỳ năm trước] AND [Ngày cuối tháng cùng kỳ năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""TPCP - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - GTGD bình quân năm báo cáo (Tỷ đồng),"GTGD bình quân năm báo cáo = Tổng GTGD TPCP năm / số phiên tính đến ngày báo cáo
+Trong đó: GTGD TPCP = GTGD Outright + Repo, với Repo là GT thanh toán lần 1",Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r), 
+uat_hnx_stg.trade_book (h), uat_mdds_stg.jad_marketinfor (m)","o.trading_value, 
+r.first_settlement_value, 
+h.trade_date, m.tradingdate","- Năm báo cáo:
+o.trading_date / r.trading_date / h.trade_date / m.trading_date BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""TPCP - GTGD bình tháng năm báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - GTGD bình quân năm báo cáo - % so với bình quân năm trước,"% so với bình quân năm trước = (GTGD bình quân năm báo cáo - GTGD bình quân năm trước) / GTGD bình quân năm trước * 100
+Trong đó, GTGD bình quân năm trước tính từ ngày đầu năm đến ngày cuối năm trước.",Báo cáo,Chỉ tiêu phái sinh,TB,"Năm, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r), 
+uat_hnx_stg.trade_book (h), uat_mdds_stg.jad_marketinfor (m)","o.trading_value, 
+r.first_settlement_value, 
+h.trade_date, m.tradingdate","- Năm trước:
+o.trading_date / r.trading_date / h.trade_date / m.trading_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""TPCP - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - Số mã trái phiếu niêm yết,"Số lượng mã TPCP niêm yết tính đến ngày báo cáo.
+Lưu ý: Dữ liệu danh sách TPCP niêm yết được Sở gửi theo tháng thì lấy số liệu của tháng báo cáo.",Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán",HNX,,,,Done,,uat_hnx_stg.gov_bond_listed_list (g),g.bond_code,"- Tháng báo cáo:
+CAST(g.report_year AS INT) = YEAR([Ngày báo cáo]) AND CAST(g.report_month AS INT) = MONTH([Ngày báo cáo])
+- Số mã niêm yết = COUNT(g.bond_code)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - Giá trị niêm yết trái phiếu (Nghìn tỷ đồng),"Giá trị niêm yết TPCP = Mệnh giá * Khối lượng niêm yết tính đến ngày báo cáo
+Lưu ý: Dữ liệu danh sách TPCP niêm yết được Sở gửi theo tháng thì lấy số liệu của tháng báo cáo.",Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán",HNX,,,,Done,,uat_hnx_stg.gov_bond_listed_list (g),g.listed_volume,"- g.report_month, g.report_year: Lấy tháng/năm của ngày báo cáo
+- GT niêm yết = SUM(g.listed_volume * 100000)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - Giá trị niêm yết trái phiếu - % so với cuối năm trước,% so với cuối năm trước = (Giá trị niêm yết TPCP tính đến ngày báo cáo - Giá trị niêm yết TPCP tính đến ngày cuối năm trước) / Giá trị niêm yết TPCP tính đến ngày cuối năm trước * 100 ,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Loại chứng khoán",HNX,,,,Done,,uat_hnx_stg.gov_bond_listed_list (g),g.bond_code,"- g.report_month, g.report_year: Lấy tháng cuối năm trước
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,TPCP - Giá trị niêm yết trái phiếu - % so với GDP năm,Tỷ lệ Giá trị niêm yết TPCP / GDP năm = (Giá trị niêm yết TPCP tính đến ngày báo cáo / GDP năm gần nhất) * 100,Báo cáo,Chỉ tiêu phái sinh,Trùng,"Ngày, Loại chứng khoán","HNX, QLRR",,,,Done,,"uat_hnx_stg.gov_bond_listed_list (g), 
+uat_mrms_stg.risk_indicator_value (v), uat_mrms_stg.risk_indicator (i)","g.listed_volume, 
+v.value","Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo,KLGD bình quân / số phiên tháng báo cáo của tất cả các HĐTL chỉ số VN30,Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Bảng uat_mdds_stg.jad_stockinfor (s):
+floorcode = '03' AND stocktype = '4' AND underlyingsymbol = 'VN30' --> HĐTL VN30
+Lấy dữ liệu danh mục - Bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link bảng uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h):
+h.issue_code = s.symbolisin
+- Bảng uat_hnx_stg.trade_book (t):
+t.market_id IN ('DVX')
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Số phiên = COUNT(trade_date) --> Dữ liệu không đủ ngày giao dịch nên lấy thêm ở bảng của mdds
+- Khối lượng giao dịch HĐTL = SUM(h.trade_quantity)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước,% so với bình quân tháng trước = (KLGD HĐTL VN30 bình quân tháng báo cáo - KLGD HĐTL VN30 bình quân tháng trước) / KLGD HĐTL VN30 bình quân tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Tháng trước: TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước,"% so với bình quân tháng trước = (KLGD HĐTL VN30 bình quân tháng báo cáo - KLGD HĐTL VN30 bình quân tháng cùng kỳ năm trước) / KLGD HĐTL VN30 bình quân tháng cùng kỳ năm trước * 100
+Trong đó, KLGD bình quân tháng cùng kỳ năm trước tính từ ngày đầu tháng đến ngày cuối tháng",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Tháng cùng kỳ Năm trước: TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu Tháng cùng kỳ năm trước] AND [Ngày cuối Tháng cùng kỳ năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - KLGD bình quân năm báo cáo,KLGD bình quân năm báo cáo = Tổng KLGD HĐTL VN30 năm / số phiên tính đến ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Năm báo cáo: TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - KLGD bình quân năm báo cáo - % so với bình quân năm trước,"% so với bình quân năm trước = (KLGD bình quân năm báo cáo - KLGD bình quân năm trước) / KLGD bình quân năm trước * 100
+Trong đó, KLGD bình quân năm trước tính từ ngày đầu năm đến ngày cuối năm trước.",Báo cáo,Chỉ tiêu phái sinh,TB,"Năm, Loại chứng khoán","HNX, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Năm trước: TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - Khối lượng mở (OI) ngày báo cáo,Tổng khối lượng mở của HĐTL VN30 ngày báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Ngày, Loại chứng khoán","MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.end_of_day_open_interest (oi)",oi.open_interest_volume,"- Bảng uat_mdds_stg.jad_stockinfor (s): 
+floorcode = '03' AND stocktype = '4' AND underlyingsymbol = 'VN30' --> HĐTL VN30
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Bảng uat_vsdc_stg.end_of_day_open_interest (oi):
+report_date = [Ngày báo cáo]
+- Link 2 bảng uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.end_of_day_open_interest (oi):
+oi.report_date = s.tradingdate AND oi.contract_code = s.symbol
+- OI = SUM(oi.open_interest_volume)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - Khối lượng mở (OI) - % so với cuối tháng trước,% so với cuối tháng trước = (OI ngày báo cáo - OI ngày cuối tháng trước) / OI ngày cuối tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Loại chứng khoán","MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.end_of_day_open_interest (oi)",oi.open_interest_volume,"- Bảng uat_vsdc_stg.end_of_day_open_interest (oi):
+report_date = [Ngày giao dịch cuối của tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - Khối lượng mở (OI) ngày báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,HĐTL VN30 - Khối lượng mở (OI) - % so với cuối năm trước,% so với cuối năm trước = (OI ngày báo cáo - OI ngày cuối năm trước) / OI ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Ngày, Loại chứng khoán","MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.end_of_day_open_interest (oi)",oi.open_interest_volume,"- Bảng uat_vsdc_stg.end_of_day_open_interest (oi):
+report_date = [Ngày giao dịch cuối của năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""HĐTL VN30 - Khối lượng mở (OI) ngày báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - KLGD bình quân tháng báo cáo,KLGD chứng quyền bình quân / số phiên tháng báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_volume,"- Bảng uat_mdds_stg.jad_stockinfor (s):
+floorcode = '10' AND stocktype IN ('4') --> Chứng quyền
+Lấy dữ liệu danh mục - Bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link bảng uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t):
+t.symbol = s.symbol
+- Bảng uat_hose_stg.trade_book (t):
+t.market_id = 'STK'
+t.trade_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Số phiên = COUNT(trade_date) --> Dữ liệu không đủ ngày giao dịch nên lấy thêm ở bảng của mdds
+- Giá trị giao dịch = SUM(t.execution_value)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước,% so với bình quân tháng trước = (KLGD chứng quyền bình quân tháng báo cáo - KLGD chứng quyền bình quân tháng trước) / KLGD chứng quyền bình quân tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_volume,"- Tháng trước:
+t.trade_date BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - KLGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - KLGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước,"% so với bình quân tháng trước = (KLGD HĐTL VN30 bình quân tháng báo cáo - KLGD HĐTL VN30 bình quân tháng cùng kỳ năm trước) / KLGD HĐTL VN30 bình quân tháng cùng kỳ năm trước * 100
+Trong đó, KLGD bình quân tháng cùng kỳ năm trước tính từ ngày đầu tháng đến ngày cuối tháng",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_volume,"- Tháng cùng kỳ năm trước:
+t.trade_date BETWEEN [Ngày đầu tháng cùng kỳ trước] AND [Ngày cuối tháng cùng kỳ trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - KLGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - GTGD bình quân tháng báo cáo (Tỷ đồng),GTGD chứng quyền bình quân / số phiên tháng báo cáo,Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Bảng uat_mdds_stg.jad_stockinfor (s):
+floorcode = '10' AND stocktype IN ('4') --> Chứng quyền
+Lấy dữ liệu danh mục - Bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link bảng uat_mdds_stg.jad_stockinfor (s) và uat_hose_stg.trade_book (t):
+t.symbol = s.symbol
+- Bảng uat_hose_stg.trade_book (t):
+t.market_id = 'STK'
+t.trade_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Số phiên = COUNT(trade_date) --> Dữ liệu không đủ ngày giao dịch nên lấy thêm ở bảng của mdds
+- Giá trị giao dịch = SUM(t.execution_value)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước,% so với bình quân tháng trước = (GTGD chứng quyền bình quân tháng báo cáo - GTGD chứng quyền bình quân tháng trước) / GTGD chứng quyền bình quân tháng trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Tháng trước:
+t.trade_date BETWEEN [Ngày đầu tháng trước] AND [Ngày cuối tháng trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - GTGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước,"% so với bình quân tháng trước = (GTGD HĐTL VN30 bình quân tháng báo cáo - GTGD HĐTL VN30 bình quân tháng cùng kỳ năm trước) / GTGD HĐTL VN30 bình quân tháng cùng kỳ năm trước * 100
+Trong đó, GTGD bình quân tháng cùng kỳ năm trước tính từ ngày đầu tháng đến ngày cuối tháng",Báo cáo,Chỉ tiêu phái sinh,TB,"Tháng, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Tháng cùng kỳ năm trước:
+t.trade_date BETWEEN [Ngày đầu tháng cùng kỳ năm trước] AND [Ngày cuối tháng cùng kỳ năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - KLGD bình quân năm báo cáo (Tỷ đồng),"KLGD chứng quyền bình quân / số phiên năm báo cáo
+Số phiên = Số ngày giao dịch trong năm tính từ đầu năm đến ngày báo cáo.",Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_volume,"- Năm báo cáo:
+t.trade_date BETWEEN [Ngày đầu năm báo cáo] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""CW - KLGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - KLGD bình quân năm báo cáo - % so với bình quân năm trước,"(KLGD chứng quyền bình quân tháng báo cáo - KLGD chứng quyền bình quân năm trước) / KLGD chứng quyền bình quân năm trước * 100
+Trong đó, KLGD bình quân năm trước tính từ ngày đầu năm đến ngày cuối năm trước",Báo cáo,Chỉ tiêu phái sinh,TB,"Năm, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_volume,"- Năm trước:
+t.trade_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - KLGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - GTGD bình quân năm báo cáo (Tỷ đồng),"GTGD chứng quyền bình quân / số phiên năm báo cáo
+Số phiên = Số ngày giao dịch trong năm tính từ đầu năm đến ngày báo cáo.",Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Năm báo cáo:
+t.trade_date BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""CW - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,CW - GTGD bình quân năm báo cáo - % so với bình quân năm trước,"(GTGD chứng quyền bình quân tháng báo cáo - GTGD chứng quyền bình quân năm trước) / GTGD chứng quyền bình quân năm trước * 100
+Trong đó, GTGD bình quân năm trước tính từ ngày đầu năm đến ngày cuối năm trước",Báo cáo,Chỉ tiêu phái sinh,TB,"Năm, Loại chứng khoán","HOSE, MDDS",,,,Done,,"uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)",t.execution_value,"- Năm trước:
+t.trade_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+- Điều kiện khác: Giống chỉ tiêu ""CW - GTGD bình quân tháng báo cáo""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"GT NĐTNN mua/bán ròng cổ phiếu, CCQ tháng báo cáo (Tỷ đồng)","GT NĐTNN mua/bán ròng cổ phiếu, CCQ tháng báo cáo (tính từ đầu tháng đến ngày báo cáo).
+Công thức: GT NĐTNN mua/bán ròng = GT NĐTNN mua - GT NĐTNN bán",Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Bảng uat_mdds_stg.jad_stockinfor (s):
+stocktype IN ('2', '3', '6') --> Cổ phiếu, CCQ
+Lấy dữ liệu danh mục - Bản ghi cuối: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC)) = 1
+- Link bảng uat_mdds_stg.jad_stockinfor (s) và uat_hnx_stg.trade_book (h) / uat_hose_stg.trade_book (t):
+t.symbol = s.symbol
+h.issue_code = s.symbolisin
+- Bảng uat_hose_stg.trade_book (t):
+t.market_id = 'STK'
+t.trade_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Bảng uat_hnx_stg.trade_book (t):
+t.market_id IN ('STX', 'UPX')
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo]
+- Số phiên = COUNT(trade_date) --> Dữ liệu không đủ ngày giao dịch nên lấy thêm ở bảng của mdds
+- GT NĐTNN mua = 
+ HOSE: (CASE WHEN SUBSTR(t.buy_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END)
+ HNX: (CASE WHEN SUBSTR(h.buy_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+- GT NĐTNN bán = 
+ HOSE: (CASE WHEN SUBSTR(t.sell_acct_no, 4, 1) IN ('E', 'F') THEN t.execution_value ELSE 0 END)
+ HNX: (CASE WHEN SUBSTR(h.sell_account_number, 4, 1) IN ('E', 'F') THEN h.trade_quantity * h.trade_price * NVL(s.contractmultiplier, 1) ELSE 0 END) 
+- GT mua/bán ròng NĐTNN = GT NĐTNN Mua - GT NĐTNN Bán",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,"GT NĐTNN mua/bán ròng cổ phiếu, CCQ năm báo cáo (Tỷ đồng)","GT NĐTNN mua/bán ròng cổ phiếu, CCQ năm báo cáo (tính từ đầu năm đến ngày báo cáo)",Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán","HNX, HOSE, MDDS",,,,Done,,"uat_hnx_stg.trade_book (h), uat_hose_stg.trade_book (t), 
+uat_mdds_stg.jad_stockinfor (s)","t.execution_value, 
+h.trade_quantity, h.trade_price","- Năm báo cáo: 
+t.trade_date BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+TO_DATE(h.trade_date, 'yyyyMMdd') BETWEEN [Ngày đầu năm] AND [Ngày báo cáo]
+- Điều kiện khác: Giống chỉ tiêu ""Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo""
+- Tính theo công thức tại cột ""Mô tả""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,GT NĐTNN mua/bán ròng trái phiếu (TPCP) tháng báo cáo (Tỷ đồng),"GT NĐTNN mua/bán ròng TPCP tháng báo cáo (tính từ đầu tháng đến ngày báo cáo).
+Công thức: GT NĐTNN mua/bán ròng = GT NĐTNN mua - GT NĐTNN bán
+Nhận diện tài khoản NĐTNN: Ký tự thứ 4 trong số tài khoản = E/F",Báo cáo,Chỉ tiêu cơ sở,TB,"Tháng, Loại chứng khoán",HNX,,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r)","o.trading_value, 
+r.first_settlement_value","Tháng báo cáo: o.trading_date / r.trading_date BETWEEN [Ngày đầu tháng] AND [Ngày báo cáo] 
+order_status = 'ĐTH'
+NĐTNN mua: o.buying_investor_account IN ('E','F')
+NĐTNN bán: o.selling_investor_account IN ('E','F')
+GTGD: SUM(o.trading_value) + SUM(r.first_settlement_value)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,GT NĐTNN mua/bán ròng trái phiếu (TPCP) năm báo cáo (Tỷ đồng),GT NĐTNN mua/bán ròng TPCP năm báo cáo (tính từ đầu năm đến ngày báo cáo),Báo cáo,Chỉ tiêu cơ sở,TB,"Năm, Loại chứng khoán",HNX,,,,Done,,"uat_hnx_stg.outright_order_book (o),
+uat_hnx_stg.repo_order_book (r)","o.trading_value, 
+r.first_settlement_value","Năm báo cáo: o.trading_date / r.trading_date BETWEEN [Ngày đầu năm] AND [Ngày báo cáo] 
+order_status = 'ĐTH'
+NĐTNN mua: o.buying_investor_account IN ('E','F')
+NĐTNN bán: o.selling_investor_account IN ('E','F')
+GTGD: SUM(o.trading_value) + SUM(r.first_settlement_value)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản NĐT,"Số lượng tài khoản NĐT tính đến ngày báo cáo: 
+Đếm số tài khoản mở trước ngày báo cáo và chưa đóng tại ngày báo cáo.
+Lưu ý: 1 TK được đóng mở nhiều lần.",Báo cáo,Chỉ tiêu cơ sở,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- UNION ALL 2 bảng uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c) thành danh sách event mở/đóng tài khoản:
+o.open_date <= [Ngày báo cáo]
+c.close_date <= [Ngày báo cáo]
+- Lấy event gần nhất <= [Ngày báo cáo]
+  + Event gần nhất là mở: tài khoản đang hoạt động tại ngày báo cáo
+  + Event gần nhất là đóng: tài khoản không hoạt động tại ngày báo cáo
+  + Chưa có event nào: Không tính
+  + Chỉ có bản ghi đóng (thiếu dữ liệu mở): Không tính
+  + Ngày gần nhất < Ngày báo cáo có cả mở và đóng: 
+    - Event trước đó = Mở <-> Ngày gần nhất đóng rồi mở lại -> TK vẫn hoạt động
+    - Event trước đó = Đóng <-> Ngày gần nhất mở rồi đóng lại -> TK vẫn không hoạt động
+-> Ngày trùng (có cả mở + đóng) -> Không làm thay đổi trạng thái tài khoản nên bỏ qua ngày trùng
+-> Công thức: Đếm tài khoản hoạt động = Có ngày mở <= [Ngày báo cáo] và (chưa từng đóng hoặc ngày mở gần nhất > ngày đóng gần nhất trước [Ngày báo cáo])",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản của NĐT - % so với cuối năm trước,% so với cuối năm trước = (Số lượng tài khoản NĐT tính đến ngày báo cáo - Số lượng tài khoản NĐT tính đến ngày cuối năm trước) / Số lượng tài khoản NĐT tính đến ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Điều kiện Thời gian: 
+o.open_date <= [Ngày cuối năm trước]
+c.close_date <= [Ngày cuối năm trước]
+- Điều kiện và công thức tính giống chỉ tiêu ""Số lượng tài khoản NĐT""",,,,Dữ liệu tĩnh,,,

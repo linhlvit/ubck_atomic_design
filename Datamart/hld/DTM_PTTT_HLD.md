@@ -780,6 +780,7 @@ erDiagram
         string Period_Type_Code
         string Period_Label
         decimal Indicator_Val
+        string Unit_Type_Code
         decimal Prev_Period_Val
         decimal Pct_Change
         decimal Yoy_Pct_Change
@@ -859,6 +860,7 @@ erDiagram
         string Period_Type_Code
         string Period_Label
         decimal Indicator_Val
+        string Unit_Type_Code
         decimal Prev_Period_Val
         decimal Pct_Change
         decimal Yoy_Pct_Change
@@ -1168,6 +1170,7 @@ erDiagram
         string Period_Type_Code
         string Period_Label
         decimal Indicator_Val
+        string Unit_Type_Code
         decimal Prev_Period_Val
         decimal Pct_Change
         decimal Yoy_Pct_Change
@@ -1312,6 +1315,7 @@ erDiagram
         string Period_Type_Code
         string Period_Label
         decimal Indicator_Val
+        string Unit_Type_Code
         decimal Prev_Period_Val
         decimal Pct_Change
         decimal Yoy_Pct_Change

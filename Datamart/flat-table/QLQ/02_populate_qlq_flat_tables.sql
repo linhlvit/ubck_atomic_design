@@ -40,6 +40,7 @@ SELECT
     f.snpst_dt_dim_id,
     f.fund_type_id,
     f.fund_count,
+    f.charter_capital_amt,
     f.src_stm_code,
     snpst_cal.cdr_dt              AS snpst_cdr_dt,
     fund_type_dim.fund_type_code  AS fund_type_code,

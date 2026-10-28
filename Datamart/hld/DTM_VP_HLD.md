@@ -248,6 +248,8 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 
 **Source:** `Fact Market Index Snapshot` → `Calendar Date Dimension`, `Market Index Dimension`; `Fact Investor Group Trading Snapshot` → `Calendar Date Dimension`, `Security Trading Snapshot Dimension`
 
+> **[SỬA 2026-10-28 — BA VP cập nhật Nhóm 1/2: phạm vi 'cổ phiếu, Chứng chỉ quỹ' (bỏ chứng quyền)]** BA đổi Mô tả (bỏ 'chứng quyền'), Độ chi tiết (thêm 'Loại chứng khoán'), Nguồn/Bảng nguồn (thêm MDDS `jad_stockinfor`) và Điều kiện: lấy `jad_stockinfor` bản ghi cuối mỗi `symbol` với `stocktype IN ('2','3','6')`, nối giao dịch `s.symbol = t.symbol` (HOSE) / `s.symbol = h.issue_code` (HNX); SQL đổi CTE `stock_daily_eod` (theo ngày) thành `stock_portfolio` (bản ghi cuối — loại CK không đổi theo ngày). Thiết kế: KPI Nhóm này lọc `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` qua FK `security_trading_snpst_dim_id` của `Fact Investor Group Trading Snapshot` (HNX/UPCOM: 2 Cổ phiếu, 3 CCQ, 6 ETF; HOSE: 2 Cổ phiếu, 3 CCQ/ETF) — không đổi Fact. **O_VP_4 đã đóng** (trước đây Mô tả/Điều kiện không lọc loại CK còn SQL lọc `stocktype = '2'`). Khác BA: HNX nối theo `isin_code` (ISSUE_CODE HNX lưu ISIN, A17) — **O_VP_33**.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -256,7 +258,7 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 | K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STK', HNX = 'STX', UPCOM = 'UPX') | Tham số lọc Sàn; ánh xạ HOSE→STK, HNX→STX, UPCOM→UPX theo Điều kiện BA | READY |
 | K_VP_3 | Chỉ số | — | Chiều | Market Index Dimension.Index Name với Market Code IN ('HOSE','HNX','UPCOM'); Sàn = 'Toàn thị trường' lấy cả 3 chỉ số | Case 1 — reuse Market Index Dimension (QLKD) | READY |
 | K_VP_4 | Giá trị chỉ số | Điểm | Cơ sở | Fact Market Index Snapshot.Market Index Value tại ngày giao dịch cuối cùng của kỳ (Fact giữ bản ghi cuối ngày: Index Time DESC, Sequence DESC) | Case 1 — reuse Fact Market Index Snapshot (QLKD); chọn chỉ số theo Market Code, không theo Index Name (H14) | READY |
-| K_VP_5 | GT mua/bán ròng NĐTNN | VND | Phái sinh | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN' và Market Id Code theo Sàn, trong kỳ | NĐTNN = ký tự thứ 4 của số tài khoản ∈ (E, F). [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK — O_VP_4. Case 2 — tính tại presentation layer từ Buy Value / Sell Value | READY |
+| K_VP_5 | GT mua/bán ròng NĐTNN | VND | Phái sinh | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Market Id Code theo Sàn và `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` (cổ phiếu + CCQ, bỏ chứng quyền), trong kỳ | NĐTNN = ký tự thứ 4 của số tài khoản ∈ (E, F). [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK: Stock Type Code ∈ ('2','3','6') theo BA 2026-10-28 (O_VP_4 đã đóng); độ chi tiết 'Loại chứng khoán' = Stock Type Code/Name. Case 2 — tính tại presentation layer từ Buy Value / Sell Value | READY |
 | K_VP_6 | Giá trị chỉ số - VN-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HOSE' (VN-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
 | K_VP_7 | Giá trị chỉ số - HNX-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HNX' (HNX-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
 | K_VP_8 | Giá trị chỉ số - UPCoM-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'UPCOM' (UPCoM-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
@@ -344,6 +346,7 @@ erDiagram
         string Investor_Group_Trading_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
         string Security_Symbol_Code
         string Market_Id_Code
         string Investor_Group_Code
@@ -406,6 +409,8 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 
 **Source:** `Fact Market Index Snapshot` → `Calendar Date Dimension`, `Market Index Dimension`; `Fact Investor Group Trading Snapshot` → `Calendar Date Dimension`, `Security Trading Snapshot Dimension`
 
+> **[SỬA 2026-10-28 — BA VP cập nhật Nhóm 1/2: phạm vi 'cổ phiếu, Chứng chỉ quỹ' (bỏ chứng quyền)]** BA đổi Mô tả (bỏ 'chứng quyền'), Độ chi tiết (thêm 'Loại chứng khoán'), Nguồn/Bảng nguồn (thêm MDDS `jad_stockinfor`) và Điều kiện: lấy `jad_stockinfor` bản ghi cuối mỗi `symbol` với `stocktype IN ('2','3','6')`, nối giao dịch `s.symbol = t.symbol` (HOSE) / `s.symbol = h.issue_code` (HNX); SQL đổi CTE `stock_daily_eod` (theo ngày) thành `stock_portfolio` (bản ghi cuối — loại CK không đổi theo ngày). Thiết kế: KPI Nhóm này lọc `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` qua FK `security_trading_snpst_dim_id` của `Fact Investor Group Trading Snapshot` (HNX/UPCOM: 2 Cổ phiếu, 3 CCQ, 6 ETF; HOSE: 2 Cổ phiếu, 3 CCQ/ETF) — không đổi Fact. **O_VP_4 đã đóng** (trước đây Mô tả/Điều kiện không lọc loại CK còn SQL lọc `stocktype = '2'`). Khác BA: HNX nối theo `isin_code` (ISSUE_CODE HNX lưu ISIN, A17) — **O_VP_33**.
+
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
@@ -414,7 +419,7 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 | K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STK', HNX = 'STX', UPCOM = 'UPX') | Reuse từ Nhóm 1 (K_VP_2) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
 | K_VP_3 | Chỉ số | — | Chiều | Market Index Dimension.Index Name với Market Code IN ('HOSE','HNX','UPCOM'); Sàn = 'Toàn thị trường' lấy cả 3 chỉ số | Reuse từ Nhóm 1 (K_VP_3) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
 | K_VP_4 | Giá trị chỉ số | Điểm | Cơ sở | Fact Market Index Snapshot.Market Index Value tại ngày giao dịch cuối cùng của kỳ (Fact giữ bản ghi cuối ngày: Index Time DESC, Sequence DESC) | Reuse từ Nhóm 1 (K_VP_4) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
-| K_VP_13 | GT mua/bán ròng Tự doanh | VND | Cơ sở | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'PROPRIETARY' và Market Id Code theo Sàn, trong kỳ | Tự doanh = ký tự thứ 4 của số tài khoản ∈ (P, E, A) theo BA; GSTT chỉ dùng (P, E) — O_VP_2. [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK — O_VP_4. Case 2 — tính tại presentation layer | READY |
+| K_VP_13 | GT mua/bán ròng Tự doanh | VND | Cơ sở | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'PROPRIETARY', Market Id Code theo Sàn và `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` (cổ phiếu + CCQ, bỏ chứng quyền), trong kỳ | Tự doanh = ký tự thứ 4 của số tài khoản ∈ (P, E, A) theo BA; GSTT chỉ dùng (P, E) — O_VP_2. [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK: Stock Type Code ∈ ('2','3','6') theo BA 2026-10-28 (O_VP_4 đã đóng); độ chi tiết 'Loại chứng khoán' = Stock Type Code/Name. Case 2 — tính tại presentation layer | READY |
 | K_VP_6 | Giá trị chỉ số - VN-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HOSE' (VN-Index) | Reuse từ Nhóm 1 (K_VP_6) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
 | K_VP_7 | Giá trị chỉ số - HNX-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HNX' (HNX-Index) | Reuse từ Nhóm 1 (K_VP_7) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
 | K_VP_8 | Giá trị chỉ số - UPCoM-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'UPCOM' (UPCoM-Index) | Reuse từ Nhóm 1 (K_VP_8) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
@@ -502,6 +507,7 @@ erDiagram
         string Investor_Group_Trading_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
         string Security_Symbol_Code
         string Market_Id_Code
         string Investor_Group_Code
@@ -686,6 +692,7 @@ erDiagram
         string Investor_Group_Trading_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
         string Security_Symbol_Code
         string Market_Id_Code
         string Investor_Group_Code
@@ -935,6 +942,7 @@ erDiagram
         string Investor_Group_Trading_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
         string Security_Symbol_Code
         string Market_Id_Code
         string Investor_Group_Code
@@ -1069,6 +1077,7 @@ erDiagram
         string Investor_Group_Trading_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
         string Security_Symbol_Code
         string Market_Id_Code
         string Investor_Group_Code
@@ -1961,6 +1970,1270 @@ flowchart LR
 | Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
 | Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
 
+#### Nhóm 32 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+> **[GHI CHÚ 2026-10-28 — BA 'Trùng' theo tên ≠ trùng ngữ nghĩa]** BA đánh 'Trùng' 6 dòng (365–368, 370, 378: GT mua/bán ròng NĐTNN, % thay đổi, YTD, % mua/bán) vì cùng TÊN với chỉ tiêu ở Nhóm 1/33, nhưng phạm vi khác: Nhóm 1 chỉ cổ phiếu + CCQ (K_VP_5), Nhóm 32 là Σ 6 loại tài sản (cổ phiếu, chứng quyền, CCQ, TPDN niêm yết, TPDN riêng lẻ, TPCP). Dùng lại K_VP_5 sẽ thiếu 3 loại trái phiếu → thiết kế KPI riêng (K_VP_115–134); vì vậy Δ số lượng BA ↔ HLD = +6 ở Gate 10 là CÓ CHỦ Ý. Thiết kế dùng lại Fact VP Nhóm 1–16, không thêm Fact/cột; sổ lệnh cổ phiếu/CCQ/chứng quyền vẫn chờ Atomic (O_VP_1); dòng BA 382–384 lỗi copy phía mua — O_VP_34.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT mua/bán ròng NĐTNN | … | … | … |
+| GT mua/bán ròng NĐTNN (YTD) | … | … | … |
+| GT mua NĐTNN | … | … | … |
+| GT bán NĐTNN | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Investor Group Trading Snapshot`, `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Reuse từ Nhóm 1 (K_VP_1) — Case 1 | READY |
+| K_VP_115 | GT mua/bán ròng NĐTNN | VND | Phái sinh | Σ GT mua NĐTNN − Σ GT bán NĐTNN của 6 loại tài sản trong kỳ | Case 2 — tính tại presentation layer từ 12 chỉ tiêu cơ sở theo loại. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_116 | GT mua/bán ròng NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT ròng kỳ báo cáo − GT ròng kỳ trước) / GT ròng kỳ trước × 100 | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_117 | GT mua/bán ròng NĐTNN (YTD) | VND | Phái sinh | Σ GT mua/bán ròng NĐTNN từ đầu năm đến cuối kỳ báo cáo | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_118 | GT mua/bán ròng NĐTNN (YTD) - % thay đổi so với cùng kỳ năm trước | % | Phái sinh | (GT ròng YTD kỳ báo cáo − GT ròng YTD cùng kỳ năm trước) / GT ròng YTD cùng kỳ năm trước × 100 | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_119 | GT mua NĐTNN | VND | Phái sinh | Σ giá trị mua NĐTNN của 6 loại tài sản trong kỳ | Case 2 — cộng 6 chỉ tiêu cơ sở theo loại; BA ghi 'Chỉ tiêu cơ sở' nhưng Mô tả là Σ → Phái sinh. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_120 | GT mua NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT mua NĐTNN kỳ báo cáo − kỳ trước) / kỳ trước × 100 | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_121 | GT mua NĐTNN - Cổ phiếu | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Cổ phiếu' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_122 | GT mua NĐTNN - Chứng quyền | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng quyền' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_123 | GT mua NĐTNN - Chứng chỉ quỹ | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng chỉ quỹ', 'ETF' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_124 | GT mua NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_77/79 (Nhóm 7) | READY |
+| K_VP_125 | GT mua NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_94/96 (Nhóm 11) | READY |
+| K_VP_126 | GT mua NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_106/108 (Nhóm 14) | READY |
+| K_VP_127 | GT bán NĐTNN | VND | Phái sinh | Σ giá trị bán NĐTNN của 6 loại tài sản trong kỳ | Case 2 — cộng 6 chỉ tiêu cơ sở theo loại; BA ghi 'Chỉ tiêu cơ sở' nhưng Mô tả là Σ → Phái sinh. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_128 | GT bán NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT bán NĐTNN kỳ báo cáo − kỳ trước) / kỳ trước × 100 | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_129 | GT bán NĐTNN - Cổ phiếu | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Cổ phiếu' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_130 | GT bán NĐTNN - Chứng quyền | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng quyền' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_131 | GT bán NĐTNN - Chứng chỉ quỹ | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng chỉ quỹ', 'ETF' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_132 | GT bán NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_77/79 (Nhóm 7) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (`h.buy_account_number`) dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+| K_VP_133 | GT bán NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_94/96 (Nhóm 11) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (row_path '…GIÁ TRỊ MUA') dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+| K_VP_134 | GT bán NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_106/108 (Nhóm 14) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (`buying_account_no`) dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Fact_Listed_Corporate_Bond_Snapshot {
+        string Listed_Corporate_Bond_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        boolean Listed_Indicator
+        decimal Issue_Term_Years
+        decimal Remaining_Term_Years
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        bigint Outstanding_Bond_Quantity
+        decimal Bond_Outstanding_Value
+    }
+    Fact_Private_Corporate_Bond_Trading_Snapshot {
+        string Private_Corporate_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Fact_Government_Bond_Trading_Snapshot {
+        string Government_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Order_Book_Type_Code
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+        Fact_Listed_Corporate_Bond_Snapshot["Fact Listed Corporate Bond Snapshot"]
+        Fact_Private_Corporate_Bond_Trading_Snapshot["Fact Private Corporate Bond Trading Snapshot"]
+        Fact_Government_Bond_Trading_Snapshot["Fact Government Bond Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 32"]
+        R1["K_VP_1,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134: Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+    Fact_Listed_Corporate_Bond_Snapshot --> R1
+    Fact_Private_Corporate_Bond_Trading_Snapshot --> R1
+    Fact_Government_Bond_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+| Fact Listed Corporate Bond Snapshot | 1 mã trái phiếu (ISIN — Security Symbol Code) × 1 ngày giao dịch; PK Listed Corporate Bond Snapshot Id = hash (Snapshot Date Dimension Id, Security Symbol Code) (Dạng B, A22) |
+| Fact Private Corporate Bond Trading Snapshot | 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP); PK Private Corporate Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id) (Dạng B, A22) |
+| Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
+
+#### Nhóm 33 - Mua/Bán ròng NĐTNN >> Chi tiết giao dịch
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT mua/bán ròng NĐTNN theo Loại chứng khoán | … | … | … |
+| GT mua NĐTNN theo Loại chứng khoán | … | … | … |
+| GT bán NĐTNN theo Loại chứng khoán | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Investor Group Trading Snapshot`, `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_135 | Loại chứng khoán | — | Chiều | Security Trading Snapshot Dimension.Stock Type Name (Cổ phiếu / Chứng quyền / Chứng chỉ quỹ·ETF / Phái sinh) + nhãn Fact trái phiếu | Chiều — O_VP_35 | READY |
+| K_VP_136 | GT mua/bán ròng NĐTNN | VND | Phái sinh | (Σ GT mua − Σ GT bán) NĐTNN theo từng Loại chứng khoán trong kỳ | Case 2 — tính tại presentation layer. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1 | READY |
+| K_VP_137 | GT mua/bán ròng NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT ròng kỳ báo cáo − kỳ trước) / kỳ trước × 100 theo Loại chứng khoán | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_138 | GT mua NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT mua kỳ báo cáo − kỳ trước) / kỳ trước × 100 theo Loại chứng khoán | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_139 | GT bán NĐTNN - % thay đổi so với kỳ trước | % | Phái sinh | (GT bán kỳ báo cáo − kỳ trước) / kỳ trước × 100 theo Loại chứng khoán | Case 2 — tính tại presentation layer; kỳ trước — O_VP_5 | READY |
+| K_VP_121 | GT mua NĐTNN - Cổ phiếu | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Cổ phiếu' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_121) — Case 1; Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_122 | GT mua NĐTNN - Chứng quyền | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng quyền' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_122) — Case 1; Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_123 | GT mua NĐTNN - Chứng chỉ quỹ | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng chỉ quỹ', 'ETF' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_123) — Case 1; Case 1 — measure Buy Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_124 | GT mua NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_124) — Case 1; Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_77/79 (Nhóm 7) | READY |
+| K_VP_125 | GT mua NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_125) — Case 1; Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_94/96 (Nhóm 11) | READY |
+| K_VP_126 | GT mua NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_126) — Case 1; Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_106/108 (Nhóm 14) | READY |
+| K_VP_140 | GT mua NĐTNN - Giao dịch phái sinh | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Market Id Code = 'DVX', Stock Type Name = 'Phái sinh', trong kỳ | Case 1 — measure Buy Value (K_VP_23/33… dùng Buy Volume cho phái sinh ở Nhóm 3). [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1; cách tính GT phái sinh — O_VP_36 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Fact_Listed_Corporate_Bond_Snapshot {
+        string Listed_Corporate_Bond_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        boolean Listed_Indicator
+        decimal Issue_Term_Years
+        decimal Remaining_Term_Years
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        bigint Outstanding_Bond_Quantity
+        decimal Bond_Outstanding_Value
+    }
+    Fact_Private_Corporate_Bond_Trading_Snapshot {
+        string Private_Corporate_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Fact_Government_Bond_Trading_Snapshot {
+        string Government_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Order_Book_Type_Code
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+        Fact_Listed_Corporate_Bond_Snapshot["Fact Listed Corporate Bond Snapshot"]
+        Fact_Private_Corporate_Bond_Trading_Snapshot["Fact Private Corporate Bond Trading Snapshot"]
+        Fact_Government_Bond_Trading_Snapshot["Fact Government Bond Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 33"]
+        R1["K_VP_135,136,137,138,139,121,122,123,124,125,126,140: Mua/Bán ròng NĐTNN >> Chi tiết giao dịch"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+    Fact_Listed_Corporate_Bond_Snapshot --> R1
+    Fact_Private_Corporate_Bond_Trading_Snapshot --> R1
+    Fact_Government_Bond_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+| Fact Listed Corporate Bond Snapshot | 1 mã trái phiếu (ISIN — Security Symbol Code) × 1 ngày giao dịch; PK Listed Corporate Bond Snapshot Id = hash (Snapshot Date Dimension Id, Security Symbol Code) (Dạng B, A22) |
+| Fact Private Corporate Bond Trading Snapshot | 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP); PK Private Corporate Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id) (Dạng B, A22) |
+| Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
+
+#### Nhóm 34 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT bán NĐTNN theo Loại chứng khoán | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Investor Group Trading Snapshot`, `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_129 | GT bán NĐTNN - Cổ phiếu | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Cổ phiếu' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_129) — Case 1; Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_130 | GT bán NĐTNN - Chứng quyền | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng quyền' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_130) — Case 1; Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_131 | GT bán NĐTNN - Chứng chỉ quỹ | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Chứng chỉ quỹ', 'ETF' (Security Trading Snapshot Dimension), Market Id Code ∈ (STK, STX, UPX), trong kỳ | Reuse từ Nhóm 32 (K_VP_131) — Case 1; Case 1 — measure Sell Value; cùng measure nền với K_VP_5 (Nhóm 1); [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền) — O_VP_1 | READY |
+| K_VP_132 | GT bán NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_132) — Case 1; Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_77/79 (Nhóm 7) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (`h.buy_account_number`) dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+| K_VP_133 | GT bán NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_133) — Case 1; Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_94/96 (Nhóm 11) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (row_path '…GIÁ TRỊ MUA') dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+| K_VP_134 | GT bán NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') | Reuse từ Nhóm 32 (K_VP_134) — Case 1; Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_106/108 (Nhóm 14) BA lỗi copy: điều kiện dòng này ghi theo phía MUA (`buying_account_no`) dù chỉ tiêu là GT bán — thiết kế theo ý định bán (O_VP_34). | READY |
+| K_VP_141 | GT bán NĐTNN - Giao dịch phái sinh | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Market Id Code = 'DVX', Stock Type Name = 'Phái sinh', trong kỳ | Case 1 — measure Sell Value. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1; cách tính GT phái sinh — O_VP_36 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Fact_Listed_Corporate_Bond_Snapshot {
+        string Listed_Corporate_Bond_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        boolean Listed_Indicator
+        decimal Issue_Term_Years
+        decimal Remaining_Term_Years
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        bigint Outstanding_Bond_Quantity
+        decimal Bond_Outstanding_Value
+    }
+    Fact_Private_Corporate_Bond_Trading_Snapshot {
+        string Private_Corporate_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Fact_Government_Bond_Trading_Snapshot {
+        string Government_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Order_Book_Type_Code
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+        Fact_Listed_Corporate_Bond_Snapshot["Fact Listed Corporate Bond Snapshot"]
+        Fact_Private_Corporate_Bond_Trading_Snapshot["Fact Private Corporate Bond Trading Snapshot"]
+        Fact_Government_Bond_Trading_Snapshot["Fact Government Bond Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 34"]
+        R1["K_VP_129,130,131,132,133,134,141: Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+    Fact_Listed_Corporate_Bond_Snapshot --> R1
+    Fact_Private_Corporate_Bond_Trading_Snapshot --> R1
+    Fact_Government_Bond_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+| Fact Listed Corporate Bond Snapshot | 1 mã trái phiếu (ISIN — Security Symbol Code) × 1 ngày giao dịch; PK Listed Corporate Bond Snapshot Id = hash (Snapshot Date Dimension Id, Security Symbol Code) (Dạng B, A22) |
+| Fact Private Corporate Bond Trading Snapshot | 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP); PK Private Corporate Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id) (Dạng B, A22) |
+| Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
+
+#### Nhóm 35 - Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị mua/bán ròng cổ phiếu NĐTNN theo nhóm ngành
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+> **[GHI CHÚ 2026-10-28 — O_VP_37, phương án thêm FK]** Fact Investor Group Trading Snapshot có thêm cột `Industry Dimension Id` (FK nullable, chỉ dòng cổ phiếu có ngành; CTCK/CTQLQ đại chúng = 07000) — không đổi grain/PK; flat denormalize `industry_code`/`industry_nm` như Fact TPDN niêm yết. Dev cần ETL + ALTER + nạp lại lịch sử.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT mua/bán ròng NĐTNN - Cổ phiếu theo Ngành | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Investor Group Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Reuse từ Nhóm 1 (K_VP_1) — Case 1 | READY |
+| K_VP_142 | Ngành | — | Chiều | Industry Dimension.Industry Code / Industry Name qua FK Industry Dimension Id của Fact nhóm NĐT; dòng không phải cổ phiếu hoặc không xác định được ngành → nhóm 'NA' (Chưa phân ngành) | Chiều — cột mới industry_dim_id của Fact (O_VP_37); cùng cách K_VP_84 (Nhóm 8) | READY |
+| K_VP_143 | GT mua/bán ròng NĐTNN - Cổ phiếu | VND | Phái sinh | SUM(Buy Value) − SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name = 'Cổ phiếu', GROUP BY Industry (qua Industry Dimension Id của Fact) và kỳ | Case 2 — tính tại presentation layer; BA ghi 'Chỉ tiêu cơ sở' nhưng là mua − bán. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Industry_Dimension {
+        string Industry_Dimension_Id PK
+        string Industry_Code
+        string Industry_Name
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Industry_Dimension["Industry Dimension"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 35"]
+        R1["K_VP_1,142,143: Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị mua/bán ròng cổ phiếu NĐTNN theo nhóm ngành"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Industry_Dimension --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Industry Dimension | 1 ngành nghề kinh doanh cấp 1 hiện hành (SCD4A current-state); sở hữu bởi GSDC |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+
+#### Nhóm 36 - Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT mua NĐTNN | … | … | … |
+| GT bán NĐTNN | … | … | … |
+| GT ròng NĐTNN | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Investor Group Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Reuse từ Nhóm 1 (K_VP_1) — Case 1 | READY |
+| K_VP_144 | GT mua NĐTNN | VND | Cơ sở | SUM(Buy Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name ∈ (Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, ETF), GROUP BY kỳ và Stock Type Name | Case 1 — measure Buy Value; khác K_VP_119 (Nhóm 32: Σ 6 loại, Tại kỳ) ở phạm vi (cổ phiếu/CCQ/chứng quyền) và chuỗi kỳ. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1 | READY |
+| K_VP_145 | GT bán NĐTNN | VND | Cơ sở | SUM(Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Name ∈ (Cổ phiếu, Chứng quyền, Chứng chỉ quỹ, ETF), GROUP BY kỳ và Stock Type Name | Case 1 — measure Sell Value. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1 | READY |
+| K_VP_146 | GT ròng NĐTNN | VND | Phái sinh | Σ Buy Value − Σ Sell Value theo Stock Type Name và kỳ | Case 2 — tính tại presentation layer. [!] Nguồn Securities Trade (cổ phiếu/CCQ/chứng quyền/phái sinh) — O_VP_1 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 36"]
+        R1["K_VP_1,144,145,146: Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Cổ phiếu của NĐTNN"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+
+#### Nhóm 37 - Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng Fact VP đã thiết kế (Nhóm 1–16): `Fact Investor Group Trading Snapshot` (cổ phiếu/CCQ/chứng quyền/phái sinh — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` — KHÔNG thêm bảng/cột Fact mới
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (D/M/Q/Y) · Kỳ
+
+| Chỉ tiêu | Kỳ báo cáo | Kỳ trước | % thay đổi |
+|---|---|---|---|
+| GT mua/bán ròng NĐTNN theo loại trái phiếu | … | … | … |
+| GT mua/bán ròng NĐTNN - Tổng TP | … | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu × 1 Kỳ, toàn thị trường, nhóm NĐT nước ngoài (Level 1); chiều 'Loại chứng khoán' chỉ cắt theo `Stock Type Name` (cổ phiếu) hoặc theo Fact (trái phiếu). Storage Grain: xem Bảng grain.
+
+**Source:** `Fact Listed Corporate Bond Snapshot`, `Fact Private Corporate Bond Trading Snapshot`, `Fact Government Bond Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Reuse từ Nhóm 1 (K_VP_1) — Case 1 | READY |
+| K_VP_147 | Loại chứng khoán | — | Chiều | Nhãn theo Fact nguồn: TPDN niêm yết / TPDN riêng lẻ / TPCP | Chiều suy từ Fact nguồn — O_VP_35 | PENDING [Nhóm 1 - BA chưa mapping xong] |
+| K_VP_148 | GT mua NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_77/79 (Nhóm 7), khác chuỗi kỳ | READY |
+| K_VP_149 | GT bán NĐTNN - TPDN niêm yết | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Listed Corporate Bond Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_77/79 (Nhóm 7), khác chuỗi kỳ | READY |
+| K_VP_150 | GT ròng NĐTNN - TPDN niêm yết | VND | Phái sinh | Σ Foreign Buy Value − Σ Foreign Sell Value trên Fact Listed Corporate Bond Snapshot theo kỳ | Case 2 — tính tại presentation layer từ K_VP_148/K_VP_149 | READY |
+| K_VP_151 | GT mua NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_94/96 (Nhóm 11), khác chuỗi kỳ | READY |
+| K_VP_152 | GT bán NĐTNN - TPDN riêng lẻ | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Private Corporate Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_94/96 (Nhóm 11), khác chuỗi kỳ | READY |
+| K_VP_153 | GT ròng NĐTNN - TPDN riêng lẻ | VND | Phái sinh | Σ Foreign Buy Value − Σ Foreign Sell Value trên Fact Private Corporate Bond Trading Snapshot theo kỳ | Case 2 — tính tại presentation layer từ K_VP_151/K_VP_152 | READY |
+| K_VP_154 | GT mua NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Buy Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Buy Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản mua ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Buy Value; cùng measure nền với K_VP_106/108 (Nhóm 14), khác chuỗi kỳ | READY |
+| K_VP_155 | GT bán NĐTNN - TPCP | VND | Cơ sở | SUM(Foreign Sell Value) trên Fact Government Bond Trading Snapshot trong kỳ; Foreign Sell Value = Σ giá trị lệnh có ký tự thứ 4 của số tài khoản bán ∈ ('E','F') và GROUP BY kỳ | Case 1 — measure Foreign Sell Value; cùng measure nền với K_VP_106/108 (Nhóm 14), khác chuỗi kỳ | READY |
+| K_VP_156 | GT ròng NĐTNN - TPCP | VND | Phái sinh | Σ Foreign Buy Value − Σ Foreign Sell Value trên Fact Government Bond Trading Snapshot theo kỳ | Case 2 — tính tại presentation layer từ K_VP_154/K_VP_155 | READY |
+| K_VP_157 | GT mua NĐTNN - Tổng TP | VND | Phái sinh | Σ GT mua NĐTNN của 3 loại trái phiếu theo kỳ (Σ Foreign Buy/Sell Value của 3 Fact trái phiếu) | Case 2 — cộng 3 chỉ tiêu cơ sở theo loại; tính tại presentation layer | READY |
+| K_VP_158 | GT bán NĐTNN - Tổng TP | VND | Phái sinh | Σ GT bán NĐTNN của 3 loại trái phiếu theo kỳ (Σ Foreign Buy/Sell Value của 3 Fact trái phiếu) | Case 2 — cộng 3 chỉ tiêu cơ sở theo loại; tính tại presentation layer | READY |
+| K_VP_159 | GT ròng NĐTNN - Tổng TP | VND | Phái sinh | GT mua − GT bán NĐTNN của 3 loại trái phiếu theo kỳ (Σ Foreign Buy/Sell Value của 3 Fact trái phiếu) | Case 2 — cộng 3 chỉ tiêu cơ sở theo loại; tính tại presentation layer | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Listed_Corporate_Bond_Snapshot {
+        string Listed_Corporate_Bond_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        boolean Listed_Indicator
+        decimal Issue_Term_Years
+        decimal Remaining_Term_Years
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+        bigint Outstanding_Bond_Quantity
+        decimal Bond_Outstanding_Value
+    }
+    Fact_Private_Corporate_Bond_Trading_Snapshot {
+        string Private_Corporate_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Fact_Government_Bond_Trading_Snapshot {
+        string Government_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Order_Book_Type_Code
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Listed_Corporate_Bond_Snapshot["Fact Listed Corporate Bond Snapshot"]
+        Fact_Private_Corporate_Bond_Trading_Snapshot["Fact Private Corporate Bond Trading Snapshot"]
+        Fact_Government_Bond_Trading_Snapshot["Fact Government Bond Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 37"]
+        R1["K_VP_1,147,148,149,150,151,152,153,154,155,156,157,158,159: Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Listed_Corporate_Bond_Snapshot --> R1
+    Fact_Private_Corporate_Bond_Trading_Snapshot --> R1
+    Fact_Government_Bond_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Listed Corporate Bond Snapshot | 1 mã trái phiếu (ISIN — Security Symbol Code) × 1 ngày giao dịch; PK Listed Corporate Bond Snapshot Id = hash (Snapshot Date Dimension Id, Security Symbol Code) (Dạng B, A22) |
+| Fact Private Corporate Bond Trading Snapshot | 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP); PK Private Corporate Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id) (Dạng B, A22) |
+| Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
+
+#### Nhóm 51 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết
+
+> Phân loại: **Phân tích**
+> Atomic: `Listing Status Change` ← HNX.LISTING_STATUS_CHANGE / HOSE.LISTING_STATUS_CHANGE — **READY** (Fact mới `Fact Listing Status Change Snapshot`; nguồn riêng, KHÔNG phụ thuộc Securities Trade); loại chứng khoán/mã sàn lấy từ `Security Trading Snapshot Dimension` (GSTT)
+
+> **[GHI CHÚ 2026-10-28 — BA 'Trùng' và mâu thuẫn BA]** BA đánh 'Trùng' 4 dòng (484–487) nhưng không nêu trùng với chỉ tiêu nào (dòng 485–487 có 'Chỉ tiêu gốc: KL cổ phiếu hủy niêm yết/ĐKGD' — các Nhóm Báo cáo thường niên khác chưa mapping); thiết kế đủ 5 KPI nên Δ số lượng BA ↔ HLD ở Gate 10 là CÓ CHỦ Ý. Mâu thuẫn BA ghi ở O_VP_38 (công thức dòng 484 lặp bảng a; dòng 487 nhãn '04 --> HNX'; Kỳ lọc `report_year` vs năm `last_trading_date`); quy tắc ETL/khóa của Fact ở O_VP_39.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Từ năm · Đến năm
+
+| Chỉ tiêu | Năm 1 | Năm 2 | … |
+|---|---|---|---|
+| SL mã cổ phiếu hủy niêm yết/ĐKGD (theo năm) | … | … | … |
+| KL cổ phiếu hủy niêm yết trên HOSE | … | … | … |
+| KL cổ phiếu hủy niêm yết trên HNX | … | … | … |
+| KL cổ phiếu hủy ĐKGD trên UPCoM | … | … | … |
+
+> ⚠️ Presentation Grain: 1 điểm biểu đồ = 1 Năm (Từ năm — Đến năm), toàn thị trường; chỉ tiêu KL tách theo sàn (HOSE / HNX / UPCoM). Storage Grain: 1 quyết định thay đổi niêm yết × 1 mã × 1 Sở — xem Bảng grain.
+
+**Source:** `Fact Listing Status Change Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_160 | Kỳ (Năm) | — | Chiều | Calendar Date Dimension: Year (từ năm — đến năm) trên ngày giao dịch cuối cùng của quyết định | Chiều — năm của ngày giao dịch cuối (O_VP_38) | READY |
+| K_VP_161 | SL mã cổ phiếu hủy niêm yết/ĐKGD | Mã | Cơ sở | COUNT(Ticker Symbol) trên Fact Listing Status Change Snapshot với Stock Type Code = '2' (Security Trading Snapshot Dimension), Delisted Share Quantity > 0, Exchange Transfer NOT LIKE 'Có%' (không chuyển sàn), GROUP BY Calendar Date Dimension.Year | Case 1 — đếm quyết định hủy niêm yết/ĐKGD của cổ phiếu (cả HNX, UPCoM, HOSE); BA công thức lặp bảng a — O_VP_38. Sổ lệnh không liên quan — nguồn Atomic `listing_status_change` (HNX/HOSE), READY. | READY |
+| K_VP_162 | KL cổ phiếu hủy niêm yết trên HOSE | CP | Cơ sở | SUM(Delisted Share Quantity) trên Fact Listing Status Change Snapshot với Source System Code = 'HOSE_LISTING_STATUS_CHANGE', Stock Type Code = '2' (Security Trading Snapshot Dimension), Delisted Share Quantity > 0, Exchange Transfer NOT LIKE 'Có%' (không chuyển sàn), GROUP BY Calendar Date Dimension.Year | Case 1 — measure Delisted Share Quantity; HNX và UPCoM cùng nguồn HNX, tách theo mã sàn của Security Trading Snapshot Dimension. | READY |
+| K_VP_163 | KL cổ phiếu hủy niêm yết trên HNX | CP | Cơ sở | SUM(Delisted Share Quantity) trên Fact Listing Status Change Snapshot với Source System Code = 'HNX_LISTING_STATUS_CHANGE' và Floor Code = '02' (HNX), Stock Type Code = '2' (Security Trading Snapshot Dimension), Delisted Share Quantity > 0, Exchange Transfer NOT LIKE 'Có%' (không chuyển sàn), GROUP BY Calendar Date Dimension.Year | Case 1 — measure Delisted Share Quantity; HNX và UPCoM cùng nguồn HNX, tách theo mã sàn của Security Trading Snapshot Dimension. | READY |
+| K_VP_164 | KL cổ phiếu hủy ĐKGD trên UPCoM | CP | Cơ sở | SUM(Delisted Share Quantity) trên Fact Listing Status Change Snapshot với Source System Code = 'HNX_LISTING_STATUS_CHANGE' và Floor Code = '04' (UPCoM), Stock Type Code = '2' (Security Trading Snapshot Dimension), Delisted Share Quantity > 0, Exchange Transfer NOT LIKE 'Có%' (không chuyển sàn), GROUP BY Calendar Date Dimension.Year | Case 1 — measure Delisted Share Quantity; HNX và UPCoM cùng nguồn HNX, tách theo mã sàn của Security Trading Snapshot Dimension. BA ghi `s.floorcode = '04' --> HNX` (04 là UPCoM) — nhãn sai, thiết kế theo mã 04 = UPCoM (O_VP_38). | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Listing_Status_Change_Snapshot {
+        string Listing_Status_Change_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Ticker_Symbol
+        string Decision_Number
+        date Decision_Date
+        date Effective_Date
+        date Listing_Last_Trading_Date
+        bigint Delisted_Share_Quantity
+        decimal Delisted_Share_Value
+        string Exchange_Transfer
+        string Delist_Transfer_Reason
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Listing_Status_Change_Snapshot["Fact Listing Status Change Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 51"]
+        R1["K_VP_160,161,162,163,164: Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết"]
+    end
+    Calendar_Date_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Listing_Status_Change_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Listing Status Change Snapshot | 1 quyết định thay đổi niêm yết × 1 mã chứng khoán × 1 Sở (HNX gồm UPCoM, HOSE); PK Listing Status Change Snapshot Id = id dòng Atomic `listing_status_change_id` (Dạng A, direct); ngày = ngày giao dịch cuối cùng |
+
+#### Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường
+
+> Phân loại: **Phân tích**
+> Atomic: Fact mới `Fact Listed Equity Snapshot` ← MDDS.JAD_STOCKINFOR (bản tin cuối ngày) + VSDC.OUTSTANDING_SHARES — **READY** (vốn hóa, số mã/giá trị niêm yết); tái dùng `Fact Market Index Snapshot` (QLKD), `Fact Macro Indicator Snapshot` (PTTT, MRMS.RISK_INDICATOR_VALUE; thêm cột Unit Type Code), `Fact Investor Group Trading Snapshot` (GTGD/KLGD cổ phiếu-CCQ, chứng quyền, HĐTL VN30; GT NĐTNN — Sổ lệnh HNX/HOSE, **[!] O_VP_1**), `Fact Derivative Contract Snapshot` (OI VN30, VSDC), `Fact Government Bond Trading Snapshot` (GT NĐTNN TPCP)
+
+> **[TIẾN ĐỘ 2026-10-28 — Nhóm 55 thiết kế theo 4 lô]** BA Nhóm 55 gồm 54 dòng (1 Chiều, 26 Cơ sở, 27 Phái sinh): **55a** (dòng 548, 592–601: ngày báo cáo, VN-Index/HNX-Index, vốn hóa, GDP) và **55b** (dòng 602–611, 621–642: GTGD bình quân cổ phiếu-CCQ, số mã/giá trị niêm yết, HĐTL VN30, chứng quyền, GT NĐTNN ròng) ĐÃ thiết kế — khối này; **55c** (TPCP, dòng 612–620) và **55d** (số tài khoản NĐT, dòng 643–644) chưa làm. Δ số lượng BA ↔ HLD ở Gate 10 là CÓ CHỦ Ý cho tới khi xong 55d. Ghi chú BA: dòng 601 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào (thiết kế mới); dòng 549–591 của file BA là phần SQL tham khảo của dòng 548 bị tách dòng do quote lỗi trong CSV (không phải chỉ tiêu). Giả định/mâu thuẫn ở O_VP_40 (vốn hóa, ngày báo cáo), O_VP_41 (GDP — đóng, chọn thêm cột Unit Type Code vào Fact Macro Indicator Snapshot) và O_VP_42 (55b).
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Ngày báo cáo
+
+| Chỉ tiêu | Ngày báo cáo / bình quân kỳ | % so với kỳ trước | % so với cùng kỳ / cuối năm trước |
+|---|---|---|---|
+| Chỉ số VNIndex, HNX-Index | … | … | … |
+| Vốn hóa thị trường cổ phiếu (Nghìn tỷ đồng) | … | — | … |
+| GDP năm, Tỷ lệ vốn hóa/GDP năm | … | — | — |
+| Cổ phiếu, CCQ - GTGD bình quân tháng / năm (Tỷ đồng) | … | … | … |
+| Số mã niêm yết HNX, HOSE / ĐKGD UPCoM; Tổng giá trị niêm yết | … | — | … |
+| HĐTL VN30 - KLGD bình quân tháng / năm; OI | … | … | … |
+| CW - KLGD, GTGD bình quân tháng / năm | … | … | … |
+| GT NĐTNN mua/bán ròng cổ phiếu-CCQ, TPCP tháng / năm (Tỷ đồng) | … | — | — |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu tại 1 Ngày báo cáo (toàn thị trường). Storage Grain: chỉ số = 1 chỉ số × 1 ngày; vốn hóa/niêm yết = 1 mã × 1 ngày; GTGD/KLGD = 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT — xem Bảng grain. Mốc ngày và số phiên suy từ Ngày báo cáo tại presentation layer.
+
+**Source:** `Fact Market Index Snapshot`, `Fact Listed Equity Snapshot`, `Fact Macro Indicator Snapshot`, `Fact Investor Group Trading Snapshot`, `Fact Derivative Contract Snapshot`, `Fact Government Bond Trading Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_165 | Ngày báo cáo | — | Chiều | Calendar Date Dimension: Calendar Date = :report_date; mốc dẫn xuất :d_cur (ngày giao dịch gần nhất <= ngày báo cáo), :d_pm / :d_py (ngày giao dịch cuối cùng tháng/năm trước), :month_start, :pm_start/:pm_end, :lym_start/:lym_end, :year_start, :py_start/:py_end (mốc lịch) | Chiều — tham số báo cáo; mốc dẫn xuất tại presentation layer (O_VP_40) | READY |
+| K_VP_166 | Chỉ số VNIndex | Điểm | Cơ sở | argMax(Market Index Value, Calendar Date) trên Fact Market Index Snapshot với Market Code = 'HOSE' tại :d_cur | Case 1 — measure Market Index Value (reuse QLKD, như K_VP_6); điểm tại :d_cur | READY |
+| K_VP_167 | Chỉ số VNIndex - % so với cuối tháng trước | % | Phái sinh | (Market Index Value tại :d_cur − tại :d_pm) / tại :d_pm × 100, Market Code = 'HOSE' | Case 2 — tính tại presentation layer từ K_VP_166 tại 2 mốc ngày | READY |
+| K_VP_168 | Chỉ số VNIndex - % so với cuối năm trước | % | Phái sinh | (Market Index Value tại :d_cur − tại :d_py) / tại :d_py × 100, Market Code = 'HOSE' | Case 2 — tính tại presentation layer từ K_VP_166 tại 2 mốc ngày | READY |
+| K_VP_169 | Chỉ số HNX-Index | Điểm | Cơ sở | argMax(Market Index Value, Calendar Date) trên Fact Market Index Snapshot với Market Code = 'HNX' tại :d_cur | Case 1 — measure Market Index Value (reuse QLKD, như K_VP_7); điểm tại :d_cur | READY |
+| K_VP_170 | Chỉ số HNX-Index - % so với cuối tháng trước | % | Phái sinh | (Market Index Value tại :d_cur − tại :d_pm) / tại :d_pm × 100, Market Code = 'HNX' | Case 2 — tính tại presentation layer từ K_VP_169 tại 2 mốc ngày | READY |
+| K_VP_171 | Chỉ số HNX-Index - % so với cuối năm trước | % | Phái sinh | (Market Index Value tại :d_cur − tại :d_py) / tại :d_py × 100, Market Code = 'HNX' | Case 2 — tính tại presentation layer từ K_VP_169 tại 2 mốc ngày | READY |
+| K_VP_172 | Vốn hóa thị trường cổ phiếu (Nghìn tỷ đồng) | Nghìn tỷ đồng | Cơ sở | SUM(Market Cap Value) trên Fact Listed Equity Snapshot với Stock Type Code = '2' (cổ phiếu), Floor Code ∈ (02, 04, 10) tại :d_cur | Case 1 — measure Market Cap Value (UPCoM: VWAP T+1, xem O_VP_40); lưu VND, hiển thị Nghìn tỷ đồng | READY |
+| K_VP_173 | Vốn hóa thị trường cổ phiếu - % so với cuối năm trước | % | Phái sinh | (Σ Market Cap Value tại :d_cur − Σ tại :d_py) / Σ tại :d_py × 100, cổ phiếu, 3 sàn | Case 2 — tính tại presentation layer từ K_VP_172 tại 2 mốc ngày | READY |
+| K_VP_174 | GDP năm | VND | Cơ sở | GDP năm (năm báo cáo − 1): ưu tiên kỳ Năm hơn Quý (Quý phải đủ 4 kỳ, cộng 4 quý), mỗi giá trị nhân hệ số đơn vị (mã 3 ×1e9, 8 ×1, 23 ×1e6) về VND | Case 1 — Indicator Value × hệ số đơn vị (Unit Type Code); thêm cột Unit Type Code ở Fact PTTT — O_VP_41 | READY |
+| K_VP_175 | Tỷ lệ vốn hóa/GDP năm | % | Phái sinh | Σ Market Cap Value tại :d_cur / GDP năm (VND) × 100 | Case 2 — tính tại presentation layer từ K_VP_172 và K_VP_174 | READY |
+| K_VP_176 | Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ giá trị khớp (Buy Value, nhóm ALL) cổ phiếu + CCQ trên HOSE, HNX, UPCoM / số phiên giao dịch (tháng báo cáo (từ đầu tháng đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_177 | Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo - % thay đổi so với bình quân tháng trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên tháng trước) / bình quân/phiên tháng trước × 100 | Case 2 — tính tại presentation layer từ K_VP_176 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_178 | Cổ phiếu, CCQ - Giá trị giao dịch bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên cùng tháng năm trước) / bình quân/phiên cùng tháng năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_176 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_179 | Cổ phiếu, CCQ - Giá trị giao dịch bình quân năm báo cáo | Tỷ đồng | Phái sinh | Σ giá trị khớp (Buy Value, nhóm ALL) cổ phiếu + CCQ trên HOSE, HNX, UPCoM / số phiên giao dịch (năm báo cáo (từ đầu năm đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_180 | Cổ phiếu, CCQ - Giá trị giao dịch bình quân năm báo cáo - % thay đổi so với bình quân năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên năm trước) / bình quân/phiên năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_179 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_181 | Cổ phiếu, CCQ - Số mã niêm yết trên HNX, HOSE | Mã | Cơ sở | COUNT(Ticker Symbol) trên Fact Listed Equity Snapshot với Floor Code ∈ (02, 10), Stock Type Code ∈ (2, 3, 6) tại :d_cur | Case 1 — đếm mã trên Fact Listed Equity Snapshot tại :d_cur | READY |
+| K_VP_182 | Cổ phiếu - Số mã cổ phiếu ĐKGD trên UPCoM | Mã | Cơ sở | COUNT(Ticker Symbol) trên Fact Listed Equity Snapshot với Floor Code = '04', Stock Type Code = '2' tại :d_cur | Case 1 — đếm mã cổ phiếu UPCoM tại :d_cur | READY |
+| K_VP_183 | Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD (Nghìn tỷ đồng) | Nghìn tỷ đồng | Cơ sở | SUM(Listed Share Value) trên Fact Listed Equity Snapshot với Stock Type Code ∈ (2, 3, 6) tại :d_cur | Case 1 — measure Listed Share Value = Listed Share Quantity × 10.000 | READY |
+| K_VP_184 | Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với cuối năm trước | % | Phái sinh | (Σ Listed Share Value tại :d_cur − tại :d_py) / tại :d_py × 100 | Case 2 — tính tại presentation layer từ K_VP_183 tại 2 mốc ngày | READY |
+| K_VP_185 | Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với GDP năm | % | Phái sinh | Σ Listed Share Value tại :d_cur / GDP năm (VND) × 100 | Case 2 — tính tại presentation layer từ K_VP_183 và K_VP_174; BA ghi 'Chỉ tiêu cơ sở' | READY |
+| K_VP_186 | HĐTL VN30 - KLGD bình quân/phiên tháng báo cáo | HĐ | Phái sinh | Σ khối lượng khớp (Buy Volume, nhóm ALL) của mọi HĐTL chỉ số VN30 (sàn 03, loại 4, tài sản cơ sở VN30) / số phiên giao dịch (tháng báo cáo (từ đầu tháng đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_187 | HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên tháng trước) / bình quân/phiên tháng trước × 100 | Case 2 — tính tại presentation layer từ K_VP_186 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_188 | HĐTL VN30 - KLGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên cùng tháng năm trước) / bình quân/phiên cùng tháng năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_186 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_189 | HĐTL VN30 - KLGD bình quân năm báo cáo | HĐ | Phái sinh | Σ khối lượng khớp (Buy Volume, nhóm ALL) của mọi HĐTL chỉ số VN30 (sàn 03, loại 4, tài sản cơ sở VN30) / số phiên giao dịch (năm báo cáo (từ đầu năm đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_190 | HĐTL VN30 - KLGD bình quân năm báo cáo - % so với bình quân năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên năm trước) / bình quân/phiên năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_189 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_191 | HĐTL VN30 - Khối lượng mở (OI) ngày báo cáo | HĐ | Cơ sở | SUM(Open Interest Quantity) trên Fact Derivative Contract Snapshot với hợp đồng VN30 (Floor Code = '03', Stock Type Code = '4', Underlying Symbol = 'VN30') tại :d_cur | Case 1 — measure Open Interest Quantity (reuse Nhóm Fact phái sinh VP) | READY |
+| K_VP_192 | HĐTL VN30 - Khối lượng mở (OI) - % so với cuối tháng trước | % | Phái sinh | (OI tại :d_cur − OI tại :d_pm) / OI tại :d_pm × 100, HĐTL VN30 | Case 2 — tính tại presentation layer từ K_VP_191 tại 2 mốc ngày | READY |
+| K_VP_193 | HĐTL VN30 - Khối lượng mở (OI) - % so với cuối năm trước | % | Phái sinh | (OI tại :d_cur − OI tại :d_py) / OI tại :d_py × 100, HĐTL VN30 | Case 2 — tính tại presentation layer từ K_VP_191 tại 2 mốc ngày | READY |
+| K_VP_194 | CW - KLGD bình quân tháng báo cáo | CW | Phái sinh | Σ khối lượng khớp (Buy Volume, nhóm ALL) chứng quyền HOSE / số phiên giao dịch (tháng báo cáo (từ đầu tháng đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_195 | CW - KLGD bình quân tháng báo cáo - % so với bình quân tháng trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên tháng trước) / bình quân/phiên tháng trước × 100 | Case 2 — tính tại presentation layer từ K_VP_194 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_196 | CW - KLGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên cùng tháng năm trước) / bình quân/phiên cùng tháng năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_194 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_197 | CW - GTGD bình quân tháng báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ giá trị khớp (Buy Value, nhóm ALL) chứng quyền HOSE / số phiên giao dịch (tháng báo cáo (từ đầu tháng đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_198 | CW - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên tháng trước) / bình quân/phiên tháng trước × 100 | Case 2 — tính tại presentation layer từ K_VP_197 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_199 | CW - GTGD bình quân tháng báo cáo - % so với bình quân tháng cùng kỳ năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên cùng tháng năm trước) / bình quân/phiên cùng tháng năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_197 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_200 | CW - KLGD bình quân năm báo cáo (Tỷ đồng) | CW | Phái sinh | Σ khối lượng khớp (Buy Volume, nhóm ALL) chứng quyền HOSE / số phiên giao dịch (năm báo cáo (từ đầu năm đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_201 | CW - KLGD bình quân năm báo cáo - % so với bình quân năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên năm trước) / bình quân/phiên năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_200 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_202 | CW - GTGD bình quân năm báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ giá trị khớp (Buy Value, nhóm ALL) chứng quyền HOSE / số phiên giao dịch (năm báo cáo (từ đầu năm đến ngày báo cáo)); số phiên = số ngày cdr_dt_dim.is_trading_date = 'Y' có dữ liệu | Case 2 — Σ / số phiên tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_203 | CW - GTGD bình quân năm báo cáo - % so với bình quân năm trước | % | Phái sinh | (bình quân/phiên kỳ báo cáo − bình quân/phiên năm trước) / bình quân/phiên năm trước × 100 | Case 2 — tính tại presentation layer từ K_VP_202 tại 2 kỳ. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_204 | GT NĐTNN mua/bán ròng cổ phiếu, CCQ tháng báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ Buy Value − Σ Sell Value trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Code ∈ (2, 3, 6), Market Id Code ∈ (STK, STX, UPX), trong tháng báo cáo | Case 2 — mua − bán tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_205 | GT NĐTNN mua/bán ròng cổ phiếu, CCQ năm báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ Buy Value − Σ Sell Value trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Stock Type Code ∈ (2, 3, 6), Market Id Code ∈ (STK, STX, UPX), trong năm báo cáo | Case 2 — mua − bán tại presentation layer; BA ghi 'Chỉ tiêu cơ sở'. [!] Nguồn Securities Trade (sổ lệnh khớp) — O_VP_1 | READY |
+| K_VP_206 | GT NĐTNN mua/bán ròng trái phiếu (TPCP) tháng báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ Foreign Buy Value − Σ Foreign Sell Value trên Fact Government Bond Trading Snapshot trong tháng báo cáo | Case 2 — mua − bán tại presentation layer; BA ghi 'Chỉ tiêu cơ sở' | READY |
+| K_VP_207 | GT NĐTNN mua/bán ròng trái phiếu (TPCP) năm báo cáo (Tỷ đồng) | Tỷ đồng | Phái sinh | Σ Foreign Buy Value − Σ Foreign Sell Value trên Fact Government Bond Trading Snapshot trong năm báo cáo | Case 2 — mua − bán tại presentation layer; BA ghi 'Chỉ tiêu cơ sở' | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Market_Index_Dimension {
+        string Market_Index_Dimension_Id PK
+        string Market_Id
+        string Market_Code
+        string Index_Name
+        string Index_Type_Code
+        string TSC_Product_Group_Id
+        string Market_Status_Code
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string Stock_Type_Code
+        string Stock_Type_Name
+        string Underlying_Symbol
+        string ISIN_Code
+        string Issuer_Name
+        bigint Listed_Share_Count
+        date First_Trading_Date
+        date Last_Trading_Date
+        date Issue_Date
+        date Maturity_Date
+        string Fund_Type_Code
+        string Covered_Warrant_Type_Code
+        decimal Exercise_Price
+        string Exercise_Ratio
+        string Exercise_Style_Code
+        string Put_Or_Call_Code
+        string Contract_Multiplier
+        string Maturity_Month_Year
+        decimal Coupon_Rate
+        decimal Yield
+        decimal Open_Price
+        decimal High_Price
+        decimal Low_Price
+        decimal Ceiling_Price
+        decimal Floor_Price
+        decimal Reference_Price
+        decimal Close_Price
+        decimal Price_Change
+        string Product_Group_Id
+        string Source_System_Code
+    }
+    Fact_Market_Index_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Market_Index_Dimension_Id FK
+        decimal Market_Index_Value
+        decimal Open_Index
+        decimal High_Index
+        decimal Low_Index
+        decimal Prior_Index
+        decimal Index_Change
+        decimal Index_Percent_Change
+        int Advances_Count
+        int Declines_Count
+        int No_Change_Count
+        int Ceiling_Count
+        int Floor_Count
+    }
+    Fact_Listed_Equity_Snapshot {
+        string Listed_Equity_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Ticker_Symbol
+        string Floor_Code
+        string Stock_Type_Code
+        bigint Outstanding_Share_Quantity
+        bigint Listed_Share_Quantity
+        decimal Listed_Share_Value
+        decimal Close_Price
+        decimal Reference_Price
+        bigint Next_Day_Volume_Weighted_Average_Price
+        decimal Market_Price
+        decimal Market_Cap_Value
+        string Source_System_Code
+    }
+    Fact_Macro_Indicator_Snapshot {
+        string Snapshot_Date_Dimension_Id FK
+        string Macro_Indicator_Code
+        string Macro_Indicator_Name
+        string Period_Type_Code
+        string Period_Label
+        decimal Indicator_Val
+        string Unit_Type_Code
+        decimal Prev_Period_Val
+        decimal Pct_Change
+        decimal Yoy_Pct_Change
+        decimal Ma_N_Val
+        string Source_System_Code
+    }
+    Fact_Investor_Group_Trading_Snapshot {
+        string Investor_Group_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Industry_Dimension_Id FK
+        string Security_Symbol_Code
+        string Market_Id_Code
+        string Investor_Group_Code
+        bigint Buy_Volume
+        decimal Buy_Value
+        bigint Sell_Volume
+        decimal Sell_Value
+    }
+    Fact_Derivative_Contract_Snapshot {
+        string Derivative_Contract_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        string Ticker_Symbol
+        bigint Open_Interest_Quantity
+        decimal Close_Price
+    }
+    Fact_Government_Bond_Trading_Snapshot {
+        string Government_Bond_Trading_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Order_Book_Type_Code
+        bigint Trading_Volume
+        decimal Trading_Value
+        decimal Foreign_Buy_Value
+        decimal Foreign_Sell_Value
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+    Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Market_Index_Dimension["Market Index Dimension"]
+        Security_Trading_Snapshot_Dimension["Security Trading Snapshot Dimension"]
+        Fact_Market_Index_Snapshot["Fact Market Index Snapshot"]
+        Fact_Listed_Equity_Snapshot["Fact Listed Equity Snapshot"]
+        Fact_Macro_Indicator_Snapshot["Fact Macro Indicator Snapshot"]
+        Fact_Investor_Group_Trading_Snapshot["Fact Investor Group Trading Snapshot"]
+        Fact_Derivative_Contract_Snapshot["Fact Derivative Contract Snapshot"]
+        Fact_Government_Bond_Trading_Snapshot["Fact Government Bond Trading Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 55"]
+        R1["K_VP_165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207: Báo cáo VP_TK02 – TTCK bất thường"]
+    end
+    Calendar_Date_Dimension --> R1
+    Market_Index_Dimension --> R1
+    Security_Trading_Snapshot_Dimension --> R1
+    Fact_Market_Index_Snapshot --> R1
+    Fact_Listed_Equity_Snapshot --> R1
+    Fact_Macro_Indicator_Snapshot --> R1
+    Fact_Investor_Group_Trading_Snapshot --> R1
+    Fact_Derivative_Contract_Snapshot --> R1
+    Fact_Government_Bond_Trading_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Market Index Dimension | 1 tổ hợp Market Id + Market Code (SCD4A current-state); sở hữu bởi QLKD |
+| Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
+| Fact Market Index Snapshot | 1 chỉ số (Market Code) × 1 ngày giao dịch — bản ghi cuối ngày; sở hữu bởi QLKD |
+| Fact Listed Equity Snapshot | 1 mã cổ phiếu/chứng chỉ quỹ (stock_tp_code 2/3/6) trên HOSE, HNX, UPCoM × 1 ngày giao dịch (bản tin cuối ngày MDDS JAD_STOCKINFOR); PK Listed Equity Snapshot Id = hash (Snapshot Date Dimension Id, Ticker Symbol, Source System Code) (Dạng B, A22) |
+| Fact Macro Indicator Snapshot | 1 row / chỉ tiêu vĩ mô / kỳ công bố |
+| Fact Investor Group Trading Snapshot | 1 mã chứng khoán / hợp đồng × 1 ngày giao dịch × 1 sàn (Market Id Code) × 1 nhóm NĐT (ALL / FOREIGN / PROPRIETARY); PK Investor Group Trading Snapshot Id = hash toàn bộ cột grain (Dạng B, A22) |
+| Fact Derivative Contract Snapshot | 1 mã hợp đồng phái sinh × 1 ngày giao dịch; PK Derivative Contract Snapshot Id = hash (Snapshot Date, Ticker Symbol) (Dạng B, A22) |
+| Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
+
 ## Section 3 — Mô hình tổng thể
 
 ### 3.1 Graph TB
@@ -2065,7 +3338,7 @@ Không có.
 | O_VP_1 | Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai | Entity Atomic `Securities Trade` (nguồn ORDERTRADE.TRADE_BOOK_HOSE / TRADE_BOOK_HNX) bị gỡ khỏi `DataModel/Atomic` ở commit `bd91cc0a` (2026-10-14); toàn bộ HLD/LLD/entity/BRD phân tích của nguồn ORDERTRADE bị xóa tiếp ở `fbe95329` (2026-10-21, "update brd") — gỡ CÓ CHỦ ĐÍCH, không phải xóa nhầm. Atomic hiện có `Security Match Log` (MDDS.JAD_TRANSLOG, tick khớp lệnh cổ phiếu, KHÔNG có số tài khoản mua/bán), `Bond Order Book` (HNX, có `buying/selling_account_nbr`) và `Private Corp Bond Trading Summary`; BRD MDDS.JAD_ODDLOTTRANSLOG đã có nhưng chưa có entity Atomic. Chưa entity nào thay thế được Sổ lệnh cấp tài khoản (HOSE/HNX `trade_book`) mà BA dùng để nhận diện NĐTNN/Tự doanh theo ký tự thứ 4 của số tài khoản. | Giữ tham chiếu entity và tên cột như GSTT/PTTT/NDTNN (Trade Date, Market Id Code, Security Symbol Code, Execution Volume, Execution Value dùng chung HOSE/HNX, Buy/Sell Account Number); KPI vẫn READY, Gate 0 official hiển thị `[!]`; chờ Atomic team cung cấp nguồn Sổ lệnh cấp tài khoản (hoặc BA đổi nguồn sang `Bond Order Book` cho phần trái phiếu) — Vuong quyết. | K_VP_5,9-17,21-28,31-38,41-48,51-58,61-68,71-82,86,90,112-113 | Data Architecture / Atomic Team | Open |
 | O_VP_2 | Quy chuẩn LLD | Định nghĩa Tự doanh khác GSTT: BA VP Nhóm 2 = ký tự thứ 4 số tài khoản ∈ (P, E, A) ('A' = tự doanh thành viên lưu ký trong nước); GSTT Investor Category 'TU_DOANH' = (P, E). | Tạo Fact riêng cho VP, không partial Fact của GSTT (tránh đổi số GSTT — H11). BA xác nhận nên thống nhất (P, E, A) hay (P, E). | K_VP_13-17 | BA Team / Datamart Modeling Team | Open |
 | O_VP_3 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | BA dòng 34, 36 (Nhóm 3): Mô tả định nghĩa NĐTNN phái sinh = Buy/Sell Foreign Investor Type Code <> '00'; Điều kiện và SQL = ký tự thứ 4 số tài khoản ∈ (E, F). | Thiết kế theo Điều kiện/SQL (thống nhất với cổ phiếu). Nếu BA chọn phương án Mô tả: dùng Buy/Sell Foreign Investor Type Code của Securities Trade, đổi quy tắc phân nhóm FOREIGN cho dòng phái sinh. | K_VP_23,25,33,35,43,45,53,55,63,65 | BA Team | Open |
-| O_VP_4 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | Nhóm 1–2: Mô tả/Điều kiện ghi thị trường cổ phiếu bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền (chỉ lọc market_id); SQL tham khảo lọc thêm `stocktype = '2'` (chỉ cổ phiếu) qua CTE stock_daily_eod. | Theo Mô tả/Điều kiện: không lọc Stock Type Code. Nếu BA chọn SQL: thêm Stock Type Code = '2' qua Security Trading Snapshot Dimension. | K_VP_5,9-17 | BA Team | Open |
+| O_VP_4 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | [ĐÃ ĐÓNG 2026-10-28 — BA cập nhật Nhóm 1/2: Mô tả bỏ chứng quyền, Điều kiện + SQL lọc stocktype IN ('2','3','6'); thiết kế lọc Stock Type Code IN ('2','3','6') ở K_VP_5, 9–17] (Lịch sử) Nhóm 1–2: Mô tả/Điều kiện ghi thị trường cổ phiếu bao gồm cổ phiếu, chứng chỉ quỹ, chứng quyền (chỉ lọc market_id); SQL tham khảo lọc thêm `stocktype = '2'` (chỉ cổ phiếu) qua CTE stock_daily_eod. | Theo Mô tả/Điều kiện: không lọc Stock Type Code. Nếu BA chọn SQL: thêm Stock Type Code = '2' qua Security Trading Snapshot Dimension. | K_VP_5,9-17 | BA Team | Closed 2026-10-28 |
 | O_VP_5 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | Loại kỳ 'D': SQL BA lấy kỳ trước = ngày lịch liền trước (`DATE_SUB(startdate, 1)`), không phải phiên giao dịch liền trước — Thứ Hai so với Chủ nhật cho kết quả NULL. | Thiết kế % thay đổi đúng SQL BA; BA xác nhận có đổi sang phiên giao dịch liền trước không. | K_VP_20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,72,74,78,80,82,91,95,97,99,101,103,105,107,109,111,114 | BA Team | Open |
 | O_VP_6 | Nhóm 1 - BA chưa mapping xong (lỗi nhập liệu BA CSV) | (a) Dòng 43/53/63/73 (KLGD % thay đổi từng sản phẩm) ghi bảng nguồn OI VSDC thay vì Sổ lệnh; (b) cột Chỉ tiêu gốc dòng 75–79 lệch hàng; (c) dòng 92/93 (Nhóm 5) nhãn 'HĐTL VN100' nhưng điều kiện `productgrpid = 'FBX'` (TPCP); (d) dòng 110 (Nhóm 6) Mô tả ghi 'HĐTL TPCP' cho Toàn thị trường; (e) % thay đổi KL ròng: dòng 39 chia ABS(kỳ trước), dòng 49/59/69/79 không dùng ABS. | Thiết kế theo Mô tả/Điều kiện từng dòng, bỏ qua ô lệch; (e) giữ nguyên công thức từng dòng. BA sửa CSV và xác nhận ABS. | K_VP_22,28,32,38,42,48-49,51-52,58,62-68 | BA Team | Open |
 | O_VP_7 | Nhóm 5 - Datamart chưa thiết kế Fact/Dim | Security Trading Snapshot Dimension (GSTT) thiếu Product Group Id (Atomic `product_group_id`) để nhận diện HĐTL TPCP (`productgrpid = 'FBX'`). | reuse chuyển thành partial: thêm cột Product Group Id (nullable) vào Dimension; khi sửa LLD phải grep mọi KPI GSTT/PTTT/NDTNN dùng dimension này (H11). | K_VP_18-70 | Datamart Modeling Team | Open |
@@ -2094,3 +3367,13 @@ Không có.
 | O_VP_30 | Quy chuẩn LLD | Số phiên giao dịch (mẫu số GTGD bình quân phiên YTD, dòng 144 Nhóm 11) theo BA = số ngày có dữ liệu Sổ lệnh HNX (`COUNT(DISTINCT trade_date)` trên `hnx.trade_book`); Securities Trade bị gỡ khỏi Atomic (O_VP_1) nên không dựng được từ Sổ lệnh. | Dùng Calendar Date Dimension.Is Trading Date = 'Y' (GSTT, O_GSTT_62 — UNION 4 nguồn: Market Index Snapshot, Security Trading Snapshot, Securities Trade nhánh HOSE và HNX) làm proxy cho 'ngày có Sổ lệnh HNX'. Lệch BA nhẹ: ngày chỉ có dữ liệu HOSE/MDDS mà không có Sổ lệnh HNX vẫn được tính. KPI không phụ thuộc trực tiếp Securities Trade. BA xác nhận chấp nhận proxy. | K_VP_92-93 | BA Team / Datamart Modeling Team | Open |
 | O_VP_31 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | Nhóm 14–16: (a) dòng 161/163 (KLGD/GTGD TPCP) không ghi bộ lọc `order_status` nhưng SQL (dòng 160) lọc `order_status = 'ĐTH'` cho mọi chỉ tiêu (dòng 165/167 ghi rõ); (b) dòng 169 (Giá trị mua/bán ròng NĐTNN) Phân loại 'Chỉ tiêu cơ sở' nhưng Mô tả là mua − bán; (c) dòng 175–177 (Nhóm 16) Độ chi tiết 'Loại CK / Thị trường, Ngày' và Đánh giá 'TB' nhưng SQL dùng chung Nhóm 15 cộng gộp OUTRIGHT + REPO, Mô tả/Điều kiện giống dòng 165/167/169; (d) dòng 161/172 Điều kiện ghi `o.volumne` (typo của `volume`); (e) dòng 170 (% ròng): Mô tả không dùng ABS, SQL chia ABS(kỳ trước); (f) dòng 160/171/174 (Kỳ) Đánh giá 'TB' nhưng cùng định nghĩa Kỳ của Nhóm 1. | (a) lọc 'ĐTH' cho mọi chỉ tiêu theo SQL; (b) Tính chất Phái sinh; (c) reuse K_VP_106/108/110 (Case 2) — Order Book Type Code nằm trong grain nên tách được 'Loại CK / Thị trường' nếu BA cần; (d) `volume`; (e) theo Mô tả (không ABS) như K_VP_82; (f) reuse K_VP_1. BA sửa CSV/SQL và xác nhận. | K_VP_1,102-111 | BA Team | Open |
 | O_VP_32 | Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai | Atomic `Bond Order Book` (HNX; dùng cho Nhóm 14–16 thay 2 bảng staging `outright_order_book` / `repo_order_book` của BA): (a) literal `order_status = 'ĐTH'` và `order_book_tp` ∈ ('OUTRIGHT', 'REPO') lấy theo BA / Atomic (`etl_derived_value`), chưa kiểm giá trị thật; (b) BA không lọc loại trái phiếu — coi mọi lệnh outright/repo HNX là TPCP, trong khi chưa có value set của `instrument_tp`/`bond_code` (O_VP_24 nghi ngờ bảng chứa cả TPDN); (c) `trading_val` chỉ có ở OUTRIGHT (NULL với REPO) nên REPO dùng `first_settlement_val` (GTTT lần 1) theo BA, REPO2 loại khỏi Fact vì BA không đọc; (d) BA không dùng `order_side`: giả định mỗi dòng đã thực hiện mang đủ số tài khoản mua và bán, không bị nhân đôi theo phía; (e) `foreign_buy_val` / `foreign_sell_val` của Fact TPCP để NULL khi ngày không có lệnh NĐTNN (đúng `SUM(CASE ...)` của BA), khác Fact TPDN niêm yết dùng `ELSE 0` (O_VP_11). | Giữ theo BA; dev xác nhận giá trị `order_status`, value set `order_book_tp`/`instrument_tp` (cùng truy vấn (1) của O_VP_24) và (d) trên UAT. Nếu bảng chứa cả TPDN: thêm bộ lọc loại trái phiếu và mở lại Nhóm 14–16. | K_VP_102-111 | Data Architecture / Atomic Team | Open |
+| O_VP_33 | Nhóm 1 - BA chưa mapping xong (mâu thuẫn BA) | Nhóm 1–2 (BA 2026-10-28): điều kiện nối sổ lệnh HNX với danh sách cổ phiếu viết `s.symbol = h.issue_code`, trong khi Atomic/Gate A17: ISSUE_CODE của sổ lệnh HNX lưu mã ISIN (không phải ticker) — nối theo symbol sẽ rơi giao dịch HNX/UPCOM. | Thiết kế nối `Security Trading Snapshot Dimension.isin_code = issue_code` cho HNX (đã là cách Fact đang tra `security_trading_snpst_dim_id`); cần BA xác nhận `issue_code` HNX là ISIN hay symbol. | K_VP_5, 9–17 | BA Team | Open |
+| O_VP_34 | Nhóm 32 - BA lỗi copy / mâu thuẫn BA | Nhóm 32 (BA 2026-10-28): (a) dòng 382 (GT bán NĐTNN - TPDN niêm yết) công thức dùng `h.buy_account_number` (phía mua) cho 'GTGD NĐTNN Bán'; dòng 383 (TPDN riêng lẻ) lọc `row_path = '…GIÁ TRỊ MUA'`; dòng 384 (TPCP) ghi 'GT NĐTNN mua' với `buying_account_no` — đều là bản sao điều kiện phía MUA; (b) dòng 369/377 (GT mua/bán NĐTNN tổng) Phân loại 'Chỉ tiêu cơ sở' nhưng Mô tả là Σ 6 loại tài sản. | (a) Thiết kế theo ý định phía bán (sell_account_number / 'GIÁ TRỊ BÁN' / selling_account_no) — dùng `sell_val` / `foreign_sell_val` của Fact; (b) Tính chất Phái sinh (cùng O_VP_31(b)). Cần BA xác nhận (a). | K_VP_115–134 | BA Team | Open |
+| O_VP_35 | Nhóm 33/37 - Chiều 'Loại chứng khoán' của trái phiếu | Nhóm 33 (dòng 385) và Nhóm 37 (dòng 412): chiều 'Loại chứng khoán' nối `jad_stockinfor` và `flat_report` nhưng BA không liệt kê tập giá trị cho trái phiếu; 3 Fact trái phiếu VP không có cột loại trái phiếu. | Thiết kế: cổ phiếu/CCQ/chứng quyền/phái sinh lấy từ Security Trading Snapshot Dimension.Stock Type Name; trái phiếu dùng nhãn cố định theo Fact nguồn (TPDN niêm yết / TPDN riêng lẻ / TPCP). Cần BA xác nhận tập giá trị (có tách TPCP theo kỳ hạn/loại không). | K_VP_135, K_VP_147 | BA Team | Open |
+| O_VP_36 | Nhóm 33/34 - Giá trị giao dịch phái sinh của NĐTNN | Nhóm 33 dòng 396 / Nhóm 34 dòng 403 'GT mua/bán NĐTNN - Giao dịch phái sinh': BA chỉ ghi nguồn sổ lệnh (trade_book) + jad_stockinfor, không nêu công thức GT (giá × KL × hệ số nhân hợp đồng?) và không ghi mã sàn DVX. | Thiết kế dùng Buy Value / Sell Value của Fact Investor Group Trading Snapshot với Market Id Code = 'DVX', Stock Type Name = 'Phái sinh' (cùng nguồn Sổ lệnh — O_VP_1); cần BA xác nhận công thức GT phái sinh và cách nhận diện NĐTNN (ký tự 4 tài khoản) cho HĐTL. | K_VP_140, K_VP_141 | BA Team | Open |
+| O_VP_37 | Nhóm 35 - Đường nối ngành của cổ phiếu | Nhóm 35 dòng 405 'Ngành' (Trùng theo tên với Nhóm 8): BA lấy ngành cổ phiếu qua IDS (jad_stockinfor stocktype = '2' → company_profiles → categories; CTCK/CTQLQ đại chúng mặc định 07000). Fact Investor Group Trading Snapshot không có FK ngành (chỉ Fact TPDN niêm yết có industry_dim_id). | [ĐÃ ĐÓNG 2026-10-28 — Vuong chọn thêm FK] Fact Investor Group Trading Snapshot thêm cột Industry Dimension Id (nullable, chỉ dòng cổ phiếu có ngành; CTCK/CTQLQ = 07000), flat denormalize industry_code/industry_nm; không đổi grain/PK; dev cần ETL + ALTER TABLE + nạp lại lịch sử. (Lịch sử: phương án nối qua Operational Security Reference không dùng.) | K_VP_142, K_VP_143 | Data Modeler | Closed 2026-10-28 |
+| O_VP_38 | Nhóm 51 - Mâu thuẫn BA | Nhóm 51 (BA 2026-10-28): (a) dòng 484 công thức 'COUNT(a.ticker_symbol) + COUNT(a.ticker_symbol)' lặp bảng a (HNX), thiếu bảng b (HOSE); Trường nguồn ghi alias n/o không khớp a/b; (b) dòng 487 (UPCoM) ghi `s.floorcode = '04' --> HNX` — mã sàn 04 là UPCoM; (c) dòng 483 Kỳ lọc `report_year` của 2 bảng nguồn còn các chỉ tiêu lọc năm của `last_trading_date`; (d) dòng 484–487 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào. | (a) Đếm mọi quyết định của cả 2 Sở; (b) UPCoM = Floor Code '04'; (c) dùng năm của `last_trading_date` (khóa ngày của Fact); (d) giữ đủ 5 KPI. Cần BA xác nhận (a), (c). | K_VP_160–164 | BA Team | Open |
+| O_VP_39 | Nhóm 51 - Quy tắc ETL / khóa Fact hủy niêm yết | Fact Listing Status Change Snapshot ← Atomic `listing_status_change` (HNX, HOSE): (a) PK Atomic = hash(số quyết định, ngày quyết định, mã) KHÔNG có src_stm_code — trùng giữa 2 Sở coi là không xảy ra; (b) Atomic có `rpt_month` (báo cáo tháng) nhưng chưa rõ định dạng/độ trễ — thiết kế nạp đủ lịch sử theo `decision_dt <= :etl_date` (upsert PK) thay vì theo tháng báo cáo; (c) `exchange_transfer` (bắt đầu bằng 'Có' = chuyển sàn) chưa kiểm giá trị thật; NULL bị loại bởi `NOT LIKE 'Có%'` như SQL BA; (d) FK ngày = `last_trading_dt`, để trống nếu chưa có/ chưa nằm trong lịch ngày; flat INNER JOIN lịch nên dòng không có ngày không vào flat. | Dev kiểm (a) trùng khóa, (c) tập giá trị `exchange_transfer`; Data Modeler xác nhận (b). | Fact Listing Status Change Snapshot, K_VP_160–164 | Dev / Data Modeler | Open |
+| O_VP_40 | Nhóm 55a - Vốn hóa cổ phiếu & ngày báo cáo (giả định/lệch BA) | Fact Listed Equity Snapshot (mới, grain 1 mã × 1 ngày) + K_VP_165–173: (1) UPCoM tính vốn hóa theo VWAP ngày T lấy ở bản tin MDDS ngày giao dịch liền sau (BA dòng 598); Atomic `vol_weighted_average_price` (MDDS VWAP, bigint) có chú thích YAML 'tên/diễn giải suy từ tên cột, cần MDDS xác nhận' và nguồn là FLOAT cast bigint; (2) dòng ngày T chỉ đầy đủ `next_day_vol_weighted_average_price`/`market_price`/`market_cap_val` khi đã có bản tin T+1 → ETL mỗi ngày upsert dòng D và D-1; flat DML chuẩn (Gate 4) chỉ làm mới `cdr_dt = :etl_date` nên dev cần chạy lại DML với ngày giao dịch liền trước; (3) khối lượng lưu hành nối ĐÚNG ngày VSDC `transaction_dt = trading_dt` theo BA, khác Fact Stock Portfolio Snapshot (GSTT) lùi về bản ghi gần nhất — nếu VSDC không gửi hằng ngày thì vốn hóa NULL; (4) BA lấy lịch ngày giao dịch từ sổ lệnh HNX trade_book ∪ jad_marketinfor, Datamart dùng `cdr_dt_dim.is_trading_date` (UNION Market Index/Security Trading/Securities Trade); (5) không dùng `total_market_cap_vsdc` của Fact Market Risk Snapshot (PTTT): grain theo ngày, UPCoM dùng giá đóng cửa, KL lưu hành lùi ngày; (6) VN-Index lọc `market_code = 'HOSE'` (CLAUDE.md mục 9, không đổi sang index_nm); (7) file BA CSV: dòng 549–591 là phần câu lệnh tham khảo của dòng 548 bị tách thành dòng do quote lỗi, không phải chỉ tiêu. | (1) Dùng `vol_weighted_average_price` như VWAP của bản tin T+1; NULL khi chưa có T+1 → vốn hóa UPCoM không cộng (như BA); (2) dev upsert D-1 + chạy lại flat DML; (3) giữ nối đúng ngày theo BA, báo lệch với GSTT; (4) dùng `is_trading_date`; mốc :d_cur/:d_pm/:d_py tính tại presentation layer. Data Modeler/MDDS xác nhận (1), (3); BA xác nhận (4) và sửa CSV (7); dev xác nhận (2). | K_VP_165–173, Fact Listed Equity Snapshot | Data Modeler / MDDS / Dev / BA | Open |
+| O_VP_41 | Nhóm 55a - GDP năm thiếu cột đơn vị (PENDING K_VP_174–175) | BA dòng 600–601: GDP năm gần nhất (năm báo cáo − 1) từ MRMS `risk_indicator_value` (`GDP_VN`), ưu tiên kỳ Năm hơn Quý (đủ 4 quý), quy đổi VND theo `unit_code` ('3' Tỷ VND ×1e9, '8' VND ×1, '23' Triệu VND ×1e6); Fact Macro Indicator Snapshot (PTTT) chỉ có `indicator_val`, không có cột đơn vị dù Atomic `cl_risk_indicator_value.unit_tp_code` (MRMS UNIT_CODE) có. Câu lệnh tham khảo BA cố định `ds_snpst_dt = '2026-10-23'` (bản chụp ngày cố định, lỗi BA) và lọc `deleted = '0'`; dòng 601 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào. | [ĐÃ ĐÓNG 2026-10-28 — Vuong chọn (a)] Fact Macro Indicator Snapshot (PTTT) thêm cột Unit Type Code (`unit_tp_code` ← MRMS UNIT_CODE; LLD per-table + 4 khối ER HLD PTTT + flat PTTT); K_VP_174/175 và K_VP_185 READY: GDP quy đổi VND theo mã đơn vị, ưu tiên Năm > Quý đủ 4 kỳ. Dev cần ETL + ALTER TABLE pttt_fct_macro_indicator_snpst_flat ADD COLUMN unit_tp_code + nạp lại; mã đơn vị 23 (Triệu VND) trong câu lệnh BA không có trong danh sách mô tả của Atomic (1–10) — Data Modeler/MRMS xác nhận; QLQ Nhóm 7 có thể dùng cột mới để đóng O_QLQ_44 (chưa sửa). (Lịch sử: K_VP_174/175 PENDING. Đề xuất (a) thêm `unit_tp_code` vào `fct_macro_indicator_snpst` (PTTT) + flat PTTT, KPI quy đổi theo đơn vị và ưu tiên Năm > Quý — khuyến nghị, đồng thời đóng O_QLQ_44 (giả định Tỷ VND ×1e9 của QLQ Nhóm 7); (b) giữ giả định Tỷ VND ×1e9 cho cả VP, đặt READY. Chờ Data Modeler chọn (a)/(b). | K_VP_174, K_VP_175, Fact Macro Indicator Snapshot (PTTT) | Data Modeler / BA | Closed 2026-10-28 |
+| O_VP_42 | Nhóm 55b - Giả định/mâu thuẫn BA (K_VP_176–207) | (1) GTGD/KLGD bình quân, GT NĐTNN ròng cổ phiếu-CCQ, chứng quyền, HĐTL VN30 đọc Fact Investor Group Trading Snapshot (nhóm ALL = tổng khớp; FOREIGN = NĐTNN) — nguồn Sổ lệnh (Securities Trade) bị gỡ khỏi Atomic, phụ thuộc O_VP_1; (2) số phiên = số ngày Is Trading Date = 'Y' có dữ liệu (proxy như O_VP_30), BA dùng COUNT(trade_date) của sổ lệnh ∪ MDDS; (3) BA lọc đúng ngày báo cáo ở dòng 607 và 626 (số mã niêm yết, OI) — thiết kế dùng :d_cur (ngày giao dịch gần nhất <= ngày báo cáo) như dòng 609; (4) dòng 608 Mô tả 'Cổ phiếu + CCQ' nhưng SQL/tên chỉ tiêu chỉ stocktype 2 → theo SQL; (5) lỗi copy/nhãn BA: dòng 606, 636, 638 Mô tả ghi 'tháng báo cáo' thay 'năm'; dòng 631, 634 ghi 'HĐTL VN30' cho chứng quyền; dòng 635 nhãn '(Tỷ đồng)' cho khối lượng; (6) giá trị niêm yết dùng mệnh giá cố định 10.000 đồng (BA) — chứng chỉ quỹ/ETF cũng 10.000; (7) HĐTL VN30 nhận diện bằng Security Trading Snapshot Dimension (Floor Code = '03', Stock Type Code = '4', Underlying Symbol = 'VN30'), chứng quyền bằng Floor Code = '10' + Stock Type Code = '4' — dimension current-state nên hợp đồng/chứng quyền đã hết hạn giữ thuộc tính cuối; (8) GT NĐTNN ròng TPCP đọc Fact Government Bond Trading Snapshot (outright + repo lần 1, như K_VP_106–108); BA dòng 641–642 ghi `buying_investor_account IN ('E','F')` — thiết kế nhận diện theo ký tự thứ 4 số tài khoản như Fact; (9) Fact Listed Equity Snapshot thêm 2 cột Listed Share Quantity, Listed Share Value — dev cần ETL + ALTER flat + nạp lại lịch sử. | Theo từng điểm ở cột Vấn đề; (1) READY có điều kiện O_VP_1 như Nhóm 1–16, 32–37. Data Modeler/BA xác nhận (2), (3), (4), (6); BA sửa (5). | K_VP_176–207, Fact Listed Equity Snapshot | Data Modeler / BA / Dev | Open |

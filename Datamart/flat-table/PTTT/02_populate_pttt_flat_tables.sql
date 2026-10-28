@@ -414,6 +414,7 @@ SELECT
     f.period_tp_code,
     f.period_label,
     f.indicator_val,
+    f.unit_tp_code,
     f.prev_period_val,
     f.pct_change,
     f.yoy_pct_change,
