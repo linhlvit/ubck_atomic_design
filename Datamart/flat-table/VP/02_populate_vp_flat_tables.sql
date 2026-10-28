@@ -101,6 +101,7 @@ SELECT
     f.buy_val,
     f.sell_vol,
     f.sell_val,
+    f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -214,6 +215,7 @@ SELECT
     f.trading_val,
     f.foreign_buy_val,
     f.foreign_sell_val,
+    f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -247,6 +249,7 @@ SELECT
     f.trading_val,
     f.foreign_buy_val,
     f.foreign_sell_val,
+    f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -280,6 +283,7 @@ SELECT
     f.rpt_year,
     f.rpt_month,
     f.maturity_dt,
+    f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,

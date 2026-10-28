@@ -25099,7 +25099,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id, security_symbol_code, market_id_code, investor_group_code). Grain = 1 mã chứng khoán/hợp đồng × 1 ngày giao dịch × 1 sàn × 1 nhóm nhà đầu tư; khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, security_symbol_code, market_id_code, investor_group_code, src_stm_code). Grain = 1 mã chứng khoán/hợp đồng × 1 ngày giao dịch × 1 sàn × 1 nhóm nhà đầu tư; src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25183,6 +25183,15 @@ entities:
         description: "Giá trị phía bán theo nhóm nhà đầu tư (nhóm nhà đầu tư không loại trừ nhau (tài khoản loại 'E' thuộc cả NĐTNN và Tự doanh), mỗi phía mua/bán xét độc lập theo ký tự thứ 4 của số tài khoản; nhóm ALL là tổng khớp của mọi giao dịch); lấy giá trị khớp của sổ lệnh, dùng chung HOSE và HNX."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
+        source_atomic_table: "securities_trade"
+        source_atomic_column: "securities_trade.src_stm_code"
 
   - id: "DTM-fct_derivative_contract_snpst"
     logical_name: "Fact Derivative Contract Snapshot"
@@ -25204,7 +25213,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id, ticker_symbol). Grain = 1 mã hợp đồng phái sinh × 1 ngày giao dịch; mã hợp đồng lấy từ bản tin cuối ngày MDDS hoặc từ báo cáo khối lượng mở VSDC; khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, ticker_symbol). Grain = 1 mã hợp đồng phái sinh × 1 ngày giao dịch; mã hợp đồng lấy từ bản tin cuối ngày MDDS hoặc từ báo cáo khối lượng mở VSDC; không đưa src_stm_code vào khóa vì mỗi dòng gộp 2 nguồn (bản tin cuối ngày MDDS và báo cáo khối lượng mở VSDC) theo (ngày, mã hợp đồng); khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25277,7 +25286,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id, security_symbol_code). Grain = 1 mã trái phiếu (ISIN) × 1 ngày giao dịch; dòng là mã có giao dịch Sổ lệnh TPDN niêm yết hoặc có bản tin cuối ngày MDDS trong ngày (kết hợp hai nguồn theo (ISIN, ngày)); khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, security_symbol_code). Grain = 1 mã trái phiếu (ISIN) × 1 ngày giao dịch; dòng là mã có giao dịch Sổ lệnh TPDN niêm yết hoặc có bản tin cuối ngày MDDS trong ngày (kết hợp hai nguồn theo (ISIN, ngày)); không đưa src_stm_code vào khóa vì mỗi dòng gộp nhiều nguồn (Sổ lệnh HNX, bản tin cuối ngày MDDS, danh sách chứng khoán niêm yết) theo (ISIN, ngày); khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25408,7 +25417,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id). Grain = 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP đã nộp), toàn thị trường; các ô theo Row Path chuyển thành cột; khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, src_stm_code). Grain = 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP đã nộp), toàn thị trường; các ô theo Row Path chuyển thành cột; src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25447,6 +25456,15 @@ entities:
         description: "Giá trị giao dịch bán của nhà đầu tư nước ngoài trong ngày báo cáo = ô 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' của báo cáo HNX09; để trống khi ngày không có báo cáo hợp lệ."
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.cell_val / row_path / data_tp_code"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.src_stm_code"
 
   - id: "DTM-fct_private_corporate_bond_registration_snpst"
     logical_name: "Fact Private Corporate Bond Registration Snapshot"
@@ -25467,7 +25485,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(bond_code, rpt_year, rpt_month). Grain = 1 mã trái phiếu doanh nghiệp riêng lẻ đăng ký giao dịch × 1 tháng báo cáo của HNX (Fact không có measure, mỗi dòng là một mã trong báo cáo tháng); khóa MERGE của ETL."
+        description: "PK — hash(bond_code, rpt_year, rpt_month, src_stm_code). Grain = 1 mã trái phiếu doanh nghiệp riêng lẻ đăng ký giao dịch × 1 tháng báo cáo của HNX (Fact không có measure, mỗi dòng là một mã trong báo cáo tháng); src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25515,6 +25533,15 @@ entities:
         description: "Ngày đáo hạn của trái phiếu; chỉ đếm mã có ngày đáo hạn sau ngày cuối kỳ khi tính số mã đăng ký giao dịch. Để trống khi nguồn không có ngày đáo hạn."
         source_atomic_table: "private_corp_bond_registration"
         source_atomic_column: "private_corp_bond_registration.maturity_dt"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
+        source_atomic_table: "private_corp_bond_registration"
+        source_atomic_column: "private_corp_bond_registration.src_stm_code"
 
   - id: "DTM-fct_government_bond_trading_snpst"
     logical_name: "Fact Government Bond Trading Snapshot"
@@ -25535,7 +25562,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id, order_book_tp). Grain = 1 ngày giao dịch × 1 loại sổ lệnh (OUTRIGHT hoặc REPO) của trái phiếu Chính phủ trên HNX, chỉ tính lệnh đã thực hiện; khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, order_book_tp, src_stm_code). Grain = 1 ngày giao dịch × 1 loại sổ lệnh (OUTRIGHT hoặc REPO) của trái phiếu Chính phủ trên HNX, chỉ tính lệnh đã thực hiện; src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -25592,6 +25619,15 @@ entities:
         description: "Giá trị bán của nhà đầu tư nước ngoài trong ngày theo loại sổ lệnh: giá trị các lệnh đã thực hiện có ký tự thứ 4 của số tài khoản bên bán thuộc E, F (cùng cách tính giá trị như Giá trị giao dịch); để trống khi không có lệnh của nhà đầu tư nước ngoài."
         source_atomic_table: "bond_order_book"
         source_atomic_column: "bond_order_book.selling_account_nbr / trading_val / first_settlement_val"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
+        source_atomic_table: "bond_order_book"
+        source_atomic_column: "bond_order_book.src_stm_code"
 
   - id: "DTM-fund_management_rpt_cell_dim"
     logical_name: "Fund Management Report Cell Dimension"

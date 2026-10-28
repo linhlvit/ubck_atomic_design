@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_investor_group_trading_snpst_flat ON 
     buy_val                                      Nullable(Decimal(23,2)) COMMENT 'Giá trị phía mua theo nhóm nhà đầu tư (nhóm nhà đầu tư không loại trừ nhau (tài khoản loại E thuộc cả NĐTNN và',
     sell_vol                                     Nullable(Int64)         COMMENT 'Khối lượng phía bán theo nhóm nhà đầu tư (nhóm nhà đầu tư không loại trừ nhau (tài khoản loại E thuộc cả NĐTNN',
     sell_val                                     Nullable(Decimal(23,2)) COMMENT 'Giá trị phía bán theo nhóm nhà đầu tư (nhóm nhà đầu tư không loại trừ nhau (tài khoản loại E thuộc cả NĐTNN và',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -210,6 +211,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_trading_snpst_
     trading_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch TPDN riêng lẻ trong ngày báo cáo = ô GIÁ TRỊ GIAO DỊCH của báo cáo HNX09; để trống khi ngày ',
     foreign_buy_val                              Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch mua của nhà đầu tư nước ngoài trong ngày báo cáo = ô GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI',
     foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch bán của nhà đầu tư nước ngoài trong ngày báo cáo = ô GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -243,6 +245,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_trading_snpst_flat ON
     trading_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch của các lệnh đã thực hiện trong ngày theo loại sổ lệnh: giá trị giao dịch với OUTRIGHT, giá ',
     foreign_buy_val                              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài trong ngày theo loại sổ lệnh: giá trị các lệnh đã thực hiện có ký tự thứ',
     foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong ngày theo loại sổ lệnh: giá trị các lệnh đã thực hiện có ký tự thứ',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -275,6 +278,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_registration_s
     rpt_year                                     String                  COMMENT 'Năm báo cáo của báo cáo tháng HNX, giữ nguyên dạng chuỗi của nguồn (chưa kiểm có đệm số 0).',
     rpt_month                                    String                  COMMENT 'Tháng báo cáo (1–12) của báo cáo tháng HNX, giữ nguyên dạng chuỗi của nguồn (chưa kiểm có đệm số 0); ngày cuối',
     maturity_dt                                  Nullable(Date)          COMMENT 'Ngày đáo hạn của trái phiếu; chỉ đếm mã có ngày đáo hạn sau ngày cuối kỳ khi tính số mã đăng ký giao dịch. Để ',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
