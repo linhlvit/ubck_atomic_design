@@ -76933,6 +76933,324 @@ attributes:
   atomic_column: "sp_license_certificate_group_code"
   data_type: "string"
 - bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Classification ECAT Administrative Procedure Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('ECAT_ADMINISTRATIVE_PROCEDURE', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "cl_ecat_ap_id"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Classification ECAT Administrative Procedure Code"
+  description: "Mã thủ tục hành chính (TTHC). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.CODE"
+  comment: "BK của entity. Nguồn VARCHAR2(80) — cần profile xác nhận NOT NULL/unique\
+    \ trước go-live (Code đóng vai trò BK). Nguồn có versioning (ID theo từng version):\
+    \ ETL chọn 1 dòng hiện hành cho mỗi CODE (DELETED = 0, EFFECTIVE = 1, VERSION\
+    \ lớn nhất), tránh trùng hash Id."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "cl_ecat_ap_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'ECAT_ADMINISTRATIVE_PROCEDURE'"
+  etl_derived_value: "ECAT_ADMINISTRATIVE_PROCEDURE"
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "src_stm_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Classification ECAT Administrative Procedure Name"
+  description: "Tên thủ tục hành chính (TTHC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.NAME"
+  comment: "Nguồn VARCHAR2(4000)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "cl_ecat_ap_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.DESCRIPTION"
+  comment: "Nguồn lưu dạng CLOB — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "description"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Field Group Name"
+  description: "Lĩnh vực của thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.FIELD_GROUP"
+  comment: "Nguồn lưu text tự do (VARCHAR2(200)), không có FK/danh mục — giữ dạng\
+    \ Text, cần profile để xem có nên chuẩn hóa thành Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "field_group_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Procedure Group Name"
+  description: "Nhóm thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_GROUP"
+  comment: "Nguồn lưu text tự do (VARCHAR2(1020)), không có FK/danh mục."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "procedure_group_nm"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Procedure Level Code"
+  description: "Mức độ dịch vụ công của thủ tục hành chính (1/2/3/4)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_LEVEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "procedure_level_code"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Implementation Method"
+  description: "Cách thức thực hiện thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.IMPLEMENTATION_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "implementation_method"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Implementation Result"
+  description: "Kết quả thực hiện thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.IMPLEMENTATION_RESULT"
+  comment: "Nguồn lưu dạng CLOB, BRD nguồn chưa có mô tả cột — ETL cần convert sang\
+    \ string."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "implementation_result"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Applied Subject"
+  description: "Đối tượng áp dụng thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.APPLIED_SUBJECT"
+  comment: "Nguồn VARCHAR2(1020) không khai FK tới ECAT.APPLIED_SUBJECT — giữ text\
+    \ denormalized; cần profile xem giá trị là mã hay tên (có thể nhiều giá trị) trước\
+    \ khi chuẩn hóa sang scheme ECAT_APPLIED_SUBJECT."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "applied_subject"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Processing Time Amount"
+  description: "Thời gian giải quyết thủ tục hành chính (số lượng theo đơn vị tính\
+    \ ở Processing Time Unit)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_AMOUNT"
+  comment: "Nguồn NUMBER(15,0) — ETL cast sang int; cần validate giá trị không vượt\
+    \ dải int32."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "processing_time_amt"
+  data_type: "int"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Processing Time Unit"
+  description: "Đơn vị tính thời gian giải quyết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_UNIT"
+  comment: "Nguồn lưu text tự do (VARCHAR2(80)), chưa có danh mục — cần profile xem\
+    \ có tập giá trị hữu hạn (ngày/giờ/...) để chuẩn hóa thành Classification Value."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "processing_time_unit"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Fee Amount"
+  description: "Lệ phí thực hiện thủ tục hành chính."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.FEE_AMOUNT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "fee_amt"
+  data_type: "decimal(23,2)"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Fee Currency Code"
+  description: "Mã đơn vị tiền tệ của lệ phí."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.FEE_UNIT_CURRENCY_ID"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "fee_currency_code"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Fee Payment Method"
+  description: "Hình thức nộp lệ phí."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.FEE_PAYMENT_METHOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "fee_payment_method"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Coordinating Agency"
+  description: "Cơ quan phối hợp thực hiện thủ tục hành chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.COORDINATING_AGENCY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "coordinating_agency"
+  data_type: "string"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Effective Date"
+  description: "Ngày thủ tục hành chính có hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.EFFECTIVE_STATUS_DATE"
+  comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hiệu lực\
+    \ nghiệp vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi,\
+    \ không map)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "effective_dt"
+  data_type: "date"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification ECAT Administrative Procedure"
+  atomic_attribute: "Expiration Date"
+  description: "Ngày thủ tục hành chính hết hiệu lực."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "ECAT"
+  source_table: "ADMINISTRATIVE_PROCEDURE"
+  source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.EXPIRATION_STATUS_DATE"
+  comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hết hiệu\
+    \ lực nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi,\
+    \ không map)."
+  classification_context: null
+  etl_derived_value: null
+  atomic_table: "cl_ecat_administrative_procedure"
+  atomic_column: "expiration_dt"
+  data_type: "date"
+- bcv_core_object: "Common"
   atomic_entity: "Classification ECAT Department"
   atomic_attribute: "Classification ECAT Department Id"
   description: "Khóa đại diện (surrogate key)."

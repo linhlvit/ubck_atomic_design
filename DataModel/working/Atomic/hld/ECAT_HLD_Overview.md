@@ -3,7 +3,7 @@
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
 **Mô tả:** Hệ thống danh mục điện tử dùng chung (Electronic Catalogue) của Ủy ban Chứng khoán Nhà nước (UBCKNN) — quản lý các danh mục nền tảng dùng xuyên suốt các hệ thống nghiệp vụ khác của UBCKNN: danh mục địa lý hành chính, tổ chức & nhân sự nội bộ, tiền tệ, chứng khoán & thị trường, loại hình doanh nghiệp/nghiệp vụ, đối tượng tham gia thị trường, hành nghề & trình độ, thủ tục hành chính, vi phạm & xử phạt, thanh tra, văn bản pháp lý.
 
-> **Phạm vi tài liệu này:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** — chỉ giữ trong HLD các bảng ECAT đã có LLD: 7 bảng Geographic Area (COUNTRY, REGION, PROVINCE_NEW, WARD_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_OLD → 2 entity Geographic Area / Geographic Area Old) và bảng DEPARTMENT (→ Classification ECAT Department, bổ sung 2026-10-22). Các bảng từng có thiết kế HLD nhưng chưa có LLD đã gỡ khỏi HLD và đưa vào mục 7f (nhóm `Chưa có LLD`). Các bảng danh mục xử lý Classification Value xem 7c. ECAT còn nhiều bảng khác (Currency Company info, Security Company, Investment Fund, Violation Behavior, Inspection Content, đồng bộ dữ liệu liên thông, bảng kỹ thuật hệ thống...) chưa thuộc phạm vi thiết kế.
+> **Phạm vi tài liệu này:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** — chỉ giữ trong HLD các bảng ECAT đã có LLD: 7 bảng Geographic Area (COUNTRY, REGION, PROVINCE_NEW, WARD_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_OLD → 2 entity Geographic Area / Geographic Area Old), bảng DEPARTMENT (→ Classification ECAT Department, bổ sung 2026-10-22) và bảng ADMINISTRATIVE_PROCEDURE (→ Classification ECAT Administrative Procedure, bổ sung 2026-10-29). Các bảng từng có thiết kế HLD nhưng chưa có LLD đã gỡ khỏi HLD và đưa vào mục 7f (nhóm `Chưa có LLD`). Các bảng danh mục xử lý Classification Value xem 7c. ECAT còn nhiều bảng khác (Currency Company info, Security Company, Investment Fund, Violation Behavior, Inspection Content, đồng bộ dữ liệu liên thông, bảng kỹ thuật hệ thống...) chưa thuộc phạm vi thiết kế.
 
 ---
 
@@ -14,8 +14,9 @@
 | T1 | Geographic Area | Location | [Location] Geographic Area | Fundamental | ECAT.COUNTRY, ECAT.REGION, ECAT.PROVINCE_NEW, ECAT.WARD_NEW | ECAT là nguồn duy nhất của entity theo LLD. |
 | T1 | Geographic Area Old | Location | [Location] Geographic Area | Fundamental | ECAT.PROVINCE_OLD, ECAT.DISTRICT_OLD, ECAT.WARD_OLD | Dữ liệu lịch sử pre-2025 (3 cấp), tách riêng khỏi Geographic Area hiện hành. |
 | T1 | Classification ECAT Department | Common | [Common] Classification | Relative | ECAT.DEPARTMENT | Danh mục phòng ban (CODE, NAME, DESCRIPTION, PHONE, EMAIL); không map quan hệ phòng ban cha. |
+| T1 | Classification ECAT Administrative Procedure | Common | [Common] Classification | Relative | ECAT.ADMINISTRATIVE_PROCEDURE | Danh mục thủ tục hành chính (TTHC); BK = CODE; không map bảng con COMPONENT/MAPPING. |
 
-**Tổng: 3 Atomic entities** (3 Tier 1, 0 Tier 2, 0 Tier 3)
+**Tổng: 4 Atomic entities** (4 Tier 1, 0 Tier 2, 0 Tier 3)
 
 ---
 
@@ -27,6 +28,7 @@ graph TD
         GA["Geographic Area"]
         GAO["Geographic Area Old"]
         CLD["Classification ECAT Department"]
+        CLAP["Classification ECAT Administrative Procedure"]
     end
 
     GAO -.successor / anchor.-> GA
@@ -57,6 +59,7 @@ graph TD
 | T1 | Location | [Location] Geographic Area | Location | DISTRICT_OLD | Update | Danh mục Quận/Huyện (cũ) | Geographic Area Old | Fundamental | Xem ECAT_HLD_Tier1.md mục 6a. |
 | T1 | Location | [Location] Geographic Area | Location | WARD_OLD | Update | Danh mục Phường/Xã/Thị trấn (cũ) | Geographic Area Old | Fundamental | Xem ECAT_HLD_Tier1.md mục 6a. |
 | T1 | Common | [Common] Classification | Common | DEPARTMENT | Update | Danh mục Phòng ban | Classification ECAT Department | Relative | Xem ECAT_HLD_Tier1.md mục 6a. |
+| T1 | Common | [Common] Classification | Common | ADMINISTRATIVE_PROCEDURE | Update | Danh mục Thủ tục hành chính (TTHC) | Classification ECAT Administrative Procedure | Relative | Xem ECAT_HLD_Tier1.md mục 6a. |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -79,6 +82,10 @@ erDiagram
     ClassificationEcatDepartment {
         bigint cl_ecat_department_id PK
         string cl_ecat_department_code
+    }
+    ClassificationEcatAdministrativeProcedure {
+        bigint cl_ecat_administrative_procedure_id PK
+        string cl_ecat_administrative_procedure_code
     }
 
     GeographicArea ||--o{ GeographicArea : "self-join"
@@ -127,7 +134,7 @@ Không có junction table.
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
 | 1 | T2 | `INSPECTION_TARGET` — `table_meaning` trong `brd_ECAT.yaml` ("Danh mục Tổ chức kiểm toán được chấp thuận") không khớp nội dung cột thực tế (danh mục đối tượng thanh tra) — nghi copy-paste error từ APPROVED_AUDIT_FIRM. | Không ảnh hưởng thiết kế Atomic (đã xử lý theo nội dung cột thực tế) — chỉ cần sửa tài liệu nguồn. |
-| 2 | T1 | (Kế thừa từ Tier 1) Các vấn đề T1-01 đến T1-05 — xem `ECAT_HLD_Tier1.md` mục 6f. | Không ảnh hưởng Tier khác. |
+| 2 | T1 | (Kế thừa từ Tier 1) Các vấn đề T1-01 đến T1-07 — xem `ECAT_HLD_Tier1.md` mục 6f (T1-06: FK suy luận `FEE_UNIT_CURRENCY_ID`; T1-07: bộ cột technical/trạng thái của ADMINISTRATIVE_PROCEDURE chưa map). | Không ảnh hưởng Tier khác. |
 
 #### 7f. Bảng ngoài scope
 
@@ -138,7 +145,6 @@ Không có junction table.
 | Chưa có LLD | ENTERPRISE_TYPE | Danh mục Loại hình doanh nghiệp (self-referencing) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | SECURITY_TYPE | Danh mục Loại chứng khoán (self-referencing) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | PAR_VALUE | Danh mục Mệnh giá chứng khoán | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | ADMINISTRATIVE_PROCEDURE | Danh mục Thủ tục hành chính (TTHC) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | ADMINISTRATIVE_PROCEDURE_COMPONENT | Thành phần hồ sơ của Thủ tục hành chính | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | LEGAL_DOCUMENT | Bảng thông tin văn bản pháp lý | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | WORKING_SCHEDULE | Danh mục Lịch làm việc | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
@@ -174,3 +180,8 @@ Không có junction table.
 **Tier:** 1 | **Source:** `ECAT.DEPARTMENT` | **BCV Concept:** [Common] Classification | **BCO:** Common | **Table Type:** Relative
 **Domain Prefix:** Classification
 **Description:** Danh mục phòng ban của hệ thống danh mục dùng chung ECAT, gồm mã, tên, mô tả, số điện thoại và email; BK = CODE nguồn.
+
+### 4. Classification ECAT Administrative Procedure
+**Tier:** 1 | **Source:** `ECAT.ADMINISTRATIVE_PROCEDURE` | **BCV Concept:** [Common] Classification | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Danh mục thủ tục hành chính (TTHC) của hệ thống danh mục dùng chung ECAT, gồm mã, tên, lĩnh vực, nhóm, mức độ, cách thức thực hiện, thời gian giải quyết, lệ phí và cơ quan phối hợp; BK = CODE nguồn.

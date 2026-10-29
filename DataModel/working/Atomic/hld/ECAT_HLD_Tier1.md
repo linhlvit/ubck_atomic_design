@@ -1,7 +1,7 @@
 # ECAT HLD — Tier 1
 
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
-**Tier 1:** Nhóm danh mục địa lý hành chính (Geographic Area) — Fundamental, chỉ tự tham chiếu (self-join), không FK đến entity nghiệp vụ nào khác. Phạm vi tier này: 7 bảng COUNTRY, REGION, PROVINCE_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_NEW, WARD_OLD (2 entity: Geographic Area, Geographic Area Old) và bảng DEPARTMENT (entity Classification ECAT Department — Tier 1 vì không FK đến entity nghiệp vụ nào, bổ sung 2026-10-22) — khớp LLD `lld/ECAT/`. Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
+**Tier 1:** Nhóm danh mục địa lý hành chính (Geographic Area) — Fundamental, chỉ tự tham chiếu (self-join), không FK đến entity nghiệp vụ nào khác. Phạm vi tier này: 7 bảng COUNTRY, REGION, PROVINCE_NEW, PROVINCE_OLD, DISTRICT_OLD, WARD_NEW, WARD_OLD (2 entity: Geographic Area, Geographic Area Old) bảng DEPARTMENT (entity Classification ECAT Department — Tier 1 vì không FK đến entity nghiệp vụ nào, bổ sung 2026-10-22) và bảng ADMINISTRATIVE_PROCEDURE (entity Classification ECAT Administrative Procedure — Tier 1, chỉ FK suy luận đến CURRENCY là Classification Value, bổ sung 2026-10-29) — khớp LLD `lld/ECAT/`. Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
 
 > **Lưu ý nguồn:** `brd_ECAT.yaml` đặt tên 7 bảng này theo quy ước `ECAT_0N_TenBang` (VD `ECAT_01_Country`), nhưng khảo sát CSDL thực tế (`Source/ECAT_Tables.csv`, `Source/ECAT_Columns.csv`) dùng tên bảng thực `COUNTRY`, `REGION`, `PROVINCE_NEW`, `PROVINCE_OLD`, `DISTRICT_OLD`, `WARD_NEW`, `WARD_OLD` — khớp với tên user cung cấp. Tier này dùng tên bảng thực từ `Source/ECAT_Columns.csv` làm chuẩn (xem mục 6f-01).
 
@@ -20,6 +20,7 @@
 | Location | [Location] Geographic Area | Location | WARD_OLD | Update | Danh mục Phường/Xã/Thị trấn (cũ, pre-2025) | **Geographic Area Old** | Fundamental | (1) Cùng term Geographic Area. (2) WARD_OLD có FK `DISTRICT_OLD_ID` (parent trực tiếp) và `WARD_NEW_ID` — FK successor trỏ sang phường/xã hiện hành tương ứng. (3) Geographic Area Old, `geographic_area_old_type_code = WARD_OLD`, `parent_geographic_area_old_id` trỏ lên DISTRICT_OLD; đồng thời giữ successor link sang Geographic Area (WARD_NEW) — xem mục 6f-02. |
 
 | Common | [Common] Classification | Common | DEPARTMENT | Update | Danh mục Phòng ban | Classification ECAT Department | Relative | (1) Term "Classification" (category Common) — danh mục phân loại dùng chung; theo chỉ đạo Data Modeler 2026-10-22, bảng danh mục được promote thành Atomic entity Classification (Domain Prefix = `Classification`, physical `cl_ecat_department`) giống `Classification IDS Business Line`. (2) Cấu trúc trường: CODE + NAME + DESCRIPTION + PHONE + EMAIL (kèm thông tin liên hệ) nên giữ thành entity thay vì Classification Value đơn thuần. (3) Chọn `[Common] Classification`; BK = CODE. Chỉ map 5 trường: CODE, NAME, DESCRIPTION, PHONE, EMAIL; theo quyết định Data Modeler 2026-10-22 không map quan hệ phòng ban cha (`PARENT_ID`/`PARENT_VERSION_ID`) nên entity không tự tham chiếu. |
+| Common | [Common] Classification | Common | ADMINISTRATIVE_PROCEDURE | Update | Danh mục Thủ tục hành chính (TTHC) | Classification ECAT Administrative Procedure | Relative | (1) Term "Classification" (category Common) — danh mục phân loại dùng chung; theo yêu cầu Data Modeler 2026-10-29, bảng danh mục TTHC được promote thành Atomic entity Classification (Domain Prefix = `Classification`, physical `cl_ecat_administrative_procedure`) cùng pattern `Classification ECAT Department`. (2) Cấu trúc trường: CODE + NAME + DESCRIPTION kèm nhiều thuộc tính mô tả TTHC (lĩnh vực, nhóm, mức độ, cách thức/kết quả thực hiện, thời gian giải quyết, lệ phí, cơ quan phối hợp, ngày hiệu lực/hết hiệu lực; người review đã loại 3 cột CLOB `IMPLEMENTATION_SEQUENCE`/`LEGAL_BASIS`/`COMPETENT_AUTHORITY` khỏi LLD, 2026-10-29) — vượt xa Code + Name nên giữ thành entity thay vì Classification Value đơn thuần. (3) Chọn `[Common] Classification`; BK = CODE (không dùng STABLE_ID, theo T1-05). Map toàn bộ cột nghiệp vụ; `FEE_UNIT_CURRENCY_ID` → `Fee Currency Code` (Currency = 1 trường Code, scheme `ECAT_CURRENCY`); `PROCEDURE_LEVEL` → Classification Value (scheme `ECAT_ADMINISTRATIVE_PROCEDURE_LEVEL`). Không map PK kỹ thuật, cột versioning, cờ trạng thái, audit — xem T1-07. Bảng con ADMINISTRATIVE_PROCEDURE_COMPONENT / _COMPONENT_MAPPING / _FIELD vẫn ngoài scope (chưa có LLD). |
 
 ---
 
@@ -108,6 +109,18 @@ erDiagram
         string stable_id
     }
 
+    ADMINISTRATIVE_PROCEDURE {
+        string id PK
+        string code
+        string name
+        string field_group
+        string procedure_group
+        string procedure_level
+        string fee_unit_currency_id FK
+        number fee_amount
+        string stable_id
+    }
+
     COUNTRY ||--o{ REGION : "country_id"
     REGION ||--o{ PROVINCE_NEW : "region_id"
     PROVINCE_NEW ||--o{ WARD_NEW : "province_new_id"
@@ -148,6 +161,14 @@ erDiagram
         string cl_ecat_department_nm
     }
 
+    ClassificationEcatAdministrativeProcedure {
+        bigint cl_ecat_administrative_procedure_id PK
+        string cl_ecat_administrative_procedure_code
+        string cl_ecat_administrative_procedure_nm
+        string procedure_level_code
+        string fee_currency_code
+    }
+
     GeographicArea ||--o{ GeographicArea : "parent_geographic_area_id (self-join: WARD→PROVINCE→REGION→COUNTRY)"
     GeographicAreaOld ||--o{ GeographicAreaOld : "parent_geographic_area_old_id (self-join: WARD_OLD→DISTRICT_OLD→PROVINCE_OLD)"
     GeographicArea ||--o{ GeographicAreaOld : "region_geographic_area_id (anchor: REGION → PROVINCE_OLD)"
@@ -165,13 +186,15 @@ erDiagram
 |---|---|---|---|---|
 | ETL derive từ tên bảng nguồn (COUNTRY/REGION/PROVINCE_NEW/WARD_NEW) | Phân biệt cấp hành chính hiện hành trên entity Geographic Area | `GEOGRAPHIC_AREA_TYPE` | etl_derived | Code: `COUNTRY`, `REGION`, `PROVINCE`, `WARD` (nguồn `ECAT.COUNTRY`/`ECAT.REGION`/`ECAT.PROVINCE_NEW`/`ECAT.WARD_NEW`). |
 | ETL derive từ tên bảng nguồn (PROVINCE_OLD/DISTRICT_OLD/WARD_OLD) | Phân biệt cấp hành chính lịch sử (pre-2025) trên entity Geographic Area Old | `GEOGRAPHIC_AREA_OLD_TYPE` | etl_derived | Scheme mới — tách khỏi `GEOGRAPHIC_AREA_TYPE` (3 code `PROVINCE_OLD`/`DISTRICT_OLD`/`WARD_OLD` chuyển từ scheme cũ sang scheme này). |
+| `PROCEDURE_LEVEL` (ADMINISTRATIVE_PROCEDURE) | Mức độ dịch vụ công của TTHC (1/2/3/4) | `ECAT_ADMINISTRATIVE_PROCEDURE_LEVEL` | modeler_defined | Scheme mới đăng ký 2026-10-29, 4 giá trị theo mô tả nguồn "Mức độ (1/2/3/4)" — chưa profile. |
+| `FEE_UNIT_CURRENCY_ID` (ADMINISTRATIVE_PROCEDURE) | Đơn vị tiền tệ của lệ phí | `ECAT_CURRENCY` | source_table | Scheme đã có (D-03 Overview); ETL join `FEE_UNIT_CURRENCY_ID` → `CURRENCY.ID` lấy `CURRENCY.CODE`; `used_in_entities` cũ "Administrative Procedure" đã đổi thành tên entity thật. |
 | `EFFECTIVE` + `ACTIVE` + `DELETED` (cả 7 bảng) | 3 cờ trạng thái nguồn (hiệu lực / đang dùng / xóa mềm) — Atomic gộp thành 1 status code duy nhất | `GEOGRAPHIC_AREA_STATUS` | etl_derived | Scheme đã có sẵn (dùng chung cho `Geographic Area`); bổ sung `Geographic Area Old` vào `used_in_entities`. Logic gộp 3 cờ → 1 status: để LLD xác nhận (mục 6f-04). |
 
 ---
 
 ## 6e. Bảng chờ thiết kế
 
-*(Không có — 8/8 bảng trong phạm vi tier này đã có đủ cấu trúc cột và đã có LLD.)*
+*(Không có — 9/9 bảng trong phạm vi tier này đã có đủ cấu trúc cột và đã có LLD.)*
 
 Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`).
 
@@ -186,3 +209,5 @@ Các bảng ECAT khác chưa có LLD — xem 7f Overview (nhóm `Chưa có LLD`)
 | T1-03 | `PROVINCE_OLD.REGION_ID`/`COUNTRY_ID` là FK "anchor" trỏ từ Geographic Area Old lên Geographic Area (Region/Country dùng chung cho cả 2 hệ phân cấp cũ/mới, không có bản "_OLD" riêng). Đặt tên attribute nào cho field cross-entity này ở LLD? (Đề xuất: `Region Geographic Area Id` + `Region Geographic Area Code`; không lưu `Country Geographic Area Id` riêng vì suy ra được qua Region.) | Chưa xác nhận — quyết định tại LLD. |
 | T1-04 | Nguồn có 3 cờ trạng thái riêng biệt trên mỗi bảng: `EFFECTIVE` (hiệu lực/hết hiệu lực), `ACTIVE` (đang dùng/không dùng), `DELETED` (xóa mềm). Atomic có nên gộp cả 3 vào 1 `geographic_area_status_code` (scheme `GEOGRAPHIC_AREA_STATUS`), hay giữ 3 field boolean riêng? | Chưa xác nhận — quyết định tại LLD. |
 | T1-05 | Nguồn có cơ chế versioning riêng: `VERSION`, `EFFECTIVE_START_DATE`/`EFFECTIVE_END_DATE`, `STABLE_ID`, `OLD_ID` — gợi ý `ID` là surrogate **theo từng version** (đổi khi record được sửa), còn `STABLE_ID` mới là định danh bền vững xuyên suốt các version. Business Key (BK) cho ETL nên dùng `STABLE_ID` hay `CODE`, không nên dùng `ID`? | Chưa xác nhận — quyết định tại LLD (ảnh hưởng đến cách resolve `parent_code`/FK giữa các version). |
+| T1-06 | `ADMINISTRATIVE_PROCEDURE.FEE_UNIT_CURRENCY_ID` là FK **suy luận** (`fk_src: inferred` trong BRD, theo tên cột → CURRENCY.ID), chưa được Data Modeler xác nhận. LLD tạm map thành `Fee Currency Code` (Classification Value, scheme `ECAT_CURRENCY`) qua join `FEE_UNIT_CURRENCY_ID` → `CURRENCY.ID` → `CODE`; `FEE_UNIT_CURRENCY_VERSION_ID` không map. Đồng thời `APPLIED_SUBJECT`/`FIELD_GROUP`/`PROCEDURE_GROUP`/`PROCESSING_TIME_UNIT` là text tự do không có FK — giữ `Text`, chưa chuẩn hóa sang scheme (kể cả `ECAT_APPLIED_SUBJECT`). | Chưa xác nhận — cần Data Modeler xác nhận FK tiền tệ và profile giá trị các cột text trước khi approve LLD. |
+| T1-07 | ADMINISTRATIVE_PROCEDURE có 8/9 cột technical bundle (`DELETED`, `CREATED_AT`, `UPDATED_AT`, `CREATED_BY_ID`, `CREATED_BY_NAME`, `UPDATED_BY_ID`, `UPDATED_BY_NAME`, `VERSION`; thiếu `STATUS`) cùng `ACTIVE`/`EFFECTIVE`/`ACTIVE_REASON`/`DELETED_REASON`/`EFFECTIVE_START_DATE`/`EFFECTIVE_END_DATE`/`STABLE_ID`/`OLD_ID`. Theo Bước 2c (bộ chưa đủ 9 cột) phải hỏi Data Modeler thay vì tự loại trừ. LLD tạm loại trừ nhất quán với `Classification ECAT Department` (18 dòng `pending_design.yaml`). Nguồn versioned (ID theo từng version): ETL phải lọc `DELETED = 0`, `EFFECTIVE = 1`, `VERSION` lớn nhất theo `CODE` để mỗi `CODE` chỉ còn 1 dòng. Câu hỏi: có cần map `ACTIVE`/`EFFECTIVE` và audit lên Atomic không? | Chưa xác nhận — nếu cần map, bổ sung attribute vào `lld_ECAT_ADMINISTRATIVE_PROCEDURE.yaml` và gỡ dòng tương ứng khỏi pending_design. |

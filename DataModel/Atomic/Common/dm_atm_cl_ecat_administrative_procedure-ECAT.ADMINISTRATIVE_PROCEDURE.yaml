@@ -1,0 +1,289 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-cl_ecat_administrative_procedure-ECAT.ADMINISTRATIVE_PROCEDURE
+  logical_name: Classification ECAT Administrative Procedure
+  physical_name: cl_ecat_administrative_procedure
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Common
+  bcv_concept: "[Common] Classification"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: ECAT
+  description: |
+    Danh mục thủ tục hành chính (TTHC) của hệ thống danh mục dùng chung ECAT, gồm mã, tên, lĩnh vực, nhóm, mức độ, trình tự và cách thức thực hiện, thời gian giải quyết, lệ phí, cơ quan có thẩm quyền và căn cứ pháp lý; BK = CODE nguồn.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-ECAT-ADMINISTRATIVE_PROCEDURE
+
+attributes:
+  - name: Classification ECAT Administrative Procedure Id
+    physical_name: cl_ecat_ap_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('ECAT_ADMINISTRATIVE_PROCEDURE', CODE)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Classification ECAT Administrative Procedure Code
+    physical_name: cl_ecat_ap_code
+    business_meaning: Mã thủ tục hành chính (TTHC). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.CODE
+    comment: "BK của entity. Nguồn VARCHAR2(80) — cần profile xác nhận NOT NULL/unique trước go-live (Code đóng vai trò BK). Nguồn có versioning (ID theo từng version): ETL chọn 1 dòng hiện hành cho mỗi CODE (DELETED = 0, EFFECTIVE = 1, VERSION lớn nhất), tránh trùng hash Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'ECAT_ADMINISTRATIVE_PROCEDURE'"
+    etl_derived_value: ECAT_ADMINISTRATIVE_PROCEDURE
+
+  - name: Classification ECAT Administrative Procedure Name
+    physical_name: cl_ecat_ap_nm
+    business_meaning: Tên thủ tục hành chính (TTHC).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.NAME
+    comment: Nguồn VARCHAR2(4000).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.DESCRIPTION
+    comment: Nguồn lưu dạng CLOB — ETL cần convert sang string.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field Group Name
+    physical_name: field_group_nm
+    business_meaning: Lĩnh vực của thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.FIELD_GROUP
+    comment: "Nguồn lưu text tự do (VARCHAR2(200)), không có FK/danh mục — giữ dạng Text, cần profile để xem có nên chuẩn hóa thành Classification Value."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Procedure Group Name
+    physical_name: procedure_group_nm
+    business_meaning: Nhóm thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_GROUP
+    comment: "Nguồn lưu text tự do (VARCHAR2(1020)), không có FK/danh mục."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Procedure Level Code
+    physical_name: procedure_level_code
+    business_meaning: Mức độ dịch vụ công của thủ tục hành chính (1/2/3/4).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_LEVEL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Implementation Method
+    physical_name: implementation_method
+    business_meaning: Cách thức thực hiện thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.IMPLEMENTATION_METHOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Implementation Result
+    physical_name: implementation_result
+    business_meaning: Kết quả thực hiện thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.IMPLEMENTATION_RESULT
+    comment: "Nguồn lưu dạng CLOB, BRD nguồn chưa có mô tả cột — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Applied Subject
+    physical_name: applied_subject
+    business_meaning: Đối tượng áp dụng thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.APPLIED_SUBJECT
+    comment: Nguồn VARCHAR2(1020) không khai FK tới ECAT.APPLIED_SUBJECT — giữ text denormalized; cần profile xem giá trị là mã hay tên (có thể nhiều giá trị) trước khi chuẩn hóa sang scheme ECAT_APPLIED_SUBJECT.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Time Amount
+    physical_name: processing_time_amt
+    business_meaning: Thời gian giải quyết thủ tục hành chính (số lượng theo đơn vị tính ở Processing Time Unit).
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_AMOUNT
+    comment: "Nguồn NUMBER(15,0) — ETL cast sang int; cần validate giá trị không vượt dải int32."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Processing Time Unit
+    physical_name: processing_time_unit
+    business_meaning: Đơn vị tính thời gian giải quyết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_UNIT
+    comment: "Nguồn lưu text tự do (VARCHAR2(80)), chưa có danh mục — cần profile xem có tập giá trị hữu hạn (ngày/giờ/...) để chuẩn hóa thành Classification Value."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fee Amount
+    physical_name: fee_amt
+    business_meaning: Lệ phí thực hiện thủ tục hành chính.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.FEE_AMOUNT
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fee Currency Code
+    physical_name: fee_currency_code
+    business_meaning: Mã đơn vị tiền tệ của lệ phí.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.FEE_UNIT_CURRENCY_ID
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fee Payment Method
+    physical_name: fee_payment_method
+    business_meaning: Hình thức nộp lệ phí.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.FEE_PAYMENT_METHOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Coordinating Agency
+    physical_name: coordinating_agency
+    business_meaning: Cơ quan phối hợp thực hiện thủ tục hành chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.COORDINATING_AGENCY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Effective Date
+    physical_name: effective_dt
+    business_meaning: Ngày thủ tục hành chính có hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.EFFECTIVE_STATUS_DATE
+    comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hiệu lực nghiệp vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi, không map)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Expiration Date
+    physical_name: expiration_dt
+    business_meaning: Ngày thủ tục hành chính hết hiệu lực.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: ECAT
+    source_table: ADMINISTRATIVE_PROCEDURE
+    source_column: ECAT.ADMINISTRATIVE_PROCEDURE.EXPIRATION_STATUS_DATE
+    comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hết hiệu lực nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi, không map)."
+    classification_context: null
+    etl_derived_value: null
