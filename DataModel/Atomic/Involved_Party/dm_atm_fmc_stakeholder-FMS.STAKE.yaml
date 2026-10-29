@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fmc_stakeholder-FMS.STAKE
+  logical_name: Fund Management Company Stakeholder
+  physical_name: fmc_stakeholder
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Involved Party
+  bcv_concept: "[Involved Party] Organization Ownership"
+  table_type: Fundamental
+  etl_pattern: SCD4A
+  source: FMS
+  description: |
+    Bên liên quan/cổ đông của công ty quản lý quỹ, ghi nhận tên, vốn góp, cờ cổ đông kiểm soát, số đăng ký và kỳ báo cáo. FK đến Fund Management Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-STAKE
+
+attributes:
+  - name: Fund Management Company Stakeholder Id
+    physical_name: fmc_stakeholder_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: STAKE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization Ownership\" (id 11558). Bên liên quan/cổ đông của Fund Management Company."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Company Stakeholder Code
+    physical_name: fmc_stakeholder_code
+    business_meaning: Khóa chính của bản ghi. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.ID
+    comment: BK chính. PK nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_STAKE'"
+    etl_derived_value: FMS_STAKE
+
+  - name: Fund Management Company Id
+    physical_name: fmc_id
+    business_meaning: "FK -> SECURITIES: Công ty QLQ liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.SECURITY_ID
+    comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES', SECURITY_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Company Code
+    physical_name: fmc_code
+    business_meaning: Mã công ty QLQ liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.SECURITY_ID
+    comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Fund Management Company Stakeholder Full Name
+    physical_name: fmc_stakeholder_full_nm
+    business_meaning: Tên hiển thị chính.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.ITEM_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Relationship Description
+    physical_name: rltnp_description
+    business_meaning: Mô tả quan hệ của nhà đầu tư với công ty QLQ.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.RELATION_SHIP
+    comment: "Text tự do, không phải FK đến FMS.RELATION."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Contributed Capital Amount
+    physical_name: contributed_capital_amt
+    business_meaning: "Vốn điều lệ/vốn góp (đơn vị: VNĐ)."
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.CAPITAL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Controlling Shareholder Indicator
+    physical_name: controlling_shareholder_ind
+    business_meaning: "Cờ là cổ đông sở hữu chính: 1=Cổ đông kiểm soát, 0=Không."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.OWNER_FLAG
+    comment: Giá trị 1 → true; 0 → false.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Stakeholder Registration Number
+    physical_name: stakeholder_registration_nbr
+    business_meaning: Số Giấy NSH của bên liên quan.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.ID_NO
+    comment: Nguồn không phân biệt loại giấy tờ nên không có Identification Type Code.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Description
+    physical_name: description
+    business_meaning: Mô tả chi tiết.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.DESCRIPTION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Type Code
+    physical_name: period_tp_code
+    business_meaning: Loại kỳ báo cáo gần nhất.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.PERIOD_TYPE
+    comment: "SCHEMA_CODE=FMS.PERIOD_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: period_val
+    business_meaning: Giá trị kỳ báo cáo gần nhất.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.PERIOD_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo gần nhất.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: STAKE
+    source_column: FMS.STAKE.YEAR_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -10,6 +10,8 @@
 >
 > **Ghi chú đánh Tier:** 5 bảng thuộc cùng một nhóm nghiệp vụ nên gộp 1 file Tier 6. Thứ tự phụ thuộc nội bộ: Fund Management Report → (Sheet, Period) → Submission → Value. Entity cao nhất (Submission) phụ thuộc Tier 4 nên toàn nhóm xếp sau Tier 7.
 >
+> **Cập nhật 2026-10-28:** Tier 6 thêm entity **Fund Management Company Insider Related Person** (INSDER_RELA, theo `lld_FMS_INSDER_RELA.yaml`, `group` = T6; FK về Fund Management Company Insider (T4), loại quan hệ qua Classification Value `FMS.RELATION`). Entity này không thuộc nhóm báo cáo — chỉ xếp Tier 6 theo `group` của LLD. Phụ thuộc bổ sung: **Tier 4:** Fund Management Company Insider; **Tier 1:** Classification Value `FMS.RELATION`.
+>
 > **[MỚI 2026-10-06]** Gỡ 5 bảng RPT_TEMP, SHEET, RPT_PERIOD, RPT_MEMBER, RPT_VALUES khỏi mục 7f (quyết định review 2026-07-02 "Xử lý luồng khác") theo yêu cầu Data Modeler. DDL chuẩn: `Source/DDL UAT 1/FMS_UAT_schema 1.txt`.
 
 ---
@@ -22,6 +24,7 @@
 | Documentation | [Documentation] Form Document | Form Document | SHEET | Update | Sheet dữ liệu trong biểu mẫu báo cáo đầu vào: tên, thứ tự, cấu hình ô | Fund Management Report Sheet | Relative | (1) Term candidate: `Form Document` — sheet là 1 phần bố cục của biểu mẫu. (2) Cấu trúc trường: FK RPT_ID, SHEET_INDEX, CELLS_META/MERGE_CELLS/ROW_HEIGHTS/COL_WIDTHS (blob JSON cấu hình bố cục) → mỗi dòng = 1 sheet của 1 biểu mẫu. (3) Chọn `Form Document` (cùng term cha). Các cột NCLOB JSON map Text (string). |
 | Documentation | [Documentation] Form Document | Form Document | RPT_PERIOD | Update | Cấu hình kỳ báo cáo của biểu mẫu: loại kỳ, hạn nộp, hạn CBTT | Fund Management Report Period | Relative | (1) Term candidate: `Form Document` — BCV không có term riêng cho lịch nộp/kỳ báo cáo của 1 biểu mẫu (đã tra `reporting period`, `report schedule`: chỉ có các property của Communication/Event không phù hợp). (2) Cấu trúc trường: FK RPT_ID, PERIOD_TYPE, SEND_IN_DAY, LATEST_SEND_DATE/WEEK, ANNOUNCE_* → cấu hình hạn nộp theo kỳ gắn với biểu mẫu. (3) Chọn `Form Document` làm term gần nhất — xem 6f T6-04. |
 | Documentation | [Documentation] Regulatory Report | Regulatory Report | RPT_MEMBER | Update | Báo cáo của thành viên thị trường (QLQ, QĐT, đại lý...): trạng thái, kỳ, file đính kèm, eForm | Fund Management Report Submission | Relative | (1) Term candidate: `Regulatory Report` — "báo cáo về các quy định, liên quan đến hoạt động của tổ chức tài chính"; IDS dùng cho COMPANY_DATA. (2) Cấu trúc trường: FK PRD_ID/RPT_ID, FK thành viên/đại lý nullable (BKM, FND, FR_BR, SEC, DISTRIBUTOR), DATE_SUBMITTED, APPROVAL_ACTION, DEADLINE_SEND → mỗi dòng = 1 lần thành viên nộp 1 báo cáo theo kỳ. (3) Chọn `Regulatory Report`. |
+| Involved Party | [Involved Party] Related Family Individual | Related Family Individual | INSDER_RELA | Update | Người liên quan của cổ đông nội bộ (gia đình, người có quan hệ kinh tế): thông tin cá nhân, loại quan hệ | Fund Management Company Insider Related Person | Fundamental | **[MỚI 2026-10-28]** (1) Term candidate: `Related Family Individual` (BCV Involved Party, theo `lld_FMS_INSDER_RELA.yaml`). (2) Cấu trúc trường: ID (BK), INSDER_ID (FK INSIDER), ITEM_NAME (họ tên), ID_NO/ID_DATE/ID_PLACE (giấy tờ), ADDRESS, RELA_ID (FK RELATION → Classification Value `FMS.RELATION`), DESCRIPTION, GP_QD_NO (số văn bản quyết định), APPROVAL_DATE. (3) Grain = 1 người liên quan × 1 người nội bộ CTQLQ. FK đến Fund Management Company Insider (T4). Địa chỉ + giấy tờ giữ denormalized, không tách IP Postal/Alt Identification. Domain Prefix `Fund Management Company`. Thay 7f `Chưa có LLD`. Xem T6-10. |
 | Documentation | [Documentation] Regulatory Report | Regulatory Report | RPT_VALUES | Update | Giá trị từng ô dữ liệu trong báo cáo: liên kết sheet, kỳ, báo cáo thành viên | Fund Management Report Value | Classification | (1) Term candidate: `Regulatory Report` — nội dung số liệu của báo cáo (IDS dùng cùng term cho DATA/REP_DATA). (2) Cấu trúc trường: FK MEB_ID/SHEET_ID/RPT_ID/PRD_ID, VALUES (text), ACC_VALUES, ROW_DYNAMIC, 4 FK thành viên → mỗi dòng = 1 ô của 1 sheet trong 1 báo cáo (EAV theo ô). (3) Chọn `Regulatory Report`. Table Type = `Classification` theo quyết định Data Modeler 2026-10-06 (mirror `fr_value`/`ufr_value` của IDS). |
 
 ---
@@ -57,6 +60,12 @@ graph LR
     RPT_VALUES -->|"RPT_ID"| RPT_TEMP
     RPT_VALUES -->|"PRD_ID"| RPT_PERIOD
     RPT_VALUES -->|"4 FK thành viên"| MEMBERS
+
+    INSDER_RELA["**INSDER_RELA**\nNgười liên quan của cổ đông nội bộ"]:::src
+    INSIDER["**INSIDER** (Tier 4)"]:::outscope
+    RELATION["**RELATION** (Tier 1, Classification Value)"]:::outscope
+    INSDER_RELA -->|"INSDER_ID"| INSIDER
+    INSDER_RELA -->|"RELA_ID"| RELATION
 ```
 
 ---
@@ -90,6 +99,12 @@ graph TD
     FMRV -->|"Report FK"| FMR
     FMRV -->|"Period FK"| FMRP
     FMRV -->|"Member FKs (nullable)"| MEM
+
+    FMIRP["**Fund Management Company Insider Related Person**\n[Involved Party] Related Family Individual\nINSDER_RELA"]:::atomic
+    FMCI["**Fund Management Company Insider** (Tier 4)"]:::outscope
+    CLREL["**Classification Value** FMS.RELATION (Tier 1, cl_value)"]:::outscope
+    FMIRP -->|"Fund Management Company Insider FK"| FMCI
+    FMIRP -->|"Relationship Type (cl_value FMS.RELATION)"| CLREL
 ```
 
 ---
@@ -126,4 +141,5 @@ Không có bảng nào trong Tier 6 chưa đủ thông tin cột.
 | T6-06 | AUDIT_FIRM_ID, AUDITOR_ID (RPT_MEMBER) trỏ tới AUDIT_FIRM/AUDITOR — ngoài scope FMS (thông tin kiểm toán lấy từ IDS, review 2026-07-03). Hiện document pending, không map. | Mất liên kết báo cáo ↔ công ty kiểm toán nếu cần phân tích. |
 | T6-07 | FK `SEC_ID` → Fund Management Company và `EVENT_TYPE_ID` → Classification FMS Event Type: BK của entity đích lấy từ `SECURITIES.CODE`/`EVENT_TYPE.EVENT_CODE`, nhưng LLD hiện hash theo cột FK (ID) giống `lld_FMS_FUNDS`/`lld_FMS_ANNOUNCE` đã có. Xác nhận cách hash Id của entity đích (từ ID hay từ CODE) để tránh hash-mismatch. | Id không khớp giữa bảng con và bảng cha nếu BK ≠ ID. |
 | T6-08 | `SHEET.IS_ADMIN_REPORT` chỉ có ở DDL UAT 1 (bản ' 1'), mô tả cột trống; `RPT_VALUES.VALUES` không có mô tả. Xác nhận ý nghĩa. | Description attribute. |
+| T6-10 | **[MỚI 2026-10-28]** `Fund Management Company Insider Related Person` (INSDER_RELA): (a) địa chỉ + giấy tờ định danh giữ denormalized trên entity, không tách IP Postal Address / IP Alt Identification (theo `notes` LLD) — nguồn không phân biệt loại giấy tờ. (b) Loại quan hệ (RELA_ID) → `cl_value` scheme `FMS.RELATION` với `cl_code` = ID RAW(16) hex (T1-05). (c) Xếp Tier 6 theo `group` LLD dù FK cao nhất là T4 (Insider) — khác thứ tự phụ thuộc thuần. | Chờ Data Modeler xác nhận (a) và cách đánh Tier (c). Xem Overview 7e #31. |
 | T6-09 | RPT_VALUES.VALUES lưu cả số lẫn text (NVARCHAR2(4000)) → map Text, khác IDS `fr_value.data_val` (Currency Amount). Xác nhận có cần cột số tách riêng cho khai thác Datamart. | Khai thác Gold cần cast. |

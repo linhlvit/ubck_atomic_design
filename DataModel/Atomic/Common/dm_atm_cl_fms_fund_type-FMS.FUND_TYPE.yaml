@@ -32,21 +32,21 @@ attributes:
     source_system: FMS
     source_table: FUND_TYPE
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', ID). BCV: \"[Common] Fund Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ — mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản..."
+    comment: "PK surrogate. Hash: hash_id('FMS_FUND_TYPE', CODE). BCV: \"[Common] Fund Management Type\" (BCV: phân biệt quỹ theo chính sách giao dịch đơn vị quỹ — mở/đóng). Danh mục loại quỹ đầu tư: quỹ mở, quỹ đóng, ETF, quỹ thành viên, quỹ bất động sản..."
     classification_context: null
     etl_derived_value: null
 
   - name: Classification FMS Fund Type Code
     physical_name: cl_fms_fund_tp_code
-    business_meaning: Khóa chính của bản ghi (UUID dạng RAW(16)). BK.
+    business_meaning: Mã loại hình quỹ eCAT dùng làm khóa đồng bộ FMS. BK.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: FMS
     source_table: FUND_TYPE
-    source_column: FMS.FUND_TYPE.ID
-    comment: BK chính. PK nguồn — không có cột mã nghiệp vụ riêng.
+    source_column: FMS.FUND_TYPE.CODE
+    comment: "BK chính — mã loại hình quỹ eCAT (CODE). Nguồn khai báo nullable — cần profile NOT NULL/unique trước go-live."
     classification_context: null
     etl_derived_value: null
 

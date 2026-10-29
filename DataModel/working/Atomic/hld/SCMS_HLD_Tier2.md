@@ -1,7 +1,7 @@
 # SCMS HLD — Tier 2
 
 **Source system:** SCMS (Quản lý Giám sát Công ty Chứng khoán)
-**Tier 2:** Các entity có FK đến Tier 1 — bao gồm chi nhánh, VPĐD, PGD (Organization Unit), chi nhánh/VPĐD nước ngoài (Foreign Organization Unit), nhân sự cấp cao và nhân sự chi nhánh/VPĐD nước ngoài, báo cáo định kỳ/đột xuất, báo cáo định kỳ ngân hàng, CBTT chào bán chứng khoán, thay đổi hồ sơ, cổ đông/người nội bộ/người liên quan/cổ đông lớn, các entity `_x_ Relationship` dịch vụ được cấp phép, nhóm biểu mẫu báo cáo (Input Submission/Sheet/Deep Config/Event Type Relationship) và shared entity Involved Party Postal/Electronic Address, Alternative Identification.
+**Tier 2:** Các entity có FK đến Tier 1 — bao gồm chi nhánh, VPĐD, PGD (Organization Unit), chi nhánh/VPĐD nước ngoài (Foreign Organization Unit), nhân sự cấp cao và nhân sự chi nhánh/VPĐD nước ngoài, báo cáo định kỳ/đột xuất, báo cáo định kỳ ngân hàng, CBTT chào bán chứng khoán, thay đổi hồ sơ, cổ đông/người nội bộ/người liên quan/cổ đông lớn, Securities Company Administrative Sanction/Practitioner/Ownership Relation (khôi phục 2026-10-28), các entity `_x_ Relationship` dịch vụ được cấp phép, nhóm biểu mẫu báo cáo (Input Submission/Sheet/Deep Config/Event Type Relationship) và shared entity Involved Party Postal/Electronic Address, Alternative Identification.
 
 ---
 
@@ -22,6 +22,9 @@
 | Event | [Event] Communication | Event | DISCLOSURE_SECURITIES_OFFERING | Thông tin chào bán chứng khoán CTCK công bố | Securities Company Disclosure Securities Offering | Relative | (1) CBTT chào bán chứng khoán là event Communication cụ thể. (2) DISCLOSURE_SECURITIES_OFFERING có SC_FIRM_INFO_ID, thông tin về đợt chào bán. (3) Chọn `[Event] Communication`. |
 | Involved Party | [Involved Party] Shareholder | Involved Party | SC_FIRM_SHAREHOLDER | Cổ đông của CTCK (cá nhân hoặc tổ chức) | Securities Company Shareholder | Fundamental | (1) BCV có `Shareholder` trong Involved Party — đây là Involved Party nắm cổ phần trong CTCK. (2) SC_FIRM_SHAREHOLDER lưu thông tin cổ đông: tỷ lệ sở hữu, số cổ phần, loại cổ đông (lớn/sáng lập/phổ thông). (3) Chọn `[Involved Party] Shareholder`. |
 | Involved Party | [Involved Party] Insider | Involved Party | SC_FIRM_INSIDER_RELATION | Người nội bộ (người có liên quan) của CTCK theo quy định CBTT | Securities Company Insider Related Person | Fundamental | (1) BCV có `Insider` hoặc `Connected Person` trong Involved Party. (2) SC_FIRM_INSIDER_RELATION lưu người nội bộ: quan hệ với SENIOR_PERSONNEL (vợ/chồng/con...), CCCD, tỷ lệ sở hữu. (3) Chọn `[Involved Party] Insider`. |
+| Event | [Event] Business Activity | Event | SC_FIRM_ADMIN_SANCTION | Biện pháp xử lý hành chính áp dụng cho CTCK | Securities Company Administrative Sanction | Relative | **[2026-10-28]** Khôi phục theo `lld_SCMS_SC_FIRM_ADMIN_SANCTION.yaml`. (1) `[Event] Business Activity`. (2) Bảng: FK→SC_FIRM_INFO, hình thức, số tiền (Currency Amount), nội dung, ngày quyết định, hình phạt bổ sung, biện pháp khắc phục, đơn vị xử lý. (3) Relative theo LLD. Xem T2-23. |
+| Involved Party | [Involved Party] Individual | Involved Party | SC_FIRM_LICENSED_PRACTITIONER | Người hành nghề chứng khoán đang công tác tại CTCK | Securities Company Practitioner | Fundamental | **[2026-10-28]** Khôi phục theo `lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER.yaml`. (1) `[Involved Party] Individual`. (2) Bảng: FK→SC_FIRM_INFO (+ SC_FIRM_BRANCH/TRANSACTION_OFFICE/REP_OFFICE nullable), số CCHN, trạng thái việc làm, xác minh CCHN với NHNCK, sync status; tách IP Postal/Electronic/Alt Identification. (3) Fundamental độc lập, KHÔNG extend `Securities Practitioner` (NHNCK). Xem T2-23. |
+| Involved Party | [Involved Party] Connected Entity | Involved Party | SC_FIRM_OWNERSHIP_RELATION | Quan hệ sở hữu của CTCK với các tổ chức khác (mẹ/con/liên kết) | Securities Company Ownership Relation | Relative | **[2026-10-28]** Khôi phục theo `lld_SCMS_SC_FIRM_OWNERSHIP_RELATION.yaml`. (1) `[Involved Party] Connected Entity`. (2) Bảng: FK→SC_FIRM_INFO, COMPANY_NAME (denormalized), OWNERSHIP_RATIO (Percentage), thời hạn; tách IP Postal/Alt Identification. (3) Relative theo LLD. Xem T2-23. |
 | Involved Party | [Involved Party] Connected Person | Involved Party | SC_FIRM_RELATED_PERSON | Người liên quan của CTCK (theo quy định CBTT/sở hữu) | Securities Company Related Person | Fundamental | (1) BCV có `Connected Person` trong Involved Party. (2) SC_FIRM_RELATED_PERSON lưu người liên quan: loại (CA_NHAN/TO_CHUC), tỷ lệ sở hữu, mối quan hệ. Khác INSIDER_RELATION ở chỗ không gắn SENIOR_PERSONNEL_ID. (3) Chọn `[Involved Party] Connected Person`. |
 | Event | [Event] Business Activity | Event | SC_FIRM_PROFILE_CHANGE | Lịch sử thay đổi hồ sơ CTCK (loại thay đổi, trước/sau, số văn bản) | Securities Company Profile Change | Fact Append | (1) BCV có `Change Event` hoặc `Profile Amendment` trong Business Activity/Event. (2) SC_FIRM_PROFILE_CHANGE ghi nhận từng lần thay đổi hồ sơ: ENTITY_TYPE (CTCK/CHI_NHANH/NHAN_SU...), BEFORE_INFO/AFTER_INFO, EVENT_TYPE_ID, số văn bản. Insert-only. (3) Chọn `[Event] Business Activity`, Fact Append. |
 | Involved Party | [Involved Party] Major Shareholder | Involved Party | SC_FIRM_MAJOR_SHAREHOLDER_RELATION | Quan hệ cổ đông lớn (sở hữu ≥5%) của CTCK | Securities Company Major Shareholder Relation | Relative | (1) BCV có `Major Shareholder` trong Involved Party — Involved Party nắm tỷ lệ sở hữu lớn. (2) Bảng: FK→SC_FIRM_INFO(FK cứng), SHAREHOLDER_ID(key: null — không phải FK). Grain = 1 cổ đông lớn × 1 CTCK. (3) Chọn `[Involved Party] Major Shareholder`. Chuyển từ Tier 3 xuống Tier 2 sau khi xác nhận BRD. |
@@ -33,9 +36,9 @@
 | Involved Party | [Involved Party] Branch | Involved Party | LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE | Liên kết chi nhánh CTCK nước ngoài với dịch vụ chứng khoán được cấp phép (SC_FIRM_FOREIGN_BRANCH_ID + SERVICE_ID + CREATED_AT) | Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship | Relative | (1) Theo chỉ đạo Data Modeler (2026-10-10) — mirror dòng LNK_TRANSACTION_OFFICE_SERVICE / LNK_SC_FIRM_SERVICE, chỉ khác entity cha `Securities Company Foreign Organization Unit`. (2) Bảng không có attribute nghiệp vụ riêng ngoài CREATED_AT nhưng đã chọn entity `_x_` theo chỉ đạo; composite PK 2 FK. (3) Tái dùng BCV Concept `[Involved Party] Branch`. |
 | Business Activity | [Event] Transaction | Business Activity | BANK_PERIODIC_REPORT | Báo cáo định kỳ của ngân hàng lưu ký nộp UBCKNN | Securities Company Bank Periodic | Relative | (1) Term `[Event] Transaction` như `SC_FIRM_PERIODIC_REPORT`. (2) Bảng có BANK_ID/FORM_REPORT_ID/EVENT_TYPE_ID, kỳ-năm, hạn nộp, RECORD_STATUS, các mốc gửi/duyệt/hủy — 1 dòng = 1 lần ngân hàng nộp báo cáo; cấu trúc giống báo cáo CTCK. (3) Chọn `[Event] Transaction`. |
 | Documentation | [Documentation] Form Document | Documentation | FORM_REPORT_DEEP_CONFIG | Cấu hình sâu của biểu mẫu báo cáo | Securities Company Report Deep Config | Relative | (1) Term `Form Document` (id 9348) — tài liệu theo mẫu chuẩn. (2) Bảng gắn 1 FORM_REPORT với cấu hình JSON (SHEETS_JSON cấu trúc sheet; 5 cột còn lại không map). (3) Chọn `[Documentation] Form Document` như FORM_SHEET*. |
-| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ bưu chính (trụ sở/địa chỉ liên hệ) của các Involved Party trong SCMS: CTCK, chi nhánh/PGD/VPĐD, ngân hàng, nhân sự, cổ đông. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
-| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ điện tử (điện thoại/fax/email/website) của các Involved Party trong SCMS. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
-| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Giấy tờ định danh/giấy phép (GPKD, mã số thuế, CCCD/hộ chiếu...) của các Involved Party trong SCMS. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_OWNERSHIP_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ bưu chính (trụ sở/địa chỉ liên hệ) của các Involved Party trong SCMS: CTCK, chi nhánh/PGD/VPĐD, ngân hàng, nhân sự, cổ đông. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ điện tử (điện thoại/fax/email/website) của các Involved Party trong SCMS. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_OWNERSHIP_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Giấy tờ định danh/giấy phép (GPKD, mã số thuế, CCCD/hộ chiếu...) của các Involved Party trong SCMS. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
 
 ---
 
@@ -109,6 +112,18 @@ erDiagram
         int SC_FIRM_INFO_ID FK
     }
     SC_FIRM_RELATED_PERSON {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
+    }
+    SC_FIRM_ADMIN_SANCTION {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
+    }
+    SC_FIRM_LICENSED_PRACTITIONER {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
+    }
+    SC_FIRM_OWNERSHIP_RELATION {
         int ID PK
         int SC_FIRM_INFO_ID FK
     }
@@ -192,6 +207,9 @@ erDiagram
     SC_FIRM_INFO ||--o{ SC_FIRM_SHAREHOLDER : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_INSIDER_RELATION : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_RELATED_PERSON : "SC_FIRM_INFO_ID"
+    SC_FIRM_INFO ||--o{ SC_FIRM_ADMIN_SANCTION : "SC_FIRM_INFO_ID"
+    SC_FIRM_INFO ||--o{ SC_FIRM_LICENSED_PRACTITIONER : "SC_FIRM_INFO_ID"
+    SC_FIRM_INFO ||--o{ SC_FIRM_OWNERSHIP_RELATION : "SC_FIRM_INFO_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_PROFILE_CHANGE : "SC_FIRM_INFO_ID"
     SC_FIRM_BRANCH ||--o{ SC_FIRM_REP_OFFICE : "SC_FIRM_BRANCH_ID"
     SC_FIRM_BRANCH ||--o{ SC_FIRM_TRANSACTION_OFFICE : "SC_FIRM_BRANCH_ID"
@@ -364,6 +382,18 @@ erDiagram
         bigint sc_major_shareholder_relation_id PK
         bigint securities_company_id FK
     }
+    Securities_Company_Administrative_Sanction {
+        bigint sc_administrative_sanction_id PK
+        bigint securities_company_id FK
+    }
+    Securities_Company_Practitioner {
+        bigint sc_practitioner_id PK
+        bigint securities_company_id FK
+    }
+    Securities_Company_Ownership_Relation {
+        bigint sc_ownership_relation_id PK
+        bigint securities_company_id FK
+    }
 
     Securities_Company ||--o{ Securities_Company_Organization_Unit : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Foreign_Organization_Unit : "securities_company_id"
@@ -385,6 +415,9 @@ erDiagram
     Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "sc_foreign_organization_unit_id"
     Classification_Securities_Company_Firm_Service ||--o{ Securities_Company_Foreign_Organization_Unit_X_Classification_Securities_Company_Firm_Service_Relationship : "cl_sc_firm_service_id"
     Securities_Company ||--o{ Securities_Company_Major_Shareholder_Relation : "securities_company_id"
+    Securities_Company ||--o{ Securities_Company_Administrative_Sanction : "securities_company_id"
+    Securities_Company ||--o{ Securities_Company_Practitioner : "securities_company_id"
+    Securities_Company ||--o{ Securities_Company_Ownership_Relation : "securities_company_id"
 ```
 
 ---
@@ -426,3 +459,4 @@ erDiagram
 | T2-20 | **[MỚI 2026-10-10]** Gộp SC_FIRM_FOREIGN_BRANCH + SC_FIRM_FOREIGN_REP_OFFICE → `Securities Company Foreign Organization Unit`; LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE → entity `_x_` `Securities Company Foreign Organization Unit X Classification Securities Company Firm Service Relationship`. | **Quyết định Data Modeler (chốt, 2026-10-10).** Thiết kế tương tự `Securities Company Organization Unit`; COUNTRY → Geographic Area qua CAT_NATIONALITY. Entity con PERSONNEL/DISCLOSURE_REPORT/ADHOC_REPORT/ALERT_VIOLATION đổi FK target (ADHOC_REPORT đang approved — chưa sửa). |
 | T2-21 | **[2026-10-21]** Đồng bộ HLD Tier 2 theo LLD (LLD là chuẩn). | Gỡ khỏi HLD (không có LLD, chuyển 7f Overview nhóm `Chưa có LLD`): chế tài/khiếu nại/kiểm tra (Administrative Penalty Decision/Sanction, Complaint Petition, Inspection Schedule), Disclosure Report/Shareholder Change, Report Violation, Alert Violation/Run/Indicator Condition, Custodian Bank, Licensed Service, Practitioner, Ownership Relation, Audit Firm Auditor, Risk Summary/Scoring Scale, Business Transaction Relationship, Report Input Source/Output Filter, và các dòng Organization Unit từ SC_FIRM_DOMESTIC_REP_OFFICE/SC_FIRM_FOREIGN_REP_OFFICE_VN. Thêm `Securities Company Foreign Branch Personnel`/`Foreign Representative Office Personnel` (đã có LLD), 3 shared entity IP. Adhoc/Periodic Report: BCO Documentation, `[Documentation] Regulatory Report`, Relative; Disclosure Securities Offering: Relative; Organization Unit/Insider/Related Person/Senior Personnel/Shareholder: Fundamental. |
 | T2-22 | **[2026-10-24]** `REPORT_INPUT_SUBMISSION` — Table Type đổi `Relative` → `Fact Append` theo yêu cầu Data Modeler. Nguồn `data_change_mode: Update` nhưng Atomic insert-only. | **Quyết định Data Modeler (chốt, 2026-10-24).** Không còn SCD2 (`ds_rcrd_eff_dt`/`ds_rcrd_end_dt`). **Còn mở:** ETL xác nhận cách xử lý bản ghi nguồn bị sửa sau khi nạp. Xem Overview 7e #27. |
+| T2-23 | **[2026-10-28]** Khôi phục 3 entity theo LLD (commit 660df05b): `SC_FIRM_ADMIN_SANCTION` → `Securities Company Administrative Sanction`; `SC_FIRM_LICENSED_PRACTITIONER` → `Securities Company Practitioner`; `SC_FIRM_OWNERSHIP_RELATION` → `Securities Company Ownership Relation`. | **Quyết định Data Modeler (chốt, 2026-10-28), LLD là chuẩn.** Sanction: `[Event] Business Activity`, Relative. Practitioner: `[Involved Party] Individual`, Fundamental độc lập — KHÔNG extend `Securities Practitioner` (NHNCK); `NHN_ID` chỉ là bridge FK nullable. Ownership Relation: `[Involved Party] Connected Entity`, Relative; `ENTERPRISE_TYPE_ID`/`COUNTRY_ID` pending. Cả 3 FK→`Securities Company` (T1) → Tier 2. Shared IP entity extend thêm source (Postal: Practitioner + Ownership Relation; Electronic: Practitioner; Alt Identification: Practitioner + Ownership Relation). **Đã xử lý 2026-10-29:** LLD Sanction `Remediation Measures` đã đổi sang cột nguồn `REMEDIAL_MEASURE` (khớp BRD). Xem Overview 7e #29. |

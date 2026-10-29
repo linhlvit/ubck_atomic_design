@@ -134,6 +134,24 @@ sources:
 - source_system: "IDS"
   source_table: "COMPANY_RELATIONSHIP"
   lld_file: "IDS/lld_IDS_COMPANY_RELATIONSHIP_IP_Alt_Identification.yaml"
+- source_system: "FMS"
+  source_table: "BANK_EMPLOY"
+  lld_file: "FMS/lld_FMS_BANK_EMPLOY_IP_Alt_Identification.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_AGENT"
+  lld_file: "FMS/lld_FMS_PENSION_AGENT_IP_Alt_Identification.yaml"
+- source_system: "FMS"
+  source_table: "MB_FUND"
+  lld_file: "FMS/lld_FMS_MB_FUND_IP_Alt_Identification.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_PROVIDER"
+  lld_file: "FMS/lld_FMS_PENSION_PROVIDER_IP_Alt_Identification.yaml"
+- source_system: "FMS"
+  source_table: "TRANSFER_AGENT"
+  lld_file: "FMS/lld_FMS_TRANSFER_AGENT_IP_Alt_Identification.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER_IP_Alt_Identification.yaml"
 consolidation_notes:
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Id' — đặt nullable=true"
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Code' — đặt nullable=true"
@@ -226,6 +244,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.ID"
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
@@ -277,6 +301,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.ID"
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -328,6 +358,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh."
@@ -379,6 +415,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Mã số đăng ký kinh doanh của pháp nhân liên quan."
@@ -431,6 +473,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.BUSINESS_REG_NO"
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp giấy tờ định danh. Mô tả gốc nguồn: Ngày Cap."
@@ -482,6 +530,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Nơi cấp giấy tờ định danh. Mô tả gốc nguồn: Nội Cap."
@@ -533,6 +587,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — hộ chiếu."
@@ -584,6 +644,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số hộ chiếu."
@@ -635,6 +701,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp hộ chiếu."
@@ -686,6 +758,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Nơi cấp hộ chiếu."
@@ -737,6 +815,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ tùy thân: NATIONAL_ID=CCCD/CMND/Hộ chiếu (cá nhân) hoặc\
@@ -790,6 +874,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số giấy tờ tùy thân / Mã số doanh nghiệp."
@@ -842,6 +932,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — mã số thuế."
@@ -893,6 +989,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Mã số thuế của chi nhánh nước ngoài."
@@ -945,6 +1047,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — giấy phép thành lập và hoạt động (UBCKNN)."
@@ -996,6 +1104,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số giấy phép thành lập và hoạt động do UBCKNN cấp."
@@ -1047,6 +1161,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.REGNO"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.REGNO"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ — GCN đăng ký hoạt động phân phối CCQ (giấy phép thành\
@@ -1099,6 +1219,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Mã giấy phép thành lập và hoạt động của công ty quản lý quỹ."
@@ -1150,6 +1276,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.IDNO"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.IDNO"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày ban hành quyết định/giấy phép chấp thuận hoạt động đại lý."
@@ -1201,6 +1333,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.IDDATE"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.IDDATE"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Cơ quan cấp GCN đăng ký hoạt động phân phối CCQ."
@@ -1252,6 +1390,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.IDADD"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.IDADD"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp giấy chứng nhận đăng ký doanh nghiệp."
@@ -1303,6 +1447,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.REGDATE"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.REGDATE"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Cơ quan cấp giấy phép thành lập và hoạt động."
@@ -1354,6 +1504,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.REGADD"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.REGADD"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — chứng nhận thành viên lưu ký."
@@ -1405,6 +1561,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số chứng nhận thành viên lưu ký (VSDC)."
@@ -1456,6 +1618,12 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.DEPCERT"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.DEPCERT"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp chứng nhận thành viên lưu ký."
@@ -1507,6 +1675,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ: CUSTODY_REGISTRATION_CERTIFICATE=Giấy chứng nhận đăng\
@@ -1559,6 +1733,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số quyết định GCN đăng ký hoạt động lưu ký chứng khoán."
@@ -1610,6 +1790,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày quyết định GCN đăng ký hoạt động lưu ký chứng khoán."
@@ -1661,6 +1847,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh — mã số doanh nghiệp."
@@ -1712,6 +1904,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Mã số doanh nghiệp của chi nhánh nước ngoài."
@@ -1763,6 +1961,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp giấy tờ/chứng chỉ."
@@ -1814,6 +2018,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Nơi cấp giấy tờ/chứng chỉ."
@@ -1865,6 +2075,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ tùy thân/pháp lý (CMND/CCCD/Hộ chiếu với NĐT cá nhân)."
@@ -1916,6 +2132,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số giấy tờ tùy thân (CCCD / CMND / Hộ chiếu)."
@@ -1967,6 +2189,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp CMND/CCCD/Hộ chiếu."
@@ -2018,6 +2246,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Nơi cấp CMND/CCCD/Hộ chiếu."
@@ -2069,6 +2303,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ: PRACTITIONER_LICENSE=Chứng chỉ hành nghề chứng khoán."
@@ -2120,6 +2360,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số chứng chỉ hành nghề (CCHN) quản lý quỹ/phân tích đầu tư."
@@ -2171,6 +2417,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp chứng chỉ hành nghề. Mô tả gốc nguồn: Ngày cấp chứng chỉ\
@@ -2223,6 +2475,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ — giấy chứng nhận đủ điều kiện hoạt động lưu ký, giám\
@@ -2275,6 +2533,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số chứng nhận/giấy phép đủ điều kiện hoạt động lưu ký, giám sát của\
@@ -2328,6 +2592,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ định danh: 1=CMND, 2=CCCD, 3=Hộ chiếu, 4=Mã số DN."
@@ -2379,6 +2649,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số CMND/CCCD/Hộ chiếu/Mã số doanh nghiệp."
@@ -2430,6 +2706,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp giấy phép thành lập."
@@ -2481,6 +2763,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Issue Place"
   physical_name: "identification_issue_place"
   description: "Nơi cấp giấy tờ định danh."
@@ -2532,6 +2820,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUED_BY"
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUED_BY"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUED_BY"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ — CCCD."
@@ -2583,6 +2877,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số CCCD."
@@ -2635,6 +2935,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Type Code"
   physical_name: "identification_tp_code"
   description: "Loại giấy tờ — Chứng chỉ kiểm toán viên (CPA)."
@@ -2687,6 +2993,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
   description: "Số chứng chỉ kiểm toán viên."
@@ -2739,6 +3051,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_NO"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.BUSINESS_LICENSE_NO"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_NO"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.BUSINESS_LICENSE_NO"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.BUSINESS_LICENSE_NO"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.NATIONAL_ID"
 - attribute_name: "Identification Issue Date"
   physical_name: "identification_issue_dt"
   description: "Ngày cấp chứng chỉ kiểm toán viên."
@@ -2790,6 +3108,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID_DATE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.LICENSE_ISSUE_DATE"
+    FMS.MB_FUND: "FMS.MB_FUND.ID_DATE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.LICENSE_ISSUE_DATE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.LICENSE_ISSUE_DATE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
   description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
@@ -2842,6 +3166,12 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Foreign Investor."
@@ -2893,3 +3223,9 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.BANK_EMPLOY: "FMS.BANK_EMPLOY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"

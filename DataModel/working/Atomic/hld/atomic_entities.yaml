@@ -23,6 +23,30 @@ entities:
   source_table: "FMS.INVES_ACC"
   status: "approved"
 - bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Arrangement"
+  atomic_entity: "Foreign Investor Securities Holding"
+  table_type: "Fact Append"
+  domain_prefix: ""
+  entity_physical_name: "foreign_investor_securities_holding"
+  description: "Thỏa thuận đầu tư/sở hữu chứng khoán của nhà đầu tư nước ngoài tại\
+    \ một công ty chứng khoán — 1 dòng = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Ghi nhận\
+    \ số lượng chứng khoán nắm giữ và tỷ lệ nắm giữ so với tổng số lượng lưu hành;\
+    \ insert-only, giữ lịch sử các lần ghi nhận. FK đến Foreign Investor và Securities\
+    \ Company."
+  source_table: "FIMS.CATEGORIESSTOCK"
+  status: "draft"
+- bcv_core_object: "Arrangement"
+  bcv_concept: "[Arrangement] Investment Fund"
+  atomic_entity: "Investment Fund Investor Membership"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "investment_fund_investor_membership"
+  description: "Tư cách nhà đầu tư/thành viên của quỹ — 1 dòng = 1 nhà đầu tư trên\
+    \ mỗi quỹ, ghi nhận họ tên, loại nhà đầu tư, quốc tịch, mã thành viên; địa chỉ\
+    \ và giấy tờ định danh tách sang shared entity IP. FK đến Investment Fund."
+  source_table: "FMS.MB_FUND"
+  status: "draft"
+- bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Trading Account Arrangement"
   atomic_entity: "Open Investor Account"
   table_type: "Fact Snapshot"
@@ -83,21 +107,15 @@ entities:
   source_table: "IDS.ACCOUNT_NUMBERS"
   status: "draft"
 - bcv_core_object: "Arrangement"
-  bcv_concept: "[Arrangement] Investment Arrangement"
-  atomic_entity: "Foreign Investor Securities Holding"
-  table_type: "Fact Append"
-  domain_prefix: ""
-  entity_physical_name: "foreign_investor_securities_holding"
-  description: "Thỏa thuận đầu tư/sở hữu chứng khoán của nhà đầu tư nước ngoài tại một công ty chứng khoán — 1 dòng = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Ghi nhận số lượng chứng khoán nắm giữ và tỷ lệ nắm giữ so với tổng số lượng lưu hành; insert-only, giữ lịch sử các lần ghi nhận. FK đến Foreign Investor và Securities Company."
-  source_table: "FIMS.CATEGORIESSTOCK"
-  status: "draft"
-- bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Authority Arrangement"
   atomic_entity: "Trading Authorization"
   table_type: "Relative"
   domain_prefix: ""
   entity_physical_name: "trading_authorization"
-  description: "Hợp đồng ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho người đại diện giao dịch hành động thay mặt. Ghi nhận loại đối tượng áp dụng, công ty quản lý quỹ/công ty chứng khoán liên quan, loại hình ủy quyền, trạng thái, thời hạn hiệu lực và tệp đính kèm."
+  description: "Hợp đồng ủy quyền giao dịch — nhà đầu tư nước ngoài ủy quyền cho người\
+    \ đại diện giao dịch hành động thay mặt. Ghi nhận loại đối tượng áp dụng, công\
+    \ ty quản lý quỹ/công ty chứng khoán liên quan, loại hình ủy quyền, trạng thái,\
+    \ thời hạn hiệu lực và tệp đính kèm."
   source_table: "FIMS.TRADINGAUTHORIZATION"
   status: "draft"
 - bcv_core_object: "Arrangement"
@@ -295,6 +313,29 @@ entities:
   description: "Danh sách đối tượng được thanh tra trong đoàn cụ thể: 7 loại đơn vị/cá\
     \ nhân, mã tham chiếu trong hệ thống nguồn, tên đối tượng."
   source_table: "THANHTRA.INSPECTION_TEAM_TARGET"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Business Activity"
+  atomic_entity: "Investment Fund Investor Capital Change Log"
+  table_type: "Fact Append"
+  domain_prefix: ""
+  entity_physical_name: "investment_fund_investor_capital_change_log"
+  description: "Nhật ký biến động vốn của nhà đầu tư trong quỹ — 1 dòng = 1 giao dịch\
+    \ (mua vào, bán ra, đăng ký), ghi nhận thời điểm giao dịch, loại biến động, tỷ\
+    \ lệ sở hữu, số lượng đơn vị và vốn trước/sau giao dịch. FK đến Investment Fund\
+    \ Investor Membership."
+  source_table: "FMS.MB_CHANGE"
+  status: "draft"
+- bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Audit Investigation"
+  atomic_entity: "Member Inspection Round"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "member_inspection_round"
+  description: "Đợt thanh tra thành viên thị trường (master), ghi nhận loại đối tượng,\
+    \ năm, ngày bắt đầu/kết thúc, số và ngày quyết định, kỳ thanh tra và loại hình\
+    \ thanh tra. Đối tượng cụ thể xác định ở Member Inspection Target."
+  source_table: "FMS.INSPECTION_ROUND"
   status: "draft"
 - bcv_core_object: "Business Activity"
   bcv_concept: "[Business Activity] Business Activity"
@@ -752,6 +793,28 @@ entities:
   source_table: "TTHC.AP_DOCUMENT"
   status: "draft"
 - bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation Item"
+  atomic_entity: "Anti Corruption Document"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "anti_corruption_document"
+  description: "Sổ văn bản phòng chống tham nhũng đi và đến của UBCKNN, ghi nhận số\
+    \ hiệu, ngày ban hành, trích yếu, năm, quý ban hành và đơn vị nhận của từng văn\
+    \ bản."
+  source_table: "THANHTRA.ANTI_CORRUPTION_DOCUMENT"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Documentation Item"
+  atomic_entity: "Anti Money Laundering Document"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "anti_money_laundering_document"
+  description: "Sổ văn bản phòng chống rửa tiền (PCRT) đi và đến của UBCKNN, ghi nhận\
+    \ loại văn bản, số hiệu, ngày ban hành, năm, quý ban hành và đơn vị nhận của từng\
+    \ văn bản."
+  source_table: "THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT"
+  status: "draft"
+- bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Gov. Registration Document"
   atomic_entity: "Audit Firm Approval"
   table_type: "Relative"
@@ -783,6 +846,17 @@ entities:
     \ tên công ty, mã thành viên, tổng giá trị giao dịch, thị phần theo giá trị và\
     \ phân loại."
   source_table: "HNX.BROKERAGE_MARKET_SHARE, HOSE.BROKERAGE_MARKET_SHARE"
+  status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Compliance Report"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "compliance_report"
+  description: "Báo cáo tuân thủ đã nộp theo từng kỳ (ngày/tuần/tháng/năm), ghi nhận\
+    \ người nộp, kết quả kiểm tra tự động, vòng phê duyệt hoặc từ chối và khoảng thời\
+    \ gian được phép nộp lại."
+  source_table: "TMS.COMPLIANCE_REPORT_MASTER"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
@@ -1664,6 +1738,18 @@ entities:
   source_table: "IDS.EVALUATION_PERIODS"
   status: "draft"
 - bcv_core_object: "Event"
+  bcv_concept: "[Event] Business Activity"
+  atomic_entity: "Securities Company Administrative Sanction"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_administrative_sanction"
+  description: "Biện pháp xử lý hành chính đối với công ty chứng khoán (hình thức\
+    \ nhẹ hơn hoặc bổ sung cho quyết định xử phạt) — 1 dòng = 1 biện pháp, ghi nhận\
+    \ hình thức, số tiền, nội dung quyết định, ngày quyết định, hình phạt bổ sung,\
+    \ biện pháp khắc phục và đơn vị xử lý. FK đến Securities Company."
+  source_table: "SCMS.SC_FIRM_ADMIN_SANCTION"
+  status: "draft"
+- bcv_core_object: "Event"
   bcv_concept: "[Event] Communication"
   atomic_entity: "Securities Company Disclosure Securities Offering"
   table_type: "Relative"
@@ -1757,6 +1843,17 @@ entities:
     \ liên hệ."
   source_table: "FMS.BANK_MONI, FIMS.BANKMONI"
   status: "approved"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual Employment Status"
+  atomic_entity: "Custodian Bank Employee"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "custodian_bank_employee"
+  description: "Nhân viên của ngân hàng lưu ký/giám sát, ghi nhận họ tên, số chứng\
+    \ chỉ hành nghề, chứng chỉ pháp lý, chứng chỉ kiểm toán, ngày cấp chứng chỉ hành\
+    \ nghề và chức vụ hiện tại. FK đến Custodian Bank."
+  source_table: "FMS.BANK_EMPLOY"
+  status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Discretionary Investment Investor"
@@ -1888,6 +1985,27 @@ entities:
   source_table: "FMS.INSIDER"
   status: "approved"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Related Family Individual"
+  atomic_entity: "Fund Management Company Insider Related Person"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company"
+  entity_physical_name: "fmc_insider_related_person"
+  description: "Người có liên quan của người nội bộ công ty quản lý quỹ, ghi nhận\
+    \ họ tên, giấy tờ định danh, địa chỉ, loại quan hệ, số văn bản quyết định và ngày\
+    \ phê duyệt. FK đến Fund Management Company Insider."
+  source_table: "FMS.INSDER_RELA"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization Ownership"
+  atomic_entity: "Fund Management Company Stakeholder"
+  table_type: "Fundamental"
+  domain_prefix: "Fund Management Company"
+  entity_physical_name: "fmc_stakeholder"
+  description: "Bên liên quan/cổ đông của công ty quản lý quỹ, ghi nhận tên, vốn góp,\
+    \ cờ cổ đông kiểm soát, số đăng ký và kỳ báo cáo. FK đến Fund Management Company."
+  source_table: "FMS.STAKE"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
   atomic_entity: "Identity and Access Management User"
   table_type: "Fundamental"
@@ -1937,7 +2055,9 @@ entities:
     \ FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.FUNDS, FMS.INVES,\
     \ FMS.STF_FG_BRCH, FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT, IDS.COMPANY_PROFILES,\
     \ AUDIT.AF_PROFILES, AUDIT.AF_AUDITOR_PROFILES, IDS.IDENTITY, FIMS.INVESTOR, FIMS.BANKMONI,\
-    \ FIMS.SECURITIESCOMPANY, IDS.COMPANY_RELATIONSHIP"
+    \ FIMS.SECURITIESCOMPANY, IDS.COMPANY_RELATIONSHIP, FMS.BANK_EMPLOY, FMS.MB_FUND,\
+    \ FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.TRANSFER_AGENT, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
+    \ SCMS.SC_FIRM_OWNERSHIP_RELATION"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1956,7 +2076,8 @@ entities:
     \ FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.STF_FG_BRCH,\
     \ FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
     \ AUDIT.AF_PROFILES, AUDIT.AF_LEGAL_REPRESENTATIVE, IDS.LEGAL_REPRESENTATIVE,\
-    \ FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY"
+    \ FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, FMS.PENSION_AGENT, FMS.PENSION_PROVIDER,\
+    \ FMS.TRANSFER_AGENT, SCMS.SC_FIRM_LICENSED_PRACTITIONER"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "Shared Entity"
@@ -1974,7 +2095,9 @@ entities:
     \ SCMS.SC_FIRM_RELATED_PERSON, SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION, FMS.SECURITIES,\
     \ FMS.BANK_MONI, FMS.AGENCIES, FMS.FOR_BRCH, FMS.TL_PROFILES, FMS.INVES, FMS.STF_FG_BRCH,\
     \ FMS.REPRESENT, FMS.INSIDER, FMS.DISTRIBUTOR_AGENT, IDS.COMPANY_PROFILES, IDS.LEGAL_ENTITIES,\
-    \ AUDIT.AF_PROFILES, FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, IDS.COMPANY_RELATIONSHIP"
+    \ AUDIT.AF_PROFILES, FIMS.INVESTOR, FIMS.BANKMONI, FIMS.SECURITIESCOMPANY, IDS.COMPANY_RELATIONSHIP,\
+    \ FMS.MB_FUND, FMS.PENSION_AGENT, FMS.PENSION_PROVIDER, FMS.TRANSFER_AGENT, SCMS.SC_FIRM_LICENSED_PRACTITIONER,\
+    \ SCMS.SC_FIRM_OWNERSHIP_RELATION"
   status: "approved"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Individual"
@@ -2006,6 +2129,29 @@ entities:
   description: "Danh sách cổ đông lớn theo mã chứng khoán: tên cổ đông, số giấy tờ,\
     \ địa chỉ liên hệ, số cổ phiếu và tỷ lệ sở hữu đầu kỳ và cuối kỳ."
   source_table: "VSDC.MAJOR_SHAREHOLDER"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Pension Fund"
+  atomic_entity: "Pension Fund"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "pension_fund"
+  description: "Quỹ hưu trí, ghi nhận số giấy chứng nhận kinh doanh, tên đầy đủ/tiếng\
+    \ Anh/viết tắt, công ty quản lý quỹ, ngân hàng lưu ký và ngân hàng giám sát. FK\
+    \ đến Fund Management Company và Custodian Bank."
+  source_table: "FMS.PENSION_FUND"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  atomic_entity: "Pension Service Organization"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "pension_service_organization"
+  description: "Tổ chức cung cấp dịch vụ cho quỹ hưu trí (đại lý, nhà cung cấp), gộp\
+    \ từ PENSION_AGENT và PENSION_PROVIDER, phân biệt vai trò bằng Pension Role Type\
+    \ Code; ghi nhận tên, loại hình công ty, ngày chấm dứt. Địa chỉ, liên lạc, giấy\
+    \ tờ tách sang shared entity IP."
+  source_table: "FMS.PENSION_AGENT, FMS.PENSION_PROVIDER"
   status: "draft"
 - bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Organization"
@@ -2192,6 +2338,30 @@ entities:
   source_table: "SCMS.LNK_TRANSACTION_OFFICE_SERVICE"
   status: "draft"
 - bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Connected Entity"
+  atomic_entity: "Securities Company Ownership Relation"
+  table_type: "Relative"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_ownership_relation"
+  description: "Quan hệ sở hữu của công ty chứng khoán với tổ chức khác (công ty mẹ,\
+    \ công ty con, công ty liên kết, sở hữu trên 5%) — 1 dòng = 1 quan hệ, ghi nhận\
+    \ loại quan hệ, tên tổ chức, tỷ lệ sở hữu, ngày bắt đầu/kết thúc. FK đến Securities\
+    \ Company."
+  source_table: "SCMS.SC_FIRM_OWNERSHIP_RELATION"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Individual"
+  atomic_entity: "Securities Company Practitioner"
+  table_type: "Fundamental"
+  domain_prefix: "Securities Company"
+  entity_physical_name: "sc_practitioner"
+  description: "Người hành nghề chứng khoán tại công ty chứng khoán theo dữ liệu SCMS;\
+    \ entity độc lập, không mở rộng Securities Practitioner (NHNCK). Ghi nhận quan\
+    \ hệ với CTCK/đơn vị, số chứng chỉ hành nghề, trạng thái việc làm, kết quả xác\
+    \ minh CCHN và trạng thái đồng bộ."
+  source_table: "SCMS.SC_FIRM_LICENSED_PRACTITIONER"
+  status: "draft"
+- bcv_core_object: "Involved Party"
   bcv_concept: "[Involved Party] Connected Person"
   atomic_entity: "Securities Company Related Person"
   table_type: "Fundamental"
@@ -2311,6 +2481,17 @@ entities:
   description: "Quan hệ giữa các cổ đông/người liên quan: vợ-chồng, cha-con, ủy quyền,\
     \ sở hữu chéo — 2 FK tự tham chiếu đến Legal Entity."
   source_table: "IDS.HOLDER_RELATIONSHIP"
+  status: "draft"
+- bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Transfer Agent"
+  atomic_entity: "Transfer Agent"
+  table_type: "Fundamental"
+  domain_prefix: ""
+  entity_physical_name: "transfer_agent"
+  description: "Đại lý chuyển nhượng, ghi nhận loại đại lý, loại hình công ty, tên\
+    \ đầy đủ/tiếng Anh/viết tắt, ngày chấm dứt. Địa chỉ, liên lạc, giấy tờ tách sang\
+    \ shared entity IP."
+  source_table: "FMS.TRANSFER_AGENT"
   status: "draft"
 - bcv_core_object: "Location"
   bcv_concept: "[Location] Geographic Area"
@@ -2702,15 +2883,6 @@ entities:
   description: "Kế hoạch kiểm tra hàng năm của UBCKNN, cấu trúc đồng nhất với kế hoạch\
     \ thanh tra nhưng dành riêng cho hoạt động kiểm tra (khác thẩm quyền)."
   source_table: "THANHTRA.EXAMINATION_ANNUAL_PLAN"
-  status: "draft"
-- bcv_core_object: ""
-  bcv_concept: ""
-  atomic_entity: "Fund Management Company Stakeholder"
-  table_type: ""
-  domain_prefix: ""
-  entity_physical_name: ""
-  description: ""
-  source_table: "FMS.STAKE"
   status: "draft"
 - bcv_core_object: "Group"
   bcv_concept: "[Group] Share Index"

@@ -214,21 +214,21 @@ attributes:
     source_system: FMS
     source_table: FUNDS
     source_column: FMS.FUNDS.FTYPE_ID
-    comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE', FTYPE_ID)."
+    comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang FMS.FUND_TYPE: FUNDS.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE', CODE)."
     classification_context: null
     etl_derived_value: null
 
   - name: Classification FMS Fund Type Code
     physical_name: cl_fms_fund_tp_code
-    business_meaning: Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — chính là ID nguồn).
+    business_meaning: Mã loại quỹ đầu tư (BK của bảng danh mục FUND_TYPE — CODE nguồn).
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FMS
     source_table: FUNDS
-    source_column: FMS.FUNDS.FTYPE_ID
-    comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id."
+    source_column: FMS.FUND_TYPE.CODE
+    comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Fund Type Id."
     classification_context: null
     etl_derived_value: null
 

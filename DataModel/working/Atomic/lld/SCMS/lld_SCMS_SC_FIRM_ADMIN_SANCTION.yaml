@@ -19,7 +19,7 @@ metadata:
   approved_at: null
   notes: "Biện pháp xử lý hành chính đối với CTCK (hình thức nhẹ hơn hoặc bổ sung\
     \ cho quyết định xử phạt). Mỗi dòng = 1 biện pháp xử lý. CONTENT (NCLOB) = nội\
-    \ dung chi tiết biện pháp. BIEN_PHAP_KHAC_PHUC = biện pháp khắc phục (NVARCHAR2\
+    \ dung chi tiết biện pháp. REMEDIAL_MEASURE = biện pháp khắc phục (NVARCHAR2\
     \ 2000). AMOUNT = số tiền xử phạt (NUMBER 38 không có scale — integer-like, map\
     \ Currency Amount). Audit: CREATED_BY/AT + LAST_MODIFIED_BY/AT; nguồn DATE — widening\
     \ sang Timestamp. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities\
@@ -181,8 +181,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_ADMIN_SANCTION.BIEN_PHAP_KHAC_PHUC"
-  comment: "NVARCHAR2(2000). Tên cột nguồn tiếng Việt: Biện pháp khắc phục."
+  - "SCMS.SC_FIRM_ADMIN_SANCTION.REMEDIAL_MEASURE"
+  comment: "NVARCHAR2(2000). Biện pháp khắc phục."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

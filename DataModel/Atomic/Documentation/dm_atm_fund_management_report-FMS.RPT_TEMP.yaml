@@ -158,7 +158,7 @@ attributes:
     source_system: FMS
     source_table: RPT_TEMP
     source_column: FMS.RPT_TEMP.FTYPE_ID
-    comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Hash: hash_id('FMS_FUND_TYPE', FTYPE_ID). Cùng pattern lld_FMS_FUNDS.FTYPE_ID."
+    comment: "FK target: cl_fms_fund_type.cl_fms_fund_tp_id. Cần ETL crosswalk sang FMS.FUND_TYPE: RPT_TEMP.FTYPE_ID = FUND_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_FUND_TYPE', CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -171,8 +171,8 @@ attributes:
     is_primary_key: false
     source_system: FMS
     source_table: RPT_TEMP
-    source_column: FMS.RPT_TEMP.FTYPE_ID
-    comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id."
+    source_column: FMS.FUND_TYPE.CODE
+    comment: "Lookup pair: cl_fms_fund_type.cl_fms_fund_tp_code. Pair with Classification FMS Fund Type Id. Giá trị lấy từ FMS.FUND_TYPE.CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Fund Type Id."
     classification_context: null
     etl_derived_value: null
 

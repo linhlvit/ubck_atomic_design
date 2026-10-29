@@ -119,6 +119,18 @@ sources:
 - source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
   lld_file: "FIMS/lld_FIMS_SECURITIESCOMPANY_IP_Electronic_Address.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_AGENT"
+  lld_file: "FMS/lld_FMS_PENSION_AGENT_IP_Electronic_Address.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_PROVIDER"
+  lld_file: "FMS/lld_FMS_PENSION_PROVIDER_IP_Electronic_Address.yaml"
+- source_system: "FMS"
+  source_table: "TRANSFER_AGENT"
+  lld_file: "FMS/lld_FMS_TRANSFER_AGENT_IP_Electronic_Address.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER_IP_Electronic_Address.yaml"
 consolidation_notes:
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Id' — đặt nullable=true"
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Code' — đặt nullable=true"
@@ -193,6 +205,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.TRANSACTIONCODE"
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
@@ -239,6 +255,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.TRANSACTIONCODE"
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -285,6 +305,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — điện thoại cố định."
@@ -331,6 +355,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại của người đại diện theo ủy quyền."
@@ -377,6 +405,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.TELEPHONE"
     FIMS.BANKMONI: "FIMS.BANKMONI.TELEPHONE"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.TELEPHONE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — email."
@@ -423,6 +455,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Địa chỉ email của người nội bộ liên quan."
@@ -469,6 +505,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.EMAIL"
     FIMS.BANKMONI: "FIMS.BANKMONI.EMAIL"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.EMAIL"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — fax."
@@ -515,6 +555,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số fax của tổ chức."
@@ -561,6 +605,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.FAX"
     FIMS.BANKMONI: "FIMS.BANKMONI.FAX"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.FAX"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — điện thoại di động."
@@ -607,6 +655,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại di động của người dùng. DIAL_NUMBER (mã vùng) ghép với\
@@ -654,6 +706,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — website."
@@ -700,6 +756,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Địa chỉ website của tổ chức."
@@ -746,6 +806,10 @@ attributes:
     FIMS.INVESTOR: "FIMS.INVESTOR.WEBSITE"
     FIMS.BANKMONI: "FIMS.BANKMONI.WEBSITE"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.WEBSITE"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại địa chỉ điện tử — điện thoại cơ quan."
@@ -792,6 +856,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Số điện thoại văn phòng của người dùng."
@@ -838,6 +906,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email công bố thông tin."
@@ -884,6 +956,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Email dùng để nhận thông báo CBTT."
@@ -930,6 +1006,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email cá nhân/đăng nhập."
@@ -977,6 +1057,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Value"
   physical_name: "electronic_adr_val"
   description: "Email cá nhân/đăng nhập của người hành nghề."
@@ -1023,6 +1107,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.PHONE"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.PHONE"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.PHONE"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PHONE"
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — điện thoại kinh doanh."
@@ -1069,6 +1157,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — email kinh doanh."
@@ -1115,6 +1207,10 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Electronic Address Type Code"
   physical_name: "electronic_adr_tp_code"
   description: "Loại kênh liên lạc — fax kinh doanh."
@@ -1161,3 +1257,7 @@ attributes:
     FIMS.INVESTOR: null
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
+    FMS.PENSION_AGENT: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null

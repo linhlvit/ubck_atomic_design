@@ -1,0 +1,163 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-foreign_investor_securities_holding-FIMS.CATEGORIESSTOCK
+  logical_name: Foreign Investor Securities Holding
+  physical_name: foreign_investor_securities_holding
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Arrangement
+  bcv_concept: "[Arrangement] Investment Arrangement"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FIMS
+  description: |
+    Thỏa thuận đầu tư/sở hữu chứng khoán của nhà đầu tư nước ngoài tại một công ty chứng khoán — 1 dòng = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Ghi nhận số lượng chứng khoán nắm giữ và tỷ lệ nắm giữ so với tổng số lượng lưu hành; insert-only, giữ lịch sử các lần ghi nhận. FK đến Foreign Investor và Securities Company.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FIMS-CATEGORIESSTOCK
+
+attributes:
+  - name: Foreign Investor Securities Holding Id
+    physical_name: foreign_investor_securities_holding_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Arrangement] Investment Arrangement\". Số lượng và tỷ lệ sở hữu chứng khoán của NĐT NN tại 1 CTCK. Hash: hash_id('FIMS_CATEGORIESSTOCK', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Securities Holding Code
+    physical_name: foreign_investor_securities_holding_code
+    business_meaning: Khóa chính của bản ghi (ID số tự tăng). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.ID
+    comment: "BCV: không có term riêng cho mã bản ghi sở hữu. Nguồn không có mã nghiệp vụ — BK = ID. Nguồn lưu dạng số — ETL cần convert sang string."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FIMS_CATEGORIESSTOCK'"
+    etl_derived_value: FIMS_CATEGORIESSTOCK
+
+  - name: Foreign Investor Id
+    physical_name: foreign_investor_id
+    business_meaning: "FK -> INVESTOR: Nhà đầu tư nước ngoài sở hữu chứng khoán."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.INVESID
+    comment: "FK target: foreign_investor.foreign_investor_id. Cần ETL crosswalk sang FIMS.INVESTOR: CATEGORIESSTOCK.INVESID = INVESTOR.ID để xác nhận TRANSACTIONCODE sau đó hash_id('FIMS_INVESTOR', TRANSACTIONCODE) | Entity Foreign Investor có BK = TRANSACTIONCODE (không phải ID kỹ thuật) — xem lld_FIMS_INVESTOR.yaml. Nguồn chưa khai nullability — cần profile trước ETL."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Foreign Investor Code
+    physical_name: foreign_investor_code
+    business_meaning: Mã số giao dịch của NĐT NN do VSDC cấp.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.INVESTOR.TRANSACTIONCODE
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign Investor Id. Giá trị lấy từ FIMS.INVESTOR.TRANSACTIONCODE sau ETL crosswalk — chi tiết xem comment Foreign Investor Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Id
+    physical_name: sc_id
+    business_meaning: "FK -> SECURITIESCOMPANY: Công ty CK liên quan."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.SECID
+    comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', SECID). Entity Securities Company có BK = SECURITIESCOMPANY.ID nên SECID hash trực tiếp. Nguồn lưu NVARCHAR2(100), trong khi SECURITIESCOMPANY.ID là NUMBER(18,2) — cần profile SECID chứa Id số hay mã CTCK, và chuẩn hóa định dạng (bỏ phần thập phân) trước khi hash để khớp Id của entity cha."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Company Code
+    physical_name: sc_code
+    business_meaning: "Mã công ty CK liên quan (BK = Id nguồn của SECURITIESCOMPANY)."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.SECID
+    comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Holding Quantity
+    physical_name: holding_quantity
+    business_meaning: Số lượng chứng khoán nắm giữ.
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.QUANTITY
+    comment: "BCV Term: Position Quantity (Accounting) — số lượng nắm giữ; giữ tên Holding Quantity vì entity thuộc Arrangement. Nguồn NUMBER(18,0) — dùng Large Counter (bigint) vì có thể vượt int32. Chưa rõ số lượng là tổng tại CTCK hay theo từng mã (T2-07)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Holding Rate
+    physical_name: holding_rate
+    business_meaning: "Tỷ lệ nắm giữ so với tổng số lượng lưu hành (%)."
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.RATE
+    comment: "BCV: không có term riêng cho tỷ lệ nắm giữ trong Investment Arrangement. Nguồn NUMBER(18,6), domain Percentage mặc định decimal(5,2) — cần profile độ chính xác (nguồn có 6 chữ số thập phân), nếu cần giữ nguyên thì đề xuất độ chính xác riêng cho cột này."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: Ngày xử lý ETL.
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: FIMS
+    source_table: CATEGORIESSTOCK
+    source_column: FIMS.CATEGORIESSTOCK.DATECREATED
+    comment: null
+    classification_context: null
+    etl_derived_value: null

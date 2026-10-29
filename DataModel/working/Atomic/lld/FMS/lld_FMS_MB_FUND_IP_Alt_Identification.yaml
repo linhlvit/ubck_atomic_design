@@ -18,7 +18,7 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Nguồn không có cột phân biệt loại giấy tờ dù MB_TYPE cho thấy có thể là\
-    \ cá nhân hoặc tổ chức — hardcode NATIONAL_ID mặc định, cần Data Modeler xác nhận."
+    \ cá nhân hoặc tổ chức — hardcode IDENTIFICATION mặc định, cần Data Modeler xác nhận."
 attributes:
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
@@ -68,10 +68,10 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns: []
-  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode NATIONAL_ID — nguồn không phân biệt loại\
+  comment: "Scheme: IP_ALT_ID_TYPE. Hardcode IDENTIFICATION — nguồn không phân biệt loại\
     \ giấy tờ."
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
-  etl_derived_value: "NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
+  etl_derived_value: "IDENTIFICATION"
   data_type: "string"
 - attribute_name: "Identification Number"
   physical_name: "identification_nbr"
@@ -83,7 +83,7 @@ attributes:
   source_columns:
   - "FMS.MB_FUND.ID_NO"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Identification Issue Date"
@@ -96,6 +96,6 @@ attributes:
   source_columns:
   - "FMS.MB_FUND.ID_DATE"
   comment: null
-  classification_context: "IP_ALT_ID_TYPE=NATIONAL_ID"
+  classification_context: "IP_ALT_ID_TYPE=IDENTIFICATION"
   etl_derived_value: null
   data_type: "date"

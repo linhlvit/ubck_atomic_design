@@ -125,6 +125,24 @@ sources:
 - source_system: "IDS"
   source_table: "COMPANY_RELATIONSHIP"
   lld_file: "IDS/lld_IDS_COMPANY_RELATIONSHIP_IP_Postal_Address.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_AGENT"
+  lld_file: "FMS/lld_FMS_PENSION_AGENT_IP_Postal_Address.yaml"
+- source_system: "FMS"
+  source_table: "MB_FUND"
+  lld_file: "FMS/lld_FMS_MB_FUND_IP_Postal_Address.yaml"
+- source_system: "FMS"
+  source_table: "PENSION_PROVIDER"
+  lld_file: "FMS/lld_FMS_PENSION_PROVIDER_IP_Postal_Address.yaml"
+- source_system: "FMS"
+  source_table: "TRANSFER_AGENT"
+  lld_file: "FMS/lld_FMS_TRANSFER_AGENT_IP_Postal_Address.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_LICENSED_PRACTITIONER"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER_IP_Postal_Address.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_OWNERSHIP_RELATION"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_OWNERSHIP_RELATION_IP_Postal_Address.yaml"
 consolidation_notes:
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Id' — đặt nullable=true"
 - "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Code' — đặt nullable=true"
@@ -207,6 +225,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company Foreign Representative Office Personnel."
@@ -255,6 +278,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.ID"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -303,6 +331,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — trụ sở chính pháp nhân liên quan."
@@ -351,6 +384,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ trụ sở của pháp nhân liên quan (free-text)."
@@ -399,6 +437,11 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.ADDRESS"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ADDRESS"
     IDS.COMPANY_RELATIONSHIP: "IDS.COMPANY_RELATIONSHIP.HEAD_OFFICE_ADDR"
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: PERMANENT=Địa chỉ thường trú theo hộ khẩu."
@@ -447,6 +490,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ trụ sở chính/văn phòng của nhân sự cấp cao."
@@ -497,6 +545,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Country Id"
   physical_name: "country_id"
   description: "FK đến Geographic Area — quốc gia."
@@ -548,6 +601,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
   description: "Mã quốc gia."
@@ -598,6 +656,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area — tỉnh/thành."
@@ -651,6 +714,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành."
@@ -701,6 +769,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area — quận/huyện."
@@ -756,6 +829,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã quận/huyện."
@@ -806,6 +884,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: CURRENT=Địa chỉ trụ sở chính/văn phòng liên lạc hiện\
@@ -856,6 +939,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ hiện tại (nơi ở hiện tại)."
@@ -904,6 +992,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Country Id"
   physical_name: "country_id"
   description: "FK đến Geographic Area — quốc gia địa chỉ tạm trú hiện tại."
@@ -955,6 +1048,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
   description: "Mã quốc gia địa chỉ tạm trú."
@@ -1005,6 +1103,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area — tỉnh/thành địa chỉ tạm trú."
@@ -1058,6 +1161,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành địa chỉ tạm trú."
@@ -1108,6 +1216,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area — quận/huyện địa chỉ tạm trú."
@@ -1161,6 +1274,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã quận/huyện địa chỉ tạm trú."
@@ -1211,6 +1329,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp tỉnh/thành phố (trụ sở chính)."
@@ -1264,6 +1387,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố (Code của Geographic Area)."
@@ -1314,6 +1442,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp quận/huyện (cũ)."
@@ -1369,6 +1502,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã quận/huyện."
@@ -1419,6 +1557,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area — xã/phường trụ sở."
@@ -1471,6 +1614,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã (Code của Geographic Area)."
@@ -1521,6 +1669,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: BRANCH=Địa chỉ chi nhánh CTCK trong nước."
@@ -1570,6 +1723,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi tiết của chi nhánh (số nhà, tên đường, phường/xã)."
@@ -1618,6 +1776,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -1671,6 +1834,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -1721,6 +1889,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -1776,6 +1949,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -1826,6 +2004,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -1878,6 +2061,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -1928,6 +2116,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: REP_OFFICE=Địa chỉ văn phòng đại diện nội địa."
@@ -1977,6 +2170,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi tiết của VPDD (số nhà, tên đường, phường/xã)."
@@ -2025,6 +2223,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -2078,6 +2281,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -2128,6 +2336,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -2183,6 +2396,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -2233,6 +2451,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -2285,6 +2508,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -2335,6 +2563,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: TRANSACTION_OFFICE=Địa chỉ phòng giao dịch."
@@ -2385,6 +2618,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi tiết của phòng giao dịch."
@@ -2433,6 +2671,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area cấp Tỉnh/Thành phố."
@@ -2486,6 +2729,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã Tỉnh/Thành phố."
@@ -2536,6 +2784,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Id"
   physical_name: "district_id"
   description: "FK đến Geographic Area Old cấp Quận/Huyện (cũ)."
@@ -2591,6 +2844,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "District Code"
   physical_name: "district_code"
   description: "Mã Quận/Huyện."
@@ -2641,6 +2899,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area cấp Phường/Xã."
@@ -2693,6 +2956,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã Phường/Xã."
@@ -2743,6 +3011,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: FOREIGN_REP_OFFICE=Địa điểm VPDD CTCK nước ngoài tại\
@@ -2794,6 +3067,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ VPDD CTCK nước ngoài tại Việt Nam."
@@ -2842,6 +3120,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ: FOREIGN_BRANCH=Địa điểm chi nhánh CTCK nước ngoài tại\
@@ -2893,6 +3176,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ chi nhánh CTCK nước ngoài tại Việt Nam."
@@ -2941,6 +3229,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Country Id"
   physical_name: "country_id"
   description: "FK đến Geographic Area — quốc gia trụ sở."
@@ -2994,6 +3287,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Country Code"
   physical_name: "country_code"
   description: "Mã quốc gia."
@@ -3044,6 +3342,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — đại lý phân phối."
@@ -3092,6 +3395,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ đại lý phân phối."
@@ -3140,6 +3448,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — công ty mẹ nước ngoài."
@@ -3188,6 +3501,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ công ty mẹ."
@@ -3236,6 +3554,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area — tỉnh/thành phố chi nhánh/VPĐD tại Việt Nam."
@@ -3289,6 +3612,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành phố."
@@ -3339,6 +3667,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area — xã/phường chi nhánh/VPĐD tại Việt Nam."
@@ -3391,6 +3724,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã xã/phường."
@@ -3440,6 +3778,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — địa chỉ chung."
@@ -3488,6 +3831,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ trụ sở."
@@ -3536,6 +3884,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Address Type Code"
   physical_name: "adr_tp_code"
   description: "Loại địa chỉ — nơi làm việc."
@@ -3584,6 +3937,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Address Value"
   physical_name: "adr_val"
   description: "Địa chỉ cơ quan/nơi làm việc."
@@ -3632,6 +3990,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ADDRESS"
+    FMS.MB_FUND: "FMS.MB_FUND.ADDRESS"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ADDRESS"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ADDRESS"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.PERMANENT_ADDRESS"
 - attribute_name: "Province Id"
   physical_name: "province_id"
   description: "FK đến Geographic Area — tỉnh/thành phố (TVS2601TK-3433)."
@@ -3685,6 +4048,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Province Code"
   physical_name: "province_code"
   description: "Mã tỉnh/thành phố."
@@ -3735,6 +4103,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Id"
   physical_name: "ward_id"
   description: "FK đến Geographic Area — xã/phường (TVS2601TK-3433)."
@@ -3787,6 +4160,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Ward Code"
   physical_name: "ward_code"
   description: "Mã xã/phường."
@@ -3836,6 +4214,11 @@ attributes:
     FIMS.BANKMONI: null
     FIMS.SECURITIESCOMPANY: null
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: null
+    FMS.MB_FUND: null
+    FMS.PENSION_PROVIDER: null
+    FMS.TRANSFER_AGENT: null
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: null
 - attribute_name: "Involved Party Id"
   physical_name: "ip_id"
   description: "Khóa đại diện (surrogate key) của shared entity; cùng giá trị với\
@@ -3885,6 +4268,11 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"
 - attribute_name: "Involved Party Code"
   physical_name: "ip_code"
   description: "Mã Securities Company."
@@ -3933,3 +4321,8 @@ attributes:
     FIMS.BANKMONI: "FIMS.BANKMONI.ID"
     FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
     IDS.COMPANY_RELATIONSHIP: null
+    FMS.PENSION_AGENT: "FMS.PENSION_AGENT.ID"
+    FMS.MB_FUND: "FMS.MB_FUND.ID"
+    FMS.PENSION_PROVIDER: "FMS.PENSION_PROVIDER.ID"
+    FMS.TRANSFER_AGENT: "FMS.TRANSFER_AGENT.ID"
+    SCMS.SC_FIRM_LICENSED_PRACTITIONER: "SCMS.SC_FIRM_LICENSED_PRACTITIONER.ID"

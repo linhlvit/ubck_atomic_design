@@ -1,0 +1,149 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-anti_money_laundering_document-THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT
+  logical_name: Anti Money Laundering Document
+  physical_name: anti_money_laundering_document
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Documentation Item"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: THANHTRA
+  description: |
+    Sổ văn bản phòng chống rửa tiền (PCRT) đi và đến của UBCKNN, ghi nhận loại văn bản, số hiệu, ngày ban hành, năm, quý ban hành và đơn vị nhận của từng văn bản.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-THANHTRA-ANTI_MONEY_LAUNDERING_DOCUMENT
+
+attributes:
+  - name: Anti Money Laundering Document Id
+    physical_name: anti_money_laundering_document_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('THANHTRA_ANTI_MONEY_LAUNDERING_DOCUMENT', CODE). BCV: [Documentation] Documentation Item."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Anti Money Laundering Document Code
+    physical_name: anti_money_laundering_document_code
+    business_meaning: BK chính. PK nguồn (VARCHAR2 UUID) — bảng nguồn không có mã nghiệp vụ riêng; Id hash từ trường này.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.ID
+    comment: BK chính. PK nguồn (VARCHAR2 UUID).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'THANHTRA_ANTI_MONEY_LAUNDERING_DOCUMENT'"
+    etl_derived_value: THANHTRA_ANTI_MONEY_LAUNDERING_DOCUMENT
+
+  - name: Document Type Code
+    physical_name: document_tp_code
+    business_meaning: Loại văn bản PCRT.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.DOCUMENT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Number
+    physical_name: document_nbr
+    business_meaning: Số hiệu văn bản PCRT.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.DOCUMENT_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issued Date
+    physical_name: issued_dt
+    business_meaning: Ngày ban hành văn bản.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.ISSUED_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Year
+    physical_name: document_year
+    business_meaning: Năm ban hành văn bản.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.DOCUMENT_YEAR
+    comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch 4 chữ số."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Document Quarter
+    physical_name: document_quarter
+    business_meaning: Quý ban hành văn bản.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.QUARTER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Receiving Unit
+    physical_name: receiving_unit
+    business_meaning: Đơn vị nhận văn bản (text tự do).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: THANHTRA
+    source_table: ANTI_MONEY_LAUNDERING_DOCUMENT
+    source_column: THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT.RECEIVING_UNIT
+    comment: "Text tự do VARCHAR2(2000) — chưa tách Involved Party, xem HLD Tier 1 T1-04."
+    classification_context: null
+    etl_derived_value: null
