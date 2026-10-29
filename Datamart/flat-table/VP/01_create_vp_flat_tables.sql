@@ -360,6 +360,10 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listing_status_change_snpst_flat ON C
     listing_last_trading_dt                      Nullable(Date)          COMMENT 'Ngày giao dịch cuối cùng của chứng khoán (LAST_TRADING_DATE) — là ngày dùng cho khóa `snpst_dt_dim_id` và cho ',
     delisted_share_quantity                      Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu bị hủy niêm yết/hủy đăng ký giao dịch (DELISTED_SHARES). BA lọc `delisted_shares > 0` để c',
     delisted_share_val                           Nullable(Decimal(23,2)) COMMENT 'Giá trị chứng khoán bị hủy niêm yết (DELISTED_VALUE).',
+    new_listed_share_quantity                    Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu niêm yết lần đầu / đăng ký giao dịch mới (NEW_LISTED_SHARES). BA Nhóm 50: `new_listed_shares > 0` chọn quyết định niêm yết mới; điều kiện nằm ở Detail Mapping, Fact giữ mọi quyết định.',
+    additional_listed_share_quantity             Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu niêm yết bổ sung (ADDITIONAL_LISTED_SHARES). BA Nhóm 50: `additional_listed_shares > 0`.',
+    listed_share_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị chứng khoán niêm yết (LISTED_VALUE). BA Nhóm 50 ghi Trường nguồn = SUM(listed_value) + SUM(additional_listed_value) nhưng công thức/Mô tả/tên chỉ tiêu dùng KHỐI LƯỢNG (new_listed_shares) — thiết kế theo khối lượng, giữ cột giá trị để đổi nhanh nếu BA chốt giá trị (O_VP_45).',
+    additional_listed_share_val                  Nullable(Decimal(23,2)) COMMENT 'Giá trị chứng khoán niêm yết bổ sung (ADDITIONAL_LISTED_VALUE) — xem ghi chú `listed_share_val` (O_VP_45).',
     exchange_transfer                            Nullable(String)        COMMENT 'Cờ/diễn giải chuyển sàn của quyết định (EXCHANGE_TRANSFER): giá trị bắt đầu bằng Có = chuyển sàn (không tính l',
     delist_transfer_reason                       Nullable(String)        COMMENT 'Lý do hủy niêm yết/chuyển sàn (DELIST_TRANSFER_REASON).',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_LISTING_STATUS_CHANGE (HNX và UPCoM) hoặc HOSE_LISTING_STATUS_CHANGE (HOSE) — p',
@@ -413,4 +417,35 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), listing_status_change_snpst_id)
 COMMENT 'Flat table — fct_listing_status_change_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 9. FACT: vp_fct_investor_account_movement_snpst_flat
+--    fct_investor_account_movement_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_investor_account_movement_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_INVESTOR_ACCOUNT_MOVEMENT_SNPST
+    investor_account_movement_snpst_id           String                  COMMENT 'PK — hash(snpst_dt_dim_id, investor_tp_code). Grain = 1 ngày phát sinh (ngày mở hoặc ngày đóng tài khoản giao ',
+    snpst_dt_dim_id                              Nullable(String)        COMMENT 'FK tới Calendar Date Dimension — ngày phát sinh của sự kiện (ngày mở tài khoản `open_dt` hoặc ngày đóng tài kh',
+    investor_tp_code                             String                  COMMENT 'Loại nhà đầu tư VSDC (INVESTOR_TYPE): 3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Ph',
+    open_account_count                           Nullable(Int64)         COMMENT 'Số tài khoản mở trong ngày thuộc loại NĐT (BA: `COUNT(o.trading_account_no)` theo `open_date`); 0 khi dòng chỉ',
+    close_account_count                          Nullable(Int64)         COMMENT 'Số tài khoản đóng trong ngày thuộc loại NĐT (BA: `COUNT(c.trading_account_no)` theo `close_date`); 0 khi dòng ',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), investor_account_movement_snpst_id)
+COMMENT 'Flat table — fct_investor_account_movement_snpst — sinh tự động từ master registry + Entities.csv'
 ;

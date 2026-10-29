@@ -5710,66 +5710,55 @@ stocktype IN ('3', '6') --> Chứng chỉ quỹ (gồm ETF)
 floorcode = '10' AND stocktype = '4' --> Chứng quyền
 floorcode = '03' AND stocktype IN ('4', '5') --> Phái sinh: HĐTL (4), HĐ quyền chọn (5)
 - Bảng uat_iss_ods.flat_report (tk): report_code = 'HNX09' Là TPDN riêng lẻ
-- Bảng uat_hnx_stg.outright_order_book (o), uat_hnx_stg.repo_order_book (r): Là TPCP","-- HOẠT ĐỘNG NĐTNN >> MUA/BÁN RÒNG >> CHỈ TIÊU TỔNG HỢP: TÍNH TẠI 1 KỲ
+- Bảng uat_hnx_stg.outright_order_book (o), uat_hnx_stg.repo_order_book (r): Là TPCP","-- HOẠT ĐỘNG NĐTNN >> MUA/BÁN RÒNG >> THỐNG KÊ THEO LOẠI CHỨNG KHOÁN: TÍNH TẠI 1 KỲ
 /* Tham số tra cứu:
  * :period_type  Loại kỳ: D/M/Q/Y
  * :period_to    Kỳ báo cáo: Ngày yyyy-MM-dd / Tháng yyyy-MM / Quý yyyy-Q[1-4] / Năm yyyy
  * Nhận diện Giao dịch của NĐTNN: Ký tự thứ 4 trong số tài khoản giao dịch IN ('E','F')
  */
 -- ======================================================================================
--- CHỈ TIÊU TỔNG HỢP
---   * GT mua/bán ròng (kỳ), GT NĐTNN mua, GT NĐTNN bán : so sánh với KỲ TRƯỚC
---   * GT mua/bán ròng YTD                              : so sánh với CÙNG KỲ NĂM TRƯỚC (YTD năm trước)
---   Phạm vi tổng: CP + CCQ + CW + TPCP + TPDNNY + TPDNRL.
---   Phái sinh (GT danh nghĩa) KHÔNG cộng vào tổng giá trị mua, bán, ròng
+-- CHI TIẾT GIAO DỊCH NĐTNN THEO LOẠI CHỨNG KHOÁN
+--   * Mỗi chỉ tiêu (GT mua, GT bán, GT mua/bán ròng) có % thay đổi so với KỲ TRƯỚC
+--   * Nhóm hiển thị: Thị trường cơ sở (CP, CCQ, CW) | Phái sinh | Trái phiếu (TPCP, TPDNNY, TPDNRL)
+--   * Phái sinh: GT danh nghĩa = KL x Giá x Hệ số nhân hợp đồng (contractmultiplier)
 -- ======================================================================================
 WITH
--- 1. Tham số tra cứu: Loại kỳ (D/M/Q/Y) + Kỳ báo cáo -> ngày đầu/cuối kỳ này, kỳ trước, YTD, YTD cùng kỳ năm trước
+-- 1. Tham số tra cứu: Loại kỳ (D/M/Q/Y) + Kỳ báo cáo -> ngày đầu/cuối kỳ này, kỳ trước
 params AS (
   SELECT
-    x.*,
-    CAST(DATE_TRUNC('YEAR', x.period_to_startdate) AS DATE) AS ytd_startdate, -- Ngày đầu năm của kỳ này
-    ADD_MONTHS(CAST(DATE_TRUNC('YEAR', x.period_to_startdate) AS DATE), -12) AS ytd_py_startdate, -- Ngày đầu năm trước
-    CASE 
-      WHEN x.period_type = 'D' THEN ADD_MONTHS(x.period_to_enddate, -12)
-      ELSE LAST_DAY(ADD_MONTHS(x.period_to_enddate, -12)) 
-    END AS ytd_py_enddate -- Ngày cuối kỳ cùng kỳ năm trước
+    period_type,
+    period_code,
+    period_to_startdate,
+    CASE period_type
+      WHEN 'D' THEN period_to_startdate
+      WHEN 'M' THEN LAST_DAY(period_to_startdate)
+      WHEN 'Q' THEN DATE_SUB(ADD_MONTHS(period_to_startdate, 3), 1)
+      WHEN 'Y' THEN DATE_SUB(ADD_MONTHS(period_to_startdate, 12), 1)
+    END AS period_to_enddate, -- Ngày cuối kỳ này
+    CASE period_type
+      WHEN 'D' THEN DATE_SUB(period_to_startdate, 1)
+      WHEN 'M' THEN ADD_MONTHS(period_to_startdate, -1)
+      WHEN 'Q' THEN ADD_MONTHS(period_to_startdate, -3)
+      WHEN 'Y' THEN ADD_MONTHS(period_to_startdate, -12)
+    END AS period_prev_startdate, -- Ngày đầu kỳ trước
+    DATE_SUB(period_to_startdate, 1) AS period_prev_enddate, -- Ngày cuối kỳ trước
+    CASE period_type
+      WHEN 'D' THEN date_format(DATE_SUB(period_to_startdate, 1), 'yyyy-MM-dd')
+      WHEN 'M' THEN date_format(ADD_MONTHS(period_to_startdate, -1), 'yyyy-MM')
+      WHEN 'Q' THEN CONCAT(CAST(year(ADD_MONTHS(period_to_startdate, -3)) AS STRING), '-Q', CAST(CAST(FLOOR((month(ADD_MONTHS(period_to_startdate, -3)) - 1) / 3) + 1 AS INT) AS STRING))
+      WHEN 'Y' THEN CAST(year(ADD_MONTHS(period_to_startdate, -12)) AS STRING)
+    END AS period_prev_code -- Mã kỳ trước
   FROM (
     SELECT
-      period_type,
-      period_code,
-      period_to_startdate,
-      CASE period_type
-        WHEN 'D' THEN period_to_startdate
-        WHEN 'M' THEN LAST_DAY(period_to_startdate)
-        WHEN 'Q' THEN DATE_SUB(ADD_MONTHS(period_to_startdate, 3), 1)
-        WHEN 'Y' THEN DATE_SUB(ADD_MONTHS(period_to_startdate, 12), 1)
-      END AS period_to_enddate, -- Ngày cuối kỳ này
-      CASE period_type
-        WHEN 'D' THEN DATE_SUB(period_to_startdate, 1)
-        WHEN 'M' THEN ADD_MONTHS(period_to_startdate, -1)
-        WHEN 'Q' THEN ADD_MONTHS(period_to_startdate, -3)
-        WHEN 'Y' THEN ADD_MONTHS(period_to_startdate, -12)
-      END AS period_prev_startdate, -- Ngày đầu kỳ trước
-      DATE_SUB(period_to_startdate, 1) AS period_prev_enddate, -- Ngày cuối kỳ trước
-      CASE period_type
-        WHEN 'D' THEN date_format(DATE_SUB(period_to_startdate, 1), 'yyyy-MM-dd')
-        WHEN 'M' THEN date_format(ADD_MONTHS(period_to_startdate, -1), 'yyyy-MM')
-        WHEN 'Q' THEN CONCAT(CAST(year(ADD_MONTHS(period_to_startdate, -3)) AS STRING), '-Q', CAST(CAST(FLOOR((month(ADD_MONTHS(period_to_startdate, -3)) - 1) / 3) + 1 AS INT) AS STRING))
-        WHEN 'Y' THEN CAST(year(ADD_MONTHS(period_to_startdate, -12)) AS STRING)
-      END AS period_prev_code -- Mã kỳ trước
-    FROM (
-      SELECT
-        :period_type AS period_type, -- Loại kỳ: D/M/Q/Y
-        :period_to AS period_code, -- Kỳ: Ngày yyyy-MM-dd / Tháng yyyy-MM / Quý yyyy-Q[1-4] / Năm yyyy
-        CAST(CASE :period_type
-          WHEN 'D' THEN :period_to
-          WHEN 'M' THEN CONCAT(:period_to, '-01')
-          WHEN 'Q' THEN CONCAT(SUBSTR(:period_to, 1, 4), '-', LPAD(CAST(CAST(SUBSTR(:period_to, 7, 1) AS INT) * 3 - 2 AS STRING), 2, '0'), '-01')
-          WHEN 'Y' THEN CONCAT(:period_to, '-01-01')
-        END AS DATE) AS period_to_startdate -- Ngày đầu kỳ này
-    )
-  ) x
+      :period_type AS period_type, -- Loại kỳ: D/M/Q/Y
+      :period_to AS period_code, -- Kỳ: Ngày yyyy-MM-dd / Tháng yyyy-MM / Quý yyyy-Q[1-4] / Năm yyyy
+      CAST(CASE :period_type
+        WHEN 'D' THEN :period_to
+        WHEN 'M' THEN CONCAT(:period_to, '-01')
+        WHEN 'Q' THEN CONCAT(SUBSTR(:period_to, 1, 4), '-', LPAD(CAST(CAST(SUBSTR(:period_to, 7, 1) AS INT) * 3 - 2 AS STRING), 2, '0'), '-01')
+        WHEN 'Y' THEN CONCAT(:period_to, '-01-01')
+      END AS DATE) AS period_to_startdate -- Ngày đầu kỳ này
+  )
 )
 -- 2. Danh sách mã chứng khoán: lấy bản ghi cuối ngày trong jad_stockinfor -> phân loại theo floorcode, stocktype
 , stock_daily_eod AS (
@@ -5788,11 +5777,11 @@ params AS (
       ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn
     FROM uat_mdds_stg.jad_stockinfor s
     CROSS JOIN params p
-    WHERE s.tradingdate BETWEEN p.ytd_py_startdate AND p.period_to_enddate
+    WHERE s.tradingdate BETWEEN p.period_prev_startdate AND p.period_to_enddate
   )
   WHERE rn = 1 -- Bản ghi cuối mỗi ngày
 )
--- 3. GT NĐTNN mua/bán theo ngày x loại chứng khoán -> Tính từ ngày đầu năm trước đến ngày cuối kỳ
+-- 3. GT NĐTNN mua/bán theo ngày x loại chứng khoán -> Tính từ ngày đầu kỳ trước đến ngày cuối kỳ này
 ---- NĐTNN: ký tự thứ 4 của số tài khoản IN ('E','F')
 , trade_daily AS (
   -- 3.1. HOSE: Cổ phiếu, CCQ, Chứng quyền
@@ -5805,32 +5794,30 @@ params AS (
   JOIN stock_daily_eod s ON h.symbol = s.symbol AND h.trade_date = s.tradingdate
   CROSS JOIN params p
   WHERE h.market_id = 'STK'
-    AND h.trade_date BETWEEN p.ytd_py_startdate AND p.period_to_enddate
-    --AND s.loai_ck IN ('CP', 'CCQ', 'CW')
+    AND h.trade_date BETWEEN p.period_prev_startdate AND p.period_to_enddate
   GROUP BY h.trade_date, s.loai_ck
   UNION ALL
-  -- 3.2. HNX + UPCoM: TPDNNY, Cổ phiếu, CCQ (CCQ hiện không còn giao dịch nên số null), Phái sinh 
+  -- 3.2. HNX + UPCoM: TPDNNY, Cổ phiếu, CCQ (CCQ hiện không còn giao dịch nên số null), Phái sinh
   ---- trade_date kiểu string yyyyMMdd; join với jad_stockinfor theo mã ISIN
   ---- Phái sinh (HNX - DVX): GT = KL x Giá x Hệ số nhân hợp đồng (contractmultiplier trong jad_stockinfor)
   SELECT
     TO_DATE(h.trade_date, 'yyyyMMdd') AS trade_date,
     s.loai_ck,
-    SUM(CASE WHEN SUBSTR(h.buy_account_number, 4, 1) IN ('E', 'F') 
-      THEN h.trade_quantity * h.trade_price * (CASE WHEN h.market_id = 'DVX' THEN s.contractmultiplier ELSE 1 END) 
+    SUM(CASE WHEN SUBSTR(h.buy_account_number, 4, 1) IN ('E', 'F')
+      THEN h.trade_quantity * h.trade_price * (CASE WHEN h.market_id = 'DVX' THEN s.contractmultiplier ELSE 1 END)
     END) AS gtgd_ndtnn_mua,
-    SUM(CASE WHEN SUBSTR(h.sell_account_number, 4, 1) IN ('E', 'F') 
-      THEN h.trade_quantity * h.trade_price * (CASE WHEN h.market_id = 'DVX' THEN s.contractmultiplier ELSE 1 END) 
+    SUM(CASE WHEN SUBSTR(h.sell_account_number, 4, 1) IN ('E', 'F')
+      THEN h.trade_quantity * h.trade_price * (CASE WHEN h.market_id = 'DVX' THEN s.contractmultiplier ELSE 1 END)
     END) AS gtgd_ndtnn_ban
   FROM uat_hnx_stg.trade_book h
   JOIN stock_daily_eod s ON h.issue_code = s.symbolisin AND TO_DATE(h.trade_date, 'yyyyMMdd') = s.tradingdate
   CROSS JOIN params p
   WHERE h.market_id IN ('STX', 'UPX', 'HCX', 'DVX')
-    AND h.trade_date BETWEEN DATE_FORMAT(p.ytd_py_startdate, 'yyyyMMdd') AND DATE_FORMAT(p.period_to_enddate, 'yyyyMMdd')
-    --AND s.loai_ck IN ('TPDNNY', 'CP', 'CCQ', 'CW', 'PS')
+    AND h.trade_date BETWEEN DATE_FORMAT(p.period_prev_startdate, 'yyyyMMdd') AND DATE_FORMAT(p.period_to_enddate, 'yyyyMMdd')
   GROUP BY h.trade_date, s.loai_ck
   UNION ALL
   -- 3.3. TPCP: Sổ lệnh outright/repo đã thực hiện (ĐTH)
-  SELECT 
+  SELECT
     trade_date,
     loai_ck,
     SUM(gtgd_ndtnn_mua) AS gtgd_ndtnn_mua,
@@ -5844,9 +5831,9 @@ params AS (
     FROM uat_hnx_stg.outright_order_book o
     CROSS JOIN params p
     WHERE o.order_status = 'ĐTH'
-      AND o.trading_date BETWEEN p.ytd_py_startdate AND p.period_to_enddate
+      AND o.trading_date BETWEEN p.period_prev_startdate AND p.period_to_enddate
     GROUP BY o.trading_date
-    UNION ALL 
+    UNION ALL
     SELECT
       r.trading_date AS trade_date,
       'TPCP' AS loai_ck,
@@ -5855,17 +5842,17 @@ params AS (
     FROM uat_hnx_stg.repo_order_book r
     CROSS JOIN params p
     WHERE r.order_status = 'ĐTH'
-      AND r.trading_date BETWEEN p.ytd_py_startdate AND p.period_to_enddate
+      AND r.trading_date BETWEEN p.period_prev_startdate AND p.period_to_enddate
     GROUP BY r.trading_date
   )
   GROUP BY trade_date, loai_ck
   UNION ALL
   -- 3.4. TPDN riêng lẻ: Báo cáo HNX09 (chỉ lấy nguồn từ Sở - ICP; không lấy CDW/KDL)
   SELECT
-    tk.report_date AS trade_date,
+    r.report_date AS trade_date,
     'TPDNRL' AS loai_ck,
-    SUM(CASE WHEN tk.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN tk.value ELSE 0 END) AS gtgd_ndtnn_mua,
-    SUM(CASE WHEN tk.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN tk.value ELSE 0 END) AS gtgd_ndtnn_ban
+    SUM(CASE WHEN r.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA' THEN r.value ELSE 0 END) AS gtgd_ndtnn_mua,
+    SUM(CASE WHEN r.row_path = 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN' THEN r.value ELSE 0 END) AS gtgd_ndtnn_ban
   FROM (
     SELECT
       MAKE_DATE(f.report_year, f.report_month, f.report_day) AS report_date,
@@ -5880,60 +5867,67 @@ params AS (
       AND f.column_path = 'GIÁ TRỊ'
       AND f.row_path IN ('GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ MUA', 'GIÁ TRỊ GIAO DỊCH NHÀ ĐẦU TƯ NƯỚC NGOÀI - GIÁ TRỊ BÁN')
       AND f.date_type = 'DAILY'
+      AND MAKE_DATE(f.report_year, f.report_month, f.report_day) BETWEEN p.period_prev_startdate AND p.period_to_enddate
       AND f.ds_snpst_dt = '2026-10-22' -- Snapshot date
-      AND MAKE_DATE(f.report_year, f.report_month, f.report_day) BETWEEN p.ytd_py_startdate AND p.period_to_enddate
-  ) tk
-  GROUP BY tk.report_date
+  ) r
+  GROUP BY r.report_date
 )
--- 4. Tổng hợp số liệu kỳ này, kỳ trước, YTD kỳ này, YTD cùng kỳ năm trước
-, kpi AS (
+-- 4. Danh mục loại chứng khoán hiển thị (đảm bảo luôn đủ dòng kể cả khi không có giao dịch)
+, loai_dm AS (
+  SELECT * FROM VALUES
+    (1, 'Thị trường cơ sở',    1, 'CP',     'Cổ phiếu'),
+    (1, 'Thị trường cơ sở',    2, 'CCQ',    'Chứng chỉ quỹ'),
+    (1, 'Thị trường cơ sở',    3, 'CW',     'Chứng quyền'),
+    (2, 'Trái phiếu',          1, 'TPCP',   'TPCP'),
+    (2, 'Trái phiếu',          2, 'TPDNNY', 'TPDN niêm yết'),
+    (2, 'Trái phiếu',          3, 'TPDNRL', 'TPDN riêng lẻ'),
+    (3, 'Giao dịch Phái sinh', 1, 'PS',     'Phái sinh')
+  AS t(nhom_stt, nhom, loai_stt, loai_ck, loai)
+)
+-- 5. Tổng hợp GT mua/bán theo loại chứng khoán: kỳ này, kỳ trước
+, trade_period AS (
   SELECT
+    d.loai_ck,
     SUM(CASE WHEN d.trade_date BETWEEN p.period_to_startdate AND p.period_to_enddate THEN d.gtgd_ndtnn_mua ELSE 0 END) AS gtgd_ndtnn_mua_kynay,
     SUM(CASE WHEN d.trade_date BETWEEN p.period_to_startdate AND p.period_to_enddate THEN d.gtgd_ndtnn_ban ELSE 0 END) AS gtgd_ndtnn_ban_kynay,
     SUM(CASE WHEN d.trade_date BETWEEN p.period_prev_startdate AND p.period_prev_enddate THEN d.gtgd_ndtnn_mua ELSE 0 END) AS gtgd_ndtnn_mua_kytruoc,
-    SUM(CASE WHEN d.trade_date BETWEEN p.period_prev_startdate AND p.period_prev_enddate THEN d.gtgd_ndtnn_ban ELSE 0 END) AS gtgd_ndtnn_ban_kytruoc,
-    SUM(CASE WHEN d.trade_date BETWEEN p.ytd_startdate AND p.period_to_enddate THEN d.gtgd_ndtnn_mua ELSE 0 END) AS gtgd_ndtnn_mua_ytd,
-    SUM(CASE WHEN d.trade_date BETWEEN p.ytd_startdate AND p.period_to_enddate THEN d.gtgd_ndtnn_ban ELSE 0 END) AS gtgd_ndtnn_ban_ytd,
-    SUM(CASE WHEN d.trade_date BETWEEN p.ytd_py_startdate AND p.ytd_py_enddate THEN d.gtgd_ndtnn_mua ELSE 0 END) AS gtgd_ndtnn_mua_ytd_py,
-    SUM(CASE WHEN d.trade_date BETWEEN p.ytd_py_startdate AND p.ytd_py_enddate THEN d.gtgd_ndtnn_ban ELSE 0 END) AS gtgd_ndtnn_ban_ytd_py
+    SUM(CASE WHEN d.trade_date BETWEEN p.period_prev_startdate AND p.period_prev_enddate THEN d.gtgd_ndtnn_ban ELSE 0 END) AS gtgd_ndtnn_ban_kytruoc
   FROM trade_daily d
   CROSS JOIN params p
-  WHERE d.loai_ck <> 'PS' -- Không tính giá trị danh nghĩa của giao dịch phái sinh vào tổng
+  GROUP BY d.loai_ck
 )
--- 5. Dữ liệu lên dashboard
-SELECT 
-  p.period_type AS loaiky, 
-  p.period_code AS ky, 
-  m.metric_code, 
-  m.metric_name, 
-  m.gia_tri, 
-  m.gia_tri_so_sanh,
-  m.gia_tri - m.gia_tri_so_sanh AS chenh_lech,
-  (m.gia_tri - m.gia_tri_so_sanh) / NULLIF(ABS(m.gia_tri_so_sanh), 0) * 100 AS ty_le_thay_doi_pt,
-  m.co_so_so_sanh
+-- 6. Dữ liệu lên dashboard
+SELECT
+  p.period_type AS loaiky,
+  p.period_code AS ky,
+  p.period_prev_code AS ky_truoc,
+  x.nhom,
+  x.loai_ck,
+  x.loai,
+  -- GT mua
+  x.gtgd_ndtnn_mua,
+  x.gtgd_ndtnn_mua_kytruoc,
+  (x.gtgd_ndtnn_mua - x.gtgd_ndtnn_mua_kytruoc) / NULLIF(ABS(x.gtgd_ndtnn_mua_kytruoc), 0) * 100 AS gtgd_ndtnn_mua_thay_doi_pt,
+  -- GT bán
+  x.gtgd_ndtnn_ban,
+  x.gtgd_ndtnn_ban_kytruoc,
+  (x.gtgd_ndtnn_ban - x.gtgd_ndtnn_ban_kytruoc) / NULLIF(ABS(x.gtgd_ndtnn_ban_kytruoc), 0) * 100 AS gtgd_ndtnn_ban_thay_doi_pt,
+  -- GT mua/bán ròng
+  x.gtgd_ndtnn_mua - x.gtgd_ndtnn_ban AS rong_gt,
+  x.gtgd_ndtnn_mua_kytruoc - x.gtgd_ndtnn_ban_kytruoc AS gtgd_ndtnn_rong_kytruoc,
+  ((x.gtgd_ndtnn_mua - x.gtgd_ndtnn_ban) - (x.gtgd_ndtnn_mua_kytruoc - x.gtgd_ndtnn_ban_kytruoc)) / NULLIF(ABS(x.gtgd_ndtnn_mua_kytruoc - x.gtgd_ndtnn_ban_kytruoc), 0) * 100 AS gtgd_ndtnn_rong_thay_doi_pt
 FROM params p
 CROSS JOIN (
-  SELECT 
-    1 AS thu_tu, 
-    'gtgd_ndtnn_rong_kynay' AS metric_code, 
-    'GT mua/bán ròng NĐTNN (kỳ)' AS metric_name,
-    gtgd_ndtnn_mua_kynay - gtgd_ndtnn_ban_kynay AS gia_tri, 
-    gtgd_ndtnn_mua_kytruoc - gtgd_ndtnn_ban_kytruoc AS gia_tri_so_sanh, 
-    'Kỳ trước' AS co_so_so_sanh 
-  FROM kpi
-  UNION ALL
   SELECT
-    2, 'gtgd_ndtnn_rong_ytd', 'GT mua/bán ròng NĐTNN (YTD)', 
-    gtgd_ndtnn_mua_ytd - gtgd_ndtnn_ban_ytd, 
-    gtgd_ndtnn_mua_ytd_py - gtgd_ndtnn_ban_ytd_py, 
-    'Cùng kỳ năm trước' 
-  FROM kpi
-  UNION ALL
-  SELECT 3, 'gtgd_ndtnn_mua', 'GT giao dịch NĐTNN mua', gtgd_ndtnn_mua_kynay, gtgd_ndtnn_mua_kytruoc, 'Kỳ trước' FROM kpi
-  UNION ALL
-  SELECT 4, 'gtgd_ndtnn_ban', 'GT giao dịch NĐTNN bán', gtgd_ndtnn_ban_kynay, gtgd_ndtnn_ban_kytruoc, 'Kỳ trước' FROM kpi
-) m
-ORDER BY m.thu_tu
+    m.nhom_stt, m.loai_stt, m.nhom, m.loai_ck, m.loai,
+    COALESCE(lp.gtgd_ndtnn_mua_kynay, 0) AS gtgd_ndtnn_mua,
+    COALESCE(lp.gtgd_ndtnn_mua_kytruoc, 0) AS gtgd_ndtnn_mua_kytruoc,
+    COALESCE(lp.gtgd_ndtnn_ban_kynay, 0) AS gtgd_ndtnn_ban,
+    COALESCE(lp.gtgd_ndtnn_ban_kytruoc, 0) AS gtgd_ndtnn_ban_kytruoc
+  FROM loai_dm m
+  LEFT JOIN trade_period lp ON lp.loai_ck = m.loai_ck
+) x
+ORDER BY x.nhom_stt, x.loai_stt
 ;",,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
 33,,Dashboard Hoạt động của NĐTNN >> Mua/Bán ròng NĐTNN >> Chi tiết giao dịch,GT mua/bán ròng NĐTNN,GT mua NĐTNN - GT bán NĐTNN,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Ngày/Tháng/Quý/Năm","HNX, HOSE, MDDS",,X,X,Done,,"uat_hose_stg.trade_book (t), 
 uat_hnx_stg.trade_book (h),
@@ -6376,15 +6370,15 @@ params AS (
       :period_to   AS period_to -- Đến kỳ
   )
 )
--- Danh sách cổ phiếu: Lấy bản ghi cuối ngày 
-, stock_daily_eod AS (
-  SELECT tradingdate, symbol, symbolisin
+-- Danh sách cổ phiếu: Lấy bản ghi cuối ngày -> Lấy danh sách cổ phiếu (chỉ cần bản ghi mới nhất để lọc điều kiện loại chứng khoán = Cổ phiếu)
+, stock_portfolio AS (
+  SELECT symbol, symbolisin, stocktype
   FROM (
     SELECT 
       s.tradingdate, 
       s.symbol, 
       s.symbolisin, 
-      ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn 
+      ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) rn 
     FROM uat_mdds_stg.jad_stockinfor s 
     CROSS JOIN params p
     WHERE s.tradingdate BETWEEN p.period_from_startdate AND p.period_to_enddate
@@ -6413,10 +6407,10 @@ FROM (
     -- Tổng GTGD theo ngày - Dữ liệu từ ngày đầu của ""Từ kỳ"" đến ngày cuối của ""Đến kỳ""
     SELECT
       t.trade_date,
-      SUM(t.execution_value) AS gtgd,
       SUM(CASE WHEN SUBSTR(t.buy_acct_no,4,1) IN ('E','F') THEN t.execution_value END) AS ndtnn_mua_gt,
       SUM(CASE WHEN SUBSTR(t.sell_acct_no,4,1) IN ('E','F') THEN t.execution_value END) AS ndtnn_ban_gt
-    JOIN stock_daily_eod s ON t.symbol = s.symbol AND t.trade_date = s.tradingdate
+    FROM uat_hose_stg.trade_book t
+    JOIN stock_portfolio s ON t.symbol = s.symbol
     CROSS JOIN params p
     WHERE t.market_id = 'STK'
       AND t.trade_date BETWEEN p.period_from_startdate AND p.period_to_enddate
@@ -6426,6 +6420,7 @@ FROM (
       SUM(CASE WHEN SUBSTR(h.buy_account_number,4,1) IN ('E','F') THEN h.trade_quantity * h.trade_price END) AS ndtnn_mua_gt,
       SUM(CASE WHEN SUBSTR(h.sell_account_number,4,1) IN ('E','F') THEN h.trade_quantity * h.trade_price END) AS ndtnn_ban_gt
     FROM uat_hnx_stg.trade_book h 
+    JOIN stock_portfolio s ON h.issue_code = s.symbolisin
     CROSS JOIN params p
     WHERE h.market_id IN ('STX', 'UPX') 
       AND h.trade_date BETWEEN DATE_FORMAT(p.period_from_startdate, 'yyyyMMdd') AND DATE_FORMAT(p.period_to_enddate, 'yyyyMMdd') -- Lọc trade_date kiểu string dạng yyyyMMdd
@@ -6760,55 +6755,299 @@ o.trading_value, r.first_settlement_value,","Tính theo công thức tại cột
 - Thời gian: 
   + Kỳ ""Nửa tháng"": nửa đầu tháng có ngày báo cáo = 15, nửa sau tháng có ngày báo cáo = ngày cuối tháng
   + Kỳ ""Tháng/Quý/Năm"": SUM số liệu của các ngày trong tháng/quý/năm",,,,Dữ liệu động,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,Loại nhà đầu tư,"Loại NĐT: 
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Kỳ,"Tại kỳ. Gồm các kỳ:
+- Ngày
+- Tháng
+- Quý
+- Năm",Dashboard,Chiều,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.open_date,
+c.close_date",,"-- 40. TÀI KHOẢN GIAO DỊCH >> CHỈ TIÊU TỔNG HỢP
+/* Tham số:
+ *  :period_type  Loại kỳ: D (Ngày) | M (Tháng) | Q (Quý) | Y (Năm)
+ *  :period_code  Kỳ: D = yyyy-MM-dd | M = yyyy-MM | Q = yyyy-Q[1-4] | Y = yyyy
+ * Loại TK (investor_type): 3 Cá nhân trong nước | 4 Cá nhân nước ngoài | 5 Pháp nhân trong nước | 6 Pháp nhân nước ngoài | 7 Nhà nước | KHAC (NULL/giá trị khác) | TOTAL (Tổng)
+ * Logic:
+ *  - Số TK hoạt động tại ngày D (lũy kế) = số bản ghi mở có ngày <= D - số bản ghi đóng có ngày <= D
+ *  - TK mở mới trong kỳ = Có ngày mở trong kỳ [ngày đầu kỳ, ngày cuối kỳ]
+ *  - TK đóng trong kỳ   = Có ngày đóng trong kỳ [ngày đầu kỳ, ngày cuối kỳ]
+ */
+WITH
+-- 1. THAM SỐ: Kỳ -> Lấy ra [ngày đầu kỳ, ngày cuối kỳ] của kỳ báo cáo / kỳ trước / cùng kỳ năm trước, Ngày cuối năm trước
+params AS (
+  SELECT
+    q.period_type, q.period_code, q.period_start, q.period_end,
+    q.prev_start,                                         -- Ngày đầu kỳ trước
+    DATE_SUB(q.period_start, 1) AS prev_end,              -- Ngày cuối kỳ trước (D: ngày liền trước; M/Q/Y: ngày cuối tháng/quý/năm trước)
+    MAKE_DATE(YEAR(q.period_end) - 1, 12, 31) AS py_end,  -- Ngày cuối năm trước
+    q.py_sameperiod_start,                                 -- Ngày đầu kỳ cùng kỳ năm trước
+    CASE q.period_type
+      WHEN 'D' THEN q.py_sameperiod_start
+      WHEN 'M' THEN LAST_DAY(q.py_sameperiod_start)
+      WHEN 'Q' THEN LAST_DAY(ADD_MONTHS(q.py_sameperiod_start, 2))
+      WHEN 'Y' THEN LAST_DAY(ADD_MONTHS(q.py_sameperiod_start, 11))
+    END AS py_sameperiod_end -- Ngày cuối kỳ cùng kỳ năm trước
+  FROM (
+    SELECT
+      s.period_type, s.period_code, s.period_start,
+      CASE s.period_type
+        WHEN 'D' THEN s.period_start
+        WHEN 'M' THEN LAST_DAY(s.period_start)
+        WHEN 'Q' THEN LAST_DAY(ADD_MONTHS(s.period_start, 2))
+        WHEN 'Y' THEN LAST_DAY(ADD_MONTHS(s.period_start, 11))
+      END AS period_end,  -- Ngày cuối kỳ
+      CASE s.period_type
+        WHEN 'D' THEN DATE_SUB(s.period_start, 1)
+        WHEN 'M' THEN ADD_MONTHS(s.period_start, -1)
+        WHEN 'Q' THEN ADD_MONTHS(s.period_start, -3)
+        WHEN 'Y' THEN ADD_MONTHS(s.period_start, -12)
+      END AS prev_start,  -- Ngày đầu kỳ trước
+      ADD_MONTHS(s.period_start, -12) AS py_sameperiod_start -- Ngày đầu kỳ cùng kỳ năm trước
+    FROM (
+      SELECT
+        :period_type AS period_type, -- Loại kỳ
+        :period_code AS period_code, -- Kỳ
+        CASE :period_type
+          WHEN 'D' THEN TO_DATE(:period_code, 'yyyy-MM-dd')
+          WHEN 'M' THEN TO_DATE(CONCAT(:period_code, '-01'), 'yyyy-MM-dd')
+          WHEN 'Q' THEN MAKE_DATE(CAST(SUBSTR(:period_code, 1, 4) AS INT), (CAST(SUBSTR(:period_code, 7, 1) AS INT) - 1) * 3 + 1, 1)
+          WHEN 'Y' THEN MAKE_DATE(CAST(:period_code AS INT), 1, 1)
+        END AS period_start -- Ngày đầu kỳ
+    ) s
+  ) q
+)
+-- Tính tổng tài khoản mở, đóng theo ngày
+, count_acc_open_close_daily AS (
+  SELECT 
+    IF(o.investor_type IN ('3','4','5','6','7'), o.investor_type, 'NA') AS investor_type, 
+    'OPEN' event_type, o.open_date AS event_date, COUNT(o.trading_account_no) acc_cnt
+  FROM uat_vsdc_stg.open_investors o
+  JOIN params p ON o.open_date <= p.period_end --> Lọc dữ liệu <= Ngày cuối kỳ
+  GROUP BY o.investor_type, o.open_date
+  UNION ALL
+  SELECT 
+    IF(c.investor_type IN ('3','4','5','6','7'), c.investor_type, 'NA') AS investor_type,
+    'CLOSE' event_type, c.close_date AS event_date, COUNT(c.trading_account_no) acc_cnt
+  FROM uat_vsdc_stg.closed_investors c
+  JOIN params p ON c.close_date <= p.period_end --> Lọc dữ liệu <= Ngày cuối kỳ
+  GROUP BY c.investor_type, c.close_date
+)
+-- Tính tổng tài khoản lũy kế, tài khoản mở/đóng trong kỳ: Kỳ báo cáo, Kỳ trước, Cùng kỳ năm trước
+, count_acc_agg AS (
+  SELECT 
+    investor_type,
+    GROUPING(investor_type) AS is_total,
+    -- Tổng số tài khoản lũy kế = OPEN - CLOSE tại từng mốc.
+    SUM(IF(event_type = 'OPEN', NVL(cnt_cur_cum, 0), 0)) - SUM(IF(event_type = 'CLOSE', NVL(cnt_cur_cum, 0), 0)) AS total_cur_cum,
+    SUM(IF(event_type = 'OPEN', NVL(cnt_prev_cum, 0), 0)) - SUM(IF(event_type = 'CLOSE', NVL(cnt_prev_cum, 0), 0)) AS total_prev_cum,
+    SUM(IF(event_type = 'OPEN', NVL(cnt_py_cum, 0), 0)) - SUM(IF(event_type = 'CLOSE', NVL(cnt_py_cum, 0), 0)) AS total_py_cum,
+    -- Số tài khoản mở trong kỳ, kỳ trước, cùng kỳ năm trước.
+    SUM(IF(event_type = 'OPEN', NVL(cnt_cur, 0), 0)) AS open_cur,
+    SUM(IF(event_type = 'OPEN', NVL(cnt_prev, 0), 0)) AS open_prev,
+    SUM(IF(event_type = 'OPEN', NVL(cnt_py_sameperiod, 0), 0)) AS open_py_sameperiod,
+    -- Số tài khoản đóng trong kỳ, kỳ trước, cùng kỳ năm trước.
+    SUM(IF(event_type = 'CLOSE', NVL(cnt_cur, 0), 0)) AS close_cur,
+    SUM(IF(event_type = 'CLOSE', NVL(cnt_prev, 0), 0)) AS close_prev,
+    SUM(IF(event_type = 'CLOSE', NVL(cnt_py_sameperiod, 0), 0)) AS close_py_sameperiod
+  FROM (
+    -- Tổng số TK mở/đóng theo từng loại tài khoản
+    SELECT 
+      i.event_type,
+      i.investor_type,
+      -- Tổng TK mở/đóng lũy kế
+      SUM(IF(i.event_date <= period_end, acc_cnt, 0)) AS cnt_cur_cum, 
+      SUM(IF(i.event_date <= prev_end, acc_cnt, 0)) AS cnt_prev_cum,
+      SUM(IF(i.event_date <= py_end, acc_cnt, 0)) AS cnt_py_cum,
+      -- Tổng TK mở/đóng trong kỳ
+      SUM(IF(i.event_date BETWEEN p.period_start AND p.period_end, acc_cnt, 0)) AS cnt_cur,
+      SUM(IF(i.event_date BETWEEN p.prev_start AND p.prev_end, acc_cnt, 0)) AS cnt_prev,
+      SUM(IF(i.event_date BETWEEN p.py_sameperiod_start AND p.py_sameperiod_end, acc_cnt, 0)) AS cnt_py_sameperiod
+    FROM count_acc_open_close_daily i 
+    CROSS JOIN params p 
+    WHERE i.event_date <= p.period_end 
+    GROUP BY i.event_type, i.investor_type
+  )
+  GROUP BY GROUPING SETS ((investor_type), ())
+) 
+-- Chỉ tiêu báo cáo
+SELECT
+  IF(is_total = 1, 'TOTAL', investor_type) AS investor_type,
+  CASE 
+    WHEN is_total = 1 THEN 'Tổng'
+    WHEN investor_type = '3' THEN 'Cá nhân trong nước'
+    WHEN investor_type = '4' THEN 'Cá nhân nước ngoài'
+    WHEN investor_type = '5' THEN 'Pháp nhân trong nước'
+    WHEN investor_type = '6' THEN 'Pháp nhân nước ngoài'
+    WHEN investor_type = '7' THEN 'Nhà nước'
+    ELSE 'Khác'
+  END AS investor_type_name,
+  -- 1. Tổng số tài khoản lũy kế và % thay đổi.
+  total_cur_cum,
+  total_prev_cum,
+  total_py_cum,
+  (total_cur_cum - total_prev_cum) / NULLIF(total_prev_cum, 0) * 100 AS pct_total_vs_prev_period,
+  (total_cur_cum  - total_py_cum) / NULLIF(total_py_cum, 0) * 100 AS pct_total_vs_prev_year_end,
+  -- 2. Số tài khoản mở trong kỳ và % thay đổi.
+  open_cur,
+  open_prev,
+  open_py_sameperiod,
+  (open_cur - open_prev) / NULLIF(open_prev, 0) * 100 AS pct_open_vs_prev_period,
+  (open_cur - open_py_sameperiod) / NULLIF(open_py_sameperiod, 0) * 100 AS pct_open_vs_same_period_py,
+  -- 3. Số tài khoản đóng trong kỳ và % thay đổi.
+  close_cur,
+  close_prev,
+  close_py_sameperiod,
+  (close_cur - close_prev) / NULLIF(close_prev, 0) * 100 AS pct_close_vs_prev_period,
+  (close_cur - close_py_sameperiod) / NULLIF(close_py_sameperiod, 0) * 100 AS pct_close_vs_same_period_py
+FROM count_acc_agg
+ORDER BY is_total, investor_type;
+;",,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Loại nhà đầu tư,"Loại NĐT: 
 - Cá nhân trong nước
 - Cá nhân nước ngoài
 - Tổ chức trong nước
-- Tổ chức nước ngoài",Dashboard,Chiều,TB,Loại NĐT,CSDLTT,X,X,,,- Thông tin tài khoản NĐT,"VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","VSDC >> BM 5, BM 6 >> Cột ""Loại hình"", ""Quốc tịch""","Loại NĐT: 
-- Cá nhân trong nước: ""Loại hình"" = 'Cá nhân' & ""Quốc tịch"" = 'Việt Nam""
-- Cá nhân nước ngoài: ""Loại hình"" = 'Cá nhân' & ""Quốc tịch"" <> 'Việt Nam""
-- Tổ chức trong nước: ""Loại hình"" = 'Tổ chức' & ""Quốc tịch"" = 'Việt Nam""
-- Tổ chức nước ngoài: ""Loại hình"" = 'Tổ chức' & ""Quốc tịch"" <> 'Việt Nam""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,Tổng số tài khoản,Count số tài khoản chưa đóng tính đến ngày báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Ngày","MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK:  
-  ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL
-  ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-- Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,Tổng số tài khoản - So sánh cuối tháng trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối tháng trước) / SL tài khoản ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày","MSS, CSDLTT",,X,X,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: 
-  + Số kỳ này: ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL, ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-  + Số kỳ trước: ""Ngày đóng"" > Ngày cuối kỳ trước OR ""Ngày đóng"" IS NULL, ""Ngày mở"" <= Ngày cuối kỳ trước
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,Tổng số tài khoản -So sánh cuối năm trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối năm trước) / SL tài khoản ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày","MSS, CSDLTT",,X,X,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: 
-  + Số kỳ này: ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL, ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-  + Số năm trước: ""Ngày đóng"" > Ngày cuối năm trước OR ""Ngày đóng"" IS NULL, ""Ngày mở"" <= Ngày cuối năm trước
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,SL TK mới,Count TK mở mới tại ngày báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,Ngày,"MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày mở"" >= Ngày đầu kỳ báo cáo AND ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,SL TK mới - So sánh cùng kỳ tháng trước,Count TK mở mới từ đầu tháng đến ngày báo cáo - So sánh với cùng kỳ tháng trước,Dashboard,Chỉ tiêu cơ sở,TB,Ngày,"MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: 
-  + Số kỳ này: ""Ngày mở"" >= Ngày đầu kỳ báo cáo AND ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-  + Số kỳ trước: ""Ngày mở"" >= Ngày đầu kỳ trước AND ""Ngày mở"" <= Ngày cuối kỳ trước 
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường cơ sở,SL TK mới - So sánh cùng kỳ năm trước,Count TK mở mới từ đầu năm đến ngày báo cáo - So sánh với cùng kỳ năm trước,Dashboard,Chỉ tiêu cơ sở,TB,Ngày,"MSS, CSDLTT",X,X,,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: 
-  + Số kỳ này: ""Ngày mở"" >= Ngày đầu kỳ báo cáo AND ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-  + Số cùng kỳ năm trước: ""Ngày mở"" >= Ngày đầu cùng kỳ năm trước AND ""Ngày mở"" <= Ngày cuối cùng kỳ năm trước
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,Loại nhà đầu tư,"Loại NĐT: 
+- Tổ chức nước ngoài
+- Nhà nước",Dashboard,Chiều,TB,Loại NĐT,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.investor_type, c.investor_type","CASE investor_type
+  WHEN '3' THEN 'Cá nhân trong nước'
+  WHEN '4' THEN 'Cá nhân nước ngoài'
+  WHEN '5' THEN 'Pháp nhân trong nước'
+  WHEN '6' THEN 'Pháp nhân nước ngoài'
+  WHEN '7' THEN 'Nhà nước'
+  ELSE 'Khác'
+END",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản,Đếm số lượng tài khoản tính đến ngày báo cáo = Tổng SL TK mở - Tổng SL TK đóng tính đến ngày cuối kỳ báo cáo (cộng dồn),Dashboard,Chỉ tiêu cơ sở,TB,Ngày,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - % so với cuối kỳ trước,(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối tháng trước) / SL tài khoản ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","o.open_date <= [Ngày cuối kỳ trước]
+c.close_date <= [Ngày cuối kỳ trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - % so với cuối năm trước,(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối năm trước) / SL tài khoản ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","o.open_date <= [Ngày cuối năm trước]
+c.close_date <= [Ngày cuối năm trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK mới,Đếm số lượng TK mở mới trong kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.open_investors (o),o.trading_account_no,"o.open_date BETWEEN [Ngày đầu kỳ báo cáo] AND [Ngày cuối kỳ báo cáo]
+SL TK mới = COUNT(o.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK mới - % so với kỳ trước,(SL TK mới trong kỳ báo cáo - SL TK mới trong kỳ trước) / SL TK mới trong kỳ trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.open_investors (o),o.trading_account_no,"o.open_date BETWEEN [Ngày đầu kỳ trước] AND [Ngày cuối kỳ trước]
+SL TK mới = COUNT(o.trading_account_no)
+% thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK mới - % so với cùng kỳ năm trước,(SL TK mới trong kỳ báo cáo - SL TK mới cùng kỳ năm trước) / SL TK mới cùng kỳ năm trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.open_investors (o),o.trading_account_no,"o.open_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+SL TK mới = COUNT(o.trading_account_no)
+% thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK đóng,Đếm số lượng TK đóng trong kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.closed_investors (c),c.trading_account_no,"c.close_date BETWEEN [Ngày đầu kỳ báo cáo] AND [Ngày cuối kỳ báo cáo]
+SL TK đóng = COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK đóng - % so với kỳ trước,(SL TK đóng trong kỳ báo cáo - SL TK đóng trong kỳ trước) / SL TK đóng trong kỳ trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.closed_investors (c),c.trading_account_no,"c.close_date BETWEEN [Ngày đầu kỳ trước] AND [Ngày cuối kỳ trước]
+SL TK đóng = COUNT(o.trading_account_no)
+% thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,SL TK đóng - % so với cùng kỳ năm trước,(SL TK đóng trong kỳ báo cáo - SL TK đóng cùng kỳ năm trước) / SL TK đóng cùng kỳ năm trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,VSDC,X,X,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.closed_investors (c),c.trading_account_no,"c.close_date BETWEEN [Ngày đầu năm trước] AND [Ngày cuối năm trước]
+SL TK đóng = COUNT(o.trading_account_no)
+% thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân trong nước,Đếm số lượng tài khoản 'Cá nhân trong nước' tính đến ngày báo cáo = SL TK mở - SL TK đóng tính đến ngày cuối kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Ngày",VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '3' --> Cá nhân trong nước
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân trong nước - % so với cuối kỳ trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối tháng trước) / SL tài khoản tính đến ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '3' --> Cá nhân trong nước
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ trước]
+c.close_date <= [Ngày cuối kỳ trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân trong nước - % so với cuối năm trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối năm trước) / SL tài khoản tính đến ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '3' --> Cá nhân trong nước
+- Năm trước:
+o.open_date <= [Ngày cuối kỳ năm trước]
+c.close_date <= [Ngày cuối kỳ năm trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân nước ngoài,Đếm số lượng tài khoản 'Cá nhân nước ngoài' tính đến ngày báo cáo = SL TK mở - SL TK đóng tính đến ngày cuối kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Ngày",VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '4' --> Cá nhân nước ngoài
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân nước ngoài - % so với cuối kỳ trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối tháng trước) / SL tài khoản tính đến ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '4' --> Cá nhân nước ngoài
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ trước]
+c.close_date <= [Ngày cuối kỳ trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Cá nhân nước ngoài - % so với cuối năm trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối năm trước) / SL tài khoản tính đến ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '4' --> Cá nhân nước ngoài
+- Năm trước:
+o.open_date <= [Ngày cuối kỳ năm trước]
+c.close_date <= [Ngày cuối kỳ năm trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức trong nước,Đếm số lượng tài khoản 'Tổ chức trong nước' tính đến ngày báo cáo = SL TK mở - SL TK đóng tính đến ngày cuối kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Ngày",VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức trong nước
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức trong nước - % so với cuối kỳ trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối tháng trước) / SL tài khoản tính đến ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức trong nước
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ trước]
+c.close_date <= [Ngày cuối kỳ trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức trong nước - % so với cuối năm trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối năm trước) / SL tài khoản tính đến ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức trong nước
+- Năm trước:
+o.open_date <= [Ngày cuối kỳ năm trước]
+c.close_date <= [Ngày cuối kỳ năm trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức nước ngoài,Đếm số lượng tài khoản 'Tổ chức nước ngoài' tính đến ngày báo cáo = SL TK mở - SL TK đóng tính đến ngày cuối kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại NĐT, Ngày",VSDC,X,X,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức nước ngoài
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức nước ngoài - % so với cuối kỳ trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối tháng trước) / SL tài khoản tính đến ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức nước ngoài
+- Kỳ báo cáo:
+o.open_date <= [Ngày cuối kỳ trước]
+c.close_date <= [Ngày cuối kỳ trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+40,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở,Tổng số tài khoản - Tổ chức nước ngoài - % so với cuối năm trước,(SL tài khoản tính đến ngày báo cáo - SL tài khoản tính đến ngày cuối năm trước) / SL tài khoản tính đến ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Ngày",VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Loại tài khoản:
+investor_type = '5' --> Tổ chức nước ngoài
+- Năm trước:
+o.open_date <= [Ngày cuối kỳ năm trước]
+c.close_date <= [Ngày cuối kỳ năm trước]
+- SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)
+- % thay đổi tính theo côn thức cột ""Mô tả""",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,Kỳ,"Tại kỳ. Gồm các loại kỳ:
+- Ngày
+- Tháng
+- Quý
+- Năm",Dashboard,Chỉ tiêu cơ sở,TB,Loại NĐT,,X,X,,,#NAME?,N/A,,,,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,Loại nhà đầu tư,"Loại NĐT: 
 - Cá nhân trong nước
 - Cá nhân nước ngoài
 - Tổ chức trong nước
-- Tổ chức nước ngoài",Dashboard,Chỉ tiêu cơ sở,TB,Loại NĐT,CSDLTT,X,X,,,#NAME?,N/A,,,,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,Tổng số tài khoản,Count số tài khoản chưa đóng tính đến ngày báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Tháng",CSDLTT,X,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
+- Tổ chức nước ngoài",Dashboard,Chỉ tiêu cơ sở,TB,Loại NĐT,,X,X,,,#NAME?,N/A,,,,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,Tổng số tài khoản,Count số tài khoản chưa đóng tính đến ngày báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,"Loại NĐT, Tháng",,X,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
 ""Số lượng cuối kỳ >> Nước ngoài >> CN""
 ""Số lượng cuối kỳ >> Trong nước >> TC""
 ""Số lượng cuối kỳ >> Nước ngoài >> TC""","* Loại NĐT: 
@@ -6817,8 +7056,8 @@ VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK:
 - Tổ chức trong nước: Cột ""Số lượng cuối kỳ >> Trong nước >> TC""
 - Tổ chức nước ngoài: Cột ""Số lượng cuối kỳ >> Nước ngoài >> TC""
 * ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,Tổng số tài khoản - So sánh cuối tháng trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối tháng trước) / SL tài khoản ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Tháng",CSDLTT,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
+* Công thức: SUM tất cả dòng",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,Tổng số tài khoản - So sánh cuối tháng trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối tháng trước) / SL tài khoản ngày cuối tháng trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Tháng",,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
 ""Số lượng cuối kỳ >> Nước ngoài >> CN""
 ""Số lượng cuối kỳ >> Trong nước >> TC""
 ""Số lượng cuối kỳ >> Nước ngoài >> TC""","* Loại NĐT: 
@@ -6827,8 +7066,8 @@ VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK:
 - Tổ chức trong nước: Cột ""Số lượng cuối kỳ >> Trong nước >> TC""
 - Tổ chức nước ngoài: Cột ""Số lượng cuối kỳ >> Nước ngoài >> TC""
 * ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,Tổng số tài khoản -So sánh cuối năm trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối năm trước) / SL tài khoản ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Tháng",CSDLTT,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
+* Công thức: SUM tất cả dòng",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,Tổng số tài khoản -So sánh cuối năm trước (%),(SL tài khoản ngày báo cáo - SL tài khoản ngày cuối năm trước) / SL tài khoản ngày cuối năm trước * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại NĐT, Tháng",,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
 ""Số lượng cuối kỳ >> Nước ngoài >> CN""
 ""Số lượng cuối kỳ >> Trong nước >> TC""
 ""Số lượng cuối kỳ >> Nước ngoài >> TC""","* Loại NĐT: 
@@ -6837,18 +7076,141 @@ VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK:
 - Tổ chức trong nước: Cột ""Số lượng cuối kỳ >> Trong nước >> TC""
 - Tổ chức nước ngoài: Cột ""Số lượng cuối kỳ >> Nước ngoài >> TC""
 * ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,SL TK mới,Count TK mở mới tại ngày báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,CSDLTT,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,SL TK mới - So sánh cùng kỳ tháng trước,Count TK mở mới từ đầu tháng đến ngày báo cáo - So sánh với cùng kỳ tháng trước,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,CSDLTT,,,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp Thị trường phái sinh,SL TK mới - So sánh cùng kỳ năm trước,Count TK mở mới từ đầu năm đến ngày báo cáo - So sánh với cùng kỳ năm trước,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,CSDLTT,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
-* Công thức: SUM tất cả dòng",,,,Chưa có CSDL - Map biểu mẫu,,,
-42,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian,Tổng số tài khoản,Count số tài khoản chưa đóng tại ngày cuối từng kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,Ngày,"MSS, CSDLTT",,X,X,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày đóng"" > Ngày cuối kỳ báo cáo OR ""Ngày đóng"" IS NULL
-- Công thức: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
-43,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản phái sinh theo thời gian,Tổng số tài khoản phái sinh,Count số tài khoản phái sinh chưa đóng tại ngày cuối từng kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường, Ngày","MSS, CSDLTT",,X,X,,- Thông tin tài khoản NĐT,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
+* Công thức: SUM tất cả dòng",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,SL TK mới,Số lượng TK mở mới trong kỳ báo cáo,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
+* Công thức: SUM tất cả dòng",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,SL TK mới - % so với kỳ trước,% so với kỳ trước = (SL TK mới kỳ báo cáo - SL TK mới kỳ trước) / SL TK mới kỳ trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,,,,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
+* Công thức: SUM tất cả dòng",,,,,,,
+41,,Dashboard Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh,SL TK mới - % so với cùng kỳ năm trước,% so với cùng kỳ năm trước = (SL TK mới cùng kỳ năm báo cáo - SL TK mới cùng kỳ năm trước) / SL TK mới cùng kỳ năm trước * 100,Dashboard,Chỉ tiêu cơ sở,TB,Ngày/Tháng/Quý/Năm,,,X,,,#NAME?,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Phát sinh trong kỳ >> Mở mới""","* ĐK: Lấy theo tháng báo cáo
+* Công thức: SUM tất cả dòng",,,,,,,
+42,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian,Kỳ,"Từ kỳ - Đến kỳ. Gồm các loại kỳ:
+- Ngày
+- Tháng
+- Quý
+- Năm",Dashboard,Chiều,TB,Ngày/Tháng/Quý/Năm,VSDC,,,,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.open_date,
+c.close_date",,"-- 42-43. TÀI KHOẢN GIAO DỊCH >> THỐNG KÊ THEO THỜI GIAN >> TỔNG SỐ TÀI KHOẢN (LŨY KẾ) + TỔNG SỐ TK MỞ MỚI
+/* Tham số:
+ *  :period_type  Loại kỳ: D (Ngày) | M (Tháng) | Q (Quý) | Y (Năm)
+ *  :period_code  Kỳ: D = yyyy-MM-dd | M = yyyy-MM | Q = yyyy-Q[1-4] | Y = yyyy
+ */
+WITH
+-- I. THAM SỐ
+-- 1. Xác định ngày đầu và ngày cuối khoảng báo cáo.
+params AS (
+  SELECT
+    period_type,
+    MAX(IF(boundary_type = 'FROM', start_date, NULL)) AS from_date,
+    MAX(IF(boundary_type = 'TO', CASE period_type WHEN 'D' THEN start_date WHEN 'M' THEN LAST_DAY(start_date) WHEN 'Q' THEN LAST_DAY(ADD_MONTHS(start_date, 2)) WHEN 'Y' THEN LAST_DAY(ADD_MONTHS(start_date, 11)) END, NULL)) AS to_date
+  FROM (
+    SELECT
+        period_type,
+        boundary_type,
+        CASE period_type
+          WHEN 'D' THEN TO_DATE(period_code, 'yyyy-MM-dd')
+          WHEN 'M' THEN TO_DATE(CONCAT(period_code, '-01'), 'yyyy-MM-dd')
+          WHEN 'Q' THEN MAKE_DATE(CAST(SUBSTR(period_code, 1, 4) AS INT), (CAST(SUBSTR(period_code, 7, 1) AS INT) - 1) * 3 + 1, 1)
+          WHEN 'Y' THEN MAKE_DATE(CAST(period_code AS INT), 1, 1)
+        END AS start_date
+    FROM VALUES (:period_type, 'FROM', :period_from), (:period_type, 'TO', :period_to) AS t(period_type, boundary_type, period_code)
+  ) s
+  GROUP BY period_type
+)
+-- 2. Sinh đầy đủ các kỳ trong khoảng [Từ kỳ, Đến kỳ] để vẽ biểu đồ lũy kế từng kỳ
+, periods AS (
+  SELECT
+    p.period_type,
+    CASE p.period_type
+      WHEN 'D' THEN DATE_FORMAT(period_start, 'yyyy-MM-dd')
+      WHEN 'M' THEN DATE_FORMAT(period_start, 'yyyy-MM')
+      WHEN 'Q' THEN CONCAT(YEAR(period_start), '-Q', QUARTER(period_start))
+      WHEN 'Y' THEN DATE_FORMAT(period_start, 'yyyy')
+    END AS period_code
+  FROM params p
+  LATERAL VIEW EXPLODE(
+    CASE p.period_type
+      WHEN 'D' THEN SEQUENCE(p.from_date, p.to_date, INTERVAL 1 DAY)
+      WHEN 'M' THEN SEQUENCE(p.from_date, p.to_date, INTERVAL 1 MONTH)
+      WHEN 'Q' THEN SEQUENCE(p.from_date, p.to_date, INTERVAL 3 MONTHS)
+      WHEN 'Y' THEN SEQUENCE(p.from_date, p.to_date, INTERVAL 1 YEAR)
+    END
+  ) t AS period_start
+  WHERE p.from_date <= p.to_date
+)
+-- II. Bắt đầu lấy số liệu
+-- 3. Tổng số lượng tài khoản mở/đóng theo ngày đến hết [Đến kỳ]
+, count_acc_open_close_daily AS (
+  SELECT 'OPEN' AS event_type, o.open_date AS event_date, COUNT(o.trading_account_no) AS acc_cnt
+  FROM uat_vsdc_stg.open_investors o
+  JOIN params p ON o.open_date <= p.to_date
+  GROUP BY o.open_date
+  UNION ALL
+  SELECT 'CLOSE' AS event_type, c.close_date AS event_date, COUNT(c.trading_account_no) AS acc_cnt
+  FROM uat_vsdc_stg.closed_investors c
+  JOIN params p ON c.close_date <= p.to_date
+  GROUP BY c.close_date
+)
+-- 4. Số tài khoản lũy kế trước [Từ kỳ]
+, opening_balance AS (
+  SELECT NVL(SUM(IF(a.event_type = 'OPEN', a.acc_cnt, -a.acc_cnt)), 0) AS begin_acc_cum
+  FROM count_acc_open_close_daily a
+  JOIN params p ON a.event_date < p.from_date
+)
+-- 5. Tổng hợp phát sinh theo kỳ trong khoảng [Từ kỳ, Đến kỳ]
+, period_counts AS (
+  SELECT
+    period_type,
+    period_code,
+    SUM(IF(event_type = 'OPEN', acc_cnt, 0)) AS open_in_period,
+    SUM(IF(event_type = 'CLOSE', acc_cnt, 0)) AS close_in_period
+  FROM (
+    SELECT
+      p.period_type,
+      CASE p.period_type
+        WHEN 'D' THEN DATE_FORMAT(a.event_date, 'yyyy-MM-dd')
+        WHEN 'M' THEN DATE_FORMAT(a.event_date, 'yyyy-MM')
+        WHEN 'Q' THEN CONCAT(CAST(YEAR(a.event_date) AS STRING), '-Q', CAST(QUARTER(a.event_date) AS STRING))
+        WHEN 'Y' THEN CAST(YEAR(a.event_date) AS STRING)
+      END AS period_code,
+      a.event_type,
+      a.acc_cnt
+    FROM count_acc_open_close_daily a
+    CROSS JOIN params p
+    WHERE a.event_date BETWEEN p.from_date AND p.to_date
+  ) s
+  GROUP BY period_type, period_code
+)
+-- 6. Bổ sung kỳ không phát sinh, điền số lượng bằng 0.
+, period_data AS (
+  SELECT
+    p.period_type,
+    p.period_code,
+    NVL(c.open_in_period, 0) AS open_in_period,
+    NVL(c.close_in_period, 0) AS close_in_period
+  FROM periods p
+  LEFT JOIN period_counts c ON p.period_type = c.period_type AND p.period_code = c.period_code
+)
+-- 7. Chỉ tiêu lên báo cáo
+SELECT
+  c.period_type,
+  c.period_code,
+  b.begin_acc_cum + SUM(c.open_in_period - c.close_in_period) OVER (ORDER BY c.period_code ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS total_cum,
+  c.open_in_period
+FROM period_data c
+CROSS JOIN opening_balance b
+ORDER BY c.period_code;",,,,,,
+42,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian,Tổng số tài khoản,Tổng số tài khoản còn hoạt động = SL mở - SL đóng tính đến ngày cuối mỗi kỳ ,Dashboard,Chỉ tiêu cơ sở,Trùng,Ngày/Tháng/Quý/Năm,VSDC,,X,X,Done,- Thông tin tài khoản NĐT,"uat_vsdc_stg.open_investors (o), 
+uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","o.open_date <= [Ngày cuối kỳ báo cáo]
+c.close_date <= [Ngày cuối kỳ báo cáo]
+SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,Chưa có CSDL - Map biểu mẫu,,,
+43,,Dashboard Tài khoản giao dịch >> Biểu đồ Số lượng tài khoản mới theo thời gian,Kỳ,"Từ kỳ - Đến kỳ. Gồm các loại kỳ:
+- Ngày
+- Tháng
+- Quý
+- Năm",Dashboard,Chiều,TB,Ngày/Tháng/Quý/Năm,VSDC,,,,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.open_investors (o),o.open_date,,,,,,,,
+43,,Dashboard Tài khoản giao dịch >> Biểu đồ Số lượng tài khoản mới theo thời gian,Số lượng TK mới,Số lượng tài khoản mới: Có ngày mở trong kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,Ngày/Tháng/Quý/Năm,VSDC,,X,X,Done,- Thông tin tài khoản NĐT,uat_vsdc_stg.open_investors (o),o.trading_account_no,"o.open_date BETWEEN [Ngày đầu kỳ báo cáo] AND [Ngày cuối kỳ báo cáo]
+SL TK mới = COUNT(o.trading_account_no)",,,,Chưa có CSDL - Map biểu mẫu,,,
+44,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản phái sinh theo thời gian,Tổng số tài khoản phái sinh,Count số tài khoản phái sinh chưa đóng tại ngày cuối từng kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường, Ngày",VSDC,,X,X,,- Thông tin tài khoản NĐT,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
 ""Số lượng cuối kỳ >> Nước ngoài >> CN""
 ""Số lượng cuối kỳ >> Trong nước >> TC""
 ""Số lượng cuối kỳ >> Nước ngoài >> TC""","* ĐK: Lấy theo tháng báo cáo
@@ -6857,10 +7219,15 @@ VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày đóng"" > Ngày cuố
 + ""Số lượng cuối kỳ >> Nước ngoài >> CN""
 + ""Số lượng cuối kỳ >> Trong nước >> TC""
 + ""Số lượng cuối kỳ >> Nước ngoài >> TC""",,,,Chưa có CSDL - Map biểu mẫu,,,
-44,,Dashboard Tài khoản giao dịch >> Biểu đồ Số lượng tài khoản mới theo thời gian,Số lượng TK mới,Đếm số lượng tài khoản mới: có ngày mở trong kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,Ngày,"MSS, CSDLTT",,X,X,,- Thông tin tài khoản NĐT,"MSS.INVESTOR_ACCOUNT
-VSDC >> ""BM 5_Thông tin và danh tính NĐT mở tài khoản"", ""BM 6_Thông tin và danh tính NĐT đóng tài khoản""","MSS.INVESTOR_ACCOUNT.INVESTOR_ACCOUNT
-VSDC >> BM 5, BM 6 >> Cột ""Mã TKGD""","- ĐK: ""Ngày mở"" >= Ngày đầu kỳ báo cáo AND ""Ngày mở"" <= Ngày cuối kỳ báo cáo
-- Công thức tính số lượng TK: COUNT INVESTOR_ACCOUNT hoặc ""Mã TKGD""",,,,Chưa có CSDL - Map biểu mẫu,,,
+44,,Dashboard Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản phái sinh theo thời gian,Tổng số tài khoản phái sinh,Count số tài khoản phái sinh chưa đóng tại ngày cuối từng kỳ,Dashboard,Chỉ tiêu cơ sở,Trùng,"Thị trường, Ngày",VSDC,,X,X,,- Thông tin tài khoản NĐT,"VSDC >> ""BM 45_TTLK_01_Báo cáo về tình hình đóng mở tài khoản"" >> Sheet2","""Số lượng cuối kỳ >> Trong nước >> CN""
+""Số lượng cuối kỳ >> Nước ngoài >> CN""
+""Số lượng cuối kỳ >> Trong nước >> TC""
+""Số lượng cuối kỳ >> Nước ngoài >> TC""","* ĐK: Lấy theo tháng báo cáo
+* Công thức: SUM tất cả dòng của các cột 
+""Số lượng cuối kỳ >> Trong nước >> CN""
++ ""Số lượng cuối kỳ >> Nước ngoài >> CN""
++ ""Số lượng cuối kỳ >> Trong nước >> TC""
++ ""Số lượng cuối kỳ >> Nước ngoài >> TC""",,,,Chưa có CSDL - Map biểu mẫu,,,
 45,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá,Loại hình đấu giá,"Phân loại:
 - IPO
 - Thoái vốn
@@ -7187,7 +7554,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Giá trị phát hành - Phát hành riêng lẻ,Σ GT phát hành theo hình thức phát hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7219,7 +7586,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Giá trị phát hành - ESOP,Σ GT phát hành theo hình thức phát hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7251,7 +7618,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,"Giá trị phát hành - Phát hành để trả cổ tức, tăng vốn từ vốn CSH",Σ GT phát hành theo hình thức phát hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7283,7 +7650,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Giá trị phát hành - Phát hành để hoán đổi/sáp nhập,Σ GT phát hành theo hình thức phát hành,Dashboard,Chỉ tiêu cơ sở,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7315,7 +7682,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Tỷ trọng - Phát hành ra công chúng,GT từng loại / Tổng GT * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7347,7 +7714,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Giá trị phát hành - Phát hành ra công chúng - Phát hành riêng lẻ,GT từng loại / Tổng GT * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7379,7 +7746,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,Giá trị phát hành - Phát hành riêng lẻ - ESOP,GT từng loại / Tổng GT * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7411,7 +7778,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,"Giá trị phát hành - ESOP - Phát hành để trả cổ tức, tăng vốn từ vốn CSH",GT từng loại / Tổng GT * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7443,7 +7810,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 46,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm,"Giá trị phát hành - Phát hành để trả cổ tức, tăng vốn từ vốn CSH - Phát hành để hoán đổi/sáp nhập",GT từng loại / Tổng GT * 100,Dashboard,Chỉ tiêu phái sinh,Trùng,"Loại chứng khoán, Hình thức phát hành, Ngày","IDS, FMS, SCMS",,X,,,"- Thông tin chào bán phát hành của CTĐC, CTCK, CTQLQ","IDS.SECURITIES_OFFERING
 IDS.SECURITIES_OFFERING_PLAN
 IDS.SECURITIES_OFFERING_RESULT
@@ -7475,7 +7842,7 @@ SCMS.DISCLOSURE_SECURITIES_OFFERING.RECORD_STATUS = '1'
 FMS.OFFERING.DELETED = '0'
 - IDS: Map dữ liệu công văn chấp thuận chào bán và dữ liệu kết quả chào bán:
 IDS.SECURITIES_OFFERING.ID = IDS.SECURITIES_OFFERING_RESULT.SECURITIES_OFFERING_ID
-- GT phát hành: SUM()",,,Giá trị phát hành,Dữ liệu tĩnh,,,
+- GT phát hành: SUM()",,Giá trị phát hành,,Dữ liệu tĩnh,,,
 47,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP,Kỳ hạn phát hành bình quân,"Σ (Kỳ hạn mã i * GT phát hành mã i) / Σ GT phát hành
 Trong đó: GT phát hành = GT trúng thầu",Dashboard,Chỉ tiêu cơ sở,TB,Năm,CSDLTT,X,X,X,,- Dữ liệu TPCP,"HNX - ""BM 21_Dữ liệu các đợt chào bán TPCP""","""Kỳ hạn""
 ""Giá trị trúng thầu""",,"SELECT
@@ -7484,7 +7851,7 @@ Trong đó: GT phát hành = GT trúng thầu",Dashboard,Chỉ tiêu cơ sở,TB
 FROM ""CSDLTT BM 21_Dữ liệu các đợt chào bán TPCP""
 WHERE EXTRACT(YEAR FROM ""Ngày phát hành"") BETWEEN :FROMYEAR AND :TOYEAR
 GROUP BY EXTRACT(YEAR FROM ""Ngày phát hành"")
-ORDER BY NAM;",,,Chưa có CSDL - Map biểu mẫu,,,
+ORDER BY NAM;",Giá trị phát hành,,Chưa có CSDL - Map biểu mẫu,,,
 48,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Lãi suất phát hành bình quân TPCP,Lãi suất bình quân,"Σ (Lãi suất mã i * GT phát hành mã i) / Σ GT phát hành
 Trong đó: GT phát hành = GT trúng thầu; Lãi suất phát hành = Lãi suất trúng thầu",Dashboard,Chỉ tiêu cơ sở,TB,Năm,CSDLTT,X,X,X,,- Dữ liệu TPCP,"HNX - ""BM 21_Dữ liệu các đợt chào bán TPCP""","""Lãi suất trúng thầu""
 ""Giá trị trúng thầu""",,"SELECT
@@ -7501,101 +7868,115 @@ TP chưa đáo hạn: ngày đáo hạn <= Ngày cuối kỳ báo cáo
 - Dư nợ = ""BM 23 >> Khối lượng niêm yết"" * 100000",,,,Chưa có CSDL - Map biểu mẫu,,,
 49,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP,GTGD Outright,Σ Giá trị giao dịch Outright,Dashboard,Chỉ tiêu cơ sở,TB,Năm,CSDLTT,X,X,X,,- Dữ liệu TPCP (BM 23_Dữ liệu về giao dịch TPCP theo loại hình giao dịch) hoặc Báo cáo HNX02,"HNX - ""BM 29_Dữ liệu về giao dịch TPCP theo loại hình giao dịch"" >> Sổ lệnh OUT","""Giá trị TT""",,,,,Chưa có CSDL - Map biểu mẫu,,,
 49,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP,GTGD Repos,Σ Giá trị giao dịch Repos,Dashboard,Chỉ tiêu cơ sở,TB,Năm,CSDLTT,X,X,X,,- Dữ liệu TPCP (BM 23_Dữ liệu về giao dịch TPCP theo loại hình giao dịch) hoặc Báo cáo HNX02,"HNX - ""BM 29_Dữ liệu về giao dịch TPCP theo loại hình giao dịch"" >> Số lệnh REPO","""GTTT lần 1""",,,,,Chưa có CSDL - Map biểu mẫu,,,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,Sàn,"Sàn: HOSE, HNX, UPCOM",Dashboard,Chiều,Trùng,Sàn,MDDS,X,X,,,- Thông tin thị trường,uat_mdds_stg.JAD_STOCKINFOR,MDDS.JAD_STOCKINFOR.FLOORCODE,"MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02', '04', '10') --> 02=HNX, 04=UPCOM, 10=HOSE",,,,Dữ liệu tĩnh,,,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,Số lượng cổ phiếu niêm yết mới,Đếm số mã cổ phiếu niêm yết mới.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"MDDS, CSDLTT",,X,X,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết","uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Mã CK""","COUNT(""Mã CK"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,"KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ","Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung",Dashboard,Chỉ tiêu cơ sở,TB,"Sàn, Năm","MDDS, CSDLTT",,X,X,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết","uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung""","SUM(""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,"KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - HOSE","Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn",Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết","uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung""","SUM(""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('10')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,"KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - HNX","Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn",Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết","uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung""","SUM(""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('02')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
-50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,"KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung - UPCOM","Σ KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung theo sàn",Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, CSDLTT",,X,X,,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết","uat_mdds_stg.JAD_STOCKINFOR
-HOSE - ""BM 18_Thông tin về niêm yết lần đầu, niêm yết bổ sung của tổ chức niêm yết""
-HNX - ""BM 32_Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết""","HOSE - BM 18, HNX - BM 32 >> Cột ""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung""","SUM(""Số lượng CK niêm yết mới"", Cột ""Số lượng CK niêm yết bổ sung"")
-Cột ""Số lượng CK niêm yết mới"" > 0 hoặc Cột ""Số lượng CK niêm yết bổ sung"" > 0
-Cột ""Ngày giao dịch đầu tiên (niêm yết mới, bổ sung)"" trong kỳ BC
-Loại chứng khoán = Cổ phiếu: MDDS.JAD_STOCKINFOR.STOCKTYPE = '2'
-Sàn HOSE: MDDS.JAD_STOCKINFOR.FLOORCODE IN ('04')",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,Kỳ (Năm),Từ năm - Đến năm,Dashboard,Chiều,TB,Năm,HNX,,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_hnx_stg.listing_status_change (a), 
-uat_hose_stg.listing_status_change (b)","a.report_year, 
-b.report_year","a.report_year BETWEEN [Từ năm] AND [Đến năm]
-b.report_year BETWEEN [Từ năm] AND [Đến năm]",,,,Dữ liệu tĩnh,,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,SL mã cổ phiếu hủy niêm yết/ĐKGD,Số lượng mã cổ phiếu bị hủy niêm yết/hủy ĐKGD trên tất cả các sàn.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"HNX, MDDS",,X,X,Done,"- Thông tin thị trường
+50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,Kỳ (Năm),Từ năm - Đến năm,Dashboard,Chiều,TB,Năm,"HNX, HOSE",X,X,,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b)",a.effective_date,"DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]",,,,Dữ liệu tĩnh,,,
+50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,Số lượng mã CP NY/ĐKGD mới,Đếm số mã cổ phiếu niêm yết/ĐKGD mới.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"MDDS, HNX, HOSE",,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b)","n.ticker_symbol, 
+o.ticker_symbol","* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+s.symbol = b.ticker_symbol AND b.effective_date = s.tradingdate
+- Bảng uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b):
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+DATE_FORMAT(b.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+new_listed_shares > 0
+* SL mã cổ phiếu niêm yết/ĐKGD mới = COUNT(a.ticker_symbol) + COUNT(a.ticker_symbol)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
+50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,KL CP NY mới/bổ sung trên HOSE,Σ KL cổ phiếu niêm yết mới và niêm yết bổ sung trên HOSE,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, HOSE",,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s),  
+uat_hose_stg.listing_status_change (b)",SUM(a.listed_value) + SUM(a.additional_listed_value),"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = b.ticker_symbol AND b.effective_date = s.tradingdate
+- Bảng uat_hose_stg.listing_status_change (b):
+DATE_FORMAT(b.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+new_listed_shares > 0 OR additional_listed_shares > 0 --> KL niêm yết mới/bổ sung > 0
+* KL cổ phiếu NY/ĐKGD mới/bổ sung = SUM(b.new_listed_shares) + SUM(b.additional_listed_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
+50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,KL CP NY mới/bổ sung trên HNX,Σ KL cổ phiếu niêm yết mới và niêm yết bổ sung trên HNX,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a)",SUM(a.listed_value) + SUM(a.additional_listed_value),"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+s.floorcode = '02' --> HNX
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+- Bảng uat_hnx_stg.listing_status_change (a):
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+new_listed_shares > 0 OR additional_listed_shares > 0 --> KL niêm yết mới/bổ sung > 0
+* KL cổ phiếu NY/ĐKGD mới/bổ sung = SUM(b.new_listed_shares) + SUM(b.additional_listed_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
+50,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới,KL CP ĐKGD mới/bổ sung trên UPCoM,Σ KL cổ phiếu ĐKGD mới và ĐKGD bổ sung trên UPCOM,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s), 
+uat_hnx_stg.listing_status_change (a)",SUM(a.listed_value) + SUM(a.additional_listed_value),"* Điều kiện:
+- Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
+s.stocktype = '2' --> Cổ phiếu
+s.floorcode = '04' --> UPCOM
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
+- JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+- Bảng uat_hnx_stg.listing_status_change (a):
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+new_listed_shares > 0 OR additional_listed_shares > 0 --> KL niêm yết mới/bổ sung > 0
+* KL cổ phiếu NY/ĐKGD mới/bổ sung = SUM(b.new_listed_shares) + SUM(b.additional_listed_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu","KL cổ phiếu niêm yết lần đầu, niêm yết bổ sung ",,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,Kỳ (Năm),Từ năm - Đến năm,Dashboard,Chiều,TB,Năm,"HNX, HOSE",,X,X,Done,"- Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_hnx_stg.listing_status_change (a), 
+uat_hose_stg.listing_status_change (b)",a.effective_date,"DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]",,,,,,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,SL mã cổ phiếu hủy niêm yết/ĐKGD,Số lượng mã cổ phiếu bị hủy niêm yết/hủy ĐKGD trên tất cả các sàn.,Dashboard,Chỉ tiêu cơ sở,Trùng,Năm,"MDDS, HNX, HOSE",,X,X,Done,"- Thông tin thị trường
 - Thông tin về niêm yết lần đầu, niêm yết bổ sung, huỷ niêm yết của tổ chức niêm yết (cổ phiếu và TPDN niêm yết) (HNX, HOSE)","uat_mdds_stg.jad_stockinfor (s), 
 uat_hnx_stg.listing_status_change (a), 
 uat_hose_stg.listing_status_change (b)","n.ticker_symbol, 
 o.ticker_symbol","* Điều kiện:
 - Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
 s.stocktype = '2' --> Cổ phiếu
-Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
 - JOIN bảng uat_hnx_stg.listing_status_change (a), 
 uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
-s.symbol = a.ticker_symbol
-s.symbol = b.ticker_symbol
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+s.symbol = b.ticker_symbol AND b.effective_date = s.tradingdate
 - Bảng uat_hnx_stg.listing_status_change (a), 
 uat_hose_stg.listing_status_change (b):
-DATE_FORMAT(a.last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
-DATE_FORMAT(b.last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+DATE_FORMAT(b.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
 delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
-exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
-* SL mã cổ phiếu hủy niêm yết/hủy ĐKGD = COUNT(a.ticker_symbol) + COUNT(a.ticker_symbol)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",,,
-51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết trên HOSE,Σ KL cổ phiếu hủy niêm yết trên HOSE,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s),  
+* SL mã cổ phiếu hủy niêm yết/hủy ĐKGD = COUNT(a.ticker_symbol) + COUNT(a.ticker_symbol)",,,,,,,
+51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết trên HOSE,Σ KL cổ phiếu hủy niêm yết trên HOSE,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","MDDS, HOSE",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s),  
 uat_hose_stg.listing_status_change (b)",o.delisted_shares,"* Điều kiện:
 - Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
 s.stocktype = '2' --> Cổ phiếu
-Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
 - JOIN bảng uat_hose_stg.listing_status_change (b) với bảng uat_mdds_stg.jad_stockinfor (s):
-s.symbol = b.ticker_symbol
-- Bảng uat_hose_stg.listing_status_change (a)
-DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+s.symbol = b.ticker_symbol AND b.effective_date = s.tradingdate
+- Bảng uat_hose_stg.listing_status_change (b):
+DATE_FORMAT(b.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
 delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
-exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
-* KL cổ phiếu hủy niêm yết trên HOSE = SUM(b.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+* KL cổ phiếu hủy niêm yết = SUM(b.delisted_shares)",,,,,KL cổ phiếu hủy niêm yết/ĐKGD,,
 51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy niêm yết trên HNX,Σ KL cổ phiếu hủy niêm yết trên HNX,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s), 
 uat_hnx_stg.listing_status_change (a)",o.delisted_shares,"* Điều kiện:
 - Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
 s.stocktype = '2' --> Cổ phiếu
 s.floorcode = '02' --> HNX
-Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
 - JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
-s.symbol = a.ticker_symbol
-- Bảng uat_hnx_stg.listing_status_change (a)
-DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+- Bảng uat_hnx_stg.listing_status_change (a):
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
 delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
-exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
-* KL cổ phiếu hủy niêm yết trên HNX = SUM(a.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+* KL cổ phiếu hủy niêm yết = SUM(a.delisted_shares)",,,,,KL cổ phiếu hủy niêm yết/ĐKGD,,
 51,,Dashboard Báo cáo thường niên >> Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết,KL cổ phiếu hủy ĐKGD trên UPCoM,Σ KL cổ phiếu hủy ĐKGD trên UPCoM,Dashboard,Chỉ tiêu cơ sở,Trùng,"Sàn, Năm","HNX, MDDS",,X,X,Done,- Thông tin về hủy niêm yết/hủy đăng ký giao dịch của tổ chức niêm yết,"uat_mdds_stg.jad_stockinfor (s), 
 uat_hnx_stg.listing_status_change (a)",o.delisted_shares,"* Điều kiện:
 - Loại chứng khoán lây từ bảng uat_mdds_stg.jad_stockinfor (s):
 s.stocktype = '2' --> Cổ phiếu
-s.floorcode = '04' --> HNX
-Lấy dữ liệu mới nhất: (ROW_NUMBER() OVER(PARTITION BY s.symbol ORDER BY s.tradingdate DESC, s.tradingtime DESC, s.`sequence` DESC) = 1
+s.floorcode = '04' --> UPCOM
+Lấy dữ liệu cuối ngày: (ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) = 1
 - JOIN bảng uat_hnx_stg.listing_status_change (a) với bảng uat_mdds_stg.jad_stockinfor (s):
-s.symbol = a.ticker_symbol
-- Bảng uat_hnx_stg.listing_status_change (a)
-DATE_FORMAT(last_trading_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
+s.symbol = a.ticker_symbol AND a.effective_date = s.tradingdate
+- Bảng uat_hnx_stg.listing_status_change (a):
+DATE_FORMAT(a.effective_date, 'yyyy') BETWEEN [Từ năm] AND [Đến năm]
 delisted_shares > 0 --> SL hủy niêm yết/ĐKGD
-exchange_transfer NOT LIKE 'Có%' --> Không chuyển sàn
-* KL cổ phiếu hủy niêm yết trên UPCoM = SUM(a.delisted_shares)",,,,"Dữ liệu tĩnh, Chưa có CSDL - Map biểu mẫu",KL cổ phiếu hủy niêm yết/ĐKGD,,
+* KL cổ phiếu hủy niêm yết = SUM(a.delisted_shares)",,,,,KL cổ phiếu hủy niêm yết/ĐKGD,,
 52,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Đơn vị tính,"Quy đổi đơn vị tính của các chỉ tiêu tiền tệ: 
 Đồng
 Triệu đồng
@@ -9039,45 +9420,30 @@ params AS (
   ) WHERE rn = 1
   AND (period_type = '4' OR (period_type = '3' AND sl_ky = 4))
 )
--- 2.7. Số lượng tài khoản NĐT hoạt động tính đến ngày báo cáo/ngày cuối năm trước (Ngày D)
----- Tài khoản mở/đóng nhiều lần: còn mở tại ngày D khi lần mở gần nhất (<= D) MỚI HƠN lần đóng gần nhất (<= D)
----- Mở và đóng cùng ngày bỏ qua do trạng thái mở/đóng của TK không đổi so với trạng thái trước ngày đó
+-- 2.7. Số lượng tài khoản NĐT hoạt động tính đến ngày báo cáo (cur) / ngày cuối năm trước (py)
+---- Số TK hoạt động lũy kế đến ngày D = SL TK mở - SL TK đóng với ngày mở, ngày đóng <= Ngày D
 , acc_agg AS (
   SELECT
-    -- Bước 3: Đếm tài khoản hoạt động: Có ngày mở <= Ngày D và (chưa từng đóng hoặc ngày mở gần nhất > ngày đóng gần nhất trước Ngày D)
-    COUNT(CASE WHEN open_cur IS NOT NULL AND (close_cur IS NULL OR open_cur > close_cur) THEN 1 END) AS tk_cur,
-    COUNT(CASE WHEN open_py  IS NOT NULL AND (close_py  IS NULL OR open_py  > close_py)  THEN 1 END) AS tk_py
+    o.acc_open_cur - c.acc_close_cur AS tk_cur,  -- Số TK hoạt động đến ngày báo cáo
+    o.acc_open_py  - c.acc_close_py  AS tk_py    -- Số TK hoạt động đến ngày cuối năm trước
   FROM (
-    -- Bước 2: Mỗi tài khoản lấy ngày ""chỉ mở"" gần nhất và ngày ""chỉ đóng"" gần nhất <= Ngày D. Ngày có cả mở và đóng (has_open AND has_close) bỏ qua (không làm thay đổi trạng thái).
+    -- Số TK mở tài khoản <= ngày báo cáo / ngày cuối năm trước
     SELECT
-      d.trading_account_no,
-      MAX(CASE WHEN d.has_open  AND NOT d.has_close AND d.event_date <= p.report_date THEN d.event_date END) AS open_cur,  -- Ngày chỉ mở gần nhất <= ngày báo cáo
-      MAX(CASE WHEN d.has_close AND NOT d.has_open  AND d.event_date <= p.report_date THEN d.event_date END) AS close_cur, -- Ngày chỉ đóng gần nhất <= ngày báo cáo
-      MAX(CASE WHEN d.has_open  AND NOT d.has_close AND d.event_date <= p.py_end      THEN d.event_date END) AS open_py,   -- Ngày chỉ mở gần nhất <= ngày cuối năm trước
-      MAX(CASE WHEN d.has_close AND NOT d.has_open  AND d.event_date <= p.py_end      THEN d.event_date END) AS close_py   -- Ngày chỉ đóng gần nhất <= ngày cuối năm trước
-    FROM (
-      -- Bước 1: Gộp event theo tài khoản + ngày: ngày có event mở không (has_open), có event đóng không (has_close)
-      ---- Gộp để nhiều bản ghi cùng loại trong 1 ngày chỉ còn 1 dòng -> nhận diện được ngày trùng mở/đóng
-      SELECT
-        e.trading_account_no, 
-        e.event_date, 
-        BOOL_OR(e.event_type = 'OPEN')  AS has_open,
-        BOOL_OR(e.event_type = 'CLOSE') AS has_close
-      FROM (
-        -- Danh sách event mở/đóng tài khoản <= ngày báo cáo
-        SELECT o.trading_account_no, o.open_date AS event_date, 'OPEN' AS event_type
-        FROM uat_vsdc_stg.open_investors o
-        WHERE o.open_date <= :report_date
-        UNION ALL
-        SELECT c.trading_account_no, close_date AS event_date, 'CLOSE' AS event_type
-        FROM uat_vsdc_stg.closed_investors c
-        WHERE c.close_date <= :report_date
-      ) e
-      GROUP BY e.trading_account_no, e.event_date
-    ) d
+      COUNT(1) AS acc_open_cur,
+      COUNT(CASE WHEN o.open_date <= p.py_end THEN 1 END) AS acc_open_py
+    FROM uat_vsdc_stg.open_investors o
     CROSS JOIN params p
-    GROUP BY d.trading_account_no
-  ) a
+    WHERE o.open_date <= p.report_date
+  ) o
+  CROSS JOIN (
+    -- Số TK đóng tài khoản <= ngày báo cáo / ngày cuối năm trước
+    SELECT
+      COUNT(1) AS acc_close_cur,
+      COUNT(CASE WHEN c.close_date <= p.py_end THEN 1 END) AS acc_close_py
+    FROM uat_vsdc_stg.closed_investors c
+    CROSS JOIN params p
+    WHERE c.close_date <= p.report_date
+  ) c
 )
 -- 2.8. Gom các giá trị về 1 dòng; bình quân = tổng / số phiên của kỳ
 , w AS (
@@ -9163,14 +9529,14 @@ CROSS JOIN (
     12, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_thang_pct_cungky', 'Cổ phiếu, CCQ - GTGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.cp_ccq_gt_bq_m - w.cp_ccq_gt_bq_lym) / NULLIF(ABS(w.cp_ccq_gt_bq_lym), 0) * 100 AS DOUBLE), '%',
     13, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_nam', 'Cổ phiếu, CCQ - GTGD bình quân năm báo cáo', CAST(w.cp_ccq_gt_bq_y AS DOUBLE), 'VND',
     14, '1', '1. Thị trường cổ phiếu', 'cp_gtgd_bq_nam_pct', 'Cổ phiếu, CCQ - GTGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.cp_ccq_gt_bq_y - w.cp_ccq_gt_bq_py) / NULLIF(ABS(w.cp_ccq_gt_bq_py), 0) * 100 AS DOUBLE), '%',
-    15, '1', '1. Thị trư",,,,,,
- 'cp_soma_cp_ccq_hnx_hose', 'Cổ phiếu, CCQ - Số mã niêm yết trên HNX, HOSE', CAST(w.so_ma_cp_ccq_hnx_hose_cur AS DOUBLE), 'Mã',,,,,,,,,,,,,,,,,,,
- '1', '1. Thị trường cổ phiếu', 'cp_soma_cp_upcom', 'Cổ phiếu - Số mã cổ phiếu ĐKGD trên UPCoM', CAST(w.so_ma_cp_upcom_cur AS DOUBLE), 'Mã',,,,,,,,,,,,,,,,,,,
- '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD', CAST(w.gt_niemyet_cp_ccq_cur AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,
- '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_pct_cuoinamtruoc', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với cuối năm trước', CAST((w.gt_niemyet_cp_ccq_cur - w.gt_niemyet_cp_ccq_py) / NULLIF(ABS(w.gt_niemyet_cp_ccq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,
- '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_gdp_pct', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với GDP năm', CAST(w.gt_niemyet_cp_ccq_cur / NULLIF(w.gdp_py, 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,
- '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang', 'TPCP - GTGD bình quân tháng báo cáo', CAST(w.tpcp_gt_bq_m AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
- '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang_pct', 'TPCP - GTGD bình quân tháng báo cáo - % so với bình quân tháng trước', CAST((w.tpcp_gt_bq_m - w.tpcp_gt_bq_pm) / NULLIF(ABS(w.tpcp_gt_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
+    15, '1', '1. Thị trường cổ phiếu', 'cp_soma_cp_ccq_hnx_hose', 'Cổ phiếu, CCQ - Số mã niêm yết trên HNX, HOSE', CAST(w.so_ma_cp_ccq_hnx_hose_cur AS DOUBLE), 'Mã',
+    16, '1', '1. Thị trường cổ phiếu', 'cp_soma_cp_upcom', 'Cổ phiếu - Số mã cổ phiếu ĐKGD trên UPCoM', CAST(w.so_ma_cp_upcom_cur AS DOUBLE), 'Mã',
+    17, '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD', CAST(w.gt_niemyet_cp_ccq_cur AS DOUBLE), 'VND',
+    18, '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_pct_cuoinamtruoc', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với cuối năm trước', CAST((w.gt_niemyet_cp_ccq_cur - w.gt_niemyet_cp_ccq_py) / NULLIF(ABS(w.gt_niemyet_cp_ccq_py), 0) * 100 AS DOUBLE), '%',
+    19, '1', '1. Thị trường cổ phiếu', 'cp_gt_niemyet_gdp_pct', 'Cổ phiếu, CCQ - Tổng giá trị niêm yết, ĐKGD - % so với GDP năm', CAST(w.gt_niemyet_cp_ccq_cur / NULLIF(w.gdp_py, 0) * 100 AS DOUBLE), '%',
+    20, '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang', 'TPCP - GTGD bình quân tháng báo cáo', CAST(w.tpcp_gt_bq_m AS DOUBLE), 'VND',
+    21, '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang_pct', 'TPCP ",,,,,,
+ CAST((w.tpcp_gt_bq_m - w.tpcp_gt_bq_pm) / NULLIF(ABS(w.tpcp_gt_bq_pm), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,,,,,
  '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_thang_pct_cungky', 'TPCP - GTGD bình quân tháng báo cáo - % so với bình quân cùng tháng năm trước', CAST((w.tpcp_gt_bq_m - w.tpcp_gt_bq_lym) / NULLIF(ABS(w.tpcp_gt_bq_lym), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
  '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_nam', 'TPCP - GTGD bình quân năm báo cáo', CAST(w.tpcp_gt_bq_y AS DOUBLE), 'VND',,,,,,,,,,,,,,,,,,,
  '2', '2. Thị trường trái phiếu', 'tpcp_gtgd_bq_nam_pct', 'TPCP - GTGD bình quân năm báo cáo - % so với bình quân năm trước', CAST((w.tpcp_gt_bq_y - w.tpcp_gt_bq_py) / NULLIF(ABS(w.tpcp_gt_bq_py), 0) * 100 AS DOUBLE), '%',,,,,,,,,,,,,,,,,,
@@ -9572,22 +9938,10 @@ order_status = 'ĐTH'
 NĐTNN mua: o.buying_investor_account IN ('E','F')
 NĐTNN bán: o.selling_investor_account IN ('E','F')
 GTGD: SUM(o.trading_value) + SUM(r.first_settlement_value)",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản NĐT,"Số lượng tài khoản NĐT tính đến ngày báo cáo: 
-Đếm số tài khoản mở trước ngày báo cáo và chưa đóng tại ngày báo cáo.
-Lưu ý: 1 TK được đóng mở nhiều lần.",Báo cáo,Chỉ tiêu cơ sở,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- UNION ALL 2 bảng uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c) thành danh sách event mở/đóng tài khoản:
-o.open_date <= [Ngày báo cáo]
-c.close_date <= [Ngày báo cáo]
-- Lấy event gần nhất <= [Ngày báo cáo]
-  + Event gần nhất là mở: tài khoản đang hoạt động tại ngày báo cáo
-  + Event gần nhất là đóng: tài khoản không hoạt động tại ngày báo cáo
-  + Chưa có event nào: Không tính
-  + Chỉ có bản ghi đóng (thiếu dữ liệu mở): Không tính
-  + Ngày gần nhất < Ngày báo cáo có cả mở và đóng: 
-    - Event trước đó = Mở <-> Ngày gần nhất đóng rồi mở lại -> TK vẫn hoạt động
-    - Event trước đó = Đóng <-> Ngày gần nhất mở rồi đóng lại -> TK vẫn không hoạt động
--> Ngày trùng (có cả mở + đóng) -> Không làm thay đổi trạng thái tài khoản nên bỏ qua ngày trùng
--> Công thức: Đếm tài khoản hoạt động = Có ngày mở <= [Ngày báo cáo] và (chưa từng đóng hoặc ngày mở gần nhất > ngày đóng gần nhất trước [Ngày báo cáo])",,,,Dữ liệu tĩnh,,,
-55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản của NĐT - % so với cuối năm trước,% so với cuối năm trước = (Số lượng tài khoản NĐT tính đến ngày báo cáo - Số lượng tài khoản NĐT tính đến ngày cuối năm trước) / Số lượng tài khoản NĐT tính đến ngày cuối năm trước * 100,Báo cáo,Chỉ tiêu phái sinh,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Điều kiện Thời gian: 
-o.open_date <= [Ngày cuối năm trước]
-c.close_date <= [Ngày cuối năm trước]
-- Điều kiện và công thức tính giống chỉ tiêu ""Số lượng tài khoản NĐT""",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản NĐT,"Số lượng tài khoản NĐT tính đến ngày báo cáo = SL TK mở - SL TK đóng với Ngày mở, đóng <= Ngày báo cáo",Báo cáo,Chỉ tiêu cơ sở,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Bảng uat_vsdc_stg.open_investors (o): open_date <= [Ngày báo cáo]
+- Bảng uat_vsdc_stg.closed_investors (c): close_date <= [Ngày báo cáo]
+SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,Dữ liệu tĩnh,,,
+55,,Báo cáo VP_TK02 – TTCK bất thường,Số lượng tài khoản của NĐT - % so với cuối năm trước,"% so với cuối năm trước = (Số lượng tài khoản NĐT tính đến ngày báo cáo - Số lượng tài khoản NĐT tính đến ngày cuối năm trước) / Số lượng tài khoản NĐT tính đến ngày cuối năm trước * 100
+Trong đó, SL TK tính đến cuối năm trước = SL TK mở - SL TK đóng với Ngày mở, đóng <= Ngày cuối năm trước",Báo cáo,Chỉ tiêu phái sinh,TB,Ngày,VSDC,,,,Done,,"uat_vsdc_stg.open_investors (o), uat_vsdc_stg.closed_investors (c)","o.trading_account_no, c.trading_account_no","- Bảng uat_vsdc_stg.open_investors (o): open_date <= [Ngày cuối năm trước]
+- Bảng uat_vsdc_stg.closed_investors (c): close_date <= [Ngày cuối năm trước]
+SL TK = COUNT(o.trading_account_no) - COUNT(c.trading_account_no)",,,,Dữ liệu tĩnh,,,

@@ -372,6 +372,56 @@ erDiagram
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_147–159 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_147–159 |
 
+## Nhóm 40 - Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_212–234 |
+
+## Nhóm 42 - Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_235–236 |
+
+## Nhóm 43 - Tài khoản giao dịch >> Biểu đồ Số lượng tài khoản mới theo thời gian
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_237–238 |
+
+## Nhóm 50 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_208–211 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160, K_VP_208–211 |
+
 ## Nhóm 51 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết
 
 ```mermaid
@@ -384,7 +434,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_161–164 |
-| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 51 (thống kê cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); Detail Mapping lọc delisted_share_quantity > 0 và không chuyển sàn | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
 
 ## Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường (lô 55a–55b: chỉ số, vốn hóa, GDP, GTGD bình quân, niêm yết, HĐTL VN30, chứng quyền, GT NĐTNN ròng)
 

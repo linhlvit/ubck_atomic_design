@@ -367,6 +367,10 @@ SELECT
     f.listing_last_trading_dt,
     f.delisted_share_quantity,
     f.delisted_share_val,
+    f.new_listed_share_quantity,
+    f.additional_listed_share_quantity,
+    f.listed_share_val,
+    f.additional_listed_share_val,
     f.exchange_transfer,
     f.delist_transfer_reason,
     f.src_stm_code,
@@ -422,4 +426,34 @@ JOIN datamart.cdr_dt_dim cal
 LEFT JOIN datamart.security_trading_snpst_dim sts_dim
     ON sts_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 9. FACT: vp_fct_investor_account_movement_snpst_flat
+-- ==========================================================
+-- [O_VP_46] nạp mọi ngày (TRUNCATE + INSERT), không khóa theo ngày chạy ETL: Fact dựng lại toàn bộ mỗi lần chạy vì sự kiện mở/đóng tài khoản có thể khai báo lùi ngày
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_investor_account_movement_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_investor_account_movement_snpst_flat
+SELECT
+    -- From: FCT_INVESTOR_ACCOUNT_MOVEMENT_SNPST
+    f.investor_account_movement_snpst_id,
+    f.snpst_dt_dim_id,
+    f.investor_tp_code,
+    f.open_account_count,
+    f.close_account_count,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_investor_account_movement_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;
