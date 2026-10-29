@@ -26325,7 +26325,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số thứ tự dòng chỉ tiêu trong sheet (nhãn ở cột STT cùng dòng) — GIẢ ĐỊNH hàng tiêu đề là hàng đầu của sheet, cột khóa có tiêu đề 'STT' (khớp cách BA tự ghép trong SQL tham khảo), chờ dữ liệu mẫu xác nhận (O_QLQ_31)"
+        description: "Số thứ tự dòng chỉ tiêu trong sheet (nhãn ở cột STT cùng dòng). Cột khóa là cột nhỏ nhất có ô tiêu đề 'STT' ở bất kỳ hàng nào của sheet — hàng tiêu đề không nhất thiết là hàng đầu (sheet TinhHinhGiaoDichCCQ_06268: 'STT' ở hàng thứ 4, sau hàng tên mục và hàng gộp ô); khớp cách BA tự ghép trong SQL tham khảo (O_QLQ_31, O_QLQ_57)"
         source_atomic_table: "fmr_sheet"
         source_atomic_column: "fmr_sheet.label_nm"
       - logical_name: "Row Indicator Code"
@@ -26361,7 +26361,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Nhãn cột của ô: nối các nhãn ô phía trên có phạm vi gộp cột phủ cột của ô, cách nhau bằng ' >> ' — GIẢ ĐỊNH về bố cục sheet, chờ xác nhận bằng dữ liệu mẫu (O_QLQ_31)"
+        description: "Nhãn cột của ô: nối các nhãn ô phía trên có phạm vi gộp cột phủ cột của ô, cách nhau bằng ' >> '. Nhãn tiêu đề của cột nằm ở phần tử CUỐI; các phần tử đầu có thể là tên mục hoặc tiêu đề gộp phủ cả bảng (VD sheet TinhHinhGiaoDichCCQ_06268: 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo') nên KHÔNG lấy phần tử đầu làm nhãn cột của sheet này (O_QLQ_31, O_QLQ_57)"
         source_atomic_table: "fmr_sheet"
         source_atomic_column: "fmr_sheet.label_nm"
       - logical_name: "Source System Code"

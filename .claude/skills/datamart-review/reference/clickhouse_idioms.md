@@ -31,3 +31,11 @@ Dòng nào hiện ra là sheet mà so khớp chính xác đang bỏ sót. Nhóm 
 - Dev có thể dán nhầm bản cũ (QLQ Nhóm 7, 2026-10-28: 2 lần). Nếu SQL mới **mâu thuẫn** điều đã kiểm cùng ngày ở Nhóm anh em → hỏi bản nào mới nhất trước khi ghi.
 - Ngày cố định trong truy vấn thử (`date'2026-01-01'`) = tham số `:date_from`/`:date_to` trong Detail Mapping.
 - 'BA cũng làm vậy' (hệ số ×1e9 GDP): đối chiếu `ba_slice.py --with-sql`; BA không có → ghi 'BA chưa có'.
+
+## Vị trí nhãn trong `column_label_nm` tùy sheet; tên cột trong SQL BA là alias theo vị trí (2026-10-29, O_QLQ_57/58)
+- `column_label_nm` nối mọi nhãn phủ cột của ô bằng `' >> '` từ hàng 0 xuống. **Đừng chọn `[1]` hay `[-1]` theo thói quen** — đếm trước (exact / phần tử đầu / phần tử cuối / bất kỳ) cho đúng (sheet, mã dòng, nhãn):
+  - sheet có tên mục hoặc ô gộp phủ cả bảng ở hàng trên (`TinhHinhGiaoDichCCQ_06268`: `II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo`) → nhãn tiêu đề ở phần tử CUỐI; `[1]` luôn sai (Datamart trả 0 dòng cho Nhóm 17–21);
+  - sheet có nhãn cha đứng đầu (BCTaiSan, BCDanhMucDauTu: `Kỳ báo cáo >> …`) → phần tử ĐẦU đúng; `[-1]` bỏ sót (R7 UAT: 3.288/3.373 và 1.867/3.225).
+  Khi chưa kiểm được: `has(arrayMap(x -> trimBoth(x), splitByString(' >> ', ifNull(col, ''))), 'nhãn')` (khớp bất kỳ phần tử).
+- **Tên cột trong SQL BA (`AS "Tổng"`, `AS "Số lượng hợp đồng"`, `AS "Kỳ báo cáo"`) là alias theo VỊ TRÍ** (`max(CASE WHEN col_idx = N THEN vl END) AS "…"`), không phải chữ tiêu đề trong sheet. Đọc `col_idx` trong khung BA rồi đối chiếu Atomic `column_index` (đánh số từ 0). Khung BA Nhóm 1/24 có vẻ đánh số từ 1 (STT = 1), khung tester Nhóm 17–21 từ 0 — kiểm bằng cột của nhãn 'STT'/'Mã chỉ tiêu' trong `fmr_sheet`. Sự cố: K_QLQ_4/7 so chữ 'Tổng'/'Số lượng hợp đồng' → 0 dòng trên UAT.
+- Nhãn dòng: `row_label_nm` nối cả nhãn bên trái (kể cả cột STT); BA thường lọc `LOWER("Chỉ tiêu") LIKE '%…%'` — so bằng chính xác dễ không khớp. Mọi giả định bố cục phải có hit count trên UAT (số dòng khớp > 0) trước khi ghi READY.

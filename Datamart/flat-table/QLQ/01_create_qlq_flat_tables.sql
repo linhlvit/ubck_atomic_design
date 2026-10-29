@@ -437,11 +437,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_rpt_cell_val_flat ON
     row_span                                         Nullable(Int64)            COMMENT 'Số hàng được gộp của ô — từ Fund Management Report Cell Dimension',
     column_span                                      Nullable(Int64)            COMMENT 'Số cột được gộp của ô — từ Fund Management Report Cell Dimension',
     label_nm                                         Nullable(String)           COMMENT 'Nhãn hiển thị của ô (parse từ DATA_LABEL) — từ Fund Management Report Cell Dimension',
-    row_stt_code                                     Nullable(String)           COMMENT 'Số thứ tự dòng chỉ tiêu trong sheet (nhãn ở cột STT cùng dòng) — GIẢ ĐỊNH hàng tiêu đề… — từ Fund Management Report Cell Dimension',
+    row_stt_code                                     Nullable(String)           COMMENT 'Số thứ tự dòng chỉ tiêu trong sheet (nhãn ở cột STT cùng dòng; cột STT là cột nhỏ nhất có ô tiêu đề STT ở bất kỳ hàng nào của sheet) — từ Fund Management Report Cell Dimension',
     row_indicator_code                               Nullable(String)           COMMENT 'Mã chỉ tiêu của dòng (nhãn ở cột Mã chỉ tiêu cùng dòng) — GIẢ ĐỊNH hàng tiêu đề là hàng… — từ Fund Management Report Cell Dimension',
     row_indicator_nm                                 Nullable(String)           COMMENT 'Tên chỉ tiêu của dòng (nhãn ở cột Chỉ tiêu cùng dòng) — GIẢ ĐỊNH hàng tiêu đề là hàng… — từ Fund Management Report Cell Dimension',
     row_label_nm                                     Nullable(String)           COMMENT 'Nhãn dòng của ô: nối các nhãn ô bên trái có phạm vi gộp hàng phủ dòng của ô, cách nhau… — từ Fund Management Report Cell Dimension',
-    column_label_nm                                  Nullable(String)           COMMENT 'Nhãn cột của ô: nối các nhãn ô phía trên có phạm vi gộp cột phủ cột của ô, cách nhau… — từ Fund Management Report Cell Dimension',
+    column_label_nm                                  Nullable(String)           COMMENT 'Nhãn cột của ô: nối các nhãn ô phía trên có phạm vi gộp cột phủ cột của ô, cách nhau bằng >>; nhãn tiêu đề cột nằm ở phần tử cuối, phần tử đầu có thể là tên mục — từ Fund Management Report Cell Dimension',
 
     -- From: FUND TYPE DIMENSION
     fund_type_code                                   Nullable(String)           COMMENT 'Mã loại hình quỹ (BK nguồn FMS.FUND_TYPE.ID — nguồn không có cột mã nghiệp vụ riêng);… — từ Fund Type Dimension',
