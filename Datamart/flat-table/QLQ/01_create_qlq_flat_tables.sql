@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_distribution_agent_snpst_flat O
 (
     -- From: FACT Fact Fund Distribution Agent Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot quý/năm — Calendar Date Dimension',
-    distribution_agent_count        Nullable(Int64)         COMMENT 'Số lượng ĐLPP đang hoạt động, đã có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ',
+    distribution_agent_count        Nullable(Int64)         COMMENT 'Số lượng ĐLPP có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ (không lọc trạng thái chấm dứt, như BA)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot quý/năm — từ Calendar Date Dimension'

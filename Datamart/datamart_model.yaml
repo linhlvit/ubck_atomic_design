@@ -22988,7 +22988,7 @@ entities:
         data_type: "int"
         nullable: true
         key: "DD"
-        description: "Số lượng ĐLPP đang hoạt động, đã có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ"
+        description: "Số lượng ĐLPP có GCN đăng ký hoạt động phân phối CCQ tính đến kỳ (cuối tháng), KHÔNG lọc trạng thái chấm dứt — đúng SQL BA (DISTRIBUTION_CERT_DATE ≤ cuối kỳ, RECORD_STATUS = 1). [SỬA 2026-10-29, O_QLQ_46(1)] trước đây chỉ đếm ĐLPP chưa chấm dứt (termination_dt IS NULL), lệch BA"
         source_atomic_table: "securities_distribution_agent"
         source_atomic_column: "securities_distribution_agent.securities_distribution_agent_id"
 
