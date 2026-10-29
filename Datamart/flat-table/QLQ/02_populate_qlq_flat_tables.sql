@@ -101,13 +101,6 @@ SELECT
     o.fund_count,
     o.rating_class_code,
     o.total_score_amt,
-    o.charter_capital_amt,
-    o.certified_practitioner_staff_count,
-    o.assets_under_management_amt,
-    o.capital_adequacy_ratio,
-    o.net_profit_after_tax_amt,
-    o.owner_equity_amt,
-    o.portfolio_management_contract_count,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_profile o
 ;

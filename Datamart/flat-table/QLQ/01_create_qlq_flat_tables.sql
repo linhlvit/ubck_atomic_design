@@ -124,13 +124,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ đầu tư do công ty này quản lý, hiệu lực tại kỳ',
     rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của công ty QLQ tại kỳ đánh giá gần nhất (1=A, 2=B, 3=C, 4=D)',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
-    charter_capital_amt              Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ/vốn góp (VNĐ)',
-    certified_practitioner_staff_count Nullable(Int64)         COMMENT 'Số lượng nhân viên có chứng chỉ hành nghề của CTQLQ (báo cáo kỳ mới nhất)',
-    assets_under_management_amt      Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị tài sản ròng đang quản lý (AUM) của CTQLQ (báo cáo kỳ mới nhất)',
-    capital_adequacy_ratio           Nullable(Decimal(9,2))  COMMENT 'Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của CTQLQ (báo cáo kỳ mới nhất)',
-    net_profit_after_tax_amt         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế TNDN lũy kế theo báo cáo tài chính gần nhất của CTQLQ',
-    owner_equity_amt                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu theo báo cáo tài chính gần nhất của CTQLQ',
-    portfolio_management_contract_count Nullable(Int64)         COMMENT 'Số lượng hợp đồng ủy thác quản lý danh mục đang thực hiện của CTQLQ (báo cáo kỳ mới nhất)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()

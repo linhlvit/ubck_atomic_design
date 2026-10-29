@@ -1751,6 +1751,7 @@ _Fact EAV mức ô (1 ô báo cáo × 1 bản nộp). Nạp tăng dần theo ng�
 |------|:-------------:|
 | Nhóm 1 — Thống kê chung | 3 |
 | Nhóm 2 — Số liệu hợp đồng uỷ thác danh mục | 7 |
+| Nhóm 3 — Danh sách các Công ty quản lý quỹ | 8 |
 | Nhóm 6 — Thống kê chung của QĐT | 2 |
 | Nhóm 7 — Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP | 2 |
 | Nhóm 8 — Biểu đồ Phân bổ tài sản của Quỹ đầu tư | 7 |
