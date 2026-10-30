@@ -504,27 +504,6 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(trade_dt)
 ORDER BY (trade_dt, fmc_employee_code, securities_account_nbr, trade_direction_code, security_symbol_code, trade_method_nm, assumeNotNull(securities_company_code), assumeNotNull(order_vol), assumeNotNull(order_price))
 COMMENT 'Flat table — Fund Management Company Staff Trade Report (Fact report, append, khử trùng như UNION của BA)'
-; mã giao dịch khớp trong sổ lệnh (cùng Trade Date, Trade Direction Code…',
-    trade_direction_code                     String                     COMMENT 'Grain (3/4) — bên của nhân viên trong giao dịch khớp: BUY = bên mua; SELL = bên bán',
-    fmc_employee_code                        String                     COMMENT 'Grain (4/4) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) sở hữu tài khoản chứng khoán của bên mua/bán; nối…',
-    trade_dt                                 Date                       COMMENT 'Grain (1/4) — Ngày giao dịch khớp (K_QLQ_109; Độ chi tiết Ngày của báo cáo); cột partition; nạp append theo ngày chạy ETL',
-    fmc_code                                 Nullable(String)           COMMENT 'Mã CTQLQ nơi nhân viên làm việc (FMS.TL_PROFILES.SEC_ID) — khóa lọc báo cáo theo CTQLQ',
-    identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều Mã CCCD của bá',
-    securities_account_nbr                   Nullable(String)           COMMENT 'Số tài khoản giao dịch chứng khoán của nhân viên (K_QLQ_107) — lấy từ sổ lệnh theo bên mua/bán',
-    securities_company_code                  Nullable(String)           COMMENT 'Mã CTCK nơi mở tài khoản (K_QLQ_108) — số hiệu môi giới/thành viên trên sổ lệnh theo bên mua/bán',
-    board_tp_code                            String                     COMMENT 'Mã loại bảng giao dịch của sổ lệnh (G1–G8; T1–T6; R1) — nguồn suy Phương thức giao dịch',
-    trade_method_nm                          Nullable(String)           COMMENT 'Phương thức giao dịch (K_QLQ_110) — ánh xạ Board Type Code sang tên theo SQL BA; HOSE chỉ G1–G4 còn lại là…',
-    trade_direction_nm                       Nullable(String)           COMMENT 'Lệnh mua/bán (K_QLQ_111): Mua hoặc Bán theo bên của nhân viên',
-    security_symbol_code                     String                     COMMENT 'Mã chứng khoán (K_QLQ_112); sàn HOSE là symbol; sàn HNX là ISSUE_CODE theo SQL BA',
-    order_vol                                Nullable(Int64)            COMMENT 'Số lượng chứng khoán của LỆNH (K_QLQ_113) theo bên mua/bán — không phải khối lượng khớp; một lệnh khớp…',
-    order_price                              Nullable(Decimal(23,2))    COMMENT 'Giá của LỆNH (K_QLQ_114) theo bên mua/bán — không phải giá khớp (O_QLQ_36)',
-    order_amt                                Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột Trường nguồn dòng 186 BA; SQL BA nhánh HNX bên',
-    src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(trade_dt)
-ORDER BY (trade_dt, securities_trade_code, trade_direction_code, fmc_employee_code)
-COMMENT 'Flat table — Fund Management Company Staff Trade Report (Fact report, append)'
 ;
 
 
