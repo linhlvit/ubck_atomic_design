@@ -216,9 +216,9 @@ LEFT JOIN (SELECT ""Tháng"", count(DISTINCT ""VPDD NN"") total,
                                   count(DISTINCT ""VPDD NN đóng cửa"") dc FROM repr GROUP BY ""Tháng"") f ON a.""Tháng"" = f.""Tháng"" 
 LEFT JOIN (SELECT ""Tháng"", SUM(dtck.slhd) value FROM dtck GROUP BY ""Tháng"") b ON a.""Tháng"" = b.""Tháng""
 LEFT JOIN (SELECT ""Tháng"", SUM(dmdt.slhd) value FROM dmdt GROUP BY ""Tháng"") c ON a.""Tháng"" = c.""Tháng""
-LEFT JOIN (SELECT ""Tháng"", SUM(aum.aum) value FROM aum GROUP BY ""Tháng"") g ON a.""Tháng"" = g.""Tháng""",,,Dữ liệu tĩnh,,,,,,F
+LEFT JOIN (SELECT ""Tháng"", SUM(aum.aum) value FROM aum GROUP BY ""Tháng"") g ON a.""Tháng"" = g.""Tháng""",,,Dữ liệu tĩnh,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,Quỹ đầu tư chứng khoán,Số lượng quỹ đầu tư chứng khoán,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,FMS_UAT.FUNDS ,FUNDS.ID,"FUNDS.DELETED = 0
-TRUNC(LAST_DAY(FUNDS.ID_DATE)) = LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,F
+TRUNC(LAST_DAY(FUNDS.ID_DATE)) = LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,Hợp đồng ủy thác quản lý danh mục, ,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo tình hình hoạt động của CTQLQ >> HDQuanLyDanhMucDauTu_06015 >> Tổng (I+II),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -244,7 +244,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'HDQuanLyDanhMucDauTu_06015'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%hoạt động% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo tình hình hoạt động của CTQLQ ,HDQuanLyDanhMucDauTu_06015,Tổng (I+II),Số lượng hợp đồng,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo tình hình hoạt động của CTQLQ ,HDQuanLyDanhMucDauTu_06015,Tổng (I+II),Số lượng hợp đồng,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,"Tổng giá trị tài sản quản lý
 (AUM)",Tổng giá trị tài sản các công ty quản lý quỹ đang quản lý,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo tình hình hoạt động của CTQLQ >> HDQuanLyQuy_06014 >> Tổng (I+II),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
@@ -281,25 +281,25 @@ TRUNC(LAST_DAY(SECURITIES.REAL_ACTIVE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'
 AND (SECURITIES.STOP_DATE IS NULL OR SECURITIES.TO_DATE IS NULL)",,,,Dữ liệu động,,,,,,F
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,Văn phòng đại diện CTQLQ nước ngoài tại Việt Nam,Số lượng VPĐD CTQLQ nước ngoài tại Việt Nam,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,FMS_UAT.FOR_BRCH,FOR_BRCH.ID,"FOR_BRCH.DELETED = 0
 FOR_BRCH.BRANCH_FLAG = 0
-TRUNC(LAST_DAY(FOR_BRCH.START_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,F
+TRUNC(LAST_DAY(FOR_BRCH.START_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,VPĐD CTQLQ nước ngoài tại Việt Nam đang hoạt động,Số lượng VPĐD CTQLQ nước ngoài tại Việt Nam đang hoạt động,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,"FMS_UAT.FOR_BRCH
 FMS_UAT.STATUS","FOR_BRCH.ID
 STATUS.ITEM_NAME","FOR_BRCH.DELETED = 0
 FOR_BRCH.BRANCH_FLAG = 0
 TRUNC(LAST_DAY(FOR_BRCH.START_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))
-LOWER(STATUS.ITEM_NAME) = 'hoạt động'",,,,Dữ liệu động,,,,,,F
+LOWER(STATUS.ITEM_NAME) = 'hoạt động'",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,VPĐD CTQLQ nước ngoài tại Việt Nam đang chờ đóng cửa,Số lượng VPĐD CTQLQ nước ngoài tại Việt Nam đang chờ đóng cửa,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,"FMS_UAT.FOR_BRCH
 FMS_UAT.STATUS","FOR_BRCH.ID
 STATUS.ITEM_NAME","FOR_BRCH.DELETED = 0
 FOR_BRCH.BRANCH_FLAG = 0
 TRUNC(LAST_DAY(FOR_BRCH.START_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))
-LOWER(STATUS.ITEM_NAME) LIKE '%chờ đóng cửa%'",,,,Dữ liệu động,,,,,,F
+LOWER(STATUS.ITEM_NAME) LIKE '%chờ đóng cửa%'",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,VPĐD CTQLQ nước ngoài tại Việt Nam đã đóng cửa,Số lượng VPĐD CTQLQ nước ngoài tại Việt Nam đã đóng cửa,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,"FMS_UAT.FOR_BRCH
 FMS_UAT.STATUS","FOR_BRCH.ID
 STATUS.ITEM_NAME","FOR_BRCH.DELETED = 0
 FOR_BRCH.BRANCH_FLAG = 0
 TRUNC(LAST_DAY(FOR_BRCH.START_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))
-LOWER(STATUS.ITEM_NAME) NOT LIKE '%chờ%' AND (LOWER(STATUS.ITEM_NAME) LIKE '%đóng cửa%' OR LOWER(STATUS.ITEM_NAME) LIKE '%chấm dứt%' OR LOWER(STATUS.ITEM_NAME) LIKE '%giải thể%')",,,,Dữ liệu động,,,,,,F
+LOWER(STATUS.ITEM_NAME) NOT LIKE '%chờ%' AND (LOWER(STATUS.ITEM_NAME) LIKE '%đóng cửa%' OR LOWER(STATUS.ITEM_NAME) LIKE '%chấm dứt%' OR LOWER(STATUS.ITEM_NAME) LIKE '%giải thể%')",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,Số lượng hợp đồng tư vấn đầu tư,Tổng số lượng hợp đồng tư vấn đầu tư,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,Chỉ tiêu BC,Báo cáo tình hình hoạt động của CTQLQ >> HDTuVanDauTuCK_06016 >> Tổng (I+II),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -327,7 +327,7 @@ lower(RPT_TEMP.ITEM_NAME) LIKE '%hoạt động% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo tình hình hoạt động của CTQLQ ,HDTuVanDauTuCK_06016,Tổng (I+II),Số lượng hợp đồng,có data,F
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,1,,Dashboard >> Tổng quan CTQLQ >> Thống kê chung,Tổng số ngân hàng giám sát,Tổng số ngân hàng giám sát,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,FMS_UAT.BANK_MONI,BANK_MONI.ID,"BANK_MONI.DELETED = 0
-TRUNC(LAST_DAY(NVL(BANK_MONI.DEC_DATE, DATE '1900-01-01'))) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,F
+TRUNC(LAST_DAY(NVL(BANK_MONI.DEC_DATE, DATE '1900-01-01'))) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))",,,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,"FMS_UAT.RPT_MEMBER
 FMS_UAT.RPT_PERIOD","COALESCE(RPT_MEMBER.PERIOD_TYPE, RPT_PERIOD.PERIOD_TYPE) = 3
 AND RPT_MEMBER.PERIOD_VALUE = EXTRACT(MONTH FROM TO_DATE(:filter_month,'MM/YYYY')) AND RPT_MEMBER.YEAR_VALUE = EXTRACT(YEAR FROM TO_DATE(:filter_month,'MM/YYYY')) ",,"WITH cte AS (
@@ -510,7 +510,7 @@ sum(CASE WHEN ""Mã chỉ tiêu"" = '180101' THEN ""Kỳ báo cáo"" END) ""Tổ
 sum(CASE WHEN ""Mã chỉ tiêu"" = '180110' THEN ""Kỳ báo cáo"" END) ""Tổng GTTT""
 FROM dt
 WHERE 1=1
-GROUP BY mth",,,Dữ liệu động,,,,,,F
+GROUP BY mth",,,Dữ liệu động,,,,,,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Số lượng hợp đồng UTDM cá nhân,Tổng số lượng hợp đồng UTDM của cá nhân,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Cá nhân (%),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -536,7 +536,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Cá nhân (%),Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Cá nhân (%),Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Giá trị thị trường hợp đồng UTDM cá nhân,Tổng giá trị ủy thác của hợp đồng UTDM cá nhân,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Cá nhân (%),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -562,7 +562,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Cá nhân (%),Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Cá nhân (%),Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Số lượng hợp đồng UTDM tổ chức,Tổng số lượng hợp đồng UTDM của tổ chức,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Tổ chức (%),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -588,7 +588,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Tổ chức (%),Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện >> - Tổ chức (%),Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Giá trị thị trường hợp đồng UTDM tổ chức,Tổng giá trị ủy thác của hợp đồng UTDM tổ chức,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Tổ chức (%),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -614,7 +614,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Tổ chức (%),Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND) >> - Tổ chức (%),Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Tổng số lượng hợp đồng UTDM,Tổng số lượng hợp đồng UTDM,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng số Hợp đồng ủy thác đầu tư đang thực hiện,"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -640,7 +640,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện,Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng số Hợp đồng ủy thác đầu tư đang thực hiện,Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,2,,Dashboard >> Tổng quan CTQLQ >> Số liệu hợp đồng uỷ thác danh mục,Tổng giá trị ủy thác,Tổng giá trị ủy thác của hợp đồng UTDM,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,Báo cáo về tình hình quản lý danh mục đầu tư >> Chung_TinhHinhQLDMDT_06020 >> Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND),"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
 FMS_UAT.RPT_VALUES
@@ -666,7 +666,7 @@ RPT_MEMBER.SEC_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
 SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'Chung_TinhHinhQLDMDT_06020'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and 
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
-RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND),Kỳ báo cáo,có data,F
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,HTTT báo dữ liệu từ bảng không đúng --> nên lấy từ báo cáo --> mapping chỉ tiêu theo báo cáo,,Dữ liệu động,Báo cáo về tình hình quản lý danh mục đầu tư,Chung_TinhHinhQLDMDT_06020,Tổng giá trị thị trường các Hợp đồng ủy thác đầu tư (VND),Kỳ báo cáo,có data,P
 Khai thác Dashboard Tổng quan của Công ty Quản lý quỹ,3,,Dashboard >> Tổng quan CTQLQ >> Danh sách các Công ty quản lý quỹ,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.SECURITIES,SECURITIES.REAL_ACTIVE_DATE,"TRUNC(LAST_DAY(SECURITIES.REAL_ACTIVE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) --Điều liện lọc
 AND (SECURITIES.STOP_DATE IS NULL OR SECURITIES.TO_DATE IS NULL)","WITH cte AS (
 SELECT
@@ -2742,12 +2742,14 @@ ORDER BY ADD_MONTHS(TO_DATE(:filter_fr,'MM/YYYY'), LEVEL - 1)
 )
 SELECT  b.""filter_label"" ""Tháng""
 , min(b.""filter_value"") mth
+, ft.ITEM_NAME ""Loại quỹ""
 , SUM(CAST(rp.""Kỳ báo cáo"" AS number)) ""CCQ lưu hành""
 FROM FMS_UAT.FUNDS f
+LEFT JOIN FMS_UAT.FUND_TYPE ft ON f.FTYPE_ID = ft.ID AND ft.DELETED = 0 AND ft.RECORD_STATUS = 1
 RIGHT JOIN label b ON LAST_DAY(f.ID_DATE) <= b.""filter_value"" AND f.DELETED = 0
 LEFT JOIN rp ON f.id = rp.fnd_id AND b.""filter_value"" = rp.month_value AND rp.""Mã chỉ tiêu"" IN ('2218')
 WHERE 1=1
-GROUP BY b.""filter_label""
+GROUP BY b.""filter_label"", ft.ITEM_NAME
 ORDER BY min(b.""filter_value"")
 ",,,Dữ liệu tĩnh,,,,,,
 Khai thác Dashboard Tổng quan của Quỹ đầu tư,11,,Dashboard >> Tổng quan QĐT >> Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư,Loại hình quỹ,,Dashboard,Chiều,Trùng,,FMS,,X,X,Done,,,FMS_UAT.FUND_TYPE,FUND_TYPE.ITEM_NAME,FUND_TYPE.RECORD_STATUS = 1 AND FUND_TYPE.DELETED = 0,,,,Dữ liệu tĩnh,,,,,,
@@ -3097,14 +3099,14 @@ WHERE 1=1
 , dt AS (
 SELECT label.""filter_label"" ""Tháng"",
 label.""filter_value"" mth,
-ft.item_name ""Loại"",
+case when f.open_fund_type is not null then f.open_fund_type else ft.item_name end ""Loại"",
 SUM(CAST(rp.""Kỳ báo cáo"" AS number)) ""Giá trị"" 
 FROM  FMS_UAT.FUNDS f
 LEFT JOIN FMS_UAT.FUND_TYPE ft ON f.FTYPE_ID = ft.ID AND ft.DELETED = 0 AND ft.RECORD_STATUS = 1
 RIGHT JOIN label ON LAST_DAY(f.ID_DATE) <= label.""filter_value"" AND f.DELETED = 0
 LEFT JOIN rp ON f.id = rp.fnd_id AND label.""filter_value"" = rp.month_value AND rp.""Mã chỉ tiêu"" IN ('2219')
 WHERE 1=1
-GROUP BY label.""filter_label"", label.""filter_value"", ft.item_name
+GROUP BY label.""filter_label"", label.""filter_value"", ""Loại""
 ORDER BY label.""filter_value""
 )
 SELECT ""Tháng"", ""Loại"", ""Giá trị"" FROM (
@@ -3120,10 +3122,13 @@ FROM lslnhqd
 WHERE 1=1
 AND last_v = 1
 --UNION 
---SELECT date_format(tradingdate,'MM/yyyy') ""Tháng"", N'VN-INDEX' ""Loại"",
---marketindex ""Giá trị"", last_day(tradingdate) mth
---FROM vnindex
---WHERE last_value = 1
+--SELECT date_format(a.tradingdate,'MM/yyyy') mth, 'VN-INDEX' loai
+--, (NULLIF(a.marketindex,0) - NULLIF(b.marketindex,0))*100/NULLIF(b.marketindex,0) gt
+--, last_day(a.tradingdate) mth_value
+--FROM vnindex a
+--left join vnindex b on last_day(a.tradingdate) = last_day(add_months(b.tradingdate,1)) and b.last_value = 1
+--WHERE a.last_value = 1
+--ORDER BY mth_value, loai
 ORDER BY mth, ""Loại""
 ) fn
 WHERE mth >= LAST_DAY(TO_DATE(:filter_fr,'MM/YYYY'))",,,Dữ liệu tĩnh,,,,,,
@@ -3546,10 +3551,7 @@ SELECT DISTINCT row_idx AS cr , LOWER(RAWTOHEX(SUBMIT)) AS csm, report_name AS r
 , max(CASE WHEN col_idx = 1 AND SHEET_NAME LIKE '%BCTaiSan%' THEN vl END) AS ""STT""
 , max(CASE WHEN col_idx = 2 AND SHEET_NAME LIKE '%BCTaiSan%' THEN vl END) AS ""Chỉ tiêu""
 , max(CASE WHEN col_idx = 3 AND SHEET_NAME LIKE '%BCTaiSan%' THEN vl END) AS ""Mã chỉ tiêu""
-, max(CASE WHEN col_idx = 4 AND (SHEET_NAME LIKE '%BCTaiSan%' OR SHEET_NAME LIKE '%BCKetQuaHoạtDongKinhDoanh%') THEN vl 
-                   WHEN col_idx = 5 AND SHEET_NAME = 'BCThuNhap_06203' THEN vl
-END) AS ""Giá trị""
---, max(CASE WHEN col_idx = 5 THEN vl END) AS ""Kỳ trước""
+, max(CASE WHEN col_idx = 5 THEN vl END) AS ""Giá trị""
 FROM ord_rp
 WHERE 1=1
 AND row_idx NOT IN (1)
@@ -3602,8 +3604,7 @@ s.ITEM_NAME ""CTQLQ"",
 ft.ITEM_NAME ""Phân loại"",
 CAST(nav.""Giá trị"" AS number) ""NAV (tỷ đồng)"",
 CAST(lnlk.""Giá trị"" AS number) ""Lợi nhuận (tỷ đồng)"",
---CAST(ccq.""Giá trị"" AS number) ""Số lượng CCQ"",
-f.TOTAL_QTTY ""Số lượng CCQ"",
+CAST(ccq.""Giá trị"" AS number) ""Số lượng CCQ"",
 dlpp.total ""Số lượng ĐLPP"",
 bm.SHORT_NAME ""NHGS"",
 dd.total ""Số lượng TV ban DD"",
@@ -3611,22 +3612,21 @@ dh.total ""Số lượng người điều hành""
 FROM FMS_UAT.FUNDS f 
 LEFT JOIN FMS_UAT.SECURITIES s ON f.SEC_ID = s.ID AND s.DELETED = 0
 LEFT JOIN FMS_UAT.FUND_TYPE ft ON f.FTYPE_ID = ft.ID AND ft.RECORD_STATUS = 1 AND ft.DELETED = 0
-LEFT JOIN (SELECT f.ID, f.ITEM_NAME FUND_NAME, COUNT(DISTINCT CASE WHEN lower(t.ITEM_NAME) LIKE N'%đại lý phân phối%' THEN a.ID END) total 
-                   FROM FMS_UAT.FUNDS f
-                   LEFT JOIN FMS_UAT.FUD_AG_AGT faa ON f.ID = faa.FUD_ID
-                   LEFT JOIN FMS_UAT.AGENCIES a ON faa.AGEN_ID = a.ID AND a.DELETED = 0 AND a.RECORD_STATUS = 1
-                   LEFT JOIN FMS_UAT.AGENCY_TYPE t ON faa.AG_TY_ID = t.ID AND t.DELETED = 0 AND t.RECORD_STATUS = 1
-                   WHERE 1=1
-                   AND f.DELETED = 0 
+LEFT JOIN (SELECT f.ID, f.ITEM_NAME FUND_NAME, COUNT(DISTINCT da.ID) total 
+FROM FMS_UAT.FUNDS f
+LEFT JOIN FMS_UAT.FUD_AG_AGT faa ON f.ID = faa.FUD_ID
+LEFT JOIN FMS_UAT.DISTRIBUTOR_AGENT da ON faa.AGEN_ID = da.ID AND da.DELETED = 0 AND da.RECORD_STATUS = 1
+WHERE 1=1
+AND f.DELETED = 0 
 GROUP BY f.ID, f.ITEM_NAME) dlpp ON dlpp.ID = f.ID
 LEFT JOIN FMS_UAT.BANK_MONI bm ON f.BANK_ID = bm.ID AND bm.DELETED = 0
 LEFT JOIN (SELECT f.ID, f.ITEM_NAME, count(DISTINCT r.id) total FROM FMS_UAT.FUNDS f
-                   LEFT JOIN FMS_UAT.REPRESENT r ON f.ID = r.FUND_ID AND r.RECORD_STATUS = 1 AND r.DELETED = 0
-                   LEFT JOIN FMS_UAT.JOBS j ON r.JOB_ID = j.ID AND j.DELETED = 0 AND j.RECORD_STATUS = 1
-                   LEFT JOIN FMS_UAT.JOB_TYPE jt ON j.JOB_TYPE_ID = jt.ID AND jt.DELETED = 0 AND jt.RECORD_STATUS = 1 AND lower(jt.ITEM_NAME) = 'ban đại diện'
-                   WHERE 1=1
-                   AND f.DELETED = 0 
-                   GROUP BY f.ID, f.ITEM_NAME) dd ON dd.ID = f.ID
+LEFT JOIN FMS_UAT.REPRESENT r ON f.ID = r.FUND_ID AND r.RECORD_STATUS = 1 AND r.DELETED = 0
+LEFT JOIN FMS_UAT.JOBS j ON r.JOB_ID = j.ID AND j.DELETED = 0 AND j.RECORD_STATUS = 1
+LEFT JOIN FMS_UAT.JOB_TYPE jt ON j.JOB_TYPE_ID = jt.ID AND jt.DELETED = 0 AND jt.RECORD_STATUS = 1 AND lower(jt.ITEM_NAME) = 'ban đại diện'
+WHERE 1=1
+AND f.DELETED = 0 
+GROUP BY f.ID, f.ITEM_NAME) dd ON dd.ID = f.ID
 LEFT JOIN (SELECT f.ID, f.ITEM_NAME, count(DISTINCT tp.id) total 
                    FROM FMS_UAT.FUNDS f
                    LEFT JOIN FMS_UAT.FUND_TL_PRO ftp ON f.ID = ftp.FUND_ID 
@@ -3642,11 +3642,11 @@ LEFT JOIN (SELECT DISTINCT sec_id, fnd_id, ""Giá trị"" FROM rank_period
                   AND ord_period = 1
                   AND s_r LIKE '%BCTaiSan%'
                   AND ""Mã chỉ tiêu"" = '2217') nav ON nav.FND_ID = f.ID 
---LEFT JOIN (SELECT DISTINCT sec_id, fnd_id, ""Giá trị"" FROM rank_period 
---                  WHERE 1=1
---                  AND ord_period = 1
---                  AND s_r LIKE '%BCTaiSan%'
---                  AND ""Mã chỉ tiêu"" = '2218') ccq ON ccq.FND_ID = f.ID 
+LEFT JOIN (SELECT DISTINCT sec_id, fnd_id, ""Giá trị"" FROM rank_period 
+                  WHERE 1=1
+                  AND ord_period = 1
+                  AND s_r LIKE '%BCTaiSan%'
+                  AND ""Mã chỉ tiêu"" = '2218') ccq ON ccq.FND_ID = f.ID 
 LEFT JOIN (SELECT DISTINCT sec_id, fnd_id, ""Giá trị"" FROM rank_period 
                    WHERE 1=1
                    AND ord_period = 1
@@ -5217,7 +5217,7 @@ FROM (
                 , da.BUSINESS_LICENSE_NO ""Số GP thành lập""
                 , to_char(da.LICENSE_ISSUE_DATE,'dd/mm/yyyy') ""Ngày cấp GP thành lập""
                 , da.ADDRESS ""Địa chỉ""
-                , CASE WHEN TERMINATION_DATE IS NOT NULL THEN 'Hoạt động' ELSE 'Đóng cửa' END ""Tình trạng hoạt động""
+                , CASE WHEN TERMINATION_DATE IS NULL THEN 'Hoạt động' ELSE 'Đóng cửa' END ""Tình trạng hoạt động""
                 , count(DISTINCT f.ID) ""Số quỹ""
                 FROM FMS_UAT.DISTRIBUTOR_AGENT da 
                 LEFT JOIN FMS_UAT.FUD_AG_AGT faa ON da.ID = faa.AGEN_ID 

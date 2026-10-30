@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_count_snpst_flat ON 
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
     fund_type_id                    String                  COMMENT 'FK loại hình quỹ — Fund Type Dimension',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ theo loại hình quỹ, hiệu lực tại kỳ',
-    charter_capital_amt                          Nullable(Decimal(23,2)) COMMENT 'Tổng vốn điều lệ/vốn góp (VNĐ) của các quỹ theo loại hình quỹ, hiệu lực tại kỳ — cùng tập quỹ với fund_count (quỹ có ngày cấp giấy phép không muộn hơn cuối tháng); K_QLQ_73/74 (Quỹ BĐS, Quỹ thành viên) chia 10.000 (mệnh giá) thành số CCQ theo mô tả BA',
+    charter_capital_amt                          Nullable(Decimal(23,2)) COMMENT 'Tổng vốn điều lệ/vốn góp (VNĐ) của các quỹ theo loại hình quỹ, hiệu lực tại kỳ — cùng tập quỹ với fund_count (quỹ có ngày cấp giấy phép không muộn hơn cuối tháng)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
 
     -- From: CALENDAR DATE DIMENSION
