@@ -4,7 +4,7 @@
 -- Generated: Phase 3 LLD Datamart
 -- 6 bảng:
 --   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5)
---   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6)
+--   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6, 32, 33, 34, 36)
 --   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 7, 8, 9, 10)
 --   4. vp_fct_private_corporate_bond_trading_snpst_flat (Nhóm 9, 11, 12, 13)
 --   5. vp_fct_government_bond_trading_snpst_flat (Nhóm 14, 15, 16)
