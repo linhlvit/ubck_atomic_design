@@ -496,13 +496,14 @@ COMMENT 'Flat table — Operational Individual Violation History'
 -- ============================================================
 -- 16. FACT: qlkd_fct_securities_company_financial_structure_snpst_flat
 --    Fact Securities Company Financial Structure Snapshot — cơ cấu tài chính định kỳ CTCK (EAV)
---    Grain: 1 dong Atomic sc_report_input_value = 1 CTCK x 1 ky x 1 lan nop x 1 o bao cao; PK = rpt_input_val_id (khoa MERGE/UPSERT; ORDER BY phai chua PK vi ReplacingMergeTree dedup theo ORDER BY)
+--    Grain: 1 dong Atomic sc_report_input_value = 1 CTCK x 1 ky x 1 lan nop x 1 o bao cao; PK = rpt_input_val_id (khoa dong; ORDER BY phai chua PK vi ReplacingMergeTree dedup theo ORDER BY)
+--    Nap theo pham vi (O_QLKD_69): thay nguyen partition thang bang REPLACE PARTITION tu bang dem qlkd_fct_securities_company_financial_structure_snpst_flat_stg (tao o 02_populate, cung cau truc voi bang nay)
 --    Joins: Calendar Date Dimension, Securities Company Dimension, Report Indicator Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
-    rpt_input_val_id                             String                  COMMENT 'PK — id dòng giá trị ô báo cáo đầu vào (Atomic `sc_report_input_value.sc_rpt_input_val_id` = hash_id của ID nguồn SCMS REPORT_INPUT_CELL_VALUE). Grain Fact = 1 dòng Atomic (không gộp): 1 CTCK × 1 kỳ × 1 lần nộp × 1 ô — nên PK này là khóa MERGE/UPSERT duy nhất của Fact. Tọa độ ô (rpt_code, sheet_id, cell_id) tra qua `report_indicator_dim_id`; section_id/row_index không đưa vào Fact vì PK đã định danh từng dòng. [MỚI 2026-10-23] Trước đây Fact không khai báo khóa dòng.',
+    rpt_input_val_id                             String                  COMMENT 'PK — id dòng giá trị ô báo cáo đầu vào (Atomic `sc_report_input_value.sc_rpt_input_val_id` = hash_id của ID nguồn SCMS REPORT_INPUT_CELL_VALUE). Grain Fact = 1 dòng Atomic (không gộp): 1 CTCK × 1 kỳ × 1 lần nộp × 1 ô — PK là khóa dòng duy nhất của Fact nhưng KHÔNG phải đơn vị nạp: Fact nạp upsert THEO PHẠM VI (sc_code, rpt_year, rpt_period, period) — xóa toàn bộ dòng của phạm vi bị ảnh hưởng rồi nạp lại, không full refresh, không append (O_QLKD_69). Tọa độ ô (rpt_code, sheet_id, cell_id) tra qua `report_indicator_dim_id`; section_id/row_index không đưa vào Fact vì PK đã định danh từng dòng. [MỚI 2026-10-23] Trước đây Fact không khai báo khóa dòng.',
     snpst_dt_dim_id                              String                  COMMENT 'FK ngày snapshot — ngày kết thúc kỳ báo cáo (end_dt), lookup qua Calendar Date Dimension.',
     securities_company_dim_id                    String                  COMMENT 'FK CTCK nộp báo cáo — lookup qua Securities Company Dimension.',
     report_indicator_dim_id                      String                  COMMENT 'FK tọa độ ô báo cáo — lookup Report Indicator Dimension theo (rpt_code, sc_rpt_id, sheet_id, cell_id).',
@@ -516,7 +517,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_struct
     submission_dt                                Nullable(Date)          COMMENT 'Ngày CTCK nộp báo cáo.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ: 1 = Gửi đúng hạn, 2 = Gửi muộn.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    preferred_report_ind                         Nullable(String)        COMMENT 'Cờ báo cáo được ưu tiên theo logic BA: 1 = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ, hoặc biểu mẫu khác (BCTLAT, BCTHHD_CTCK...); 0 = BCTCRL của CTCK đã có BCTCHN cùng kỳ (BA: chỉ lấy BCTCRL cho CTCK không nộp BCTCHN — CTE ctck_co_hn). KPI đo lọc = 1 để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng Fact của cùng CTCK + năm + loại kỳ + kỳ.',
+    preferred_report_ind                         Nullable(String)        COMMENT 'Cờ báo cáo được ưu tiên theo logic BA: 1 = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ, hoặc biểu mẫu khác (BCTLAT, BCTHHD_CTCK...); 0 = BCTCRL của CTCK đã có BCTCHN cùng kỳ (BA: chỉ lấy BCTCRL cho CTCK không nộp BCTCHN — CTE ctck_co_hn). KPI đo lọc = 1 để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng Fact của cùng CTCK + năm + loại kỳ + kỳ. Đây cũng là phạm vi nạp của Fact (O_QLKD_69): cờ của dòng BCTCRL phụ thuộc có BCTCHN cùng phạm vi hay không, nên mọi dòng của phạm vi phải được dựng lại cùng lúc.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',

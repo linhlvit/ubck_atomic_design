@@ -294,6 +294,41 @@ def _split_keep_nl(text: str):
     return text.split(nl), nl
 
 
+def _dml_blocks(ml: list, flat: str):
+    """[(tên bảng, (start, end))] các khối INSERT phải giữ cùng danh sách cột với DDL của `flat`.
+
+    Gồm INSERT thẳng vào flat và INSERT vào bảng đệm `<flat>_stg` (flat nạp theo phạm vi: INSERT bảng đệm
+    rồi ALTER TABLE <flat> REPLACE PARTITION ... FROM <flat>_stg; Gate 4 bắt projection bảng đệm = cột DDL flat).
+    """
+    out = []
+    for name in (flat, f"{flat}_stg"):
+        b = _flat_block(ml, "dml", name)
+        if b:
+            out.append((name, b))
+    return out
+
+
+def _dml_insert_pos(ml: list, ms: int, me: int, prev):
+    """(dòng chèn, alias) cho cột mới trong 1 khối INSERT [ms, me); None nếu không định vị được."""
+    projs = []
+    sel_k = None  # dòng từ khóa SELECT — KHÔNG phải projection (regex _DML_PROJ khớp nhầm 'SELECT' như 1 cột)
+    for k in range(ms + 1, me):
+        if sel_k is None:
+            if _SELECT_KW.match(ml[k]):
+                sel_k = k
+            continue
+        m = _DML_PROJ.match(ml[k])
+        if m and not ml[k].strip().startswith("--"):
+            projs.append((k, m.group(2), m.group(4) or m.group(3)))
+    if prev:
+        return next(((k, a) for k, a, n in projs if n == prev), None)
+    # đầu bảng: chèn vào dòng đầu tiên sau SELECT (bỏ qua dòng trống/comment '-- From:'), khớp vị trí DDL.
+    # Dòng đầu có thể là biểu thức phức tạp (không khớp regex) -> alias lấy từ projection đơn giản đầu tiên.
+    first = next((k for k in range((sel_k or ms) + 1, me)
+                  if ml[k].strip() and not ml[k].strip().startswith("--")), None)
+    return (first, next((a for _, a, _ in projs if a), None)) if first is not None and sel_k is not None else None
+
+
 def sync_columns(ddl_txt: str, dml_txt: str, flat_prefix: str, lld_cols: dict, tables: list):
     """Chèn cột LLD thiếu vào flat đã có (DDL + DML cùng vị trí). Trả (ddl, dml, added, skipped)."""
     dl, nl_d = _split_keep_nl(ddl_txt)
@@ -302,7 +337,7 @@ def sync_columns(ddl_txt: str, dml_txt: str, flat_prefix: str, lld_cols: dict, t
     for t in tables:
         flat = f"{flat_prefix}_{t}_flat"
         have = ddl_columns(dl, flat)
-        if have is None or _flat_block(ml, "dml", flat) is None:
+        if have is None or not _dml_blocks(ml, flat):
             continue
         cols = lld_cols.get(t, [])
         order = [c[0] for c in cols]
@@ -311,53 +346,38 @@ def sync_columns(ddl_txt: str, dml_txt: str, flat_prefix: str, lld_cols: dict, t
             i = order.index(c)
             prev = next((p for p in reversed(order[:i]) if p in have), None)
             s, e = _flat_block(dl, "ddl", flat)
-            ms, me = _flat_block(ml, "dml", flat)
 
             # --- vị trí DDL
             ddl_lines = [(k, _DDL_COL.match(dl[k])) for k in range(s + 1, e) if not dl[k].strip().startswith("--")]
             ddl_lines = [(k, m.group(1)) for k, m in ddl_lines if m]
             d_idx = next((k for k, n in ddl_lines if n == prev), None) if prev else (ddl_lines[0][0] if ddl_lines else None)
-            # --- vị trí DML
-            projs = []
-            sel_k = None  # dòng từ khóa SELECT — KHÔNG phải projection (regex _DML_PROJ khớp nhầm 'SELECT' như 1 cột)
-            for k in range(ms + 1, me):
-                if sel_k is None:
-                    if _SELECT_KW.match(ml[k]):
-                        sel_k = k
-                    continue
-                m = _DML_PROJ.match(ml[k])
-                if m and not ml[k].strip().startswith("--"):
-                    projs.append((k, m.group(2), m.group(4) or m.group(3)))
-            if prev:
-                m_pos = next(((k, a) for k, a, n in projs if n == prev), None)
-            else:
-                # đầu bảng: chèn vào dòng đầu tiên sau SELECT (bỏ qua dòng trống/comment '-- From:'), khớp vị trí DDL.
-                # Dòng đầu có thể là biểu thức phức tạp (không khớp regex) -> alias lấy từ projection đơn giản đầu tiên.
-                first = next((k for k in range((sel_k or ms) + 1, me)
-                              if ml[k].strip() and not ml[k].strip().startswith("--")), None)
-                m_pos = (first, next((a for _, a, _ in projs if a), None)) if first is not None and sel_k is not None else None
-            if d_idx is None or m_pos is None:
+            # --- vị trí DML: mọi khối INSERT của flat (thẳng vào flat và/hoặc vào bảng đệm `_stg`)
+            m_poss = [_dml_insert_pos(ml, ms, me, prev) for _, (ms, me) in _dml_blocks(ml, flat)]
+            if d_idx is None or any(p is None for p in m_poss):
                 skipped.append((flat, c, f"không định vị được cột liền trước '{prev}' trong "
                                          f"{'DDL' if d_idx is None else 'DML'} (projection phức tạp?) — chèn tay"))
                 continue
             _, dt, nu, de = meta[c]
             ty = ch_type(dt, nu)
-            alias = m_pos[1]
             new_d = f"    {c:<44} {ty:<23} COMMENT '{de}'"
-            new_m = f"    {alias + '.' if alias else ''}{c}"
+            # chèn từ dòng lớn xuống dòng nhỏ để vị trí các khối còn lại không bị lệch
+            by_line_desc = sorted(m_poss, key=lambda p: -p[0])
             if prev:
                 # DDL: chèn SAU cột trước; nếu cột trước là dòng cuối (không dấu phẩy) thì chuyển dấu phẩy xuống
                 tail = not dl[d_idx].rstrip().endswith(",")
                 if tail:
                     dl[d_idx] = dl[d_idx].rstrip() + ","
                 dl.insert(d_idx + 1, new_d + ("" if tail else ","))
-                tail_m = not re.sub(r"\s*--.*$", "", ml[m_pos[0]]).rstrip().endswith(",")
-                if tail_m:
-                    ml[m_pos[0]] = re.sub(r"(\s*--.*)?$", lambda mm: "," + (mm.group(1) or ""), ml[m_pos[0]].rstrip(), count=1)
-                ml.insert(m_pos[0] + 1, new_m + ("" if tail_m else ","))
+                for k, alias in by_line_desc:
+                    new_m = f"    {alias + '.' if alias else ''}{c}"
+                    tail_m = not re.sub(r"\s*--.*$", "", ml[k]).rstrip().endswith(",")
+                    if tail_m:
+                        ml[k] = re.sub(r"(\s*--.*)?$", lambda mm: "," + (mm.group(1) or ""), ml[k].rstrip(), count=1)
+                    ml.insert(k + 1, new_m + ("" if tail_m else ","))
             else:
                 dl.insert(d_idx, new_d + ",")
-                ml.insert(m_pos[0], new_m + ",")
+                for k, alias in by_line_desc:
+                    ml.insert(k, f"    {alias + '.' if alias else ''}{c}" + ",")
             have.add(c)
             added.append((flat, c, prev))
     return nl_d.join(dl), nl_m.join(ml), added, skipped

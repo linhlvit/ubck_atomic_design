@@ -5,8 +5,11 @@ datamart_flat_table_checker.py — Datamart Flat Table Quality Gate 4 Checker CL
 Audits Flat Table SQL files (DDL + DML) against 5 criteria:
   1. Column Coverage: All Fact/Operational columns and joined Dim business attributes present in DDL
   2. Projection Alignment: 1-1 count, order, and alias match between CREATE TABLE and SELECT
+     (flat nạp theo phạm vi: INSERT vào bảng đệm `<flat>_stg` + ALTER TABLE <flat> REPLACE PARTITION ... FROM
+     `<flat>_stg` — projection của bảng đệm phải khớp cột DDL của flat chính, flat chính không cần INSERT riêng)
   3. Column Drift: No orphan columns vs master datamart_attributes.csv
   4. Parameter Consistency: All daily ETL date filters use :etl_date
+     (ngoại lệ duy nhất: bộ lọc partition của bảng đệm `toYYYYMM(<alias>.cdr_dt) = :ym`)
   5. Common Dimensions Sync: cdr_dt_flat present in Common/ with 9 required columns
 
 Usage:
@@ -164,6 +167,19 @@ _RE_INSERT_INTO = re.compile(
 )
 _RE_BAD_ETL_PARAM = re.compile(
     r":\w+|\{\s*etl_date\s*\}|\$etl_date|%\(etl_date\)s|\?|'\d{4}-\d{2}-\d{2}'",
+    re.IGNORECASE,
+)
+# Nạp theo phạm vi: INSERT vào bảng đệm `<flat>_stg`, rồi ALTER TABLE <flat> REPLACE PARTITION <ym> FROM <flat>_stg.
+_STG_SUFFIX = "_stg"
+_RE_REPLACE_PARTITION = re.compile(
+    r"ALTER\s+TABLE\s+([a-zA-Z0-9_.]+)(?:\s+ON\s+CLUSTER\s+(?:'[^']*'|\"[^\"]*\"|\S+))?"
+    r"\s+REPLACE\s+PARTITION\s+\S+\s+FROM\s+([a-zA-Z0-9_.]+)",
+    re.IGNORECASE,
+)
+# REPLACE PARTITION nhận partition literal nên bộ lọc tháng của bảng đệm dùng tham số riêng :ym (YYYYMM),
+# chỉ chấp nhận đúng dạng này — mọi bộ lọc cdr_dt khác vẫn phải dùng :etl_date.
+_RE_PARTITION_MONTH_FILTER = re.compile(
+    r"^\s*(?:WHERE|AND)\s+toYYYYMM\(\s*\w+\.cdr_dt\s*\)\s*=\s*:ym\s*;?\s*$",
     re.IGNORECASE,
 )
 
@@ -471,28 +487,44 @@ def _check_column_coverage(
 # Criterion 2: 1-1 Projection Alignment Check
 # ---------------------------------------------------------------------------
 
+def _parse_replace_partitions(sql_text: str) -> Dict[str, str]:
+    """{flat (lower): bảng đệm (lower)} từ các câu ALTER TABLE <flat> REPLACE PARTITION <p> FROM <flat>_stg.
+
+    Chỉ nhận cặp mà nguồn đúng là `<flat>_stg` — bảng nguồn tên khác không được miễn kiểm tra DDL/DML.
+    """
+    clean = re.sub(r"--[^\n]*", " ", sql_text)
+    clean = re.sub(r"/\*.*?\*/", " ", clean, flags=re.DOTALL)
+    out: Dict[str, str] = {}
+    for m in _RE_REPLACE_PARTITION.finditer(clean):
+        flat, src = m.group(1).lower(), m.group(2).lower()
+        if src == flat + _STG_SUFFIX:
+            out[flat] = src
+    return out
+
+
 def _check_projection_alignment(
     ddl_tables: Dict[str, List[str]],
     dml_tables: Dict[str, List[str]],
+    staging: Optional[Dict[str, str]] = None,
 ) -> List[FlatTableIssue]:
     """
     Criterion 2: 1-1 Projection Alignment Check (L4-FLAT-TABLE-PROJECTION-MISALIGNMENT)
     Verifies 1-1 count, order, and alias matching between CREATE TABLE and SELECT.
+
+    `staging` = {flat: bảng đệm} lấy từ REPLACE PARTITION (xem `_parse_replace_partitions`). Flat nạp theo
+    phạm vi không INSERT trực tiếp vào bảng chính mà vào `<flat>_stg`: bảng đệm không cần DDL riêng nhưng
+    projection INSERT của nó phải khớp cột DDL của flat chính (REPLACE PARTITION đòi cùng cấu trúc).
     """
     issues: List[FlatTableIssue] = []
+    staging = staging or {}
     ddl_table_set = set(ddl_tables.keys())
     dml_table_set = set(dml_tables.keys())
 
-    for table_name, ddl_cols in ddl_tables.items():
-        dml_cols = dml_tables.get(table_name)
-        if dml_cols is None:
-            issues.append(FlatTableIssue(
-                error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
-                severity="CRITICAL",
-                table_name=table_name,
-                message=f"Table {table_name} in DDL but not found in DML INSERT INTO",
-            ))
-            continue
+    def stg_key_of(table_name: str) -> Optional[str]:
+        stg = staging.get(table_name.lower())
+        return next((k for k in dml_tables if k.lower() == stg), None) if stg else None
+
+    def compare(table_name: str, ddl_cols: List[str], dml_cols: List[str]) -> None:
         if len(ddl_cols) != len(dml_cols):
             issues.append(FlatTableIssue(
                 error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
@@ -500,18 +532,38 @@ def _check_projection_alignment(
                 table_name=table_name,
                 message=f"Column count mismatch: DDL has {len(ddl_cols)} columns, DML INSERT has {len(dml_cols)} columns",
             ))
-        else:
-            for i, (dc, ic) in enumerate(zip(ddl_cols, dml_cols)):
-                if dc.lower() != ic.lower():
-                    issues.append(FlatTableIssue(
-                        error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
-                        severity="CRITICAL",
-                        table_name=table_name,
-                        message=f"Column name mismatch at position {i+1}: DDL='{dc}', DML INSERT='{ic}'",
-                    ))
-                    break
+            return
+        for i, (dc, ic) in enumerate(zip(ddl_cols, dml_cols)):
+            if dc.lower() != ic.lower():
+                issues.append(FlatTableIssue(
+                    error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
+                    severity="CRITICAL",
+                    table_name=table_name,
+                    message=f"Column name mismatch at position {i+1}: DDL='{dc}', DML INSERT='{ic}'",
+                ))
+                return
+
+    staged: Set[str] = set()
+    for table_name, ddl_cols in ddl_tables.items():
+        dml_cols = dml_tables.get(table_name)
+        stg_key = stg_key_of(table_name)
+        if dml_cols is None and stg_key is None:
+            issues.append(FlatTableIssue(
+                error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
+                severity="CRITICAL",
+                table_name=table_name,
+                message=f"Table {table_name} in DDL but not found in DML INSERT INTO",
+            ))
+            continue
+        if dml_cols is not None:
+            compare(table_name, ddl_cols, dml_cols)
+        if stg_key is not None:
+            staged.add(stg_key.lower())
+            compare(stg_key, ddl_cols, dml_tables[stg_key])
 
     for table_name in dml_table_set - ddl_table_set:
+        if table_name.lower() in staged:
+            continue
         issues.append(FlatTableIssue(
             error_code="L4-FLAT-TABLE-PROJECTION-MISALIGNMENT",
             severity="CRITICAL",
@@ -576,6 +628,8 @@ def _check_etl_date_params(sql_text: str) -> List[FlatTableIssue]:
     """Criterion 4: Check all WHERE date filter clauses use :etl_date."""
     issues: List[FlatTableIssue] = []
     for line_num, line in enumerate(sql_text.split("\n"), 1):
+        if _RE_PARTITION_MONTH_FILTER.match(line):
+            continue
         line_upper = line.upper().strip()
         if ("WHERE" in line_upper or "AND" in line_upper) and "CDR_DT" in line_upper and "=" in line:
             eq_pos = line.find("=")
@@ -828,7 +882,7 @@ def audit_module_flat_table(
     result.issues.extend(cov_issues)
 
     # 2. Criterion 2: 1-1 Projection Alignment
-    align_issues = _check_projection_alignment(ddl_tables, dml_tables)
+    align_issues = _check_projection_alignment(ddl_tables, dml_tables, _parse_replace_partitions(dml_text))
     result.issues.extend(align_issues)
 
     # 3. Criterion 3: Column Drift Control

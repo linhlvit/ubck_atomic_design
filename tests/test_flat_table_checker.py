@@ -557,6 +557,109 @@ class TestFlatTableCheckerNegativeControls(BaseMockWorkspaceFixture):
         self.assertTrue(any("Missing DML file" in i.message for i in common_issues))
 
 
+class TestFlatTableCheckerStagingReplacePartition(BaseMockWorkspaceFixture):
+    """Flat nạp theo phạm vi: INSERT vào bảng đệm `<flat>_stg` rồi ALTER TABLE <flat> REPLACE PARTITION ... FROM <flat>_stg.
+
+    Gate 4 phải (a) không đòi INSERT riêng vào flat chính, (b) không đòi CREATE TABLE riêng cho bảng đệm,
+    (c) vẫn bắt projection bảng đệm lệch cột DDL flat chính, (d) chỉ nhận tham số :ym ở đúng dạng
+    `toYYYYMM(<alias>.cdr_dt) = :ym`.
+    """
+
+    STG = "datamart.test_mod_fct_test_flat_stg"
+    FLAT = "datamart.test_mod_fct_test_flat"
+
+    def _dml(self, projection=None, where="WHERE toYYYYMM(d.cdr_dt) = :ym;", replace=True):
+        projection = projection or [
+            "f.fct_test_id", "f.snpst_dt_dim_id", "d.cdr_dt", "d.is_trading_date",
+            "f.security_code", "f.trade_vol", "f.trade_val",
+        ]
+        sel = ",\n".join(f"    {p}" for p in projection)
+        stmt = f"ALTER TABLE {self.FLAT} REPLACE PARTITION :ym FROM {self.STG};\n"
+        return (
+            f"TRUNCATE TABLE IF EXISTS {self.STG};\n"
+            f"INSERT INTO {self.STG}\n"
+            f"SELECT\n{sel}\n"
+            "FROM datamart.fct_test f\n"
+            "JOIN datamart.cdr_dt_dim d ON f.snpst_dt_dim_id = d.cdr_dt_dim_id\n"
+            f"{where}\n"
+            + (stmt if replace else f"-- {stmt}")
+        )
+
+    def _issues(self, code):
+        result = audit_module_flat_table(self.mock_root, "TEST_MOD")
+        return result, [i for i in result.issues if i.error_code == code]
+
+    def test_21_staging_only_flat_passes(self):
+        """Không INSERT vào flat chính, không DDL cho bảng đệm: vẫn PASS khi có REPLACE PARTITION FROM <flat>_stg."""
+        self.dml_sql.write_text(self._dml(), encoding="utf-8")
+        result = audit_module_flat_table(self.mock_root, "TEST_MOD")
+        self.assertEqual(result.critical_count, 0, f"Unexpected issues: {result.issues}")
+        self.assertEqual(result.status, "PASS")
+
+    def test_22_staging_projection_missing_column_detected(self):
+        """Bảng đệm thiếu cột so với DDL flat chính -> L4-FLAT-TABLE-PROJECTION-MISALIGNMENT (REPLACE PARTITION đòi cùng cấu trúc)."""
+        self.dml_sql.write_text(self._dml(projection=[
+            "f.fct_test_id", "f.snpst_dt_dim_id", "d.cdr_dt", "d.is_trading_date", "f.security_code", "f.trade_vol",
+        ]), encoding="utf-8")
+        result, issues = self._issues("L4-FLAT-TABLE-PROJECTION-MISALIGNMENT")
+        self.assertEqual(result.status, "FAIL")
+        self.assertTrue(any("Column count mismatch" in i.message and i.table_name.endswith("_flat_stg") for i in issues), issues)
+
+    def test_23_staging_projection_order_mismatch_detected(self):
+        """Bảng đệm đảo thứ tự cột -> L4-FLAT-TABLE-PROJECTION-MISALIGNMENT."""
+        self.dml_sql.write_text(self._dml(projection=[
+            "f.fct_test_id", "f.snpst_dt_dim_id", "d.cdr_dt", "d.is_trading_date", "f.security_code", "f.trade_val", "f.trade_vol",
+        ]), encoding="utf-8")
+        _, issues = self._issues("L4-FLAT-TABLE-PROJECTION-MISALIGNMENT")
+        self.assertTrue(any("Column name mismatch at position" in i.message for i in issues), issues)
+
+    def test_24_staging_insert_without_replace_partition_detected(self):
+        """INSERT vào bảng đệm mà không có REPLACE PARTITION (chỉ nằm trong comment) -> cả hai chiều đều bị báo."""
+        self.dml_sql.write_text(self._dml(replace=False), encoding="utf-8")
+        result, issues = self._issues("L4-FLAT-TABLE-PROJECTION-MISALIGNMENT")
+        self.assertEqual(result.status, "FAIL")
+        self.assertTrue(any("in DDL but not found in DML INSERT INTO" in i.message for i in issues), issues)
+        self.assertTrue(any("in DML but not found in DDL CREATE TABLE" in i.message for i in issues), issues)
+
+    def test_25_replace_partition_from_other_source_not_exempt(self):
+        """REPLACE PARTITION từ bảng không phải `<flat>_stg` không được miễn INSERT riêng vào flat chính."""
+        dml = self._dml().replace(
+            f"REPLACE PARTITION :ym FROM {self.STG}",
+            "REPLACE PARTITION :ym FROM datamart.test_mod_other_buffer",
+        )
+        self.dml_sql.write_text(dml, encoding="utf-8")
+        result, issues = self._issues("L4-FLAT-TABLE-PROJECTION-MISALIGNMENT")
+        self.assertEqual(result.status, "FAIL")
+        self.assertTrue(any("in DDL but not found in DML INSERT INTO" in i.message for i in issues), issues)
+
+    def test_26_ym_parameter_only_allowed_on_partition_month_filter(self):
+        """:ym chỉ hợp lệ ở `toYYYYMM(<alias>.cdr_dt) = :ym`; lọc ngày thô bằng :ym vẫn là L4-FLAT-TABLE-PARAMETER-INCONSISTENT."""
+        self.dml_sql.write_text(self._dml(where="WHERE d.cdr_dt = :ym;"), encoding="utf-8")
+        result, issues = self._issues("L4-FLAT-TABLE-PARAMETER-INCONSISTENT")
+        self.assertEqual(result.status, "FAIL")
+        self.assertTrue(any(":ym" in i.message for i in issues), issues)
+
+    def test_27_main_flat_insert_still_checked_when_both_present(self):
+        """Có cả INSERT vào flat chính lẫn bảng đệm: cả hai đều phải khớp DDL."""
+        main_bad = (
+            "INSERT INTO datamart.test_mod_fct_test_flat\n"
+            "SELECT\n"
+            "    f.fct_test_id,\n"
+            "    f.snpst_dt_dim_id,\n"
+            "    d.cdr_dt,\n"
+            "    d.is_trading_date,\n"
+            "    f.security_code,\n"
+            "    f.trade_vol\n"
+            "FROM datamart.fct_test f\n"
+            "JOIN datamart.cdr_dt_dim d ON f.snpst_dt_dim_id = d.cdr_dt_dim_id\n"
+            "WHERE d.cdr_dt = :etl_date;\n"
+        )
+        self.dml_sql.write_text(main_bad + "\n" + self._dml(), encoding="utf-8")
+        _, issues = self._issues("L4-FLAT-TABLE-PROJECTION-MISALIGNMENT")
+        self.assertTrue(any("Column count mismatch" in i.message and i.table_name == self.FLAT for i in issues), issues)
+        self.assertFalse(any(i.table_name == self.STG for i in issues), issues)
+
+
 class TestFlatTableCheckerCLIFlags(BaseMockWorkspaceFixture):
     """Subprocess CLI tests verifying flags -m/--module, --root, --strict, --json."""
 

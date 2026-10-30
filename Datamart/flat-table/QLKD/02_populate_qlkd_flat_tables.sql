@@ -505,11 +505,21 @@ FROM datamart.opr_individual_violation_hist o
 -- 16. FACT: qlkd_fct_securities_company_financial_structure_snpst_flat
 -- ============================================================
 --    Grain: 1 CTCK x 1 ô báo cáo x 1 kỳ x 1 biểu mẫu; cdr_dt = NGÀY KẾT THÚC KỲ báo cáo (end_dt), KHÔNG phải ngày ETL.
---    [SỬA 2026-10-16 — rà cột ngày] Fact ETL không giới hạn theo ngày chạy (nạp mọi kỳ, khử trùng bản nộp mới nhất; kỳ cũ có thể được nộp/nộp lại về sau)
---    nên flat TRUNCATE + INSERT toàn bộ, cùng cách các Fact báo cáo ở QLQ/PTTT. Trước đây DELETE/WHERE cdr_dt bằng ngày ETL chỉ khớp khi ngày ETL
---    trùng đúng ngày kết thúc kỳ → flat gần như rỗng.
-TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlkd_fct_securities_company_financial_structure_snpst_flat
+--    [SỬA 2026-10-16 — rà cột ngày] Fact ETL không giới hạn theo ngày chạy (kỳ cũ có thể được nộp/nộp lại về sau) nên cdr_dt không thể lọc theo ngày ETL;
+--    trước đó DELETE/WHERE cdr_dt bằng ngày ETL chỉ khớp khi ngày ETL trùng đúng ngày kết thúc kỳ → flat gần như rỗng, sau đó đổi sang TRUNCATE + nạp toàn bộ.
+--    [SỬA 2026-10-30 — O_QLKD_69] Nạp UPSERT THEO PHẠM VI (sc_code, rpt_year, rpt_period, period); không TRUNCATE toàn bảng, không APPEND.
+--    Fact `fct_securities_company_financial_structure_snpst` được nạp theo phạm vi (xóa toàn bộ dòng của phạm vi bị ảnh hưởng rồi nạp lại, kể cả
+--    preferred_report_ind tính trên cả phạm vi). Flat chỉ phản chiếu Fact: dựng lại NGUYÊN partition tháng toYYYYMM(cdr_dt) chứa phạm vi đó
+--    vào bảng đệm rồi REPLACE PARTITION (nguyên tử — dashboard không thấy khoảng trống như khi TRUNCATE).
+--    Tham số ym = YYYYMM (số nguyên) của partition cần thay. Orchestrator chạy khối này lặp cho từng ym thuộc tập partition bị ảnh hưởng
+--    (tháng của end_dt phạm vi; thêm tháng của end_dt CŨ nếu end_dt của phạm vi đổi). Nạp lần đầu / khôi phục: lặp cho mọi tháng có trong Fact.
+--    Bảng đệm <flat>_stg tạo bằng CREATE TABLE ... AS <flat> (cùng cột/ENGINE/PARTITION/ORDER BY — REPLACE PARTITION đòi cùng cấu trúc);
+--    Gate 4 bắt projection bảng đệm lệch cột DDL flat, build_flat_tables --sync-columns chèn cột mới vào cả hai khối.
+--    REPLACE PARTITION chạy trên ĐÚNG replica vừa nạp bảng đệm, không ON CLUSTER (ReplicatedMergeTree tự nhân bản sang replica còn lại).
+--    CHƯA chạy thử trên ClickHouse: partition rỗng ở bảng đệm có xóa partition đích hay không cần dev xác nhận.
+CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat_stg ON CLUSTER 'my_cluster' AS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat;
+TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_financial_structure_snpst_flat_stg ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_fct_securities_company_financial_structure_snpst_flat_stg
 SELECT
     -- From: FCT_SECURITIES_COMPANY_FINANCIAL_STRUCTURE_SNPST
     f.rpt_input_val_id,
@@ -566,7 +576,9 @@ LEFT JOIN datamart.securities_company_dim sc_dim
     ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
 LEFT JOIN datamart.report_indicator_dim ri_dim
     ON ri_dim.report_indicator_dim_id = f.report_indicator_dim_id
+WHERE toYYYYMM(cal.cdr_dt) = :ym
 ;
+ALTER TABLE datamart.qlkd_fct_securities_company_financial_structure_snpst_flat REPLACE PARTITION :ym FROM datamart.qlkd_fct_securities_company_financial_structure_snpst_flat_stg;
 
 
 -- ============================================================
