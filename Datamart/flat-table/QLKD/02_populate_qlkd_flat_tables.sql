@@ -537,6 +537,7 @@ SELECT
     f.submission_status_code,
     f.src_stm_code,
     f.preferred_report_ind,
+    f.rpt_input_submission_nbr,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,

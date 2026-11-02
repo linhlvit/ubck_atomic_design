@@ -16947,6 +16947,15 @@ entities:
         description: "Cờ báo cáo được ưu tiên theo logic BA: '1' = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ, hoặc biểu mẫu khác (BCTLAT, BCTHHD_CTCK...); '0' = BCTCRL của CTCK đã có BCTCHN cùng kỳ (chỉ lấy BCTCRL cho CTCK không nộp BCTCHN cùng kỳ). KPI đo lọc = '1' để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng Fact của cùng CTCK + năm + loại kỳ + kỳ. Đây cũng là phạm vi nạp của Fact (O_QLKD_69): cờ của dòng BCTCRL phụ thuộc có BCTCHN cùng phạm vi hay không, nên mọi dòng của phạm vi phải được dựng lại cùng lúc."
         source_atomic_table: "sc_report"
         source_atomic_column: "sc_report.rpt_code"
+      - logical_name: "Report Input Submission Number"
+        physical_name: "rpt_input_submission_nbr"
+        data_domain: "Large Counter"
+        data_type: "bigint"
+        nullable: true
+        key: "DD"
+        description: "Số hiệu lần nộp báo cáo đầu vào (eForm) dạng số — ID lần nộp của nguồn SCMS (REPORT_INPUT_SUBMISSION.ID, số tự tăng: lần nộp sau có số lớn hơn). Dùng để xếp thứ tự lần nộp khi cùng 1 CTCK có nhiều bản BCTC cùng năm (BCTCHN và BCTCRL): BA STT 18 chọn bản có CFO, rồi bản nộp sau cùng (ID lớn nhất) — K_QLKD_98/99. Không dùng `rpt_input_submission_id` để so thứ tự vì đó là mã băm."
+        source_atomic_table: "sc_report_input_value"
+        source_atomic_column: "sc_report_input_value.sc_rpt_input_submission_code"
 
   - id: "DTM-report_indicator_dim"
     logical_name: "Report Indicator Dimension"
