@@ -102,9 +102,7 @@ SELECT
     o.rating_class_code,
     o.total_score_amt,
     o.src_stm_code,
-    o.fmc_id,
-    o.charter_capital_amt,
-    o.establishment_license_dt
+    o.fmc_id
 FROM datamart.opr_fund_management_company_profile o
 ;
 

@@ -125,9 +125,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của công ty QLQ tại kỳ đánh giá gần nhất (1=A, 2=B, 3=C, 4=D)',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-    fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ (O_QLQ_64)',
-    charter_capital_amt                          Nullable(Decimal(23,2)) COMMENT 'Vốn điều lệ/vốn góp (VNĐ) — theo mapping BA dòng 30 (SECURITIES.CAPITAL); lọc theo tháng bằng establishment_license_dt (BA: LAST_DAY(ID_DATE) <= tháng)',
-    establishment_license_dt                     Nullable(Date)          COMMENT 'Ngày cấp giấy phép thành lập và hoạt động của CTQLQ (SECURITIES.ID_DATE) — dùng lọc công ty đã được cấp phép đến cuối tháng theo mapping BA dòng 30 (LAST_DAY(ID_DATE) <= tháng)'
+    fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ (O_QLQ_64)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
