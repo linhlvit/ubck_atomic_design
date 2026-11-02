@@ -5674,15 +5674,15 @@ SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME = 'TinhHinhGiaoDichCCQ_06268 '
 lower(RPT_TEMP.ITEM_NAME) LIKE '%đại lý phân phối% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 8
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",,,,Dữ liệu động,,,,,,
-Khai thác Dashboard Tổng quan của Đại lý phân phối,23,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối >> Danh sách các Quỹ đang phân phối,Danh sách các Quỹ đang phân phối,Danh sách tên các quỹ mà ĐLPP đang thực hiện phân phối,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý/Năm, ĐLPP",FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ITEM_NAME,FUNDS.DELETED = 0,"WITH label AS (
-SELECT cvt.convert_ft ""filter_value"",
+Khai thác Dashboard Tổng quan của Đại lý phân phối,23,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối >> Danh sách các Quỹ đang phân phối,Danh sách các Quỹ đang phân phối,Danh sách tên các quỹ mà ĐLPP đang thực hiện phân phối,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý/Năm, ĐLPP",FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ITEM_NAME,FUNDS.DELETED = 0,"""WITH label AS (
+SELECT cvt.convert_ft """"filter_value"""",
 CASE WHEN lower(:filter_type) = 'tháng' THEN TO_CHAR(cvt.convert_ft,'MM/YYYY')
            WHEN lower(:filter_type) = 'quý' AND EXTRACT(MONTH FROM cvt.convert_ft) IN (1,2,3) THEN 'Quý 1/' || TO_CHAR(cvt.convert_ft,'YYYY')
            WHEN lower(:filter_type) = 'quý' AND EXTRACT(MONTH FROM cvt.convert_ft) IN (4,5,6) THEN 'Quý 2/' || TO_CHAR(cvt.convert_ft,'YYYY')
            WHEN lower(:filter_type) = 'quý' AND EXTRACT(MONTH FROM cvt.convert_ft) IN (7,8,9) THEN 'Quý 3/' || TO_CHAR(cvt.convert_ft,'YYYY')
            WHEN lower(:filter_type) = 'quý' AND EXTRACT(MONTH FROM cvt.convert_ft) IN (10,11,12) THEN 'Quý 4/' || TO_CHAR(cvt.convert_ft,'YYYY')
            WHEN lower(:filter_type) = 'năm' THEN TO_CHAR(cvt.convert_ft,'YYYY')
- END ""filter_label""
+ END """"filter_label""""
 FROM (
 SELECT  
 CASE WHEN lower(:filter_type) = 'quý' AND lower(SUBSTR(:filter,1,2)) = 'q1' THEN last_day(to_date('03/' || SUBSTR(:filter,-4),'mm/yyyy'))
@@ -5697,13 +5697,13 @@ FROM dual
 ORDER BY cvt.convert_ft
 )
 SELECT da.ID
-, da.ITEM_NAME ""Tên ĐLPP""
-, f.ITEM_NAME ""Tên quỹ""
+, da.ITEM_NAME """"Tên ĐLPP""""
+, f.ITEM_NAME """"Tên quỹ""""
 FROM FMS_UAT.DISTRIBUTOR_AGENT da 
 LEFT JOIN FMS_UAT.FUD_AG_AGT faa ON da.ID = faa.AGEN_ID 
 LEFT JOIN FMS_UAT.FUNDS f ON faa.FUD_ID = f.ID AND f.DELETED = 0
-RIGHT JOIN label ON TRUNC(LAST_DAY(da.DISTRIBUTION_CERT_DATE)) <= label.""filter_value"" AND da.DELETED = 0 AND da.RECORD_STATUS = 1
-WHERE 1=1",,,Dữ liệu tĩnh,,,,,,
+RIGHT JOIN label ON TRUNC(LAST_DAY(da.DISTRIBUTION_CERT_DATE)) <= label.""""filter_value"""" AND da.DELETED = 0 AND da.RECORD_STATUS = 1
+WHERE 1=1""",,,Dữ liệu tĩnh,,,,,,
 Khai thác Dashboard Tổng quan của Chi nhánh CTQLQ nước ngoài tại Việt Nam,24,,Dashboard >> Tổng quan CN CTQLQ NN tại VN >>  Thống kê chung,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.FOR_BRCH,"COALESCE(FOR_BRCH.START_DATE, FOR_BRCH.LICENSE_DATE)","FOR_BRCH.DELETED = 0
 AND FOR_BRCH.BRANCH_FLAG = 1
 AND LAST_DAY(COALESCE(FOR_BRCH.START_DATE, FOR_BRCH.LICENSE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))","WITH cte AS (

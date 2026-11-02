@@ -101,7 +101,10 @@ SELECT
     o.fund_count,
     o.rating_class_code,
     o.total_score_amt,
-    o.src_stm_code
+    o.src_stm_code,
+    o.fmc_id,
+    o.charter_capital_amt,
+    o.establishment_license_dt
 FROM datamart.opr_fund_management_company_profile o
 ;
 
@@ -324,6 +327,7 @@ SELECT
     f.cell_val,
     f.cell_numeric_val,
     f.src_stm_code,
+    f.fmc_id,
     rpt_period_end_cal.cdr_dt     AS rpt_period_end_cdr_dt,
     cell_dim.fmr_sheet_code,
     cell_dim.cell_id,
