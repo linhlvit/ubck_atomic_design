@@ -31,6 +31,7 @@ SELECT
     f.is_reissue_indicator,
     f.certificate_issue_dt,
     f.revocation_dt,
+    f.certificate_status_code,
     f.decision_tp_code,
     f.decision_signed_dt,
 
@@ -83,6 +84,10 @@ SELECT
     f.age,
     f.has_active_violation,
     f.first_license_dt,
+    f.practicing_indicator,
+    f.concurrent_employment_indicator,
+    f.insufficient_training_indicator,
+    f.no_practice_3_years_indicator,
 
     -- From: CALENDAR DATE DIMENSION (Snapshot Date)
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
@@ -162,10 +167,12 @@ TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat 
 INSERT INTO datamart.nhnck_opr_practitioner_list_company_role_flat
 SELECT
     o.practitioner_code,
-    o.securities_company_code,
-    o.securities_company_short_nm,
-    o.representative_position,
+    o.organization_employment_rpt_code,
+    o.securities_organization_reference_code,
+    o.practitioner_workplace_at_rpt,
+    o.practitioner_position_at_rpt,
     o.practice_status_code,
+    o.practice_status_nm,
     o.shares_held,
     o.account_nbr,
     o.account_holder_nm,
@@ -309,6 +316,9 @@ SELECT
     o.issue_dt,
     o.current_organization_nm,
     o.identification_tp_code,
+    o.concurrent_employment_indicator,
+    o.insufficient_training_indicator,
+    o.no_practice_3_years_indicator,
     o.src_stm_code,
     p360.birth_dt                      AS birth_dt,
     p360.identification_nbr            AS identification_nbr,

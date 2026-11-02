@@ -144,14 +144,18 @@ modules:
     note: "Trùng tên cột 'Note' ở index 19 và 31. [2026-10-23 16:58, xác minh qua header sống: BA BỎ lại cột UC → STT về index 0, 32 cột, cột tên rỗng ở index 26] [2026-10-23: BA thêm lại cột UC ở index 0 → STT về index 1, 33 cột, cột tên rỗng ở index 27] [2026-10-16, xác minh qua header sống] BA bỏ cột UC (Use case) ở index 0 → STT về index 0 (bản 2026-10-09 có UC, STT ở index 1); vẫn đủ 32 cột vì có 1 cột tên rỗng ở index 26 (giữa 'Kết quả SIT' và 'Báo cáo'). Parser theo tên cột nên không đổi hành vi."
 
   NHNCK:
-    expect_columns: 31
+    expect_columns: 34
     sql_columns: ["Câu lệnh tham khảo"]
+    # Khối 'Khai thác nguồn' xuất hiện 2 lần (index 15–19 và 20–24). Lấy khối ĐẦU = mapping mới sau UAT 27/10/2026.
+    first_duplicate_columns: ["Bảng nguồn", "Trường nguồn", "Điều kiện chung", "Câu lệnh tham khảo", "Note"]
     drop_extra:
       - "SIT ngày 17/7/2026"          # header gốc có 2 khoảng trắng — so khớp sau khi gộp whitespace
       - "THAY ĐỔI VỚI TK CŨ"
       - "29/7 - Kiểm tra với Staging"
+      - "Kết quả SIT (Round 1)"
+      - "Kết quả SIT (Round 2)"
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
-    note: "Trùng tên cột 'Kết quả' ở index 26 và 29."
+    note: "[CẬP NHẬT 2026-10-29, xác minh qua header sống + so với HEAD] 34 cột (HEAD 31): BA thêm khối 'Khai thác nguồn' MỚI ở index 15–19 (Bảng nguồn/Trường nguồn/Điều kiện chung/Câu lệnh tham khảo/Note), khối CŨ bị đẩy xuống index 20–24 (thay 'Kết quả Test/Model/DMT'); cột 14 đổi tên 'Mapping (nghiệp vụ) Thay đổi sau UAT 27/10/2026' (đánh dấu Đổi tên/Bổ sung/Bỏ chỉ tiêu/Thay đổi rule); thêm 'Kết quả SIT (Round 1/2)' (rỗng). Hàng mới (VD 'Điều kiện lọc: Loại vi phạm') chỉ có khối đầu → parser dùng `first_duplicate_columns` (khối đầu), khối sau bị bỏ khỏi lát cắt. Trùng tên cột 'Kết quả' ở index 28 và 31 (nằm trong drop mặc định)."
 
   PTTT:
     expect_columns: 28

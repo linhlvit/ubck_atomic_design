@@ -436,6 +436,12 @@ def drop_column_indices(header: Sequence[str], profile: dict, with_sql: bool = F
         n = _norm(name)
         out.update(i for i, h in enumerate(normed) if h == n)
 
+    # `first_duplicate_columns`: giữ khối đầu, bỏ các khối trùng tên phía sau khỏi lát cắt (xem parse_ba_file).
+    for name in (profile.get("first_duplicate_columns") or []):
+        n = _norm(name)
+        idxs = [i for i, h in enumerate(normed) if h == n]
+        out.update(idxs[1:])
+
     for rule in (profile.get("_drop_rules") or []):
         pat = rule.get("drop_column_matches")
         guard = rule.get("only_if_column_exists")
@@ -524,6 +530,14 @@ def parse_ba_file(
 
     col_map = _build_col_map(header)
     dups = _duplicate_columns(header)
+    # Profile `first_duplicate_columns`: với các tên cột này lấy khối ĐẦU TIÊN thay vì cuối (NHNCK 2026-10-29:
+    # BA thêm khối 'Khai thác nguồn' mới ở index 15–19, khối cũ bị đẩy xuống index 20–24).
+    _first = {_norm(x) for x in ((profile or {}).get("first_duplicate_columns") or [])}
+    if _first:
+        for _k, _v in dups.items():
+            if _norm(_k) in _first:
+                col_map[_k] = _v[0]
+        dups = {k: v for k, v in dups.items() if _norm(k) not in _first}
     if dups:
         warnings.append(
             "Cột trùng tên (lấy index cuối, theo hành vi bản cũ): "
