@@ -239,7 +239,7 @@ modules:
 
   VP:
     delimiter: ","
-    expect_columns: 25
+    expect_columns: 26
     stt_column: "TT"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
@@ -255,3 +255,6 @@ modules:
       Parser tra theo TÊN nên chỉ đổi expect_columns 25 → 26.
       [CẬP NHẬT 2026-10-28 19:43, xác minh qua header sống: 644 bản ghi đều 25 cột, delimiter ',', header dòng 1] BA BỎ lại cột 'UC' sau ~1 giờ (lần thứ 2
       trong ngày bật/tắt) → expect_columns 26 → 25; TT index 0. File VP vẫn đang được BA sửa trực tiếp: kiểm MD5/mtime trước khi ghi thiết kế.
+      [CẬP NHẬT 2026-11-02 17:50, xác minh qua header sống: 627 bản ghi đều 26 cột, delimiter ',', header dòng 1, legend dòng 2, 624 dòng dữ liệu] BA THÊM LẠI
+      cột đầu 'UC' (lần thứ 3; giá trị = tên use case, vd 'Khai thác Dashboard giao dịch trên thị trường phái sinh') → expect_columns 25 → 26; 'TT' index 1,
+      'Trạng thái mapping' index 14, 'Câu lệnh tham khảo' index 19, 'Update' index 25. Parser tra theo TÊN nên chỉ đổi expect_columns.

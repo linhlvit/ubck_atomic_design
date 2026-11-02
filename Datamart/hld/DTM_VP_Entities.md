@@ -1,8 +1,8 @@
 # DTM_VP_Entities — Danh mục thực thể Datamart Phân hệ VP (Thống kê thị trường chứng khoán)
 
-**Phiên bản:** 2.4 (bổ sung Nhóm 32–37 — NĐTNN mua/bán ròng; Nhóm 51 — Fact hủy niêm yết; Nhóm 55a — Fact vốn hóa cổ phiếu)  
-**Ngày cập nhật:** 2026-10-28  
-**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2) và Nhóm 32–37, 51 (Lô 3). Đồng bộ với `DTM_VP_HLD.md` Section 3 + Section 4.
+**Phiên bản:** 2.5 (bổ sung Nhóm 19 — vốn hóa cổ phiếu; Nhóm 47–48 — Fact kết quả đấu thầu TPCP; Nhóm 49 — quy mô niêm yết/giao dịch TPCP; Nhóm 55c/55d — GTGD bình quân TPCP, số tài khoản NĐT)  
+**Ngày cập nhật:** 2026-11-02  
+**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2), Nhóm 32–37, 51 (Lô 3), Nhóm 19, 47–49, 55 (Lô 4). Đồng bộ với `DTM_VP_HLD.md` (khối Nhóm). Lưu ý: HLD Section 3 + Section 4 chưa liệt kê các Fact của Lô 3–4 (Listing Status Change, Investor Account Movement, Listed Equity, Bidding Result) — nợ có từ trước, chưa sửa trong lượt này.
 
 ---
 
@@ -266,6 +266,20 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | new | Khối lượng, giá trị giao dịch và giá trị mua/bán NĐTNN TPCP theo ngày và loại sổ lệnh (Nhóm 14, 15, 16) | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO (PK government_bond_trading_snpst_id = hash(snpst_dt_dim_id, order_book_tp, src_stm_code)) | K_VP_106,108,110 |
 
+## Nhóm 19 - Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (mốc ngày giao dịch cuối kỳ, kỳ trước, cuối năm trước) | 1 ngày dương lịch | K_VP_1 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 55 | 1 mã × 1 ngày giao dịch | K_VP_239–254 |
+| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu) — mẫu số tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố | K_VP_243–245 |
+
 ## Nhóm 32 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
 
 ```mermaid
@@ -408,6 +422,44 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_237–238 |
 
+## Nhóm 47 - Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày phát hành) | 1 ngày dương lịch | K_VP_160 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — kỳ hạn quy đổi năm, giá trị và lãi suất trúng thầu; dùng cho Nhóm 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_255 |
+
+## Nhóm 48 - Tổng quan thị trường >> Biểu đồ Lãi suất phát hành bình quân TPCP
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày phát hành) | 1 ngày dương lịch | K_VP_160 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — dùng chung với Nhóm 47 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_256 |
+
+## Nhóm 49 - Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày giao dịch) | 1 ngày dương lịch | K_VP_160 |
+| Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | GTGD Outright / Repos TPCP theo loại sổ lệnh (dùng chung với Nhóm 14–16) | 1 ngày × 1 loại sổ lệnh | K_VP_258–259 |
+
+Giá trị niêm yết TPCP (K_VP_257) PENDING — xem mục "Bảng PENDING" (Fact Government Bond Listing Snapshot).
+
 ## Nhóm 50 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu niêm yết mới
 
 ```mermaid
@@ -420,7 +472,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_208–211 |
-| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160, K_VP_208–211 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160, K_VP_208–211 |
 
 ## Nhóm 51 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết
 
@@ -434,9 +486,9 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_161–164 |
-| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
 
-## Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường (lô 55a–55b: chỉ số, vốn hóa, GDP, GTGD bình quân, niêm yết, HĐTL VN30, chứng quyền, GT NĐTNN ròng)
+## Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường (lô 55a–55d: chỉ số, vốn hóa, GDP, GTGD bình quân, niêm yết, HĐTL VN30, chứng quyền, GT NĐTNN ròng, GTGD bình quân TPCP, số tài khoản NĐT; niêm yết TPCP PENDING)
 
 ```mermaid
 erDiagram
@@ -446,6 +498,7 @@ erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
     Market_Index_Dimension ||--o{ Fact_Market_Index_Snapshot : " "
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Derivative_Contract_Snapshot : " "
@@ -461,17 +514,18 @@ erDiagram
 | Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; thêm cột Unit Type Code 2026-10-28, O_VP_41) | 1 chỉ tiêu × 1 kỳ công bố | K_VP_174–175, 185 |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | reuse | GTGD/KLGD nhóm ALL cổ phiếu-CCQ, chứng quyền, HĐTL VN30; GT NĐTNN (FOREIGN) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT | K_VP_176–180, 186–190, 194–205 |
 | Fact Derivative Contract Snapshot | Fact Snapshot | reuse | OI HĐTL VN30 (VSDC) | 1 mã hợp đồng × 1 ngày | K_VP_191–193 |
-| Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | GT NĐTNN mua/bán TPCP | 1 ngày × 1 loại sổ lệnh | K_VP_206–207 |
+| Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | GT NĐTNN mua/bán TPCP; GTGD bình quân TPCP (Outright + Repo) | 1 ngày × 1 loại sổ lệnh | K_VP_206–207, 260–264 |
+| Fact Investor Account Movement Snapshot | Fact Snapshot | reuse | Số tài khoản NĐT lũy kế (Σ mở − Σ đóng) đến ngày báo cáo / cuối năm trước (VSDC; dùng chung với Nhóm 40, 42, 43) | 1 ngày phát sinh × 1 loại NĐT | K_VP_269–270 |
 
 ---
 
 ## Bảng PENDING (không thiết kế trong Phase 2)
 
-Không có — mọi Fact/Dimension của Nhóm 1–16 đều có KPI READY.
+Mọi Fact/Dimension đang thiết kế đều có KPI READY; 1 Fact dự kiến PENDING toàn bộ:
 
 | Datamart Entity | Lý do PENDING | Issue |
 |---|---|---|
-| — | — | — |
+| Fact Government Bond Listing Snapshot (dự kiến; Atomic `gov_bond_listing` ← HNX.GOV_BOND_LISTED_LIST) | Atomic thiếu năm báo cáo (chỉ có `rpt_month`) và khóa chỉ băm từ BOND_CODE (mất lịch sử theo tháng) — KPI K_VP_257 (Nhóm 49), K_VP_265–268 (Nhóm 55) PENDING [Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai]; Data Modeler chốt 2026-11-02 | O_VP_50 |
 
 ## Bảng DEPRECATED / Bãi bỏ
 

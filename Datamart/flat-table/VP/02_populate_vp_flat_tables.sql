@@ -374,6 +374,7 @@ SELECT
     f.exchange_transfer,
     f.delist_transfer_reason,
     f.src_stm_code,
+    f.listing_floor_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -454,6 +455,41 @@ SELECT
     cal.is_trading_date AS is_trading_date
 
 FROM datamart.fct_investor_account_movement_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+;
+
+
+-- ==========================================================
+-- 10. FACT: vp_fct_government_bond_bidding_result_snpst_flat
+-- ==========================================================
+-- [O_VP_49] nạp mọi ngày (TRUNCATE + INSERT), không khóa theo ngày chạy ETL: kết quả đấu thầu do HNX gửi theo BÁO CÁO THÁNG (REPORT_MONTH) nên dòng có ngày phát hành
+-- trong quá khứ đến muộn; Fact nạp đủ lịch sử theo PK (upsert) và bảng nhỏ (vài dòng mỗi đợt), nên dựng lại toàn bộ thay vì chỉ các dòng có cdr_dt trùng ngày chạy ETL.
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_government_bond_bidding_result_snpst_flat
+SELECT
+    -- From: FCT_GOVERNMENT_BOND_BIDDING_RESULT_SNPST
+    f.government_bond_bidding_result_snpst_id,
+    f.snpst_dt_dim_id,
+    f.bidding_session,
+    f.bond_code,
+    f.bond_term,
+    f.issue_term_years,
+    f.winning_val,
+    f.winning_interest_rate,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_government_bond_bidding_result_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;

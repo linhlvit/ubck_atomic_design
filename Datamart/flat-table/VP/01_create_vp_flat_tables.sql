@@ -367,6 +367,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listing_status_change_snpst_flat ON C
     exchange_transfer                            Nullable(String)        COMMENT 'Cờ/diễn giải chuyển sàn của quyết định (EXCHANGE_TRANSFER): giá trị bắt đầu bằng Có = chuyển sàn (không tính l',
     delist_transfer_reason                       Nullable(String)        COMMENT 'Lý do hủy niêm yết/chuyển sàn (DELIST_TRANSFER_REASON).',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_LISTING_STATUS_CHANGE (HNX và UPCoM) hoặc HOSE_LISTING_STATUS_CHANGE (HOSE) — p',
+    listing_floor_code                           Nullable(String)        COMMENT 'Mã sàn của cổ phiếu tại thời điểm xảy ra quyết định (02 = HNX, 04 = UPCoM, 10 = HOSE): niêm yết mới (New Listed Share Quantity > 0) lấy tại ngày giao dịch đầu tiên, niêm yết bổ sung / hủy lấy tại phiên giao dịch gần nhất <= ngày hiệu lực (không giới hạn dưới, đúng SQL BA); để trống khi không có bản tin MDDS. [DATE-BOUND-REVIEWED 2026-11-02: BA chủ ý lấy phiên gần nhất <= ngày hiệu lực không có cận dưới; O_VP_53] Tên có tiền tố listing_ để không trùng cột `floor_code` của Security Trading Snapshot Dimension trên flat; lưu trên Fact vì Security Trading Snapshot Dimension là current-state (mã đã chuyển sàn sẽ mang sàn hiện tại).',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -448,4 +449,39 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), investor_account_movement_snpst_id)
 COMMENT 'Flat table — fct_investor_account_movement_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 10. FACT: vp_fct_government_bond_bidding_result_snpst_flat
+--    fct_government_bond_bidding_result_snpst — Grain: 1 dòng kết quả đấu thầu phát hành trái phiếu Chính phủ (id dòng Atomic gov_bond_bidding_result); FK ngày = ngày phát hành; PK government_bond_bidding_result_snpst_id
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_GOVERNMENT_BOND_BIDDING_RESULT_SNPST
+    government_bond_bidding_result_snpst_id      String                  COMMENT 'PK — id dòng Atomic `gov_bond_bidding_result_id` (hash HNX_GOV_BOND_OFFERING + BIDDING_SESSION). Grain = 1 dòng kết q...',
+    snpst_dt_dim_id                              Nullable(String)        COMMENT 'FK tới Calendar Date Dimension — NGÀY PHÁT HÀNH của đợt đấu thầu (ISSUE_DATE); BA Nhóm 47–48 lọc và nhóm theo năm của...',
+    bidding_session                              String                  COMMENT 'Đợt đấu thầu (BIDDING_SESSION) — khóa nghiệp vụ của Atomic, định danh dòng.',
+    bond_code                                    Nullable(String)        COMMENT 'Mã trái phiếu Chính phủ được phát hành trong đợt đấu thầu.',
+    bond_term                                    Nullable(String)        COMMENT 'Kỳ hạn nguyên văn từ HNX (chuỗi dạng ''10 năm'', ''26 tuần'', ''6 tháng'') — giữ để đối chiếu cột Issue Term Years.',
+    issue_term_years                             Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn phát hành quy đổi ra năm: số trong chuỗi kỳ hạn chia 52 nếu đơn vị ''tuần'', chia 12 nếu ''tháng'', giữ nguyên nếu...',
+    winning_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị trúng thầu (WINNING_VALUE) — BA Nhóm 47–48: giá trị phát hành = giá trị trúng thầu, dùng làm trọng số bình quân.',
+    winning_interest_rate                        Nullable(Decimal(5,2))  COMMENT 'Lãi suất trúng thầu (%) (WINNING_INTEREST_RATE) — BA Nhóm 48: lãi suất phát hành = lãi suất trúng thầu.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: ''HNX_GOV_BOND_OFFERING'' (kết quả đấu thầu trái phiếu Chính phủ HNX).',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), government_bond_bidding_result_snpst_id)
+COMMENT 'Flat table — fct_government_bond_bidding_result_snpst × Calendar Date; grain 1 dòng kết quả đấu thầu TPCP, PK government_bond_bidding_result_snpst_id'
 ;
