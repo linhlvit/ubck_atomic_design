@@ -23048,7 +23048,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị tài sản ròng (NAV) hiện tại của quỹ theo báo cáo kỳ mới nhất — chỉ lấy báo cáo kỳ tháng (PERIOD_TYPE = 3 như BA), tháng gần nhất không muộn hơn ngày chạy ETL"
+        description: "Giá trị tài sản ròng (NAV) hiện tại của quỹ theo báo cáo kỳ mới nhất — chỉ lấy báo cáo kỳ tháng (PERIOD_TYPE = 3 như BA), tháng gần nhất không muộn hơn ngày chạy ETL Nhãn cột 'Kỳ báo cáo' so khớp theo TIỀN TỐ của phần tử ĐẦU của column_label_nm (sau TRIM): nhãn thật có đuôi '>> ...' và khoảng trắng đầu — UAT: so chính xác chỉ khớp 4/20 ô (O_QLQ_69, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.investment_fund_id"
       - logical_name: "Year To Date Profit Amount"
@@ -23646,7 +23646,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở trong kỳ"
+        description: "Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở trong kỳ Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Trading Account Year To Date Count"
@@ -23655,7 +23655,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở lũy kế từ đầu năm"
+        description: "Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở lũy kế từ đầu năm Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Lũy kế từ đầu năm đến kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Institution Trading Account Count"
@@ -23664,7 +23664,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản giao dịch CCQ của nhà đầu tư tổ chức trong nước"
+        description: "Số tài khoản giao dịch CCQ của nhà đầu tư tổ chức trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Individual Trading Account Count"
@@ -23673,7 +23673,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản giao dịch CCQ của nhà đầu tư cá nhân trong nước"
+        description: "Số tài khoản giao dịch CCQ của nhà đầu tư cá nhân trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Foreign Trading Account Count"
@@ -23682,7 +23682,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản giao dịch CCQ của nhà đầu tư nước ngoài"
+        description: "Số tài khoản giao dịch CCQ của nhà đầu tư nước ngoài Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Institution Holding Account Count"
@@ -23691,7 +23691,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư tổ chức trong nước"
+        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư tổ chức trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Individual Holding Account Count"
@@ -23700,7 +23700,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư cá nhân trong nước"
+        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư cá nhân trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Foreign Holding Account Count"
@@ -23709,7 +23709,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư nước ngoài"
+        description: "Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư nước ngoài Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Institution Fund Certificate Amount"
@@ -23718,7 +23718,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư tổ chức trong nước"
+        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư tổ chức trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Individual Fund Certificate Amount"
@@ -23727,7 +23727,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư cá nhân trong nước"
+        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư cá nhân trong nước Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Foreign Fund Certificate Amount"
@@ -23736,7 +23736,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư nước ngoài"
+        description: "Giá trị CCQ nắm giữ bởi nhà đầu tư nước ngoài Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Issued Amount"
@@ -23745,7 +23745,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị CCQ phát hành trong kỳ (cộng các dòng con 5.1–5.3)"
+        description: "Tổng giá trị CCQ phát hành trong kỳ (cộng các dòng con 5.1–5.3) Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Issued Year To Date Amount"
@@ -23754,7 +23754,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị CCQ phát hành lũy kế từ đầu năm (cộng các dòng con 5.1–5.3)"
+        description: "Tổng giá trị CCQ phát hành lũy kế từ đầu năm (cộng các dòng con 5.1–5.3) Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Lũy kế từ đầu năm đến kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Redeemed Amount"
@@ -23763,7 +23763,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị CCQ mua lại trong kỳ (cộng các dòng con 6.1–6.3)"
+        description: "Tổng giá trị CCQ mua lại trong kỳ (cộng các dòng con 6.1–6.3) Nhãn cột so khớp theo phần tử CUỐI của column_label_nm (sheet 06268: tên mục đứng đầu, 'II. Tình hình hoạt động đại lý phân phối >> Kỳ báo cáo'; so chính xác không khớp — O_QLQ_57, O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.securities_distribution_agent_id"
       - logical_name: "Source System Code"
@@ -24315,7 +24315,7 @@ entities:
         data_type: "decimal(9,2)"
         nullable: true
         key: ""
-        description: "Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của chi nhánh (báo cáo kỳ mới nhất) — chỉ lấy báo cáo kỳ tháng (PERIOD_TYPE = 3 như BA), tháng gần nhất không muộn hơn ngày chạy ETL"
+        description: "Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của chi nhánh (báo cáo kỳ mới nhất) — chỉ lấy báo cáo kỳ tháng (PERIOD_TYPE = 3 như BA), tháng gần nhất không muộn hơn ngày chạy ETL Nhãn cột so khớp dạng chứa (LIKE) vì nhãn có thể kèm tiền tố/đuôi; nhãn thật của sheet BangTongHop_06013 chưa kiểm UAT (O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.foreign_fm_ou_id"
       - logical_name: "Net Profit After Tax Amount"
@@ -24324,7 +24324,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Lợi nhuận sau thuế TNDN theo báo cáo tài chính gần nhất của chi nhánh"
+        description: "Lợi nhuận sau thuế TNDN theo báo cáo tài chính gần nhất của chi nhánh Nhãn cột 'Kỳ này' so khớp theo phần tử ĐẦU của column_label_nm: nhãn thật có đuôi số thứ tự ('Kỳ này >> 4', UAT 2026-11-02) nên so chính xác không khớp (O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.foreign_fm_ou_id"
       - logical_name: "Owner Equity Amount"
@@ -24333,7 +24333,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn chủ sở hữu theo báo cáo tài chính gần nhất của chi nhánh"
+        description: "Vốn chủ sở hữu theo báo cáo tài chính gần nhất của chi nhánh Nhãn cột 'Số cuối kỳ' so khớp theo phần tử ĐẦU của column_label_nm: nhãn thật có đuôi số thứ tự ('Số cuối kỳ >> 4', UAT 2026-11-02) nên so chính xác không khớp (O_QLQ_71)."
         source_atomic_table: "fmr_value / fmr_submission"
         source_atomic_column: "fmr_value.cell_val / fmr_submission.foreign_fm_ou_id"
       - logical_name: "Portfolio Management Contract Count"
