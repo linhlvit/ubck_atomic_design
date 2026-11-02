@@ -292,7 +292,8 @@ SELECT
     o.customer_nm,
     o.custody_account_nbr,
     o.contract_market_val_amt,
-    o.src_stm_code
+    o.src_stm_code,
+    o.fmc_id
 FROM datamart.opr_fund_management_company_contract_list o
 ;
 

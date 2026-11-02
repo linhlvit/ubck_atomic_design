@@ -22142,7 +22142,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ (O_QLQ_64)"
+        description: "Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id và là tham số drill-down (:fmc_id) của popup Nhóm 4 (opr_fund_management_company_fund_list.fmc_id) và Nhóm 5 (opr_fund_management_company_contract_list.fmc_id). fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ (O_QLQ_64)"
         source_atomic_table: "fund_management_company"
         source_atomic_column: "fund_management_company.fmc_id"
 
@@ -22176,7 +22176,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "FK -> Fund Management Company Dimension (CTQLQ sở hữu quỹ)"
+        description: "FK -> Fund Management Company Dimension (CTQLQ sở hữu quỹ) — khóa lọc danh sách quỹ theo CTQLQ ở Nhóm 4, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_68)"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.fmc_id"
       - logical_name: "Fund Management Company Code"
@@ -22185,7 +22185,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id)"
+        description: "Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id). Atomic định nghĩa investment_fund.fmc_code từ FUNDS.SEC_ID (cùng cơ chế fmr_value.fmc_code), có thể không bằng fmc_code của Profile (SECURITIES.CODE) — chờ dev xác nhận; không dùng làm khóa lọc theo CTQLQ, dùng fmc_id (O_QLQ_68)"
         source_atomic_table: "investment_fund"
         source_atomic_column: "investment_fund.fmc_code"
       - logical_name: "Investment Fund Full Name"
@@ -22311,7 +22311,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã CTQLQ nộp báo cáo (bản nộp loại đối tượng CTQLQ = 2 theo BA; nếu dòng báo cáo không mang mã CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 3"
+        description: "Mã CTQLQ nộp báo cáo (bản nộp loại đối tượng CTQLQ = 2 theo BA; nếu dòng báo cáo không mang mã CTQLQ thì suy từ quỹ nộp). Theo định nghĩa Atomic, fmr_value.fmc_code lấy từ RPT_VALUES.SEC_ID (không phải SECURITIES.CODE như fmc_code của Profile ở Nhóm 3) nên KHÔNG dùng làm khóa lọc danh sách hợp đồng theo CTQLQ — dùng fmc_id (O_QLQ_68)"
         source_atomic_table: "fmr_value / investment_fund"
         source_atomic_column: "fmr_value.fmc_code / investment_fund.fmc_code"
       - logical_name: "Record Type"
@@ -22320,7 +22320,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại đối tượng nộp báo cáo (BA: 7 = Quỹ)"
+        description: "Loại đối tượng nộp báo cáo (sheet @QLDMDT: 2 = CTQLQ, BA xác nhận 2026-10-30; BA: 7 = Quỹ cho các sheet khác)"
         source_atomic_table: "fmr_submission"
         source_atomic_column: "fmr_submission.record_tp"
       - logical_name: "Period Type Code"
@@ -22431,6 +22431,15 @@ entities:
         description: "Timestamp xử lý ETL — audit field"
         source_atomic_table: null
         source_atomic_column: null
+      - logical_name: "Fund Management Company Id"
+        physical_name: "fmc_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)"
+        source_atomic_table: "fmr_value / investment_fund"
+        source_atomic_column: "fmr_value.fmc_id / investment_fund.fmc_id"
 
   - id: "DTM-opr_foreign_fund_management_organization_unit_contract_list"
     logical_name: "Foreign Fund Management Organization Unit Contract List"

@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của công ty QLQ tại kỳ đánh giá gần nhất (1=A, 2=B, 3=C, 4=D)',
     total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-    fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ (O_QLQ_64)'
+    fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id và là tham số drill-down (:fmc_id) của popup Nhóm 4/5. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ và bảng hợp đồng (O_QLQ_64, O_QLQ_68)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_fl
 (
     -- From: OPERATIONAL Fund Management Company Fund List
     investment_fund_code             String                  COMMENT 'PK — mã quỹ (Bảng Tác nghiệp con, 1 dòng / quỹ trong 1 CTQLQ)',
-    fmc_id                           Nullable(String)        COMMENT 'FK -> Fund Management Company Dimension (CTQLQ sở hữu quỹ)',
-    fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (lookup pair với Fund Management Company Id)',
+    fmc_id                           Nullable(String)        COMMENT 'FK -> Fund Management Company Dimension (CTQLQ sở hữu quỹ) — khóa lọc danh sách quỹ theo CTQLQ ở Nhóm 4, cùng giá trị fmc_id của Profile (O_QLQ_68)',
+    fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (FUNDS.SEC_ID theo Atomic, có thể ≠ SECURITIES.CODE của Profile) — không dùng làm khóa lọc, dùng fmc_id (O_QLQ_68)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
     fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — mã (join Fund Type Dimension.fund_type_code lấy tên)',
     net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị tài sản ròng (NAV) của quỹ theo báo cáo kỳ mới nhất',
@@ -349,16 +349,16 @@ COMMENT 'Flat table — Operational Investment Fund Distribution Agent List'
 -- ============================================================
 -- 16. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
 --    Operational Fund Management Company Contract List
---    Grain: 1 hợp đồng UTDM (dòng động) × 1 bản nộp báo cáo của 1 quỹ × 1 kỳ báo cáo
+--    Grain: 1 hợp đồng UTDM (dòng động) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Fund Management Company Contract List
     fmr_submission_code      String                  COMMENT 'PK (composite) — mã bản nộp báo cáo',
     dynamic_row_nbr          Int64                   COMMENT 'PK (composite) — số thứ tự dòng động, mỗi dòng là 1 hợp đồng UTDM',
-    investment_fund_code     Nullable(String)        COMMENT 'Mã quỹ nộp báo cáo (loại đối tượng = 7 theo Điều kiện BA)',
-    fmc_code                 Nullable(String)        COMMENT 'Mã CTQLQ quản lý quỹ nộp báo cáo — khóa lọc danh sách hợp đồng theo CTQLQ',
-    record_tp                Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo (BA: 7 = Quỹ)',
+    investment_fund_code     Nullable(String)        COMMENT 'Mã quỹ của dòng báo cáo (nếu có; bản nộp của CTQLQ có thể để trống)',
+    fmc_code                 Nullable(String)        COMMENT 'Mã CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID, không phải SECURITIES.CODE của Profile) — không dùng làm khóa lọc theo CTQLQ, dùng fmc_id (O_QLQ_68)',
+    record_tp                Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo (sheet @QLDMDT: 2 = CTQLQ, BA xác nhận 2026-10-30)',
     period_tp_code           Nullable(String)        COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
     period_val               Nullable(String)        COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (số tháng theo SQL BA)',
     rpt_year                 Nullable(Int64)         COMMENT 'Năm của kỳ báo cáo',
@@ -366,7 +366,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_lis
     customer_nm              Nullable(String)        COMMENT 'Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
     custody_account_nbr      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
     contract_market_val_amt  Nullable(Decimal(38,8)) COMMENT 'Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND)',
-    src_stm_code             String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
+    src_stm_code             String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+    fmc_id                   Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()

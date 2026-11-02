@@ -56,7 +56,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Fund List | Operational | new | Bảng con drill-down danh sách quỹ theo CTQLQ | 1 quỹ × 1 CTQLQ × 1 tháng slicer | K_QLQ_33,34 |
+| Fund Management Company Fund List | Operational | new | Bảng con drill-down danh sách quỹ theo CTQLQ | 1 quỹ (PK `investment_fund_code`, thuộc 1 CTQLQ — lọc `fmc_id` khi drill-down từ Nhóm 3, O_QLQ_68) | K_QLQ_33,34,35 |
 
 ---
 
@@ -64,7 +64,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (dòng động `dynamic_row_nbr`) × 1 bản nộp báo cáo của 1 quỹ × 1 kỳ báo cáo | K_QLQ_36,37,38 |
+| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (dòng động `dynamic_row_nbr`) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo; lọc `fmc_id` khi drill-down từ Nhóm 3 (O_QLQ_68) | K_QLQ_36,37,38 |
 
 ---
 
