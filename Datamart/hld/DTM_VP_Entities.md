@@ -1,8 +1,8 @@
 # DTM_VP_Entities — Danh mục thực thể Datamart Phân hệ VP (Thống kê thị trường chứng khoán)
 
-**Phiên bản:** 2.5 (bổ sung Nhóm 19 — vốn hóa cổ phiếu; Nhóm 47–48 — Fact kết quả đấu thầu TPCP; Nhóm 49 — quy mô niêm yết/giao dịch TPCP; Nhóm 55c/55d — GTGD bình quân TPCP, số tài khoản NĐT)  
-**Ngày cập nhật:** 2026-11-02  
-**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2), Nhóm 32–37, 51 (Lô 3), Nhóm 19, 47–49, 55 (Lô 4). Đồng bộ với `DTM_VP_HLD.md` (khối Nhóm). Lưu ý: HLD Section 3 + Section 4 chưa liệt kê các Fact của Lô 3–4 (Listing Status Change, Investor Account Movement, Listed Equity, Bidding Result) — nợ có từ trước, chưa sửa trong lượt này.
+**Phiên bản:** 2.6 (bổ sung Nhóm 30, 31 — chỉ tiêu phát hành/đấu thầu TPCP theo tháng-quý-năm, thêm cột calling_val vào Fact kết quả đấu thầu; Nhóm 45 — Fact kết quả đấu giá cổ phần; trước đó: Nhóm 19 — vốn hóa cổ phiếu; Nhóm 47–48 — Fact kết quả đấu thầu TPCP; Nhóm 49 — quy mô niêm yết/giao dịch TPCP; Nhóm 55c/55d — GTGD bình quân TPCP, số tài khoản NĐT)  
+**Ngày cập nhật:** 2026-11-03  
+**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2), Nhóm 32–37, 51 (Lô 3), Nhóm 19, 30, 31, 45, 47–49, 55 (Lô 4). Đồng bộ với `DTM_VP_HLD.md` (khối Nhóm). Lưu ý: HLD Section 3 + Section 4 chưa liệt kê các Fact của Lô 3–4 (Listing Status Change, Investor Account Movement, Listed Equity, Bidding Result, Share Auction Result) — nợ có từ trước, chưa sửa trong lượt này.
 
 ---
 
@@ -280,6 +280,31 @@ erDiagram
 | Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 55 | 1 mã × 1 ngày giao dịch | K_VP_239–254 |
 | Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; bổ sung PK macro_indicator_val_id và cột unit_tp_code, O_VP_41 phương án A) — mẫu số tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_243–245 |
 
+## Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (kỳ tháng/quý/năm của ngày phát hành) | 1 ngày dương lịch | K_VP_1 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — GT phát hành = giá trị trúng thầu, kỳ hạn và lãi suất bình quân gia quyền theo kỳ; dùng chung với Nhóm 31, 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_273–278 |
+| — (PENDING) Tổng dư nợ TPCP | — | — | Chưa có Fact: Atomic `gov_bond_listing` thiếu năm báo cáo và khóa chỉ băm BOND_CODE (O_VP_50) | — | K_VP_271–272 |
+
+## Nhóm 31 - Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (kỳ tháng/quý/năm của ngày phát hành) | 1 ngày dương lịch | K_VP_1 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — thêm cột Calling Value (giá trị gọi thầu) cho Nhóm 31; dùng chung với Nhóm 30, 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_279–280 (K_VP_273 dùng lại) |
+
 ## Nhóm 32 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
 
 ```mermaid
@@ -421,6 +446,18 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_237–238 |
+
+## Nhóm 45 - Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Share_Auction_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày cuối tháng báo cáo) | 1 ngày dương lịch | K_VP_160 |
+| Fact Share Auction Result Snapshot | Fact Snapshot | new | Kết quả đấu giá cổ phần theo biểu mẫu eForm HNX05 (HNX) và HSX03 (HOSE) do ISS thu nhận — nhóm loại hình đấu giá tính tại ETL, giá trị trúng giá nhà đầu tư trong nước và nước ngoài | 1 dòng biểu mẫu = 1 đợt đấu giá của 1 tổ chức (PK share_auction_result_snpst_id = hash(snpst_dt_dim_id, rpt_code, row_nbr, src_stm_code)) | K_VP_281–287 |
 
 ## Nhóm 47 - Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP
 

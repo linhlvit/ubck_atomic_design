@@ -478,6 +478,7 @@ SELECT
     f.winning_val,
     f.winning_interest_rate,
     f.src_stm_code,
+    f.calling_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -490,6 +491,41 @@ SELECT
     cal.is_trading_date AS is_trading_date
 
 FROM datamart.fct_government_bond_bidding_result_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+;
+
+
+-- ==========================================================
+-- 11. FACT: vp_fct_share_auction_result_snpst_flat (Nhóm 45)
+-- ==========================================================
+-- [O_VP_55] nạp mọi ngày (TRUNCATE + INSERT), không khóa theo ngày chạy ETL: biểu mẫu HNX05/HSX03 do Sở nộp theo THÁNG (FK ngày = ngày cuối tháng báo cáo)
+-- và có thể nộp muộn/nộp lại; Fact nạp đủ lịch sử theo PK (upsert) và bảng nhỏ (vài dòng mỗi tháng), nên dựng lại toàn bộ thay vì chỉ dòng có cdr_dt trùng ngày chạy ETL.
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_share_auction_result_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_share_auction_result_snpst_flat
+SELECT
+    -- From: FCT_SHARE_AUCTION_RESULT_SNPST
+    f.share_auction_result_snpst_id,
+    f.snpst_dt_dim_id,
+    f.rpt_code,
+    f.row_nbr,
+    f.auction_tp_nm,
+    f.auction_tp_group_nm,
+    f.domestic_winning_val,
+    f.foreign_winning_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_share_auction_result_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;

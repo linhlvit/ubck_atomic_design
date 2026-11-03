@@ -469,6 +469,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_
     winning_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị trúng thầu (WINNING_VALUE) — BA Nhóm 47–48: giá trị phát hành = giá trị trúng thầu, dùng làm trọng số bình quân.',
     winning_interest_rate                        Nullable(Decimal(5,2))  COMMENT 'Lãi suất trúng thầu (%) (WINNING_INTEREST_RATE) — BA Nhóm 48: lãi suất phát hành = lãi suất trúng thầu.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: ''HNX_GOV_BOND_OFFERING'' (kết quả đấu thầu trái phiếu Chính phủ HNX).',
+    calling_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị gọi thầu (CALLING_VALUE) — BA Nhóm 31: cộng theo kỳ làm mẫu số của tỷ lệ trúng thầu.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -484,4 +485,39 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), government_bond_bidding_result_snpst_id)
 COMMENT 'Flat table — fct_government_bond_bidding_result_snpst × Calendar Date; grain 1 dòng kết quả đấu thầu TPCP, PK government_bond_bidding_result_snpst_id'
+;
+
+
+-- ==========================================================
+-- 11. FACT: vp_fct_share_auction_result_snpst_flat (Nhóm 45)
+--    fct_share_auction_result_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_share_auction_result_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_SHARE_AUCTION_RESULT_SNPST
+    share_auction_result_snpst_id                String                  COMMENT 'PK — hash(snpst_dt_dim_id, rpt_code, row_nbr, src_stm_code). Grain = 1 dòng biểu mẫu đấu giá cổ phần (HNX05 củ',
+    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày cuối tháng báo cáo của biểu mẫu (ghép từ năm, tháng báo cáo).',
+    rpt_code                                     String                  COMMENT 'Mã biểu mẫu báo cáo đấu giá: HNX05 (Sở GDCK Hà Nội) hoặc HSX03 (Sở GDCK TP.HCM).',
+    row_nbr                                      Int64                   COMMENT 'Số thứ tự dòng trong biểu mẫu — mỗi dòng là 1 đợt đấu giá của 1 tổ chức.',
+    auction_tp_nm                                Nullable(String)        COMMENT 'Loại hình đấu giá nguyên văn ở cột LOẠI HÌNH ĐẤU GIÁ của biểu mẫu.',
+    auction_tp_group_nm                          String                  COMMENT 'Nhóm loại hình đấu giá: IPO, Thoái vốn, Phát hành ra công chúng / quyền mua hoặc Khác.',
+    domestic_winning_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phần trúng giá của nhà đầu tư trong nước trong đợt đấu giá (VND).',
+    foreign_winning_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phần trúng giá của nhà đầu tư nước ngoài trong đợt đấu giá (VND).',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), share_auction_result_snpst_id)
+COMMENT 'Flat table — fct_share_auction_result_snpst — sinh tự động từ master registry + Entities.csv'
 ;
