@@ -550,7 +550,7 @@ _Không có dim join (operational / self-contained table)._
 
 ## NHNCK
 
-**11 bảng flat** (2 fact + 9 operational) · **121 KPI unique**
+**11 bảng flat** (2 fact + 9 operational) · **123 KPI unique**
 
 *(Sửa 2026-08) Đồng bộ lại toàn bộ theo `Datamart/flat-table/NHNCK/01_create_nhnck_flat_tables.sql` + `Datamart/lld/DTM_NHNCK_Detail_Mapping.csv` hiện tại — bản trước lệch tên bảng/cột và thiếu 1 bảng so với SQL thực tế.*
 
@@ -610,6 +610,7 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm 1b — Thống kê tổng hợp (KPI thẻ NHN) | 2 |
 | Nhóm 2 — Biểu đồ Trình độ chuyên môn | 3 |
 | Nhóm 4 — Biểu đồ Phân bổ độ tuổi | 10 |
+| Nhóm 13 — Practitioner Data Explorer | 1 |
 
 ---
 
@@ -632,7 +633,7 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 5 — Thông tin chung của NHNCK | 9 |
-| Nhóm 13 — Practitioner Data Explorer | 5 |
+| Nhóm 13 — Practitioner Data Explorer | 9 |
 
 ---
 
@@ -664,17 +665,40 @@ _Không có dim join (operational / self-contained table)._
 | **Loại** | `operational` |
 | **Entity nguồn** | Operational Practitioner Listed Company Role |
 | **Bảng fact/operational** | `datamart.opr_practitioner_list_company_role` |
-| **PK** | `practitioner_code, organization_employment_rpt_code` |
+| **PK** | `practitioner_code, sc_shareholder_code` |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
+
+*(Sửa 2026-11-03) Driving đổi về `sc_shareholder` (SCMS.SC_FIRM_SHAREHOLDER), grain 1 NHN × 1 bản ghi cổ đông cá nhân của DN niêm yết; cột tài khoản/mã CK VSDC tách sang `nhnck_opr_practitioner_account_holding_flat`. Dev: DROP rồi CREATE lại (PK/ORDER BY và tên cột đổi) — O_NHNCK_43.*
 
 **Nhóm KPI**
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 6 — Sub-tab Mạng lưới người liên quan | 2 |
 | Nhóm 7 — Dashboard Hồ sơ & Danh mục của NHNCK | 5 |
+
+---
+
+### `datamart.nhnck_opr_practitioner_account_holding_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Operational Practitioner Account Holding |
+| **Bảng fact/operational** | `datamart.opr_practitioner_account_holding` |
+| **PK** | `practitioner_account_holding_id` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+*(Mới 2026-11-03) Tài khoản VSDC cá nhân của NHN × (0..n mã CK cổ đông lớn); tách khỏi `nhnck_opr_practitioner_list_company_role_flat` để không nhân dòng — O_NHNCK_43.*
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 7 — Dashboard Hồ sơ & Danh mục của NHNCK | 4 |
 
 ---
 
@@ -714,7 +738,9 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
+| Nhóm 6 — Sub-tab Mạng lưới người liên quan | 2 |
 | Nhóm 8 — Sub-tab Quá trình hành nghề | 7 |
+| Nhóm 13 — Practitioner Data Explorer | 1 |
 
 ---
 
@@ -777,26 +803,6 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 11 — Sub-tab Cập nhật kiến thức hành nghề | 7 |
-
----
-
-### `datamart.nhnck_opr_practitioner_data_explorer_flat`
-
-| Thuộc tính | Giá trị |
-|------------|---------|
-| **Loại** | `operational` |
-| **Entity nguồn** | Operational Practitioner Data Explorer |
-| **Bảng fact/operational** | `datamart.opr_practitioner_data_explorer` |
-| **PK** | `practitioner_code, license_certificate_document_code` |
-| **Số dim join** | 0 |
-
-_Không có dim join — nhưng (Sửa 2026-07-22) LEFT JOIN thêm Practitioner 360 Profile (1-1), Practitioner Exam History (1-N, fan-out), Practitioner Violation History (1-N, fan-out). Grain thực tế = 1 CCHN × 1 đợt thi × 1 vi phạm._
-
-**Nhóm KPI**
-
-| Nhóm | Số KPI unique |
-|------|:-------------:|
-| Nhóm 13 — Practitioner Data Explorer (bảng tra cứu tổng hợp) | 9 |
 
 ---
 

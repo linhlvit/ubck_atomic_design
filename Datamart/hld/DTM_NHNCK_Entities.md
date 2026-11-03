@@ -31,7 +31,7 @@ graph TB
     OPR6["Practitioner Violation History"]:::oper
     OPR7["Practitioner Exam History"]:::oper
     OPR8["Practitioner Training History"]:::oper
-    OPR9["Practitioner Data Explorer"]:::oper
+    OPR9["Practitioner Account Holding"]:::oper
 
     DIM_DATE --> FACT_CERT
     DIM_DATE --> FACT_ANN
@@ -150,13 +150,14 @@ erDiagram
 
 ---
 
-### Nhóm 7 — Dashboard Hồ sơ & Danh mục — Vai trò tại DN niêm yết
+### Nhóm 7 — Dashboard Hồ sơ & Danh mục — Vai trò tại DN niêm yết và Tài khoản
 
 *Không có relationship line — bảng tác nghiệp*
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Listed Company Role | Operational | new | Vai trò tại DN niêm yết/UPCOM — tất cả lịch sử: tên DN, vị trí, mã CTCK, trạng thái | 1 lần báo cáo tổ chức per NHN | K_NHNCK_81–84 (READY); K_NHNCK_85, 87–89, 103 (PENDING) (Sửa 2026-07-20: thêm K_NHNCK_103 — Số lượng chứng khoán VSDC sở hữu Cuối kỳ) |
+| Practitioner Listed Company Role | Operational | new | Vai trò của NHN tại DN niêm yết — cổ đông cá nhân: tên DN, mã DN, vai trò, trạng thái, số cổ phiếu (Sửa 2026-11-03: driving sc_shareholder) | 1 NHN × 1 bản ghi cổ đông cá nhân | K_NHNCK_81–85 (READY) |
+| Practitioner Account Holding | Operational | new | (Mới 2026-11-03) Tài khoản giao dịch và mã CK nắm giữ của NHN — VSDC | 1 NHN × 1 tài khoản × (0..n mã CK cổ đông lớn) | K_NHNCK_87–89, 103 (READY) |
 
 ---
 
@@ -218,7 +219,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường — slicer Loại hình và Trạng thái filter tại query time. Dùng cho Tab DATA EXPLORER | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_101 |
+| *(Không có bảng riêng — Sửa 2026-11-03 bãi bỏ Practitioner Data Explorer)* | — | — | Nhóm 13 tổng hợp từ Practitioner 360 Profile (driving), Certificate History, Employment History, Exam History, Violation History và Fact Practitioner Daily Snapshot qua Practitioner Code | 1 NHN × 1 CCHN (hiển thị) | K_NHNCK_68–74, 101, 104–117, 123 |
 
 ---
 
@@ -234,10 +235,10 @@ erDiagram
 | Fact Practitioner Daily Snapshot | Fact Snapshot | new | Periodic Snapshot NHN — tổng NHN, cảnh báo, trình độ, độ tuổi | 1 NHN × 1 ngày | K_NHNCK_1, 4, 9–14, 23–32 |
 | Practitioner 360 Profile | Operational | new | Hồ sơ 360° NHN — latest state | 1 NHN | K_NHNCK_33–41 |
 | Practitioner Related Party Profile | Operational | new | Mạng lưới người liên quan per NHN | 1 người liên quan per NHN | K_NHNCK_75–80, K_NHNCK_86 |
-| Practitioner Listed Company Role | Operational | new | Vai trò tại DN niêm yết/UPCOM per NHN | 1 lần báo cáo tổ chức per NHN | K_NHNCK_81–85, 87–89, 103 |
+| Practitioner Listed Company Role | Operational | new | Vai trò của NHN tại DN niêm yết (cổ đông cá nhân) | 1 NHN × 1 bản ghi cổ đông cá nhân | K_NHNCK_81–85 |
+| Practitioner Account Holding | Operational | new | (Mới 2026-11-03) Tài khoản giao dịch và mã CK nắm giữ của NHN (VSDC) | 1 NHN × 1 tài khoản × (0..n mã CK cổ đông lớn) | K_NHNCK_87–89, 103 |
 | Practitioner Certificate History | Operational | new | Lịch sử cấp CCHN per NHN | 1 CCHN per NHN | K_NHNCK_43–48, K_NHNCK_92 |
-| Practitioner Employment History | Operational | new | Quá trình hành nghề per NHN | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91 |
+| Practitioner Employment History | Operational | new | Quá trình hành nghề per NHN | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91, K_NHNCK_132–133 (Nhóm 6) |
 | Practitioner Violation History | Operational | new | Lịch sử vi phạm & xử phạt per NHN | 1 vi phạm per NHN | K_NHNCK_54–58 |
 | Practitioner Exam History | Operational | new | Lịch sử thi sát hạch per NHN | 1 lần thi per NHN | K_NHNCK_59–63, K_NHNCK_94–95, K_NHNCK_102 |
 | Practitioner Training History | Operational | new | Lịch sử cập nhật kiến thức per NHN (DRAFT) | 1 enrollment per NHN | K_NHNCK_66, K_NHNCK_67, K_NHNCK_96–100 |
-| Practitioner Data Explorer | Operational | new | Flat list CCHN toàn thị trường (Data Explorer) | 1 CCHN per NHN | K_NHNCK_68–74, K_NHNCK_101 |

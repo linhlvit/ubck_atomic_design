@@ -3,6 +3,7 @@
 -- Module: Người Hành Nghề Chứng Khoán (NHNCK)
 -- Generated: Phase 3 LLD Datamart
 -- 11 bảng: 2 fact + 9 operational
+-- (Sửa 2026-11-03) NHNCK Nhóm 7/13: xem ghi chú file 01_create — list_company_role đổi cột/PK, thêm account_holding, bỏ data_explorer
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- Grain 2 fact Snapshot (license_certificate_snpst, daily_snpst) = APPEND
 -- theo Snapshot_Date (HLD: "ETL append 1 row per NHN mỗi ngày") — phục vụ
@@ -125,6 +126,7 @@ SELECT
     o.nationality_code,
     o.nationality_nm,
     o.identification_nbr,
+    o.identification_tp_code,
     o.education_level_code,
     o.education_level_nm,
     o.workplace_nm,
@@ -167,17 +169,13 @@ TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat 
 INSERT INTO datamart.nhnck_opr_practitioner_list_company_role_flat
 SELECT
     o.practitioner_code,
-    o.organization_employment_rpt_code,
-    o.securities_organization_reference_code,
-    o.practitioner_workplace_at_rpt,
-    o.practitioner_position_at_rpt,
+    o.sc_shareholder_code,
+    o.securities_company_code,
+    o.securities_company_short_nm,
+    o.representative_position,
     o.practice_status_code,
     o.practice_status_nm,
     o.shares_held,
-    o.account_nbr,
-    o.account_holder_nm,
-    o.main_held_securities_code,
-    o.vsdc_held_securities_vol,
     o.src_stm_code
 FROM datamart.opr_practitioner_list_company_role o
 ;
@@ -217,6 +215,7 @@ SELECT
     o.securities_organization_reference_nm,
     o.organization_tp_code,
     o.organization_tp_nm,
+    o.practitioner_workplace_at_rpt,
     o.practitioner_position_at_rpt,
     o.practitioner_department_at_rpt,
     o.hire_dt,
@@ -296,48 +295,20 @@ FROM datamart.opr_practitioner_training_hist o
 ;
 
 
--- ============================================================
--- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
---    (Sửa 2026-07-22) LEFT JOIN Practitioner 360 Profile (1-1) + Exam History (1-N)
---    + Violation History (1-N) theo practitioner_code — chấp nhận cartesian
---    khi 1 NHN vừa có nhiều đợt thi vừa có nhiều vi phạm đồng thời.
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.nhnck_opr_practitioner_data_explorer_flat
+-- ==========================================================
+-- 11. OPERATIONAL: nhnck_opr_practitioner_account_holding_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_account_holding_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_account_holding_flat
 SELECT
-    o.practitioner_code,
-    o.license_certificate_document_code,
-    o.full_nm,
-    o.certificate_nbr,
-    o.certificate_tp_code,
-    o.certificate_tp_nm,
-    o.practice_status_code,
-    o.practice_status_nm,
-    o.issue_dt,
-    o.current_organization_nm,
-    o.identification_tp_code,
-    o.concurrent_employment_indicator,
-    o.insufficient_training_indicator,
-    o.no_practice_3_years_indicator,
-    o.src_stm_code,
-    p360.birth_dt                      AS birth_dt,
-    p360.identification_nbr            AS identification_nbr,
-    p360.education_level_nm            AS education_level_nm,
-    p360.age                           AS age,
-    p360.nationality_nm                AS nationality_nm,
-    exam.assessment_nm                 AS exam_assessment_nm,
-    exam.examination_period            AS exam_examination_period,
-    exam.examination_start_dt          AS exam_examination_start_dt,
-    exam.examination_end_dt            AS exam_examination_end_dt,
-    exam.overall_result_nm             AS exam_overall_result_nm,
-    viol.decision_nbr                  AS violation_decision_nbr,
-    viol.decision_signed_dt            AS violation_decision_signed_dt,
-    viol.note                          AS violation_note
-FROM datamart.opr_practitioner_data_explorer o
-LEFT JOIN datamart.opr_practitioner_360_profile p360
-    ON p360.practitioner_code = o.practitioner_code
-LEFT JOIN datamart.opr_practitioner_exam_hist exam
-    ON exam.practitioner_code = o.practitioner_code
-LEFT JOIN datamart.opr_practitioner_violation_hist viol
-    ON viol.practitioner_code = o.practitioner_code
+    -- From: OPR_PRACTITIONER_ACCOUNT_HOLDING
+    f.practitioner_account_holding_id,
+    f.practitioner_code,
+    f.account_nbr,
+    f.account_holder_nm,
+    f.main_held_securities_code,
+    f.vsdc_held_securities_vol,
+    f.src_stm_code
+
+FROM datamart.opr_practitioner_account_holding f
 ;

@@ -3,6 +3,7 @@
 -- Module: Người Hành Nghề Chứng Khoán (NHNCK)
 -- Generated: Phase 3 LLD Datamart
 -- 11 bảng: 2 fact + 9 operational
+-- (Sửa 2026-11-03) NHNCK Nhóm 7/13: opr_practitioner_list_company_role đổi driving về SCMS sc_shareholder (PK/ORDER BY và cột đổi — DROP rồi CREATE lại), tách cột VSDC sang bảng mới nhnck_opr_practitioner_account_holding_flat; bãi bỏ nhnck_opr_practitioner_data_explorer_flat (Nhóm 13 JOIN các bảng đã có) — dev cần DROP flat Data Explorer; thêm identification_tp_code (360 Profile), practitioner_workplace_at_rpt (Employment History). Xem O_NHNCK_43/44/45
 -- ============================================================
 
 
@@ -108,6 +109,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON C
     nationality_code            Nullable(String)    COMMENT 'Mã quốc tịch',
     nationality_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
     identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
+    identification_tp_code                       Nullable(String)        COMMENT 'Loại giấy tờ định danh (scheme: IP_ALT_ID_TYPE: NATIONAL_ID=CMND, CITIZEN_ID=CCCD, PASSPORT=Hộ chiếu) — ETL-derived: LEFT JOIN ip_alternative_identification theo sp_id; NULL nếu chưa có giấy tờ (Sửa 2026-11-03) chuyển từ Operational Practitioner Data Explorer (đã bãi bỏ) — phục vụ K_NHNCK_101 Nhóm 13',
     education_level_code        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Trình độ học vấn — scheme: EDUCATIONAL_LEVEL',
     education_level_nm          Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên trình độ học vấn',
     workplace_nm        Nullable(String)    COMMENT 'Nơi công tác hiện tại',
@@ -153,28 +155,25 @@ COMMENT 'Flat table — Practitioner Related Party Profile (1 người liên qua
 
 -- ============================================================
 -- 5. OPERATIONAL: opr_practitioner_list_company_role_flat
+-- (Sửa 2026-11-03) Driving sc_shareholder; cột VSDC tách sang nhnck_opr_practitioner_account_holding_flat — O_NHNCK_43
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_list_company_role_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Practitioner Listed Company Role
     practitioner_code                       String              COMMENT 'PK (1/2) — Mã NHN',
-    organization_employment_rpt_code        String              COMMENT 'PK (2/2) — Mã bản ghi báo cáo tổ chức',
-    securities_organization_reference_code  Nullable(String)    COMMENT 'Mã tổ chức theo báo cáo (K_NHNCK_84 Mã CTCK)',
-    practitioner_workplace_at_rpt           Nullable(String)    COMMENT 'Nơi làm việc của NHN theo báo cáo tổ chức (K_NHNCK_81 Tên DN)',
-    practitioner_position_at_rpt            Nullable(String)    COMMENT 'Chức vụ của NHN theo báo cáo tổ chức (K_NHNCK_82 Vai trò)',
+    sc_shareholder_code                          String                  COMMENT 'PK (2/2) — BK bản ghi cổ đông SCMS (sc_shareholder_code); 1 NHN có thể có nhiều bản ghi cổ đông, kể cả cùng 1 DN',
+    securities_company_code                      Nullable(String)        COMMENT 'Mã DN niêm yết mà NHN là cổ đông cá nhân (SC_FIRM_INFO.CODE) — cột Mã CTCK (K_NHNCK_84) theo SQL BA dòng 61/71; mô tả BA dòng 72 là CTCK mà NHN mở tài khoản nhưng SQL lấy SC_FIRM_INFO.CODE qua cổ đông — O_NHNCK_43',
+    securities_company_short_nm                  Nullable(String)        COMMENT 'Tên viết tắt DN niêm yết (SC_FIRM_INFO.SHORT_NAME) — cột Tên DN niêm yết (K_NHNCK_81)',
+    representative_position                      Nullable(String)        COMMENT 'Vai trò/chức vụ đại diện của NHN tại DN niêm yết (SC_FIRM_SHAREHOLDER.REPRESENTATIVE_POSITION) — cột Vai trò (K_NHNCK_82)',
     practice_status_code                    Nullable(String)    COMMENT 'Trạng thái hành nghề hiển thị dẫn xuất (K_NHNCK_83): 0=Chưa hành nghề, 1=Đang hoạt động, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã nghỉ, 9=Khác',
     practice_status_nm                      Nullable(String)    COMMENT 'Tên trạng thái hành nghề hiển thị tương ứng practice_status_code',
-    shares_held                             Nullable(Int64)     COMMENT 'Số lượng cổ phiếu sở hữu (K_NHNCK_85) — PENDING, NULL cho tới khi xác nhận khóa nối mã tổ chức NHNCK với mã công ty SCMS (O_NHNCK_42)',
-    account_nbr                             Nullable(String)    COMMENT 'Số tài khoản (K_NHNCK_87) — nguồn open_investor_account, theo NHN',
-    account_holder_nm                       Nullable(String)    COMMENT 'Tên chủ tài khoản (K_NHNCK_88) — nguồn open_investor_account, theo NHN',
-    main_held_securities_code               Nullable(String)    COMMENT 'Mã CK nắm giữ chính (K_NHNCK_89) — nguồn major_shareholder_ownership, theo NHN',
-    vsdc_held_securities_vol                Nullable(Int64)     COMMENT 'Số lượng CK VSDC sở hữu cuối kỳ (K_NHNCK_103) — nguồn major_shareholder_ownership, theo NHN',
-    src_stm_code                            String              COMMENT 'Mã hệ thống nguồn'
+    shares_held                                  Nullable(Int64)         COMMENT 'Số lượng cổ phiếu NHN sở hữu tại DN niêm yết (K_NHNCK_85) — SC_FIRM_SHAREHOLDER.SHARES_HELD',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của driving — SCMS_SC_FIRM_SHAREHOLDER'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (practitioner_code, organization_employment_rpt_code)
-COMMENT 'Flat table — Practitioner Listed Company Role (1 báo cáo tổ chức per NHN)'
+ORDER BY (practitioner_code, sc_shareholder_code)
+COMMENT 'Flat table — Practitioner Listed Company Role (1 NHN × 1 bản ghi cổ đông cá nhân của DN niêm yết)'
 ;
 
 
@@ -216,6 +215,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_employment_hist_flat 
     securities_organization_reference_nm     Nullable(String)    COMMENT 'Tên tổ chức',
     organization_tp_code         Nullable(String)    COMMENT 'Loại tổ chức — scheme: ORG_TYPE',
     organization_tp_nm           Nullable(String)    COMMENT 'Tên loại tổ chức',
+    practitioner_workplace_at_rpt                Nullable(String)        COMMENT 'Nơi làm việc của NHN dạng text tự do tại thời điểm báo cáo tổ chức (ORGANIZATION_REPORTS.Workplace) — phục vụ Nhóm 6 Đơn vị công tác (K_NHNCK_132, BA Nhóm 6 dòng 52); khác Securities Organization Name (tên tổ chức theo mã tổ chức)',
     practitioner_position_at_rpt     Nullable(String)    COMMENT 'Vị trí/chức vụ tại thời điểm báo cáo',
     practitioner_department_at_rpt    Nullable(String)    COMMENT 'Phòng ban tại thời điểm báo cáo',
     hire_dt             Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
@@ -314,56 +314,23 @@ COMMENT 'Flat table — Practitioner Training History (1 lần bồi dưỡng pe
 ;
 
 
--- ============================================================
--- 11. OPERATIONAL: opr_practitioner_data_explorer_flat
---    (Sửa 2026-07-22) Tái cấu trúc theo yêu cầu BA bổ sung — JOIN thêm
---    Practitioner 360 Profile (1-1) + Exam History (1-N) + Violation History (1-N).
---    Grain: 1 CCHN × 1 đợt thi × 1 vi phạm — chấp nhận cartesian khi 1 NHN
---    vừa có nhiều đợt thi vừa có nhiều vi phạm đồng thời (theo xác nhận người thiết kế).
---    (Sửa 2026-08) Driving đổi sang Securities Practitioner (toàn bộ NHN, kể cả
---    chưa có CCHN) — license_certificate_document_code đổi Nullable vì NHN
---    chưa có CCHN sẽ NULL ở cột này (PK logical, không enforce constraint vật lý).
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster'
+-- ==========================================================
+-- 11. OPERATIONAL: nhnck_opr_practitioner_account_holding_flat
+--    opr_practitioner_account_holding — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_account_holding_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Practitioner Data Explorer
-    practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
-    license_certificate_document_code    Nullable(String)    COMMENT 'PK (2/2, documentation-only) — Mã CCHN. NULL nếu NHN chưa có CCHN nào',
-    full_nm                 Nullable(String)    COMMENT 'Họ tên NHN',
-    certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
-    certificate_tp_code             Nullable(String)    COMMENT 'Loại hình hành nghề — SP License Certificate Type (Fundamental entity, không phải Classification)',
-    certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại hình hành nghề',
-    practice_status_code        Nullable(String)    COMMENT '(Sửa 2026-10-30) Trạng thái hành nghề dẫn xuất tại ngày chạy ETL: 0=Chưa hành nghề, 1=Đang hoạt động, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp lại, 4=Đã nghỉ, 9=Khác',
-    practice_status_nm          Nullable(String)    COMMENT '(Sửa 2026-10-30) Tên trạng thái hành nghề — nhãn cố định ứng với practice_status_code, K_NHNCK_109',
-    issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
-    current_organization_nm          Nullable(String)    COMMENT 'Tên tổ chức công tác hiện tại',
-    identification_tp_code          Nullable(String)    COMMENT 'Loại giấy tờ định danh — scheme: IP_ALT_ID_TYPE',
-    concurrent_employment_indicator              Nullable(String)        COMMENT 'Y nếu trong cửa sổ lũy kế từ 01/01 của năm snapshot đến ngày snapshot, NHN có ít nhất 2 kỳ làm việc ở 2 tổ chức sử dụng NHN KHÁC NHAU giao nhau về thời gian (ngày vào của kỳ này không sau ngày kết thúc của kỳ kia và ngược lại; kỳ chưa có ngày kết thúc tính đến ngày snapshot); chỉ báo cáo tổ chức đã xác nhận; làm hai đợt ở cùng một công ty không tính. Phục vụ LV đồng thời tại 2 TCSD NHN (K_NHNCK_120) và slicer Loại vi phạm (K_NHNCK_123). [MỚI 2026-10-29, O_NHNCK_35]',
-    insufficient_training_indicator              Nullable(String)        COMMENT 'Y nếu NHN chưa đáp ứng cập nhật kiến thức tối thiểu 8 giờ/năm tại ngày snapshot: tổng Training Hours của kết quả tập huấn Hoàn thành (Training Result Status Code = 1) có Training End Date từ 01/01 của năm snapshot đến ngày snapshot < 8; miễn nếu NHN chỉ có đúng một CCHN và được cấp trong chính năm snapshot; chỉ xét NHN đã có CCHN còn hiệu lực để theo dõi (Status Code ∈ 0 chưa sử dụng, 1 đang sử dụng, 2 thu hồi được cấp lại, 5 hết hạn) cấp trước 01/01 của năm snapshot. Phục vụ Không đáp ứng yêu cầu tập huấn tối thiểu (K_NHNCK_121) và slicer Loại vi phạm. [MỚI 2026-10-29, O_NHNCK_35]',
-    no_practice_3_years_indicator                Nullable(String)        COMMENT 'Y nếu NHN không hành nghề 3 năm liên tục tại ngày snapshot: không có kỳ làm việc đang hiệu lực (báo cáo tổ chức đã xác nhận) VÀ (đã nghỉ hết và ngày kết thúc gần nhất + 36 tháng <= ngày snapshot, HOẶC khoảng trống giữa hai kỳ làm việc liền nhau đủ 36 tháng, HOẶC chưa từng có báo cáo tổ chức đã xác nhận và ngày cấp CCHN sớm nhất + 36 tháng <= ngày snapshot). Không lọc thêm loại tổ chức (nguồn báo cáo đã là CTCK/CTQLQ). Phục vụ Không hành nghề 3 năm liên tục (K_NHNCK_122) và slicer Loại vi phạm. [MỚI 2026-10-29, O_NHNCK_35]',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
-
-    -- From: OPERATIONAL Practitioner 360 Profile (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-1)
-    birth_dt                     Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày sinh NHN — K_NHNCK_104, từ Practitioner 360 Profile',
-    identification_nbr           Nullable(String)    COMMENT '(Sửa 2026-07-22) Số CCCD/Hộ chiếu — K_NHNCK_105, từ Practitioner 360 Profile',
-    education_level_nm           Nullable(String)    COMMENT '(Sửa 2026-07-22) Trình độ học vấn — K_NHNCK_106, từ Practitioner 360 Profile',
-    age                          Nullable(Int64)     COMMENT '(Sửa 2026-07-22) Tuổi NHN — K_NHNCK_107, từ Practitioner 360 Profile',
-    nationality_nm                Nullable(String)    COMMENT '(Sửa 2026-07-22) Quốc tịch — K_NHNCK_108, từ Practitioner 360 Profile',
-
-    -- From: OPERATIONAL Practitioner Exam History (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-N — fan-out)
-    exam_assessment_nm           Nullable(String)    COMMENT '(Sửa 2026-07-22) Đợt thi — K_NHNCK_110, từ Practitioner Exam History',
-    exam_examination_period      Nullable(String)    COMMENT '(Sửa 2026-07-22) Kỳ thi — K_NHNCK_111, từ Practitioner Exam History',
-    exam_examination_start_dt    Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày bắt đầu thi — K_NHNCK_112, từ Practitioner Exam History',
-    exam_examination_end_dt      Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày kết thúc thi — K_NHNCK_113, từ Practitioner Exam History',
-    exam_overall_result_nm       Nullable(String)    COMMENT '(Sửa 2026-07-22) Kết quả thi — K_NHNCK_114, từ Practitioner Exam History',
-
-    -- From: OPERATIONAL Practitioner Violation History (Sửa 2026-07-22 — LEFT JOIN theo practitioner_code, 1-N — fan-out)
-    violation_decision_nbr       Nullable(String)    COMMENT '(Sửa 2026-07-22) Số QĐ vi phạm — K_NHNCK_115, từ Practitioner Violation History',
-    violation_decision_signed_dt Nullable(Date)      COMMENT '(Sửa 2026-07-22) Ngày QĐ vi phạm — K_NHNCK_116, từ Practitioner Violation History',
-    violation_note                Nullable(String)    COMMENT '(Sửa 2026-07-22) Nội dung vi phạm — K_NHNCK_117, từ Practitioner Violation History'
+    -- From: OPR_PRACTITIONER_ACCOUNT_HOLDING
+    practitioner_account_holding_id              String                  COMMENT 'PK — Driving: open_investor_account (VSDC.OPEN_INVESTORS, tài khoản cá nhân investor_tp_code IN (3, 4)). Grain',
+    practitioner_code                            String                  COMMENT 'BK người hành nghề — join anchor tới các bảng Operational khác của NHN; nối tài khoản VSDC với NHN qua số giấy',
+    account_nbr                                  Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán cá nhân của NHN — VSDC (open_investor_account.investor_account_nbr) — K_NHN',
+    account_holder_nm                            Nullable(String)        COMMENT 'Tên chủ tài khoản giao dịch chứng khoán của NHN (open_investor_account.investor_nm) — K_NHNCK_88',
+    main_held_securities_code                    Nullable(String)        COMMENT 'Mã chứng khoán NHN nắm giữ với tư cách cổ đông lớn VSDC (major_shareholder_ownership.ticker_symbol) — K_NHNCK_',
+    vsdc_held_securities_vol                     Nullable(Int64)         COMMENT 'Số lượng chứng khoán NHN sở hữu cuối kỳ theo VSDC (major_shareholder_ownership.closing_share_quantity) — K_NHN',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của driving — VSDC_OPEN_INVESTORS'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY tuple()
-ORDER BY (practitioner_code, license_certificate_document_code)
-COMMENT 'Flat table — Practitioner Data Explorer × Practitioner 360 Profile × Practitioner Exam History × Practitioner Violation History (Sửa 2026-07-22: grain mở rộng 1 CCHN × 1 đợt thi × 1 vi phạm, chấp nhận cartesian) (Sửa 2026-08: đổi PARTITION BY tuple() — issue_dt nay NULL hợp lệ khi NHN chưa có CCHN, không còn phù hợp làm partition key qua assumeNotNull)'
+ORDER BY (practitioner_account_holding_id)
+COMMENT 'Flat table — opr_practitioner_account_holding — sinh tự động từ master registry + Entities.csv'
 ;
