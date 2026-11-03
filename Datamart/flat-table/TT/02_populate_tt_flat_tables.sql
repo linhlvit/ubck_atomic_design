@@ -240,6 +240,7 @@ SELECT
     o.status_code,
     o.decision_dt,
     o.decision_year,
+    o.violation_behavior_nm,
     o.src_stm_code
 FROM datamart.opr_inspection_case_list o
 ;
@@ -257,6 +258,7 @@ SELECT
     o.status_code,
     o.decision_dt,
     o.decision_year,
+    o.violation_behavior_nm,
     o.src_stm_code
 FROM datamart.opr_examination_case_list o
 ;
@@ -275,6 +277,7 @@ SELECT
     o.issued_dt,
     o.issued_year,
     o.total_fine_amt,
+    o.violation_behavior_nm,
     o.src_stm_code
 FROM datamart.opr_penalty_decision_list o
 ;
@@ -320,7 +323,7 @@ SELECT
 FROM datamart.fct_inspection_team_violation_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.decision_dt_dim_id
-JOIN datamart.inspection_team_violation_behavior_dim behavior_dim
+LEFT JOIN datamart.inspection_team_violation_behavior_dim behavior_dim
     ON behavior_dim.inspection_team_violation_behavior_dim_id = f.inspection_team_violation_behavior_dim_id
 JOIN datamart.inspection_team_dim team_dim
     ON team_dim.inspection_team_dim_id = f.inspection_team_dim_id
@@ -351,7 +354,7 @@ SELECT
 FROM datamart.fct_examination_team_violation_behavior f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.decision_dt_dim_id
-JOIN datamart.examination_team_violation_behavior_dim behavior_dim
+LEFT JOIN datamart.examination_team_violation_behavior_dim behavior_dim
     ON behavior_dim.examination_team_violation_behavior_dim_id = f.examination_team_violation_behavior_dim_id
 JOIN datamart.examination_team_dim team_dim
     ON team_dim.examination_team_dim_id = f.examination_team_dim_id

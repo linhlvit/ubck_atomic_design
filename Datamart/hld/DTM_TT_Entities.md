@@ -22,7 +22,7 @@ erDiagram
 | Fact Inspection Team Activity | Fact — Event | new | 1 đoàn thanh tra | 1 row per `INSPECTION_TEAM` | K_TT_1–7 (Nhóm 1), K_TT_8–10 (Nhóm 2) |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 | Inspection Team Dimension | Dimension | new | Thuộc tính mô tả đoàn thanh tra | 1 row / đoàn thanh tra | — |
-| Fact Inspection Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi — multi-source UNION 2 nhánh (qua Violation Case / qua Violation Record) | 1 row per đoàn thanh tra × biên bản × hành vi (`VIOLATION_RECORD_BEHAVIOR`) | K_TT_11–12 (Nhóm 3) |
+| Fact Inspection Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi — multi-source UNION 3 nhánh (qua Violation Case / qua Violation Record / Inspection Team không có hành vi ACTIVE — FK hành vi NULL, **[SỬA 2026-11-03]**) | 1 row per đoàn thanh tra × biên bản × hành vi ACTIVE (`VIOLATION_RECORD_BEHAVIOR`) + 1 row/đoàn thanh tra không có hành vi ACTIVE | K_TT_11–12 (Nhóm 3) |
 | Inspection Team Violation Behavior Dimension | Dimension | new | **[MỚI 2026-09-28]** Tên hành vi vi phạm chuẩn hoá | 1 row / `VIOLATION_RECORD_BEHAVIOR` | — |
 
 ---
@@ -43,7 +43,7 @@ erDiagram
 | Fact Examination Team Activity | Fact — Event | new | 1 vụ việc kiểm tra | 1 row per `EXAMINATION_TEAM` | K_TT_20–26 (Nhóm 6), K_TT_27–29 (Nhóm 7) |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 row / ngày | — |
 | Examination Team Dimension | Dimension | new | Thuộc tính mô tả vụ việc kiểm tra | 1 row / vụ việc kiểm tra | — |
-| Fact Examination Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi (KT) — multi-source UNION 2 nhánh (qua Violation Case / qua Violation Record) | 1 row per vụ việc kiểm tra × biên bản × hành vi (`VIOLATION_RECORD_BEHAVIOR`) | K_TT_30–31 (Nhóm 8) |
+| Fact Examination Team Violation Behavior | Fact — Event | new | **[MỚI 2026-09-28, bỏ sót từ O_TT_11]** Số vi phạm theo loại hành vi (KT) — multi-source UNION 3 nhánh (qua Violation Case / qua Violation Record / Examination Team không có hành vi ACTIVE — FK hành vi NULL, **[SỬA 2026-11-03]**) | 1 row per vụ việc kiểm tra × biên bản × hành vi ACTIVE (`VIOLATION_RECORD_BEHAVIOR`) + 1 row/vụ việc kiểm tra không có hành vi ACTIVE | K_TT_30–31 (Nhóm 8) |
 | Examination Team Violation Behavior Dimension | Dimension | new | **[MỚI 2026-09-28]** Tên hành vi vi phạm chuẩn hoá | 1 row / `VIOLATION_RECORD_BEHAVIOR` | — |
 
 ---
@@ -88,7 +88,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Inspection Case List | Tác nghiệp | new | Danh sách đoàn thanh tra × đối tượng — latest state. Không reuse `opr_securities_company_compliance_hist` (module QLKD, khác table_type/mục đích) | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) | Nhóm 5 (TT) |
+| Operational Inspection Case List | Tác nghiệp | new | Danh sách đoàn thanh tra × đối tượng — latest state. Không reuse `opr_securities_company_compliance_hist` (module QLKD, khác table_type/mục đích) | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) × hành vi vi phạm (**[SỬA 2026-11-03]**) | Nhóm 5 (TT) |
 
 ---
 
@@ -96,7 +96,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Examination Case List | Tác nghiệp | new | Danh sách vụ kiểm tra × đối tượng — latest state. Không reuse Operational Inspection Case List (khác nguồn Atomic) | 1 row per `EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET` (N:1) | Nhóm 10 (KT) |
+| Operational Examination Case List | Tác nghiệp | new | Danh sách vụ kiểm tra × đối tượng — latest state. Không reuse Operational Inspection Case List (khác nguồn Atomic) | 1 row per `EXAMINATION_TEAM` × `EXAMINATION_TEAM_TARGET` (N:1) × hành vi vi phạm (**[SỬA 2026-11-03]**) | Nhóm 10 (KT) |
 
 ---
 
@@ -158,7 +158,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Penalty Decision List | Tác nghiệp | new | Danh sách QĐ × đối tượng — latest state | 1 row per `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (N:1) | Nhóm 15 (XP) |
+| Operational Penalty Decision List | Tác nghiệp | new | Danh sách QĐ × đối tượng — latest state | 1 row per `PENALTY_DECISION` × `PENALTY_DECISION_SUBJECT` (N:1) × hành vi vi phạm (**[SỬA 2026-11-03]**) | Nhóm 15 (XP) |
 
 ---
 
@@ -215,7 +215,7 @@ erDiagram
 | Fact Penalty Decision | Fact — Event | partial | 1 QĐXP | `penalty_decision` | K_TT_81–85, K_TT_86–87 |
 | Fact Penalty Decision Subject Behavior | Fact — Event | partial | 1 QĐ × 1 đối tượng × 1 hành vi | `penalty_decision` / `penalty_decision_subject` / `pd_subject_behavior` / `violation_behavior` | K_TT_88–110, K_TT_136–150 |
 | Fact Penalty Decision Subject | Fact — Event | partial | 1 QĐ × 1 đối tượng | `penalty_decision` / `penalty_decision_subject` | K_TT_111–115 |
-| Operational Inspection Case List | Tác nghiệp | new | 1 đoàn × 1 đối tượng (latest) | `inspection_team` / `inspection_team_target` | Nhóm 5 |
-| Operational Examination Case List | Tác nghiệp | new | 1 vụ × 1 đối tượng (latest) | `examination_team` / `examination_team_target` | Nhóm 10 |
-| Operational Penalty Decision List | Tác nghiệp | new | 1 QĐ × 1 đối tượng (latest) | `penalty_decision` / `penalty_decision_subject` / `violation_case` | Nhóm 15 |
+| Operational Inspection Case List | Tác nghiệp | new | 1 đoàn × 1 đối tượng × 1 hành vi (latest) | `inspection_team` / `inspection_team_target` / `violation_behavior` | Nhóm 5 |
+| Operational Examination Case List | Tác nghiệp | new | 1 vụ × 1 đối tượng × 1 hành vi (latest) | `examination_team` / `examination_team_target` / `violation_behavior` | Nhóm 10 |
+| Operational Penalty Decision List | Tác nghiệp | new | 1 QĐ × 1 đối tượng × 1 hành vi (latest) | `penalty_decision` / `penalty_decision_subject` / `violation_case` / `violation_behavior` | Nhóm 15 |
 | Operational Petition List | Tác nghiệp | new | 1 đơn thư (latest) | `petition` | Nhóm 16–19, K_TT_121–131 |

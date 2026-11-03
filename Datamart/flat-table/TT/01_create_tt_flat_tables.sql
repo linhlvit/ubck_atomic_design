@@ -244,11 +244,12 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_inspection_case_list_flat ON CLUSTER 
     status_code                   Nullable(String)    COMMENT 'Trạng thái — ETL-derived từ Start_Date/End_Date',
     decision_dt                   Nullable(Date)      COMMENT 'Ngày ban hành quyết định thanh tra',
     decision_year                 Nullable(Int64)     COMMENT 'Năm ban hành quyết định — slicer',
+    violation_behavior_nm     String              COMMENT 'PK ghép — hành vi vi phạm; \'Không xác định\' khi không có tên hành vi (BA 2026-11-03)',
     src_stm_code                  String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
-ORDER BY (assumeNotNull(decision_dt), inspection_team_target_code)
+ORDER BY (assumeNotNull(decision_dt), inspection_team_target_code, violation_behavior_nm)
 COMMENT 'Flat table — Operational Inspection Case List'
 ;
 
@@ -266,11 +267,12 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_examination_case_list_flat ON CLUSTER
     status_code                    Nullable(String)    COMMENT 'Trạng thái — ETL-derived từ Start_Date/End_Date',
     decision_dt                    Nullable(Date)      COMMENT 'Ngày ban hành quyết định kiểm tra',
     decision_year                  Nullable(Int64)     COMMENT 'Năm ban hành quyết định — slicer',
+    violation_behavior_nm     String              COMMENT 'PK ghép — hành vi vi phạm; \'Không xác định\' khi không có tên hành vi (BA 2026-11-03)',
     src_stm_code                   String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
-ORDER BY (assumeNotNull(decision_dt), examination_team_target_code)
+ORDER BY (assumeNotNull(decision_dt), examination_team_target_code, violation_behavior_nm)
 COMMENT 'Flat table — Operational Examination Case List'
 ;
 
@@ -289,11 +291,12 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER
     issued_dt                  Nullable(Date)              COMMENT 'Ngày ban hành quyết định',
     issued_year                Nullable(Int64)             COMMENT 'Năm ban hành quyết định — slicer',
     total_fine_amt              Nullable(Decimal(23,2))     COMMENT 'Tổng mức phạt tiền đối với đối tượng này',
+    violation_behavior_nm     String              COMMENT 'PK ghép — hành vi vi phạm; \'Không xác định\' khi không có tên hành vi (BA 2026-11-03)',
     src_stm_code                String                      COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
-ORDER BY (assumeNotNull(issued_dt), pd_subject_code)
+ORDER BY (assumeNotNull(issued_dt), pd_subject_code, violation_behavior_nm)
 COMMENT 'Flat table — Operational Penalty Decision List'
 ;
 
@@ -327,13 +330,13 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_fl
     -- From: FACT Fact Inspection Team Violation Behavior
     decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định thanh tra — Calendar Date Dimension',
     inspection_team_dim_id                       String              COMMENT 'FK đoàn thanh tra',
-    inspection_team_violation_behavior_dim_id    String              COMMENT 'FK hành vi vi phạm — driving table',
+    inspection_team_violation_behavior_dim_id    Nullable(String)              COMMENT 'FK hành vi vi phạm — driving table; NULL = inspection team không có hành vi ACTIVE (Nguồn C)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định thanh tra (join qua Inspection Team) — từ Calendar Date Dimension',
 
     -- From: INSPECTION TEAM VIOLATION BEHAVIOR DIMENSION
-    violation_record_behavior_code                  String           COMMENT 'BK per-row unique — từ Inspection Team Violation Behavior Dimension',
+    violation_record_behavior_code                  Nullable(String)           COMMENT 'BK per-row unique — từ Inspection Team Violation Behavior Dimension',
     violation_behavior_nm                           Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Inspection Team Violation Behavior Dimension',
     inspection_team_violation_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Inspection Team Violation Behavior Dimension',
 
@@ -350,7 +353,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_inspection_team_violation_behavior_fl
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), violation_record_behavior_code)
+ORDER BY (assumeNotNull(cdr_dt), inspection_team_code, assumeNotNull(violation_record_behavior_code))
 COMMENT 'Flat table — Fact Inspection Team Violation Behavior × Calendar Date Dimension × Inspection Team Violation Behavior Dimension × Inspection Team Dimension'
 ;
 
@@ -362,13 +365,13 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_f
     -- From: FACT Fact Examination Team Violation Behavior
     decision_dt_dim_id                           String              COMMENT 'FK ngày quyết định kiểm tra — Calendar Date Dimension',
     examination_team_dim_id                      String              COMMENT 'FK vụ việc kiểm tra',
-    examination_team_violation_behavior_dim_id   String              COMMENT 'FK hành vi vi phạm — driving table',
+    examination_team_violation_behavior_dim_id   Nullable(String)              COMMENT 'FK hành vi vi phạm — driving table; NULL = examination team không có hành vi ACTIVE (Nguồn C)',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                          Nullable(Date)   COMMENT 'Ngày quyết định kiểm tra (join qua Examination Team) — từ Calendar Date Dimension',
 
     -- From: EXAMINATION TEAM VIOLATION BEHAVIOR DIMENSION
-    violation_record_behavior_code                  String           COMMENT 'BK per-row unique — từ Examination Team Violation Behavior Dimension',
+    violation_record_behavior_code                  Nullable(String)           COMMENT 'BK per-row unique — từ Examination Team Violation Behavior Dimension',
     violation_behavior_nm                           Nullable(String) COMMENT 'Tên hành vi vi phạm — từ Examination Team Violation Behavior Dimension',
     examination_team_violation_behavior_src_stm_code Nullable(String) COMMENT 'Mã hệ thống nguồn — từ Examination Team Violation Behavior Dimension',
 
@@ -385,6 +388,6 @@ CREATE TABLE IF NOT EXISTS datamart.tt_fct_examination_team_violation_behavior_f
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), violation_record_behavior_code)
+ORDER BY (assumeNotNull(cdr_dt), examination_team_code, assumeNotNull(violation_record_behavior_code))
 COMMENT 'Flat table — Fact Examination Team Violation Behavior × Calendar Date Dimension × Examination Team Violation Behavior Dimension × Examination Team Dimension'
 ;

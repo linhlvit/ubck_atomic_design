@@ -222,7 +222,7 @@ modules:
 
   TT:
     delimiter: ","
-    expect_columns: 25
+    expect_columns: 19
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["STT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: >-
@@ -236,6 +236,14 @@ modules:
       Trước khi tin lại bản ghi này ở phiên sau: đối chiếu `git log -- BRD/BA/BA_analyst_TT.csv`
       xem file có đổi tiếp không, đừng giả định "đã xác minh" mãi mãi (xem
       feedback_verify_ba_column_profile_live).
+      [CẬP NHẬT 2026-11-03, xác minh qua header sống: 170 bản ghi đều 26 cột, delimiter ',', dòng 0 là dòng nhóm cột, header dòng 1, legend dòng 2]
+      BA THÊM cột đầu 'Usecase' (index 0, giá trị VD 'Khai thác Dashboard') — mọi cột cũ dịch +1: STT index 1, Mã 2, Trạng thái mapping 14,
+      Bảng nguồn 16, Trường nguồn 17, Điều kiện 18, Câu lệnh tham khảo 19, Note 20, Loại dữ liệu 22. Parser tra theo TÊN nên chỉ đổi expect_columns.
+      [CẬP NHẬT 2026-11-03 18:46, xác minh qua header sống: 170 bản ghi đều 19 cột, không BOM, header dòng 1, legend dòng 2] ~7 phút sau lần trên BA đổi tiếp:
+      BỎ cột 'Usecase' và 6 cột cuối (Note, Hoàn thành DEV, Loại dữ liệu, Kết quả SIT (Round 1), Kết quả SIT (Round 2), Trạng thái bổ sung). Header thật còn
+      0 STT, 1 Mã, 2 Dashboard/báo cáo, 3 Thông tin, 4 Mô tả, 5 Nhóm yêu cầu, 6 Phân loại, 7 Đánh giá, 8 Độ chi tiết, 9 Nguồn, 10 Cần phân tích?, 11 Cần test?,
+      12 DL lịch sử?, 13 Trạng thái mapping, 14 Mapping (nghiệp vụ), 15 Bảng nguồn, 16 Trường nguồn, 17 Điều kiện, 18 Câu lệnh tham khảo. BA đang sửa trực tiếp —
+      kiểm lại mtime/số cột trước khi ghi thiết kế.
 
   VP:
     delimiter: ","

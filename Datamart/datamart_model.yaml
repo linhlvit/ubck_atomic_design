@@ -8913,10 +8913,11 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Danh sách đoàn thanh tra × đối tượng — latest state, phục vụ tra cứu Nhóm 5. Grain: 1 row per INSPECTION_TEAM × INSPECTION_TEAM_TARGET."
+    description: "Danh sách đoàn thanh tra × đối tượng — latest state, phục vụ tra cứu Nhóm 5. Grain: 1 row per INSPECTION_TEAM × INSPECTION_TEAM_TARGET × hành vi vi phạm (BA 2026-11-03; khóa ghép inspection_team_target_code + violation_behavior_nm)."
     source_atomic:
       - "inspection_team_target"
       - "inspection_team"
+      - "violation_behavior"
     modules_using:
       - "TT"
     columns:
@@ -8926,7 +8927,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã lượt đoàn×đối tượng, unique per dòng (per-row unique, PK nguồn VARCHAR2 UUID). ETL hàng ngày lọc theo Decision_Date của Inspection Team (xem dòng Form Type Code)"
+        description: "PK (ghép với violation_behavior_nm) — mã lượt đoàn×đối tượng, unique per lượt đối tượng (PK nguồn VARCHAR2 UUID); 1 lượt có thể có nhiều dòng theo hành vi. ETL hàng ngày lọc theo Decision_Date của Inspection Team (xem dòng Form Type Code)"
         source_atomic_table: "inspection_team_target"
         source_atomic_column: "inspection_team_target.inspection_team_target_code"
       - logical_name: "Inspection Team Code"
@@ -8992,6 +8993,15 @@ entities:
         description: "Năm ban hành quyết định — slicer Year=selected_year"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.decision_dt"
+      - logical_name: "Violation Behavior Name"
+        physical_name: "violation_behavior_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK (ghép với inspection_team_target_code) — Hành vi vi phạm: tên hành vi ACTIVE của đoàn (gộp 2 nguồn: biên bản trực tiếp / qua hồ sơ vụ việc), 'Không xác định' khi không có tên hành vi. Mỗi lượt đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03)"
+        source_atomic_table: "violation_behavior"
+        source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -9228,10 +9238,11 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Danh sách vụ kiểm tra × đối tượng — latest state, phục vụ tra cứu Nhóm 10. Grain: 1 row per EXAMINATION_TEAM × EXAMINATION_TEAM_TARGET."
+    description: "Danh sách vụ kiểm tra × đối tượng — latest state, phục vụ tra cứu Nhóm 10. Grain: 1 row per EXAMINATION_TEAM × EXAMINATION_TEAM_TARGET. [SỬA 2026-11-03] thêm chiều hành vi vi phạm: grain × hành vi, khóa ghép examination_team_target_code + violation_behavior_nm."
     source_atomic:
       - "examination_team_target"
       - "examination_team"
+      - "violation_behavior"
     modules_using:
       - "TT"
     columns:
@@ -9241,7 +9252,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã lượt vụ×đối tượng, unique per dòng (per-row unique, PK nguồn VARCHAR2 UUID). ETL hàng ngày lọc theo Decision_Date của Examination Team (xem dòng Examination Team Code)"
+        description: "PK (ghép với violation_behavior_nm) — mã lượt vụ×đối tượng, unique per lượt đối tượng (PK nguồn VARCHAR2 UUID); 1 lượt có thể có nhiều dòng theo hành vi. ETL hàng ngày lọc theo Decision_Date của Examination Team (xem dòng Examination Team Code)"
         source_atomic_table: "examination_team_target"
         source_atomic_column: "examination_team_target.examination_team_target_code"
       - logical_name: "Examination Team Code"
@@ -9307,6 +9318,15 @@ entities:
         description: "Năm ban hành quyết định — slicer Year=selected_year"
         source_atomic_table: "examination_team"
         source_atomic_column: "examination_team.decision_dt"
+      - logical_name: "Violation Behavior Name"
+        physical_name: "violation_behavior_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK (ghép với examination_team_target_code) — Hành vi vi phạm: tên hành vi ACTIVE của vụ kiểm tra (gộp 2 nguồn: biên bản trực tiếp / qua hồ sơ vụ việc), 'Không xác định' khi không có tên hành vi. Mỗi lượt đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03)"
+        source_atomic_table: "violation_behavior"
+        source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -9369,7 +9389,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Tên hành vi vi phạm ĐẠI DIỆN của QĐ (1 giá trị/QĐ) — ưu tiên nhánh chính (qua đối tượng bị xử phạt) trước nhánh phụ (qua biên bản vi phạm liên kết) trước khi gộp 'Khác'. Dùng GROUP BY/lọc cho Nhóm 13 (K_TT_46/47) và làm fallback trong ETL của fct_penalty_decision_subject_behavior.violation_behavior_group_nm (cột này dùng cho Nhóm 20)"
+        description: "Tên hành vi vi phạm ĐẠI DIỆN của QĐ (1 giá trị/QĐ) — ưu tiên nhánh chính (qua đối tượng bị xử phạt) trước nhánh phụ (qua biên bản vi phạm liên kết) trước khi gộp 'Không xác định' (BA 2026-11-03). Dùng GROUP BY/lọc cho Nhóm 13 (K_TT_46/47) và làm fallback trong ETL của fct_penalty_decision_subject_behavior.violation_behavior_group_nm (cột này dùng cho Nhóm 20)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
 
@@ -9600,7 +9620,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Tên nhóm hành vi theo từng dòng hành vi của QĐ — ưu tiên tên hành vi của dòng, fallback tên đại diện của QĐ (nhánh phụ/'Khác') khi dòng không có hành vi nhánh chính; QĐ có N hành vi được đếm ở N nhóm. Dùng để phân loại cho Nhóm 20 (K_TT_70–84); Nhóm 13 (K_TT_46/47) dùng penalty_decision_dim.violation_behavior_nm"
+        description: "Tên nhóm hành vi theo từng dòng hành vi của QĐ — ưu tiên tên hành vi của dòng, fallback tên đại diện của QĐ (nhánh phụ/'Không xác định') khi dòng không có hành vi nhánh chính; QĐ có N hành vi được đếm ở N nhóm. Dùng để phân loại cho Nhóm 20 (K_TT_70–84); Nhóm 13 (K_TT_46/47) dùng penalty_decision_dim.violation_behavior_nm"
         source_atomic_table: "penalty_decision_subject_behavior_dim"
         source_atomic_column: "penalty_decision_subject_behavior_dim.violation_behavior_nm"
       - logical_name: "Data Dt"
@@ -9671,13 +9691,14 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Danh sách QĐ × đối tượng — latest state, phục vụ tra cứu Nhóm 15. Grain: 1 row per PENALTY_DECISION × PENALTY_DECISION_SUBJECT."
+    description: "Danh sách QĐ × đối tượng — latest state, phục vụ tra cứu Nhóm 15. Grain: 1 row per PENALTY_DECISION × PENALTY_DECISION_SUBJECT. [SỬA 2026-11-03] thêm chiều hành vi vi phạm: grain × hành vi, khóa ghép pd_subject_code + violation_behavior_nm."
     source_atomic:
       - "pd_subject"
       - "penalty_decision"
       - "violation_case"
       - "inspection_team"
       - "examination_team"
+      - "violation_behavior"
     modules_using:
       - "TT"
     columns:
@@ -9687,7 +9708,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã lượt QĐ×đối tượng, unique per dòng (per-row unique, PK nguồn VARCHAR2 UUID). ETL hàng ngày lọc theo Issued_Date của Penalty Decision (xem dòng Violation Case Code)"
+        description: "PK (ghép với violation_behavior_nm) — mã lượt QĐ×đối tượng, unique per lượt đối tượng (PK nguồn VARCHAR2 UUID); 1 lượt có thể có nhiều dòng theo hành vi. ETL hàng ngày lọc theo Issued_Date của Penalty Decision (xem dòng Violation Case Code)"
         source_atomic_table: "pd_subject"
         source_atomic_column: "pd_subject.pd_subject_code"
       - logical_name: "Violation Case Code"
@@ -9714,7 +9735,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại đối tượng — map 1:1 từ nguồn (INDIVIDUAL/ORGANIZATION), không qua Classification Value"
+        description: "Phân loại đối tượng — map 1:1 từ nguồn (INDIVIDUAL/ORGANIZATION), không qua Classification Value — nhãn hiển thị Cá nhân/Tổ chức/'Không xác định' tại DM (BA 2026-11-03)"
         source_atomic_table: "pd_subject"
         source_atomic_column: "pd_subject.subject_tp_code"
       - logical_name: "Form Type Code"
@@ -9723,7 +9744,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "(Sửa 2026-08-08) Loại hình — ETL-derived: nếu Violation Case.Inspection_Team_Id NOT NULL lấy Inspection Team.Form_Type_Code; nếu Examination_Team_Id NOT NULL lấy Examination Team.Form_Type_Code; 'Khác' nếu hồ sơ không từ đoàn TT/KT (trước đây NULL)"
+        description: "(Sửa 2026-08-08) Loại hình — ETL-derived: nếu Violation Case.Inspection_Team_Id NOT NULL lấy Inspection Team.Form_Type_Code; nếu Examination_Team_Id NOT NULL lấy Examination Team.Form_Type_Code; 'Không xác định' nếu hồ sơ không từ đoàn TT/KT (trước đây NULL)"
         source_atomic_table: "inspection_team / examination_team"
         source_atomic_column: "inspection_team / examination_team.form_tp_code / form_tp_code"
       - logical_name: "Life Cycle Status Code"
@@ -9762,6 +9783,15 @@ entities:
         description: "Tổng mức phạt tiền đối với đối tượng này"
         source_atomic_table: "pd_subject"
         source_atomic_column: "pd_subject.total_fine_amt"
+      - logical_name: "Violation Behavior Name"
+        physical_name: "violation_behavior_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK (ghép với pd_subject_code) — Hành vi vi phạm: ưu tiên hành vi của đối tượng bị xử phạt, fallback hành vi của biên bản vi phạm liên kết QĐ, 'Không xác định' khi không có (cùng quy tắc violation_behavior_group_nm ở Fact Nhóm 13, mức dòng). Mỗi lượt QĐ × đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03)"
+        source_atomic_table: "violation_behavior"
+        source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -15992,7 +16022,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI lọc IS NOT NULL (BA 2026-10-01 AND NAME IS NOT NULL, thay COALESCE Khác)"
+        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI dùng COALESCE(…, 'Không xác định') cho đoàn không có hành vi (BA 2026-11-03 bỏ AND NAME IS NOT NULL)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
@@ -16012,7 +16042,7 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Event 1 đoàn thanh tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter INSPECTION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1e."
+    description: "Event 1 đoàn thanh tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter INSPECTION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1e. [SỬA 2026-11-03] thêm Nguồn C: đoàn không có hành vi ACTIVE → 1 dòng FK hành vi NULL (nhãn 'Không xác định')."
     source_atomic:
       - "violation_record"
       - "violation_record_x_violation_behavior_relationship"
@@ -16028,7 +16058,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Calendar Date Dimension. Date key: Decision Date (Nguồn B — join qua Violation Case → Inspection Team, không qua Violation Record)"
+        description: "FK → Calendar Date Dimension. Date key: Decision Date (Nguồn C — inspection team không có hành vi ACTIVE, lấy trực tiếp từ Inspection Team)"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.decision_dt"
       - logical_name: "Inspection Team Dimension Id"
@@ -16037,18 +16067,18 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Inspection Team Dimension (Nhóm 1) — Nguồn B: lookup qua Violation Case.Inspection_Team_Code, không qua Violation Record (Violation Record ở nhánh này không có Inspection_Team_Id trực tiếp)"
+        description: "FK → Inspection Team Dimension — Nguồn C: lookup trực tiếp theo Inspection Team Code (không qua Violation Record/Violation Case)"
         source_atomic_table: "inspection_team_dim"
         source_atomic_column: "inspection_team_dim.inspection_team_dim_id"
       - logical_name: "Inspection Team Violation Behavior Dimension Id"
         physical_name: "inspection_team_violation_behavior_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
-        description: "FK → Inspection Team Violation Behavior Dimension. Dedupe key khi UNION với Nguồn A — ETL phải loại trùng theo giá trị này trước khi insert, tránh đếm 2 lần khi cùng 1 hành vi vi phạm xuất hiện ở cả Nguồn A và Nguồn B"
-        source_atomic_table: "inspection_team_violation_behavior_dim"
-        source_atomic_column: "inspection_team_violation_behavior_dim.inspection_team_violation_behavior_dim_id"
+        description: "FK → Inspection Team Violation Behavior Dimension — LUÔN NULL ở Nguồn C: inspection team không có hành vi ACTIVE nào qua Nguồn A/B (đếm vào nhãn 'Không xác định', khớp BA: NAME NULL → 'Không xác định')"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Data Dt"
         physical_name: "data_dt"
         data_domain: "Text"
@@ -16097,7 +16127,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI lọc IS NOT NULL (BA 2026-10-01 AND NAME IS NOT NULL, thay COALESCE Khác)"
+        description: "Tên hành vi vi phạm — NULL nếu hành vi không ACTIVE/không có; KPI dùng COALESCE(…, 'Không xác định') cho đoàn không có hành vi (BA 2026-11-03 bỏ AND NAME IS NOT NULL)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
@@ -16117,7 +16147,7 @@ entities:
     module: "TT"
     status: "draft"
     reuse_status: "new"
-    description: "Event 1 vụ kiểm tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter EXAMINATION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1f."
+    description: "Event 1 vụ kiểm tra × 1 biên bản × 1 hành vi — tách riêng để tránh fanout. Grain: 1 row per VIOLATION_RECORD × VIOLATION_RECORD_BEHAVIOR, filter EXAMINATION_TEAM_ID IS NOT NULL (Nguồn A) hoặc lookup qua VIOLATION_CASE (Nguồn B) — 2 nguồn UNION+dedupe, xem HLD Cụm 1f. [SỬA 2026-11-03] thêm Nguồn C: cuộc kiểm tra không có hành vi ACTIVE → 1 dòng FK hành vi NULL (nhãn 'Không xác định')."
     source_atomic:
       - "violation_record"
       - "violation_record_x_violation_behavior_relationship"
@@ -16133,7 +16163,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Calendar Date Dimension. Date key: Decision Date (Nguồn B — join qua Violation Case → Examination Team, không qua Violation Record)"
+        description: "FK → Calendar Date Dimension. Date key: Decision Date (Nguồn C — examination team không có hành vi ACTIVE, lấy trực tiếp từ Examination Team)"
         source_atomic_table: "examination_team"
         source_atomic_column: "examination_team.decision_dt"
       - logical_name: "Examination Team Dimension Id"
@@ -16142,18 +16172,18 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK → Examination Team Dimension (Nhóm 6) — Nguồn B: lookup qua Violation Case.Examination_Team_Code, không qua Violation Record (Violation Record ở nhánh này không có Examination_Team_Id trực tiếp)"
+        description: "FK → Examination Team Dimension — Nguồn C: lookup trực tiếp theo Examination Team Code (không qua Violation Record/Violation Case)"
         source_atomic_table: "examination_team_dim"
         source_atomic_column: "examination_team_dim.examination_team_dim_id"
       - logical_name: "Examination Team Violation Behavior Dimension Id"
         physical_name: "examination_team_violation_behavior_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
-        description: "FK → Examination Team Violation Behavior Dimension. Dedupe key khi UNION với Nguồn A — ETL phải loại trùng theo giá trị này trước khi insert, tránh đếm 2 lần khi cùng 1 hành vi vi phạm xuất hiện ở cả Nguồn A và Nguồn B"
-        source_atomic_table: "examination_team_violation_behavior_dim"
-        source_atomic_column: "examination_team_violation_behavior_dim.examination_team_violation_behavior_dim_id"
+        description: "FK → Examination Team Violation Behavior Dimension — LUÔN NULL ở Nguồn C: examination team không có hành vi ACTIVE nào qua Nguồn A/B (đếm vào nhãn 'Không xác định', khớp BA: NAME NULL → 'Không xác định')"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Data Dt"
         physical_name: "data_dt"
         data_domain: "Text"
