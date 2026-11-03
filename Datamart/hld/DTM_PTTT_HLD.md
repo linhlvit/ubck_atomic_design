@@ -774,6 +774,7 @@ erDiagram
     }
     Calendar_Date_Dimension ||--o{ Fact_Market_Risk_Snapshot : "Snapshot_Date_Dimension_Id"
     Fact_Macro_Indicator_Snapshot {
+        string Macro_Indicator_Value_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Macro_Indicator_Code
         string Macro_Indicator_Name
@@ -807,7 +808,7 @@ flowchart LR
 |---|---|
 | Fact Market Risk Snapshot | 1 row / ngày (SCD4A current state) |
 | Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
-| Fact Macro Indicator Snapshot | 1 row / chỉ tiêu vĩ mô / kỳ công bố |
+| Fact Macro Indicator Snapshot | 1 row / chỉ tiêu vĩ mô / kỳ công bố (PK macro_indicator_val_id = id dòng Atomic cl_risk_indicator_value, A22) |
 
 ---
 
@@ -3512,7 +3513,7 @@ flowchart LR
 | Fact Market Statistics Snapshot | 1 row / chỉ số / ngày |
 | Fact Sector Risk Snapshot | 1 row / ngành / ngày |
 | Fact Cap Group Snapshot | 1 row / nhóm vốn hóa / ngày |
-| Fact Macro Indicator Snapshot | 1 row / indicator_code / kỳ báo cáo |
+| Fact Macro Indicator Snapshot | 1 row / chỉ tiêu vĩ mô / kỳ công bố (PK macro_indicator_val_id = id dòng Atomic cl_risk_indicator_value, A22) |
 | Sector Dimension | 1 row / ngành + 1 dòng UNCLASSIFIED |
 | Calendar Date Dimension | 1 row / ngày (SCD4A current state) |
 
