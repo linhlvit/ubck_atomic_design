@@ -146,7 +146,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_fund_list_fl
     fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ sở hữu quỹ (FUNDS.SEC_ID theo Atomic, có thể ≠ SECURITIES.CODE của Profile) — không dùng làm khóa lọc, dùng fmc_id (O_QLQ_68)',
     investment_fund_full_nm          Nullable(String)        COMMENT 'Tên hiển thị chính của quỹ',
     fund_tp_code                     Nullable(String)        COMMENT 'Loại hình quỹ — mã (join Fund Type Dimension.fund_type_code lấy tên)',
-    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị tài sản ròng (NAV) của quỹ theo báo cáo kỳ mới nhất',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -173,8 +172,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_profile_flat ON CLUS
     manager_count                    Nullable(Int64)         COMMENT 'Số lượng người điều hành quỹ',
     outstanding_unit_quantity        Nullable(Int64)         COMMENT 'Số lượng CCQ đang lưu hành',
     distribution_agent_count         Nullable(Int64)         COMMENT 'Số lượng đại lý phân phối của quỹ (loại đại lý phân phối)',
-    net_asset_val_amt                Nullable(Decimal(23,2)) COMMENT 'Giá trị tài sản ròng (NAV) hiện tại của quỹ theo báo cáo kỳ mới nhất',
-    year_to_dt_profit_amt            Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận lũy kế từ đầu năm của quỹ (BCKQHĐKD mã 50 hoặc BCThuNhap mã 41, cột lũy kế từ đầu năm đến cuối kỳ báo cáo)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -234,24 +231,11 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat
     securities_distribution_agent_full_nm Nullable(String)    COMMENT 'Tên hiển thị chính của ĐLPP',
     license_nbr                      Nullable(String)        COMMENT 'Số giấy phép thành lập',
     license_dt                       Nullable(Date)           COMMENT 'Ngày cấp giấy phép thành lập',
+    distribution_cert_dt             Nullable(Date)           COMMENT 'Ngày cấp giấy chứng nhận đăng ký hoạt động phân phối CCQ (ip_alternative_identification) — dùng để lọc danh sách ĐLPP theo kỳ, O_QLQ_72',
     address                          Nullable(String)        COMMENT 'Địa chỉ trụ sở chính',
     active_status_flag               Nullable(Int64)         COMMENT 'Trạng thái hoạt động (1=Đang hoạt động, 0=Ngừng hoạt động)',
     termination_dt                   Nullable(Date)           COMMENT 'Ngày chấm dứt hoạt động',
     distributing_fund_count          Nullable(Int64)         COMMENT 'Số quỹ đang phân phối của ĐLPP — đếm quỹ chưa xóa trong FUD_AG_AGT có AGEN_ID = DISTRIBUTOR_AGENT.ID như SQL BA (BA 2026-10-26: DISTRIBUTOR_AGENT → FUD_AG_AGT → FUNDS, thay nối theo tên qua AGENCIES/AGEN_FUNDS); nối theo mã nguồn vì khóa đại lý của FUD_AG_AGT trên Atomic băm theo AGENCIES (O_QLQ_21)',
-    trading_account_count            Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở trong kỳ',
-    trading_account_year_to_dt_count Nullable(Int64)         COMMENT 'Số lượng tài khoản giao dịch chứng chỉ quỹ đã mở lũy kế từ đầu năm',
-    institution_trading_account_count Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư tổ chức trong nước',
-    individual_trading_account_count Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư cá nhân trong nước',
-    foreign_trading_account_count    Nullable(Int64)         COMMENT 'Số tài khoản giao dịch CCQ của nhà đầu tư nước ngoài',
-    institution_holding_account_count Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư tổ chức trong nước',
-    individual_holding_account_count Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư cá nhân trong nước',
-    foreign_holding_account_count    Nullable(Int64)         COMMENT 'Số tài khoản nắm giữ CCQ cuối kỳ của nhà đầu tư nước ngoài',
-    institution_fund_certificate_amt Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư tổ chức trong nước',
-    individual_fund_certificate_amt  Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư cá nhân trong nước',
-    foreign_fund_certificate_amt     Nullable(Decimal(23,2)) COMMENT 'Giá trị CCQ nắm giữ bởi nhà đầu tư nước ngoài',
-    issued_amt                       Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ phát hành trong kỳ (cộng các dòng con 5.1–5.3)',
-    issued_year_to_dt_amt            Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ phát hành lũy kế từ đầu năm (cộng các dòng con 5.1–5.3)',
-    redeemed_amt                     Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị CCQ mua lại trong kỳ (cộng các dòng con 6.1–6.3)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -292,11 +276,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization
     foreign_fund_management_organization_unit_full_nm Nullable(String) COMMENT 'Tên hiển thị chính của CN',
     foreign_fund_management_organization_unit_short_nm Nullable(String) COMMENT 'Tên viết tắt của CN',
     director_full_nm                 Nullable(String)        COMMENT 'Tên Giám đốc chi nhánh',
-    certified_practitioner_staff_count Nullable(Int64)         COMMENT 'Số lượng nhân viên có chứng chỉ hành nghề/chứng chỉ quốc tế của chi nhánh (báo cáo kỳ mới nhất)',
-    capital_adequacy_ratio           Nullable(Decimal(9,2))  COMMENT 'Tỷ lệ an toàn tài chính (tỷ lệ vốn khả dụng) của chi nhánh (báo cáo kỳ mới nhất)',
-    net_profit_after_tax_amt         Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế TNDN theo báo cáo tài chính gần nhất của chi nhánh',
-    owner_equity_amt                 Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu theo báo cáo tài chính gần nhất của chi nhánh',
-    portfolio_management_contract_count Nullable(Int64)         COMMENT 'Số lượng hợp đồng ủy thác quản lý danh mục của chi nhánh (báo cáo kỳ mới nhất)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()

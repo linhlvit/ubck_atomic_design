@@ -56,7 +56,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Fund List | Operational | new | Bảng con drill-down danh sách quỹ theo CTQLQ | 1 quỹ (PK `investment_fund_code`, thuộc 1 CTQLQ — lọc `fmc_id` khi drill-down từ Nhóm 3, O_QLQ_68) | K_QLQ_33,34,35 |
+| Fund Management Company Fund List | Operational | new | Bảng con drill-down danh sách quỹ theo CTQLQ | 1 quỹ (PK `investment_fund_code`, thuộc 1 CTQLQ — lọc `fmc_id` khi drill-down từ Nhóm 3, O_QLQ_68); NAV đọc Fact RPT Cụm 17 theo tháng slicer (O_QLQ_72) | K_QLQ_33-35 |
 
 ---
 
@@ -137,7 +137,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Investment Fund Profile | Operational | partial | Hồ sơ quỹ đầu tư | 1 quỹ × 1 tháng slicer | K_QLQ_92-99,101 |
+| Investment Fund Profile | Operational | partial | Hồ sơ quỹ đầu tư | Tác nghiệp Active-only — 1 quỹ (hiện trạng; NAV và LN YTD đọc Fact RPT Cụm 17 theo tháng slicer, O_QLQ_72) | K_QLQ_92-102 |
 
 ---
 
@@ -190,7 +190,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Distribution Agent Profile | Operational | new | Hồ sơ ĐLPP (nguồn FMS.DISTRIBUTOR_AGENT) | 1 ĐLPP × 1 tháng slicer | K_QLQ_137-143 |
+| Fund Distribution Agent Profile | Operational | new | Hồ sơ ĐLPP (nguồn FMS.DISTRIBUTOR_AGENT) | Tác nghiệp Active-only — 1 ĐLPP (lọc theo ngày cấp GCN `distribution_cert_dt` ≤ ngày chọn; 15 chỉ tiêu RPT đọc Fact RPT Cụm 17, O_QLQ_72) | K_QLQ_137-158 |
 
 ---
 
@@ -223,7 +223,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Fund Management Organization Unit Profile | Operational | partial | Hồ sơ CN CTQLQ nước ngoài | 1 CN × 1 tháng slicer | K_QLQ_171,172,173 |
+| Foreign Fund Management Organization Unit Profile | Operational | partial | Hồ sơ CN CTQLQ nước ngoài | Tác nghiệp Active-only — 1 CN (hiện trạng; 5 chỉ tiêu RPT đọc Fact RPT Cụm 17 theo tháng slicer, O_QLQ_72) | K_QLQ_171-178 |
 | Foreign Fund Management Organization Unit Staff Dimension | Dimension | new | Nhân viên CN CTQLQ nước ngoài (Giám đốc CN) | 1 nhân viên (current state) | — |
 
 ---

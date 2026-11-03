@@ -118,7 +118,6 @@ SELECT
     o.fmc_code,
     o.investment_fund_full_nm,
     o.fund_tp_code,
-    o.net_asset_val_amt,
     o.src_stm_code
 FROM datamart.opr_fund_management_company_fund_list o
 ;
@@ -140,8 +139,6 @@ SELECT
     o.manager_count,
     o.outstanding_unit_quantity,
     o.distribution_agent_count,
-    o.net_asset_val_amt,
-    o.year_to_dt_profit_amt,
     o.src_stm_code
 FROM datamart.opr_investment_fund_profile o
 ;
@@ -186,24 +183,11 @@ SELECT
     o.securities_distribution_agent_full_nm,
     o.license_nbr,
     o.license_dt,
+    o.distribution_cert_dt,
     o.address,
     o.active_status_flag,
     o.termination_dt,
     o.distributing_fund_count,
-    o.trading_account_count,
-    o.trading_account_year_to_dt_count,
-    o.institution_trading_account_count,
-    o.individual_trading_account_count,
-    o.foreign_trading_account_count,
-    o.institution_holding_account_count,
-    o.individual_holding_account_count,
-    o.foreign_holding_account_count,
-    o.institution_fund_certificate_amt,
-    o.individual_fund_certificate_amt,
-    o.foreign_fund_certificate_amt,
-    o.issued_amt,
-    o.issued_year_to_dt_amt,
-    o.redeemed_amt,
     o.src_stm_code
 FROM datamart.opr_fund_distribution_agent_profile o
 ;
@@ -234,11 +218,6 @@ SELECT
     o.foreign_fund_management_organization_unit_full_nm,
     o.foreign_fund_management_organization_unit_short_nm,
     o.director_full_nm,
-    o.certified_practitioner_staff_count,
-    o.capital_adequacy_ratio,
-    o.net_profit_after_tax_amt,
-    o.owner_equity_amt,
-    o.portfolio_management_contract_count,
     o.src_stm_code
 FROM datamart.opr_foreign_fund_management_organization_unit_profile o
 ;
@@ -300,11 +279,10 @@ FROM datamart.opr_fund_management_company_contract_list o
 
 -- ============================================================
 -- 17. FACT: qlq_fct_fund_management_rpt_cell_val_flat
---    Nạp tăng dần theo ngày nộp: bản nộp có submitted_dt = ngày chạy ETL (khớp cách nạp Fact ở Gold — O_QLQ_34).
+--    Nạp toàn bộ bản nộp hợp lệ: không lọc theo ngày chạy ETL (O_QLQ_72).
 --    Không lọc theo ngày cuối kỳ báo cáo: KPI cần nhiều kỳ và nhiều bản nộp trong cùng bảng (O_QLQ_32).
 -- ============================================================
-DELETE FROM datamart.qlq_fct_fund_management_rpt_cell_val_flat ON CLUSTER 'my_cluster'
-WHERE submitted_dt = :etl_date;
+TRUNCATE TABLE IF EXISTS datamart.qlq_fct_fund_management_rpt_cell_val_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlq_fct_fund_management_rpt_cell_val_flat
 SELECT
     f.rpt_period_end_dt_dim_id,
@@ -363,7 +341,6 @@ LEFT JOIN datamart.fund_management_rpt_cell_dim cell_dim
     ON cell_dim.fund_management_rpt_cell_id = f.fund_management_rpt_cell_id AND cell_dim.ds_rcrd_st = 'ACTIVE'
 LEFT JOIN datamart.fund_type_dim fund_type_dim
     ON fund_type_dim.fund_type_id = f.fund_type_id AND fund_type_dim.ds_rcrd_st = 'ACTIVE'
-WHERE f.submitted_dt = :etl_date
 ;
 
 
