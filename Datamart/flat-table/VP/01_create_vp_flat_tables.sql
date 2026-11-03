@@ -9,7 +9,7 @@
 --   4. vp_fct_private_corporate_bond_trading_snpst_flat (Nhóm 9, 11, 12, 13)
 --   5. vp_fct_government_bond_trading_snpst_flat (Nhóm 14, 15, 16)
 --   6. vp_fct_private_corporate_bond_registration_snpst_flat (Nhóm 11)
--- Ghi chú: Fact Market Index Snapshot (reuse QLKD) dùng bảng flat của QLKD; lịch ngày dùng datamart.cdr_dt_flat (Datamart/flat-table/Common).
+-- Ghi chú: Fact Market Index Snapshot (reuse QLKD) dùng bảng flat của QLKD; Fact Macro Indicator Snapshot (reuse PTTT) dùng bảng flat datamart.pttt_fct_macro_indicator_snpst_flat của PTTT; lịch ngày dùng datamart.cdr_dt_flat (Datamart/flat-table/Common).
 --   Lô 1 (Nhóm 7-10, 2026-10-25): thêm 2 flat TPDN; Industry Dimension (GSDC) chỉ denormalize industry_code, industry_nm vào flat Fact TPDN niêm yết.
 --   Lô 2 (Nhóm 11-16, 2026-10-25): thêm 2 flat — TPCP (Bond Order Book HNX, OUTRIGHT/REPO) và TPDN riêng lẻ đăng ký giao dịch (báo cáo tháng HNX); flat TPDN riêng lẻ HNX09 của Lô 1 dùng thêm cho Nhóm 11-13 (không đổi cột).
 -- Thiết kế lại VP 2026-10-25: bỏ 2 flat cũ vp_fact_otc_bond_snapshot_flat, vp_fact_share_auction_snapshot_flat (DEPRECATED, HLD Section 4).

@@ -278,7 +278,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (mốc ngày giao dịch cuối kỳ, kỳ trước, cuối năm trước) | 1 ngày dương lịch | K_VP_1 |
 | Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 55 | 1 mã × 1 ngày giao dịch | K_VP_239–254 |
-| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu) — mẫu số tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố | K_VP_243–245 |
+| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; bổ sung PK macro_indicator_val_id và cột unit_tp_code, O_VP_41 phương án A) — mẫu số tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_243–245 |
 
 ## Nhóm 32 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
 
@@ -511,7 +511,7 @@ erDiagram
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — lọc chứng quyền, HĐTL VN30, cổ phiếu/CCQ | 1 mã | K_VP_176–180, 186–207 |
 | Fact Market Index Snapshot | Fact Snapshot | reuse | Điểm chỉ số cuối ngày (QLKD sở hữu) — VN-Index (HOSE), HNX-Index (HNX) | 1 chỉ số × 1 ngày giao dịch | K_VP_166–171 |
 | Fact Listed Equity Snapshot | Fact Snapshot | new | Vốn hóa, khối lượng lưu hành và quy mô niêm yết của cổ phiếu/chứng chỉ quỹ cuối ngày trên HOSE, HNX, UPCoM — dùng cho Nhóm 55 (báo cáo TTCK bất thường: vốn hóa, số mã/giá trị niêm yết); grain 1 mã × 1 ngày giao dịch (PK listed_equity_snpst_id = hash cột grain); UPCoM tính vốn hóa theo VWAP ngày T lấy ở bản tin T+1 | 1 mã × 1 ngày giao dịch (PK hash cột grain) | K_VP_172–173, 181–185 |
-| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; thêm cột Unit Type Code 2026-10-28, O_VP_41) | 1 chỉ tiêu × 1 kỳ công bố | K_VP_174–175, 185 |
+| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; bổ sung PK macro_indicator_val_id và cột Unit Type Code, O_VP_41 phương án A) | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_174–175, 185 |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | reuse | GTGD/KLGD nhóm ALL cổ phiếu-CCQ, chứng quyền, HĐTL VN30; GT NĐTNN (FOREIGN) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT | K_VP_176–180, 186–190, 194–205 |
 | Fact Derivative Contract Snapshot | Fact Snapshot | reuse | OI HĐTL VN30 (VSDC) | 1 mã hợp đồng × 1 ngày | K_VP_191–193 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | GT NĐTNN mua/bán TPCP; GTGD bình quân TPCP (Outright + Repo) | 1 ngày × 1 loại sổ lệnh | K_VP_206–207, 260–264 |

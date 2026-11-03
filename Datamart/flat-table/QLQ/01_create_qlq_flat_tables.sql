@@ -350,6 +350,7 @@ COMMENT 'Flat table — Operational Investment Fund Distribution Agent List'
 -- 16. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
 --    Operational Fund Management Company Contract List
 --    Grain: 1 hợp đồng UTDM (dòng động) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo
+--    Khai thác ClickHouse (K_QLQ_36–38, O_QLQ_33/O_QLQ_68): bảng giữ mọi kỳ nên trên môi trường có cột partition loader ds_snpst_dt luôn đọc max(ds_snpst_dt) (không chặn theo tháng chọn vì báo cáo tháng M nộp đầu tháng M+1); lọc kỳ bằng period_tp_code = '3', rpt_year, period_val; khử trùng part chưa merge bằng LIMIT 1 BY fmr_submission_code, dynamic_row_nbr
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster'
 (
