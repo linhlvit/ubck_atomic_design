@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 13 bảng: 6 FACT + 7 operational EAV/danh sách. `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
+-- 14 bảng: 6 FACT + 8 operational EAV/danh sách. `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
 -- Operational: KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác; FACT: JOIN dim theo thiết kế
 -- ============================================================
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_ttlk10_cw_outstanding_rpt_flat ON CLUST
     report_period_dt        Date                     COMMENT 'BK — kỳ báo cáo',
     listed_cw_code          String                   COMMENT 'PK — mã chứng quyền niêm yết, khóa nghiệp vụ danh sách (không dùng item_code vì đây là bảng danh sách, không phải EAV)',
     covered_warrant_nm      String                   COMMENT 'Tên chứng quyền',
-    outstanding_quantity    Nullable(Int64)          COMMENT 'Khối lượng chứng quyền đang lưu hành (KL cho phép phát hành trừ KL đã phân phối)',
+    outstanding_quantity    Nullable(Int64)          COMMENT 'Khối lượng chứng quyền đang lưu hành = Σ outstanding_shares (VSDC) theo mã CW và tháng báo cáo — theo SQL BA TTLK10',
     src_stm_code            String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -152,14 +152,14 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTE
     -- From: FACT Fact Market Trading Snapshot
     snpst_dt_dim_id         String      COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
     index_constituent_dim_id String     COMMENT '[SỬA 2026-09-23] FK tới Index Constituent Dimension — Loại chỉ số K_TKNB_1013 (grain Trade Date × Index Code)',
-    total_trading_val       Decimal(23,2) COMMENT 'Tổng giá trị giao dịch cổ phiếu toàn thị trường (cộng gộp HOSE+HNX+UPCoM) trong ngày',
-    total_trading_vol       Int64       COMMENT 'Tổng khối lượng giao dịch cổ phiếu toàn thị trường trong ngày',
-    matched_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch khớp lệnh toàn thị trường trong ngày',
-    matched_trading_vol     Int64       COMMENT 'Khối lượng giao dịch khớp lệnh toàn thị trường trong ngày',
-    negotiated_trading_val  Decimal(23,2) COMMENT 'Giá trị giao dịch thỏa thuận toàn thị trường trong ngày',
-    negotiated_trading_vol  Int64       COMMENT 'Khối lượng giao dịch thỏa thuận toàn thị trường trong ngày',
-    odd_lot_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch lô lẻ toàn thị trường trong ngày',
-    odd_lot_trading_vol     Int64       COMMENT 'Khối lượng giao dịch lô lẻ toàn thị trường trong ngày',
+    total_trading_val       Decimal(23,2) COMMENT 'Tổng giá trị giao dịch cổ phiếu của các mã thuộc chỉ số (Index Code) trong ngày — BA BM030a 27/10',
+    total_trading_vol       Int64       COMMENT 'Tổng khối lượng giao dịch cổ phiếu của các mã thuộc chỉ số (Index Code) trong ngày',
+    matched_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch khớp lệnh (board G1,G2,G3,G7,G8) của các mã thuộc chỉ số trong ngày',
+    matched_trading_vol     Int64       COMMENT 'Khối lượng giao dịch khớp lệnh (board G1,G2,G3,G7,G8) của các mã thuộc chỉ số trong ngày',
+    negotiated_trading_val  Decimal(23,2) COMMENT 'Giá trị giao dịch thỏa thuận (board T1,T2,T3,R1) của các mã thuộc chỉ số trong ngày',
+    negotiated_trading_vol  Int64       COMMENT 'Khối lượng giao dịch thỏa thuận (board T1,T2,T3,R1) của các mã thuộc chỉ số trong ngày',
+    odd_lot_trading_val     Decimal(23,2) COMMENT 'Giá trị giao dịch lô lẻ (board G4,T4,T6) của các mã thuộc chỉ số trong ngày',
+    odd_lot_trading_vol     Int64       COMMENT 'Khối lượng giao dịch lô lẻ (board G4,T4,T6) của các mã thuộc chỉ số trong ngày',
     market_index_val        Nullable(Decimal(23,2)) COMMENT '[SỬA 2026-09-23] Giá trị chỉ số — bản ghi cuối ngày (K_TKNB_1014)',
     src_stm_code            String      COMMENT 'Mã hệ thống nguồn dữ liệu',
 
@@ -452,4 +452,41 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id)
 COMMENT 'Flat table — Fact Derivatives Security Detail Snapshot × Calendar Date × Security Trading Snapshot Dimension'
+;
+
+
+-- ============================================================
+-- 25. OPERATIONAL: ttlk01_account_open_close_rpt
+--    Custody Account Open Close Report (TTLK01)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.tknb_ttlk01_account_open_close_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPERATIONAL Custody Account Open Close Report (TTLK01)
+    report_code                               String             COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
+    report_period_dt                          Date               COMMENT 'BK — kỳ báo cáo (tháng) = ngày cuối tháng của tháng báo cáo (nguồn lưu dạng MM/yyyy).',
+    depository_member_nm                      String             COMMENT 'PK — Thành viên lưu ký (TVLK) nộp báo cáo, lấy từ cột `TVLK` của biểu mẫu TTLK01; mỗi TVLK là 1 dòng trong kỳ báo cáo.',
+    row_nbr                                   Int32              COMMENT 'Số thứ tự dòng (STT) của TVLK trong biểu mẫu TTLK01.',
+    opening_domestic_individual_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước cá nhân`).',
+    opening_domestic_institution_account_qty  Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước tổ chức`).',
+    opening_foreign_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài cá nhân`).',
+    opening_foreign_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài tổ chức`).',
+    opened_domestic_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Trong nước cá nhân`).',
+    opened_domestic_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Trong nước tổ chức`).',
+    opened_foreign_individual_account_qty     Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài cá nhân`).',
+    opened_foreign_institution_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài tổ chức`).',
+    closed_domestic_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Trong nước cá nhân`).',
+    closed_domestic_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Trong nước tổ chức`).',
+    closed_foreign_individual_account_qty     Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài cá nhân`).',
+    closed_foreign_institution_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài tổ chức`).',
+    closing_domestic_individual_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng cuối kỳ Trong nước cá nhân`).',
+    closing_domestic_institution_account_qty  Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng cuối kỳ Trong nước tổ chức`).',
+    closing_foreign_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng cuối kỳ Nước ngoài cá nhân`).',
+    closing_foreign_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng cuối kỳ Nước ngoài tổ chức`).',
+    total_account_qty                         Nullable(Int32)    COMMENT 'Tổng cộng số lượng tài khoản lưu ký của TVLK theo cột `Tổng cộng` của biểu mẫu (đọc nguyên giá trị nguồn, không tự cộng).',
+    src_stm_code                              String             COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(report_period_dt)
+ORDER BY (report_code, report_period_dt, depository_member_nm)
+COMMENT 'Flat table — Custody Account Open Close Report (TTLK01)'
 ;

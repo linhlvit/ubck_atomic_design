@@ -431,3 +431,35 @@ LEFT JOIN datamart.security_trading_snpst_dim sd
     ON sd.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
 ;
+
+
+-- ============================================================
+-- 25. OPERATIONAL: ttlk01_account_open_close_rpt
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.tknb_ttlk01_account_open_close_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_ttlk01_account_open_close_rpt_flat
+SELECT
+    o.report_code,
+    o.report_period_dt,
+    o.depository_member_nm,
+    o.row_nbr,
+    o.opening_domestic_individual_account_qty,
+    o.opening_domestic_institution_account_qty,
+    o.opening_foreign_individual_account_qty,
+    o.opening_foreign_institution_account_qty,
+    o.opened_domestic_individual_account_qty,
+    o.opened_domestic_institution_account_qty,
+    o.opened_foreign_individual_account_qty,
+    o.opened_foreign_institution_account_qty,
+    o.closed_domestic_individual_account_qty,
+    o.closed_domestic_institution_account_qty,
+    o.closed_foreign_individual_account_qty,
+    o.closed_foreign_institution_account_qty,
+    o.closing_domestic_individual_account_qty,
+    o.closing_domestic_institution_account_qty,
+    o.closing_foreign_individual_account_qty,
+    o.closing_foreign_institution_account_qty,
+    o.total_account_qty,
+    o.src_stm_code
+FROM datamart.ttlk01_account_open_close_rpt o
+;
