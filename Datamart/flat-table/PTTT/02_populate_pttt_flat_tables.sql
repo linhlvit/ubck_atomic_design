@@ -28,8 +28,8 @@ SELECT
     f.beta_foreign_net_flow,
     f.beta_equity_capital_raising,
     f.beta_intercept,
-    f.epsilon_error_term,
     f.risk_index,
+    f.epsilon_error_term,
     f.z_score_equity_capital_raising,
     f.equity_capital_raising_amt,
     f.margin_to_cap_ratio_stddev,
@@ -231,6 +231,12 @@ SELECT
     f.maturity_pressure_growth_percentage,
     f.bond_trading_val,
     f.bond_yield_weighted_average,
+    f.outstanding_vol_listed,
+    f.outstanding_vol_private,
+    f.bond_outstanding_val_listed,
+    f.bond_outstanding_val_private,
+    f.maturity_pressure_12_months_listed,
+    f.maturity_pressure_12_months_private,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt
 FROM datamart.fct_corporate_bond_market_snpst f
@@ -254,6 +260,7 @@ SELECT
     f.outstanding_vol,
     f.bond_outstanding_val,
     f.maturity_dt,
+    f.data_dt,
 
     snpst_cal.cdr_dt AS snpst_cdr_dt,
 
@@ -395,7 +402,9 @@ SELECT
     o.owner_equity_average_amt,
     o.net_profit_after_tax_amt,
     o.debt_to_equity_ratio,
-    o.roe_pct
+    o.roe_pct,
+    o.data_dt,
+    o.src_stm_code
 FROM datamart.opr_corporate_bond_issuer_credit_monitor o
 ;
 
@@ -408,6 +417,7 @@ WHERE cdr_dt = :etl_date;
 INSERT INTO datamart.pttt_fct_macro_indicator_snpst_flat
 SELECT
     -- From: FCT_MACRO_INDICATOR_SNPST
+    f.macro_indicator_val_id,
     f.snpst_dt_dim_id,
     f.macro_indicator_code,
     f.macro_indicator_name,
@@ -476,6 +486,8 @@ SELECT
     f.period_nbr,
     f.margin_debt_amt,
     f.owner_equity_amt,
+    f.owner_equity_period_end_dt,
+    f.total_liabilities_amt,
     f.margin_to_equity_ratio,
     f.capital_adequacy_ratio,
     f.src_stm_code,

@@ -13931,7 +13931,7 @@ entities:
       - logical_name: "Volatility 20 Days"
         physical_name: "volatility_20_days"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: ""
         description: "Biến động giá VN-Index 20 phiên (độ lệch chuẩn log-return)"
@@ -13994,7 +13994,7 @@ entities:
       - logical_name: "Beta Volatility"
         physical_name: "beta_volatility"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Biến động chỉ số VN-Index"
@@ -14003,7 +14003,7 @@ entities:
       - logical_name: "Beta Liquidity"
         physical_name: "beta_liquidity"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Thanh khoản"
@@ -14012,7 +14012,7 @@ entities:
       - logical_name: "Beta Margin Balance"
         physical_name: "beta_margin_balance"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Dư nợ Margin"
@@ -14021,7 +14021,7 @@ entities:
       - logical_name: "Beta Interbank Rate"
         physical_name: "beta_interbank_rate"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Lãi suất liên ngân hàng"
@@ -14030,7 +14030,7 @@ entities:
       - logical_name: "Beta Foreign Net Flow"
         physical_name: "beta_foreign_net_flow"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Dòng tiền ròng NĐTNN"
@@ -14039,7 +14039,7 @@ entities:
       - logical_name: "Beta Equity Capital Raising"
         physical_name: "beta_equity_capital_raising"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hệ số hồi quy β — Huy động vốn cổ phần"
@@ -14048,19 +14048,10 @@ entities:
       - logical_name: "Beta Intercept"
         physical_name: "beta_intercept"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Hằng số hồi quy β0"
-        source_atomic_table: "risk_weight_config"
-        source_atomic_column: "risk_weight_config.weight"
-      - logical_name: "Epsilon Error Term"
-        physical_name: "epsilon_error_term"
-        data_domain: "Percentage"
-        data_type: "decimal(5,2)"
-        nullable: true
-        key: "DD"
-        description: "Sai số hồi quy ε"
         source_atomic_table: "risk_weight_config"
         source_atomic_column: "risk_weight_config.weight"
       - logical_name: "Risk Index"
@@ -14072,6 +14063,15 @@ entities:
         description: "Risk Index — Chỉ số rủi ro hệ thống tổng hợp."
         source_atomic_table: null
         source_atomic_column: null
+      - logical_name: "Epsilon Error Term"
+        physical_name: "epsilon_error_term"
+        data_domain: "Percentage"
+        data_type: "decimal(38,20)"
+        nullable: true
+        key: "DD"
+        description: "Sai số hồi quy ε"
+        source_atomic_table: "risk_weight_config"
+        source_atomic_column: "risk_weight_config.weight"
       - logical_name: "Z Score Equity Capital Raising"
         physical_name: "z_score_equity_capital_raising"
         data_domain: "Percentage"
@@ -14088,8 +14088,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Huy động vốn cổ phần thị trường tại ngày t — tổng 3 nguồn UNION ALL"
-        source_atomic_table: "pc_securities_offering_result / pc_securities_offering_plan / pc_securities_offering / sc_disclosure_securities_offering / fmc_securities_offering"
-        source_atomic_column: "pc_securities_offering_result / pc_securities_offering_plan / pc_securities_offering / sc_disclosure_securities_offering / fmc_securities_offering.total_collected_amt"
+        source_atomic_table: "pc_securities_offering_result / sc_disclosure_securities_offering / fmc_securities_offering"
+        source_atomic_column: "pc_securities_offering_result / sc_disclosure_securities_offering / fmc_securities_offering.total_collected_amt"
       - logical_name: "Margin To Cap Ratio Stddev"
         physical_name: "margin_to_cap_ratio_stddev"
         data_domain: "Percentage"
@@ -14123,13 +14123,13 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng dư nợ cho vay giao dịch ký quỹ toàn hệ thống CTCK (MDₜ) của kỳ báo cáo THÁNG gần nhất có dữ liệu TS024 và ≤ tháng của ngày thống kê (kỳ t = MAX(rpt_year*100 + period) trong các kỳ có TS024 khác NULL và ≤ yyyyMM(ngày thống kê)) — carry-forward: giữ nguyên giá trị cho đến khi có báo cáo tháng mới. [SỬA 2026-10-08, BA đã xác nhận] Trước đây chỉ lấy kỳ trùng tháng ngày thống kê nên NULL khi tháng chưa có báo cáo; nay lùi về kỳ gần nhất có dữ liệu (VD ngày 2026-08-24, dữ liệu mới nhất đến T2/2026 → lấy T2/2026 = 0,338434 tỷ đồng). NULL chỉ khi chưa có kỳ nào ≤ tháng ngày thống kê. Phần còn lại giữ nguyên: SUM(cell_val) các CTCK ở submission mới nhất theo (ref_tp_code, ref_id), rpt_submission_status_code IN ('1','2'). Xem O_PTTT_37."
+        description: "Tổng dư nợ cho vay giao dịch ký quỹ toàn hệ thống CTCK (MDₜ), đơn vị VND — ô TS024 sheet II.8 biểu mẫu BCTHHD_CTCK của kỳ báo cáo THÁNG gần nhất có END_DATE ≤ ngày thống kê (BA K_PTTT_5), quy đổi ×1.000.000 từ triệu đồng; carry-forward: giữ nguyên giá trị cho đến khi có báo cáo tháng mới; NULL chỉ khi chưa có kỳ nào ≤ ngày thống kê. Xem O_PTTT_37."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Index Log Return"
         physical_name: "index_log_return"
         data_domain: "Percentage"
-        data_type: "decimal(18,10)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Giá trị hiện tại — log return chỉ số VN-Index ngày t [SỬA 2026-09-24, BA PTTT Nhóm 6 dòng 'Chỉ số Index tại ngày t' bổ sung ROW_NUMBER theo indexTime DESC] Market Index Snapshot là dữ liệu trong phiên (nhiều bản ghi/ngày) — bắt buộc lấy bản ghi cuối ngày trước khi tính, tránh nhân dòng/lệch giá trị."
@@ -14165,7 +14165,7 @@ entities:
       - logical_name: "Weight Liquidity"
         physical_name: "weight_liquidity"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Trọng số W1 áp dụng cho S_liquidity trong công thức Sentiment Score"
@@ -14174,7 +14174,7 @@ entities:
       - logical_name: "Weight Stability"
         physical_name: "weight_stability"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Trọng số W2 áp dụng cho S_stability trong công thức Sentiment Score"
@@ -14219,7 +14219,7 @@ entities:
       - logical_name: "VNIndex Daily Return"
         physical_name: "vnindex_daily_return"
         data_domain: "Percentage"
-        data_type: "decimal(18,10)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Lợi suất ngày VN-Index Rt [SỬA 2026-09-24, BA PTTT Nhóm 6 dòng 'Chỉ số Index tại ngày t' bổ sung ROW_NUMBER theo indexTime DESC] Market Index Snapshot là dữ liệu trong phiên (nhiều bản ghi/ngày) — bắt buộc lấy bản ghi cuối ngày trước khi tính, tránh nhân dòng/lệch giá trị."
@@ -14228,7 +14228,7 @@ entities:
       - logical_name: "Systemic Vol Current"
         physical_name: "systemic_vol_current"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Độ lệch chuẩn biến động VN-Index 20 phiên (annualized)"
@@ -14237,7 +14237,7 @@ entities:
       - logical_name: "Systemic Vol Max"
         physical_name: "systemic_vol_max"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Độ lệch chuẩn biến động VN-Index lịch sử tối đa"
@@ -14273,7 +14273,7 @@ entities:
       - logical_name: "VNIndex Daily Return Average"
         physical_name: "vnindex_daily_return_average"
         data_domain: "Percentage"
-        data_type: "decimal(18,10)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Lợi suất VN-Index trung bình N phiên (R̄ₙ) — cửa sổ tính correlation, mặc định 20 phiên [SỬA 2026-09-24, BA PTTT Nhóm 6 dòng 'Chỉ số Index tại ngày t' bổ sung ROW_NUMBER theo indexTime DESC] Market Index Snapshot là dữ liệu trong phiên (nhiều bản ghi/ngày) — bắt buộc lấy bản ghi cuối ngày trước khi tính, tránh nhân dòng/lệch giá trị."
@@ -14384,7 +14384,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng hạn mức margin tối đa = 2 × Σ VCSH các CTCK (BA dòng 129): mỗi CTCK 1 báo cáo ưu tiên Năm > Bán niên > Quý, mới nhất trong năm của ngày t; VCSH BCTCHN TS359, thiếu thì BCTCRL TS223/TS221."
+        description: "Tổng hạn mức margin tối đa = 2 × Σ VCSH các CTCK (BA dòng 129): mỗi CTCK 1 báo cáo ưu tiên Năm > Bán niên > Quý, mới nhất trong năm của ngày t; VCSH = COALESCE(TS359, NULLIF(TS223,0), TS221) trong báo cáo được chọn (không phân biệt BCTCHN/BCTCRL qua mã form — theo code dev)."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Margin Stress"
@@ -14411,7 +14411,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Δ dư nợ margin giữa kỳ báo cáo t và kỳ báo cáo liền trước t-1 (K_PTTT_123) — t = kỳ THÁNG gần nhất dùng cho total_margin_balance; t-1 = kỳ THÁNG hợp lệ (TS024 khác NULL) lớn nhất < t (không nhất thiết là tháng liền kề theo lịch). Giữ nguyên giá trị cho đến khi có báo cáo mới; NULL khi chưa có kỳ t-1. [SỬA 2026-10-08, BA/Data Modeler xác nhận cách hiểu] Thay `<cell_id DU_NO_MARGIN>` bằng TS024 (O_PTTT_15 đã hết hiệu lực) và bỏ LAG theo tháng lịch. Nền tảng tính Margin Stress. Xem O_PTTT_37."
+        description: "Δ dư nợ margin giữa kỳ báo cáo t và kỳ báo cáo liền trước t-1 (K_PTTT_123) — t = kỳ THÁNG gần nhất dùng cho total_margin_balance (theo END_DATE ≤ ngày thống kê); t-1 = kỳ THÁNG hợp lệ (TS024 khác NULL) liền trước t trong chuỗi tháng (không nhất thiết là tháng liền kề theo lịch); đơn vị VND. Giữ nguyên giá trị cho đến khi có báo cáo mới; NULL khi chưa có kỳ t-1. Nền tảng tính Margin Stress. Xem O_PTTT_37."
         source_atomic_table: "sc_report_input_value"
         source_atomic_column: "sc_report_input_value.cell_val"
       - logical_name: "Correlation Index Interbank Rate"
@@ -14472,15 +14472,6 @@ entities:
     modules_using:
       - "PTTT"
     columns:
-      - logical_name: "Investor Group Dimension Id"
-        physical_name: "investor_group_dim_id"
-        data_domain: "Surrogate Key"
-        data_type: "string"
-        nullable: false
-        key: "PK"
-        description: "PK — ETL-derived, 6 giá trị cố định (không có nguồn danh mục Atomic)"
-        source_atomic_table: null
-        source_atomic_column: null
       - logical_name: "Investor Group Code"
         physical_name: "investor_group_code"
         data_domain: "Text"
@@ -14497,6 +14488,15 @@ entities:
         nullable: false
         key: ""
         description: "Tên nhóm NĐT: NĐT nước ngoài / Tự doanh / Tổ chức trong nước / Cá nhân trong nước / Cá nhân nước ngoài / Tổ chức nước ngoài"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Investor Group Dimension Id"
+        physical_name: "investor_group_dim_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — surrogate key sinh bằng generate_surrogate_key_bigint('PTTT_INVESTOR_GROUP', investor_group_code) (macro trả sha2 dạng string, 1 giá trị/nhóm), 6 giá trị cố định, không có nguồn danh mục Atomic; là khóa join ở fct_investor_flow_snpst.investor_group_dim_id. Thứ tự cột theo SELECT của model dev (mart ghi theo vị trí cột)"
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Source System Code"
@@ -14660,7 +14660,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK to Industry Dimension"
+        description: "FK to Sector Dimension — ngành cấp 1 của công ty đại chúng (IDS_CATEGORIES); nhóm UNCLASSIFIED = Chưa phân ngành"
         source_atomic_table: "public_company"
         source_atomic_column: "public_company.cl_ids_business_line_level_1_code"
       - logical_name: "Total Value Sector"
@@ -14693,7 +14693,7 @@ entities:
       - logical_name: "Sector Liquid Score"
         physical_name: "sector_liquid_score"
         data_domain: "Percentage"
-        data_type: "decimal(5,2)"
+        data_type: "decimal(38,20)"
         nullable: true
         key: "DD"
         description: "Tỷ lệ thanh khoản ngành = Tổng GTGD ngành / Tổng vốn hóa ngành [SỬA 2026-09-24, BA PTTT Nhóm 7 dòng 163/164/191 (Done lại)] Vốn hóa chỉ tính mã FloorCode IN ('02','04','10') theo câu lệnh BA. [SỬA 2026-10-09] Tử số = SUM(total_trading_val) snapshot (BA dòng 187); bỏ nối securities_trade."
@@ -14733,15 +14733,15 @@ entities:
         nullable: true
         key: "DD"
         description: "He so no/von chu so huu toan nganh = Sigma No phai tra nganh / Sigma VCSH nganh (BA dong 195) - BA ghi them can 'quy doi ra diem so 0-100' nhung chua cho nguong cu the, giu nguyen ty le tho, xem ghi chu"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column.cell_val"
       - logical_name: "Total Trading Value Matched Sector"
         physical_name: "total_trading_val_matched_sector"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Tổng giá trị giao dịch khớp lệnh của các cổ phiếu thuộc ngành trong ngày t (GTGD theo ngành — PTTT Nhóm 33). [SỬA 2026-10-09, Data Modeler — O_PTTT_43] Nguồn: SUM(security_trading_snapshot.total_trading_val) (JAD_STOCKINFOR.totalTradingValue — số KHỚP cộng dồn từ đầu ngày; bản ghi trading_time mới nhất của mã × ngày) nối public_company theo mã, thay SUM(securities_trade.execution_val) nối public_company.equity_ticker_symbol = securities_trade.security_symbol_code (HNX/UPCOM: security_symbol_code là ISSUE_CODE/ISIN nên mã HNX bị rơi khỏi tổng ngành). BA dòng 440: Ngày × Ngành, chỉ lọc Market ID (không board, không loại NĐT) → floor_code IN ('02','04','10'); không lọc stock_tp_code (khác total_val_sector — BA dòng 187 lọc cổ phiếu). BA ghi nguồn 'Sổ lệnh' nên cần BA/dev xác nhận (O_PTTT_43)."
+        description: "Tổng giá trị giao dịch khớp lệnh của các cổ phiếu thuộc ngành trong ngày t (GTGD theo ngành — PTTT Nhóm 33). [SỬA 2026-10-09, Data Modeler — O_PTTT_43] Nguồn: SUM(security_trading_snapshot.total_trading_val) (JAD_STOCKINFOR.totalTradingValue — số KHỚP cộng dồn từ đầu ngày; bản ghi trading_time mới nhất của mã × ngày) nối public_company theo mã, thay SUM(securities_trade.execution_val) nối public_company.equity_ticker_symbol = securities_trade.security_symbol_code (HNX/UPCOM: security_symbol_code là ISSUE_CODE/ISIN nên mã HNX bị rơi khỏi tổng ngành). BA dòng 440: Ngày × Ngành, chỉ lọc Market ID (không board, không loại NĐT) → floor_code IN ('02','04','10'); lọc stock_tp_code = '2' (chỉ cổ phiếu — BA chốt 2026-10-28; bỏ chứng quyền, CCQ, trái phiếu); mã không có hồ sơ công ty gom vào nhóm UNCLASSIFIED. BA ghi nguồn 'Sổ lệnh' nên cần BA/dev xác nhận (O_PTTT_43)."
         source_atomic_table: "security_trading_snapshot / public_company"
         source_atomic_column: "security_trading_snapshot.total_trading_val / public_company.cl_ids_business_line_level_1_code"
       - logical_name: "Foreign Net Value Sector"
@@ -14750,7 +14750,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá trị mua ròng của nhà đầu tư nước ngoài theo ngành ngày t = GT mua NĐTNN − GT bán NĐTNN (Dòng tiền ròng NĐTNN theo ngành — PTTT Nhóm 33). [SỬA 2026-10-09, Data Modeler — O_PTTT_43] Giữ securities_trade (cần cờ loại NĐT của sổ lệnh: buy/sell_foreign_investor_tp_code IN ('10','20') như Nhóm 13/14/16; BA dòng 441 liệt kê thêm JAD_STOCKINFOR — phương án foreign_buy_val − foreign_sell_val của snapshot chưa chọn, xem O_PTTT_43) nhưng sửa khóa nối mã → ngành: securities_trade.security_symbol_code của HNX là ISSUE_CODE/ISIN nên nối thẳng public_company.equity_ticker_symbol làm rơi toàn bộ giao dịch HNX/UPCOM; nay đi qua security_trading_snapshot (HOSE: symbol = security_symbol_code; HNX: isin_code = security_symbol_code — A17), rồi nối public_company theo symbol."
+        description: "Giá trị mua ròng của nhà đầu tư nước ngoài theo ngành ngày t = GT mua NĐTNN − GT bán NĐTNN (Dòng tiền ròng NĐTNN theo ngành — PTTT Nhóm 33). NĐTNN = ký tự thứ 4 của số tài khoản IN ('E','F'); mã chứng khoán → ngành qua security_trading_snapshot (HOSE: ticker_symbol = security_symbol_code; HNX: isin_code = security_symbol_code — A17) rồi nối public_company theo ticker; chỉ cổ phiếu. O_PTTT_43."
         source_atomic_table: "securities_trade / security_trading_snapshot / public_company"
         source_atomic_column: "securities_trade.execution_vol / securities_trade.execution_price / securities_trade.buy_foreign_investor_tp_code / securities_trade.sell_foreign_investor_tp_code / security_trading_snapshot.isin_code / public_company.cl_ids_business_line_level_1_code"
       - logical_name: "Proprietary Net Value Sector"
@@ -14759,7 +14759,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá trị mua ròng của tự doanh CTCK theo ngành ngày t = GT mua tự doanh − GT bán tự doanh (Dòng tiền ròng tự doanh theo ngành — PTTT Nhóm 33). [SỬA 2026-10-09, Data Modeler — O_PTTT_43] Giữ securities_trade (cần cờ loại NĐT của sổ lệnh: buy/sell_client_house_cl_code = '30'; tự doanh không có trên snapshot) nhưng sửa khóa nối mã → ngành: securities_trade.security_symbol_code của HNX là ISSUE_CODE/ISIN nên nối thẳng public_company.equity_ticker_symbol làm rơi toàn bộ giao dịch HNX/UPCOM; nay đi qua security_trading_snapshot (HOSE: symbol = security_symbol_code; HNX: isin_code = security_symbol_code — A17), rồi nối public_company theo symbol."
+        description: "Giá trị mua ròng của tự doanh CTCK theo ngành ngày t = GT mua tự doanh − GT bán tự doanh (Dòng tiền ròng tự doanh theo ngành — PTTT Nhóm 33). Tự doanh = ký tự thứ 4 của số tài khoản IN ('A','E','P'); mã chứng khoán → ngành qua security_trading_snapshot (HOSE: ticker_symbol = security_symbol_code; HNX: isin_code = security_symbol_code — A17) rồi nối public_company theo ticker; chỉ cổ phiếu. O_PTTT_43."
         source_atomic_table: "securities_trade / security_trading_snapshot / public_company"
         source_atomic_column: "securities_trade.execution_vol / securities_trade.execution_price / securities_trade.buy_client_house_cl_code / securities_trade.sell_client_house_cl_code / security_trading_snapshot.isin_code / public_company.cl_ids_business_line_level_1_code"
       - logical_name: "Total Outstanding Share Quantity Sector"
@@ -14777,18 +14777,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_275 — Tổng LNST quý gần nhất đã công bố của các công ty đại chúng trong ngành (business_line_level_1_code) — BA PTTT dòng 444 (cùng công thức dòng 432 Nhóm 32, grain ngành × ngày theo Iso-Grain)"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val / cl_ids_business_line_level_1_code / equity_ticker_symbol"
+        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_275 — Tổng LNST kỳ gần nhất CÓ LNST đã công bố của các công ty đại chúng trong ngành (business_line_level_1_code) — BA PTTT dòng 444 (cùng công thức dòng 432 Nhóm 32, grain ngành × ngày theo Iso-Grain)"
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column.cell_val / cl_ids_business_line_level_1_code / equity_ticker_symbol"
       - logical_name: "Sector PE"
         physical_name: "sector_pe"
         data_domain: "Percentage"
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_244 — P/E theo ngành = SUM(Giá đóng cửa × Số CP lưu hành) / SUM(LNST quý gần nhất) của các mã CÓ LNST trong ngành — BA dòng 442 'Giá đóng cửa / EPS' quy đổi cấp ngành"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / security_trading_snapshot"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / security_trading_snapshot.data_val / outstanding_share_quantity / close_price / cl_ids_business_line_level_1_code"
+        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_244 — P/E theo ngành = SUM(Giá đóng cửa × Số CP lưu hành) / SUM(LNST kỳ gần nhất có LNST) của các mã CÓ LNST, giá đóng cửa > 0 và KLLH > 0 trong ngành — BA dòng 442 'Giá đóng cửa / EPS' quy đổi cấp ngành"
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / security_trading_snapshot"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / security_trading_snapshot.cell_val / outstanding_share_quantity / close_price / cl_ids_business_line_level_1_code"
 
   - id: "DTM-fct_order_size_snpst"
     logical_name: "Fact Order Size Snapshot"
@@ -15033,7 +15033,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Áp lực đáo hạn 12 tháng tại kỳ liền trước"
+        description: "Áp lực đáo hạn 12 tháng của phiên giao dịch liền trước (LAG theo phiên có dữ liệu trái phiếu, không theo kỳ lịch)"
         source_atomic_table: "fct_corporate_bond_market_snpst"
         source_atomic_column: "fct_corporate_bond_market_snpst.maturity_pressure_12_months"
       - logical_name: "Maturity Pressure Growth Percentage"
@@ -15060,9 +15060,63 @@ entities:
         data_type: "decimal(9,4)"
         nullable: true
         key: "DD"
-        description: "Lợi suất trái phiếu bình quân gia quyền theo GTGD ngày t = Σ(YTMi × GTGDi) / ΣGTGDi — BA dòng 305. YTMi = security_trading_snapshot.yield của mã TP (StockType = '1') lấy bản ghi cuối ngày; GTGDi = tổng execution_val của mã TP trong ngày (Market ID = 'HCX', chỉ HNX). INNER JOIN như SQL BA: mã không có YTM hoặc không có giao dịch trong ngày bị loại khỏi cả tử và mẫu [HNX-KEY-REVIEWED 2026-10-09: SQL BA dòng 305 nối Issue_Code = symbol cho TP HCX; chờ dev xác nhận khóa — O_PTTT_42]"
+        description: "Lợi suất trái phiếu bình quân gia quyền theo GTGD ngày t = Σ(YTMi × GTGDi) / ΣGTGDi — BA dòng 305. YTMi = security_trading_snapshot.yield của mã TP (StockType = '1') lấy bản ghi cuối ngày; GTGDi = tổng execution_val của mã TP trong ngày (Market ID = 'HCX', chỉ HNX). INNER JOIN như SQL BA: mã không có YTM hoặc không có giao dịch trong ngày bị loại khỏi cả tử và mẫu [HNX-KEY-REVIEWED 2026-10-09: SQL BA dòng 305 nối Issue_Code = symbol cho TP HCX; dev đã xác nhận nối bằng isin_code (code 2026-10-27) — O_PTTT_42]"
         source_atomic_table: "security_trading_snapshot / securities_trade"
         source_atomic_column: "security_trading_snapshot / securities_trade.yield / execution_val"
+      - logical_name: "Outstanding Volume Listed"
+        physical_name: "outstanding_vol_listed"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "KL trái phiếu NIÊM YẾT (HNX) lưu hành ngày t — thành phần niêm yết của outstanding_vol"
+        source_atomic_table: "listed_share_information"
+        source_atomic_column: "listed_share_information.listed_share_quantity"
+      - logical_name: "Outstanding Volume Private"
+        physical_name: "outstanding_vol_private"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "KL trái phiếu RIÊNG LẺ lưu hành ngày t — thành phần riêng lẻ của outstanding_vol (kỳ báo cáo gần nhất không vượt tháng ngày t)"
+        source_atomic_table: "private_corp_bond_registration"
+        source_atomic_column: "private_corp_bond_registration.outstanding_bond_quantity"
+      - logical_name: "Bond Outstanding Value Listed"
+        physical_name: "bond_outstanding_val_listed"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Dư nợ trái phiếu NIÊM YẾT ngày t = mệnh giá × KL niêm yết lưu hành"
+        source_atomic_table: "fct_corporate_bond_market_snpst"
+        source_atomic_column: "fct_corporate_bond_market_snpst.outstanding_vol_listed"
+      - logical_name: "Bond Outstanding Value Private"
+        physical_name: "bond_outstanding_val_private"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Dư nợ trái phiếu RIÊNG LẺ ngày t = mệnh giá × KL riêng lẻ lưu hành"
+        source_atomic_table: "fct_corporate_bond_market_snpst"
+        source_atomic_column: "fct_corporate_bond_market_snpst.outstanding_vol_private"
+      - logical_name: "Maturity Pressure 12 Months Listed"
+        physical_name: "maturity_pressure_12_months_listed"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Áp lực đáo hạn 12 tháng của trái phiếu NIÊM YẾT — thành phần niêm yết của maturity_pressure_12_months"
+        source_atomic_table: "security_trading_snapshot / listed_share_information"
+        source_atomic_column: "security_trading_snapshot / listed_share_information.maturity_dt / listed_share_quantity"
+      - logical_name: "Maturity Pressure 12 Months Private"
+        physical_name: "maturity_pressure_12_months_private"
+        data_domain: "Small Counter"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Áp lực đáo hạn 12 tháng của trái phiếu RIÊNG LẺ — thành phần riêng lẻ của maturity_pressure_12_months"
+        source_atomic_table: "private_corp_bond_registration"
+        source_atomic_column: "private_corp_bond_registration.maturity_dt / outstanding_bond_quantity"
 
   - id: "DTM-fct_corporate_bond_maturity_wall"
     logical_name: "Fact Corporate Bond Maturity Wall"
@@ -15087,7 +15141,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK to Calendar Date Dimension — ngày chốt quý (nạp đủ mọi quý; chọn quý ở tầng BI qua SLICER K_PTTT_163). LISTED: ngày giao dịch cuối cùng của quý trong security_trading_snapshot (BA dòng 309/312); PRIVATE: ngày cuối tháng của rpt_month = tháng cuối quý (BA dòng 322: MONTH(rpt_month) = quý × 3)"
+        description: "FK to Calendar Date Dimension — ngày chốt quý — mỗi lần chạy chỉ nạp QUÝ chứa :etl_date (chiến lược append, partition data_dt = :etl_date), các quý tích lũy qua các lần chạy; chọn quý ở tầng BI qua SLICER K_PTTT_163. LISTED: ngày giao dịch cuối cùng của quý trong security_trading_snapshot (BA dòng 309/312); PRIVATE: ngày cuối tháng của rpt_month = tháng cuối quý (BA dòng 322: MONTH(rpt_month) = quý × 3) [DATE-BOUND-REVIEWED 2026-11-03: các cột ngày kỹ thuật ds_snpst_dt viết không tiền tố bảng (quy ước Gate 0) nên checker A19 không nhận diện; mọi truy cập snapshot/listed_share_information/offering đã khóa ds_snpst_dt = :etl_date hoặc cửa sổ lùi có cận trên :etl_date — đúng code dev]"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
         source_atomic_column: "security_trading_snapshot / private_corp_bond_offering.trading_dt / rpt_month"
       - logical_name: "Securities Dimension Id"
@@ -15152,7 +15206,7 @@ entities:
         key: "DD"
         description: "Dư nợ trái phiếu của mã = Mệnh giá × KL lưu hành (BA dòng 309/318/322)"
         source_atomic_table: "listed_share_information / private_corp_bond_offering"
-        source_atomic_column: "listed_share_information / private_corp_bond_offering.outstanding_share_quantity / offering_bond_quantity"
+        source_atomic_column: "listed_share_information / private_corp_bond_offering.listed_share_quantity / offering_bond_quantity"
       - logical_name: "Maturity Date"
         physical_name: "maturity_dt"
         data_domain: "Date"
@@ -15162,6 +15216,15 @@ entities:
         description: "Ngày đáo hạn trái phiếu — dùng cho lọc kỳ đáo hạn của K_PTTT_178. LISTED: JAD_STOCKINFOR.MaturityDate; PRIVATE: private_corp_bond_offering.maturity_dt"
         source_atomic_table: "security_trading_snapshot / private_corp_bond_offering"
         source_atomic_column: "security_trading_snapshot / private_corp_bond_offering.maturity_dt / maturity_dt"
+      - logical_name: "Data Dt"
+        physical_name: "data_dt"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Ngày ETL nạp dữ liệu (yyyy-MM-dd) — technical field, cột partition của chiến lược append (mỗi lần chạy ghi 1 partition data_dt = :etl_date)"
+        source_atomic_table: null
+        source_atomic_column: null
 
   - id: "DTM-corp_bond_industry_dim"
     logical_name: "Corp Bond Industry Dimension"
@@ -15182,7 +15245,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — Driving: cl_ids_business_line"
+        description: "PK — Driving: cl_ids_business_line; khóa sinh = hash('PTTT_CORP_BOND_INDUSTRY', industry_code) (generate_surrogate_key_bigint, ép string)"
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Industry Code"
@@ -15191,7 +15254,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "BK"
-        description: "BK — mã ngành nghề cấp 1 (Classification IDS Business Line Code) của TCPH"
+        description: "BK — mã ngành nghề (Classification IDS Business Line Code) của TCPH; gồm mọi cấp ngành của IDS_CATEGORIES"
         source_atomic_table: "cl_ids_business_line"
         source_atomic_column: "cl_ids_business_line.cl_ids_business_line_code"
       - logical_name: "Industry Name"
@@ -15200,7 +15263,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Tên ngành nghề cấp 1 của TCPH"
+        description: "Tên ngành nghề của TCPH (mọi cấp ngành IDS_CATEGORIES)"
         source_atomic_table: "cl_ids_business_line"
         source_atomic_column: "cl_ids_business_line.cl_ids_business_line_nm"
       - logical_name: "Source System Code"
@@ -15209,7 +15272,57 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "src_stm_code — Driving: cl_ids_business_line, current-state SCD4A lấy bản ghi mới nhất theo Industry Code"
+        description: "src_stm_code — Driving: cl_ids_business_line (SCD2 hiện hành; dedupe theo Industry Code làm ở atomic)"
+        source_atomic_table: "cl_ids_business_line"
+        source_atomic_column: "cl_ids_business_line.src_stm_code"
+
+  - id: "DTM-sector_dim"
+    logical_name: "Sector Dimension"
+    datamart_table: "sector_dim"
+    table_type: "dim"
+    module: "PTTT"
+    status: "draft"
+    reuse_status: "new"
+    description: "Chiều ngành nghề kinh tế của công ty đại chúng dùng cho phân tích rủi ro theo ngành PTTT — SCD4A — grain 1 row/ngành IDS_CATEGORIES + 1 dòng cố định UNCLASSIFIED (Chưa phân ngành)."
+    source_atomic:
+      - "cl_ids_business_line"
+    modules_using:
+      - "PTTT"
+    columns:
+      - logical_name: "Sector Dimension Id"
+        physical_name: "sector_dim_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — Driving: cl_ids_business_line; khóa sinh = hash('PTTT_SECTOR', industry_code) (generate_surrogate_key_bigint, ép string); dòng UNCLASSIFIED sinh từ ('PTTT_SECTOR','UNCLASSIFIED')"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Industry Code"
+        physical_name: "industry_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "BK"
+        description: "BK — mã ngành nghề (Classification IDS Business Line Code); khớp public_company.cl_ids_business_line_level_1_code; 'UNCLASSIFIED' = Chưa phân ngành"
+        source_atomic_table: "cl_ids_business_line"
+        source_atomic_column: "cl_ids_business_line.cl_ids_business_line_code"
+      - logical_name: "Industry Name"
+        physical_name: "industry_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Tên ngành nghề; dòng UNCLASSIFIED = 'Chưa phân ngành'"
+        source_atomic_table: "cl_ids_business_line"
+        source_atomic_column: "cl_ids_business_line.cl_ids_business_line_nm"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "src_stm_code — Driving: cl_ids_business_line (SCD2 hiện hành); dòng UNCLASSIFIED cũng mang IDS_CATEGORIES"
         source_atomic_table: "cl_ids_business_line"
         source_atomic_column: "cl_ids_business_line.src_stm_code"
 
@@ -15233,14 +15346,14 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK to Calendar Date Dimension"
+        description: "FK to Calendar Date Dimension [DATE-BOUND-REVIEWED 2026-11-03: các cột ngày kỹ thuật ds_snpst_dt viết không tiền tố bảng (quy ước Gate 0) nên checker A19 không nhận diện; mọi truy cập snapshot/listed_share_information/offering đã khóa ds_snpst_dt = :etl_date hoặc cửa sổ lùi có cận trên :etl_date — đúng code dev]"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Corp Bond Industry Dimension Id"
         physical_name: "corp_bond_industry_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
         description: "FK to Corp Bond Industry Dimension"
         source_atomic_table: "public_company / security_trading_snapshot"
@@ -15307,7 +15420,7 @@ entities:
         data_type: "date"
         nullable: false
         key: "PK"
-        description: "PK — ngày thống kê"
+        description: "PK — ngày thống kê [DATE-BOUND-REVIEWED 2026-11-03: các cột ngày kỹ thuật ds_snpst_dt viết không tiền tố bảng (quy ước Gate 0) nên checker A19 không nhận diện; mọi truy cập snapshot/listed_share_information/offering đã khóa ds_snpst_dt = :etl_date hoặc cửa sổ lùi có cận trên :etl_date — đúng code dev]"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Bond Outstanding Value"
@@ -15371,8 +15484,8 @@ entities:
         nullable: true
         key: ""
         description: "Tong no phai tra cua TCPH tai ky bao cao gan nhat (BCDKT, row_desc 300 DN/BH - 400 TD)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "Owner Equity Ending Amount"
         physical_name: "owner_equity_ending_amt"
         data_domain: "Currency Amount"
@@ -15380,8 +15493,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH cuoi ky bao cao gan nhat (BCDKT, row_desc 400 DN/BH - 500 TD, col_desc=1 cuoi ky)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "Owner Equity Beginning Amount"
         physical_name: "owner_equity_beginning_amt"
         data_domain: "Currency Amount"
@@ -15389,8 +15502,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH dau ky bao cao gan nhat (BCDKT, row_desc 400 DN/BH - 500 TD, col_desc=2 dau ky)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "Owner Equity Average Amount"
         physical_name: "owner_equity_average_amt"
         data_domain: "Currency Amount"
@@ -15398,8 +15511,8 @@ entities:
         nullable: true
         key: ""
         description: "VCSH binh quan = (dau ky + cuoi ky) / 2 - neu dau ky NULL thi lay dung cuoi ky (theo BA note)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "Net Profit After Tax Amount"
         physical_name: "net_profit_after_tax_amt"
         data_domain: "Currency Amount"
@@ -15407,8 +15520,8 @@ entities:
         nullable: true
         key: ""
         description: "LNST ky bao cao gan nhat (BCKQKD, row_desc 60 DN/BH - 21 TD)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "Debt To Equity Ratio"
         physical_name: "debt_to_equity_ratio"
         data_domain: "Percentage"
@@ -15416,8 +15529,8 @@ entities:
         nullable: true
         key: ""
         description: "He so D/E = Tong no phai tra / VCSH cuoi ky"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
       - logical_name: "ROE Percentage"
         physical_name: "roe_pct"
         data_domain: "Percentage"
@@ -15425,8 +15538,26 @@ entities:
         nullable: true
         key: ""
         description: "ROE = LNST / VCSH binh quan x 100"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / public_company / security_trading_snapshot.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / public_company / security_trading_snapshot.cell_val"
+      - logical_name: "Data Dt"
+        physical_name: "data_dt"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Ngày ETL nạp dữ liệu (yyyy-MM-dd) — technical field"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu — lấy từ bản ghi cuối phiên của security_trading_snapshot"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.src_stm_code"
 
   - id: "DTM-fct_cap_grp_snpst"
     logical_name: "Fact Cap Group Snapshot"
@@ -15448,7 +15579,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK to Calendar Date Dimension"
+        description: "FK to Calendar Date Dimension [DATE-BOUND-REVIEWED 2026-11-03: cột ngày kỹ thuật ds_snpst_dt viết không tiền tố bảng (quy ước Gate 0) nên checker A19 không nhận diện; mọi truy cập snapshot và listed_share_information (transaction_dt = :etl_date) đã khóa ds_snpst_dt = :etl_date (hoặc cửa sổ lùi có cận trên :etl_date) — đúng code dev]"
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Cap Group Code"
@@ -15649,7 +15780,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD NĐTNN mua HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; chờ dev xác nhận khóa — O_PTTT_42]"
+        description: "KLGD NĐTNN mua HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; dev đã xác nhận nối bằng isin_code (code 2026-10-21) — O_PTTT_42/O_PTTT_50]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Foreign Sell Volume"
@@ -15658,7 +15789,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD NĐTNN bán HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; chờ dev xác nhận khóa — O_PTTT_42]"
+        description: "KLGD NĐTNN bán HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; dev đã xác nhận nối bằng isin_code (code 2026-10-21) — O_PTTT_42/O_PTTT_50]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Foreign Net Volume"
@@ -15676,7 +15807,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD Tự doanh mua HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; chờ dev xác nhận khóa — O_PTTT_42]"
+        description: "KLGD Tự doanh mua HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; dev đã xác nhận nối bằng isin_code (code 2026-10-21) — O_PTTT_42/O_PTTT_50]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Proprietary Sell Volume"
@@ -15685,7 +15816,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD Tự doanh bán HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; chờ dev xác nhận khóa — O_PTTT_42]"
+        description: "KLGD Tự doanh bán HĐTL [HNX-KEY-REVIEWED 2026-10-09: SQL BA nối Issue_Code = symbol cho HĐTL DVX; cần cờ NĐTNN/tự doanh của sổ lệnh nên giữ securities_trade; dev đã xác nhận nối bằng isin_code (code 2026-10-21) — O_PTTT_42/O_PTTT_50]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_vol"
       - logical_name: "Proprietary Net Volume"
@@ -15721,8 +15852,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK to Calendar Date Dimension"
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.trading_dt"
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.trading_dt"
       - logical_name: "Market Code"
         physical_name: "market_code"
         data_domain: "Text"
@@ -15738,7 +15869,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "KLGD theo chỉ số tại ngày t [HNX-KEY-REVIEWED 2026-10-09: BA dòng 426 (Nhóm 32) giữ sổ lệnh vì lọc board (Board Type/Board ID LIKE '%G%') và nối chỉ số qua JAD_CSIDXINFOR; SQL BA nối HNX/UPCOM bằng Issue Code = idx.symbol — chưa xác nhận; nếu ISSUE_CODE HNX là ISIN thì KLGD các chỉ số gồm mã HNX bị rơi, cần nối index_constituent_snapshot qua security_trading_snapshot.isin_code (A17). LLD chưa có lọc board G của BA. Cân nhắc market_index_snapshot.total_vol (JAD_MARKETINFOR) — O_PTTT_45]"
+        description: "KLGD khớp theo chỉ số tại ngày t — tổng KLGD các cổ phiếu thuộc rổ chỉ số; HNX nối index_constituent_snapshot qua ISIN (A17); không lọc board G (dev; BA dòng 426 Nhóm 32 còn mô tả lọc board G — xem O_PTTT_57). O_PTTT_45."
         source_atomic_table: "securities_trade / index_constituent_snapshot"
         source_atomic_column: "securities_trade / index_constituent_snapshot.execution_vol"
       - logical_name: "Close Price"
@@ -15747,18 +15878,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá đóng cửa ngày t"
-        source_atomic_table: "security_trading_snapshot / index_constituent_snapshot"
-        source_atomic_column: "security_trading_snapshot / index_constituent_snapshot.close_price"
+        description: "Giá trị chỉ số đóng cửa ngày t (market_index_val cuối phiên)"
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.market_index_val"
       - logical_name: "Close Price Previous Day"
         physical_name: "close_price_previous_day"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Giá đóng cửa ngày t-1"
-        source_atomic_table: "security_trading_snapshot / index_constituent_snapshot"
-        source_atomic_column: "security_trading_snapshot / index_constituent_snapshot.close_price"
+        description: "Giá trị chỉ số đóng cửa của phiên liền trước (t-1)"
+        source_atomic_table: "market_index_snapshot"
+        source_atomic_column: "market_index_snapshot.market_index_val"
       - logical_name: "Price Change Percentage"
         physical_name: "price_change_percentage"
         data_domain: "Percentage"
@@ -15774,7 +15905,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "GTGD phiên tại ngày t"
+        description: "GTGD khớp theo chỉ số tại ngày t — tổng GTGD các cổ phiếu thuộc rổ chỉ số"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.execution_val"
       - logical_name: "Total Trading Value Matched Average 50 Days"
@@ -15801,27 +15932,27 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_234 — Tổng LNST của các mã thuộc rổ chỉ số, lấy quý báo cáo GẦN NHẤT đã công bố (approval_status_code = 'APPROVED') tính đến ngày snapshot — theo câu lệnh BA PTTT dòng 432 (BCKQKD%, col_desc '1', row_desc '60' DN/BH – '21' TD, ưu tiên form HN > TH > ME > RI). Mã chưa có BCTC → không cộng. LNST 1 QUÝ, không TTM (Data Modeler chọn theo BA 2026-09-24, xem O_PTTT_19)"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / index_constituent_snapshot"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / index_constituent_snapshot.data_val / rpt_year / rpt_quarter / approval_status_code / fr_code / ticker_symbol"
+        description: "K_PTTT_234 — Tổng LNST của các mã (cổ phiếu) thuộc rổ chỉ số, lấy kỳ báo cáo GẦN NHẤT CÓ LNST đã công bố (approval_status_code = 'APPROVED') tính đến ngày snapshot — BCKQKD%, cột '1', dòng '60' DN/BH – '21' TD, ưu tiên form HN > TH > ME > RI; kỳ mới nhất không có LNST thì lùi về kỳ trước (BA chốt 2026-10-28). LNST 1 QUÝ, không TTM (O_PTTT_19). Mã chưa có BCTC → không cộng."
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / index_constituent_snapshot"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / index_constituent_snapshot.cell_val / rpt_year / rpt_quarter / approval_status_code / fr_code / ticker_symbol"
       - logical_name: "Index EPS"
         physical_name: "idx_eps"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_233 — EPS của rổ chỉ số = SUM(LNST quý gần nhất) / SUM(Số CP đang lưu hành VSDC) của các mã thuộc rổ — BA dòng 431 'LNST / số cổ phiếu đang lưu hành'. Chỉ cộng mẫu số cho mã CÓ LNST để tử/mẫu cùng tập mã"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / index_constituent_snapshot"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / index_constituent_snapshot.data_val / outstanding_share_quantity / ticker_symbol"
+        description: "K_PTTT_233 — EPS của rổ chỉ số = SUM(LNST kỳ gần nhất có LNST) / SUM(KL cổ phiếu đang lưu hành VSDC) của các mã thuộc rổ — BA dòng 431 'LNST / số cổ phiếu đang lưu hành'. Chỉ cộng mẫu số cho mã CÓ LNST để tử/mẫu cùng tập mã."
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / index_constituent_snapshot"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / index_constituent_snapshot.cell_val / outstanding_share_quantity / ticker_symbol"
       - logical_name: "Index PE"
         physical_name: "idx_pe"
         data_domain: "Percentage"
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-24, review PTTT — Atomic fr_value (IDS.DATA) đã có] K_PTTT_235 — P/E của rổ chỉ số = SUM(Giá đóng cửa × Số CP lưu hành) / SUM(LNST quý gần nhất) của các mã CÓ LNST thuộc rổ — quy đổi cấp chỉ số của công thức BA dòng 429 'Giá đóng cửa / EPS' (tương đương vốn hóa / LNST). Giá đóng cửa: security_trading_snapshot floor_code IN ('02','04','10') ngày snapshot"
-        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / security_trading_snapshot / index_constituent_snapshot"
-        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template / listed_share_information / security_trading_snapshot / index_constituent_snapshot.data_val / outstanding_share_quantity / close_price / ticker_symbol"
+        description: "K_PTTT_235 — P/E của rổ chỉ số = SUM(Giá đóng cửa × KL lưu hành) / SUM(LNST) của các mã thuộc rổ CÓ LNST, giá đóng cửa > 0 và KL lưu hành > 0 (tử và mẫu cùng tập mã — BA chốt 2026-10-28) — quy đổi cấp chỉ số của công thức BA dòng 429 'Giá đóng cửa / EPS'. Giá đóng cửa: bản tin cuối ngày của mã trong security_trading_snapshot (floor_code IN ('02','04','10')) ngày snapshot."
+        source_atomic_table: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / security_trading_snapshot / index_constituent_snapshot"
+        source_atomic_column: "public_company / pc_report_submission / fr_value / fr_catalog / fr_row / fr_column / listed_share_information / security_trading_snapshot / index_constituent_snapshot.cell_val / outstanding_share_quantity / close_price / ticker_symbol"
 
   - id: "DTM-inspection_team_violation_behavior_dim"
     logical_name: "Inspection Team Violation Behavior Dimension"
@@ -17776,12 +17907,14 @@ entities:
     module: "PTTT"
     status: "draft"
     reuse_status: "new"
-    description: "Snapshot các chỉ tiêu vĩ mô, lãi suất liên ngân hàng, tỷ giá, CPI, GDP và DXY Index theo từng kỳ báo cáo (ngày/tháng/quý/năm) — grain 1 row / macro_indicator_code / period_dt."
+    description: "Snapshot các chỉ tiêu vĩ mô, lãi suất liên ngân hàng, tỷ giá, CPI, GDP và DXY Index kèm mã đơn vị tính theo từng kỳ báo cáo (ngày/tháng/quý/năm) — grain 1 row / chỉ tiêu vĩ mô / kỳ công bố (PK macro_indicator_val_id = id dòng Atomic cl_risk_indicator_value; PTTT sở hữu, QLQ và VP tái sử dụng)."
     source_atomic:
       - "cl_risk_indicator"
       - "cl_risk_indicator_value"
     modules_using:
       - "PTTT"
+      - "QLQ"
+      - "VP"
     columns:
       - logical_name: "Snapshot Date Dimension Id"
         physical_name: "snpst_dt_dim_id"
@@ -17837,15 +17970,6 @@ entities:
         description: "Giá trị chỉ tiêu vĩ mô tại kỳ báo cáo này"
         source_atomic_table: "cl_risk_indicator_value"
         source_atomic_column: "cl_risk_indicator_value.val"
-      - logical_name: "Unit Type Code"
-        physical_name: "unit_tp_code"
-        data_domain: "Classification Value"
-        data_type: "string"
-        nullable: true
-        key: "DD"
-        description: "[MỚI 2026-10-28, O_VP_41] Mã đơn vị của giá trị chỉ tiêu (MRMS UNIT_TYPE: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính) — cần để quy đổi giá trị về cùng đơn vị (VD GDP về VND: mã 3 ×1.000.000.000, mã 8 ×1). Mã 23 (Triệu VND) xuất hiện trong câu lệnh BA VP nhưng không có trong danh sách mô tả của Atomic — O_VP_41."
-        source_atomic_table: "cl_risk_indicator_value"
-        source_atomic_column: "cl_risk_indicator_value.unit_tp_code"
       - logical_name: "Previous Period Value"
         physical_name: "prev_period_val"
         data_domain: "Currency Amount"
@@ -25021,8 +25145,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Tổng nợ phải trả của CTCK niêm yết tại quý báo cáo (BCDKT, row_desc 300 DN/BH – 400 TD, col_desc 1) — cùng cách BA dòng 339 Nhóm 21 (O_PTTT_32)"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column.cell_val"
       - logical_name: "Owner Equity Amount"
         physical_name: "owner_equity_amt"
         data_domain: "Currency Amount"
@@ -25030,8 +25154,8 @@ entities:
         nullable: true
         key: "DD"
         description: "VCSH của CTCK niêm yết tại quý báo cáo (BCDKT, row_desc 400 DN/BH – 500 TD, col_desc 1) — cùng nguồn IDS với nợ phải trả để D/E cùng tập CTCK"
-        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template"
-        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row_template / fr_column_template.data_val"
+        source_atomic_table: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column"
+        source_atomic_column: "pc_report_submission / fr_value / fr_catalog / fr_row / fr_column.cell_val"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Text"
@@ -25071,11 +25195,11 @@ entities:
         physical_name: "securities_company_dim_id"
         data_domain: "Surrogate Dimension Key"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: "FK"
         description: "FK to Securities Company Dimension (reuse QLKD) — CTCK nộp báo cáo"
         source_atomic_table: "sc_periodic_report"
-        source_atomic_column: "sc_periodic_report.sc_code"
+        source_atomic_column: "sc_periodic_report.sc_id"
       - logical_name: "Report Year"
         physical_name: "rpt_year"
         data_domain: "Small Counter"
@@ -25100,18 +25224,36 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "Dư nợ margin của CTCK tại tháng báo cáo (VND; BA chia 1e9 khi hiển thị tỷ VND) — ô TS024, BCTHHD_CTCK, sheet II.8 (K_PTTT_58/252)"
-        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.cell_val"
+        description: "Dư nợ margin của CTCK tại tháng báo cáo (VND; ô TS024 nguồn tính bằng triệu đồng, nhân 1.000.000; BA chia 1e9 khi hiển thị tỷ VND) — BCTHHD_CTCK, sheet II.8 (K_PTTT_58/252)"
+        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config.cell_val"
       - logical_name: "Owner Equity Amount"
         physical_name: "owner_equity_amt"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: "DD"
-        description: "VCSH của CTCK — số dư thời điểm của 1 báo cáo được chọn tính đến cuối tháng snapshot (K_PTTT_197/251): BCTCHN ô TS359; BCTCRL (chỉ khi không có BCTCHN cùng kỳ) COALESCE(NULLIF(TS223,0), TS221)"
-        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.cell_val"
+        description: "VCSH của CTCK (VND) — số dư của báo cáo QUÝ CHUNG gần nhất không quá cuối tháng snapshot, cùng 1 quý cho mọi CTCK, không xét ngày nộp (K_PTTT_197/251): BCTCHN ô TS359 (sheet 06620); BCTCRL (chỉ khi CTCK không có BCTCHN cùng kỳ) COALESCE(NULLIF(TS223,0), TS221) (sheet 06608); CTCK không có báo cáo của quý chung → NULL"
+        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config.cell_val"
+      - logical_name: "Owner Equity Period End Date"
+        physical_name: "owner_equity_period_end_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: true
+        key: "DD"
+        description: "Ngày kết thúc của quý báo cáo dùng để tính owner_equity_amt (quý chung); NULL khi CTCK không có báo cáo của quý chung"
+        source_atomic_table: "sc_periodic_report"
+        source_atomic_column: "sc_periodic_report.end_dt"
+      - logical_name: "Total Liabilities Amount"
+        physical_name: "total_liabilities_amt"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: "DD"
+        description: "Tổng nợ phải trả của CTCK cùng báo cáo/quý chung với VCSH (VND) — BCTCHN ô TS275 (sheet 06620); BCTCRL ô TS137 (sheet 06608); NULL khi CTCK không có báo cáo của quý chung"
+        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config.cell_val"
       - logical_name: "Margin To Equity Ratio"
         physical_name: "margin_to_equity_ratio"
         data_domain: "Percentage"
@@ -25128,8 +25270,8 @@ entities:
         nullable: true
         key: "DD"
         description: "Tỷ lệ vốn khả dụng của CTCK (%) — ô TS006 'Tỷ lệ vốn khả dụng (6=5/4)', BCTLAT, sheet 06H08 (K_PTTT_202); không chia đơn vị. Mức xếp hạng ATTC (>150 Cao / 120–150 Trung bình / <120 Thấp) tính ở presentation layer, không lưu cột"
-        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report"
-        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report.cell_val"
+        source_atomic_table: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config"
+        source_atomic_column: "sc_report_input_value / sc_report_input_submission / sc_periodic_report / sc_report / sc_report_deep_config.cell_val"
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"

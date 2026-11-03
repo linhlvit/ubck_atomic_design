@@ -16,45 +16,45 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_market_risk_snpst_flat ON CLUSTER '
 (
     -- From: FACT Market Risk Snapshot
     snpst_dt_dim_id                             String                  COMMENT 'FK → Calendar Date Dimension',
-    volatility_20_days                          Nullable(Decimal(5,2))  COMMENT 'Biến động giá VN-Index 20 phiên',
+    volatility_20_days                          Nullable(Decimal(38,20))  COMMENT 'Biến động giá VN-Index 20 phiên',
     z_score_volatility                          Nullable(Decimal(5,2))  COMMENT 'Z-score Biến động giá',
     z_score_liquidity                           Nullable(Decimal(5,2))  COMMENT 'Z-score Thanh khoản ILLIQ',
     z_score_margin_balance                      Nullable(Decimal(5,2))  COMMENT 'Z-score Dư nợ Margin',
     z_score_interbank_rate                      Nullable(Decimal(5,2))  COMMENT 'Z-score Lãi suất liên ngân hàng',
     z_score_foreign_net_flow                    Nullable(Decimal(5,2))  COMMENT 'Z-score Dòng tiền ròng NĐTNN',
     total_market_cap                            Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường MCAPt',
-    beta_volatility                             Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Biến động chỉ số VN-Index',
-    beta_liquidity                              Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Thanh khoản',
-    beta_margin_balance                         Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Dư nợ Margin',
-    beta_interbank_rate                         Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Lãi suất liên ngân hàng',
-    beta_foreign_net_flow                       Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Dòng tiền ròng NĐTNN',
-    beta_equity_capital_raising                 Nullable(Decimal(5,2))  COMMENT 'Hệ số hồi quy β — Huy động vốn cổ phần',
-    beta_intercept                              Nullable(Decimal(5,2))  COMMENT 'Hằng số hồi quy β0',
-    epsilon_error_term                          Nullable(Decimal(5,2))  COMMENT 'Sai số hồi quy ε',
+    beta_volatility                             Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Biến động chỉ số VN-Index',
+    beta_liquidity                              Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Thanh khoản',
+    beta_margin_balance                         Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Dư nợ Margin',
+    beta_interbank_rate                         Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Lãi suất liên ngân hàng',
+    beta_foreign_net_flow                       Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Dòng tiền ròng NĐTNN',
+    beta_equity_capital_raising                 Nullable(Decimal(38,20))  COMMENT 'Hệ số hồi quy β — Huy động vốn cổ phần',
+    beta_intercept                              Nullable(Decimal(38,20))  COMMENT 'Hằng số hồi quy β0',
     risk_index                                  Nullable(Decimal(5,2))  COMMENT 'Risk Index — Chỉ số rủi ro hệ thống tổng hợp',
+    epsilon_error_term                          Nullable(Decimal(38,20))  COMMENT 'Sai số hồi quy ε',
     z_score_equity_capital_raising              Nullable(Decimal(5,2))  COMMENT 'Z-score Huy động vốn cổ phần',
     equity_capital_raising_amt                  Nullable(Decimal(23,2)) COMMENT 'Huy động vốn cổ phần thị trường tại ngày t',
     margin_to_cap_ratio_stddev                  Nullable(Decimal(5,2))  COMMENT 'Độ lệch chuẩn chuỗi tỷ lệ Dư nợ Margin/MCAP',
     margin_to_cap_ratio_current                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ Dư nợ Margin / Tổng vốn hóa tại ngày t',
     margin_to_cap_ratio_avg                     Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ Dư nợ Margin / Tổng vốn hóa trung bình',
     total_margin_balance                        Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-23] Tổng dư nợ margin toàn hệ thống CTCK (MDₜ) kỳ báo cáo tháng gần nhất ≤ ngày t (carry-forward) — SCMS BCTHHD_CTCK cell TS024',
-    index_log_return                            Nullable(Decimal(18,10)) COMMENT 'Log return chỉ số VN-Index ngày t',
+    index_log_return                            Nullable(Decimal(38,20)) COMMENT 'Log return chỉ số VN-Index ngày t',
     illiquidity_ratio                           Nullable(Decimal(38,20)) COMMENT 'Tỷ lệ thanh khoản ILLIQ ngày t',
     foreign_net_flow                            Nullable(Decimal(23,2)) COMMENT 'Dòng tiền ròng NĐTNN ngày t',
     vnindex_val                                 Nullable(Decimal(23,2)) COMMENT 'Điểm chứng khoán VN-Index ngày t',
-    weight_liquidity                            Nullable(Decimal(5,2))  COMMENT 'Trọng số W1 (S_liquidity)',
-    weight_stability                            Nullable(Decimal(5,2))  COMMENT 'Trọng số W2 (S_stability)',
+    weight_liquidity                            Nullable(Decimal(38,20))  COMMENT 'Trọng số W1 (S_liquidity)',
+    weight_stability                            Nullable(Decimal(38,20))  COMMENT 'Trọng số W2 (S_stability)',
     sentiment_index                             Nullable(Decimal(5,2))  COMMENT 'Chỉ số tâm lý giao dịch toàn thị trường',
     sentiment_index_status                      Nullable(String)        COMMENT 'Ngưỡng trạng thái Sentiment Index',
     margin_tension                              Nullable(Decimal(5,2))  COMMENT 'Chỉ số độ căng margin',
     margin_tension_status                       Nullable(String)        COMMENT 'Ngưỡng trạng thái Margin Tension',
-    vnindex_daily_return                        Nullable(Decimal(18,10)) COMMENT 'Lợi suất ngày VN-Index Rt',
-    systemic_vol_current                        Nullable(Decimal(5,2))  COMMENT 'Độ lệch chuẩn biến động VN-Index 20 phiên (annualized)',
-    systemic_vol_max                            Nullable(Decimal(5,2))  COMMENT 'Độ lệch chuẩn biến động VN-Index lịch sử tối đa',
+    vnindex_daily_return                        Nullable(Decimal(38,20)) COMMENT 'Lợi suất ngày VN-Index Rt',
+    systemic_vol_current                        Nullable(Decimal(38,20))  COMMENT 'Độ lệch chuẩn biến động VN-Index 20 phiên (annualized)',
+    systemic_vol_max                            Nullable(Decimal(38,20))  COMMENT 'Độ lệch chuẩn biến động VN-Index lịch sử tối đa',
     systemic_vol                                Nullable(Decimal(5,2))  COMMENT 'Chỉ số biến động hệ thống',
     systemic_vol_status                         Nullable(String)        COMMENT 'Ngưỡng trạng thái Systemic Vol',
     vnindex_val_previous_day                    Nullable(Decimal(23,2)) COMMENT 'Điểm chứng khoán VN-Index phiên trước',
-    vnindex_daily_return_average                Nullable(Decimal(18,10)) COMMENT 'Lợi suất VN-Index trung bình N phiên',
+    vnindex_daily_return_average                Nullable(Decimal(38,20)) COMMENT 'Lợi suất VN-Index trung bình N phiên',
     index_val_monthly_average                   Nullable(Decimal(23,2)) COMMENT 'Chỉ số Index bình quân tháng',
     total_trading_val_matched                   Nullable(Decimal(23,2)) COMMENT 'Tổng GTGD khớp lệnh toàn thị trường ngày t',
     total_trading_val_matched_previous_day      Nullable(Decimal(23,2)) COMMENT 'Tổng GTGD khớp lệnh ngày giao dịch trước',
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_sector_risk_snpst_flat ON CLUSTER '
     total_val_sector    Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị giao dịch toàn bộ cổ phiếu trong ngành ngày t',
     total_market_cap_sector          Nullable(Decimal(23,2)) COMMENT 'Tổng vốn hóa thị trường toàn ngành ngày t (TotalCap_Sector)',
     stress_score_sector               Nullable(Decimal(5,2))  COMMENT 'Chỉ số căng thẳng ngành tổng hợp — weighted average StressScore theo tỷ trọng vốn hóa',
-    sector_liquid_score                Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ thanh khoản ngành = Tổng GTGD ngành / Tổng vốn hóa ngành',
+    sector_liquid_score                Nullable(Decimal(38,20))  COMMENT 'Tỷ lệ thanh khoản ngành = Tổng GTGD ngành / Tổng vốn hóa ngành',
     stress_score_sector_previous_day  Nullable(Decimal(5,2))  COMMENT 'Sector Stress Score kỳ (ngày giao dịch) trước',
     sector_stress_delta                Nullable(Decimal(5,2))  COMMENT 'Biến động áp lực ngành = Stress Score Sector kỳ này trừ kỳ trước',
     sector_rating                       Nullable(String)        COMMENT 'Xếp hạng mức độ căng thẳng ngành',
@@ -264,18 +264,24 @@ COMMENT 'Flat table — Fact Proprietary Net Trade Snapshot × Calendar Date Dim
 CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_market_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Corporate Bond Market Snapshot
-    snpst_dt_dim_id                        String                  COMMENT 'FK → Calendar Date Dimension',
-    par_val                                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
-    outstanding_vol                         Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành toàn thị trường ngày t (HNX niêm yết + riêng lẻ)',
-    bond_outstanding_val                    Nullable(Decimal(23,2)) COMMENT 'Tổng dư nợ trái phiếu toàn thị trường ngày t',
-    maturity_pressure_12_months             Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng',
-    maturity_pressure_12_months_previous    Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng tại kỳ liền trước',
-    maturity_pressure_growth_percentage     Nullable(Decimal(5,2))  COMMENT 'Tăng trưởng áp lực đáo hạn',
-    bond_trading_val                        Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu toàn thị trường ngày t (Market ID HCX, HNX)',
-    bond_yield_weighted_average             Nullable(Decimal(9,4))  COMMENT 'Lợi suất TP bình quân gia quyền GTGD ngày t',
+    snpst_dt_dim_id                      String                  COMMENT 'FK → Calendar Date Dimension',
+    par_val                              Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
+    outstanding_vol                      Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành toàn thị trường ngày t (HNX niêm yết + riêng lẻ)',
+    bond_outstanding_val                 Nullable(Decimal(23,2)) COMMENT 'Tổng dư nợ trái phiếu toàn thị trường ngày t',
+    maturity_pressure_12_months          Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng',
+    maturity_pressure_12_months_previous Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng tại kỳ liền trước',
+    maturity_pressure_growth_percentage  Nullable(Decimal(5,2))  COMMENT 'Tăng trưởng áp lực đáo hạn',
+    bond_trading_val                     Nullable(Decimal(23,2)) COMMENT 'GTGD trái phiếu toàn thị trường ngày t (Market ID HCX, HNX)',
+    bond_yield_weighted_average          Nullable(Decimal(9,4))  COMMENT 'Lợi suất TP bình quân gia quyền GTGD ngày t',
+    outstanding_vol_listed               Nullable(Decimal(23,2)) COMMENT 'KL trái phiếu NIÊM YẾT (HNX) lưu hành ngày t — thành phần niêm yết của outstanding_vol',
+    outstanding_vol_private              Nullable(Decimal(23,2)) COMMENT 'KL trái phiếu RIÊNG LẺ lưu hành ngày t — thành phần riêng lẻ của outstanding_vol (kỳ báo cáo gần nhất không vượt tháng ngày t)',
+    bond_outstanding_val_listed          Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu NIÊM YẾT ngày t = mệnh giá × KL niêm yết lưu hành',
+    bond_outstanding_val_private         Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu RIÊNG LẺ ngày t = mệnh giá × KL riêng lẻ lưu hành',
+    maturity_pressure_12_months_listed   Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng của trái phiếu NIÊM YẾT — thành phần niêm yết của maturity_pressure_12_months',
+    maturity_pressure_12_months_private  Nullable(Decimal(23,2)) COMMENT 'Áp lực đáo hạn 12 tháng của trái phiếu RIÊNG LẺ — thành phần riêng lẻ của maturity_pressure_12_months',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                            Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
+    snpst_cdr_dt                         Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
@@ -293,30 +299,31 @@ COMMENT 'Flat table — Fact Corporate Bond Market Snapshot × Calendar Date Dim
 CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_maturity_wall_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Corporate Bond Maturity Wall
-    snpst_dt_dim_id      String            COMMENT 'FK → Calendar Date Dimension',
-    securities_dim_id    Nullable(String)  COMMENT 'FK → Securities Dimension (chỉ luồng LISTED)',
-    ranking_code          Nullable(String)  COMMENT 'Xếp hạng tín nhiệm DN',
-    bond_flow_code        String            COMMENT 'Luồng nguồn: LISTED / PRIVATE',
-    bond_code             String            COMMENT 'Mã trái phiếu',
-    par_val               Nullable(Decimal(23,2)) COMMENT 'Mệnh giá',
-    outstanding_vol       Nullable(Decimal(23,2)) COMMENT 'KL lưu hành',
-    bond_outstanding_val  Nullable(Decimal(23,2)) COMMENT 'Dư nợ = mệnh giá × KL lưu hành',
-    maturity_dt           Nullable(Date)    COMMENT 'Ngày đáo hạn',
+    snpst_dt_dim_id      String                  COMMENT 'FK → Calendar Date Dimension',
+    securities_dim_id    Nullable(String)        COMMENT 'FK → Securities Dimension (chỉ luồng LISTED)',
+    ranking_code         Nullable(String)        COMMENT 'Xếp hạng tín nhiệm DN',
+    bond_flow_code       String                  COMMENT 'Luồng nguồn: LISTED / PRIVATE',
+    bond_code            String                  COMMENT 'Mã trái phiếu',
+    par_val              Nullable(Decimal(23,2)) COMMENT 'Mệnh giá',
+    outstanding_vol      Nullable(Decimal(23,2)) COMMENT 'KL lưu hành',
+    bond_outstanding_val Nullable(Decimal(23,2)) COMMENT 'Dư nợ = mệnh giá × KL lưu hành',
+    maturity_dt          Nullable(Date)          COMMENT 'Ngày đáo hạn',
+    data_dt              String                  COMMENT 'Ngày ETL nạp dữ liệu (yyyy-MM-dd) — technical field, cột partition của chiến lược append (mỗi lần chạy ghi 1 partition data_dt = :etl_date)',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt          Nullable(Date)    COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+    snpst_cdr_dt         Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
 
     -- From: SECURITIES DIMENSION
-    symbol                 Nullable(String)  COMMENT 'Mã chứng khoán — từ Securities Dimension',
-    security_full_nm       Nullable(String)  COMMENT 'Tên đầy đủ chứng khoán — từ Securities Dimension',
-    stock_tp_code          Nullable(String)  COMMENT 'Loại chứng khoán — từ Securities Dimension',
-    floor_code             Nullable(String)  COMMENT 'Sàn giao dịch — từ Securities Dimension',
-    listed_share_count     Nullable(Int64)   COMMENT 'Số lượng cổ phiếu niêm yết — từ Securities Dimension',
-    total_listing_vol      Nullable(Int64)   COMMENT 'Tổng KL niêm yết — từ Securities Dimension',
-    underlying_symbol      Nullable(String)  COMMENT 'Mã chỉ số cơ sở — từ Securities Dimension',
-    issuer_nm              Nullable(String)  COMMENT 'Tên tổ chức phát hành — từ Securities Dimension',
-    listing_dt             Nullable(Date)    COMMENT 'Ngày niêm yết — từ Securities Dimension',
-    symbol_status_code     Nullable(String)  COMMENT 'Trạng thái mã — từ Securities Dimension'
+    symbol               Nullable(String)        COMMENT 'Mã chứng khoán — từ Securities Dimension',
+    security_full_nm     Nullable(String)        COMMENT 'Tên đầy đủ chứng khoán — từ Securities Dimension',
+    stock_tp_code        Nullable(String)        COMMENT 'Loại chứng khoán — từ Securities Dimension',
+    floor_code           Nullable(String)        COMMENT 'Sàn giao dịch — từ Securities Dimension',
+    listed_share_count   Nullable(Int64)         COMMENT 'Số lượng cổ phiếu niêm yết — từ Securities Dimension',
+    total_listing_vol    Nullable(Int64)         COMMENT 'Tổng KL niêm yết — từ Securities Dimension',
+    underlying_symbol    Nullable(String)        COMMENT 'Mã chỉ số cơ sở — từ Securities Dimension',
+    issuer_nm            Nullable(String)        COMMENT 'Tên tổ chức phát hành — từ Securities Dimension',
+    listing_dt           Nullable(Date)          COMMENT 'Ngày niêm yết — từ Securities Dimension',
+    symbol_status_code   Nullable(String)        COMMENT 'Trạng thái mã — từ Securities Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
@@ -334,22 +341,22 @@ COMMENT 'Flat table — Fact Corporate Bond Maturity Wall × Calendar Date Dimen
 CREATE TABLE IF NOT EXISTS datamart.pttt_fct_corporate_bond_sector_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Corporate Bond Sector Snapshot
-    snpst_dt_dim_id             String                  COMMENT 'FK → Calendar Date Dimension',
-    corp_bond_industry_dim_id     String                  COMMENT 'FK → Corp Bond Industry Dimension',
-    bond_outstanding_val         Nullable(Decimal(23,2)) COMMENT 'Tổng dư nợ trái phiếu theo ngành TCPH tại ngày t',
-    bond_outstanding_val_total   Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu toàn thị trường tại ngày t',
-    bond_outstanding_ratio       Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng dư nợ trái phiếu theo ngành TCPH',
+    snpst_dt_dim_id            String                  COMMENT 'FK → Calendar Date Dimension',
+    corp_bond_industry_dim_id  Nullable(String)        COMMENT 'FK → Corp Bond Industry Dimension',
+    bond_outstanding_val       Nullable(Decimal(23,2)) COMMENT 'Tổng dư nợ trái phiếu theo ngành TCPH tại ngày t',
+    bond_outstanding_val_total Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu toàn thị trường tại ngày t',
+    bond_outstanding_ratio     Nullable(Decimal(5,2))  COMMENT 'Tỷ trọng dư nợ trái phiếu theo ngành TCPH',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                 Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+    snpst_cdr_dt               Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
 
     -- From: CORP BOND SECTOR DIMENSION
-    industry_code                   Nullable(String)        COMMENT 'Mã ngành nghề TCPH — từ Corp Bond Industry Dimension',
-    industry_nm                     Nullable(String)        COMMENT 'Tên ngành nghề TCPH — từ Corp Bond Industry Dimension'
+    industry_code              Nullable(String)        COMMENT 'Mã ngành nghề TCPH — từ Corp Bond Industry Dimension',
+    industry_nm                Nullable(String)        COMMENT 'Tên ngành nghề TCPH — từ Corp Bond Industry Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), corp_bond_industry_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(corp_bond_industry_dim_id))
 COMMENT 'Flat table — Fact Corporate Bond Sector Snapshot × Calendar Date Dimension × Corp Bond Industry Dimension'
 ;
 
@@ -456,21 +463,23 @@ COMMENT 'Flat table — Fact Market Statistics Snapshot × Calendar Date Dimensi
 CREATE TABLE IF NOT EXISTS datamart.pttt_opr_corporate_bond_issuer_credit_monitor_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Corporate Bond Issuer Credit Monitor
-    issuer_symbol_code    String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = SUBSTR(symbol, 1, 3)',
-    snpst_dt               Date                    COMMENT 'PK — ngày thống kê',
-    bond_outstanding_val   Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu per TCPH tại ngày t',
-    par_val                 Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
-    outstanding_vol         Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành per TCPH tại ngày t',
-    audit_opinion_text      Nullable(String)        COMMENT 'Ý kiến kiểm toán per TCPH',
-    ranking_code             Nullable(String)        COMMENT 'Xếp hạng tín nhiệm per TCPH',
-    risk_rating_text         Nullable(String)        COMMENT 'Xếp loại rủi ro per TCPH',
-    total_liabilities_amt    Nullable(Decimal(23,2)) COMMENT 'Tổng nợ phải trả per TCPH tại kỳ báo cáo gần nhất',
-    owner_equity_ending_amt  Nullable(Decimal(23,2)) COMMENT 'VCSH cuối kỳ per TCPH',
+    issuer_symbol_code         String                  COMMENT 'PK — mã trái phiếu (symbol); TCPH xác định qua public_company.equity_ticker_symbol = SUBSTR(symbol, 1, 3)',
+    snpst_dt                   Date                    COMMENT 'PK — ngày thống kê',
+    bond_outstanding_val       Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu per TCPH tại ngày t',
+    par_val                    Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
+    outstanding_vol            Nullable(Decimal(23,2)) COMMENT 'KL TP lưu hành per TCPH tại ngày t',
+    audit_opinion_text         Nullable(String)        COMMENT 'Ý kiến kiểm toán per TCPH',
+    ranking_code               Nullable(String)        COMMENT 'Xếp hạng tín nhiệm per TCPH',
+    risk_rating_text           Nullable(String)        COMMENT 'Xếp loại rủi ro per TCPH',
+    total_liabilities_amt      Nullable(Decimal(23,2)) COMMENT 'Tổng nợ phải trả per TCPH tại kỳ báo cáo gần nhất',
+    owner_equity_ending_amt    Nullable(Decimal(23,2)) COMMENT 'VCSH cuối kỳ per TCPH',
     owner_equity_beginning_amt Nullable(Decimal(23,2)) COMMENT 'VCSH đầu kỳ per TCPH',
-    owner_equity_average_amt  Nullable(Decimal(23,2)) COMMENT 'VCSH bình quân per TCPH',
-    net_profit_after_tax_amt  Nullable(Decimal(23,2)) COMMENT 'LNST per TCPH',
-    debt_to_equity_ratio      Nullable(Decimal(8,2))  COMMENT 'Hệ số D/E per TCPH',
-    roe_pct                    Nullable(Decimal(8,4))  COMMENT 'ROE per TCPH'
+    owner_equity_average_amt   Nullable(Decimal(23,2)) COMMENT 'VCSH bình quân per TCPH',
+    net_profit_after_tax_amt   Nullable(Decimal(23,2)) COMMENT 'LNST per TCPH',
+    debt_to_equity_ratio       Nullable(Decimal(8,2))  COMMENT 'Hệ số D/E per TCPH',
+    roe_pct                    Nullable(Decimal(8,4))  COMMENT 'ROE per TCPH',
+    data_dt                    String                  COMMENT 'Ngày ETL nạp dữ liệu (yyyy-MM-dd) — technical field',
+    src_stm_code               String                  COMMENT 'Mã hệ thống nguồn dữ liệu — lấy từ bản ghi cuối phiên của security_trading_snapshot'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(snpst_dt)
@@ -488,13 +497,14 @@ COMMENT 'Flat table — Operational Corporate Bond Issuer Credit Monitor'
 CREATE TABLE IF NOT EXISTS datamart.pttt_fct_macro_indicator_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_MACRO_INDICATOR_SNPST
+    macro_indicator_val_id                       String                  COMMENT 'PK — Driving: cl_risk_indicator_value. Grain = 1 chỉ tiêu vĩ mô × 1 kỳ công bố (1 dòng Atomic); khóa dòng = id dòng Atomic.',
     snpst_dt_dim_id                              String                  COMMENT 'FK đến Calendar Date Dimension — khóa ngày chụp số liệu vĩ mô',
     macro_indicator_code                         String                  COMMENT 'Mã định danh chỉ tiêu vĩ mô/tiền tệ (VD: INTERBANK_IR, EX_RATE_VND_USD, CPI_VN, GDP_VN, DXY)',
     macro_indicator_name                         String                  COMMENT 'Tên chỉ tiêu vĩ mô/tiền tệ',
     period_tp_code                               String                  COMMENT 'Mã loại kỳ báo cáo: 1=Ngày, 2=Tháng, 3=Quý, 4=Năm',
     period_label                                 Nullable(String)        COMMENT 'Nhãn hiển thị kỳ báo cáo (VD: 2026-03, 2026-Q1, 2026)',
     indicator_val                                Decimal(23,4)           COMMENT 'Giá trị chỉ tiêu vĩ mô tại kỳ báo cáo này',
-    unit_tp_code                                 Nullable(String)        COMMENT '[MỚI 2026-10-28, O_VP_41] Mã đơn vị của giá trị chỉ tiêu (MRMS UNIT_TYPE: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính) — cần để quy đổi giá trị về cùng đơn vị (VD GDP về VND: mã 3 ×1.000.000.000, mã 8 ×1). Mã 23 (Triệu VND) xuất hiện trong câu lệnh BA VP nhưng không có trong danh sách mô tả của Atomic — O_VP_41.',
+    unit_tp_code                                 Nullable(String)        COMMENT 'Mã đơn vị của giá trị chỉ tiêu (MRMS UNIT_TYPE: 1=%, 2=Điểm, 3=Tỷ VND, 4=Triệu USD, 5=Hợp đồng, 6=Cổ phiếu, 7=Công ty, 8=VND, 9=Số tài khoản, 10=Đơn vị tính) — dùng để quy đổi giá trị chỉ tiêu về cùng đơn vị tính',
     prev_period_val                              Nullable(Decimal(23,4)) COMMENT 'Giá trị chỉ tiêu vĩ mô ở kỳ báo cáo liền trước (t-1)',
     pct_change                                   Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % so với kỳ liền trước ((t - t-1) / t-1 * 100)',
     yoy_pct_change                               Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ tăng trưởng % cùng kỳ năm trước (YoY)',
@@ -513,7 +523,7 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_macro_indicator_snpst_flat ON CLUST
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), snpst_dt_dim_id)
+ORDER BY (assumeNotNull(cdr_dt), macro_indicator_val_id)
 COMMENT 'Flat table — Fact Macro Indicator Snapshot — chỉ tiêu vĩ mô, lãi suất LNH, tỷ giá, CPI, GDP, DXY'
 ;
 
@@ -559,13 +569,15 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_securities_company_safety_snpst_fla
 (
     -- From: FACT Securities Company Safety Snapshot
     snpst_dt_dim_id            String                  COMMENT 'FK → Calendar Date Dimension',
-    securities_company_dim_id  String                  COMMENT 'FK → Securities Company Dimension',
+    securities_company_dim_id  Nullable(String)        COMMENT 'FK → Securities Company Dimension',
     rpt_year                   Int32                   COMMENT 'Năm báo cáo',
     period_nbr                 Int32                   COMMENT 'Tháng báo cáo (1–12)',
-    margin_debt_amt            Nullable(Decimal(23,2)) COMMENT 'Dư nợ margin của CTCK (VND) — SCMS BCTHHD_CTCK ô TS024',
-    owner_equity_amt           Nullable(Decimal(23,2)) COMMENT 'VCSH của CTCK (VND) — 1 báo cáo được chọn: BCTCHN ô TS359 / BCTCRL ô TS223, TS221',
+    margin_debt_amt            Nullable(Decimal(23,2)) COMMENT 'Dư nợ margin của CTCK (VND; ô TS024 nguồn tính bằng triệu đồng, nhân 1.000.000) — SCMS BCTHHD_CTCK, sheet II.8',
+    owner_equity_amt           Nullable(Decimal(23,2)) COMMENT 'VCSH của CTCK (VND) — báo cáo QUÝ CHUNG gần nhất không quá cuối tháng snapshot: BCTCHN ô TS359 (sheet 06620) / BCTCRL ô TS223, TS221 (sheet 06608)',
+    owner_equity_period_end_dt Nullable(Date)          COMMENT 'Ngày kết thúc của quý báo cáo dùng để tính owner_equity_amt (quý chung); NULL khi CTCK không có báo cáo của quý chung',
+    total_liabilities_amt      Nullable(Decimal(23,2)) COMMENT 'Tổng nợ phải trả của CTCK cùng báo cáo/quý chung với VCSH (VND) — BCTCHN ô TS275 (sheet 06620); BCTCRL ô TS137 (sheet 06608); NULL khi CTCK không có báo cáo của quý chung',
     margin_to_equity_ratio     Nullable(Decimal(8,2))  COMMENT 'Tỷ lệ dư nợ margin / VCSH (%)',
-    capital_adequacy_ratio     Nullable(Decimal(8,2))  COMMENT 'Tỷ lệ vốn khả dụng (%) — SCMS BCTLAT ô TS006',
+    capital_adequacy_ratio     Nullable(Decimal(8,2))  COMMENT 'Tỷ lệ vốn khả dụng (%) — SCMS BCTLAT ô TS006, sheet 06H08',
     src_stm_code               String                  COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
@@ -577,6 +589,6 @@ CREATE TABLE IF NOT EXISTS datamart.pttt_fct_securities_company_safety_snpst_fla
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), securities_company_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(securities_company_dim_id))
 COMMENT 'Flat table — Fact Securities Company Safety Snapshot × Calendar Date Dimension × Securities Company Dimension'
 ;
