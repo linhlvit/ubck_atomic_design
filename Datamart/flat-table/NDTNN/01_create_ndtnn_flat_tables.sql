@@ -190,6 +190,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_public_company_foreign_ownership_s
     current_foreign_holding_quantity Nullable(Int64)        COMMENT 'Số lượng CP NĐTNN đang nắm giữ hiện tại',
     remaining_foreign_holding_quantity Nullable(Int64)      COMMENT 'Số lượng CP còn lại NĐTNN có thể mua thêm (room còn lại)',
     src_stm_code                     String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+    foreign_holding_value                        Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phiếu NĐTNN đang nắm giữ (VND) = Current Foreign Holding Quantity × giá đóng cửa gần nhất ≤ ngày snapshot — tử số và mẫu số K_NDTNN_51 (tỷ trọng danh mục theo ngành, Nhóm 8). [THÊM 2026-11-03] Đặt tại Fact NDTNN để K_NDTNN_51 không đọc Fact của module GSDC; công thức giữ như cột cùng tên ở Fact Public Company Foreign Holding Snapshot (GSDC), cột đó giữ nguyên. Mã không có giá đóng cửa ≤ ngày snapshot → NULL.',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                    Nullable(Date)           COMMENT 'Ngày snapshot — từ Calendar Date Dimension',

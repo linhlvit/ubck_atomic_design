@@ -191,6 +191,7 @@ SELECT
     f.current_foreign_holding_quantity,
     f.remaining_foreign_holding_quantity,
     f.src_stm_code,
+    f.foreign_holding_value,
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cal.cdr_dt                       AS snpst_cdr_dt,

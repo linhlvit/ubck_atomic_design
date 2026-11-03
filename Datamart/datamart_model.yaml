@@ -16926,6 +16926,15 @@ entities:
         description: "Mã hệ thống nguồn — forward-compat khi Fact có thêm nguồn khác ngoài VSDC"
         source_atomic_table: "foreign_ownership_information"
         source_atomic_column: "foreign_ownership_information.src_stm_code"
+      - logical_name: "Foreign Holding Value"
+        physical_name: "foreign_holding_value"
+        data_domain: "Currency Amount"
+        data_type: "decimal(23,2)"
+        nullable: true
+        key: ""
+        description: "Giá trị cổ phiếu NĐTNN đang nắm giữ (VND) = Current Foreign Holding Quantity × giá đóng cửa gần nhất ≤ ngày snapshot — tử số và mẫu số K_NDTNN_51 (tỷ trọng danh mục theo ngành, Nhóm 8). [THÊM 2026-11-03] Đặt tại Fact NDTNN để K_NDTNN_51 không đọc Fact của module GSDC; công thức giữ như cột cùng tên ở Fact Public Company Foreign Holding Snapshot (GSDC), cột đó giữ nguyên. Mã không có giá đóng cửa ≤ ngày snapshot → NULL."
+        source_atomic_table: "foreign_ownership_information / security_trading_snapshot"
+        source_atomic_column: "foreign_ownership_information / security_trading_snapshot.current_foreign_holding_quantity / close_price"
 
   - id: "DTM-fct_securities_company_financial_structure_snpst"
     logical_name: "Fact Securities Company Financial Structure Snapshot"
