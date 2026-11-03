@@ -1,0 +1,225 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: HNX
+table: TRADE_BOOK
+brd_ref: BRD-SRC-HNX-TRADE_BOOK
+columns:
+- name: TRADE_DATE
+  data_type: STRING
+  description: Ngày giao dịch của trade. Định dạng yyyymmdd
+  key: null
+  fk_note: null
+- name: MARKET_ID
+  data_type: STRING
+  description: 'Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market
+    có rule riêng.'
+  key: null
+  fk_note: null
+- name: BOARD_ID
+  data_type: STRING
+  description: 'Loại bảng giao dịch: xác định kiểu mua bán trong thị trường.'
+  key: null
+  fk_note: null
+- name: ISSUE_CODE
+  data_type: STRING
+  description: 'Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường
+    là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa.'
+  key: null
+  fk_note: null
+- name: TRADE_NUMBER
+  data_type: BIGINT
+  description: 'ID của giao dịch. Dùng để: Unique key, Audit, Tracking trade (BK)'
+  key: null
+  fk_note: null
+- name: TRADE_TIME
+  data_type: STRING
+  description: Thời điểm giao dịch xảy ra. Định dạng hh24misss
+  key: null
+  fk_note: null
+- name: TRADE_PRICE
+  data_type: DECIMAL(38,4)
+  description: Giá khớp của giao dịch
+  key: null
+  fk_note: null
+- name: TRADE_QUANTITY
+  data_type: BIGINT
+  description: Khối lượng giao dịch
+  key: null
+  fk_note: null
+- name: SESSION_ID
+  data_type: STRING
+  description: 'Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.'
+  key: null
+  fk_note: null
+- name: SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
+  data_type: STRING
+  description: 'Mã xác định hành động sửa hoặc hủy của lệnh bên BÁN (Sell order) liên
+    quan đến giao dịch hoặc message hiện tại.'
+  key: null
+  fk_note: null
+- name: SELL_MEMBER_NUMBER
+  data_type: STRING
+  description: Mã định danh của công ty chứng khoán (broker) thực hiện lệnh bán
+  key: null
+  fk_note: null
+- name: SELL_ACCOUNT_NUMBER
+  data_type: STRING
+  description: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
+  key: null
+  fk_note: null
+- name: SELL_ORDER_TYPE_CODE
+  data_type: STRING
+  description: 'Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý
+    theo cơ chế nào khi vào thị trường.'
+  key: null
+  fk_note: null
+- name: SELL_ORDER_CONDITION_CODE
+  data_type: STRING
+  description: 'Là mã xác định điều kiện hiệu lực và cách xử lý của lệnh bán theo
+    thời gian và trạng thái khớp.'
+  key: null
+  fk_note: null
+- name: SELL_CLIENT_HOUSE_CLASSIFICATION
+  data_type: STRING
+  description: 'Mã phân loại lệnh bán thuộc về khách hàng (client) hay tự doanh (house)
+    của công ty chứng khoán.'
+  key: null
+  fk_note: null
+- name: SELL_INVESTOR_CLASSIFICATION_CODE
+  data_type: STRING
+  description: 'Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân,
+    phục vụ giám sát, thống kê và quản lý thị trường.'
+  key: null
+  fk_note: null
+- name: SELL_ORDER_QUANTITY
+  data_type: DECIMAL(20,0)
+  description: Khối lượng đặt bán
+  key: null
+  fk_note: null
+- name: SELL_ORDER_PRICE
+  data_type: DECIMAL(38,4)
+  description: 'Giá đặt bán.'
+  key: null
+  fk_note: null
+- name: BUY_MEMBER_NUMBER
+  data_type: STRING
+  description: Mã/số công ty chứng khoán thực hiện giao dịch mua
+  key: null
+  fk_note: null
+- name: BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
+  data_type: STRING
+  description: 'Loại hành động đối với lệnh mua hiện tại.
+    3 Cancel'
+  key: null
+  fk_note: null
+- name: BUY_ACCOUNT_NUMBER
+  data_type: STRING
+  description: Mã tài khoản thực hiện giao dịch mua
+  key: null
+  fk_note: null
+- name: BUY_ORDER_TYPE_CODE
+  data_type: STRING
+  description: 'Loại lệnh mua.'
+  key: null
+  fk_note: null
+- name: BUY_ORDER_CONDITION_CODE
+  data_type: STRING
+  description: 'Điều kiện thực hiện lệnh mua.'
+  key: null
+  fk_note: null
+- name: BUY_CLIENT_HOUSE_CLASSIFICATION
+  data_type: STRING
+  description: 'Lệnh mua của khách hàng (client) hay của chính công ty chứng khoán
+    (house).'
+  key: null
+  fk_note: null
+- name: BUY_INVESTOR_CLASSIFICATION_CODE
+  data_type: STRING
+  description: 'Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân.'
+  key: null
+  fk_note: null
+- name: BUY_ORDER_QUANTITY
+  data_type: DECIMAL(20,0)
+  description: Khối lượng đặt mua
+  key: null
+  fk_note: null
+- name: BUY_ORDER_PRICE
+  data_type: DECIMAL(38,4)
+  description: 'Giá đặt mua.'
+  key: null
+  fk_note: null
+- name: MESSAGE_SEQUENCE
+  data_type: DECIMAL(20,0)
+  description: Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo
+    các message được xử lý đúng thứ tự
+  key: null
+  fk_note: null
+- name: SELL_ORDER_RECEPTION_NUMBER
+  data_type: DECIMAL(20,0)
+  description: Số định danh của lệnh bán tại thời điểm hệ thống (KRX hoặc gateway)
+    tiếp nhận lệnh
+  key: null
+  fk_note: null
+- name: BUY_ORDER_RECEPTION_NUMBER
+  data_type: DECIMAL(20,0)
+  description: Số định danh của lệnh mua tại thời điểm hệ thống (KRX hoặc gateway)
+    tiếp nhận lệnh
+  key: null
+  fk_note: null
+- name: SELL_QUOTE_REQUEST_CODE
+  data_type: STRING
+  description: 'Mã xác định loại yêu cầu báo giá của bên bán.'
+  key: null
+  fk_note: null
+- name: BUY_QUOTE_REQUEST_CODE
+  data_type: STRING
+  description: 'Mã xác định loại yêu cầu báo giá của bên mua.'
+  key: null
+  fk_note: null
+- name: EXECUTION_PRICE_OF_SPREAD_FIRST
+  data_type: STRING
+  description: Giá khớp của leg thứ nhất (First leg) trong spread
+  key: null
+  fk_note: null
+- name: EXECUTION_PRICE_OF_SPREAD_SECOND
+  data_type: STRING
+  description: Giá khớp của leg thứ hai (Second leg)
+  key: null
+  fk_note: null
+- name: SELL_FOREIGN_INVESTOR_TYPE_CODE
+  data_type: STRING
+  description: 'Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao
+    dịch bán.'
+  key: null
+  fk_note: null
+- name: BUY_FOREIGN_INVESTOR_TYPE_CODE
+  data_type: STRING
+  description: 'Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao
+    dịch mua.'
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_DAY
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: DS_SNPST_DT
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: DS_ETL_PCS_TMS
+  data_type: TIMESTAMP
+  description: null
+  key: null
+  fk_note: null

@@ -104,7 +104,6 @@ erDiagram
 | JAD_CORPBONDINFOR.interest_coupon_type | Kiểu trả lãi: Standard/Long/Short/Zero Coupon | `MDDS_COUPON_TYPE` | source_table | |
 | JAD_CORPBONDINFOR.interestrate_type | Loại lãi suất: Cố định/Thả nổi | `MDDS_INTEREST_RATE_TYPE` | source_table | |
 | JAD_CORPBONDINFOR.securitytradingstatus | Trạng thái TPDN: 0-bình thường, 10-tạm ngừng, 11-hạn chế | `MDDS_SECURITY_TRADING_STATUS` | source_table | |
-| JAD_TRANSLOG.lastColor / JAD_STOCKINFOR.lastcolor | Chiều mua/bán chủ động | `MDDS_TRADE_DIRECTION` | etl_derived | Indicator tăng/giảm, cần profile giá trị thực |
 
 ---
 

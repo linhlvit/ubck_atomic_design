@@ -14,10 +14,10 @@
 | T1 | Foreign Ownership Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.foreign_investor_info | Sở hữu NĐTNN theo mã |
 | T1 | Listed Share Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.outstanding_shares, HNX.listed_securities_list, HOSE.listed_securities_list | Entity dùng chung 3 nguồn, phân biệt qua `src_stm_code` |
 | T1 | Major Shareholder Ownership | Involved Party | [Involved Party] Organization Ownership | Fact Snapshot | VSDC.major_shareholder | Cổ đông lớn theo mã × kỳ |
-| T2 | Closed Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Snapshot | VSDC.closed_investors | Tài khoản đóng trong kỳ |
+| T2 | Closed Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Append | VSDC.closed_investors | Tài khoản đóng trong kỳ |
 | T2 | Foreign Bond Portfolio | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.foreign_investor_bond_portfolio | Danh mục trái phiếu NĐTNN |
-| T2 | Open Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Snapshot | VSDC.open_investors | Tài khoản mở mới trong kỳ |
-| T2 | Updated Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Snapshot | VSDC.updated_investors | Tài khoản thay đổi thông tin trong kỳ |
+| T2 | Open Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Append | VSDC.open_investors | Tài khoản mở mới trong kỳ |
+| T2 | Updated Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Append | VSDC.updated_investors | Tài khoản thay đổi thông tin trong kỳ |
 
 **Tổng: 9 Atomic entities** (5 Tier 1, 4 Tier 2)
 *(Trong đó: 0 shared entities extend từ source khác — `Listed Share Information` được VSDC định nghĩa, HNX/HOSE bổ sung source_table)*
@@ -72,10 +72,10 @@ graph TD
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | foreign_investor_info | Append | Sở hữu nước ngoài theo mã chứng khoán | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | outstanding_shares | Append | Cơ cấu cổ phiếu theo mã và ngày chốt | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Involved Party | [Involved Party] Organization Ownership | Involved Party | major_shareholder | Append | Cổ đông lớn theo mã chứng khoán và kỳ | Major Shareholder Ownership | Fact Snapshot | Organization Ownership (11558) — Core Object Involved Party theo chỉ định Data Modeler |
-| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | closed_investors | Append | Danh sách tài khoản đóng trong kỳ | Closed Investor Account | Fact Snapshot | Trading Account Arrangement (7562) |
+| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | closed_investors | Append | Danh sách tài khoản đóng trong kỳ | Closed Investor Account | Fact Append | Trading Account Arrangement (7562) |
 | T2 | Documentation | [Documentation] Regulatory Report | Documentation | foreign_investor_bond_portfolio | Append | Danh mục trái phiếu nắm giữ của NĐTNN theo tháng | Foreign Bond Portfolio | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | open_investors | Append | Danh sách tài khoản mở mới trong kỳ | Open Investor Account | Fact Snapshot | Trading Account Arrangement (7562) |
-| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | updated_investors | Append | Danh sách tài khoản thay đổi thông tin trong kỳ | Updated Investor Account | Fact Snapshot | Trading Account Arrangement (7562) |
+| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | open_investors | Append | Danh sách tài khoản mở mới trong kỳ | Open Investor Account | Fact Append | Trading Account Arrangement (7562) |
+| T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | updated_investors | Append | Danh sách tài khoản thay đổi thông tin trong kỳ | Updated Investor Account | Fact Append | Trading Account Arrangement (7562) |
 
 #### 7b. Diagram Atomic tổng (Mermaid)
 
@@ -120,6 +120,7 @@ erDiagram
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
 | nationality | Danh mục quốc tịch VSDC | [Common] Nationality | Nâng cấp thành entity thật `Classification VSDC Nationality` (không dùng scheme) |
+| registered_ownership_type | Danh mục loại đăng ký sở hữu VSDC (`investor_type` BIGINT = mã, `ownership_type` STRING = tên) — không có instance data | — (BCV không có term khớp: `Arrangement Ownership Type` phân biệt quan hệ sở hữu Arrangement, không khớp với loại đăng ký sở hữu chứng khoán) | Classification Value, scheme `VSDC_REGISTERED_OWNERSHIP_TYPE` (`modeler_defined`); các cột nguồn tham chiếu mã này giữ dạng Classification Value Code |
 
 #### 7d. Junction Tables
 
@@ -134,11 +135,14 @@ Không có junction table.
 | 3 | T1 | `Listed Share Information` gộp VSDC + HNX + HOSE vào 1 entity (nhiều cột nullable theo nguồn) | Có thể phải tách entity nếu không chấp nhận nullable |
 | 4 | T2 | Kiểu `nationality_code` (INT = `autoid` hay STRING) và áp dụng crosswalk cho `foreign_investor_bond_portfolio` | Thiết kế attribute LLD, rủi ro cast |
 | 5 | T1/T2 | Tên vật lý lấy theo DDL atomic hiện có; 3 phân hệ không có domain_prefix | Có thể phải rename ở LLD |
+| 6 | T1 | `registered_ownership_type` có Code (`investor_type` BIGINT) + Name nhưng cột `investor_type` ở `open_investors`/`closed_investors`/`updated_investors` là STRING "Loại hình (Cá nhân/Tổ chức)" — chưa rõ mã `investor_type` BIGINT map vào cột nào, và chưa có mô tả nguồn | Cần Data Modeler xác nhận cột tiêu thụ và ý nghĩa mã; giá trị scheme chưa profile |
+| 7 | T1 | `registered_ownership_type` xử lý thành Classification Value (theo quy tắc Code + Name), trong khi `nationality` được nâng thành entity thật theo chỉ định | Nếu muốn nhất quán với `Classification VSDC Nationality` thì nâng thành entity `Classification` (tên theo quy tắc #7, không chèn tên nguồn) |
 
 #### 7f. Bảng ngoài scope
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Reference Data | registered_ownership_type | Danh mục loại đăng ký sở hữu VSDC (mã + tên) | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
 | Fact Data | account_opening_closing_status | Trạng thái mở/đóng tài khoản (đã bỏ khỏi mapping) | Bỏ không còn khai thác theo quyết định Data Modeler — không còn trong DDL nguồn hiện tại |
 
 ---
@@ -193,7 +197,7 @@ Không có junction table.
 **Attributes chính:** `ticker_symbol`, `identification_nbr` (BK ghép), số cổ phiếu/tỷ lệ đầu–cuối kỳ, `isin_code`.
 
 ### 6. Closed Investor Account
-**Tier:** 2 | **Source:** `VSDC.closed_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Snapshot
+**Tier:** 2 | **Source:** `VSDC.closed_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Append
 **Domain Prefix:** (none)
 **Description:** Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư đã đóng trong kỳ, gồm thông tin chủ tài khoản, ngày đóng và ghi chú đóng tài khoản.
 
@@ -211,7 +215,7 @@ Không có junction table.
 **Attributes chính:** `foreign_investor_code` (BK), tên, phân loại NĐT, FK `nationality_code`, mã trái phiếu, khối lượng sở hữu, tháng báo cáo.
 
 ### 8. Open Investor Account
-**Tier:** 2 | **Source:** `VSDC.open_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Snapshot
+**Tier:** 2 | **Source:** `VSDC.open_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Append
 **Domain Prefix:** (none)
 **Description:** Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư mở mới trong kỳ, gồm thông tin chủ tài khoản và ngày mở tài khoản.
 
@@ -220,7 +224,7 @@ Không có junction table.
 **Attributes chính:** `investor_account_nbr` (BK), tên, loại hình, giấy tờ, `open_dt`, FK `nationality_code` → Classification VSDC Nationality.
 
 ### 9. Updated Investor Account
-**Tier:** 2 | **Source:** `VSDC.updated_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Snapshot
+**Tier:** 2 | **Source:** `VSDC.updated_investors` | **BCV Concept:** [Arrangement] Trading Account Arrangement | **BCO:** Arrangement | **Table Type:** Fact Append
 **Domain Prefix:** (none)
 **Description:** Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư có thay đổi thông tin trong kỳ, gồm thông tin chủ tài khoản, ngày thay đổi và ghi chú thay đổi.
 

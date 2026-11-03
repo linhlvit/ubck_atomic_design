@@ -1,0 +1,262 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: HOSE
+table: ORDER_BOOK
+brd_ref: BRD-SRC-HOSE-ORDER_BOOK
+columns:
+- name: TRADE_DATE
+  data_type: DATE
+  description: Ngày giao dịch theo thị trường chứng khoán
+  key: null
+  fk_note: null
+- name: MARKET_ID
+  data_type: STRING
+  description: 'Mã thị trường chứng khoán.'
+  key: null
+  fk_note: null
+- name: SYMBOL
+  data_type: STRING
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: CURRENCY
+  data_type: STRING
+  description: Đơn vị tiền tệ
+  key: null
+  fk_note: null
+- name: BOARD_TYPE
+  data_type: STRING
+  description: 'Loại bảng giao dịch mà lệnh được phân loại vào.'
+  key: null
+  fk_note: null
+- name: ORDER_DATE
+  data_type: DATE
+  description: Ngày đặt lệnh của người thực hiện giao dịch
+  key: null
+  fk_note: null
+- name: ORDER_TIME
+  data_type: STRING
+  description: Thời gian đặt lệnh của người thực hiện giao dịch
+  key: null
+  fk_note: null
+- name: SESSION
+  data_type: STRING
+  description: 'Phiên giao dịch của thị trường chứng khoán.'
+  key: null
+  fk_note: null
+- name: MODIFY_CANCEL
+  data_type: STRING
+  description: 'Sửa/Hủy lệnh.'
+  key: null
+  fk_note: null
+- name: ORDER_ACCEPT_ID
+  data_type: STRING
+  description: Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày
+    giao dịch, theo từng mã chứng khoán (BK phụ)
+  key: null
+  fk_note: null
+- name: ORIG_ORDER_ACCEPT_ID
+  data_type: STRING
+  description: Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ
+    thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán
+  key: null
+  fk_note: null
+- name: SIDE
+  data_type: STRING
+  description: 'Loại lệnh.'
+  key: null
+  fk_note: null
+- name: BRK_ID
+  data_type: STRING
+  description: Mã/số công ty chứng khoán
+  key: null
+  fk_note: null
+- name: BRK
+  data_type: STRING
+  description: Tên công ty chứng khoán
+  key: null
+  fk_note: null
+- name: PIN
+  data_type: STRING
+  description: Mã PIN của tài khoản giao dịch
+  key: null
+  fk_note: null
+- name: ACCT_NO
+  data_type: STRING
+  description: Mã/Số tài khoản giao dịch của nhà đầu tư
+  key: null
+  fk_note: null
+- name: NAME
+  data_type: STRING
+  description: Tên nhà đầu tư/chủ tài khoản nhà đầu tư
+  key: null
+  fk_note: null
+- name: MARKET_MAKER_ORDER
+  data_type: STRING
+  description: 'Lệnh đặt của nhà tạo lập thị trường.'
+  key: null
+  fk_note: null
+- name: CLIENT_HOUSE_CLASSIFICATION_CODE
+  data_type: STRING
+  description: 'Phân loại lệnh khách hàng/công ty.'
+  key: null
+  fk_note: null
+- name: INVEST_TYPE
+  data_type: STRING
+  description: 'Phân loại nhà đầu tư.'
+  key: null
+  fk_note: null
+- name: FOREIGNER_INVESTOR_TYPE
+  data_type: STRING
+  description: 'Phân loại đầu tư nước ngoài.'
+  key: null
+  fk_note: null
+- name: ORDER_TYPE
+  data_type: STRING
+  description: 'Loại lệnh theo giá.'
+  key: null
+  fk_note: null
+- name: ORDER_PRICE
+  data_type: DECIMAL(38,4)
+  description: Giá đặt lệnh
+  key: null
+  fk_note: null
+- name: ORDER_VOL
+  data_type: BIGINT
+  description: Khối lượng đặt lệnh
+  key: null
+  fk_note: null
+- name: ORDER_CONDITION
+  data_type: STRING
+  description: 'Điều kiện thực hiện lệnh - lệnh được khớp như thế nào.'
+  key: null
+  fk_note: null
+- name: LTP
+  data_type: DOUBLE
+  description: Giá khớp gần nhất trên thị trường (Last Traded Price)
+  key: null
+  fk_note: null
+- name: EXECUTION_PRICE
+  data_type: DOUBLE
+  description: Giá khớp lệnh thực tế
+  key: null
+  fk_note: null
+- name: IMMED_MATCHED_VOL
+  data_type: BIGINT
+  description: Khối lượng khớp ngay khi hệ thống ghi nhận lệnh
+  key: null
+  fk_note: null
+- name: MATCHED_VOL
+  data_type: BIGINT
+  description: Tổng khối lượng đã khớp của lệnh
+  key: null
+  fk_note: null
+- name: ORDER_RQTY
+  data_type: BIGINT
+  description: Khối lượng còn lại chưa khớp của lệnh (Order remaining quantity)
+  key: null
+  fk_note: null
+- name: ORDER_PRICE_LTP
+  data_type: DOUBLE
+  description: Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất
+  key: null
+  fk_note: null
+- name: MATCHED_RATIO
+  data_type: DOUBLE
+  description: Tỷ lệ khớp lệnh
+  key: null
+  fk_note: null
+- name: BUY_UP_SELL_DOWN_AMT
+  data_type: DOUBLE
+  description: Mức tăng/giảm giá so với tham chiếu theo giá trị
+  key: null
+  fk_note: null
+- name: BUY_UP_SELL_DOWN_TICK
+  data_type: DOUBLE
+  description: Mức tăng/giảm theo bước giá
+  key: null
+  fk_note: null
+- name: NEW_HIGH_LOW_PRICE
+  data_type: STRING
+  description: 'Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày,
+    theo từng mã chứng khoán. Giá trị: New High: Giá mới cao nhất tính đến thời điểm
+    khớp lệnh; New Low: Giá mới thấp nhất tính đến thời điểm khớp lệnh'
+  key: null
+  fk_note: null
+- name: ORDER_STATUS
+  data_type: STRING
+  description: 'Trạng thái của lệnh.'
+  key: null
+  fk_note: null
+- name: ICD_BUG_QTY
+  data_type: BIGINT
+  description: Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch
+  key: null
+  fk_note: null
+- name: EXPECTED_EXECUTION_PRICE
+  data_type: DOUBLE
+  description: Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
+  key: null
+  fk_note: null
+- name: EXPECTED_EXECUTION_VOLUME
+  data_type: BIGINT
+  description: Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong
+    ngày
+  key: null
+  fk_note: null
+- name: SHORT_SELL_INDICATOR
+  data_type: STRING
+  description: 'Phân loại lệnh bán khống. Giá trị: 00 - Không phải lệnh bán khống;
+    10 - Là lệnh bán khống'
+  key: null
+  fk_note: null
+- name: TRADER_NO
+  data_type: STRING
+  description: Mã/số định danh người thực hiện giao dịch
+  key: null
+  fk_note: null
+- name: TRADER_NAME
+  data_type: STRING
+  description: Tên người thực hiện giao dịch
+  key: null
+  fk_note: null
+- name: REFERENCE_SEQUENCE_NO
+  data_type: STRING
+  description: Số tham chiếu theo thứ tự giao dịch
+  key: null
+  fk_note: null
+- name: ORDER_ID
+  data_type: STRING
+  description: Mã định danh của lệnh đặt
+  key: null
+  fk_note: null
+- name: ORIG_ORDER_ID
+  data_type: STRING
+  description: Mã định danh của lệnh đặt trước khi chỉnh sửa
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_DAY
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: DS_SNPST_DT
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: DS_ETL_PCS_TMS
+  data_type: TIMESTAMP
+  description: null
+  key: null
+  fk_note: null

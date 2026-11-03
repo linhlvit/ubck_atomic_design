@@ -1,0 +1,267 @@
+schema_type: brd_source_columns
+schema_version: '1.0'
+source: HOSE
+table: TRADE_BOOK
+brd_ref: BRD-SRC-HOSE-TRADE_BOOK
+columns:
+- name: TRADE_DATE
+  data_type: DATE
+  description: Ngày giao dịch theo thị trường chứng khoán
+  key: null
+  fk_note: null
+- name: MARKET_ID
+  data_type: STRING
+  description: 'Mã thị trường chứng khoán.'
+  key: null
+  fk_note: null
+- name: SYMBOL
+  data_type: STRING
+  description: Mã chứng khoán
+  key: null
+  fk_note: null
+- name: CURRENCY
+  data_type: STRING
+  description: Đơn vị tiền tệ
+  key: null
+  fk_note: null
+- name: BOARD_TYPE
+  data_type: STRING
+  description: 'Loại bảng giao dịch mà lệnh được phân loại vào.'
+  key: null
+  fk_note: null
+- name: TRADE_NO
+  data_type: BIGINT
+  description: Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày
+    giao dịch, theo từng mã chứng khoán
+  key: null
+  fk_note: null
+- name: TIME
+  data_type: STRING
+  description: Thời gian diễn ra giao dịch khớp lệnh
+  key: null
+  fk_note: null
+- name: SESSION
+  data_type: BIGINT
+  description: 'Phiên giao dịch của thị trường chứng khoán.'
+  key: null
+  fk_note: null
+- name: EXECUTION_EXEC_PRICE
+  data_type: DECIMAL(38,4)
+  description: Giá khớp lệnh thực tế của giao dịch
+  key: null
+  fk_note: null
+- name: EXECUTION_EXEC_PRICE_LTP
+  data_type: DECIMAL(38,4)
+  description: Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán
+  key: null
+  fk_note: null
+- name: EXECUTION_VOLUME
+  data_type: BIGINT
+  description: Khối lượng khớp lệnh
+  key: null
+  fk_note: null
+- name: EXECUTION_VALUE
+  data_type: DECIMAL(38,4)
+  description: Tổng giá trị giao dịch của lệnh khớp
+  key: null
+  fk_note: null
+- name: EXECUTION_LTP
+  data_type: DECIMAL(38,4)
+  description: Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price)
+  key: null
+  fk_note: null
+- name: EXECUTION_NEW_HIGH_LOW_PRICE
+  data_type: STRING
+  description: 'Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày,
+    theo từng mã chứng khoán.'
+  key: null
+  fk_note: null
+- name: BUY_ORDER_DATE
+  data_type: DATE
+  description: Ngày đặt lệnh mua
+  key: null
+  fk_note: null
+- name: BUY_ORDER_TIME
+  data_type: STRING
+  description: Thời gian đặt lệnh mua
+  key: null
+  fk_note: null
+- name: BUY_ORDER_ACCEPT_NO
+  data_type: BIGINT
+  description: Số thứ tự của lệnh mua được ghi nhận trên hệ thống của Sàn trong ngày
+    giao dịch, theo từng mã chứng khoán
+  key: null
+  fk_note: null
+- name: BUY_BRK_NO
+  data_type: STRING
+  description: Mã/số công ty chứng khoán thực hiện giao dịch mua
+  key: null
+  fk_note: null
+- name: BUY_BRK
+  data_type: STRING
+  description: Tên công ty chứng khoán thực hiện giao dịch mua
+  key: null
+  fk_note: null
+- name: BUY_PIN
+  data_type: STRING
+  description: Mã PIN của tài khoản mua
+  key: null
+  fk_note: null
+- name: BUY_ACCT_NO
+  data_type: STRING
+  description: Mã/Số tài khoản giao dịch mua của nhà đầu tư
+  key: null
+  fk_note: null
+- name: BUY_NAME
+  data_type: STRING
+  description: Tên tài khoản giao dịch mua của nhà đầu tư
+  key: null
+  fk_note: null
+- name: BUY_CLIENT_HOUSE_CLASSIFICATION_CODE
+  data_type: BIGINT
+  description: 'Phân loại lệnh khách hàng/công ty của lệnh mua. Giá trị: 10 Client
+    trade; 30 House trade'
+  key: null
+  fk_note: null
+- name: BUY_INVEST_TYPE
+  data_type: BIGINT
+  description: 'Phân loại nhà đầu tư của lệnh mua.'
+  key: null
+  fk_note: null
+- name: BUY_FOREIGNER_INVESTOR_TYPE
+  data_type: STRING
+  description: 'Phân loại đầu tư nước ngoài của lệnh mua.'
+  key: null
+  fk_note: null
+- name: BUY_ORDER_PRICE
+  data_type: DECIMAL(38,4)
+  description: Giá đặt mua
+  key: null
+  fk_note: null
+- name: BUY_ORDER_VOL
+  data_type: BIGINT
+  description: Khối lượng đặt mua
+  key: null
+  fk_note: null
+- name: BUY_TRADER_NO
+  data_type: STRING
+  description: Mã/số định danh người thực hiện đặt mua
+  key: null
+  fk_note: null
+- name: BUY_TRADER_NAME
+  data_type: STRING
+  description: Tên người thực hiện đặt mua
+  key: null
+  fk_note: null
+- name: BUY_REFERENCE_SEQUENCE_NO
+  data_type: STRING
+  description: Số tham chiếu theo thứ tự đặt mua trong ngày
+  key: null
+  fk_note: null
+- name: SELL_ORDER_DATE
+  data_type: DATE
+  description: Ngày đặt lệnh bán
+  key: null
+  fk_note: null
+- name: SELL_ORDER_TIME
+  data_type: STRING
+  description: Thời gian đặt lệnh bán
+  key: null
+  fk_note: null
+- name: SELL_ORDER_ACCEPT_NO
+  data_type: BIGINT
+  description: Số thứ tự của lệnh bán được ghi nhận trên hệ thống của Sàn trong ngày
+    giao dịch, theo từng mã chứng khoán
+  key: null
+  fk_note: null
+- name: SELL_BRK_NO
+  data_type: STRING
+  description: Mã/số công ty chứng khoán thực hiện giao dịch bán
+  key: null
+  fk_note: null
+- name: SELL_BRK
+  data_type: STRING
+  description: Tên công ty chứng khoán thực hiện giao dịch bán
+  key: null
+  fk_note: null
+- name: SELL_PIN
+  data_type: STRING
+  description: Mã PIN của tài khoản bán
+  key: null
+  fk_note: null
+- name: SELL_ACCT_NO
+  data_type: STRING
+  description: Mã/Số tài khoản giao dịch bán của nhà đầu tư
+  key: null
+  fk_note: null
+- name: SELL_NAME
+  data_type: STRING
+  description: Tên tài khoản giao dịch bán của nhà đầu tư
+  key: null
+  fk_note: null
+- name: SELL_CLIENT_HOUSE_CLASSIFICATION_CODE
+  data_type: BIGINT
+  description: 'Phân loại lệnh khách hàng/công ty của lệnh bán. Giá trị: 10 Client
+    trade; 30 House trade'
+  key: null
+  fk_note: null
+- name: SELL_INVEST_TYPE
+  data_type: BIGINT
+  description: 'Phân loại nhà đầu tư.'
+  key: null
+  fk_note: null
+- name: SELL_FOREIGNER_INVESTOR_TYPE
+  data_type: STRING
+  description: 'Phân loại đầu tư nước ngoài của lệnh bán.'
+  key: null
+  fk_note: null
+- name: SELL_ORDER_PRICE
+  data_type: DECIMAL(38,4)
+  description: Giá đặt bán
+  key: null
+  fk_note: null
+- name: SELL_ORDER_VOL
+  data_type: BIGINT
+  description: Khối lượng đặt bán
+  key: null
+  fk_note: null
+- name: SELL_TRADER_NO
+  data_type: STRING
+  description: Mã/số định danh người thực hiện đặt bán
+  key: null
+  fk_note: null
+- name: SELL_TRADER_NAME
+  data_type: STRING
+  description: Tên người thực hiện đặt bán
+  key: null
+  fk_note: null
+- name: SELL_REFERENCE_SEQUENCE_NO
+  data_type: STRING
+  description: Số tham chiếu theo thứ tự đặt bán trong ngày
+  key: null
+  fk_note: null
+- name: REPORT_YEAR
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: REPORT_DAY
+  data_type: INT
+  description: null
+  key: null
+  fk_note: null
+- name: DS_SNPST_DT
+  data_type: DATE
+  description: null
+  key: null
+  fk_note: null
+- name: DS_ETL_PCS_TMS
+  data_type: TIMESTAMP
+  description: null
+  key: null
+  fk_note: null

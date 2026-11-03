@@ -150,7 +150,6 @@ erDiagram
 | MDDS.JAD_CORPBONDINFOR.interest_coupon_type | Kiểu trả lãi coupon | [Common] Classification Value | Classification Value scheme `MDDS_COUPON_TYPE` |
 | MDDS.JAD_CORPBONDINFOR.interestrate_type | Loại lãi suất | [Common] Classification Value | Classification Value scheme `MDDS_INTEREST_RATE_TYPE` |
 | MDDS.JAD_CORPBONDINFOR.securitytradingstatus | Trạng thái giao dịch CK | [Common] Classification Value | Classification Value scheme `MDDS_SECURITY_TRADING_STATUS` |
-| MDDS.JAD_TRANSLOG.lastColor | Chiều giao dịch chủ động | [Common] Classification Value | Classification Value scheme `MDDS_TRADE_DIRECTION` |
 
 #### 7d. Junction Tables
 
@@ -214,7 +213,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 **Grain:** 1 dòng = 1 lần khớp lệnh (1 tick) của 1 mã chứng khoán (source Id unique).
 
-**Attributes chính:** ds_match_id (PK), source_id, symbol, trading_date, match_time, match_price, match_volume, acc_volume, acc_value, total_buy_volume, total_sell_volume, trade_direction_code (MDDS_TRADE_DIRECTION), board_id.
+**Attributes chính:** ds_match_id (PK), source_id, symbol, trading_date, match_time, match_price, match_volume, acc_volume, acc_value, total_buy_volume, total_sell_volume, trade_direction_code, board_id.
 
 ### 5. Index Constituent Snapshot
 **Tier:** 2 | **Source:** `MDDS.JAD_CSIDXINFOR` | **BCV Concept:** [Group] Share Index | **BCO:** Group | **Table Type:** Fact Snapshot
@@ -222,7 +221,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 **Grain:** 1 dòng = 1 cặp (index_code, symbol, trading_date).
 
-**Attributes chính:** ds_constituent_id (PK), source_id, index_code, index_id, symbol, trading_date, add_date, floor_code (MDDS_FLOOR_CODE), total_match_volume.
+**Attributes chính:** ds_constituent_id (PK), source_id, index_code, index_id, symbol, trading_date, add_date, floor_code (MDDS_FLOOR_CODE), total_quantity.
 
 ### 6. Market Price Snapshot
 **Tier:** 2 | **Source:** `MDDS.JAD_TVHISTORY1M, MDDS.JAD_TVHISTORY1D` | **BCV Concept:** [Product] Financial Market Instrument | **BCO:** Product | **Table Type:** Fact Snapshot

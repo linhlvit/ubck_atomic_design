@@ -90,6 +90,7 @@ erDiagram
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
 | nationality | Danh mục quốc tịch VSDC | (không dùng scheme — entity thật) | source_table | Nâng cấp thành entity `Classification VSDC Nationality` (xem 6a). Entity tiêu thụ (Tier 2) dùng FK/Code theo crosswalk `nationality = autoid`. |
+| registered_ownership_type | Danh mục loại đăng ký sở hữu VSDC (`investor_type` BIGINT, `ownership_type` STRING) | `VSDC_REGISTERED_OWNERSHIP_TYPE` | modeler_defined | Classification Value (chưa profile values); cột tiêu thụ cần Data Modeler xác nhận — xem `VSDC_HLD_Overview` 7e #6 |
 
 ---
 
@@ -110,3 +111,4 @@ erDiagram
 | T1-02 | `nationality` có Change Mode `Append` nhưng table_type `Classification` (ETL Upsert) | Cần xác nhận cơ chế nạp: nếu nguồn chỉ append snapshot theo `ds_snpst_dt` thì ETL phải lấy bản mới nhất theo `autoid` |
 | T1-03 | `Listed Share Information` gộp 3 bảng (VSDC.outstanding_shares + HNX/HOSE.listed_securities_list) — BK `ticker_symbol`, phân biệt qua `src_stm_code`; các cột chỉ có ở 1 phía (`total_issued_share_quantity…` / `issuer_name, listed_share_quantity, reference_price`) sẽ NULL phía còn lại | Cần xác nhận cách gộp (1 entity nullable) thay vì tách 2 entity |
 | T1-04 | Tên vật lý atomic (`listed_share_information`, `foreign_ownership_information`, …) lấy theo `vsdc_atomic.sql` đã duyệt; 3 phân hệ không có domain_prefix | Nếu cần áp quy tắc, đổi ở bước LLD (entity chưa approved) |
+| T1-05 | `registered_ownership_type` xử lý thành Classification Value (Code + Name) thay vì entity như `nationality` | Xem `VSDC_HLD_Overview` 7e #6, #7 |

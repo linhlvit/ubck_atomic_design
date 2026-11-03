@@ -1,0 +1,475 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "ORDER_BOOK"
+  atomic_entity: "Securities Order"
+  entity_physical_name: "securities_order"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Financial Market Order"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "approved"
+  version: "1.1"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế lại theo DDL nguồn mới (Data Modeler, 2026-11-03). Entity dùng chung HNX + HOSE: cột cùng ý nghĩa gộp thành 1 attribute Atomic, mỗi sàn trỏ về cột nguồn riêng trong source_columns (xem hld/HNX_HOSE_Order_Trade_Overlap.md mục 6-7). Fact Append: insert-only, bảng độc lập, không FK sang bảng khác (HLD D-08). Cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo (ghi pending_design.yaml). Cột có bộ mã dùng Classification Value, schema_code Data Modeler đặt sau."
+attributes:
+- attribute_name: "Securities Order Id"
+  physical_name: "securities_order_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_ID"
+  comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Order Code"
+  physical_name: "securities_order_code"
+  description: "Mã định danh của lệnh giao dịch (BK chính). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_ID"
+  comment: "BK chính. Mã định danh nghiệp vụ duy nhất của Securities Order; nguồn HNX.ORDER_BOOK.ORDER_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_ORDER_BOOK"
+  etl_derived_value: "HNX_ORDER_BOOK"
+  data_type: "string"
+- attribute_name: "Trade Date"
+  physical_name: "trade_dt"
+  description: "Ngày giao dịch. Định dạng yyyymmdd"
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.TRADE_DATE"
+  comment: "Gộp với HOSE.ORDER_BOOK.TRADE_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Market Code"
+  physical_name: "market_code"
+  description: "Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.MARKET_ID"
+  comment: "SCHEMA_CODE=HNX.MARKET"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ISSUE_CODE"
+  comment: "Gộp với HOSE.ORDER_BOOK.SYMBOL (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HNX ISSUE_CODE thường là mã ISIN (riêng Repo do Sở tự định nghĩa), HOSE SYMBOL là mã giao dịch — chưa xác nhận cùng định dạng giá trị; phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Board Type Code"
+  physical_name: "board_tp_code"
+  description: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.BOARD_ID"
+  comment: "SCHEMA_CODE=HNX.BOARD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Session Code"
+  physical_name: "session_code"
+  description: "Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.SESSION_ID"
+  comment: "SCHEMA_CODE=HNX.SESSION"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Side"
+  physical_name: "side"
+  description: "Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.SELL_BUY_CLASSIFICATION_CODE"
+  comment: "SCHEMA_CODE=HNX.SIDE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Action Type Code"
+  physical_name: "order_action_tp_code"
+  description: "Mã xác định loại hành động đối với lệnh hiện tại: sửa lệnh (Replace/Amend) hoặc hủy lệnh (Cancel). Giá trị: 1 New; 2 Replace; 3 Cancel"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.REPLACE_CANCEL"
+  comment: "SCHEMA_CODE=HNX.ORDER_ACTION_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Code"
+  physical_name: "member_code"
+  description: "Mã định danh thành viên giao dịch trên thị trường – thường là công ty chứng khoán hoặc tổ chức được phép gửi lệnh vào hệ thống KRX"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.MEMBER_ID"
+  comment: "Gộp với HOSE.ORDER_BOOK.BRK_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Number"
+  physical_name: "account_nbr"
+  description: "Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán (Member), dùng để xác định chủ sở hữu lệnh, phục vụ quản lý rủi ro, thanh toán và giám sát thị trường; Member ID + Account Number xác định duy nhất một nhà đầu tư"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ACCOUNT_NUMBER"
+  comment: "Gộp với HOSE.ORDER_BOOK.ACCT_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Type Code"
+  physical_name: "account_tp_code"
+  description: "Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán (house)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.CLIENT_HOUSE_CLASSIFICATION_CODE"
+  comment: "SCHEMA_CODE=HNX.ACCOUNT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Type Code"
+  physical_name: "investor_tp_code"
+  description: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.INVESTOR_CLASSIFICATION_CODE"
+  comment: "SCHEMA_CODE=HNX.INVESTOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Type Code"
+  physical_name: "foreign_investor_tp_code"
+  description: "Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.FOREIGN_INVESTOR_TYPE_CODE"
+  comment: "SCHEMA_CODE=HNX.FOREIGN_INVESTOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Type Code"
+  physical_name: "order_tp_code"
+  description: "Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống matching engine xử lý lệnh đó."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_TYPE_CODE"
+  comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Condition Type Code"
+  physical_name: "order_condition_tp_code"
+  description: "Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi nào, như thế nào, và có được giữ lại hay không."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_CONDITION_CODE"
+  comment: "SCHEMA_CODE=HNX.ORDER_CONDITION_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Price"
+  physical_name: "order_price"
+  description: "Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_PRICE"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_PRICE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Order Quantity"
+  physical_name: "order_quantity"
+  description: "Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_QUANTITY"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_VOL (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Order Remaining Quantity"
+  physical_name: "order_remaining_quantity"
+  description: "Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_REMAINING_QUANTITY"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_RQTY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Order Date"
+  physical_name: "order_dt"
+  description: "Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của hệ thống. Lưu ý: Với xác nhận sửa/hủy lệnh GT, giá trị là ngày đặt lệnh ban đầu"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_DATE"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). HOSE: ngày đặt lệnh; HNX: ngày ghi nhận theo ngày giao dịch của hệ thống. Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Order Time"
+  physical_name: "order_time"
+  description: "Thời điểm lệnh được hệ thống giao dịch (matching engine) chấp nhận hợp lệ và đưa vào sổ lệnh; là lúc KRX core system ghi nhận lệnh (không phải lúc người dùng đặt lệnh hay CTCK nhận lệnh), dùng để xếp thứ tự ưu tiên và khớp lệnh. Định dạng hh24misss"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_ACCEPT_TIME"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_TIME (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE ORDER_TIME là lúc người dùng đặt lệnh; HNX ORDER_ACCEPT_TIME là lúc KRX core chấp nhận lệnh (không phải lúc đặt) — ý nghĩa thời điểm khác nhau, phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Reception Code"
+  physical_name: "order_reception_code"
+  description: "Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh; duy nhất trong ngày giao dịch, thường tăng dần, do hệ thống sinh ra"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_RECEPTION_NUMBER"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORDER_ACCEPT_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Order Reception Code"
+  physical_name: "original_order_reception_code"
+  description: "Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang tham chiếu tới"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORIGINAL_ORDER_RECEPTION_NUMBER"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORIG_ORDER_ACCEPT_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Order Code"
+  physical_name: "original_order_code"
+  description: "Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel) đang tham chiếu tới"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORIGINAL_ORDER_ID"
+  comment: "Gộp với HOSE.ORDER_BOOK.ORIG_ORDER_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sequence Number"
+  physical_name: "sequence_nbr"
+  description: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.MESSAGE_SEQUENCE"
+  comment: "Gộp với HOSE.ORDER_BOOK.REFERENCE_SEQUENCE_NO (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE REFERENCE_SEQUENCE_NO là số tham chiếu theo thứ tự giao dịch; HNX MESSAGE_SEQUENCE là số thứ tự message trong luồng dữ liệu — cùng vai trò sắp thứ tự, chưa kiểm chứng trên dữ liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Reject Reason Code"
+  physical_name: "order_reject_reason_code"
+  description: "Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORDER_REJECT_REASON_CODE"
+  comment: "Mã phân loại — schema_code do Data Modeler đặt sau; giữ mã raw của sàn, phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Public Quantity"
+  physical_name: "public_quantity"
+  description: "Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order book) đối với lệnh Iceberg; Public Quantity ≤ Order Quantity"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.PUBLIC_QUANTITY"
+  comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Condition Price"
+  physical_name: "condition_price"
+  description: "Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order hoặc conditional order)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.CONDITION_PRICE"
+  comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Original Order Type Code"
+  physical_name: "original_order_tp_code"
+  description: "Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc hủy (cancel)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.ORIGINAL_ORDER_TYPE_CODE"
+  comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Automated Cancel Type Code"
+  physical_name: "automated_cancel_tp_code"
+  description: "Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay không, và nếu có thì do cơ chế nào."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.AUTOMATED_CANCEL"
+  comment: "SCHEMA_CODE=HNX.AUTOMATED_CANCEL_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Quote Request Type Code"
+  physical_name: "quote_request_tp_code"
+  description: "Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một bên gửi tới thị trường hoặc đối tác. Giá trị: 1 Request (Initiator); 2 Cancel(Initiator); 3 Confirm(Counterparty); 4 Reject(Counterparty)"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.QUOTE_REQUEST_TYPE"
+  comment: "SCHEMA_CODE=HNX.QUOTE_REQUEST_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

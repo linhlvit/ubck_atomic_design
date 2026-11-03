@@ -7,7 +7,7 @@ metadata:
   entity_physical_name: "updated_investor_account"
   bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: "Fact Snapshot"
+  table_type: "Fact Append"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -213,3 +213,81 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "From Year"
+  physical_name: "from_year"
+  description: "Năm bắt đầu"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.FROM_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "From Month"
+  physical_name: "from_month"
+  description: "Tháng bắt đầu"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.FROM_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "From Day"
+  physical_name: "from_day"
+  description: "Ngày bắt đầu"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.FROM_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "To Year"
+  physical_name: "to_year"
+  description: "Năm kết thúc"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.TO_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "To Month"
+  physical_name: "to_month"
+  description: "Tháng kết thúc"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.TO_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "To Day"
+  physical_name: "to_day"
+  description: "Ngày kết thúc"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.UPDATED_INVESTORS.TO_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

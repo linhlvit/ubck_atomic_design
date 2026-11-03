@@ -1,0 +1,670 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HOSE"
+  source_table: "ORDER_BOOK"
+  atomic_entity: "Securities Order"
+  entity_physical_name: "securities_order"
+  bcv_core_object: "Communication"
+  bcv_concept: "[Communication] Financial Market Order"
+  table_type: "Fact Append"
+  group: "T1"
+  design_status: "approved"
+  version: "1.1"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế lại theo DDL nguồn mới (Data Modeler, 2026-11-03). Entity dùng chung HNX + HOSE: cột cùng ý nghĩa gộp thành 1 attribute Atomic, mỗi sàn trỏ về cột nguồn riêng trong source_columns (xem hld/HNX_HOSE_Order_Trade_Overlap.md mục 6-7). Fact Append: insert-only, bảng độc lập, không FK sang bảng khác (HLD D-08). Cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo (ghi pending_design.yaml). Cột có bộ mã dùng Classification Value, schema_code Data Modeler đặt sau."
+attributes:
+- attribute_name: "Securities Order Id"
+  physical_name: "securities_order_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_ID"
+  comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Order Code"
+  physical_name: "securities_order_code"
+  description: "Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_ID"
+  comment: "BK chính. Mã định danh nghiệp vụ duy nhất của Securities Order; nguồn HOSE.ORDER_BOOK.ORDER_ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HOSE_ORDER_BOOK"
+  etl_derived_value: "HOSE_ORDER_BOOK"
+  data_type: "string"
+- attribute_name: "Trade Date"
+  physical_name: "trade_dt"
+  description: "Ngày giao dịch theo thị trường chứng khoán"
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.TRADE_DATE"
+  comment: "Gộp với HNX.ORDER_BOOK.TRADE_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Market Code"
+  physical_name: "market_code"
+  description: "Mã thị trường chứng khoán."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.MARKET_ID"
+  comment: "SCHEMA_CODE=HOSE.MARKET"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã chứng khoán"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.SYMBOL"
+  comment: "Gộp với HNX.ORDER_BOOK.ISSUE_CODE (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HNX ISSUE_CODE thường là mã ISIN (riêng Repo do Sở tự định nghĩa), HOSE SYMBOL là mã giao dịch — chưa xác nhận cùng định dạng giá trị; phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Board Type Code"
+  physical_name: "board_tp_code"
+  description: "Loại bảng giao dịch mà lệnh được phân loại vào."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.BOARD_TYPE"
+  comment: "SCHEMA_CODE=HOSE.BOARD_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Session Code"
+  physical_name: "session_code"
+  description: "Phiên giao dịch của thị trường chứng khoán."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.SESSION"
+  comment: "SCHEMA_CODE=HOSE.SESSION"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Side"
+  physical_name: "side"
+  description: "Loại lệnh."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.SIDE"
+  comment: "SCHEMA_CODE=HOSE.SIDE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Action Type Code"
+  physical_name: "order_action_tp_code"
+  description: "Sửa/Hủy lệnh."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.MODIFY_CANCEL"
+  comment: "SCHEMA_CODE=HOSE.ORDER_ACTION_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Code"
+  physical_name: "member_code"
+  description: "Mã/số công ty chứng khoán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.BRK_ID"
+  comment: "Gộp với HNX.ORDER_BOOK.MEMBER_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Number"
+  physical_name: "account_nbr"
+  description: "Mã/Số tài khoản giao dịch của nhà đầu tư"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ACCT_NO"
+  comment: "Gộp với HNX.ORDER_BOOK.ACCOUNT_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Type Code"
+  physical_name: "account_tp_code"
+  description: "Phân loại lệnh khách hàng/công ty."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.CLIENT_HOUSE_CLASSIFICATION_CODE"
+  comment: "SCHEMA_CODE=HOSE.ACCOUNT_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Investor Type Code"
+  physical_name: "investor_tp_code"
+  description: "Phân loại nhà đầu tư."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.INVEST_TYPE"
+  comment: "SCHEMA_CODE=HOSE.INVESTOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Foreign Investor Type Code"
+  physical_name: "foreign_investor_tp_code"
+  description: "Phân loại đầu tư nước ngoài."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.FOREIGNER_INVESTOR_TYPE"
+  comment: "SCHEMA_CODE=HOSE.FOREIGN_INVESTOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Type Code"
+  physical_name: "order_tp_code"
+  description: "Loại lệnh theo giá."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_TYPE"
+  comment: "SCHEMA_CODE=HOSE.ORDER_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Condition Type Code"
+  physical_name: "order_condition_tp_code"
+  description: "Điều kiện thực hiện lệnh - lệnh được khớp như thế nào."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_CONDITION"
+  comment: "SCHEMA_CODE=HOSE.ORDER_CONDITION_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Price"
+  physical_name: "order_price"
+  description: "Giá đặt lệnh"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_PRICE"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_PRICE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Order Quantity"
+  physical_name: "order_quantity"
+  description: "Khối lượng đặt lệnh"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_VOL"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_QUANTITY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Order Remaining Quantity"
+  physical_name: "order_remaining_quantity"
+  description: "Khối lượng còn lại chưa khớp của lệnh (Order remaining quantity)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_RQTY"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_REMAINING_QUANTITY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Order Date"
+  physical_name: "order_dt"
+  description: "Ngày đặt lệnh của người thực hiện giao dịch"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_DATE"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). HOSE: ngày đặt lệnh; HNX: ngày ghi nhận theo ngày giao dịch của hệ thống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Order Time"
+  physical_name: "order_time"
+  description: "Thời gian đặt lệnh của người thực hiện giao dịch"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_TIME"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_ACCEPT_TIME (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE ORDER_TIME là lúc người dùng đặt lệnh; HNX ORDER_ACCEPT_TIME là lúc KRX core chấp nhận lệnh (không phải lúc đặt) — ý nghĩa thời điểm khác nhau, phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Reception Code"
+  physical_name: "order_reception_code"
+  description: "Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_ACCEPT_ID"
+  comment: "Gộp với HNX.ORDER_BOOK.ORDER_RECEPTION_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Order Reception Code"
+  physical_name: "original_order_reception_code"
+  description: "Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORIG_ORDER_ACCEPT_ID"
+  comment: "Gộp với HNX.ORDER_BOOK.ORIGINAL_ORDER_RECEPTION_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Original Order Code"
+  physical_name: "original_order_code"
+  description: "Mã định danh của lệnh đặt trước khi chỉnh sửa"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORIG_ORDER_ID"
+  comment: "Gộp với HNX.ORDER_BOOK.ORIGINAL_ORDER_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Sequence Number"
+  physical_name: "sequence_nbr"
+  description: "Số tham chiếu theo thứ tự giao dịch"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.REFERENCE_SEQUENCE_NO"
+  comment: "Gộp với HNX.ORDER_BOOK.MESSAGE_SEQUENCE (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE REFERENCE_SEQUENCE_NO là số tham chiếu theo thứ tự giao dịch; HNX MESSAGE_SEQUENCE là số thứ tự message trong luồng dữ liệu — cùng vai trò sắp thứ tự, chưa kiểm chứng trên dữ liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Currency Code"
+  physical_name: "currency_code"
+  description: "Đơn vị tiền tệ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.CURRENCY"
+  comment: "Mã phân loại — schema_code do Data Modeler đặt sau; giữ mã raw của sàn, phân biệt theo src_stm_code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Member Name"
+  physical_name: "member_nm"
+  description: "Tên công ty chứng khoán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.BRK"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Pin Code"
+  physical_name: "pin_code"
+  description: "Mã PIN của tài khoản giao dịch"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.PIN"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Account Name"
+  physical_name: "account_nm"
+  description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Market Maker Order Indicator"
+  physical_name: "market_maker_order_ind"
+  description: "Lệnh đặt của nhà tạo lập thị trường."
+  data_domain: "Indicator"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.MARKET_MAKER_ORDER"
+  comment: "RULE: CASE WHEN MARKET_MAKER_ORDER = 'Y' THEN 1 WHEN MARKET_MAKER_ORDER = 'N' THEN 0 END."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Last Traded Price"
+  physical_name: "last_traded_price"
+  description: "Giá khớp gần nhất trên thị trường (Last Traded Price)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.LTP"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(23,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Execution Price"
+  physical_name: "execution_price"
+  description: "Giá khớp lệnh thực tế"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.EXECUTION_PRICE"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(23,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Immediate Matched Quantity"
+  physical_name: "immediate_matched_quantity"
+  description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.IMMED_MATCHED_VOL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Matched Quantity"
+  physical_name: "matched_quantity"
+  description: "Tổng khối lượng đã khớp của lệnh"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.MATCHED_VOL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Order Price Last Traded Price Diff Difference"
+  physical_name: "order_price_ltp_difference"
+  description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_PRICE_LTP"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(23,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Matched Ratio"
+  physical_name: "matched_ratio"
+  description: "Tỷ lệ khớp lệnh"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.MATCHED_RATIO"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(5,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+- attribute_name: "Buy Up Sell Down Amount"
+  physical_name: "buy_up_sell_down_amount"
+  description: "Mức tăng/giảm giá so với tham chiếu theo giá trị"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.BUY_UP_SELL_DOWN_AMT"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(23,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Buy Up Sell Down Tick"
+  physical_name: "buy_up_sell_down_tick"
+  description: "Mức tăng/giảm theo bước giá"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.BUY_UP_SELL_DOWN_TICK"
+  comment: "Nguồn lưu dạng DOUBLE — cần profile phần thập phân trước khi cast sang int."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "New High Low Price Type Code"
+  physical_name: "new_high_low_price_tp_code"
+  description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày, theo từng mã chứng khoán. Giá trị: New High: Giá mới cao nhất tính đến thời điểm khớp lệnh; New Low: Giá mới thấp nhất tính đến thời điểm khớp lệnh"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.NEW_HIGH_LOW_PRICE"
+  comment: "SCHEMA_CODE=HOSE.NEW_HIGH_LOW_PRICE_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Order Status Code"
+  physical_name: "order_status_code"
+  description: "Trạng thái của lệnh."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ORDER_STATUS"
+  comment: "SCHEMA_CODE=HOSE.ORDER_STATUS"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Icd Bug Quantity"
+  physical_name: "icd_bug_quantity"
+  description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.ICD_BUG_QTY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Expected Execution Price"
+  physical_name: "expected_execution_price"
+  description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.EXPECTED_EXECUTION_PRICE"
+  comment: "Nguồn lưu dạng DOUBLE — ETL cast sang decimal(23,2), lưu ý sai số dấu phẩy động."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Expected Execution Quantity"
+  physical_name: "expected_execution_quantity"
+  description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.EXPECTED_EXECUTION_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Short Sell Type Code"
+  physical_name: "short_sell_tp_code"
+  description: "Phân loại lệnh bán khống. Giá trị: 00 - Không phải lệnh bán khống; 10 - Là lệnh bán khống"
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.SHORT_SELL_INDICATOR"
+  comment: "SCHEMA_CODE=HOSE.SHORT_SELL_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trader Code"
+  physical_name: "trader_code"
+  description: "Mã/số định danh người thực hiện giao dịch"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.TRADER_NO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Trader Name"
+  physical_name: "trader_nm"
+  description: "Tên người thực hiện giao dịch"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.TRADER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.ORDER_BOOK.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

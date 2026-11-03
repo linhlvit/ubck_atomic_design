@@ -1,7 +1,7 @@
 # HOSE HLD — Tier 1
 
 **Source system:** HOSE (Dữ liệu Sở Giao dịch Chứng khoán TP.HCM — vùng staging `uat_hose_stg`)
-**Tier 1:** 4 bảng HOSE có cấu trúc trùng với bảng cùng tên của HNX/VSDC → không tạo entity mới, chỉ bổ sung `source_table` cho entity đã định nghĩa ở `HNX_HLD_Tier1` và `VSDC_HLD_Tier1`
+**Tier 1:** 5 bảng HOSE (4 bảng + `order_book`; `trade_book` ở Tier 2) có cấu trúc trùng với bảng cùng tên của HNX/VSDC → không tạo entity mới, chỉ bổ sung `source_table` cho entity đã định nghĩa ở `HNX_HLD_Tier1` và `VSDC_HLD_Tier1`
 
 ---
 
@@ -15,6 +15,7 @@
 | Documentation | [Documentation] Regulatory Report | Documentation | listing_status_change | Append | Quyết định thay đổi niêm yết tại HOSE — cấu trúc 18 cột giống hệt `HNX.listing_status_change` — entity định nghĩa ở HNX_HLD_Tier1 | Listing Status Change | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: quyết định thay đổi niêm yết chứng khoán — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
 | Documentation | [Documentation] Regulatory Report | Documentation | listed_securities_list | Append | Danh sách chứng khoán niêm yết HOSE: mã, tổ chức phát hành, số lượng niêm yết, số lượng lưu hành, giá tham chiếu — entity định nghĩa ở VSDC_HLD_Tier1 | Listed Share Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: cơ cấu số lượng cổ phiếu theo mã/ngày (VSDC) và số lượng niêm yết, giá tham chiếu (HNX/HOSE) — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
 | Documentation | [Documentation] Regulatory Report | Documentation | brokerage_market_share | Append | Thị phần môi giới theo quý tại HOSE — cấu trúc 8 cột giống hệt `HNX.brokerage_market_share` — entity định nghĩa ở HNX_HLD_Tier1 | Brokerage Market Share | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: thị phần môi giới của công ty chứng khoán thành viên theo quý — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
+| Communication | [Communication] Financial Market Order | Financial Markets Trading | order_book | Update | Sổ lệnh chi tiết HOSE — mỗi bản ghi là 1 event lệnh (cổ phiếu/trái phiếu/repo); cùng cấu trúc `HNX.order_book` ở các cột chung | Securities Order | Fact Append | Financial Market Order (8539) — xem `HNX_HLD_Tier1` 6a; entity định nghĩa ở HNX |
 
 ---
 
@@ -74,7 +75,7 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| — | Không có Classification Value scheme | — | — | Các cột phân loại giữ dạng Text, không đăng ký scheme |
+| order_book / trade_book | Các cột có bộ mã (market, board, session, side, order action, account/investor/foreign type, order type/condition, currency…) dùng domain Classification Value, giữ mã raw từng sàn | Chưa đặt (Data Modeler đặt sau) | — | Thiết kế lại 2026-11-03, xem `HNX_HOSE_Order_Trade_Overlap.md` |
 
 ---
 
@@ -93,3 +94,4 @@ erDiagram
 |---|---|---|
 | T1-01 | 4 bảng HOSE extend entity có sẵn thay vì tạo entity riêng cho HOSE | Cấu trúc cột trùng khớp HNX/VSDC; `src_stm_code` phân biệt nguồn. Cần xác nhận không có khác biệt ngữ nghĩa/giá trị ở dữ liệu thực |
 | T1-02 | `HOSE.listed_securities_list` có đủ cột như HNX (`issuer_name`, `listed_shares`, `outstanding_shares`, `reference_price`) nhưng khác `VSDC.outstanding_shares` | Xem `VSDC_HLD_Overview` 7e #3 |
+| T1-03 | `HOSE.order_book` extend `Securities Order` (định nghĩa ở `HNX_HLD_Tier1`); `HOSE.trade_book` xếp Tier 2 | Xem `HOSE_HLD_Tier2`; nhiều cột chỉ có ở HOSE (nullable ở phía HNX) |

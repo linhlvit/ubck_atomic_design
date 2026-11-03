@@ -303,8 +303,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(7,4)"
-- attribute_name: "Order Bond Quantity"
-  physical_name: "order_bond_quantity"
+- attribute_name: "Order Bond Volume"
+  physical_name: "order_bond_vol"
   description: "Khối lượng"
   data_domain: "Large Counter"
   nullable: true
@@ -576,3 +576,42 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.OUTRIGHT_ORDER_BOOK.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

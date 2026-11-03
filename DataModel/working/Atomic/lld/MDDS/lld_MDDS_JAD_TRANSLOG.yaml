@@ -71,7 +71,7 @@ attributes:
   comment: null
 - attribute_name: "Change Color Code"
   physical_name: "change_color_code"
-  description: "Indicator tăng/giảm so với giá tham chiếu."
+  description: "Màu sắc thể hiện trạng thái biến động của khoảng tăng/giảm giá (Change) so với phiên trước."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -110,14 +110,14 @@ attributes:
   comment: null
 - attribute_name: "Price Change"
   physical_name: "price_change"
-  description: "Mức thay đổi giá so với giá tham chiếu tại lần khớp."
+  description: "Giá trị chênh lệch tuyệt đối giữa mức giá hiện tại (giá khớp lệnh cuối cùng) so với giá tham chiếu của ngày hôm đó."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_TRANSLOG.FORMATTEDCHANGEVALUE"
-  comment: " Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
@@ -134,8 +134,8 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "Match Time"
-  physical_name: "match_time"
+- attribute_name: "Time"
+  physical_name: "time"
   description: "Thời gian khớp."
   data_domain: "Text"
   nullable: true
@@ -147,8 +147,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Match Volume"
-  physical_name: "match_vol"
+- attribute_name: "Volume"
+  physical_name: "vol"
   description: "Khối lượng khớp."
   data_domain: "Large Counter"
   nullable: false
@@ -162,15 +162,15 @@ attributes:
   comment: null
 - attribute_name: "Trade Direction Code"
   physical_name: "trade_direction_code"
-  description: "Chiều mua/bán chủ động."
-  data_domain: "Classification Value"
+  description: "Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_TRANSLOG.LASTCOLOR"
-  comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
-  classification_context: "MDDS_TRADE_DIRECTION"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Sequence Message"

@@ -1,51 +1,65 @@
 DATA DICTIONARY - SCHEMA: UAT_HNX_STG
-Tong so bang: 14 | Materialized View: 0
+Tong so bang: 18 | Materialized View: 0
 ==============================================================================================================
 
-BANG: share_auction
-Mo ta: 
+BANG: brokerage_market_share
+Mo ta: BM 38 (HNX) - Thị phần môi giới
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-issuer_name                   STRING              YES                                      Tên tổ chức phát hành / Tên công ty
-auction_type                  STRING              YES                                      Loại hình đấu giá
-registered_offering_shares    BIGINT              YES                                      Số CP đăng ký chào bán
-total_registered_investors    BIGINT              YES                                      Tổng số NĐT đăng ký tham gia
-starting_price                DECIMAL(18,2)       YES                                      Giá khởi điểm
-average_winning_price         DECIMAL(18,2)       YES                                      Giá trúng bình quân
-domestic_institutional_winnersBIGINT              YES                                      Số NĐT trúng giá tổ chức trong nước
-foreign_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức nước ngoài
-domestic_individual_winners   BIGINT              YES                                      Số NĐT trúng giá cá nhân trong nước
-foreign_individual_winners    BIGINT              YES                                      Số NĐT trúng giá cá nhân nước ngoài
-domestic_registered_buy_volumeBIGINT              YES                                      KL CP đăng ký mua - NĐT trong nước
-foreign_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT nước ngoài
-domestic_winning_shares       BIGINT              YES                                      Số CP trúng giá - NĐT trong nước
-foreign_winning_shares        BIGINT              YES                                      Số CP trúng giá - NĐT nước ngoài
-domestic_winning_value        DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Trong nước
-foreign_winning_value         DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Nước ngoài
-domestic_actual_sold_shares   BIGINT              YES                                      Số CP thực tế bán được - Trong nước
-foreign_actual_sold_shares    BIGINT              YES                                      Số CP thực tế bán được - Nước ngoài
-domestic_actual_sold_value    DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Trong nước
-foreign_actual_sold_value     DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Nước ngoài
-report_month                  STRING              YES                                      Tháng báo cáo
-report_year                   STRING              YES                                      Năm báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+broker_name                   STRING              YES                                      Tên công ty chứng khoán
+member_code                   STRING              YES                                      Mã thành viên
+total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
+market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
+classification                STRING              YES                                      Phân loại
+report_quarter                STRING              YES                                      Quý báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: private_corp_bond_trading
-Mo ta: 
+BANG: gov_bond_additional_listing
+Mo ta: BM 27 (HNX) - Niêm yết bổ sung TPCP
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-indicator                     STRING              YES                                      Chỉ tiêu
-unit                          STRING              YES                                      Đơn vị tính
-value                         DECIMAL(18,4)       YES                                      Giá trị
-report_date                   DATE                YES                                      Ngày báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+bond_code                     STRING              YES                                      Mã trái phiếu
+bond_type                     STRING              YES                                      Loại trái phiếu
+status                        STRING              YES                                      Trạng thái
+volume                        BIGINT              YES                                      Khối lượng
+par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
+listing_change_date           DATE                YES                                      Ngày thay đổi niêm yết
+report_month                  INT                 YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
+BANG: gov_bond_listed_list
+Mo ta: BM 26 (HNX) - Danh sách TPCP niêm yết
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+bond_code                     STRING              YES                                      Mã trái phiếu
+issuer_name                   STRING              YES                                      Tổ chức phát hành
+bond_type                     STRING              YES                                      Loại trái phiếu
+listed_volume                 BIGINT              YES                                      Khối lượng niêm yết
+bond_term                     STRING              YES                                      Kỳ hạn trái phiếu
+remaining_term                STRING              YES                                      Kỳ hạn còn lại của trái phiếu
+interest_payment_method       STRING              YES                                      Hình thức trả lãi
+interest_payment_type         STRING              YES                                      Loại hình trả lãi
+interest_rate                 DECIMAL(10,2)       YES                                      Lãi suất (%)
+first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
+status                        STRING              YES                                      Trạng thái
+report_month                  INT                 YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
 BANG: gov_bond_offering
-Mo ta: 
+Mo ta: BM 25 (HNX) - Dữ liệu các đợt chào bán TPCP
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
@@ -62,127 +76,30 @@ bidding_value                 DECIMAL(18,2)       YES                           
 winning_value                 DECIMAL(18,2)       YES                                      Giá trị trúng thầu
 nominal_interest_rate         DECIMAL(10,2)       YES                                      Lãi suất danh nghĩa (%)
 winning_interest_rate         DECIMAL(10,2)       YES                                      Lãi suất trúng thầu (%)
-report_month                  STRING              YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+report_month                  INT                 YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: gov_bond_listed_list
-Mo ta: 
+BANG: listed_securities_list
+Mo ta: BM 37 (HNX) - Danh sách CK niêm yết/ĐKGD
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-bond_code                     STRING              YES                                      Mã trái phiếu
+ticker_symbol                 STRING              YES                                      Mã cổ phiếu/chứng khoán
 issuer_name                   STRING              YES                                      Tổ chức phát hành
-bond_type                     STRING              YES                                      Loại trái phiếu
-listed_volume                 BIGINT              YES                                      Khối lượng niêm yết
-bond_term                     STRING              YES                                      Kỳ hạn trái phiếu
-remaining_term                STRING              YES                                      Kỳ hạn còn lại của trái phiếu
-interest_payment_method       STRING              YES                                      Hình thức trả lãi
-interest_payment_type         STRING              YES                                      Loại hình trả lãi
-interest_rate                 DECIMAL(10,2)       YES                                      Lãi suất (%)
-first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
-status                        STRING              YES                                      Trạng thái
-report_month                  STRING              YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-
-BANG: gov_bond_additional_listing
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-bond_code                     STRING              YES                                      Mã trái phiếu
-bond_type                     STRING              YES                                      Loại trái phiếu
-status                        STRING              YES                                      Trạng thái
-volume                        BIGINT              YES                                      Khối lượng
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
-listing_change_date           DATE                YES                                      Ngày thay đổi niêm yết
-report_month                  STRING              YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-
-BANG: private_corp_bond_offering
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-report_day                    STRING              YES                                      Ngày báo cáo
-report_month                  STRING              YES                                      Tháng báo cáo
-report_year                   STRING              YES                                      Năm báo cáo
-market_type                   STRING              YES                                      Loại thị trường (Trong nước/Quốc tế)
-posting_date                  DATE                YES                                      Ngày đăng tin
-issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
-enterprise_type               STRING              YES                                      Loại hình doanh nghiệp
-business_sector               STRING              YES                                      Lĩnh vực hoạt động
-bond_code                     STRING              YES                                      Mã trái phiếu
-currency                      STRING              YES                                      Tiền tệ
-term_unit                     STRING              YES                                      Đơn vị kỳ hạn
-term                          INT                 YES                                      Kỳ hạn
-issue_date                    DATE                YES                                      Ngày phát hành
-maturity_date                 DATE                YES                                      Ngày đáo hạn
-remaining_term                INT                 YES                                      Kỳ hạn còn lại
-offering_volume               BIGINT              YES                                      Khối lượng chào bán
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
-interest_payment_type         STRING              YES                                      Loại hình trả lãi
-interest_rate_type            STRING              YES                                      Loại lãi suất
-interest_payment_method       STRING              YES                                      Phương thức thanh toán lãi
-repurchase_and_swap           STRING              YES                                      Mua lại và hoán đổi
-issue_market                  STRING              YES                                      Thị trường phát hành
-issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
-convertible_bond              STRING              YES                                      Trái phiếu chuyển đổi (Có/Không)
-warrant_linked_bond           STRING              YES                                      Trái phiếu kèm chứng quyền (Có/Không)
-secured_bond                  STRING              YES                                      Trái phiếu bảo đảm (Có/Không)
-business_no                   STRING              YES                                      Mã số doanh nghiệp
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-
-BANG: private_corp_bond_registration
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-bond_code                     STRING              YES                                      Mã trái phiếu
-currency                      STRING              YES                                      Tiền tệ
-issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
-term_unit                     STRING              YES                                      Đơn vị kỳ hạn
-remaining_term                INT                 YES                                      Kỳ hạn còn lại
-issue_date                    DATE                YES                                      Ngày phát hành
-maturity_date                 DATE                YES                                      Ngày đáo hạn
-interest_payment_method       STRING              YES                                      Phương thức trả lãi
-interest_payment_term         STRING              YES                                      Kỳ hạn trả lãi
-issued_volume                 BIGINT              YES                                      Khối lượng phát hành
-repurchased_converted_swapped_volumeBIGINT              YES                                      KL mua lại/chuyển đổi/hoán đổi
-registered_trading_volume     BIGINT              YES                                      Khối lượng đăng ký giao dịch
-outstanding_volume            BIGINT              YES                                      Khối lượng còn lưu hành
-issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
-first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
-report_day                    STRING              YES                                      Ngày báo cáo
-report_month                  STRING              YES                                      Tháng báo cáo
-report_year                   STRING              YES                                      Năm báo cáo
-business_no                   STRING              YES                                      Mã số doanh nghiệp
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-
-BANG: registration_status_change
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-bond_code                     STRING              YES                                      Mã trái phiếu
-issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
-currently_registered_trading_volumeBIGINT              YES                                      KL đang đăng ký giao dịch
-first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
-last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
-trading_registration_status   STRING              YES                                      Trạng thái ĐKGD
-report_month                  STRING              YES                                      Tháng báo cáo
-business_no                   STRING              YES                                      Mã số doanh nghiệp
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
+outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
+reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
 BANG: listing_status_change
-Mo ta: 
+Mo ta: BM 35 (HNX) - Thay đổi niêm yết
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
@@ -201,40 +118,55 @@ effective_date                DATE                YES                           
 first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
 last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
 delist_transfer_reason        STRING              YES                                      Lý do hủy, chuyển sàn
-report_month                  STRING              YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+report_month                  INT                 YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: listed_securities_list
-Mo ta: 
+BANG: order_book
+Mo ta: Sổ lệnh HNX — tương đương ORDER_BOOK_HOSE nhưng cho sàn HNX (cổ phiếu niêm yết / UPCOM / TPCP / TP DN / phái sinh). Có thêm tính năng Iceberg order và Stop order theo chuẩn KRX.
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ticker_symbol                 STRING              YES                                      Mã cổ phiếu/chứng khoán
-issuer_name                   STRING              YES                                      Tổ chức phát hành
-listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
-outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
-reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
-report_date                   DATE                YES                                      Ngày báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-
-BANG: brokerage_market_share
-Mo ta: 
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-broker_name                   STRING              YES                                      Tên công ty chứng khoán
-member_code                   STRING              YES                                      Mã thành viên
-total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
-market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
-classification                STRING              YES                                      Phân loại
-report_quarter                STRING              YES                                      Quý báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+trade_date                    STRING              YES                                      Ngày giao dịch (yyyymmdd)
+market_id                     STRING              YES                                      Mã thị trường chứng khoán
+board_id                      STRING              YES                                      Loại bảng giao dịch
+issue_code                    STRING              YES                                      Mã định danh của loại chứng khoán (unique, thường là ISIN)
+order_accept_time             STRING              YES                                      Thời điểm KRX core system chấp nhận lệnh vào sổ lệnh (hh24misss)
+member_id                     STRING              YES                                      Mã định danh thành viên giao dịch (công ty chứng khoán) do Sở giao dịch cấp
+sell_buy_classification_code  STRING              YES                                      Hướng lệnh: Mua/Bán
+account_number                STRING              YES                                      Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán
+order_type_code               STRING              YES                                      Loại lệnh theo giá
+order_condition_code          STRING              YES                                      Điều kiện thực hiện lệnh
+client_house_classification_code STRING              YES                                      Lệnh của khách hàng hay công ty tự doanh
+investor_classification_code  STRING              YES                                      Phân loại nhà đầu tư theo loại hình tổ chức/cá nhân (raw từ HNX)
+order_date                    STRING              YES                                      Ngày mà lệnh được ghi nhận theo ngày giao dịch của hệ thống
+order_reject_reason_code      STRING              YES                                      Mã lý do lệnh bị từ chối bởi hệ thống KRX
+order_quantity                STRING              YES                                      Số lượng chứng khoán muốn mua hoặc bán trong lệnh
+order_price                   STRING              YES                                      Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel)
+public_quantity               STRING              YES                                      Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty ≤ order_qty)
+condition_price               STRING              YES                                      Mức giá điều kiện để kích hoạt lệnh Stop order
+order_reception_number        STRING              YES                                      Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất trong ngày, tăng dần theo issue)
+original_order_reception_number STRING              YES                                      Order Reception Number của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới
+original_order_type_code      STRING              YES                                      Loại lệnh của lệnh gốc trước khi bị sửa/hủy
+session_id                    STRING              YES                                      Mã phiên giao dịch
+order_remaining_quantity      STRING              YES                                      Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy
+message_sequence              STRING              YES                                      Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)
+replace_cancel                STRING              YES                                      Loại hành động đối với lệnh: Mới / Sửa / Hủy
+quote_request_type            STRING              YES                                      Loại yêu cầu báo giá RFQ (HNX-only)
+automated_cancel              STRING              YES                                      Mã xác định việc hủy lệnh tự động do cơ chế nào
+order_id                      STRING              YES                                      Mã định danh của lệnh giao dịch (BK chính)
+original_order_id             STRING              YES                                      Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới
+foreign_investor_type_code    STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài
+report_year                   INT                 YES                                      
+report_month                  INT                 YES                                      
+report_day                    INT                 YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
 
 BANG: outright_order_book
-Mo ta: 
+Mo ta: Sổ lệnh Outright
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
@@ -275,70 +207,136 @@ buying_proxy_entry            STRING              YES                           
 settlement_status             STRING              YES                                      Tình trạng TT
 settlement_bond_code          STRING              YES                                      Mã TP thanh toán
 settlement_volume             BIGINT              YES                                      KL thanh toán
-equivalent_bond_settlement_valueDECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
+equivalent_bond_settlement_value DECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
 settlement_method             STRING              YES                                      Phương thức TT
 order_creator_rep             STRING              YES                                      ĐDGD tạo lệnh
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: repo_order_book
-Mo ta: 
+BANG: private_corp_bond_offering
+Mo ta: BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-currency_code                 STRING              YES                                      Mã tiền tệ
-original_order_no             STRING              YES                                      SHL gốc
-payment_status                STRING              YES                                      Tình trạng thanh toán
-trading_method                STRING              YES                                      Phương thức GD
-time                          STRING              YES                                      Thgian
-order_no                      STRING              YES                                      SHL
-remaining_term_days           BIGINT              YES                                      KH còn lại(ngày)
-remaining_term                STRING              YES                                      KH còn lại
-bond_code                     STRING              YES                                      Mã TP
-instrument_type               STRING              YES                                      Loại hàng hóa
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+market_type                   STRING              YES                                      Loại thị trường (Trong nước/Quốc tế)
+posting_date                  DATE                YES                                      Ngày đăng tin
+issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+enterprise_type               STRING              YES                                      Loại hình doanh nghiệp
+business_sector               STRING              YES                                      Lĩnh vực hoạt động
+bond_code                     STRING              YES                                      Mã trái phiếu
+currency                      STRING              YES                                      Tiền tệ
+term_unit                     STRING              YES                                      Đơn vị kỳ hạn
+term                          INT                 YES                                      Kỳ hạn
+issue_date                    DATE                YES                                      Ngày phát hành
+maturity_date                 DATE                YES                                      Ngày đáo hạn
+remaining_term                INT                 YES                                      Kỳ hạn còn lại
+offering_volume               BIGINT              YES                                      Khối lượng chào bán
+par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
 interest_payment_type         STRING              YES                                      Loại hình trả lãi
-interest_payment_method       STRING              YES                                      Kiểu trả lãi
 interest_rate_type            STRING              YES                                      Loại lãi suất
-order_type                    STRING              YES                                      Loại lệnh
-order_side                    STRING              YES                                      M/B
-order_status                  STRING              YES                                      Trạng thái lệnh
-quoted_price                  DECIMAL(18,4)       YES                                      Giá yết
-yield_rate                    DECIMAL(10,4)       YES                                      Lợi suất
-discount_rate                 DECIMAL(10,4)       YES                                      Lãi suất CK
-execution_price               DECIMAL(18,4)       YES                                      Giá TH
-par_value                     DECIMAL(18,2)       YES                                      GTMG
-volume                        BIGINT              YES                                      Khối lượng
-first_settlement_value        DECIMAL(18,2)       YES                                      GTTT lần 1
-repo_term                     BIGINT              YES                                      KH Repos
-repo_rate                     DECIMAL(10,4)       YES                                      LS Repos
-coupon_rate                   DECIMAL(10,4)       YES                                      LS/ lãi C
-repo_interest                 DECIMAL(18,2)       YES                                      Lãi Repos
-coupon_interest               DECIMAL(18,2)       YES                                      Lãi Coupon
-receive_coupon_interest       STRING              YES                                      Nhận lãi Coupon
-interest_on_coupon            DECIMAL(18,2)       YES                                      Lãi/Lãi C
-risk_margin_ratio             DECIMAL(10,2)       YES                                      Tỷ lệ PVRR
-trading_date                  DATE                YES                                      Ngày BĐGD
-first_settlement_date         DATE                YES                                      Ngày TT lần 1
-second_settlement_date        DATE                YES                                      Ngày TT lần 2
-end_trading_date              DATE                YES                                      Ngày KTGD
-second_settlement_value       DECIMAL(18,2)       YES                                      GTTT lần 2
-selling_member_code           STRING              YES                                      TV Bán
-selling_rep                   STRING              YES                                      ĐDGD Bán
-selling_account_no            STRING              YES                                      TKNĐT Bán
-selling_broker_dealer         STRING              YES                                      MG/TD Bán
-selling_proxy_entry           STRING              YES                                      Nhập hộ bán
-buying_member_code            STRING              YES                                      TV Mua
-buying_rep                    STRING              YES                                      ĐDGD Mua
-buying_account_no             STRING              YES                                      TK NĐT mua
-buying_broker_dealer          STRING              YES                                      MG/TD Mua
-buying_proxy_entry            STRING              YES                                      Nhập hộ mua
-settlement_method             STRING              YES                                      Phương thức TT
-order_creator_rep             STRING              YES                                      ĐDGD tạo lệnh
+interest_payment_method       STRING              YES                                      Phương thức thanh toán lãi
+repurchase_and_swap           STRING              YES                                      Mua lại và hoán đổi
+issue_market                  STRING              YES                                      Thị trường phát hành
+issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
+convertible_bond              STRING              YES                                      Trái phiếu chuyển đổi (Có/Không)
+warrant_linked_bond           STRING              YES                                      Trái phiếu kèm chứng quyền (Có/Không)
+secured_bond                  STRING              YES                                      Trái phiếu bảo đảm (Có/Không)
+business_no                   STRING              YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+
+BANG: private_corp_bond_registration
+Mo ta: BM 31 (HNX) - Quy mô Đăng ký giao dịch TPDNRL
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+bond_code                     STRING              YES                                      Mã trái phiếu
+currency                      STRING              YES                                      Tiền tệ
+issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
+term_unit                     STRING              YES                                      Đơn vị kỳ hạn
+remaining_term                INT                 YES                                      Kỳ hạn còn lại
+issue_date                    DATE                YES                                      Ngày phát hành
+maturity_date                 DATE                YES                                      Ngày đáo hạn
+interest_payment_method       STRING              YES                                      Phương thức trả lãi
+interest_payment_term         STRING              YES                                      Kỳ hạn trả lãi
+issued_volume                 BIGINT              YES                                      Khối lượng phát hành
+repurchased_converted_swapped_volume BIGINT              YES                                      KL mua lại/chuyển đổi/hoán đổi
+registered_trading_volume     BIGINT              YES                                      Khối lượng đăng ký giao dịch
+outstanding_volume            BIGINT              YES                                      Khối lượng còn lưu hành
+issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
+first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+business_no                   STRING              YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+
+BANG: private_corp_bond_service_orgs
+Mo ta: BM 34 (HNX) - Danh sách CTCK là tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH TPDNRL và thông tin TPDNRL tương ứng
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+bond_code                     STRING              YES                                      Mã trái phiếu (Maxlength 50)
+issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+issued_volume                 BIGINT              YES                                      Khối lượng phát hành (Number, Maxlength 10)
+secured_asset                 STRING              YES                                      Tài sản bảo đảm (Có/Không) (Maxlength 50)
+collateral_type               STRING              YES                                      Hình thức bảo đảm (Maxlength 100)
+advisory_org                  STRING              YES                                      Tổ chức tư vấn (Maxlength 100)
+registrar_depository_org      STRING              YES                                      Tổ chức đăng ký, lưu ký (Maxlength 100)
+issuance_agent_org            STRING              YES                                      Tổ chức đại lý phát hành (Maxlength 100)
+bondholder_representative_org STRING              YES                                      Tổ chức đại diện người sở hữu trái phiếu (Maxlength 100)
+underwriting_guarantor_org    STRING              YES                                      Tổ chức bảo lãnh phát hành (Maxlength 100)
+collateral_value              DECIMAL(18,2)       YES                                      Giá trị tài sản bảo đảm (VND)
+business_no                   STRING              YES                                      Mã đăng ký kinh doanh công ty
 ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
 
+BANG: private_corp_bond_trading
+Mo ta: BM 11 (HNX) - Giao dịch TPDNRL
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+indicator                     STRING              YES                                      Chỉ tiêu
+unit                          STRING              YES                                      Đơn vị tính
+value                         DECIMAL(18,4)       YES                                      Giá trị
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
+BANG: registration_status_change
+Mo ta: BM 32 (HNX) - Thống kê thay đổi trạng thái đăng ký giao dịch
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+bond_code                     STRING              YES                                      Mã trái phiếu
+issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
+currently_registered_trading_volume BIGINT              YES                                      KL đang đăng ký giao dịch
+first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
+last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
+trading_registration_status   STRING              YES                                      Trạng thái ĐKGD
+report_month                  INT                 YES                                      Tháng báo cáo
+business_no                   STRING              YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
 BANG: repo2_order_book
-Mo ta: 
+Mo ta: Sổ lệnh Repo 2
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
@@ -393,7 +391,182 @@ order_creator_rep             STRING              YES                           
 settlement_status             STRING              YES                                      Tình trạng TT
 settlement_bond_code          STRING              YES                                      Mã TP thanh toán
 settlement_volume             BIGINT              YES                                      KL thanh toán
-equivalent_bond_settlement_valueDECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
+equivalent_bond_settlement_value DECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
 mark_settlement_bond          STRING              YES                                      Đánh dấu TPTT
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
+BANG: repo_order_book
+Mo ta: Sổ lệnh Repo
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+currency_code                 STRING              YES                                      Mã tiền tệ
+original_order_no             STRING              YES                                      SHL gốc
+payment_status                STRING              YES                                      Tình trạng thanh toán
+trading_method                STRING              YES                                      Phương thức GD
+time                          STRING              YES                                      Thgian
+order_no                      STRING              YES                                      SHL
+remaining_term_days           BIGINT              YES                                      KH còn lại(ngày)
+remaining_term                STRING              YES                                      KH còn lại
+bond_code                     STRING              YES                                      Mã TP
+instrument_type               STRING              YES                                      Loại hàng hóa
+interest_payment_type         STRING              YES                                      Loại hình trả lãi
+interest_payment_method       STRING              YES                                      Kiểu trả lãi
+interest_rate_type            STRING              YES                                      Loại lãi suất
+order_type                    STRING              YES                                      Loại lệnh
+order_side                    STRING              YES                                      M/B
+order_status                  STRING              YES                                      Trạng thái lệnh
+quoted_price                  DECIMAL(18,4)       YES                                      Giá yết
+yield_rate                    DECIMAL(10,4)       YES                                      Lợi suất
+discount_rate                 DECIMAL(10,4)       YES                                      Lãi suất CK
+execution_price               DECIMAL(18,4)       YES                                      Giá TH
+par_value                     DECIMAL(18,2)       YES                                      GTMG
+volume                        BIGINT              YES                                      Khối lượng
+first_settlement_value        DECIMAL(18,2)       YES                                      GTTT lần 1
+repo_term                     BIGINT              YES                                      KH Repos
+repo_rate                     DECIMAL(10,4)       YES                                      LS Repos
+coupon_rate                   DECIMAL(10,4)       YES                                      LS/ lãi C
+repo_interest                 DECIMAL(18,2)       YES                                      Lãi Repos
+coupon_interest               DECIMAL(18,2)       YES                                      Lãi Coupon
+receive_coupon_interest       STRING              YES                                      Nhận lãi Coupon
+interest_on_coupon            DECIMAL(18,2)       YES                                      Lãi/Lãi C
+risk_margin_ratio             DECIMAL(10,2)       YES                                      Tỷ lệ PVRR
+trading_date                  DATE                YES                                      Ngày BĐGD
+first_settlement_date         DATE                YES                                      Ngày TT lần 1
+second_settlement_date        DATE                YES                                      Ngày TT lần 2
+end_trading_date              DATE                YES                                      Ngày KTGD
+second_settlement_value       DECIMAL(18,2)       YES                                      GTTT lần 2
+selling_member_code           STRING              YES                                      TV Bán
+selling_rep                   STRING              YES                                      ĐDGD Bán
+selling_account_no            STRING              YES                                      TKNĐT Bán
+selling_broker_dealer         STRING              YES                                      MG/TD Bán
+selling_proxy_entry           STRING              YES                                      Nhập hộ bán
+buying_member_code            STRING              YES                                      TV Mua
+buying_rep                    STRING              YES                                      ĐDGD Mua
+buying_account_no             STRING              YES                                      TK NĐT mua
+buying_broker_dealer          STRING              YES                                      MG/TD Mua
+buying_proxy_entry            STRING              YES                                      Nhập hộ mua
+settlement_method             STRING              YES                                      Phương thức TT
+order_creator_rep             STRING              YES                                      ĐDGD tạo lệnh
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
+BANG: share_auction
+Mo ta: BM 7 (HNX) - Đấu giá cổ phần
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+issuer_name                   STRING              YES                                      Tên tổ chức phát hành / Tên công ty
+auction_type                  STRING              YES                                      Loại hình đấu giá
+registered_offering_shares    BIGINT              YES                                      Số CP đăng ký chào bán
+total_registered_investors    BIGINT              YES                                      Tổng số NĐT đăng ký tham gia
+starting_price                DECIMAL(18,2)       YES                                      Giá khởi điểm
+average_winning_price         DECIMAL(18,2)       YES                                      Giá trúng bình quân
+domestic_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức trong nước
+foreign_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức nước ngoài
+domestic_individual_winners   BIGINT              YES                                      Số NĐT trúng giá cá nhân trong nước
+foreign_individual_winners    BIGINT              YES                                      Số NĐT trúng giá cá nhân nước ngoài
+domestic_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT trong nước
+foreign_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT nước ngoài
+domestic_winning_shares       BIGINT              YES                                      Số CP trúng giá - NĐT trong nước
+foreign_winning_shares        BIGINT              YES                                      Số CP trúng giá - NĐT nước ngoài
+domestic_winning_value        DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Trong nước
+foreign_winning_value         DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Nước ngoài
+domestic_actual_sold_shares   BIGINT              YES                                      Số CP thực tế bán được - Trong nước
+foreign_actual_sold_shares    BIGINT              YES                                      Số CP thực tế bán được - Nước ngoài
+domestic_actual_sold_value    DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Trong nước
+foreign_actual_sold_value     DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Nước ngoài
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+
+BANG: trade_book
+Mo ta: Sổ khớp HNX — tương đương TRADE_BOOK_HOSE nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế.
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+trade_date                    STRING              YES                                      Ngày giao dịch của trade
+market_id                     STRING              YES                                      Mã thị trường chứng khoán
+board_id                      STRING              YES                                      Loại bảng giao dịch
+issue_code                    STRING              YES                                      Mã định danh của loại chứng khoán đang được giao dịch (unique)
+trade_number                  BIGINT              YES                                      ID của giao dịch — dùng làm unique key, audit, tracking trade (BK)
+trade_time                    STRING              YES                                      Thời điểm giao dịch xảy ra
+trade_price                   DECIMAL(38,4)       YES                                      Giá khớp của giao dịch
+trade_quantity                BIGINT              YES                                      Khối lượng giao dịch
+session_id                    STRING              YES                                      Mã phiên giao dịch
+sell_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên bán
+sell_member_number            STRING              YES                                      Mã định danh công ty chứng khoán thực hiện lệnh bán
+sell_account_number           STRING              YES                                      Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
+sell_order_type_code          STRING              YES                                      Loại lệnh của phía bán
+sell_order_condition_code     STRING              YES                                      Điều kiện hiệu lực và cách xử lý của lệnh bán
+sell_client_house_classification STRING              YES                                      Lệnh bán của khách hàng hay tự doanh
+sell_investor_classification_code STRING              YES                                      Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX)
+sell_order_quantity           DECIMAL(20,0)       YES                                      Khối lượng đặt bán
+sell_order_price              DECIMAL(38,4)       YES                                      Giá đặt bán
+buy_member_number             STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
+buy_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên mua
+buy_account_number            STRING              YES                                      Mã tài khoản thực hiện giao dịch mua
+buy_order_type_code           STRING              YES                                      Loại lệnh mua
+buy_order_condition_code      STRING              YES                                      Điều kiện thực hiện lệnh mua
+buy_client_house_classification STRING              YES                                      Lệnh mua của khách hàng hay tự doanh
+buy_investor_classification_code STRING              YES                                      Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX)
+buy_order_quantity            DECIMAL(20,0)       YES                                      Khối lượng đặt mua
+buy_order_price               DECIMAL(38,4)       YES                                      Giá đặt mua
+message_sequence              DECIMAL(20,0)       YES                                      Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)
+sell_order_reception_number   DECIMAL(20,0)       YES                                      Số định danh của lệnh bán tại thời điểm hệ thống KRX tiếp nhận
+buy_order_reception_number    DECIMAL(20,0)       YES                                      Số định danh của lệnh mua tại thời điểm hệ thống KRX tiếp nhận
+sell_quote_request_code       STRING              YES                                      Mã loại yêu cầu báo giá của bên bán (HNX RFQ)
+buy_quote_request_code        STRING              YES                                      Mã loại yêu cầu báo giá của bên mua (HNX RFQ)
+execution_price_of_spread_first STRING              YES                                      Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế)
+execution_price_of_spread_second STRING              YES                                      Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế)
+sell_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán
+buy_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua
+report_year                   INT                 YES                                      
+report_month                  INT                 YES                                      
+report_day                    INT                 YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+
+BANG: market_capitalization
+Mo ta: BM 42 (HNX) - Vốn hoá thị trường HNX
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã chứng khoán
+reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
+open_price                    DECIMAL(18,2)       YES                                      Giá mở cửa
+close_price                   DECIMAL(18,2)       YES                                      Giá đóng cửa
+average_price                 DECIMAL(18,2)       YES                                      Giá trung bình
+highest_price                 DECIMAL(18,2)       YES                                      Giá cao nhất
+lowest_price                  DECIMAL(18,2)       YES                                      Giá thấp nhất
+change_points                 DECIMAL(18,2)       YES                                      Thay đổi (điểm)
+change_percentage             DECIMAL(10,2)       YES                                      Thay đổi (%)
+even_lot_match_volume         BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô chẵn)
+even_lot_match_value          DECIMAL(18,2)       YES                                      Giá trị giao dịch (Khớp lệnh lô chẵn)
+odd_lot_match_volume          BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô lẻ)
+odd_lot_match_value           DECIMAL(18,2)       YES                                      Giá trị giao dịch (Khớp lệnh lô lẻ)
+even_lot_put_through_volume   BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô chẵn)
+even_lot_put_through_value    DECIMAL(18,2)       YES                                      Giá trị giao dịch (Thỏa thuận lô chẵn)
+odd_lot_put_through_volume    BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô lẻ)
+odd_lot_put_through_value     DECIMAL(18,2)       YES                                      Giá trị giao dịch (Thỏa thuận lô lẻ)
+total_trading_volume          BIGINT              YES                                      Tổng khối lượng giao dịch
+volume_weight_percentage      DECIMAL(10,2)       YES                                      Tỷ trọng khối lượng (%)
+total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
+value_weight_percentage       DECIMAL(10,2)       YES                                      Tỷ trọng giá trị (%)
+outstanding_shares            BIGINT              YES                                      Khối lượng lưu hành
+market_capitalization         DECIMAL(18,2)       YES                                      Giá trị vốn hóa
+market_cap_weight_percentage  DECIMAL(10,4)       YES                                      Tỷ trọng giá trị vốn hóa (%)
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL

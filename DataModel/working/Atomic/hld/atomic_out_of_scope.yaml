@@ -1401,10 +1401,20 @@ entries:
   group: Shared Entity
   reason: Dùng entity `Listing Status Change` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
 - source_system: HOSE
+  source_table: order_book
+  description: Sổ lệnh chi tiết HOSE
+  group: Shared Entity
+  reason: Dùng entity `Securities Order` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
+- source_system: HOSE
   source_table: share_auction
   description: Kết quả đấu giá cổ phiếu tại HOSE
   group: Shared Entity
   reason: Dùng entity `Share Auction Result` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
+- source_system: HOSE
+  source_table: trade_book
+  description: Sổ khớp chi tiết HOSE
+  group: Shared Entity
+  reason: Dùng entity `Securities Trade` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
 - source_system: IDS
   source_table: '`COMPANY_CHANGE_ROLE_HIS`'
   description: Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn.
@@ -1436,11 +1446,6 @@ entries:
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: IDS
-  source_table: '`DATA_VALUES`'
-  description: Bảng giá trị tham chiếu cho field trong form.
-  group: Form Metadata
-  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
-- source_system: IDS
   source_table: '`FIELDS_MGR`'
   description: Quản lý field metadata trong hệ thống.
   group: Form Metadata
@@ -1448,11 +1453,6 @@ entries:
 - source_system: IDS
   source_table: '`FIELDS`'
   description: Định nghĩa field trong form CBTT.
-  group: Form Metadata
-  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
-- source_system: IDS
-  source_table: '`FORM_FIELDS`'
-  description: Mapping field vào form CBTT.
   group: Form Metadata
   reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
@@ -2889,3 +2889,8 @@ entries:
   group: Fact Data
   reason: Bỏ không còn khai thác theo quyết định Data Modeler — không còn trong DDL
     nguồn hiện tại
+- source_system: VSDC
+  source_table: registered_ownership_type
+  description: Danh mục loại đăng ký sở hữu VSDC (mã + tên)
+  group: Reference Data
+  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value

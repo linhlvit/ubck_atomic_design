@@ -121,8 +121,8 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Total Volume"
-  physical_name: "pt_total_vol"
+- attribute_name: "PT Total Quantity"
+  physical_name: "pt_total_quantity"
   description: "Tổng khối lượng giao dịch thỏa thuận."
   data_domain: "Large Counter"
   nullable: false
@@ -175,7 +175,7 @@ attributes:
   comment: null
 - attribute_name: "Advances Volume"
   physical_name: "advances_vol"
-  description: "Tổng khối lượng đã khớp của các mã tăng."
+  description: "Tổng khối lượng khớp của các mã tăng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -201,7 +201,7 @@ attributes:
   comment: null
 - attribute_name: "Declines Volume"
   physical_name: "declines_vol"
-  description: "Tổng khối lượng đã khớp của các mã giảm."
+  description: "Tổng khối lượng khớp của các mã giảm giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -253,7 +253,7 @@ attributes:
   comment: null
 - attribute_name: "Index Color"
   physical_name: "index_color"
-  description: "Indicator index đang tăng/giảm."
+  description: "Màu sắc thể hiện trạng thái biến động của một chỉ số chứng khoán (VN-Index, HNX-Index, VN30...) tại thời điểm hiện tại so với mức điểm tham chiếu (điểm đóng cửa phiên trước)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -396,7 +396,7 @@ attributes:
   comment: null
 - attribute_name: "No Change Volume"
   physical_name: "no_change_vol"
-  description: "Khối lượng khớp mã không tăng/giảm."
+  description: "Tổng khối lượng khớp của các mã đứng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -435,7 +435,7 @@ attributes:
   comment: null
 - attribute_name: "Odd Lot Total Value"
   physical_name: "odd_lot_total_val"
-  description: "Giá trị khớp lô lẻ."
+  description: "Tổng giá trị giao dịch lô lẻ."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
@@ -448,7 +448,7 @@ attributes:
   comment: null
 - attribute_name: "Odd Lot Total Volume"
   physical_name: "odd_lot_total_vol"
-  description: "Khối lượng khớp lô lẻ."
+  description: "Khối lượng khớp lô lẻ — chỉ tiêu báo cáo riêng, không nằm trong bộ ba phân loại tăng/giảm/đứng giá."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false

@@ -199,8 +199,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "PT Match Volume"
-  physical_name: "pt_match_vol"
+- attribute_name: "PT Match Quantity"
+  physical_name: "pt_match_quantity"
   description: "Khối lượng khớp thỏa thuận gần nhất."
   data_domain: "Large Counter"
   nullable: false
@@ -212,8 +212,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
-- attribute_name: "PT Total Traded Volume"
-  physical_name: "pt_total_traded_vol"
+- attribute_name: "PT Total Traded Quantity"
+  physical_name: "pt_total_traded_quantity"
   description: "Tổng khối lượng khớp thỏa thuận từ đầu ngày."
   data_domain: "Large Counter"
   nullable: false
@@ -277,9 +277,9 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Total Bid Volume"
-  physical_name: "total_bid_vol"
-  description: "Tổng khối lượng dư mua."
+- attribute_name: "Total Bid Quantity"
+  physical_name: "total_bid_quantity"
+  description: "Tổng khối lượng đặt mua chưa khớp toàn bảng giá."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -290,9 +290,9 @@ attributes:
   etl_derived_value: null
   data_type: "bigint"
   comment: null
-- attribute_name: "Total Offer Volume"
-  physical_name: "total_offer_vol"
-  description: "Tổng khối lượng dư bán."
+- attribute_name: "Total Offer Quantity"
+  physical_name: "total_offer_quantity"
+  description: "Tổng khối lượng đặt bán chưa khớp toàn bảng giá."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -370,7 +370,7 @@ attributes:
   comment: null
 - attribute_name: "Bid Volume 1"
   physical_name: "bid_vol_1"
-  description: "Khối lượng mua top 1."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao nhất (tốt nhất) hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -383,7 +383,7 @@ attributes:
   comment: null
 - attribute_name: "Bid Volume 2"
   physical_name: "bid_vol_2"
-  description: "Khối lượng mua top 2."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 2 hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -396,7 +396,7 @@ attributes:
   comment: null
 - attribute_name: "Bid Volume 3"
   physical_name: "bid_vol_3"
-  description: "Khối lượng mua top 3."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 3 hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -448,7 +448,7 @@ attributes:
   comment: null
 - attribute_name: "Close Price"
   physical_name: "close_price"
-  description: "Giá khớp gần nhất."
+  description: "Giá đóng cửa."
   data_domain: "Currency Amount"
   nullable: false
   is_primary_key: false
@@ -461,7 +461,7 @@ attributes:
   comment: null
 - attribute_name: "Close Volume"
   physical_name: "close_vol"
-  description: "Khối lượng khớp gần nhất."
+  description: "Khối lượng giao dịch phiên đóng cửa."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -563,9 +563,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "Foreign Remain Volume"
-  physical_name: "foreign_remain_vol"
-  description: "Room còn lại cho NĐTNN."
+- attribute_name: "Foreign Remain Quantity"
+  physical_name: "foreign_remain_quantity"
+  description: "Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống)."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -576,9 +576,9 @@ attributes:
   etl_derived_value: null
   data_type: "bigint"
   comment: null
-- attribute_name: "Foreign Room Volume"
-  physical_name: "foreign_room_vol"
-  description: "Tổng room NĐTNN."
+- attribute_name: "Foreign Room Quantity"
+  physical_name: "foreign_room_quantity"
+  description: "Tổng khối lượng chứng khoán tối đa mà nhà đầu tư nước ngoài được phép nắm giữ tại mã chứng khoán theo quy định pháp luật hoặc điều lệ công ty (tổng room)."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -656,15 +656,15 @@ attributes:
   data_type: "string"
 - attribute_name: "Last Color"
   physical_name: "last_color"
-  description: "Chiều mua/bán chủ động gần nhất."
-  data_domain: "Classification Value"
+  description: "Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu."
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.LASTCOLOR"
-  comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
-  classification_context: "MDDS_TRADE_DIRECTION"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Last Trading Date"
@@ -774,7 +774,7 @@ attributes:
   comment: null
 - attribute_name: "Offer Volume 1"
   physical_name: "offer_vol_1"
-  description: "Khối lượng bán top 1."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp nhất (tốt nhất) hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -787,7 +787,7 @@ attributes:
   comment: null
 - attribute_name: "Offer Volume 2"
   physical_name: "offer_vol_2"
-  description: "Khối lượng bán top 2."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 2 hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -800,7 +800,7 @@ attributes:
   comment: null
 - attribute_name: "Offer Volume 3"
   physical_name: "offer_vol_3"
-  description: "Khối lượng bán top 3."
+  description: "Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 3 hiện tại."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -989,33 +989,33 @@ attributes:
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE"
-  comment: "Scheme: MDDS_SYMBOL_STATUS."
-  classification_context: "MDDS_SYMBOL_STATUS"
+  comment: "Trạng thái mã CK, ghép của 3 tag 30635|30636|30637. 30635 SymbolAdminStatusCode (SCHEMA_CODE=MDDS.SYMBOL_ADMIN_STATUS_CODE): Tình trạng quản lý mã chứng khoán khi vi phạm các quy định về công bố thông tin, 30636 SymbolTradingMethodStatusCode (SCHEMA_CODE=MDDS.SYMBOL_TRADING_METHOD_CODE): Xác định loại giao dịch cho một mã chứng khoán, 30637 SymbolTradingSantionStatusCode (SCHEMA_CODE=MDDS.SYMBOL_TRADING_SANTION_STATUS_CODE): Phân loại tình trạng giao dịch như tạm ngưng, ngưng giao dịch vì một số lý do."
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Total Buy Volume"
   physical_name: "total_buy_vol"
-  description: "Tổng khối lượng mua."
+  description: "Tổng khối lượng mua đã khớp."
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.TOTALBUYVOL"
-  comment: "Cùng ý nghĩa với Total Buy Volume của Security Match Log. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
 - attribute_name: "Total Sell Volume"
   physical_name: "total_sell_vol"
-  description: "Tổng khối lượng bán."
+  description: "Tổng khối lượng bán đã khớp."
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.TOTALSELLVOL"
-  comment: "Cùng ý nghĩa với Total Sell Volume của Security Match Log. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
@@ -1048,14 +1048,14 @@ attributes:
 - attribute_name: "Trading Session Status Code"
   physical_name: "trading_session_status_code"
   description: "Trạng thái phiên tại thời điểm chụp."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.TRADINGSESSIONID"
-  comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
-  classification_context: "MDDS_TRADING_SESSION_STATUS"
+  comment: null
+  classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Trading Time"

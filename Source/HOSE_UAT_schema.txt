@@ -1,39 +1,42 @@
 DATA DICTIONARY - SCHEMA: UAT_HOSE_STG
-Tong so bang: 4 | Materialized View: 0
+Tong so bang: 6 | Materialized View: 0
 ==============================================================================================================
 
-BANG: share_auction
-Mo ta: 
+BANG: brokerage_market_share
+Mo ta: BM 9 (HOSE)
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-issuer_name                   STRING              YES                                      Tên tổ chức phát hành / Tên công ty
-auction_type                  STRING              YES                                      Loại hình đấu giá
-registered_offering_shares    BIGINT              YES                                      Số CP đăng ký chào bán
-total_registered_investors    BIGINT              YES                                      Tổng số NĐT đăng ký tham gia
-starting_price                DECIMAL(18,2)       YES                                      Giá khởi điểm
-average_winning_price         DECIMAL(18,2)       YES                                      Giá trúng bình quân
-domestic_institutional_winnersBIGINT              YES                                      Số NĐT trúng giá tổ chức trong nước
-foreign_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức nước ngoài
-domestic_individual_winners   BIGINT              YES                                      Số NĐT trúng giá cá nhân trong nước
-foreign_individual_winners    BIGINT              YES                                      Số NĐT trúng giá cá nhân nước ngoài
-domestic_registered_buy_volumeBIGINT              YES                                      KL CP đăng ký mua - NĐT trong nước
-foreign_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT nước ngoài
-domestic_winning_shares       BIGINT              YES                                      Số CP trúng giá - NĐT trong nước
-foreign_winning_shares        BIGINT              YES                                      Số CP trúng giá - NĐT nước ngoài
-domestic_winning_value        DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Trong nước
-foreign_winning_value         DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Nước ngoài
-domestic_actual_sold_shares   BIGINT              YES                                      Số CP thực tế bán được - Trong nước
-foreign_actual_sold_shares    BIGINT              YES                                      Số CP thực tế bán được - Nước ngoài
-domestic_actual_sold_value    DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Trong nước
-foreign_actual_sold_value     DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Nước ngoài
-report_month                  STRING              YES                                      Tháng báo cáo
-report_year                   STRING              YES                                      Năm báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+broker_name                   STRING              YES                                      Tên công ty chứng khoán
+member_code                   STRING              YES                                      Mã thành viên
+total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
+market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
+classification                STRING              YES                                      Phân loại
+report_quarter                STRING              YES                                      Quý báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+
+BANG: listed_securities_list
+Mo ta: BM 12 (HOSE)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã cổ phiếu
+issuer_name                   STRING              YES                                      Tổ chức phát hành
+listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
+outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
+reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
 BANG: listing_status_change
-Mo ta: 
+Mo ta: BM 13 (HOSE)
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
@@ -52,34 +55,152 @@ effective_date                DATE                YES                           
 first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
 last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
 delist_transfer_reason        STRING              YES                                      Lý do hủy, chuyển sàn
-report_month                  STRING              YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+report_month                  INT                 YES                                      Tháng báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: listed_securities_list
-Mo ta: 
+BANG: order_book
+Mo ta: Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh giao dịch trên sàn HOSE (cổ phiếu / trái phiếu / repo). Mỗi bản ghi là một event: lệnh mới / sửa / hủy. Đối tượng trung tâm của phân hệ ORDERTRADE.
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-ticker_symbol                 STRING              YES                                      Mã cổ phiếu
-issuer_name                   STRING              YES                                      Tổ chức phát hành
-listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
-outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
-reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
-report_date                   DATE                YES                                      Ngày báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+trade_date                    DATE                YES                                      Ngày giao dịch theo thị trường chứng khoán
+market_id                     STRING              YES                                      Mã thị trường chứng khoán
+symbol                        STRING              YES                                      Mã chứng khoán
+currency                      STRING              YES                                      Đơn vị tiền tệ
+board_type                    STRING              YES                                      Loại bảng giao dịch mà lệnh được phân loại vào
+order_date                    DATE                YES                                      Ngày đặt lệnh của người thực hiện giao dịch
+order_time                    STRING              YES                                      Thời gian đặt lệnh của người thực hiện giao dịch
+session                       STRING              YES                                      Phiên giao dịch của thị trường chứng khoán
+modify_cancel                 STRING              YES                                      Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy
+order_accept_id               STRING              YES                                      Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)
+orig_order_accept_id          STRING              YES                                      Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn
+side                          STRING              YES                                      Loại lệnh: B=Buy / S=Sell
+brk_id                        STRING              YES                                      Mã/số công ty chứng khoán
+brk                           STRING              YES                                      Tên công ty chứng khoán
+pin                           STRING              YES                                      Mã PIN của tài khoản giao dịch
+acct_no                       STRING              YES                                      Mã/Số tài khoản giao dịch của nhà đầu tư
+name                          STRING              YES                                      Tên nhà đầu tư/chủ tài khoản nhà đầu tư
+market_maker_order            STRING              YES                                      Lệnh đặt của nhà tạo lập thị trường
+client_house_classification_code STRING              YES                                      Phân loại lệnh khách hàng/công ty tự doanh
+invest_type                   STRING              YES                                      Phân loại nhà đầu tư (raw từ HOSE)
+foreigner_investor_type       STRING              YES                                      Phân loại đầu tư nước ngoài
+order_type                    STRING              YES                                      Loại lệnh theo giá
+order_price                   DECIMAL(38,4)       YES                                      Giá đặt lệnh
+order_vol                     BIGINT              YES                                      Khối lượng đặt lệnh
+order_condition               STRING              YES                                      Điều kiện thực hiện lệnh
+ltp                           DOUBLE              YES                                      Giá khớp gần nhất trên thị trường (Last Traded Price)
+execution_price               DOUBLE              YES                                      Giá khớp lệnh thực tế
+immed_matched_vol             BIGINT              YES                                      Khối lượng khớp ngay khi hệ thống ghi nhận lệnh
+matched_vol                   BIGINT              YES                                      Tổng khối lượng đã khớp của lệnh
+order_rqty                    BIGINT              YES                                      Khối lượng còn lại chưa khớp của lệnh
+order_price_ltp               DOUBLE              YES                                      Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất
+matched_ratio                 DOUBLE              YES                                      Tỷ lệ khớp lệnh
+buy_up_sell_down_amt          DOUBLE              YES                                      Mức tăng/giảm giá so với tham chiếu theo giá trị
+buy_up_sell_down_tick         DOUBLE              YES                                      Mức tăng/giảm theo bước giá
+new_high_low_price            STRING              YES                                      Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày
+order_status                  STRING              YES                                      Trạng thái của lệnh
+icd_bug_qty                   BIGINT              YES                                      Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch
+expected_execution_price      DOUBLE              YES                                      Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
+expected_execution_volume     BIGINT              YES                                      Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
+short_sell_indicator          STRING              YES                                      Phân loại lệnh bán khống
+trader_no                     STRING              YES                                      Mã/số định danh người thực hiện giao dịch
+trader_name                   STRING              YES                                      Tên người thực hiện giao dịch
+reference_sequence_no         STRING              YES                                      Số tham chiếu theo thứ tự giao dịch
+order_id                      STRING              YES                                      Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính)
+orig_order_id                 STRING              YES                                      Mã định danh của lệnh đặt trước khi chỉnh sửa
+report_year                   INT                 YES                                      
+report_month                  INT                 YES                                      
+report_day                    INT                 YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
 
-BANG: brokerage_market_share
-Mo ta: 
+BANG: share_auction
+Mo ta: BM 5 (HOSE)
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-broker_name                   STRING              YES                                      Tên công ty chứng khoán
-member_code                   STRING              YES                                      Mã thành viên
-total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
-market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
-classification                STRING              YES                                      Phân loại
-report_quarter                STRING              YES                                      Quý báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+issuer_name                   STRING              YES                                      Tên tổ chức phát hành / Tên công ty
+auction_type                  STRING              YES                                      Loại hình đấu giá
+registered_offering_shares    BIGINT              YES                                      Số CP đăng ký chào bán
+total_registered_investors    BIGINT              YES                                      Tổng số NĐT đăng ký tham gia
+starting_price                DECIMAL(18,2)       YES                                      Giá khởi điểm
+average_winning_price         DECIMAL(18,2)       YES                                      Giá trúng bình quân
+domestic_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức trong nước
+foreign_institutional_winners BIGINT              YES                                      Số NĐT trúng giá tổ chức nước ngoài
+domestic_individual_winners   BIGINT              YES                                      Số NĐT trúng giá cá nhân trong nước
+foreign_individual_winners    BIGINT              YES                                      Số NĐT trúng giá cá nhân nước ngoài
+domestic_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT trong nước
+foreign_registered_buy_volume BIGINT              YES                                      KL CP đăng ký mua - NĐT nước ngoài
+domestic_winning_shares       BIGINT              YES                                      Số CP trúng giá - NĐT trong nước
+foreign_winning_shares        BIGINT              YES                                      Số CP trúng giá - NĐT nước ngoài
+domestic_winning_value        DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Trong nước
+foreign_winning_value         DECIMAL(18,2)       YES                                      Giá trị CP trúng giá (VND) - Nước ngoài
+domestic_actual_sold_shares   BIGINT              YES                                      Số CP thực tế bán được - Trong nước
+foreign_actual_sold_shares    BIGINT              YES                                      Số CP thực tế bán được - Nước ngoài
+domestic_actual_sold_value    DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Trong nước
+foreign_actual_sold_value     DECIMAL(18,2)       YES                                      Giá trị CP thực tế bán được - Nước ngoài
+report_month                  INT                 YES                                      Tháng báo cáo
+report_year                   INT                 YES                                      Năm báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_day                    INT                 YES                                      Ngày báo cáo
+
+BANG: trade_book
+Mo ta: Sổ khớp HOSE — ghi nhận từng giao dịch khớp thành công trên HOSE. Mỗi bản ghi chứa đồng thời thông tin bên mua và bên bán. 1 Order có thể tạo ra nhiều Trade (khớp dần).
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+trade_date                    DATE                YES                                      Ngày giao dịch theo thị trường chứng khoán
+market_id                     STRING              YES                                      Mã thị trường chứng khoán
+symbol                        STRING              YES                                      Mã chứng khoán
+currency                      STRING              YES                                      Đơn vị tiền tệ
+board_type                    STRING              YES                                      Loại bảng giao dịch
+trade_no                      BIGINT              YES                                      Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống Sàn trong ngày, theo từng mã chứng khoán (Trade ID / BK)
+time                          STRING              YES                                      Thời gian diễn ra giao dịch khớp lệnh
+session                       BIGINT              YES                                      Phiên giao dịch
+execution_exec_price          DECIMAL(38,4)       YES                                      Giá khớp lệnh thực tế của giao dịch
+execution_exec_price_ltp      DECIMAL(38,4)       YES                                      Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán
+execution_volume              BIGINT              YES                                      Khối lượng khớp lệnh
+execution_value               DECIMAL(38,4)       YES                                      Tổng giá trị giao dịch của lệnh khớp
+execution_ltp                 DECIMAL(38,4)       YES                                      Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price)
+execution_new_high_low_price  STRING              YES                                      Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày
+buy_order_date                DATE                YES                                      Ngày đặt lệnh mua
+buy_order_time                STRING              YES                                      Thời gian đặt lệnh mua
+buy_order_accept_no           BIGINT              YES                                      Số thứ tự của lệnh mua được ghi nhận trên hệ thống Sàn trong ngày giao dịch
+buy_brk_no                    STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
+buy_brk                       STRING              YES                                      Tên công ty chứng khoán thực hiện giao dịch mua
+buy_pin                       STRING              YES                                      Mã PIN của tài khoản mua
+buy_acct_no                   STRING              YES                                      Mã/Số tài khoản giao dịch mua của nhà đầu tư
+buy_name                      STRING              YES                                      Tên tài khoản giao dịch mua của nhà đầu tư
+buy_client_house_classification_code BIGINT              YES                                      Phân loại lệnh khách hàng/công ty tự doanh của lệnh mua
+buy_invest_type               BIGINT              YES                                      Phân loại nhà đầu tư của lệnh mua (raw từ HOSE)
+buy_foreigner_investor_type   STRING              YES                                      Phân loại đầu tư nước ngoài của lệnh mua
+buy_order_price               DECIMAL(38,4)       YES                                      Giá đặt mua
+buy_order_vol                 BIGINT              YES                                      Khối lượng đặt mua
+buy_trader_no                 STRING              YES                                      Mã/số định danh người thực hiện đặt mua
+buy_trader_name               STRING              YES                                      Tên người thực hiện đặt mua
+buy_reference_sequence_no     STRING              YES                                      Số tham chiếu theo thứ tự đặt mua trong ngày
+sell_order_date               DATE                YES                                      Ngày đặt lệnh bán
+sell_order_time               STRING              YES                                      Thời gian đặt lệnh bán
+sell_order_accept_no          BIGINT              YES                                      Số thứ tự của lệnh bán được ghi nhận trên hệ thống Sàn trong ngày giao dịch
+sell_brk_no                   STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch bán
+sell_brk                      STRING              YES                                      Tên công ty chứng khoán thực hiện giao dịch bán
+sell_pin                      STRING              YES                                      Mã PIN của tài khoản bán
+sell_acct_no                  STRING              YES                                      Mã/Số tài khoản giao dịch bán của nhà đầu tư
+sell_name                     STRING              YES                                      Tên tài khoản giao dịch bán của nhà đầu tư
+sell_client_house_classification_code BIGINT              YES                                      Phân loại lệnh khách hàng/công ty tự doanh của lệnh bán
+sell_invest_type              BIGINT              YES                                      Phân loại nhà đầu tư của lệnh bán (raw từ HOSE)
+sell_foreigner_investor_type  STRING              YES                                      Phân loại đầu tư nước ngoài của lệnh bán
+sell_order_price              DECIMAL(38,4)       YES                                      Giá đặt bán
+sell_order_vol                BIGINT              YES                                      Khối lượng đặt bán
+sell_trader_no                STRING              YES                                      Mã/số định danh người thực hiện đặt bán
+sell_trader_name              STRING              YES                                      Tên người thực hiện đặt bán
+sell_reference_sequence_no    STRING              YES                                      Số tham chiếu theo thứ tự đặt bán trong ngày
+report_year                   INT                 YES                                      
+report_month                  INT                 YES                                      
+report_day                    INT                 YES                                      
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES

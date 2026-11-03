@@ -7,7 +7,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 7 (HNX) - Đấu giá cổ phần
     functional_group: Đấu giá cổ phần
     scope_status: in_scope
     scope_reason: null
@@ -26,7 +26,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 11 (HNX) - Giao dịch TPDNRL
     functional_group: Trái phiếu doanh nghiệp
     scope_status: in_scope
     scope_reason: null
@@ -45,7 +45,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 25 (HNX) - Dữ liệu các đợt chào bán TPCP
     functional_group: Trái phiếu Chính phủ
     scope_status: in_scope
     scope_reason: null
@@ -64,7 +64,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 26 (HNX) - Danh sách TPCP niêm yết
     functional_group: Trái phiếu Chính phủ
     scope_status: in_scope
     scope_reason: null
@@ -83,7 +83,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 27 (HNX) - Niêm yết bổ sung TPCP
     functional_group: Trái phiếu Chính phủ
     scope_status: in_scope
     scope_reason: null
@@ -102,7 +102,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL
     functional_group: Trái phiếu doanh nghiệp
     scope_status: in_scope
     scope_reason: null
@@ -121,7 +121,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 31 (HNX) - Quy mô Đăng ký giao dịch TPDNRL
     functional_group: Trái phiếu doanh nghiệp
     scope_status: in_scope
     scope_reason: null
@@ -140,7 +140,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 32 (HNX) - Thống kê thay đổi trạng thái đăng ký giao dịch
     functional_group: Đăng ký & niêm yết
     scope_status: in_scope
     scope_reason: null
@@ -159,7 +159,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 35 (HNX) - Thay đổi niêm yết
     functional_group: Đăng ký & niêm yết
     scope_status: in_scope
     scope_reason: null
@@ -178,7 +178,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 37 (HNX) - Danh sách CK niêm yết/ĐKGD
     functional_group: Đăng ký & niêm yết
     scope_status: in_scope
     scope_reason: null
@@ -197,7 +197,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: BM 38 (HNX) - Thị phần môi giới
     functional_group: Thị phần môi giới
     scope_status: in_scope
     scope_reason: null
@@ -216,7 +216,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: Sổ lệnh Outright
     functional_group: Sổ lệnh giao dịch
     scope_status: in_scope
     scope_reason: null
@@ -235,7 +235,7 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: Sổ lệnh Repo
     functional_group: Sổ lệnh giao dịch
     scope_status: in_scope
     scope_reason: null
@@ -254,11 +254,92 @@ brd_entries:
   ba_email: username@fssc.com.vn
   steward_email: username@ubck.com.vn
   content:
-    table_meaning: null
+    table_meaning: Sổ lệnh Repo 2
     functional_group: Sổ lệnh giao dịch
     scope_status: in_scope
     scope_reason: null
     table: REPO2_ORDER_BOOK
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-HNX-ORDER_BOOK
+  brd_name: Design Atomic từ nguồn HNX bảng ORDER_BOOK
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Sổ lệnh HNX — tương đương ORDER_BOOK_HOSE nhưng cho sàn HNX (cổ
+      phiếu niêm yết / UPCOM / TPCP / TP DN / phái sinh). Có thêm tính năng Iceberg
+      order và Stop order theo chuẩn KRX.
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: in_scope
+    scope_reason: null
+    table: ORDER_BOOK
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-HNX-PRIVATE_CORP_BOND_SERVICE_ORGS
+  brd_name: Design Atomic từ nguồn HNX bảng PRIVATE_CORP_BOND_SERVICE_ORGS
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: BM 34 (HNX) - Danh sách CTCK là tổ chức tư vấn, đại lý phát hành,
+      đại lý lưu ký, đại diện NSH TPDNRL và thông tin TPDNRL tương ứng
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: in_scope
+    scope_reason: null
+    table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-HNX-TRADE_BOOK
+  brd_name: Design Atomic từ nguồn HNX bảng TRADE_BOOK
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: Sổ khớp HNX — tương đương TRADE_BOOK_HOSE nhưng cho sàn HNX. Bổ
+      sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao
+      dịch phái sinh/repo có 2 vế.
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: in_scope
+    scope_reason: null
+    table: TRADE_BOOK
+    related_tables: null
+    notes: null
+    data_volume_hint: null
+    refresh_frequency: null
+    ingestion:
+      data_change_mode: Append
+      filter_logic: null
+      filter_note: null
+- brd_id: BRD-SRC-HNX-MARKET_CAPITALIZATION
+  brd_name: Design Atomic từ nguồn HNX bảng MARKET_CAPITALIZATION
+  type: Theo Source
+  ba_email: username@fssc.com.vn
+  steward_email: username@ubck.com.vn
+  content:
+    table_meaning: BM 42 (HNX) - Vốn hoá thị trường HNX
+    functional_group: CHƯA PHÂN NHÓM
+    scope_status: in_scope
+    scope_reason: null
+    table: MARKET_CAPITALIZATION
     related_tables: null
     notes: null
     data_volume_hint: null

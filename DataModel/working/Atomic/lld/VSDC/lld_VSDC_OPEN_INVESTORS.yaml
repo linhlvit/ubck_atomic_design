@@ -7,7 +7,7 @@ metadata:
   entity_physical_name: "open_investor_account"
   bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: "Fact Snapshot"
+  table_type: "Fact Append"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -200,3 +200,42 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.OPEN_INVESTORS.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

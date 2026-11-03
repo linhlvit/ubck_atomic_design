@@ -4220,15 +4220,6 @@ schemes:
       - "Corporate Bond Trading Snapshot"
     values: []
 
-  - scheme_code: "MDDS_TRADE_DIRECTION"
-    name: "Chiều giao dịch chủ động — Buy/Sell indicator"
-    source_type: "source_table"
-    source_table: "MDDS.TransLog"
-    used_in_entities:
-      - "Security Match Log"
-      - "Security Trading Snapshot"
-    values: []
-
   - scheme_code: "MDDS_SYMBOL_STATUS"
     name: "Trạng thái mã chứng khoán niêm yết — cần profile giá trị từ nguồn"
     source_type: "source_table"
@@ -6652,3 +6643,10 @@ schemes:
       - "Fund Management Company Insider Related Person"
     values: []
     reactivated_note: "Đăng ký mới 2026-10-28 — FMS.RELATION map vào Classification Value theo yêu cầu Data Modeler, cl_code = ID (không có cột CODE riêng). Khác scheme FMS_RELATION_TYPE (FK-reference cũ, chưa có entity tiêu thụ trong LLD FMS hiện tại)."
+
+  - scheme_code: "VSDC_REGISTERED_OWNERSHIP_TYPE"
+    name: "Danh mục loại đăng ký sở hữu VSDC (investor_type BIGINT = mã, ownership_type STRING = tên) — cần profile values từ VSDC"
+    source_type: "modeler_defined"
+    source_table: "VSDC.REGISTERED_OWNERSHIP_TYPE"
+    used_in_entities: []
+    values: []

@@ -146,7 +146,6 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| JAD_TRANSLOG.lastColor | Chiều mua/bán chủ động: Buy/Sell indicator | `MDDS_TRADE_DIRECTION` | source_table | Cùng scheme với JAD_STOCKINFOR.lastcolor — đăng ký 1 lần tại Tier 1 |
 | JAD_CSIDXINFOR.floorcode | Mã sở giao dịch | `MDDS_FLOOR_CODE` | source_table | Cùng scheme với JAD_STOCKINFOR.floorcode — đã đăng ký Tier 1 |
 
 ---

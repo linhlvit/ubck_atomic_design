@@ -85,19 +85,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Report Month"
-  physical_name: "rpt_month"
-  description: "Tháng báo cáo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Issuer Name"
   physical_name: "issuer_nm"
   description: "Tên doanh nghiệp phát hành"
@@ -107,6 +94,19 @@ attributes:
   status: "draft"
   source_columns:
   - "HNX.PRIVATE_CORP_BOND_OFFERING.ISSUER_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Business Number"
+  physical_name: "business_nbr"
+  description: "Mã số doanh nghiệp"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -358,23 +358,10 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-- attribute_name: "Report Day"
-  physical_name: "rpt_day"
-  description: "Ngày báo cáo"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Report Year"
   physical_name: "rpt_year"
   description: "Năm báo cáo"
-  data_domain: "Text"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -383,17 +370,30 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Business Number"
-  physical_name: "business_nbr"
-  description: "Mã số doanh nghiệp"
-  data_domain: "Text"
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_NO"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

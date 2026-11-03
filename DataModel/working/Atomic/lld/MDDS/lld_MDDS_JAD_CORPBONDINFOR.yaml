@@ -277,9 +277,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Best Bid Volume"
-  physical_name: "pt_best_bid_vol"
-  description: "Tổng KL chào mua cao nhất GD thỏa thuận Outright."
+- attribute_name: "PT Best Bid Quantity"
+  physical_name: "pt_best_bid_quantity"
+  description: "Khối lượng chào mua ở mức giá cao nhất GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -303,9 +303,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Best Offer Volume"
-  physical_name: "pt_best_offer_vol"
-  description: "Tổng KL chào bán thấp nhất GD thỏa thuận Outright."
+- attribute_name: "PT Best Offer Quantity"
+  physical_name: "pt_best_offer_quantity"
+  description: "Khối lượng chào bán ở mức giá thấp nhất GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -329,8 +329,8 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Match Volume"
-  physical_name: "pt_match_vol"
+- attribute_name: "PT Match Quantity"
+  physical_name: "pt_match_quantity"
   description: "Khối lượng thực hiện gần nhất GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
@@ -355,9 +355,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Max Volume"
-  physical_name: "pt_max_vol"
-  description: "KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright."
+- attribute_name: "PT Max Quantity"
+  physical_name: "pt_max_quantity"
+  description: "Khối lượng giao dịch tối đa quy định cho một lệnh giao dịch thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -381,9 +381,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Min Volume"
-  physical_name: "pt_min_vol"
-  description: "KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright."
+- attribute_name: "PT Min Quantity"
+  physical_name: "pt_min_quantity"
+  description: "Khối lượng giao dịch tối thiểu quy định cho một lệnh giao dịch thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -394,8 +394,8 @@ attributes:
   etl_derived_value: null
   data_type: "bigint"
   comment: "Nguồn lưu dạng FLOAT(53) — ETL cần cast sang bigint; validate giá trị nguyên (không mất phần thập phân)."
-- attribute_name: "PT Total Traded Volume"
-  physical_name: "pt_total_traded_vol"
+- attribute_name: "PT Total Traded Quantity"
+  physical_name: "pt_total_traded_quantity"
   description: "Tổng khối lượng GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
@@ -420,9 +420,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "PT Total Bid Volume"
-  physical_name: "pt_total_bid_vol"
-  description: "Tổng KL chào mua GD thỏa thuận Outright."
+- attribute_name: "PT Total Bid Quantity"
+  physical_name: "pt_total_bid_quantity"
+  description: "Tổng khối lượng chào mua GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -433,9 +433,9 @@ attributes:
   etl_derived_value: null
   data_type: "bigint"
   comment: "Nguồn lưu dạng FLOAT(53) — ETL cần cast sang bigint; validate giá trị nguyên (không mất phần thập phân)."
-- attribute_name: "PT Total Offer Volume"
-  physical_name: "pt_total_offer_vol"
-  description: "Tổng KL chào bán GD thỏa thuận Outright."
+- attribute_name: "PT Total Offer Quantity"
+  physical_name: "pt_total_offer_quantity"
+  description: "Tổng khối lượng chào bán GD thỏa thuận Outright."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -539,7 +539,7 @@ attributes:
   comment: null
 - attribute_name: "Close Volume"
   physical_name: "close_vol"
-  description: "Khối lượng đóng cửa."
+  description: "Khối lượng giao dịch phiên đóng cửa."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -563,9 +563,9 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(23,2)"
   comment: null
-- attribute_name: "Foreign Remain Volume"
-  physical_name: "foreign_remain_vol"
-  description: "Room NĐTNN còn lại."
+- attribute_name: "Foreign Remain Quantity"
+  physical_name: "foreign_remain_quantity"
+  description: "Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống)."
   data_domain: "Large Counter"
   nullable: false
   is_primary_key: false
@@ -696,7 +696,7 @@ attributes:
 - attribute_name: "Trading Session Id"
   physical_name: "trading_session_id"
   description: "Trạng thái phiên giao dịch HNX."
-  data_domain: "Classification Value"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"

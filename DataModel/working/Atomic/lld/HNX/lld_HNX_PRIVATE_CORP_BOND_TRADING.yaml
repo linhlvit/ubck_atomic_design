@@ -83,16 +83,42 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,4)"
-- attribute_name: "Report Date"
-  physical_name: "rpt_dt"
-  description: "Ngày báo cáo"
-  data_domain: "Date"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_TRADING.REPORT_DATE"
+  - "HNX.PRIVATE_CORP_BOND_TRADING.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "int"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_TRADING.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_TRADING.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
