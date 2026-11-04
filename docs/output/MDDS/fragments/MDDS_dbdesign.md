@@ -1,4 +1,4 @@
-## MDDS — Hệ thống dữ liệu giao dịch thị trường từ các SGDCK
+## MDDS — Phân hệ quản lí giao dịch thị trường từ các SGDCK
 
 ### Các mô hình quan hệ dữ liệu
 
@@ -8,41 +8,39 @@
 
 | STT | Tên bảng | Mô tả |
 |---|---|---|
-| 1 | corp_bond_mtch_log | Log tick-by-tick từng lần khớp lệnh trái phiếu doanh nghiệp theo thứ tự ConfirmNoCorpBond. Grain: 1 dòng = 1 lần khớp (symbol × ngày × confirm_no). Insert-only. |
-| 2 | scr_mtch_log | Log tick-by-tick từng lần khớp lệnh chứng khoán theo thứ tự sequenceMsg. Grain: 1 dòng = 1 lần khớp (symbol × ngày × sequenceMsg). Insert-only. Chứa chiều giao dịch chủ động (lastColor) và tích lũy KL/GT từ đầu ngày. |
-| 3 | corp_bond_tdg_snpst | Snapshot trạng thái giao dịch trái phiếu doanh nghiệp niêm yết HNX tại thời điểm phát sinh thay đổi: giá tham chiếu/trần/sàn/khớp |
-| 4 | indx_constituent_snpst | Snapshot thành phần rổ chỉ số thị trường: mã chứng khoán thuộc rổ nào (IndexCode × Symbol × ngày giao dịch). Có attribute nghiệp vụ: tỷ trọng (Weighted) và ngày vào rổ (AddDate). |
-| 5 | mkt_indx_snpst | Snapshot thông tin chỉ số thị trường chứng khoán (VN30/VNINDEX/HNX30...) tại thời điểm phát sinh: giá trị chỉ số |
-| 6 | mkt_snpst | Snapshot trạng thái tổng hợp toàn sàn giao dịch (HOSE/HNX/UPCOM) tại mỗi thời điểm: điểm chỉ số sàn |
-| 7 | scr_tdg_snpst | Snapshot trạng thái giao dịch đa loại chứng khoán (cổ phiếu/CCQ/chứng quyền/phái sinh) tại thời điểm có thay đổi lệnh/khớp lệnh: giá tham chiếu/trần/sàn |
+| 1 | security_match_log | Log từng lần khớp lệnh (tick-by-tick) của cổ phiếu niêm yết trong ngày giao dịch, bao gồm giá khớp, khối lượng khớp, chiều giao dịch chủ động, và lũy kế khối lượng/giá trị từ đầu ngày. |
+| 2 | corporate_bond_trading_snapshot | Snapshot trạng thái giao dịch của trái phiếu doanh nghiệp niêm yết tại sàn HNX tại một thời điểm, bao gồm giá khớp, order book thỏa thuận Outright, thông tin đặc thù trái phiếu (kỳ hạn, lãi suất, coupon, mệnh giá, ngày phát hành/đáo hạn). |
+| 3 | index_constituent_snapshot | Snapshot thành phần rổ chỉ số thị trường theo ngày giao dịch — mỗi dòng ghi nhận một cặp mã chỉ số và mã chứng khoán có mặt trong rổ chỉ số tại ngày giao dịch tương ứng. |
+| 4 | market_index_snapshot | Snapshot trạng thái của một chỉ số thị trường (VNINDEX, HNX-Index, UPCOM-Index) tại một thời điểm trong ngày, bao gồm điểm chỉ số, tổng khối lượng/giá trị, thống kê mã tăng/giảm/trần/sàn, trạng thái phiên giao dịch. |
+| 5 | market_price_snapshot | Nến giá OHLCV (mở/cao/thấp/đóng cửa, khối lượng khớp) của một mã (chứng khoán hoặc chỉ số) theo kỳ phút hoặc ngày, phục vụ biểu đồ TradingView. Gộp từ 2 bảng nguồn cấu trúc gần như giống hệt nhau, phân biệt qua src_stm_code. |
+| 6 | security_trading_snapshot | Snapshot trạng thái giao dịch của một công cụ tài chính (cổ phiếu, chứng quyền, hợp đồng phái sinh, chứng chỉ quỹ) tại một thời điểm trong ngày giao dịch, bao gồm giá, sổ lệnh, NĐTNN và thông tin đặc thù theo loại instrument. |
 
 
 
 
-### Bảng corp_bond_mtch_log
+### Bảng security_match_log
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | corp_bond_mtch_log_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi khớp lệnh trái phiếu doanh nghiệp. |
-| 2 | corp_bond_mtch_log_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.CorpBondMatch' | Mã nguồn dữ liệu. |
-| 4 | corp_bond_tdg_snpst_id | STRING |  |  | F |  | FK đến bản tin thông tin giao dịch trái phiếu doanh nghiệp tương ứng. |
-| 5 | symb | STRING |  |  |  |  | Mã trái phiếu doanh nghiệp. BK. |
-| 6 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch. BK. |
-| 7 | cfrm_no | INT |  |  |  |  | Số xác nhận/số thứ tự giao dịch TPDN (thay cho sequenceMsg trong TransLog). BK. |
-| 8 | mtch_tm | STRING | X |  |  |  | Giờ khớp lệnh (HH:mm:ss). |
-| 9 | mtch_drc_code | STRING | X |  |  |  | Chiều giao dịch chủ động: B=Mua chủ động / S=Bán chủ động / O=ATO / C=ATC. |
-| 10 | mtch_prc | DECIMAL(23,2) | X |  |  |  | Giá khớp (thường theo % mệnh giá nhân mệnh giá cho TPDN). |
-| 11 | mtch_vol | INT | X |  |  |  | Khối lượng khớp của lần khớp này. |
-| 12 | prc_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi so với giá tham chiếu tại thời điểm khớp. |
-| 13 | chg_color | STRING | X |  |  |  | Style hiển thị của giá thay đổi. |
-| 14 | acm_vol | INT | X |  |  |  | Tổng khối lượng khớp tích lũy từ đầu ngày. |
-| 15 | acm_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp tích lũy từ đầu ngày (VND). |
-| 16 | tot_buy_vol | INT | X |  |  |  | Tổng khối lượng mua chủ động (lastColor=B) tích lũy trong ngày. |
-| 17 | tot_sell_vol | INT | X |  |  |  | Tổng khối lượng bán chủ động (lastColor=S) tích lũy trong ngày. |
-| 18 | mkt_id | STRING |  |  |  | '06' | ID thị trường — luôn = 06 (trái phiếu doanh nghiệp HNX). |
+| 1 | security_match_log_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | security_match_log_code | STRING |  |  |  |  | Bản ghi log khớp lệnh — PK bảng nguồn (KID). |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_TRANSLOG' | Mã hệ thống nguồn dữ liệu. |
+| 4 | board_id | STRING | X |  |  |  | Board của mã, mặc định G1. |
+| 5 | change_color_code | STRING | X |  |  |  | Màu sắc thể hiện trạng thái biến động của khoảng tăng/giảm giá (Change) so với phiên trước. |
+| 6 | accumulated_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị khớp lũy kế trong ngày (lô chẵn). |
+| 7 | accumulated_vol | BIGINT |  |  |  |  | Tổng khối lượng khớp lũy kế trong ngày (lô chẵn). |
+| 8 | price_change | DECIMAL(23,2) |  |  |  |  | Giá trị chênh lệch tuyệt đối giữa mức giá hiện tại (giá khớp lệnh cuối cùng) so với giá tham chiếu của ngày hôm đó. |
+| 9 | match_price | DECIMAL(23,2) |  |  |  |  | Giá khớp. |
+| 10 | match_time | STRING | X |  |  |  | Thời gian khớp. |
+| 11 | match_vol | BIGINT |  |  |  |  | Khối lượng khớp. |
+| 12 | trade_direction_code | STRING | X |  |  |  | Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu. |
+| 13 | sequence_message | STRING | X |  |  |  | Sequence tín hiệu của sở. |
+| 14 | ticker_symbol | STRING | X |  | F |  | Mã chứng khoán. |
+| 15 | total_buy_vol | BIGINT |  |  |  |  | Tổng khối lượng mua chủ động. |
+| 16 | total_sell_vol | BIGINT |  |  |  |  | Tổng khối lượng bán chủ động. |
+| 17 | trading_dt | DATE | X |  |  |  | Ngày giao dịch. |
 
 
 #### Constraint
@@ -51,152 +49,7 @@
 
 | Tên trường |
 |---|
-| corp_bond_mtch_log_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| corp_bond_tdg_snpst_id | corp_bond_tdg_snpst | corp_bond_tdg_snpst_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng scr_mtch_log
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | scr_mtch_log_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi khớp lệnh chứng khoán. |
-| 2 | scr_mtch_log_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.TransLog' | Mã nguồn dữ liệu. |
-| 4 | scr_tdg_snpst_id | STRING |  |  | F |  | FK đến bản tin thông tin giao dịch chứng khoán tương ứng. |
-| 5 | symb | STRING |  |  |  |  | Mã chứng khoán. BK. |
-| 6 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch. BK. |
-| 7 | seq_msg | INT |  |  |  |  | Số thứ tự tăng dần trong ngày — đảm bảo thứ tự xử lý và phát hiện mất gói. BK. |
-| 8 | mtch_tm | STRING | X |  |  |  | Giờ khớp lệnh (HH:mm:ss) theo giờ máy chủ sở giao dịch. Nhiều tick có thể cùng timestamp trong ATO/ATC (batch matching). |
-| 9 | mtch_drc_code | STRING | X |  |  |  | Chiều giao dịch chủ động: B=Mua chủ động / S=Bán chủ động / O=Khớp phiên ATO / C=Khớp phiên ATC. B/S trong MDDS là chiều của bên đặt lệnh đối ứng — ngược với hiển thị bảng giá thông thường. |
-| 10 | mtch_prc | DECIMAL(23,2) | X |  |  |  | Giá khớp lệnh (VND — số nguyên không có dấu phẩy). |
-| 11 | mtch_vol | INT | X |  |  |  | Khối lượng khớp của lần khớp này. |
-| 12 | prc_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi của giá khớp so với giá tham chiếu tại thời điểm khớp (+/-). |
-| 13 | chg_color | STRING | X |  |  |  | Style hiển thị của giá thay đổi (tăng/giảm/đứng). |
-| 14 | acm_vol | INT | X |  |  |  | Tổng khối lượng khớp tích lũy từ đầu ngày đến thời điểm này (cho mã đó). |
-| 15 | acm_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp tích lũy từ đầu ngày đến thời điểm này (VND). formattedAccVal / formattedAccVol = VWAP tại thời điểm. |
-| 16 | tot_buy_vol | INT | X |  |  |  | Tổng khối lượng mua chủ động (lastColor=B) tích lũy trong ngày cho mã đó. |
-| 17 | tot_sell_vol | INT | X |  |  |  | Tổng khối lượng bán chủ động (lastColor=S) tích lũy trong ngày cho mã đó. |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| scr_mtch_log_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| scr_tdg_snpst_id | scr_tdg_snpst | scr_tdg_snpst_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng corp_bond_tdg_snpst
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | corp_bond_tdg_snpst_id | STRING |  | X | P |  | Khóa đại diện cho bản tin thông tin giao dịch trái phiếu doanh nghiệp. |
-| 2 | corp_bond_tdg_snpst_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.CorpBondInfor' | Mã nguồn dữ liệu. |
-| 4 | symb | STRING |  |  |  |  | Mã trái phiếu doanh nghiệp (ví dụ: BHB12104). BK. |
-| 5 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch (dd/mm/yyyy). BK. |
-| 6 | full_nm | STRING | X |  |  |  | Tên đầy đủ của trái phiếu. |
-| 7 | flr_code | STRING |  |  |  | '06' | Mã sàn giao dịch — luôn = 06 (thị trường trái phiếu doanh nghiệp HNX). |
-| 8 | stk_tp_code | STRING |  |  |  | '12' | Loại chứng khoán — luôn = 12 cho TPDN. |
-| 9 | tdg_ssn_id | STRING | X |  |  |  | Mã trạng thái giao dịch theo quy định kết cấu phiên HNX. |
-| 10 | scr_tdg_st_code | STRING | X |  |  |  | Trạng thái trái phiếu: 0=Bình thường / 1=Tạm ngừng nghỉ lễ / 2=Ngừng GD / 10=Tạm ngừng GD / 11=Hạn chế GD / 25=GD đặc biệt. |
-| 11 | tdg_ssn_st_code | STRING | X |  |  |  | Trạng thái phiên giao dịch: 1=Đang nhận lệnh / 2=Tạm dừng / 13=Kết thúc nhận lệnh / 90=Chờ nhận lệnh / 97=Đóng cửa. |
-| 12 | ceiling_prc | DECIMAL(23,2) | X |  |  |  | Giá trần giao dịch khớp lệnh. |
-| 13 | flr_prc | DECIMAL(23,2) | X |  |  |  | Giá sàn giao dịch khớp lệnh. |
-| 14 | refr_prc | DECIMAL(23,2) | X |  |  |  | Giá tham chiếu. |
-| 15 | cls_prc | DECIMAL(23,2) | X |  |  |  | Giá đóng cửa (giá khớp gần nhất). |
-| 16 | cls_vol | INT | X |  |  |  | Khối lượng khớp tại lần khớp gần nhất. |
-| 17 | prc_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi của giá khớp gần nhất so với giá tham chiếu. |
-| 18 | opn_prc | DECIMAL(23,2) | X |  |  |  | Giá mở cửa. |
-| 19 | high_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện cao nhất của giao dịch khớp lệnh trong ngày. |
-| 20 | low_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện thấp nhất của giao dịch khớp lệnh trong ngày. |
-| 21 | av_prc | DECIMAL(23,2) | X |  |  |  | Giá trung bình trong ngày (totalTradingValue / totalTrading). |
-| 22 | tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng giao dịch tích lũy. |
-| 23 | tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị giao dịch tích lũy. |
-| 24 | pt_mtch_vol | INT | X |  |  |  | Khối lượng thực hiện gần nhất của giao dịch thỏa thuận Outright. |
-| 25 | pt_mtch_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện gần nhất của giao dịch thỏa thuận Outright. |
-| 26 | pt_tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng giao dịch thỏa thuận Outright tích lũy. |
-| 27 | pt_tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị giao dịch thỏa thuận Outright tích lũy. |
-| 28 | pt_best_bid_vol | INT | X |  |  |  | Tổng khối lượng chào mua cao nhất trên order book thỏa thuận Outright. |
-| 29 | pt_best_bid_prc | DECIMAL(23,2) | X |  |  |  | Giá chào mua cao nhất trên order book thỏa thuận Outright. |
-| 30 | pt_best_ofr_vol | INT | X |  |  |  | Tổng khối lượng chào bán thấp nhất trên order book thỏa thuận Outright. |
-| 31 | pt_best_ofr_prc | DECIMAL(23,2) | X |  |  |  | Giá chào bán thấp nhất trên order book thỏa thuận Outright. |
-| 32 | pt_tot_bid_vol | INT | X |  |  |  | Tổng khối lượng chào mua toàn bộ order book thỏa thuận Outright. |
-| 33 | pt_tot_ofr_vol | INT | X |  |  |  | Tổng khối lượng chào bán toàn bộ order book thỏa thuận Outright. |
-| 34 | pt_max_vol | INT | X |  |  |  | Tổng khối lượng thực hiện tương ứng với giá cao nhất — giao dịch thỏa thuận Outright. |
-| 35 | pt_max_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện cao nhất — giao dịch thỏa thuận Outright. |
-| 36 | pt_min_vol | INT | X |  |  |  | Tổng khối lượng thực hiện tương ứng với giá thấp nhất — giao dịch thỏa thuận Outright. |
-| 37 | pt_min_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện thấp nhất — giao dịch thỏa thuận Outright. |
-| 38 | frgn_rman_room | INT | X |  |  |  | Số lượng còn lại nhà đầu tư nước ngoài được phép mua. |
-| 39 | issur_nm | STRING | X |  | F |  | Mã tổ chức phát hành trái phiếu. |
-| 40 | mat_dt | DATE | X |  |  |  | Ngày đáo hạn trái phiếu. |
-| 41 | issu_dt | DATE | X |  |  |  | Ngày phát hành trái phiếu. |
-| 42 | tot_listing_vol | INT | X |  |  |  | Tổng khối lượng trái phiếu niêm yết. |
-| 43 | par_val | DECIMAL(23,2) | X |  |  |  | Mệnh giá trái phiếu (thường 100.000 VND/trái phiếu). |
-| 44 | bond_prd | INT | X |  |  |  | Kỳ hạn gốc của trái phiếu. |
-| 45 | prd_unit_code | STRING | X |  |  |  | Đơn vị kỳ hạn: 1=Ngày / 2=Tuần / 3=Tháng / 4=Năm. |
-| 46 | prd_rman | INT | X |  |  |  | Kỳ hạn còn lại tính bằng ngày (tính toán lại hàng ngày). |
-| 47 | bond_int_tp_code | STRING | X |  |  |  | Loại hình lãi suất: 1=Coupon / 2=Zero Coupon. |
-| 48 | int_rate | DECIMAL(8,5) | X |  |  |  | Lãi suất danh nghĩa (coupon rate). |
-| 49 | dbt_int_tp_code | STRING | X |  |  |  | Loại lãi suất: 1=Cố định / 2=Thả nổi. |
-| 50 | int_prd | INT | X |  |  |  | Kỳ hạn trả lãi. |
-| 51 | int_prd_unit_code | STRING | X |  |  |  | Đơn vị kỳ hạn trả lãi: 1=Ngày / 2=Tuần / 3=Tháng / 4=Năm. |
-| 52 | int_cpn_tp_code | STRING | X |  |  |  | Kiểu coupon: 1=Standard / 2=Long Coupon / 3=Short Coupon / 4=Khác. |
-| 53 | int_pymt_tp_code | STRING | X |  |  |  | Phương thức trả lãi: 1=Định kỳ cuối kỳ / 2=Định kỳ đầu kỳ. |
-| 54 | char | STRING | X |  |  |  | Đặc điểm của trái phiếu. |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| corp_bond_tdg_snpst_id |
+| security_match_log_id |
 
 
 
@@ -216,26 +69,67 @@ N/A
 
 
 
-### Bảng indx_constituent_snpst
+### Bảng corporate_bond_trading_snapshot
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | indx_constituent_snpst_id | STRING |  | X | P |  | Khóa đại diện cho bản ghi thành phần rổ chỉ số. |
-| 2 | indx_constituent_snpst_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.CSIDXInfor' | Mã nguồn dữ liệu. |
-| 4 | mkt_indx_snpst_id | STRING |  |  | F |  | FK đến bản tin thông tin chỉ số tương ứng. |
-| 5 | indx_code | STRING |  |  |  |  | Mã chỉ số (VN30 / HNX30 / VNFINSELECT...). BK. |
-| 6 | scr_tdg_snpst_id | STRING |  |  | F |  | FK đến bản tin thông tin giao dịch chứng khoán thành viên. |
-| 7 | symb | STRING |  |  |  |  | Mã chứng khoán thành viên trong rổ chỉ số. BK. |
-| 8 | snpst_tm | STRING |  |  |  |  | Thời điểm snapshot trong ngày. BK. Nguồn ghi là TradingDate nhưng tài liệu gốc mô tả "định dạng HHmmss" — ngữ nghĩa là timestamp nội ngày, không phải ngày giao dịch. Cần xác nhận lại với đội nguồn. |
-| 9 | flr_code | STRING | X |  |  |  | Mã sàn giao dịch của mã chứng khoán. |
-| 10 | indx_id | STRING | X |  |  |  | ID số của sàn giao dịch. |
-| 11 | wght | DECIMAL(5,2) | X |  |  |  | Tỷ trọng (weight) của mã trong rổ chỉ số (dạng thập phân — ví dụ 0.0513 = 5.13%). |
-| 12 | add_dt | DATE | X |  |  |  | Ngày mã được thêm vào rổ chỉ số. |
-| 13 | stk_ctb | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số tại thời điểm hiện tại (dùng để tính index contribution). |
-| 14 | tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng khớp lệnh của mã này trong ngày (lô chẵn). |
+| 1 | corporate_bond_trading_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | corporate_bond_trading_snpst_code | STRING |  |  |  |  | Mã trái phiếu — PK bảng nguồn (SYMBOL). BK của Snapshot entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_CORPBONDINFOR' | Mã hệ thống nguồn dữ liệu. |
+| 4 | ticker_symbol | STRING |  |  |  |  | Mã chứng khoán trái phiếu. |
+| 5 | period | STRING | X |  |  |  | Kỳ hạn trái phiếu. |
+| 6 | exchange_code | STRING | X |  |  |  | Mã sàn: 06 (corp-bond HNX). |
+| 7 | full_nm | STRING | X |  |  |  | Tên đầy đủ của trái phiếu. |
+| 8 | interest_rate_tp_code | STRING | X |  |  |  | Loại lãi suất: Cố định/Thả nổi/Khác. |
+| 9 | coupon_tp_code | STRING | X |  |  |  | Kiểu trả lãi: Standard/Long/Short/Zero Coupon. |
+| 10 | interest_payment_tp_code | STRING | X |  |  |  | Phương thức trả lãi. |
+| 11 | interest_period | STRING | X |  |  |  | Kỳ hạn trả lãi. |
+| 12 | interest_period_unit_code | STRING | X |  |  |  | Đơn vị kỳ hạn trả lãi. |
+| 13 | interest_rate | DECIMAL(8,5) | X |  |  |  | Lãi suất danh nghĩa. |
+| 14 | interest_tp_code | STRING | X |  |  |  | Loại hình trả lãi (Định kỳ cuối kỳ / đầu kỳ / khác). |
+| 15 | issue_dt | DATE | X |  |  |  | Ngày phát hành trái phiếu. |
+| 16 | issuer_nm | STRING | X |  |  |  | Tên tổ chức phát hành. |
+| 17 | maturity_dt | DATE | X |  |  |  | Ngày đáo hạn trái phiếu. |
+| 18 | period_remain_days | INT | X |  |  |  | Kỳ hạn còn lại tính bằng ngày. |
+| 19 | period_unit | STRING | X |  |  |  | Đơn vị kỳ hạn (Ngày/Tuần/Tháng/Năm). |
+| 20 | pt_best_bid_price | DECIMAL(23,2) |  |  |  |  | Giá chào mua cao nhất GD thỏa thuận Outright. |
+| 21 | pt_best_bid_quantity | BIGINT |  |  |  |  | Khối lượng chào mua ở mức giá cao nhất GD thỏa thuận Outright. |
+| 22 | pt_best_offer_price | DECIMAL(23,2) |  |  |  |  | Giá chào bán thấp nhất GD thỏa thuận Outright. |
+| 23 | pt_best_offer_quantity | BIGINT |  |  |  |  | Khối lượng chào bán ở mức giá thấp nhất GD thỏa thuận Outright. |
+| 24 | pt_match_price | DECIMAL(23,2) |  |  |  |  | Giá thực hiện gần nhất GD thỏa thuận Outright. |
+| 25 | pt_match_quantity | BIGINT |  |  |  |  | Khối lượng thực hiện gần nhất GD thỏa thuận Outright. |
+| 26 | pt_max_price | DECIMAL(23,2) |  |  |  |  | Giá thực hiện cao nhất GD thỏa thuận Outright. |
+| 27 | pt_max_quantity | BIGINT |  |  |  |  | Khối lượng giao dịch tối đa quy định cho một lệnh giao dịch thỏa thuận Outright. |
+| 28 | pt_min_price | DECIMAL(23,2) |  |  |  |  | Giá thực hiện thấp nhất GD thỏa thuận Outright. |
+| 29 | pt_min_quantity | BIGINT |  |  |  |  | Khối lượng giao dịch tối thiểu quy định cho một lệnh giao dịch thỏa thuận Outright. |
+| 30 | pt_total_traded_quantity | BIGINT |  |  |  |  | Tổng khối lượng GD thỏa thuận Outright. |
+| 31 | pt_total_traded_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị GD thỏa thuận Outright. |
+| 32 | pt_total_bid_quantity | BIGINT |  |  |  |  | Tổng khối lượng chào mua GD thỏa thuận Outright. |
+| 33 | pt_total_offer_quantity | BIGINT |  |  |  |  | Tổng khối lượng chào bán GD thỏa thuận Outright. |
+| 34 | stock_tp_code | STRING | X |  |  |  | Loại CK. |
+| 35 | total_listing_vol | BIGINT |  |  |  |  | Khối lượng niêm yết. |
+| 36 | average_price | DECIMAL(23,2) |  |  |  |  | Giá trung bình. |
+| 37 | ceiling_price | DECIMAL(23,2) |  |  |  |  | Giá trần khớp lệnh. |
+| 38 | price_change | DECIMAL(23,2) |  |  |  |  | Thay đổi giá khớp gần nhất so với giá tham chiếu. |
+| 39 | bond_characteristics | STRING | X |  |  |  | Đặc điểm trái phiếu. |
+| 40 | close_price | DECIMAL(23,2) |  |  |  |  | Giá đóng cửa ngày. |
+| 41 | close_vol | BIGINT |  |  |  |  | Khối lượng giao dịch phiên đóng cửa. |
+| 42 | floor_price | DECIMAL(23,2) |  |  |  |  | Giá sàn khớp lệnh. |
+| 43 | foreign_remain_quantity | BIGINT |  |  |  |  | Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống). |
+| 44 | high_price | DECIMAL(23,2) |  |  |  |  | Giá thực hiện cao nhất GD khớp lệnh. |
+| 45 | low_price | DECIMAL(23,2) |  |  |  |  | Giá thực hiện thấp nhất GD khớp lệnh. |
+| 46 | open_price | DECIMAL(23,2) |  |  |  |  | Giá mở cửa. |
+| 47 | par_val | DECIMAL(23,2) | X |  |  |  | Mệnh giá trái phiếu. |
+| 48 | reference_price | DECIMAL(23,2) |  |  |  |  | Giá tham chiếu. |
+| 49 | security_trading_status_code | STRING | X |  |  |  | Trạng thái trái phiếu. |
+| 50 | total_trading_vol | BIGINT |  |  |  |  | Tổng khối lượng giao dịch. |
+| 51 | total_trading_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị giao dịch. |
+| 52 | trading_session_status | STRING | X |  |  |  | Trạng thái phiên giao dịch. |
+| 53 | trading_session_id | STRING | X |  |  |  | Trạng thái phiên giao dịch HNX. |
+| 54 | trading_time | STRING | X |  |  |  | Thời gian giao dịch. |
+| 55 | trading_dt | DATE | X |  |  |  | Ngày giao dịch format dd/mm/yyyy. |
 
 
 #### Constraint
@@ -244,73 +138,7 @@ N/A
 
 | Tên trường |
 |---|
-| indx_constituent_snpst_id |
-
-
-
-**Khóa phụ (Foreign Key):**
-
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| mkt_indx_snpst_id | mkt_indx_snpst | mkt_indx_snpst_id |
-| scr_tdg_snpst_id | scr_tdg_snpst | scr_tdg_snpst_id |
-
-
-
-#### Index
-
-N/A
-
-#### Trigger
-
-N/A
-
-
-
-
-### Bảng mkt_indx_snpst
-
-
-
-| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
-|---|---|---|---|---|---|---|---|
-| 1 | mkt_indx_snpst_id | STRING |  | X | P |  | Khóa đại diện cho bản tin thông tin chỉ số thị trường. |
-| 2 | mkt_indx_snpst_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.IDXInfor' | Mã nguồn dữ liệu. |
-| 4 | indx_code | STRING |  |  |  |  | Mã chỉ số (VNINDEX / HNXINDEX / VN30 / HNX30 / UPCOMINDEX...). BK. |
-| 5 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch. BK. |
-| 6 | udt_tm | STRING |  |  |  |  | Thời gian cập nhật theo giờ máy chủ. BK. |
-| 7 | indx_nm | STRING | X |  |  |  | Tên đầy đủ của chỉ số. |
-| 8 | flr_code | STRING | X |  |  |  | Mã sàn giao dịch của chỉ số. |
-| 9 | indx_tp_code | STRING | X |  |  |  | Loại chỉ số: 0=Toàn thị trường / 1=Bảng giao dịch / 2=Phức hợp / 3=Ngành / 4=Top ranking. |
-| 10 | crn_st_code | STRING | X |  |  |  | Trạng thái chỉ số (=1 bình thường). |
-| 11 | indx_id | STRING | X |  |  |  | ID số của sàn giao dịch. |
-| 12 | indx_val | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số hiện tại. |
-| 13 | prev_indx_val | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số tham chiếu (đóng cửa phiên gần nhất). |
-| 14 | high_indx_val | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số cao nhất trong ngày. |
-| 15 | lws_indx_val | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số thấp nhất trong ngày. |
-| 16 | cls_indx_val | DECIMAL(23,2) | X |  |  |  | Giá trị chỉ số đóng cửa (cập nhật sau khi kết thúc phiên). |
-| 17 | indx_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi giá trị chỉ số so với phiên trước (tuyệt đối). |
-| 18 | indx_chg_rto | DECIMAL(5,2) | X |  |  |  | Tỷ lệ phần trăm thay đổi so với phiên trước. |
-| 19 | tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng khớp lệnh thường (lô chẵn) tích lũy. |
-| 20 | tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp lệnh thường (lô chẵn) tích lũy. |
-| 21 | pt_tot_vol | INT | X |  |  |  | Tổng khối lượng khớp lệnh thỏa thuận tích lũy. |
-| 22 | pt_tval | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp lệnh thỏa thuận tích lũy. |
-| 23 | tot_stk_cnt | INT | X |  |  |  | Tổng số mã chứng khoán trong rổ tính chỉ số. |
-| 24 | advnc_cnt | INT | X |  |  |  | Tổng số mã chứng khoán tăng giá trong rổ. |
-| 25 | decline_cnt | INT | X |  |  |  | Tổng số mã chứng khoán giảm giá trong rổ. |
-| 26 | no_chg_cnt | INT | X |  |  |  | Tổng số mã chứng khoán đứng giá trong rổ. |
-| 27 | ceiling_cnt | INT | X |  |  |  | Tổng số mã chứng khoán tăng trần trong rổ. |
-| 28 | flr_lmt_cnt | INT | X |  |  |  | Tổng số mã chứng khoán giảm sàn trong rổ. |
-
-
-#### Constraint
-
-**Khóa chính (Primary Key):**
-
-| Tên trường |
-|---|
-| mkt_indx_snpst_id |
+| corporate_bond_trading_snpst_id |
 
 
 
@@ -330,46 +158,24 @@ N/A
 
 
 
-### Bảng mkt_snpst
+### Bảng index_constituent_snapshot
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | mkt_snpst_id | STRING |  | X | P |  | Khóa đại diện cho bản tin tổng quan thị trường. |
-| 2 | mkt_snpst_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.MarketInfor' | Mã nguồn dữ liệu. |
-| 4 | mkt_id | STRING |  |  |  |  | ID sàn/chỉ số: 10=HOSE / 02=HNX / 04=UPCOM / 06=Corp Bond / VN30 / HNX30... BK. |
-| 5 | mkt_code | STRING | X |  |  |  | Mã chỉ số tương ứng với marketId. |
-| 6 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch. |
-| 7 | seq_msg | INT |  |  |  |  | Số thứ tự tăng dần trong ngày — đảm bảo thứ tự xử lý bản tin. |
-| 8 | indx_tm | STRING | X |  |  |  | Thời gian cập nhật chỉ số. |
-| 9 | mkt_st_code | STRING | X |  |  |  | Trạng thái phiên giao dịch (ATO / Continuous / ATC / Closed...). |
-| 10 | mkt_indx_val | DECIMAL(23,2) | X |  |  |  | Điểm chỉ số thị trường hiện tại. |
-| 11 | indx_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi điểm chỉ số so với đầu ngày (tham chiếu). |
-| 12 | indx_chg_pct | DECIMAL(5,2) | X |  |  |  | Phần trăm thay đổi điểm chỉ số so với đầu ngày. |
-| 13 | indx_color | STRING | X |  |  |  | Màu hiển thị chỉ số (tăng/giảm/đứng). |
-| 14 | prev_mkt_indx_val | DECIMAL(23,2) | X |  |  |  | Chỉ số tham chiếu — giá trị đóng cửa phiên giao dịch gần nhất. |
-| 15 | av_mkt_indx_val | DECIMAL(23,2) | X |  |  |  | Chỉ số trung bình của thị trường trong phiên. |
-| 16 | av_prev_mkt_indx_val | DECIMAL(23,2) | X |  |  |  | Chỉ số trung bình đóng cửa phiên giao dịch gần nhất. |
-| 17 | av_indx_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi của chỉ số trung bình. |
-| 18 | av_indx_chg_pct | DECIMAL(5,2) | X |  |  |  | Phần trăm thay đổi của chỉ số trung bình. |
-| 19 | tot_mtch_trd_cnt | INT | X |  |  |  | Tổng số lệnh khớp (FloorCode=02: cổ phiếu; FloorCode=03: trái phiếu). |
-| 20 | tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng khớp lệnh thường toàn thị trường. |
-| 21 | tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp lệnh thường toàn thị trường. |
-| 22 | advnc_cnt | INT | X |  |  |  | Số mã tăng giá. |
-| 23 | decline_cnt | INT | X |  |  |  | Số mã giảm giá. |
-| 24 | no_chg_cnt | INT | X |  |  |  | Số mã không đổi giá. |
-| 25 | advnc_vol | INT | X |  |  |  | Tổng khối lượng chứng khoán tăng giá (bao gồm giao dịch thỏa thuận). |
-| 26 | decline_vol | INT | X |  |  |  | Tổng khối lượng chứng khoán giảm giá (bao gồm giao dịch thỏa thuận). |
-| 27 | no_chg_vol | INT | X |  |  |  | Tổng khối lượng chứng khoán đứng giá (bao gồm giao dịch thỏa thuận). |
-| 28 | ceiling_cnt | INT | X |  |  |  | Số mã tăng trần. |
-| 29 | flr_cnt | INT | X |  |  |  | Số mã giảm sàn. |
-| 30 | pt_tot_trd_cnt | INT | X |  |  |  | Tổng số lệnh giao dịch thỏa thuận. |
-| 31 | pt_tot_vol | INT | X |  |  |  | Tổng khối lượng giao dịch thỏa thuận. |
-| 32 | pt_tval | DECIMAL(23,2) | X |  |  |  | Tổng giá trị giao dịch thỏa thuận. |
-| 33 | odd_lot_tot_vol | INT | X |  |  |  | Tổng khối lượng giao dịch lô lẻ. |
-| 34 | odd_lot_tval | DECIMAL(23,2) | X |  |  |  | Tổng giá trị giao dịch lô lẻ. |
+| 1 | index_constituent_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | index_constituent_snpst_code | STRING |  |  |  |  | GUID — PK của bảng nguồn. BK. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_CSIDXINFOR' | Mã hệ thống nguồn dữ liệu. |
+| 4 | add_dt | DATE | X |  |  |  | Ngày thêm vào chỉ số. |
+| 5 | floor_code | STRING | X |  |  |  | Mã sở giao dịch CK. |
+| 6 | index_code | STRING | X |  | F |  | Mã chỉ số (FK đến MarketInfor / IDXInfor). |
+| 7 | index_id | STRING |  |  |  |  | ID nội bộ của chỉ số. |
+| 8 | stock_nbr | STRING | X |  |  |  | Số hiệu mã chứng khoán trong rổ chỉ số. |
+| 9 | ticker_symbol | STRING | X |  |  |  | Mã chứng khoán trong rổ (FK đến StockInfor). |
+| 10 | total_quantity | BIGINT | X |  |  |  | Tổng khối lượng cổ phiếu lưu hành. |
+| 11 | trading_dt | DATE | X |  |  |  | Ngày giao dịch dạng dd/MM/yyyy. |
+| 12 | constituent_weight_percentage | DECIMAL(5,2) | X |  |  |  | Tỷ trọng của mã trong rổ chỉ số. |
 
 
 #### Constraint
@@ -378,7 +184,7 @@ N/A
 
 | Tên trường |
 |---|
-| mkt_snpst_id |
+| index_constituent_snpst_id |
 
 
 
@@ -398,87 +204,56 @@ N/A
 
 
 
-### Bảng scr_tdg_snpst
+### Bảng market_index_snapshot
 
 
 
 | STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
 |---|---|---|---|---|---|---|---|
-| 1 | scr_tdg_snpst_id | STRING |  | X | P |  | Khóa đại diện cho bản tin thông tin giao dịch chứng khoán. |
-| 2 | scr_tdg_snpst_code | STRING |  |  |  |  | Định danh duy nhất bản tin (GUID). BK. |
-| 3 | src_stm_code | STRING |  |  |  | 'MDDS.StockInfor' | Mã nguồn dữ liệu. |
-| 4 | symb | STRING |  |  |  |  | Mã chứng khoán (VCB / HPG / VNM...). BK. |
-| 5 | tdg_dt | DATE |  |  |  |  | Ngày giao dịch (dd/mm/yyyy). BK. |
-| 6 | stk_id | STRING | X |  |  |  | ID nội bộ duy nhất của chứng khoán trong hệ thống MDDS. |
-| 7 | full_nm | STRING | X |  |  |  | Tên đầy đủ của chứng khoán. |
-| 8 | flr_code | STRING |  |  |  |  | Mã sàn giao dịch: 02=HNX / 04=UPCOM / 10=HOSE / 03=FDS (phái sinh) / 06=Corp Bond. |
-| 9 | stk_tp_code | STRING | X |  |  |  | Loại chứng khoán theo sàn. HNX: BO/ST/MF/FU/OP/EF. HOSE: B=Trái phiếu / S=Cổ phiếu / U/E=CCQ / D=TP chuyển đổi / W=Chứng quyền. Parse kết hợp FloorCode. |
-| 10 | tdg_ssn_id | STRING | X |  |  |  | Mã phiên giao dịch (ATO / Continuous / ATC...). |
-| 11 | ceiling_prc | DECIMAL(23,2) | X |  |  |  | Giá trần trong ngày. |
-| 12 | flr_prc | DECIMAL(23,2) | X |  |  |  | Giá sàn trong ngày. |
-| 13 | refr_prc | DECIMAL(23,2) | X |  |  |  | Giá tham chiếu trong ngày. |
-| 14 | cls_prc | DECIMAL(23,2) | X |  |  |  | Giá khớp lệnh gần nhất (giá thị trường hiện tại). |
-| 15 | cls_vol | INT | X |  |  |  | Khối lượng khớp tại lần khớp gần nhất. |
-| 16 | prc_chg_val | DECIMAL(23,2) | X |  |  |  | Thay đổi của giá khớp gần nhất so với giá tham chiếu (+/-). |
-| 17 | prev_prc | DECIMAL(23,2) | X |  |  |  | Giá khớp gần nhất (trước lần cập nhật hiện tại). |
-| 18 | opn_prc | DECIMAL(23,2) | X |  |  |  | Giá mở cửa (giá khớp ATO). |
-| 19 | high_prc | DECIMAL(23,2) | X |  |  |  | Giá cao nhất trong ngày. |
-| 20 | low_prc | DECIMAL(23,2) | X |  |  |  | Giá thấp nhất trong ngày. |
-| 21 | av_prc | DECIMAL(23,2) | X |  |  |  | Giá trung bình (VWAP) trong ngày. |
-| 22 | bid_prc_1 | DECIMAL(23,2) | X |  |  |  | Giá mua bước 1 (tốt nhất). |
-| 23 | bid_vol_1 | INT | X |  |  |  | Khối lượng mua tại bước giá 1. |
-| 24 | bid_prc_2 | DECIMAL(23,2) | X |  |  |  | Giá mua bước 2. |
-| 25 | bid_vol_2 | INT | X |  |  |  | Khối lượng mua tại bước giá 2. |
-| 26 | bid_prc_3 | DECIMAL(23,2) | X |  |  |  | Giá mua bước 3 (xa nhất). |
-| 27 | bid_vol_3 | INT | X |  |  |  | Khối lượng mua tại bước giá 3. |
-| 28 | ofr_prc_1 | DECIMAL(23,2) | X |  |  |  | Giá bán bước 1 (tốt nhất). |
-| 29 | ofr_vol_1 | INT | X |  |  |  | Khối lượng bán tại bước giá 1. |
-| 30 | ofr_prc_2 | DECIMAL(23,2) | X |  |  |  | Giá bán bước 2. |
-| 31 | ofr_vol_2 | INT | X |  |  |  | Khối lượng bán tại bước giá 2. |
-| 32 | ofr_prc_3 | DECIMAL(23,2) | X |  |  |  | Giá bán bước 3 (xa nhất). |
-| 33 | ofr_vol_3 | INT | X |  |  |  | Khối lượng bán tại bước giá 3. |
-| 34 | tot_bid_vol | INT | X |  |  |  | Tổng khối lượng chào mua cộng dồn. |
-| 35 | tot_ofr_vol | INT | X |  |  |  | Tổng khối lượng chào bán cộng dồn. |
-| 36 | tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng khớp lệnh tích lũy từ đầu ngày. |
-| 37 | tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị khớp lệnh tích lũy từ đầu ngày. |
-| 38 | pt_mtch_vol | INT | X |  |  |  | Tổng khối lượng giao dịch thông thường (không tính thỏa thuận). |
-| 39 | pt_mtch_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện của lệnh thỏa thuận hiện thời. |
-| 40 | pt_tot_mtch_vol | INT | X |  |  |  | Tổng khối lượng giao dịch thỏa thuận tích lũy. |
-| 41 | pt_tot_mtch_val | DECIMAL(23,2) | X |  |  |  | Tổng giá trị giao dịch thỏa thuận tích lũy. |
-| 42 | frgn_buy_vol | INT | X |  |  |  | Tổng khối lượng mua của nhà đầu tư nước ngoài. |
-| 43 | frgn_sell_vol | INT | X |  |  |  | Tổng khối lượng bán của nhà đầu tư nước ngoài. |
-| 44 | frgn_rman_room | INT | X |  |  |  | Số lượng còn lại nhà đầu tư nước ngoài được phép mua (cập nhật sau mỗi giao dịch NĐTNN). |
-| 45 | frgn_tot_room | INT | X |  |  |  | Tổng room nhà đầu tư nước ngoài được phép mua. |
-| 46 | refr_prc_1 | DECIMAL(23,2) | X |  |  |  | Giá tham chiếu phụ 1 (dùng nội bộ bảng giá). |
-| 47 | refr_prc_2 | DECIMAL(23,2) | X |  |  |  | Giá tham chiếu phụ 2 (dùng nội bộ bảng giá). |
-| 48 | tot_listing_vol | INT | X |  |  |  | Tổng khối lượng niêm yết — dùng cho HNX/UPCOM. |
-| 49 | fnd_tp | STRING | X |  |  |  | Loại chứng khoán theo nguyên văn sở trả về (chưa convert). |
-| 50 | hnx_listing_st_code | STRING | X |  |  |  | Trạng thái niêm yết HNX/UPCOM: parse từ Status (vị trí 1) — chỉ áp dụng FloorCode=02/04. |
-| 51 | hnx_adj_vol | STRING | X |  |  |  | Điều chỉnh khối lượng HNX/UPCOM: parse từ Status (vị trí 2) — chỉ áp dụng FloorCode=02/04. |
-| 52 | hnx_refr_st_code | STRING | X |  |  |  | Trạng thái tham chiếu HNX/UPCOM: parse từ Status (vị trí 3) — chỉ áp dụng FloorCode=02/04. |
-| 53 | hnx_adj_rate | STRING | X |  |  |  | Tỷ lệ điều chỉnh HNX/UPCOM: parse từ Status (vị trí 4) — chỉ áp dụng FloorCode=02/04. |
-| 54 | hnx_dvdn_rate | STRING | X |  |  |  | Tỷ lệ cổ tức HNX/UPCOM: parse từ Status (vị trí 5) — chỉ áp dụng FloorCode=02/04. |
-| 55 | hnx_st | STRING | X |  |  |  | Trạng thái tổng hợp HNX/UPCOM: parse từ Status (vị trí 6) — chỉ áp dụng FloorCode=02/04. |
-| 56 | hose_delist_f | STRING | X |  |  |  | Cờ hủy niêm yết HOSE: parse từ Status (vị trí 1) — chỉ áp dụng FloorCode=10. |
-| 57 | hose_susp_f | STRING | X |  |  |  | Cờ đình chỉ giao dịch HOSE: parse từ Status (vị trí 2) — chỉ áp dụng FloorCode=10. |
-| 58 | hose_halt_resume_f | STRING | X |  |  |  | Cờ tạm ngừng/khôi phục HOSE: parse từ Status (vị trí 3) — chỉ áp dụng FloorCode=10. |
-| 59 | hose_split_f | STRING | X |  |  |  | Cờ chia tách HOSE: parse từ Status (vị trí 4) — chỉ áp dụng FloorCode=10. |
-| 60 | hose_bnft_f | STRING | X |  |  |  | Cờ quyền lợi HOSE: parse từ Status (vị trí 5) — chỉ áp dụng FloorCode=10. |
-| 61 | hose_mtg_f | STRING | X |  |  |  | Cờ đại hội cổ đông HOSE: parse từ Status (vị trí 6) — chỉ áp dụng FloorCode=10. |
-| 62 | hose_ntc_f | STRING | X |  |  |  | Cờ thông báo HOSE: parse từ Status (vị trí 7) — chỉ áp dụng FloorCode=10. |
-| 63 | hose_odd_lot_halt_resume_f | STRING | X |  |  |  | Cờ tạm ngừng/khôi phục lô lẻ HOSE: parse từ Status (vị trí 8) — chỉ áp dụng FloorCode=10. |
-| 64 | ulyg_imt_id | STRING | X |  | F |  | FK đến Security Trading Snapshot của tài sản cơ sở — dùng cho phái sinh và chứng quyền. |
-| 65 | ulyg_symb | STRING | X |  | F |  | Mã tài sản cơ sở (VN30...) — dùng cho phái sinh và chứng quyền. |
-| 66 | opn_int | INT | X |  |  |  | Khối lượng hợp đồng mở (Open Interest) — chỉ dùng cho phái sinh. |
-| 67 | opn_int_chg | INT | X |  |  |  | Thay đổi khối lượng hợp đồng mở so với phiên trước. |
-| 68 | frst_tdg_dt | DATE | X |  |  |  | Ngày giao dịch đầu tiên — dùng cho phái sinh và chứng quyền. |
-| 69 | last_tdg_dt | DATE | X |  |  |  | Ngày giao dịch cuối cùng — dùng cho phái sinh và chứng quyền. |
-| 70 | mat_dt | DATE | X |  |  |  | Ngày đáo hạn — dùng cho chứng quyền và phái sinh. |
-| 71 | cvrd_wrnt_tp_code | STRING | X |  |  |  | Loại chứng quyền — chỉ áp dụng khi StockType=W. |
-| 72 | exrc_prc | DECIMAL(23,2) | X |  |  |  | Giá thực hiện — dùng cho chứng quyền. |
-| 73 | exrc_rto | DECIMAL(5,2) | X |  |  |  | Tỷ lệ chuyển đổi — dùng cho chứng quyền. |
-| 74 | list_shr | INT | X |  |  |  | Khối lượng chứng quyền niêm yết. |
-| 75 | issur_nm | STRING | X |  |  |  | Tên tổ chức phát hành chứng quyền. |
+| 1 | market_index_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | market_index_snpst_code | STRING |  |  |  |  | ID unique để lưu lịch sử — PK thực tế của bảng. BK của Snapshot entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_MARKETINFOR' | Mã hệ thống nguồn dữ liệu. |
+| 4 | average_index_change | DECIMAL(23,2) |  |  |  |  | Mức thay đổi chỉ số bình quân. |
+| 5 | average_market_index_val | DECIMAL(23,2) |  |  |  |  | Giá trị chỉ số thị trường bình quân. |
+| 6 | average_index_percent_change | DECIMAL(5,2) |  |  |  |  | Phần trăm thay đổi chỉ số bình quân. |
+| 7 | average_prior_index | DECIMAL(23,2) |  |  |  |  | Giá trị chỉ số liền trước bình quân. |
+| 8 | previous_prior_market_index | DECIMAL(23,2) |  |  |  |  | Index cuối cùng của phiên trước đó. |
+| 9 | pt_total_quantity | BIGINT |  |  |  |  | Tổng khối lượng giao dịch thỏa thuận. |
+| 10 | pt_total_trade_count | BIGINT |  |  |  |  | Tổng số giao dịch thỏa thuận. |
+| 11 | pt_total_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị giao dịch thỏa thuận. |
+| 12 | advances_count | INT |  |  |  |  | Số lượng mã tăng. |
+| 13 | advances_vol | BIGINT |  |  |  |  | Tổng khối lượng khớp của các mã tăng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường. |
+| 14 | declines_count | INT |  |  |  |  | Số lượng mã giảm. |
+| 15 | declines_vol | BIGINT |  |  |  |  | Tổng khối lượng khớp của các mã giảm giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường. |
+| 16 | halt_reason_code | STRING | X |  |  |  | Lý do thị trường bị halt. |
+| 17 | high_index | DECIMAL(23,2) |  |  |  |  | Index cao nhất tính đến thời điểm hiện tại. |
+| 18 | index_change | DECIMAL(23,2) |  |  |  |  | Giá trị index thay đổi so với index cuối ngày hôm trước. |
+| 19 | index_color | STRING | X |  |  |  | Màu sắc thể hiện trạng thái biến động của một chỉ số chứng khoán (VN-Index, HNX-Index, VN30...) tại thời điểm hiện tại so với mức điểm tham chiếu (điểm đóng cửa phiên trước). |
+| 20 | index_nm | STRING | X |  |  |  | Tên của index. |
+| 21 | index_percent_change | DECIMAL(5,2) |  |  |  |  | % index thay đổi so với index cuối ngày hôm trước. |
+| 22 | index_time | STRING | X |  |  |  | Thời gian ghi nhận chỉ số. |
+| 23 | index_tp_code | STRING | X |  |  |  | Loại index — mã Sở quy định. |
+| 24 | low_index | DECIMAL(23,2) |  |  |  |  | Index thấp nhất tính đến thời điểm hiện tại. |
+| 25 | market_code | STRING | X |  |  |  | Mã thị trường — FSS tự quy định. |
+| 26 | market_id | STRING | X |  |  |  | ID thị trường — FSS tự quy định. |
+| 27 | market_index_val | DECIMAL(23,2) |  |  |  |  | Giá trị index tại thời điểm ghi nhận. |
+| 28 | market_status | STRING | X |  |  |  | Trạng thái phiên giao dịch. |
+| 29 | no_change_count | INT |  |  |  |  | Số lượng mã không tăng/giảm. |
+| 30 | no_change_vol | BIGINT |  |  |  |  | Tổng khối lượng khớp của các mã đứng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường. |
+| 31 | ceiling_count | INT |  |  |  |  | Số lượng mã đang trần. |
+| 32 | floor_count | INT |  |  |  |  | Số lượng mã đang sàn. |
+| 33 | odd_lot_total_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị giao dịch lô lẻ. |
+| 34 | odd_lot_total_vol | BIGINT |  |  |  |  | Khối lượng khớp lô lẻ — chỉ tiêu báo cáo riêng, không nằm trong bộ ba phân loại tăng/giảm/đứng giá. |
+| 35 | open_index | DECIMAL(23,2) |  |  |  |  | Index mở cửa. |
+| 36 | previous_market_status_code | STRING | X |  |  |  | Trạng thái phiên giao dịch liền trước. |
+| 37 | sequence | BIGINT |  |  |  |  | Đánh thứ tự update của từng Index. |
+| 38 | sequence_message | STRING | X |  |  |  | Sequence tín hiệu của sở. |
+| 39 | total_trade_count | BIGINT |  |  |  |  | Tổng số giao dịch. |
+| 40 | total_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị đã khớp. |
+| 41 | total_vol | BIGINT |  |  |  |  | Tổng khối lượng đã khớp. |
+| 42 | trading_dt | DATE | X |  |  |  | Ngày giao dịch. |
+| 43 | tsc_product_group_id | STRING | X |  |  |  | Mã sản phẩm giao dịch (hose/hnx/upcom). |
+| 44 | exchange_code | STRING | X |  |  |  | Mã sàn giao dịch. |
 
 
 #### Constraint
@@ -487,16 +262,208 @@ N/A
 
 | Tên trường |
 |---|
-| scr_tdg_snpst_id |
+| market_index_snpst_id |
 
 
 
 **Khóa phụ (Foreign Key):**
 
-| Tên trường | Bảng tham chiếu | Cột tham chiếu |
-|---|---|---|
-| ulyg_imt_id | scr_tdg_snpst | scr_tdg_snpst_id |
+*Không có Foreign Key.*
 
+
+#### Index
+
+N/A
+
+#### Trigger
+
+N/A
+
+
+
+
+### Bảng market_price_snapshot
+
+
+
+#### Từ MDDS.JAD_TVHISTORY1M
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | market_price_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | market_price_snpst_code | STRING |  |  |  |  | Định danh. PK bảng nguồn. BK của Snapshot entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_TVHISTORY1M' | Mã hệ thống nguồn dữ liệu. |
+| 4 | close_price | DECIMAL(23,2) |  |  |  |  | Giá đóng cửa trong phút. |
+| 5 | high_price | DECIMAL(23,2) |  |  |  |  | Giá cao nhất trong phút. |
+| 6 | low_price | DECIMAL(23,2) |  |  |  |  | Giá thấp nhất trong phút. |
+| 7 | processing_time | STRING | X |  |  |  | Giờ tính toán (HH:mm). |
+| 8 | open_price | DECIMAL(23,2) |  |  |  |  | Giá mở cửa trong phút. |
+| 9 | ticker_symbol | STRING | X |  | F |  | Mã (gồm cả chứng khoán và index). |
+| 10 | trading_dt | DATE | X |  |  |  | Ngày tính toán (dd/MM/yyyy). |
+| 11 | vol | BIGINT |  |  |  |  | Tổng khối lượng khớp trong phút. |
+
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| market_price_snpst_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+**Index:** N/A
+
+**Trigger:** N/A
+
+
+#### Từ MDDS.JAD_TVHISTORY1D
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | market_price_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | market_price_snpst_code | STRING |  |  |  |  | Định danh. PK bảng nguồn. BK của Snapshot entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_TVHISTORY1D' | Mã hệ thống nguồn dữ liệu. |
+| 4 | close_price | DECIMAL(23,2) |  |  |  |  | Giá đóng cửa trong ngày. |
+| 5 | high_price | DECIMAL(23,2) |  |  |  |  | Giá cao nhất trong ngày. |
+| 6 | low_price | DECIMAL(23,2) |  |  |  |  | Giá thấp nhất trong ngày. |
+| 7 | open_price | DECIMAL(23,2) |  |  |  |  | Giá mở cửa trong ngày. |
+| 8 | ticker_symbol | STRING | X |  | F |  | Mã (gồm cả chứng khoán và index). |
+| 9 | trading_dt | DATE | X |  |  |  | Ngày tính toán (dd/MM/yyyy). |
+| 10 | vol | BIGINT |  |  |  |  | Tổng khối lượng khớp trong ngày. |
+
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| market_price_snpst_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
+
+
+**Index:** N/A
+
+**Trigger:** N/A
+
+
+
+
+
+### Bảng security_trading_snapshot
+
+
+
+| STT | Tên trường | Kiểu dữ liệu và độ dài | Nullable | Unique | P/F Key | Mặc định | Mô tả |
+|---|---|---|---|---|---|---|---|
+| 1 | security_trading_snpst_id | STRING |  | X | P |  | Khóa đại diện (surrogate key). |
+| 2 | security_trading_snpst_code | STRING |  |  |  |  | ID unique cho từng dòng lịch sử — PK bảng nguồn. BK của Snapshot entity. |
+| 3 | src_stm_code | STRING |  |  |  | 'MDDS.JAD_STOCKINFOR' | Mã hệ thống nguồn dữ liệu. |
+| 4 | covered_warrant_tp_code | STRING | X |  |  |  | Kiểu chứng quyền. |
+| 5 | exercise_price | DECIMAL(23,2) | X |  |  |  | Giá thực hiện CW. |
+| 6 | exercise_ratio | STRING | X |  |  |  | Tỉ lệ thực hiện CW. |
+| 7 | floor_code | STRING | X |  |  |  | Mã sàn: 02-HNX, 04-UPCOM, 10-HOSE, 03-FDS. |
+| 8 | full_nm | STRING | X |  |  |  | Tên chứng khoán (tiếng Việt). |
+| 9 | fund_tp_code | STRING | X |  |  |  | Loại quỹ. |
+| 10 | issuer_nm | STRING | X |  |  |  | Tổ chức phát hành. |
+| 11 | listed_share_count | BIGINT | X |  |  |  | Khối lượng CK niêm yết. |
+| 12 | maturity_dt | DATE | X |  |  |  | Ngày đáo hạn. |
+| 13 | prior_price | DECIMAL(23,2) | X |  |  |  | Giá của phiên liền trước. |
+| 14 | pt_match_price | DECIMAL(23,2) |  |  |  |  | Giá khớp thỏa thuận gần nhất. |
+| 15 | pt_match_quantity | BIGINT |  |  |  |  | Khối lượng khớp thỏa thuận gần nhất. |
+| 16 | pt_total_traded_quantity | BIGINT |  |  |  |  | Tổng khối lượng khớp thỏa thuận từ đầu ngày. |
+| 17 | pt_total_traded_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị khớp thỏa thuận từ đầu ngày. |
+| 18 | status_code | STRING | X |  |  |  | Trạng thái sự kiện quyền của CK. |
+| 19 | stock_id | STRING | X |  |  |  | ID của chứng khoán trong hệ thống Sở. |
+| 20 | stock_tp_code | STRING | X |  |  |  | Loại chứng khoán (ST/BO/MF/FU/OP/EF/W...). |
+| 21 | total_bid_quantity | BIGINT |  |  |  |  | Tổng khối lượng đặt mua chưa khớp toàn bảng giá. |
+| 22 | total_offer_quantity | BIGINT |  |  |  |  | Tổng khối lượng đặt bán chưa khớp toàn bảng giá. |
+| 23 | total_listing_vol | BIGINT | X |  |  |  | Khối lượng CK niêm yết. |
+| 24 | average_price | DECIMAL(23,2) |  |  |  |  | Giá khớp trung bình. |
+| 25 | bid_price_1 | DECIMAL(23,2) |  |  |  |  | Giá mua top 1. |
+| 26 | bid_price_2 | DECIMAL(23,2) |  |  |  |  | Giá mua top 2. |
+| 27 | bid_price_3 | DECIMAL(23,2) |  |  |  |  | Giá mua top 3. |
+| 28 | bid_vol_1 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao nhất (tốt nhất) hiện tại. |
+| 29 | bid_vol_2 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 2 hiện tại. |
+| 30 | bid_vol_3 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 3 hiện tại. |
+| 31 | board_id | STRING | X |  |  |  | Board của mã CK (mặc định G1). |
+| 32 | ceiling_price | DECIMAL(23,2) |  |  |  |  | Giá trần. |
+| 33 | price_change | DECIMAL(23,2) |  |  |  |  | Thay đổi giữa giá khớp gần nhất và giá tham chiếu. |
+| 34 | close_price | DECIMAL(23,2) |  |  |  |  | Giá đóng cửa. |
+| 35 | close_vol | BIGINT |  |  |  |  | Khối lượng giao dịch phiên đóng cửa. |
+| 36 | contract_multiplier | STRING | X |  |  |  | Hệ số nhân HĐTL. |
+| 37 | coupon_rate | DECIMAL(8,5) | X |  |  |  | Lãi suất trái phiếu. |
+| 38 | exercise_style_code | STRING | X |  |  |  | Kiểu thực hiện phái sinh: A/E/B/Z. |
+| 39 | first_trading_dt | DATE | X |  |  |  | Ngày giao dịch đầu tiên — dành cho phái sinh/CW. |
+| 40 | floor_price | DECIMAL(23,2) |  |  |  |  | Giá sàn. |
+| 41 | foreign_buy_vol | BIGINT |  |  |  |  | Khối lượng NĐTNN mua. |
+| 42 | foreign_buy_val | DECIMAL(23,2) |  |  |  |  | Giá trị NĐTNN mua. |
+| 43 | foreign_remain_quantity | BIGINT |  |  |  |  | Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống). |
+| 44 | foreign_room_quantity | BIGINT |  |  |  |  | Tổng khối lượng chứng khoán tối đa mà nhà đầu tư nước ngoài được phép nắm giữ tại mã chứng khoán theo quy định pháp luật hoặc điều lệ công ty (tổng room). |
+| 45 | foreign_sell_vol | BIGINT |  |  |  |  | Khối lượng NĐTNN bán. |
+| 46 | foreign_sell_val | DECIMAL(23,2) |  |  |  |  | Giá trị NĐTNN bán. |
+| 47 | high_price | DECIMAL(23,2) |  |  |  |  | Giá khớp cao nhất tính đến thời điểm. |
+| 48 | issue_dt | DATE | X |  |  |  | Ngày phát hành. |
+| 49 | jadapter_id | STRING | X |  |  |  | ID của mã do jadapter tự sinh. |
+| 50 | last_color | STRING | X |  |  |  | Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu. |
+| 51 | last_trading_dt | DATE | X |  |  |  | Ngày giao dịch cuối cùng — dành cho phái sinh/CW. |
+| 52 | listing_dt | DATE | X |  |  |  | Ngày niêm yết sản phẩm phái sinh. |
+| 53 | low_price | DECIMAL(23,2) |  |  |  |  | Giá khớp thấp nhất tính đến thời điểm. |
+| 54 | exchange_code | STRING | X |  |  |  | Mã sàn theo Sở. |
+| 55 | maturity_month_year | STRING | X |  |  |  | Năm tháng đáo hạn HĐTL. |
+| 56 | offer_price_1 | DECIMAL(23,2) |  |  |  |  | Giá bán top 1. |
+| 57 | offer_price_2 | DECIMAL(23,2) |  |  |  |  | Giá bán top 2. |
+| 58 | offer_price_3 | DECIMAL(23,2) |  |  |  |  | Giá bán top 3. |
+| 59 | offer_vol_1 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp nhất (tốt nhất) hiện tại. |
+| 60 | offer_vol_2 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 2 hiện tại. |
+| 61 | offer_vol_3 | BIGINT |  |  |  |  | Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 3 hiện tại. |
+| 62 | open_price | DECIMAL(23,2) |  |  |  |  | Giá mở cửa. |
+| 63 | open_interest | BIGINT | X |  |  |  | Khối lượng mở (open interest) của phái sinh. |
+| 64 | open_interest_change | BIGINT | X |  |  |  | Thay đổi khối lượng mở (open interest) của phái sinh. |
+| 65 | price_one | DECIMAL(23,2) | X |  |  |  | Giá một (PRICEONE). |
+| 66 | price_two | DECIMAL(23,2) | X |  |  |  | Giá hai (PRICETWO). |
+| 67 | product_group_id | STRING | X |  |  |  | Mã sản phẩm của CK theo Sở. |
+| 68 | product_id | STRING | X |  |  |  | Tag 20003 của Sở — xác định CK thuộc bộ sản phẩm nào. |
+| 69 | put_or_call_code | STRING | X |  |  |  | Loại quyền phái sinh: P/C. |
+| 70 | reference_price | DECIMAL(23,2) |  |  |  |  | Giá tham chiếu. |
+| 71 | sequence | BIGINT |  |  |  |  | Số thứ tự cập nhật bản tin. |
+| 72 | settlement_price | DECIMAL(23,2) | X |  |  |  | Giá tham chiếu cho ngày giao dịch tiếp theo của HĐTL. |
+| 73 | ticker_symbol | STRING | X |  |  |  | Mã chứng khoán. |
+| 74 | isin_code | STRING | X |  |  |  | Mã ISIN của CK. |
+| 75 | symbol_status_code | STRING | X |  |  |  | Trạng thái mã CK. |
+| 76 | total_buy_vol | BIGINT | X |  |  |  | Tổng khối lượng mua đã khớp. |
+| 77 | total_sell_vol | BIGINT | X |  |  |  | Tổng khối lượng bán đã khớp. |
+| 78 | total_trading_vol | BIGINT |  |  |  |  | Tổng khối lượng khớp từ đầu ngày. |
+| 79 | total_trading_val | DECIMAL(23,2) |  |  |  |  | Tổng giá trị khớp từ đầu ngày. |
+| 80 | trading_session_status_code | STRING | X |  |  |  | Trạng thái phiên tại thời điểm chụp. |
+| 81 | trading_time | STRING | X |  |  |  | Thời gian ghi nhận snapshot. |
+| 82 | trading_dt | DATE | X |  |  |  | Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date. |
+| 83 | underlying_symbol | STRING | X |  |  |  | Chứng khoán cơ sở — dành cho CW/phái sinh. |
+| 84 | yield | DECIMAL(8,5) | X |  |  |  | YTM (Yield to Maturity). |
+| 85 | vol_weighted_average_price | BIGINT | X |  |  |  | Giá bình quân gia quyền theo khối lượng (VWAP). |
+
+
+#### Constraint
+
+**Khóa chính (Primary Key):**
+
+| Tên trường |
+|---|
+| security_trading_snpst_id |
+
+
+
+**Khóa phụ (Foreign Key):**
+
+*Không có Foreign Key.*
 
 
 #### Index

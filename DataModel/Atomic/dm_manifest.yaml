@@ -8,11 +8,11 @@ entries:
   logical_name: Closed Investor Account
   bcv_core_object: Arrangement
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
+  table_type: Fact Append
+  etl_pattern: Fact Append
   source: VSDC
   status: draft
-  attribute_count: 15
+  attribute_count: 18
   brd_ref: BRD-SRC-VSDC-CLOSED_INVESTORS
 - subfolder: Arrangement
   file_name: dm_atm_discretionary_investment_account-FMS.INVES_ACC.yaml
@@ -60,11 +60,11 @@ entries:
   logical_name: Open Investor Account
   bcv_core_object: Arrangement
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
+  table_type: Fact Append
+  etl_pattern: Fact Append
   source: VSDC
   status: draft
-  attribute_count: 14
+  attribute_count: 17
   brd_ref: BRD-SRC-VSDC-OPEN_INVESTORS
 - subfolder: Arrangement
   file_name: dm_atm_pc_share_statistics-IDS.COMPANY_SHARE_STATISTICS.yaml
@@ -151,11 +151,11 @@ entries:
   logical_name: Updated Investor Account
   bcv_core_object: Arrangement
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
+  table_type: Fact Append
+  etl_pattern: Fact Append
   source: VSDC
   status: draft
-  attribute_count: 15
+  attribute_count: 21
   brd_ref: BRD-SRC-VSDC-UPDATED_INVESTORS
 - subfolder: Business_Activity
   file_name: dm_atm_af_auditor_status_history-AUDIT.AF_AUDITOR_STATUS_HISTORY.yaml
@@ -1406,6 +1406,32 @@ entries:
   attribute_count: 23
   brd_ref: BRD-SRC-THANHTRA-PETITION
 - subfolder: Communication
+  file_name: dm_atm_securities_order-HNX.ORDER_BOOK.yaml
+  id: ATM-securities_order-HNX.ORDER_BOOK
+  physical_name: securities_order
+  logical_name: Securities Order
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Financial Market Order"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: HNX
+  status: draft
+  attribute_count: 35
+  brd_ref: BRD-SRC-HNX-ORDER_BOOK
+- subfolder: Communication
+  file_name: dm_atm_securities_order-HOSE.ORDER_BOOK.yaml
+  id: ATM-securities_order-HOSE.ORDER_BOOK
+  physical_name: securities_order
+  logical_name: Securities Order
+  bcv_core_object: Communication
+  bcv_concept: "[Communication] Financial Market Order"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: HOSE
+  status: draft
+  attribute_count: 50
+  brd_ref: BRD-SRC-HOSE-ORDER_BOOK
+- subfolder: Communication
   file_name: dm_atm_sp_license_application_result_notification-NHNCK.MCDT_RESULT_OUTBOX.yaml
   id: ATM-sp_license_application_result_notification-NHNCK.MCDT_RESULT_OUTBOX
   physical_name: sp_license_application_result_notification
@@ -1507,7 +1533,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 9
+  attribute_count: 11
   brd_ref: BRD-SRC-HNX-GOV_BOND_ADDITIONAL_LISTING
 - subfolder: Documentation
   file_name: dm_atm_af_approval-AUDIT.AF_APPROVAL.yaml
@@ -1572,7 +1598,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 11
+  attribute_count: 13
   brd_ref: BRD-SRC-HNX-REGISTRATION_STATUS_CHANGE
 - subfolder: Documentation
   file_name: dm_atm_brokerage_market_share-HNX.BROKERAGE_MARKET_SHARE.yaml
@@ -1585,7 +1611,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 8
+  attribute_count: 11
   brd_ref: BRD-SRC-HNX-BROKERAGE_MARKET_SHARE
 - subfolder: Documentation
   file_name: dm_atm_brokerage_market_share-HOSE.BROKERAGE_MARKET_SHARE.yaml
@@ -1598,7 +1624,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HOSE
   status: draft
-  attribute_count: 8
+  attribute_count: 11
   brd_ref: BRD-SRC-HOSE-BROKERAGE_MARKET_SHARE
 - subfolder: Documentation
   file_name: dm_atm_compliance_report-TMS.COMPLIANCE_REPORT_MASTER.yaml
@@ -1624,7 +1650,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: VSDC
   status: draft
-  attribute_count: 5
+  attribute_count: 7
   brd_ref: BRD-SRC-VSDC-END_OF_DAY_OPEN_INTEREST
 - subfolder: Documentation
   file_name: dm_atm_et_declaration_report-KNT.TAX_REPORT.yaml
@@ -1806,7 +1832,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: VSDC
   status: draft
-  attribute_count: 13
+  attribute_count: 15
   brd_ref: BRD-SRC-VSDC-FOREIGN_INVESTOR_BOND_PORTFOLIO
 - subfolder: Documentation
   file_name: dm_atm_foreign_investor_report-FIMS.FOREIGN_INVESTOR_REPORT.yaml
@@ -1832,7 +1858,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: VSDC
   status: draft
-  attribute_count: 10
+  attribute_count: 12
   brd_ref: BRD-SRC-VSDC-FOREIGN_INVESTOR_INFO
 - subfolder: Documentation
   file_name: dm_atm_fr_catalog-IDS.REPORT_CATALOG.yaml
@@ -1861,6 +1887,32 @@ entries:
   attribute_count: 16
   brd_ref: BRD-SRC-IDS-RCOL
 - subfolder: Documentation
+  file_name: dm_atm_fr_field-IDS.FIELDS.yaml
+  id: ATM-fr_field-IDS.FIELDS
+  physical_name: fr_field
+  logical_name: Financial Report Field
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  status: draft
+  attribute_count: 11
+  brd_ref: BRD-SRC-IDS-FIELDS
+- subfolder: Documentation
+  file_name: dm_atm_fr_field_value-IDS.DATA_VALUES.yaml
+  id: ATM-fr_field_value-IDS.DATA_VALUES
+  physical_name: fr_field_value
+  logical_name: Financial Report Field Value
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-IDS-DATA_VALUES
+- subfolder: Documentation
   file_name: dm_atm_fr_row-IDS.RROW.yaml
   id: ATM-fr_row-IDS.RROW
   physical_name: fr_row
@@ -1887,6 +1939,19 @@ entries:
   attribute_count: 14
   brd_ref: BRD-SRC-IDS-DATA
 - subfolder: Documentation
+  file_name: dm_atm_fr_x_fr_field_relationship-IDS.FORM_FIELDS.yaml
+  id: ATM-fr_x_fr_field_relationship-IDS.FORM_FIELDS
+  physical_name: fr_x_fr_field_relationship
+  logical_name: Financial Report X Financial Report Field Relationship
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  status: draft
+  attribute_count: 14
+  brd_ref: BRD-SRC-IDS-FORM_FIELDS
+- subfolder: Documentation
   file_name: dm_atm_fund_management_report-FMS.RPT_TEMP.yaml
   id: ATM-fund_management_report-FMS.RPT_TEMP
   physical_name: fund_management_report
@@ -1910,7 +1975,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 16
+  attribute_count: 18
   brd_ref: BRD-SRC-HNX-GOV_BOND_OFFERING
 - subfolder: Documentation
   file_name: dm_atm_gov_bond_listing-HNX.GOV_BOND_LISTED_LIST.yaml
@@ -1923,7 +1988,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 14
+  attribute_count: 16
   brd_ref: BRD-SRC-HNX-GOV_BOND_LISTED_LIST
 - subfolder: Documentation
   file_name: dm_atm_inspection_conclusion-THANHTRA.INSPECTION_CONCLUSION.yaml
@@ -1962,7 +2027,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-HNX-LISTED_SECURITIES_LIST
 - subfolder: Documentation
   file_name: dm_atm_listed_share_information-HOSE.LISTED_SECURITIES_LIST.yaml
@@ -1975,7 +2040,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HOSE
   status: draft
-  attribute_count: 8
+  attribute_count: 10
   brd_ref: BRD-SRC-HOSE-LISTED_SECURITIES_LIST
 - subfolder: Documentation
   file_name: dm_atm_listed_share_information-VSDC.OUTSTANDING_SHARES.yaml
@@ -1988,7 +2053,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: VSDC
   status: draft
-  attribute_count: 11
+  attribute_count: 14
   brd_ref: BRD-SRC-VSDC-OUTSTANDING_SHARES
 - subfolder: Documentation
   file_name: dm_atm_listing_status_change-HNX.LISTING_STATUS_CHANGE.yaml
@@ -2001,7 +2066,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 18
+  attribute_count: 20
   brd_ref: BRD-SRC-HNX-LISTING_STATUS_CHANGE
 - subfolder: Documentation
   file_name: dm_atm_listing_status_change-HOSE.LISTING_STATUS_CHANGE.yaml
@@ -2014,7 +2079,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HOSE
   status: draft
-  attribute_count: 18
+  attribute_count: 20
   brd_ref: BRD-SRC-HOSE-LISTING_STATUS_CHANGE
 - subfolder: Documentation
   file_name: dm_atm_pc_cancellation-IDS.PUB_COMPANY_CANCELLATION.yaml
@@ -2095,6 +2160,19 @@ entries:
   attribute_count: 22
   brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_REGISTRATION
 - subfolder: Documentation
+  file_name: dm_atm_private_corp_bond_service_organization-HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.yaml
+  id: ATM-private_corp_bond_service_organization-HNX.PRIVATE_CORP_BOND_SERVICE_ORGS
+  physical_name: private_corp_bond_service_organization
+  logical_name: Private Corp Bond Service Organization
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: HNX
+  status: draft
+  attribute_count: 17
+  brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_SERVICE_ORGS
+- subfolder: Documentation
   file_name: dm_atm_private_corp_bond_trading_summary-HNX.PRIVATE_CORP_BOND_TRADING.yaml
   id: ATM-private_corp_bond_trading_summary-HNX.PRIVATE_CORP_BOND_TRADING
   physical_name: private_corp_bond_trading_summary
@@ -2105,7 +2183,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 6
+  attribute_count: 8
   brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_TRADING
 - subfolder: Documentation
   file_name: dm_atm_sc_adhoc_report-SCMS.SC_FIRM_ADHOC_REPORT.yaml
@@ -2265,6 +2343,19 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-SCMS-LNK_EVENT_TYPE_FORM
 - subfolder: Documentation
+  file_name: dm_atm_security_market_capitalization-HNX.MARKET_CAPITALIZATION.yaml
+  id: ATM-security_market_capitalization-HNX.MARKET_CAPITALIZATION
+  physical_name: security_market_capitalization
+  logical_name: Security Market Capitalization
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  status: draft
+  attribute_count: 29
+  brd_ref: BRD-SRC-HNX-MARKET_CAPITALIZATION
+- subfolder: Documentation
   file_name: dm_atm_share_auction_result-HNX.SHARE_AUCTION.yaml
   id: ATM-share_auction_result-HNX.SHARE_AUCTION
   physical_name: share_auction_result
@@ -2275,7 +2366,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 24
+  attribute_count: 25
   brd_ref: BRD-SRC-HNX-SHARE_AUCTION
 - subfolder: Documentation
   file_name: dm_atm_share_auction_result-HOSE.SHARE_AUCTION.yaml
@@ -2288,7 +2379,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HOSE
   status: draft
-  attribute_count: 24
+  attribute_count: 25
   brd_ref: BRD-SRC-HOSE-SHARE_AUCTION
 - subfolder: Documentation
   file_name: dm_atm_sp_license_application-NHNCK.APPLICATIONS.yaml
@@ -4711,7 +4802,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: VSDC
   status: draft
-  attribute_count: 16
+  attribute_count: 22
   brd_ref: BRD-SRC-VSDC-MAJOR_SHAREHOLDER
 - subfolder: Involved_Party
   file_name: dm_atm_pc_entity_role-IDS.COMPANY_ENTITY_ROLE.yaml
@@ -5339,7 +5430,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: MDDS
   status: draft
-  attribute_count: 86
+  attribute_count: 85
   brd_ref: BRD-SRC-MDDS-JAD_STOCKINFOR
 - subfolder: Transaction
   file_name: dm_atm_bond_order_book-HNX.OUTRIGHT_ORDER_BOOK.yaml
@@ -5352,7 +5443,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 43
+  attribute_count: 46
   brd_ref: BRD-SRC-HNX-OUTRIGHT_ORDER_BOOK
 - subfolder: Transaction
   file_name: dm_atm_bond_order_book-HNX.REPO2_ORDER_BOOK.yaml
@@ -5365,7 +5456,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 56
+  attribute_count: 59
   brd_ref: BRD-SRC-HNX-REPO2_ORDER_BOOK
 - subfolder: Transaction
   file_name: dm_atm_bond_order_book-HNX.REPO_ORDER_BOOK.yaml
@@ -5378,8 +5469,34 @@ entries:
   etl_pattern: Fact Snapshot
   source: HNX
   status: draft
-  attribute_count: 51
+  attribute_count: 54
   brd_ref: BRD-SRC-HNX-REPO_ORDER_BOOK
+- subfolder: Transaction
+  file_name: dm_atm_securities_trade-HNX.TRADE_BOOK.yaml
+  id: ATM-securities_trade-HNX.TRADE_BOOK
+  physical_name: securities_trade
+  logical_name: Securities Trade
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: HNX
+  status: draft
+  attribute_count: 41
+  brd_ref: BRD-SRC-HNX-TRADE_BOOK
+- subfolder: Transaction
+  file_name: dm_atm_securities_trade-HOSE.TRADE_BOOK.yaml
+  id: ATM-securities_trade-HOSE.TRADE_BOOK
+  physical_name: securities_trade
+  logical_name: Securities Trade
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: HOSE
+  status: draft
+  attribute_count: 51
+  brd_ref: BRD-SRC-HOSE-TRADE_BOOK
 - subfolder: Transaction
   file_name: dm_atm_security_match_log-MDDS.JAD_TRANSLOG.yaml
   id: ATM-security_match_log-MDDS.JAD_TRANSLOG

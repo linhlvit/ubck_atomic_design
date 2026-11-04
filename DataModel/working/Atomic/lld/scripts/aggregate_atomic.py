@@ -110,6 +110,7 @@ ATTR_FIELDS = [
     "nullable", "is_primary_key",
     "source_system", "source_table", "source_column",
     "comment", "classification_context", "etl_derived_value",
+    "data_type",  # lấy từ LLD (Data Modeler đã khảo sát); trống → transform tính theo data_domain
 ]
 
 ENTITY_FIELDS = [
@@ -204,6 +205,7 @@ def load_yaml_attr_rows(path: Path) -> list[dict]:
             "comment":                a.get("comment", "") or "",
             "classification_context": a.get("classification_context", "") or "",
             "etl_derived_value":      a.get("etl_derived_value", "") or "",
+            "data_type":              a.get("data_type", "") or "",
         })
     return rows
 
@@ -621,6 +623,7 @@ def build_attributes(manifest_rows: list[dict],
                         "classification_context": resolve_output_ctx(
                             attr_name, master_addr_part, ctx_key, multi_context, own_ctx),
                         "etl_derived_value":      matched.get("etl_derived_value", ""),
+                        "data_type":              matched.get("data_type", ""),
                     })
                 else:
                     # NULL row — attribute không có trong source/context này

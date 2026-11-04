@@ -1,0 +1,177 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fr_field-IDS.FIELDS
+  logical_name: Financial Report Field
+  physical_name: fr_field
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: IDS
+  description: |
+    Định nghĩa trường dữ liệu chi tiết dùng trong form hồ sơ/công bố thông tin (CBTT): tên trường, kiểu dữ liệu, cờ lặp, nhóm danh mục lookup và cấp cha. Thiết kế mới (2026-11-04, theo yêu cầu tường minh Data Modeler) — xem 7e #32.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-FIELDS
+
+attributes:
+  - name: Financial Report Field Id
+    physical_name: fr_field_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: FIELDS
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_FIELDS', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Field Code
+    physical_name: fr_field_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.ID
+    comment: BK chính. PK nguồn NUMBER(10) tự tăng — mirror pattern Financial Report Row/Column.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_FIELDS'"
+    etl_derived_value: IDS_FIELDS
+
+  - name: Financial Report Field Name
+    physical_name: fr_field_nm
+    business_meaning: Tên trường (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.FIELD_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Field English Name
+    physical_name: fr_field_english_nm
+    business_meaning: Tên trường (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.FIELD_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field Data Type Code
+    physical_name: field_data_tp_code
+    business_meaning: Kiểu dữ liệu của trường.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.DATA_TYPE
+    comment: "Scheme: IDS_FORM_FIELD_DATA_TYPE. Values load từ IDS.DATA_TYPES (bảng ngoài scope, xử lý thành Classification Value)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Repeatable Indicator
+    physical_name: repeatable_ind
+    business_meaning: "Lặp (0 - không lặp; 1 - lặp)."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.REPEATABLE_FLG
+    comment: Giá trị 1 → true; 0 → false. Nguồn NUMBER(1).
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field Form Type Code
+    physical_name: field_form_tp_code
+    business_meaning: "Kiểu trường (HS = hồ sơ; CBTT = công bố thông tin)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.FORM_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Id
+    physical_name: parent_fr_field_id
+    business_meaning: Khóa cha (tự tham chiếu).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.PARENT_ID
+    comment: "FK target: fr_field.fr_field_id. Hash: hash_id('IDS_FIELDS', PARENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Code
+    physical_name: parent_fr_field_code
+    business_meaning: Khóa cha (tự tham chiếu) (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.PARENT_ID
+    comment: "Lookup pair: fr_field.fr_field_code. Pair with Parent Financial Report Field Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Lookup Group Code
+    physical_name: lookup_group_code
+    business_meaning: Loại (LOOKUP_GROUP của LOOKUP_VALUES) — nhóm danh mục lookup mà trường sử dụng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: FIELDS
+    source_column: IDS.FIELDS.LOOKUP_GROUP
+    comment: null
+    classification_context: null
+    etl_derived_value: null

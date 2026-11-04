@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-fr_field_value-IDS.DATA_VALUES
+  logical_name: Financial Report Field Value
+  physical_name: fr_field_value
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: IDS
+  description: |
+    Giá trị dữ liệu công ty đại chúng nhập cho từng trường của form CBTT trong mỗi lần nộp báo cáo/tin: giá trị dạng text, ngày hoặc số, kiểu dữ liệu và quan hệ cha-con. Thiết kế mới (2026-11-03, theo yêu cầu tường minh Data Modeler) — xem 7e #32.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-IDS-DATA_VALUES
+
+attributes:
+  - name: Financial Report Field Value Id
+    physical_name: fr_field_val_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('IDS_DATA_VALUES', ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report Field Value Code
+    physical_name: fr_field_val_code
+    business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã nghiệp vụ riêng).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.ID
+    comment: BK chính. PK nguồn NUMBER(19) tự tăng — mirror pattern fr_value/ufr_val.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'IDS_DATA_VALUES'"
+    etl_derived_value: IDS_DATA_VALUES
+
+  - name: Public Company Report Submission Id
+    physical_name: pc_rpt_submission_id
+    business_meaning: Mã công ty (lần nộp báo cáo/tin CBTT — COMPANY_DATA).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.COMPANY_DATA_ID
+    comment: "FK target: pc_rpt_submission.pc_rpt_submission_id. Hash: hash_id('IDS_COMPANY_DATA', COMPANY_DATA_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Public Company Report Submission Code
+    physical_name: pc_rpt_submission_code
+    business_meaning: Mã công ty (lần nộp báo cáo/tin CBTT — COMPANY_DATA) (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.COMPANY_DATA_ID
+    comment: "Lookup pair: pc_rpt_submission.pc_rpt_submission_code. Pair with Public Company Report Submission Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report X Financial Report Field Relationship Id
+    physical_name: fr_x_fr_field_rltnp_id
+    business_meaning: Mã khóa cha của field (FORM_FIELDS.ID) — trường thuộc form tương ứng.
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FORM_FIELD_ID
+    comment: "FK target: fr_x_fr_field_relationship.fr_x_fr_field_rltnp_id. Hash: hash_id('IDS_FORM_FIELDS', FORM_FIELD_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Financial Report X Financial Report Field Relationship Code
+    physical_name: fr_x_fr_field_rltnp_code
+    business_meaning: Mã khóa cha của field (FORM_FIELDS.ID) — trường thuộc form tương ứng (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FORM_FIELD_ID
+    comment: "Lookup pair: fr_x_fr_field_relationship.fr_x_fr_field_rltnp_code. Pair with Financial Report X Financial Report Field Relationship Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Id
+    physical_name: parent_fr_field_id
+    business_meaning: Khóa cha của trường (FIELD_PARENT_ID → FIELDS.ID).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FIELD_PARENT_ID
+    comment: "FK target: fr_field.fr_field_id. Hash: hash_id('IDS_FIELDS', FIELD_PARENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Code
+    physical_name: parent_fr_field_code
+    business_meaning: Khóa cha của trường (FIELD_PARENT_ID → FIELDS.ID) (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FIELD_PARENT_ID
+    comment: "Lookup pair: fr_field.fr_field_code. Pair with Parent Financial Report Field Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Value Id
+    physical_name: parent_fr_field_val_id
+    business_meaning: Mã giá trị cha (tự tham chiếu DATA_VALUES.ID).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.PARENT_ID
+    comment: "FK target: fr_field_value.fr_field_val_id. Hash: hash_id('IDS_DATA_VALUES', PARENT_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Parent Financial Report Field Value Code
+    physical_name: parent_fr_field_val_code
+    business_meaning: Mã giá trị cha (tự tham chiếu DATA_VALUES.ID) (denormalized lookup).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.PARENT_ID
+    comment: "Lookup pair: fr_field_value.fr_field_val_code. Pair with Parent Financial Report Field Value Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field Name
+    physical_name: field_nm
+    business_meaning: Tên trường (tiếng Việt).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FIELD_NAME_VI
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field English Name
+    physical_name: field_english_nm
+    business_meaning: Tên trường (tiếng Anh).
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.FIELD_NAME_EN
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Text Value
+    physical_name: text_val
+    business_meaning: Dữ liệu kiểu text.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.TEXT_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Date Value
+    physical_name: dt_val
+    business_meaning: Dữ liệu kiểu date.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.DATE_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Number Value
+    physical_name: nbr_val
+    business_meaning: Dữ liệu kiểu number.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.NUMBER_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Field Data Type Code
+    physical_name: field_data_tp_code
+    business_meaning: Kiểu dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: IDS
+    source_table: DATA_VALUES
+    source_column: IDS.DATA_VALUES.DATA_TYPE
+    comment: "Scheme: IDS_FORM_FIELD_DATA_TYPE. Denormalized từ FIELDS/FORM_FIELDS."
+    classification_context: null
+    etl_derived_value: null

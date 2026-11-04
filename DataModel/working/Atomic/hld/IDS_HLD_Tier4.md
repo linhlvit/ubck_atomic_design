@@ -2,7 +2,7 @@
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
 **Tier 4:** Các entity thuộc Tier 4 theo LLD (`group: T4`). Gồm:
-- Con của **Public Company Report Submission** (T3) + **Financial Report** (T1) + **Financial Report Field** (T2): Financial Report Field Value (`DATA_VALUES`)
+- Con của **Public Company Report Submission** (T3) + **Financial Report X Financial Report Field Relationship** (T2) + **Financial Report Field** (T1): Financial Report Field Value (`DATA_VALUES`)
 - Con của **Public Company Report Submission** (T3) + **Public Company** (T1) + **Legal Entity** (T1) + **Unstructured Financial Report** (T1) + **Unstructured Financial Report Row/Column** (T2): Unstructured Financial Report Value (Tier 4 theo LLD)
 
 ---
@@ -12,7 +12,7 @@
 | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|
 | Documentation | [Documentation] Regulatory Report | Documentation | `REP_DATA` | Update | Lưu trữ dữ liệu của hàng và cột của báo cáo có cấu trúc (báo cáo định kỳ): mã hàng/cột, giá trị số/chuỗi, kỳ báo cáo qua liên kết đến bản ghi nộp báo cáo. | Unstructured Financial Report Value | Classification | (1) Term candidate: `[Documentation] Regulatory Report` (BCV #9297) — cùng term đã dùng cho `Financial Report Value` (`DATA`, T2): "Regulatory Information which is a report on regulations". (2) Cấu trúc trường: COMPANY_PROFILE_ID (FK tagged → COMPANY_PROFILES), LEGAL_ENTITY_ID (soft-FK, nullable — "ID Nhà đầu tư NNB/NLQ/CĐ"), COMPANY_DATA_ID (soft-FK → COMPANY_DATA, T3), REP_FORM_ID/REP_ROW_ID/REP_COL_ID (soft-FK → REP_FORMS T1/REP_ROW T2/REP_COLUMN T2), DATA_VALUE, TEXT_VALUE, REP_ROW_INDEX, REP_COL_INDEX, COL_DATA_TYPE, ROW_DATA_TYPE — mỗi dòng là 1 giá trị ô cụ thể của 1 báo cáo định kỳ, cùng vai trò với `DATA` nhưng cho họ template `REP_FORMS`/`REP_ROW`/`REP_COLUMN` thay vì `REPORT_CATALOG`/`RROW`/`RCOL`. (3) Chọn `[Documentation] Regulatory Report`. Domain Prefix `Unstructured Financial Report` (mở rộng nhóm REP_FORMS/REP_ROW/REP_COLUMN — xem 6f T4-04). Table Type = Fundamental, theo đúng pattern đã áp dụng cho toàn bộ họ Value/Template liên quan (`DATA`, `RROW`, `RCOL`, `REP_ROW`, `REP_COLUMN`, `COMPANY_DATA`) dù còn FK lên Tier 1/2/3 — xem 6f T4-05. Tier 4 theo LLD (`group: T4`; FK mềm tới Public Company Report Submission — Tier 3 theo LLD, Unstructured Financial Report Row/Column — Tier 2). Table Type Fundamental → Classification (2026-09-15, theo yêu cầu tường minh Data Modeler) — xem Overview 7e #27. |
-| Documentation | [Documentation] Regulatory Report | Documentation | `DATA_VALUES` | Update | Giá trị dữ liệu CTĐC nhập cho từng trường của form CBTT trong mỗi lần nộp: giá trị text/date/number, kiểu dữ liệu, bắt buộc, quan hệ cha-con. | Financial Report Field Value | Classification | (1) Term candidate: `[Documentation] Regulatory Report` (BCV #9297) — cùng term với `Financial Report Value` (`DATA`) và `Unstructured Financial Report Value` (`REP_DATA`). (2) Cấu trúc trường: COMPANY_DATA_ID (FK → COMPANY_DATA, T3), FORM_ID (FK → FORMS, T1), FIELD_ID (FK → FIELDS, ngoài scope), FORM_FIELD_ID (FK → FORM_FIELDS, T2), TEXT_VALUE/DATE_VALUE/NUMBER_VALUE, FIELD_NAME_VI/EN, DATA_TYPE, REQUIRED_FLG, PARENT_ID/FIELD_PARENT_ID — mỗi dòng là giá trị 1 trường mà CTĐC nhập trong 1 lần nộp báo cáo/tin CBTT. (3) Chọn `[Documentation] Regulatory Report`. Table Type = Classification theo yêu cầu tường minh Data Modeler (2026-11-03), cùng pattern đã áp dụng cho `DATA`/`REP_DATA`. Tier 4 vì FK tới Public Company Report Submission (T3) + Financial Report Field (T2). Đưa từ out-of-scope (nhóm Form Metadata) vào scope — xem 6f T4-07/T4-08. |
+| Documentation | [Documentation] Regulatory Report | Documentation | `DATA_VALUES` | Update | Giá trị dữ liệu CTĐC nhập cho từng trường của form CBTT trong mỗi lần nộp: giá trị text/date/number, kiểu dữ liệu, bắt buộc, quan hệ cha-con. | Financial Report Field Value | Classification | (1) Term candidate: `[Documentation] Regulatory Report` (BCV #9297) — cùng term với `Financial Report Value` (`DATA`) và `Unstructured Financial Report Value` (`REP_DATA`). (2) Cấu trúc trường: COMPANY_DATA_ID (FK → COMPANY_DATA, T3), FORM_FIELD_ID (FK → FORM_FIELDS, T2; FORM_ID/FIELD_ID không map — suy ra qua FORM_FIELDS, Data Modeler 2026-11-04), TEXT_VALUE/DATE_VALUE/NUMBER_VALUE, FIELD_NAME_VI/EN, DATA_TYPE, REQUIRED_FLG, PARENT_ID/FIELD_PARENT_ID — mỗi dòng là giá trị 1 trường mà CTĐC nhập trong 1 lần nộp báo cáo/tin CBTT. (3) Chọn `[Documentation] Regulatory Report`. Table Type = Classification, BCO = Documentation (xác nhận Data Modeler 2026-11-04), cùng pattern đã áp dụng cho `DATA`/`REP_DATA`. Tier 4 vì FK tới Public Company Report Submission (T3) + Financial Report X Financial Report Field Relationship (T2). Xem 6f T4-07/T4-08. |
 
 ---
 
@@ -32,7 +32,7 @@ erDiagram
         int ID PK
     }
 
-    FORMS {
+    FIELDS {
         int ID PK
     }
 
@@ -43,8 +43,6 @@ erDiagram
     DATA_VALUES {
         int ID PK
         int COMPANY_DATA_ID FK
-        int FORM_ID FK
-        int FIELD_ID FK
         int FORM_FIELD_ID FK
         int PARENT_ID
         int FIELD_PARENT_ID
@@ -92,8 +90,9 @@ erDiagram
     REP_ROW ||--o{ REP_DATA : "REP_ROW_ID"
     REP_COLUMN ||--o{ REP_DATA : "REP_COL_ID"
     COMPANY_DATA ||--o{ DATA_VALUES : "COMPANY_DATA_ID"
-    FORMS ||--o{ DATA_VALUES : "FORM_ID"
     FORM_FIELDS ||--o{ DATA_VALUES : "FORM_FIELD_ID"
+    FIELDS ||--o{ DATA_VALUES : "FIELD_PARENT_ID"
+    DATA_VALUES ||--o{ DATA_VALUES : "PARENT_ID (giả định self-ref)"
 ```
 
 ---
@@ -149,19 +148,20 @@ erDiagram
     Unstructured_Financial_Report_Row ||--o{ Unstructured_Financial_Report_Value : "ufr_row_id"
     Unstructured_Financial_Report_Column ||--o{ Unstructured_Financial_Report_Value : "ufr_column_id"
 
-    Financial_Report {
-        string financial_report_id PK
-    }
-
     Financial_Report_Field {
         string fr_field_id PK
+    }
+
+    Financial_Report_X_Financial_Report_Field_Relationship {
+        string fr_x_fr_field_rel_id PK
     }
 
     Financial_Report_Field_Value {
         string fr_field_value_id PK
         string pc_report_submission_id FK
-        string financial_report_id FK
-        string fr_field_id FK
+        string fr_x_fr_field_rel_id FK
+        string parent_fr_field_id FK
+        string parent_fr_field_val_id FK
         string fld_nm_vi
         string fld_nm_en
         string txt_val
@@ -172,8 +172,9 @@ erDiagram
     }
 
     Public_Company_Report_Submission ||--o{ Financial_Report_Field_Value : "pc_report_submission_id"
-    Financial_Report ||--o{ Financial_Report_Field_Value : "financial_report_id"
-    Financial_Report_Field ||--o{ Financial_Report_Field_Value : "fr_field_id"
+    Financial_Report_X_Financial_Report_Field_Relationship ||--o{ Financial_Report_Field_Value : "fr_x_fr_field_rel_id"
+    Financial_Report_Field ||--o{ Financial_Report_Field_Value : "parent_fr_field_id"
+    Financial_Report_Field_Value ||--o{ Financial_Report_Field_Value : "parent_fr_field_val_id"
 ```
 
 ---
@@ -202,5 +203,5 @@ erDiagram
 | T4-04 | `REP_DATA` (`Unstructured Financial Report Value`) dùng Domain Prefix `Unstructured Financial Report` — quyết định 2026-08-27 (Tier2.md T2-22/Overview 7e #22) từng ghi rõ "chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN". Đề xuất mở rộng nhóm này thành 4 entity (thêm REP_DATA) do cùng gia đình template/value và cùng physical prefix `ufr`. | Cần Data Modeler xác nhận việc mở rộng phạm vi quyết định 2026-08-27. |
 | T4-05 | `REP_DATA` chỉ có `COMPANY_PROFILE_ID` được tag `key: FK` trong BRD; `LEGAL_ENTITY_ID`, `COMPANY_DATA_ID`, `REP_FORM_ID`, `REP_ROW_ID`, `REP_COL_ID` đều là soft-FK (`key: null`, `fk_note: null`) dù mô tả cột nêu rõ là khóa liên kết. Table Type tạm chọn Fundamental theo pattern đã áp dụng cho `DATA`/`RROW`/`RCOL`/`REP_ROW`/`REP_COLUMN`/`COMPANY_DATA` (cùng họ Value/Template, cùng lý do override). | Cần Data Modeler xác nhận: (1) constraint FK thực tế tại nguồn cho 5 soft-FK trên, (2) đồng ý Table Type = Fundamental theo pattern có sẵn. |
 | T4-06 | `REP_DATA` có cả `LEGAL_ENTITY_ID` (nullable, mô tả "ID Nhà đầu tư NNB/NLQ/CĐ") lẫn `COMPANY_PROFILE_ID` — chưa rõ 2 FK này loại trừ nhau (giống pattern `SECURITIES_OFFERING.APPLICANT_TYPE_FLG`) hay có thể cùng khác NULL đồng thời (báo cáo vừa gắn CTĐC vừa gắn 1 cá nhân liên quan cụ thể). Ảnh hưởng đến thiết kế grain ở bước LLD. | Cần Data Modeler xác nhận ý nghĩa nghiệp vụ khi cả 2 FK cùng có giá trị. |
-| T4-07 | `DATA_VALUES` (`Financial Report Field Value`) đưa từ out-of-scope vào Tier 4 theo yêu cầu Data Modeler (2026-11-03), Table Type Classification (cùng pattern `DATA`/`REP_DATA`). Bảng có instance data nhập theo từng lần nộp (giá trị text/date/number gắn `COMPANY_DATA_ID`) — chưa phải reference data set thuần Code+Name. Xác nhận giữ Classification? Nếu Classification, BCO có đổi sang `Common` theo quy ước mặc định? | Giữ BCO Documentation + Classification theo tiền lệ `DATA`/`REP_DATA`; cần Data Modeler xác nhận. |
-| T4-08 | `DATA_VALUES` có `FORM_ID`, `FIELD_ID`, `FORM_FIELD_ID` đồng thời — FORM_ID/FIELD_ID suy ra được từ `FORM_FIELDS` qua FORM_FIELD_ID (dư thừa). `PARENT_ID` ("Mã giá trị", NUMBER(19)) và `FIELD_PARENT_ID` không có FK tagged; `FIELD_NAME_VI/EN`, `DATA_TYPE`, `REQUIRED_FLG` là denormalize từ `FORM_FIELDS`. | Đề xuất LLD: chỉ giữ FK `fr_field_id` + `pc_report_submission_id` + `financial_report_id` (không FK `FIELDS`); cần Data Modeler xác nhận ý nghĩa PARENT_ID và việc giữ các cột denormalize. |
+| T4-07 | Đã xác nhận (2026-11-04): `DATA_VALUES` (`Financial Report Field Value`) giữ Table Type Classification, BCO = Documentation (tiền lệ `DATA`/`REP_DATA`). | Đã xử lý. |
+| T4-08 | Đã xác nhận (2026-11-04): bỏ `FORM_ID`, `FIELD_ID` khỏi `DATA_VALUES` (suy ra qua `FORM_FIELD_ID`). `FIELD_PARENT_ID` → `FIELDS` (`parent_fr_field_id`); `PARENT_ID` ("Mã giá trị") self-ref `DATA_VALUES.ID` — áp theo quyết định `FORM_FIELDS`, chưa có xác nhận riêng cho bảng này. `FIELD_NAME_VI/EN` trên `DATA_VALUES` còn denormalize (chưa có quyết định bỏ). | Cần Data Modeler xác nhận `PARENT_ID`/`FIELD_PARENT_ID` và `FIELD_NAME_VI/EN` trên `DATA_VALUES`. |

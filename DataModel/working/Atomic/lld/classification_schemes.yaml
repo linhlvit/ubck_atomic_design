@@ -6650,3 +6650,22 @@ schemes:
     source_table: "VSDC.REGISTERED_OWNERSHIP_TYPE"
     used_in_entities: []
     values: []
+
+  - scheme_code: "IDS_FORM_FIELD_DATA_TYPE"
+    name: "Kiểu dữ liệu của trường form CBTT — DATA_TYPE của bảng IDS.DATA_TYPES"
+    source_type: "source_table"
+    source_table: "IDS.DATA_TYPES"
+    used_in_entities:
+      - "Financial Report Field"
+      - "Financial Report X Financial Report Field Relationship"
+      - "Financial Report Field Value"
+    values: []
+    reactivated_note: "Đăng ký mới 2026-11-04 — thiết kế FIELDS/FORM_FIELDS/DATA_VALUES theo yêu cầu Data Modeler. DATA_TYPES ngoài scope, xử lý thành Classification Value."
+
+  - scheme_code: "IDS_FIELD_FORM_TYPE"
+    name: "Kiểu trường (HS = hồ sơ; CBTT = công bố thông tin) — FIELDS.FORM_TYPE"
+    source_type: "etl_derived"
+    source_table: "IDS.FIELDS"
+    used_in_entities:
+      - "Financial Report Field"
+    values: []

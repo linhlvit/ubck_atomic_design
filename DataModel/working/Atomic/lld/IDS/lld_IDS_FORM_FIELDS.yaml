@@ -1,0 +1,201 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "IDS"
+  source_table: "FORM_FIELDS"
+  atomic_entity: "Financial Report X Financial Report Field Relationship"
+  entity_physical_name: "fr_x_fr_field_relationship"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế mới (2026-11-04, theo yêu cầu tường minh Data Modeler): FORM_FIELDS → \"Financial Report X Financial Report Field Relationship\" (Relative), quan hệ N-N Form × Field kèm cấu hình. Domain Prefix rỗng theo tiền lệ các entity \"X Relationship\" (entity_physical_name quét cụm curated Financial Report → fr). PARENT_ID self-ref FORM_FIELDS.ID; FIELD_PARENT_ID → FIELDS.ID. ID kỹ thuật là BK (Code), Id hash từ Code. Không map: FIELD_NAME_VI/EN, SYSTEM_CD, READ_ONLY_FLG, WRITE_FLG, FIELD_FORMAT_OTHER (Data Modeler 2026-11-04). FORM_ID/FIELD_ID là fk_src: inferred — cần xác nhận. FORM_ID crosswalk qua IDS.FORMS vì BK của Financial Report là FORM_CD."
+attributes:
+- attribute_name: "Financial Report X Financial Report Field Relationship Id"
+  physical_name: "fr_x_fr_field_rltnp_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('IDS_FORM_FIELDS', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report X Financial Report Field Relationship Code"
+  physical_name: "fr_x_fr_field_rltnp_code"
+  description: "Khóa chính. BK của entity — map từ PK bảng nguồn (không có cột mã nghiệp vụ riêng)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.ID"
+  comment: "BK chính. PK nguồn NUMBER(10) tự tăng — entity có business attribute riêng nên có Id/Code riêng, không phải pure link."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=IDS_FORM_FIELDS"
+  etl_derived_value: "IDS_FORM_FIELDS"
+  data_type: "string"
+- attribute_name: "Financial Report Id"
+  physical_name: "fr_id"
+  description: "Mã form."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FORM_ID"
+  comment: "FK target: fr.fr_id. Cần ETL crosswalk sang IDS.FORMS: FORM_FIELDS.FORM_ID = FORMS.ID để xác nhận FORM_CD sau đó hash_id('IDS_FORMS', FORM_CD)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Code"
+  physical_name: "fr_code"
+  description: "Mã form."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORMS.FORM_CD"
+  comment: "Lookup pair: fr.fr_code. Pair with Financial Report Id. Giá trị lấy từ IDS.FORMS.FORM_CD sau ETL crosswalk — chi tiết xem comment Financial Report Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Field Id"
+  physical_name: "fr_field_id"
+  description: "Mã field."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_ID"
+  comment: "FK target: fr_field.fr_field_id. Hash: hash_id('IDS_FIELDS', FIELD_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Financial Report Field Code"
+  physical_name: "fr_field_code"
+  description: "Mã field (denormalized lookup)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_ID"
+  comment: "Lookup pair: fr_field.fr_field_code. Pair with Financial Report Field Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Financial Report Field Id"
+  physical_name: "parent_fr_field_id"
+  description: "Mã field cha (FIELD_PARENT_ID → FIELDS.ID, xác nhận 2026-11-04)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_PARENT_ID"
+  comment: "FK target: fr_field.fr_field_id. Hash: hash_id('IDS_FIELDS', FIELD_PARENT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Financial Report Field Code"
+  physical_name: "parent_fr_field_code"
+  description: "Mã field cha (FIELD_PARENT_ID → FIELDS.ID, xác nhận 2026-11-04) (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_PARENT_ID"
+  comment: "Lookup pair: fr_field.fr_field_code. Pair with Parent Financial Report Field Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Financial Report X Financial Report Field Relationship Id"
+  physical_name: "parent_fr_x_fr_field_rltnp_id"
+  description: "Mã cha (tự tham chiếu FORM_FIELDS.ID, xác nhận 2026-11-04)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.PARENT_ID"
+  comment: "FK target: fr_x_fr_field_relationship.fr_x_fr_field_rltnp_id. Hash: hash_id('IDS_FORM_FIELDS', PARENT_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Parent Financial Report X Financial Report Field Relationship Code"
+  physical_name: "parent_fr_x_fr_field_rltnp_code"
+  description: "Mã cha (tự tham chiếu FORM_FIELDS.ID, xác nhận 2026-11-04) (denormalized lookup)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.PARENT_ID"
+  comment: "Lookup pair: fr_x_fr_field_relationship.fr_x_fr_field_rltnp_code. Pair with Parent Financial Report X Financial Report Field Relationship Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Field Data Type Code"
+  physical_name: "field_data_tp_code"
+  description: "Kiểu dữ liệu (DATA_TYPE của bảng DATA_TYPES)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.DATA_TYPE"
+  comment: "Scheme: IDS_FORM_FIELD_DATA_TYPE. Denormalized từ FIELDS — giữ vì có thể khác theo form (Data Modeler 2026-11-04)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Field Display Order"
+  physical_name: "field_display_order"
+  description: "Thứ tự sắp xếp."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_ORDER"
+  comment: "Nguồn NUMBER(30,0) — ETL cần xác nhận giá trị nằm trong dải int32."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Field Format"
+  physical_name: "field_format"
+  description: "Định dạng của trường."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "IDS.FORM_FIELDS.FIELD_FORMAT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

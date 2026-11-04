@@ -420,7 +420,8 @@ def patch_lld_files(
             if a.get("physical_name") != new_physical:
                 a["physical_name"] = new_physical
                 changed += 1
-            new_dt = resolve_data_type(domain, domain_map) or None
+            # Giữ data_type Data Modeler đã đặt trong LLD; chỉ điền theo domain khi trống.
+            new_dt = a.get("data_type") or resolve_data_type(domain, domain_map) or None
             if a.get("data_type") != new_dt:
                 a["data_type"] = new_dt
                 changed += 1
@@ -495,7 +496,8 @@ def patch_atomic_attributes(
 
         a[COL_ENTITY_PHYS] = entity_cache[entity]
         a[COL_ATTR_PHYS]   = attr_cache[attr]
-        a[COL_DATA_TYPE]   = resolve_data_type(domain, domain_map)
+        # data_type đã khai trong LLD (khảo sát dữ liệu) được giữ nguyên; chỉ tính theo domain khi trống.
+        a[COL_DATA_TYPE]   = a.get(COL_DATA_TYPE) or resolve_data_type(domain, domain_map)
 
     if dry_run:
         print(yaml.dump(data, Dumper=DQDumper, allow_unicode=True, sort_keys=False, default_flow_style=False))

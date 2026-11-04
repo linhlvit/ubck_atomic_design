@@ -12,6 +12,7 @@
 | Involved Party | [Involved Party] Organization | Organization | `COMPANY_PROFILES` | Update | Thông tin cơ bản của công ty đại chúng: tên VI/EN, mã CK, sàn niêm yết, trạng thái, vốn điều lệ, loại hình doanh nghiệp. Hạt nhân của toàn bộ IDS — hầu hết bảng nghiệp vụ FK về đây. | Public Company | Fundamental | (1) Term candidate: `[Involved Party] Organization` — BCV mô tả tổ chức/pháp nhân có lifecycle riêng, được UBCKNN quản lý. (2) Cấu trúc trường: tên VI/EN/viết tắt, mã CK, sàn niêm yết (EQUITY_LISTING_EXCH), trạng thái (STATUS_IDS_CD), vốn điều lệ (CAPITAL_PAID_REPORTED), loại doanh nghiệp (ENTERPRISE_TYPE_CD), loại BCTC (FINANCIAL_STMT_TYPE_CD) — rõ ràng là profile của pháp nhân tổ chức; không có bảng `company_detail` riêng trong BRD thực tế. (3) Chọn `[Involved Party] Organization` — công ty đại chúng là pháp nhân tổ chức; shared entity với SCMS.DM_CONG_TY_DC. |
 | Involved Party | [Involved Party] Individual | Involved Party | `LEGAL_ENTITIES` | Update | Cổ đông giao dịch, người nội bộ, người liên quan của công ty đại chúng (cá nhân hoặc tổ chức). Grain = 1 thực thể pháp lý độc lập — không FK đến COMPANY_PROFILES ở bảng này; quan hệ với công ty thể hiện qua COMPANY_ENTITY_ROLE và COMPANY_SHAREHOLDING (Tier 2). | Legal Entity | Fundamental | (1) Term candidate: `[Involved Party] Individual` — BCV mô tả cá nhân hoặc tổ chức là Involved Party có lifecycle riêng. (2) Cấu trúc trường: ENTITY_NAME, ENTITY_TYPE_CD (cá nhân/tổ chức), GENDER_CD, BIRTH_DATE, ADDRESS, PHONE_NO, FAX_NO, NATIONALITY, EDUCATION_LEVEL_CD, BUSINESS_REG_NO (nếu là tổ chức), PAID_UP_CHARTER_CAPITAL, WEBSITE — đây là profile đầy đủ của một thực thể pháp lý độc lập không gắn với công ty cụ thể. (3) Chọn `[Involved Party] Individual` — LEGAL_ENTITIES là Involved Party với lifecycle riêng; grain = 1 thực thể, không phải 1 giao dịch. Fundamental vì không FK đến bảng nghiệp vụ ở T1. |
 | Documentation | [Documentation] Form Document | Documentation | `FORMS` | Update | Định nghĩa template form CBTT — mỗi form là một loại hồ sơ/tin công bố; self-ref qua `parent_form_id` tạo cấu trúc cha-con. | Financial Report | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348, category Documentation, part_of `Documentation Item`) — "Mục Tài liệu được trình bày theo bố cục mẫu tiêu chuẩn, yêu cầu cung cấp thêm thông tin" (VD: mẫu đơn vay, bảng câu hỏi). (2) Cấu trúc trường: form_type_cd, news_type_cd, parent_form_id (self-ref), tên biểu mẫu — chỉ là metadata của bản mẫu (layout chuẩn), không có dữ liệu nghiệp vụ thực; dữ liệu thực (đã điền vào form) nằm ở `Financial Report Value` (`DATA`) — đúng khớp mô tả "yêu cầu cung cấp thêm thông tin". (3) Chọn `[Documentation] Form Document`, thay cho `[Condition] Form Definition` trước đây — term "Form Definition" **không tồn tại** trong `knowledge/terms.csv` (grep xác nhận 0 kết quả; term cũ tự đặt, không qua tra cứu BCV đúng quy trình rule#6), trong khi "Form Document" là term thật (id 9348) khớp chính xác cấu trúc bảng. Đổi theo yêu cầu tường minh Data Modeler (2026-08-13) — xem Overview 7e #21. Domain prefix giữ nguyên `Financial Report` (`fr`). |
+| Documentation | [Documentation] Form Document | Documentation | `FIELDS` | Update | Định nghĩa trường dữ liệu chi tiết dùng trong form HS/CBTT: tên VI/EN, kiểu dữ liệu, cờ lặp, nhóm lookup, cấp cha. | Financial Report Field | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348) — Documentation Item theo bố cục mẫu chuẩn; cùng term với `FORMS`. (2) Cấu trúc trường: FIELD_NAME_VI/EN, DATA_TYPE, REPEATABLE_FLG, FORM_TYPE (HS/CBTT), PARENT_ID (self-ref → `FIELDS.ID`), LOOKUP_GROUP, DELETE_FLG (CONTROL_UNIT_CD/OPERATING_UNIT_CD không map — Data Modeler 2026-11-04) — mỗi dòng là định nghĩa 1 trường dữ liệu dùng chung, độc lập với form cụ thể (form nào dùng trường nào nằm ở `FORM_FIELDS`). (3) Chọn `[Documentation] Form Document`. Table Type = Relative theo yêu cầu tường minh Data Modeler (2026-11-04). Tier 1: không FK tới entity nghiệp vụ nào (chỉ self-ref và mã đơn vị). Đưa từ out-of-scope (Form Metadata) vào scope — xem 6f T1-15. |
 | Documentation | [Documentation] Form Document | Documentation | `REPORT_CATALOG` | Update | Danh mục báo cáo tài chính: định nghĩa loại báo cáo (BCTC, KQKD...) với tập hàng/cột tương ứng. | Financial Report Catalog | Relative | (1) Term: `[Documentation] Form Document` (BCV id 9348) theo LLD `lld_IDS_REPORT_CATALOG.yaml` — cùng họ với `FORMS`/`RROW`/`RCOL`. (2) Cấu trúc trường: rc_type_cd, tên catalog, phạm vi (rc_scope_cd), loại doanh nghiệp (report_type_cd), kỳ báo cáo — metadata bản mẫu BCTC, không phải dữ liệu thực. (3) Chọn `[Documentation] Form Document` (đồng bộ theo LLD 2026-10-21, thay `[Condition] Form Definition`). |
 | Documentation | [Documentation] Form Document | Documentation | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) — bộ mẫu độc lập với báo cáo tài chính. | Unstructured Financial Report | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348, category Documentation, part_of `Documentation Item`) — "Mục Tài liệu được trình bày theo bố cục mẫu tiêu chuẩn, yêu cầu cung cấp thêm thông tin". (2) Cấu trúc trường: rf_report_type_cd (tần suất), tên form, mô tả — chỉ là metadata của bản mẫu báo cáo định kỳ, không có dữ liệu nghiệp vụ thực (số liệu điền vào từng kỳ). (3) Chọn `[Documentation] Form Document`, thay cho `[Condition] Form Definition` trước đây — term "Form Definition" **không tồn tại** trong `knowledge/terms.csv` (grep xác nhận 0 kết quả; tự đặt, không qua tra cứu BCV đúng quy trình rule#6), trong khi "Form Document" là term thật (id 9348) khớp chính xác. Đổi theo yêu cầu tường minh Data Modeler (2026-08-13) — xem Overview 7e #21. Đổi tên entity từ `Periodic Report Form` (2026-08-05); domain prefix đổi sang `Unstructured Financial Report` (`ufr`) (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem Overview 7e #22. Bỏ chữ "Sub" khỏi tên entity (2026-08-27) — xem Overview 7e #23. |
 | Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng công ty đại chúng (không có FK đến bảng nghiệp vụ khác). | Public Company Evaluation Group | Relative | (1) Term candidate: `[Group] Group` — BCV mô tả nhóm phân loại. (2) Cấu trúc trường: GROUP_NAME, GROUP_CD, WEIGHT, DISPLAY_ORDER — đây là danh mục nhóm chỉ tiêu phục vụ đánh giá, có CODE + NAME + metadata. Tuy nhiên có WEIGHT (trọng số) là attribute nghiệp vụ quan trọng. (3) Chọn `[Group] Group` — EVALUATION_GROUPS là bảng phân nhóm chỉ tiêu đánh giá; Table Type = Relative theo LLD (`lld_IDS_EVALUATION_GROUPS.yaml`, 2026-10-21). |
@@ -57,6 +58,18 @@ erDiagram
         string PHONE_NO
         string NATIONALITY
         string BUSINESS_REG_NO
+    }
+
+    FIELDS {
+        int ID PK
+        string FIELD_NAME_VI
+        string FIELD_NAME_EN
+        string DATA_TYPE
+        int REPEATABLE_FLG
+        string FORM_TYPE
+        int PARENT_ID FK
+        string LOOKUP_GROUP
+        int DELETE_FLG
     }
 
     FORMS {
@@ -116,6 +129,7 @@ erDiagram
     CATEGORIES ||--o{ CATEGORIES : "PARENT_ID (self-ref)"
     CATEGORIES ||--o{ COMPANY_PROFILES : "CATEGORY_L1_ID / CATEGORY_L2_ID"
     FORMS ||--o{ FORMS : "PARENT_FORM_ID (self-ref)"
+    FIELDS ||--o{ FIELDS : "PARENT_ID (self-ref)"
     COMPANY_PROFILES ||--o{ BOND_LISTING_HISTORY : "COMPANY_PROFILE_ID"
 ```
 
@@ -224,6 +238,20 @@ erDiagram
     Classification_IDS_Business_Line ||--o{ Public_Company : "business_line_level_1_id / business_line_level_2_id"
     Financial_Report ||--o{ Financial_Report : "parent_form_id"
     Public_Company ||--o{ Public_Company_Bond_Listing_History : "pblc_co_id"
+
+    Financial_Report_Field {
+        string fr_field_id PK
+        string fld_nm_vi
+        string fld_nm_en
+        string fld_data_tp_code
+        boolean repeatable_ind
+        string form_tp_code
+        string parent_fr_field_id FK
+        string lookup_grp_code
+        boolean active_ind
+    }
+
+    Financial_Report_Field ||--o{ Financial_Report_Field : "parent_fr_field_id"
 ```
 
 ---
@@ -247,6 +275,8 @@ erDiagram
 | `REPORT_CATALOG.RC_SCOPE_CD` | Phạm vi báo cáo (hợp nhất, mẹ...) | `IDS_REPORT_SCOPE` | source_table | Values load từ `LOOKUP_VALUES` |
 | `REP_FORMS.RF_REPORT_TYPE_CD` | Tần suất báo cáo định kỳ (tháng/quý/năm...) | `IDS_PERIODIC_REPORT_FREQUENCY` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 | `EVALUATION_PERIODS.STATUS` | Trạng thái kỳ đánh giá (approved/draft) | `IDS_EVAL_PERIOD_STATUS` | etl_derived | Values lấy trực tiếp từ cột nguồn |
+| `FIELDS.DATA_TYPE` | Kiểu dữ liệu của trường (DATA_TYPE của bảng `DATA_TYPES`) | `IDS_FORM_FIELD_DATA_TYPE` | source_table | Values load từ `DATA_TYPES` (bảng ngoài scope, xử lý thành Classification Value — xem Overview 7f). Scheme dùng chung cho `FORM_FIELDS.DATA_TYPE`, `DATA_VALUES.DATA_TYPE` |
+| `FIELDS.FORM_TYPE` | Kiểu trường (HS = hồ sơ; CBTT = công bố thông tin) | `IDS_FIELD_FORM_TYPE` | etl_derived | Values lấy trực tiếp từ cột nguồn |
 
 ---
 
@@ -266,3 +296,4 @@ erDiagram
 | T1-04 | `EVALUATION_PERIODS` có STATUS lifecycle riêng (draft → approved) → Fundamental, không phải Classification. Xác nhận. | Xác nhận — có lifecycle status, grain = 1 kỳ đánh giá. |
 | T1-13 | `CATEGORIES` (danh mục ngành nghề 2 cấp): **đảo quyết định (2026-10-21, Data Modeler)** — thiết kế thành entity `Classification IDS Business Line` (`lld_IDS_CATEGORIES.yaml`, draft; giữ tiền tố nguồn `IDS` theo yêu cầu). `COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID` đổi sang cặp FK Id + Code (`Business Line Level 1/2 Id/Code`) theo `lld_IDS_COMPANY_PROFILES.yaml`. Cần xác nhận lọc `TYPE` (IDS/BTC) và `DELETE_FLG = 0` khi ETL. | Đã xử lý ở 6a/6b/6c + Overview. |
 | T1-14 | `Shared entities` (IP Postal Address, IP Electronic Address, IP Alt Identification) đã approved từ NHNCK — chỉ bổ sung source_table IDS, không tạo mới. Source cho IP Postal Address từ IDS: COMPANY_PROFILES (HEAD_OFFICE_ADDR + PROVINCE_ID), LEGAL_ENTITIES (ADDRESS). | Xác nhận — bổ sung source khi chạy aggregate_atomic.py sau khi xuất Overview. Chuyển từ Tier2.md T2-05 (2026-10-21): theo LLD, host `COMPANY_PROFILES`/`LEGAL_ENTITIES` group T1 → 3 shared entity ghi ở Tier 1 (Tier thấp nhất); host khác group T2. |
+| T1-15 | `FIELDS` (`Financial Report Field`) đưa từ out-of-scope vào Tier 1 theo yêu cầu Data Modeler (2026-11-03), Table Type Relative. Đã xác nhận (2026-11-04): `PARENT_ID` self-ref `FIELDS.ID`; `CONTROL_UNIT_CD`/`OPERATING_UNIT_CD` không map lên Atomic (ghi `pending_design` ở LLD). `LOOKUP_GROUP` trỏ nhóm `LOOKUP_VALUES`. | Đã xử lý. |
