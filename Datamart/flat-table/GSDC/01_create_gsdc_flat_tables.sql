@@ -723,6 +723,12 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_smy_snpst_
     pre_tax_profit_ytd                Nullable(Decimal(38,8)) COMMENT 'Lợi nhuận trước thuế lũy kế từ đầu năm (YTD).',
     roa_ytd                           Nullable(Decimal(30,6)) COMMENT 'ROA = LNST / bình quân (Tổng tài sản đầu kỳ, Tổng tài sản cuối kỳ) × 100. — theo LNST lũy kế (YTD).',
     roe_ytd                           Nullable(Decimal(30,6)) COMMENT 'ROE = LNST / bình quân (Vốn chủ sở hữu đầu kỳ, Vốn chủ sở hữu cuối kỳ) × 100. — theo LNST lũy kế (YTD).',
+    interest_expense_ytd                         Nullable(Decimal(38,8)) COMMENT 'Chi phí lãi vay lũy kế từ đầu năm (YTD) (BCKQKD, chỉ tiêu 23) — chỉ DN. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `CP_laivay_LK`: SUM theo cột lũy kế (`column_description_reference = 3`), cùng row/điều kiện với `interest_expense` (kỳ này, `= 1`); form ưu tiên HN>TH>ME>RI, dedup bản ghi mới nhất mỗi ô.',
+    financial_revenue_ytd                        Nullable(Decimal(38,8)) COMMENT 'Doanh thu hoạt động tài chính lũy kế từ đầu năm (YTD) (BCKQKD) — DN: chỉ tiêu 21; BH: chỉ tiêu 12. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `DT_HDTC_LK`: SUM theo cột lũy kế (`column_description_reference = 3`), cùng row/điều kiện với `financial_revenue` (kỳ này, `= 1`); form ưu tiên HN>TH>ME>RI, dedup bản ghi mới nhất mỗi ô.',
+    other_revenue_ytd                            Nullable(Decimal(38,8)) COMMENT 'Doanh thu hoạt động khác lũy kế từ đầu năm (YTD) (BCKQKD) — DN: chỉ tiêu 31; BH: chỉ tiêu 13. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `DT_HDKH_LK`: SUM theo cột lũy kế (`column_description_reference = 3`), cùng row/điều kiện với `other_revenue` (kỳ này, `= 1`); form ưu tiên HN>TH>ME>RI, dedup bản ghi mới nhất mỗi ô.',
+    interest_coverage_ytd                        Nullable(Decimal(30,6)) COMMENT 'EBIT/Lãi vay lũy kế từ đầu năm = (Lợi nhuận trước thuế lũy kế (50) + Chi phí lãi vay lũy kế (23)) / Chi phí lãi vay lũy kế (23) — chỉ DN. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `EBIT_laivay_LK`. Tỷ số (không nhân 100); NULL khi mẫu số = 0/NULL. Kiểu decimal(30,6) theo quy ước cột chia.',
+    financial_revenue_to_net_profit_ytd          Nullable(Decimal(30,6)) COMMENT 'Doanh thu hoạt động tài chính lũy kế / Lợi nhuận sau thuế lũy kế (60) — DN/BH. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `DTTC_LNST_LK`. Tỷ số (không nhân 100); NULL khi mẫu số = 0/NULL. Kiểu decimal(30,6) theo quy ước cột chia.',
+    other_revenue_to_net_profit_ytd              Nullable(Decimal(30,6)) COMMENT 'Doanh thu hoạt động khác lũy kế / Lợi nhuận sau thuế lũy kế (60) — DN/BH. [MỚI 2026-11-04, BA bổ sung Nhóm 7/18.1] SQL BA `DTKH_LNST_LK`. Tỷ số (không nhân 100); NULL khi mẫu số = 0/NULL. Kiểu decimal(30,6) theo quy ước cột chia.',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                   Nullable(Date)      COMMENT 'Ngày snapshot ETL — từ Calendar Date Dimension.',
@@ -980,4 +986,34 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_industry_flat ON CLUSTER 'my_cluster'
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (industry_dim_id)
 COMMENT 'Flat table — Industry Dimension (1-1)'
+;
+
+
+-- ==========================================================
+-- 20. FACT: gsdc_public_company_financial_ytd_chg_rpt_flat
+--    public_company_financial_ytd_chg_rpt — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.gsdc_public_company_financial_ytd_chg_rpt_flat ON CLUSTER 'my_cluster'
+(
+    -- From: PUBLIC_COMPANY_FINANCIAL_YTD_CHG_RPT
+    equity_listing_exchange_code                 String                  COMMENT 'Sàn niêm yết/đăng ký giao dịch — grain key của báo cáo. Giá trị ALL đại diện toàn thị trường (UNION ALL riêng,',
+    business_line_level_1_code                   String                  COMMENT 'Mã ngành cấp 1 — grain key mới: báo cáo chuyển thành cross-tab sàn × ngành. [MỚI 2026-10-08] header code 2026-',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo (Năm N) — grain key theo kỳ. Load strategy: UPSERT theo khóa nghiệp vụ (equity_listing_exchange_co',
+    rpt_quarter                                  Nullable(Int64)         COMMENT 'Quý báo cáo — grain key theo kỳ.',
+    total_asset_ytd_chg                          Nullable(Decimal(30,6)) COMMENT 'Biến động `total_asset` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ClickHous',
+    total_liability_ytd_chg                      Nullable(Decimal(30,6)) COMMENT 'Biến động `total_liability` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản Click',
+    equity_ytd_chg                               Nullable(Decimal(30,6)) COMMENT 'Biến động `equity` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ClickHouse. [M',
+    contributed_capital_ytd_chg                  Nullable(Decimal(30,6)) COMMENT 'Biến động `contributed_capital` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản C',
+    inventory_ytd_chg                            Nullable(Decimal(30,6)) COMMENT 'Biến động `inventory` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ClickHouse.',
+    undistributed_profit_ytd_chg                 Nullable(Decimal(30,6)) COMMENT 'Biến động `undistributed_profit` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ',
+    receivable_ytd_chg                           Nullable(Decimal(30,6)) COMMENT 'Biến động `receivable` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ClickHouse',
+    cash_and_equivalent_ytd_chg                  Nullable(Decimal(30,6)) COMMENT 'Biến động `cash_and_equivalent` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản C',
+    debt_to_equity_ytd_chg                       Nullable(Decimal(30,6)) COMMENT 'Biến động `debt_to_equity` so với đầu năm (YTD change) theo sàn × ngành — bảng trung gian, KHÔNG có bản ClickH',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu tính toán báo cáo tổng hợp tài chính YoY.',
+    rpt_dt                                       String                  COMMENT 'Ngày chạy ETL populate bảng (format yyyyMMdd) — audit column phục vụ downstream lọc lát cắt dữ liệu mới của ng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (equity_listing_exchange_code)
+COMMENT 'Flat table — public_company_financial_ytd_chg_rpt — sinh tự động từ master registry + Entities.csv'
 ;

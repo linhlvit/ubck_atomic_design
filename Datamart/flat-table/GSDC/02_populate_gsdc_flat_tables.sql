@@ -700,6 +700,12 @@ SELECT
     f.pre_tax_profit_ytd,
     f.roa_ytd,
     f.roe_ytd,
+    f.interest_expense_ytd,
+    f.financial_revenue_ytd,
+    f.other_revenue_ytd,
+    f.interest_coverage_ytd,
+    f.financial_revenue_to_net_profit_ytd,
+    f.other_revenue_to_net_profit_ytd,
     snpst_cal.cdr_dt            AS snpst_cdr_dt,
     dim.public_company_code,
     dim.equity_ticker_symbol,
@@ -935,4 +941,31 @@ SELECT
     d.industry_nm,
     d.src_stm_code
 FROM datamart.industry_dim d
+;
+
+
+-- ==========================================================
+-- 20. FACT: gsdc_public_company_financial_ytd_chg_rpt_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.gsdc_public_company_financial_ytd_chg_rpt_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.gsdc_public_company_financial_ytd_chg_rpt_flat
+SELECT
+    -- From: PUBLIC_COMPANY_FINANCIAL_YTD_CHG_RPT
+    f.equity_listing_exchange_code,
+    f.business_line_level_1_code,
+    f.rpt_year,
+    f.rpt_quarter,
+    f.total_asset_ytd_chg,
+    f.total_liability_ytd_chg,
+    f.equity_ytd_chg,
+    f.contributed_capital_ytd_chg,
+    f.inventory_ytd_chg,
+    f.undistributed_profit_ytd_chg,
+    f.receivable_ytd_chg,
+    f.cash_and_equivalent_ytd_chg,
+    f.debt_to_equity_ytd_chg,
+    f.src_stm_code,
+    f.rpt_dt
+
+FROM datamart.public_company_financial_ytd_chg_rpt f
 ;

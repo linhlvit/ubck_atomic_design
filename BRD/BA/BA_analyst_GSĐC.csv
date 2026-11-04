@@ -1114,7 +1114,18 @@ Chitiet_DN AS (
         SUM(CASE WHEN chi_tieu = 'PHAI_THU' THEN data_value END) AS PHAI_THU,
         SUM(CASE WHEN chi_tieu = 'TIEN' THEN data_value END) AS TIEN,
         SUM(CASE WHEN chi_tieu = 'LNTT' THEN data_value END) AS LNTT,
-        SUM(CASE WHEN chi_tieu = 'LNTT_LK' THEN data_value END) AS LNTT_LK
+        SUM(CASE WHEN chi_tieu = 'LNTT_LK' THEN data_value END) AS LNTT_LK,
+                --BS UAT
+                SUM(CASE WHEN chi_tieu = 'Dong_tien_TT' THEN data_value END) AS Dong_tien_TT,
+                SUM(CASE WHEN chi_tieu = 'Dong_tien_GT' THEN data_value END) AS Dong_tien_GT,
+                SUM(CASE WHEN chi_tieu = 'TSAN_NH'                THEN data_value END) AS TSAN_NH,
+                SUM(CASE WHEN chi_tieu = 'NO_NH'                THEN data_value END) AS NO_NH,
+                SUM(CASE WHEN chi_tieu = 'CP_laivay'        THEN data_value END) AS CP_laivay,
+                SUM(CASE WHEN chi_tieu = 'DT_HDTC'                THEN data_value END) AS DT_HDTC,
+                SUM(CASE WHEN chi_tieu = 'DT_HDKH'                THEN data_value END) AS DT_HDKH,
+                SUM(CASE WHEN chi_tieu = 'CP_laivay_LK'        THEN data_value END) AS CP_laivay_LK,
+                SUM(CASE WHEN chi_tieu = 'DT_HDTC_LK'        THEN data_value END) AS DT_HDTC_LK,
+                SUM(CASE WHEN chi_tieu = 'DT_HDKH_LK'        THEN data_value END) AS DT_HDKH_LK
     FROM (
         SELECT
             rn, company_profile_id, MA_TEN_CK, equity_listing_exch, category_l1_id, STATUS_IDS_CD, DN_ENTERPRISE_TYPE_CD,
@@ -1182,6 +1193,35 @@ Chitiet_DN AS (
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='50')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='50')
                       OR (upper(enterprise_type_cd)='TD' AND row_desc='17')) THEN 'LNTT_LK'                      
+                                ----BS UAT
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCLCTT_TT%'
+                                        AND ((upper(enterprise_type_cd)='DN' AND row_desc='20')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='20')) THEN 'Dong_tien_TT'
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCLCTT_GT%'
+                                        AND ((upper(enterprise_type_cd)='DN' AND row_desc='20')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='20')) THEN 'Dong_tien_GT'
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
+                                        AND ((upper(enterprise_type_cd)='DN' AND row_desc='100')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='100')) THEN 'TSAN_NH'
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
+                                        AND ((upper(enterprise_type_cd)='DN' AND row_desc='310')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='310')) THEN 'NO_NH'
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='23')) THEN 'CP_laivay'          
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='21')
+                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='12')) THEN 'DT_HDTC'
+                                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='31')
+                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='13')) THEN 'DT_HDKH'
+                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='23')) THEN 'CP_laivay_LK'          
+                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='21')
+                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='12')) THEN 'DT_HDTC_LK'
+                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='31')
+                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='13')) THEN 'DT_HDKH_LK'
             END AS chi_tieu,
             data_value
         FROM (
@@ -3690,7 +3730,16 @@ SELECT
         NO_PT/NULLIF(VCSH,0) AS D_E,
         ct.LNTT, ct.LNTT_LK,
         CASE WHEN ct.LNST > 0 THEN 1 ELSE 0 END AS DNBaoLai,
-        CASE WHEN ct.LNST_LK > 0 THEN 1 ELSE 0 END AS DNBaoLai_LK
+        CASE WHEN ct.LNST_LK > 0 THEN 1 ELSE 0 END AS DNBaoLai_LK,
+	--BS UAT
+	COALESCE(Dong_tien_GT,Dong_tien_TT) AS Dong_tien,
+	TSAN_NH/NULLIF(NO_NH,0)			AS KN_HD_hienthoi,
+	(LNTT + CP_laivay)/NULLIF(CP_laivay,0) 			AS EBIT_laivay,
+	DT_HDTC/NULLIF(LNST,0)			AS DTTC_LNST,
+	DT_HDKH/NULLIF(LNST,0)			AS DTKH_LNST,
+	(LNTT_LK + CP_laivay_LK)/NULLIF(CP_laivay_LK,0)	AS EBIT_laivay_LK,
+	DT_HDTC_LK/NULLIF(LNST_LK,0)	AS DTTC_LNST_LK,
+	DT_HDKH_LK/NULLIF(LNST_LK,0)	AS DTKH_LNST_LK
 FROM Chitiet_DN ct
 LEFT JOIN UAT_IDS_STG.CATEGORIES c ON c.ID = ct.category_l1_id AND c.ds_snpst_dt = DATE '2026-09-24'
 where 1=1 
@@ -3733,6 +3782,21 @@ ORDER BY company_profile_id, MA_TEN_CK, report_year, report_quarter"
 18.1,, Các chỉ tiêu BCTC chung,Nợ/Vốn CSH,Chi tiết công thức tổng hợp tại sheet CSĐC_công thức CT,Data Explorer,Chỉ tiêu phái sinh,Trùng,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
  IDS.rcol (rc2), IDS.company_data (cd),
  IDS.company_profiles (cp), IDS.categories (cat)","ROUND(SUM(no_pt)/NULLIF(SUM(vcsh),0),4) AS no_tren_vcsh",BCDKT% | col_desc='1' | Nợ PT và VCSH trong 1 query CASE WHEN,
+18.1,, Các chỉ tiêu BCTC chung,Dòng tiền từ HĐKD,"- Dòng tiền từ HĐKD: = Chỉ tiêu 20- Lưu chuyển tiền thuần từ hoạt động kinh doanh trên BCLCTT gián tiếp, nếu không có gián tiếp thì lấy trực tiếp. Chỉ tính của doanh nghiệp thường và bảo hiểm.",Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
+18.1,, Các chỉ tiêu BCTC chung,Khả năng hoạt động hiện thời,- Khả năng hoạt động hiện thời: = Tài sản ngắn hạn (100)/ Nợ ngắn hạn (310) trên BCĐKT. Chỉ tính của doanh nghiệp thường và bảo hiểm.,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
+18.1,, Các chỉ tiêu BCTC chung,EBIT/Lãi vay,- EBIT/Lãi vay: = (Lợi nhuận trước thuế (50) + Chi phí lãi vay (23))/Chi phí lãi vay (23) trên BCKQKD. Chỉ tính của doanh nghiệp thường.,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
+18.1,, Các chỉ tiêu BCTC chung,Doanh thu từ Hoạt động Tài chính/Lợi nhuận sau thuế,"- Doanh thu từ Hoạt động Tài chính/Lợi nhuận sau thuế: = Doanh thu hoạt động tài chính (DN thường chỉ tiêu 21, BH chỉ tiêu 12)/ LNST (60) trên BCKQKD. Chỉ tính của doanh nghiệp thường và bảo hiểm.",Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
+18.1,, Các chỉ tiêu BCTC chung,Doanh thu từ Hoạt động khác/Lợi nhuận sau thuế,"- Doanh thu từ Hoạt động khác/Lợi nhuận sau thuế: = Doanh thu từ hoạt động khác (DN thường chỉ tiêu 31, BH chỉ tiêu 13)/ LNST (60) trên BCKQKD. Chỉ tính của doanh nghiệp thường và bảo hiểm",Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
 19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,A – TÀI SẢN NGẮN HẠN,Mã chỉ tiêu 100,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
