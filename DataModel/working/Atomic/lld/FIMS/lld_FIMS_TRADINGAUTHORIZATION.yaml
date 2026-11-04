@@ -42,7 +42,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.Id"
+  - "FIMS.TRADINGAUTHORIZATION.ID"
   comment: "BK chính. PK nguồn."
   classification_context: null
   etl_derived_value: null
@@ -68,7 +68,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.SystemObject"
+  - "FIMS.TRADINGAUTHORIZATION.SYSTEMOBJECT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -81,7 +81,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.FundComId"
+  - "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
   comment: "FK target: Fund Management Company.Fund Management Company Id. Nguồn lưu\
     \ ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy\
     \ giá trị rồi hash_id('FMS_SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
@@ -98,7 +98,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.FundComId"
+  - "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
   comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
     \ with Fund Management Company Id."
   classification_context: null
@@ -112,7 +112,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.SecComId"
+  - "FIMS.TRADINGAUTHORIZATION.SECCOMID"
   comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY', SecComId). Entity Securities Company (FIMS.SECURITIESCOMPANY) có BK = Id nguồn nên SecComId hash trực tiếp — thay crosswalk SCMS.SC_FIRM_INFO cũ (quyết định 2026-10-05)."
   classification_context: null
   etl_derived_value: null
@@ -125,7 +125,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.SecComId"
+  - "FIMS.TRADINGAUTHORIZATION.SECCOMID"
   comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company Id."
   classification_context: null
   etl_derived_value: null
@@ -138,9 +138,9 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  - "FIMS.TRADINGAUTHORIZATION.INVESTORID"
   comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật\
-    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
+    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode\
     \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
   etl_derived_value: null
@@ -153,7 +153,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  - "FIMS.TRADINGAUTHORIZATION.INVESTORID"
   comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign\
     \ Investor Id."
   classification_context: null
@@ -167,7 +167,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId"
+  - "FIMS.TRADINGAUTHORIZATION.AUTHORIZATIONTYPEID"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -180,7 +180,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.SDate"
+  - "FIMS.TRADINGAUTHORIZATION.SDATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -193,7 +193,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.EDate"
+  - "FIMS.TRADINGAUTHORIZATION.EDATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -206,7 +206,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.Note"
+  - "FIMS.TRADINGAUTHORIZATION.NOTE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -219,7 +219,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
+  - "FIMS.TRADINGAUTHORIZATION.TRADINGREPRESENTATIVEID"
   comment: null
   classification_context: null
   etl_derived_value: null

@@ -4,15 +4,15 @@
 **Mô tả:** IDS là hệ thống quản lý và giám sát công bố thông tin chứng khoán của UBCKNN. Phân hệ: Quản lý, giám sát công ty đại chúng (CTĐC) — hồ sơ, corporate actions, cổ đông giao dịch, BCTC, thanh tra/xử phạt, công bố thông tin. *(Phân hệ quản lý tổ chức kiểm toán được chấp thuận và kiểm toán viên — các bảng `AF_*` — đã tách sang source `AUDIT` từ 2026-10-16; xem [AUDIT_HLD_Overview.md](AUDIT_HLD_Overview.md).)*
 
 **File chi tiết theo tầng:**
-- [IDS_HLD_Tier1.md](IDS_HLD_Tier1.md) — Classification IDS Business Line, Public Company, Legal Entity, Financial Report, Financial Report Catalog, Unstructured Financial Report, Public Company Evaluation Group, Public Company Evaluation Period, Public Company Bond Listing History; Shared Entities (IP Postal/Electronic Address, IP Alt Identification)
+- [IDS_HLD_Tier1.md](IDS_HLD_Tier1.md) — Classification IDS Business Line, Public Company, Legal Entity, Financial Report, Financial Report Catalog, Unstructured Financial Report, Public Company Evaluation Group, Public Company Evaluation Period, Public Company Bond Listing History; Shared Entities (IP Postal/Electronic Address, IP Alt Identification, Classification Value)
 - [IDS_HLD_Tier2.md](IDS_HLD_Tier2.md) — Con của Public Company (Legal Representative, State Capital, FOL, Related Entity, Inspection, Penalty, Capital actions, Tender Offer, Treasury Stock Activity, Treasury Share Transaction, Share Statistics, Stock Listing History, Registration, Cancellation, Report Extension, Bond Evaluation, Financial Report Value), con của Form templates (Financial Report Row/Column, Unstructured Financial Report Row/Column), Violation Report Template, Evaluation Criterion; con của Legal Entity (Position, Stock Holder Trading Account/Relationship, Stock Control), Public Company Shareholding, Public Company Entity Role, Securities Offering, Public Company Evaluation
 - [IDS_HLD_Tier3.md](IDS_HLD_Tier3.md) — Public Company Report Submission, Violation Report, Securities Offering Plan/Result, Public Company Evaluation Detail, Tender Offer Result, Treasury Share Transaction Result
 - [IDS_HLD_Tier4.md](IDS_HLD_Tier4.md) — Unstructured Financial Report Value
 
 ---
 
-**Tổng: 55 Atomic entities** (13 Tier 1, 33 Tier 2, 7 Tier 3, 2 Tier 4) — khớp 55 entity trong LLD `lld/IDS/`. Đã trừ 11 entity `Audit Firm*` tách sang AUDIT (2026-10-16) và 3 entity không có LLD gỡ khỏi HLD (2026-10-21, xem 7f); `Classification IDS Business Line` (`CATEGORIES`) đã bổ sung lại ngày 2026-10-21 (xem 7e #12, #31).
-*(Trong đó: 3 shared entities — Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification — extend source_table IDS, không tạo mới; ghi ở Tier 1 — Tier thấp nhất theo LLD, host `COMPANY_PROFILES`/`LEGAL_ENTITIES` group T1, host khác group T2.)*
+**Tổng: 56 Atomic entities** (14 Tier 1, 33 Tier 2, 7 Tier 3, 2 Tier 4) — gồm 55 entity khớp LLD `lld/IDS/` và shared entity `Classification Value` (đích của `LOOKUP_VALUES`, cập nhật 2026-11-04). Đã trừ 11 entity `Audit Firm*` tách sang AUDIT (2026-10-16) và 3 entity không có LLD gỡ khỏi HLD (2026-10-21, xem 7f); `Classification IDS Business Line` (`CATEGORIES`) đã bổ sung lại ngày 2026-10-21 (xem 7e #12, #31).
+*(Trong đó: 4 shared entities — Involved Party Postal Address, Involved Party Electronic Address, Involved Party Alternative Identification và Classification Value (`LOOKUP_VALUES`, Tier 1: chỉ có FK tự tham chiếu `LOOKUP_PARENT_ID`, các entity ở mọi Tier tham chiếu qua cột `*_cd`, không vẽ quan hệ) — extend source_table IDS, không tạo mới; ghi ở Tier 1 — Tier thấp nhất theo LLD, host `COMPANY_PROFILES`/`LEGAL_ENTITIES` group T1, host khác group T2.)*
 
 ---
 
@@ -208,7 +208,7 @@ Không có junction table.
 |---|---|---|---|
 | 3 | T2 | `Financial Report Data` (DATA) đã điều chỉnh từ T4 → T2 (FK → REPORT_CATALOG T1 + COMPANY_PROFILES T1). Tier4.md ghi nhận điều chỉnh này. | Tier4.md đã xử lý đúng. |
 | 4 | T3 | `SECURITIES_OFFERING_RESULT` Source Change Mode = Update nhưng trước đó đặt Table Type Fact Append. ✅ Data Modeler đã review (file `IDS_7a_Atomic_Entities.xlsx`) và xác nhận Table Type = Fundamental. | Đã xử lý. |
-| 5 | T2 | `LOOKUP_VALUES` xuất hiện đồng thời ở 7c (Classification Value) và 7f (Reference Data). 7c là xử lý đúng — 7f là duplicate sai. Đã xóa dòng `LOOKUP_VALUES` khỏi 7f (2026-10-25, Data Modeler xác nhận). LLD `lld_IDS_LOOKUP_VALUES.yaml` map vào Classification Value (`cl_value`). | Đã xử lý. |
+| 5 | T1 | `LOOKUP_VALUES` xuất hiện đồng thời ở 7c (Classification Value) và 7f (Reference Data). 7c là xử lý đúng — 7f là duplicate sai. Đã xóa dòng `LOOKUP_VALUES` khỏi 7f (2026-10-25, Data Modeler xác nhận). LLD `lld_IDS_LOOKUP_VALUES.yaml` map vào Classification Value (`cl_value`). | Đã xử lý. |
 | 6 | T3 | `Violation Report` (đổi tên từ `Public Company Violation Report`, 2026-08-05) lấy từ bảng nguồn `VIOLATION_REPORT`. | Đã xử lý — mục 7a. |
 | 7 | Nhiều Tier | Data Modeler đã review mục 7a qua file `IDS_7a_Atomic_Entities.xlsx` và xác nhận chủ đích đổi Table Type từ `Relative`/`Classification` → `Fundamental` cho ~30 entity Tier 2/3/4 dù các entity này vẫn còn FK đến entity Tier trước (lệch quy tắc chuẩn "FK đến Fundamental ⇒ Relative"). Đây là quyết định có chủ đích của Data Modeler, không phải lỗi thao tác. | Đã áp dụng trong mục 7a — không cần review lại ở các lần sau. |
 | 8 | T2 | `IDENTITY` đã được gộp vào shared entity `Involved Party Alternative Identification` (thêm `IDENTITY` vào source_table), thay vì giữ là entity riêng `Legal Entity Alternative Identification` như trước đây. | Đã xử lý — đã gộp trong mục 7a. |
@@ -238,38 +238,39 @@ Không có junction table.
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Audit Log nguồn | `HISTORY_CHANGE_LOG` | Bảng lịch sử thay đổi dữ liệu toàn hệ thống IDS theo cơ chế generic (change_mode = Append). | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
-| Operational / System | `USER_AUDIT_LOG` | Log hành động người dùng trong hệ thống IDS (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `MIGRATION_EXECUTIONS` | Metadata quản lý tiến trình migration dữ liệu vào IDS. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `MIGRATION_LOGS` | Log chi tiết từng bước migration (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `UBCK_SYNC_ITEM_LOG` | Log đồng bộ item với hệ thống UBCK khác (change_mode = Append). | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTEGRATION_JOB_DEFINITION` | Định nghĩa các job tích hợp hệ thống. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTEGRATION_SYNC_LOG` | Log đồng bộ tích hợp giữa các hệ thống. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_FINANCIAL_STATEMENT` | Staging bảng BCTC từ hệ thống tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_FORM_MAPPING` | Mapping form giữa các hệ thống tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_IMPORT_DATA_LOG` | Log import dữ liệu từ hệ thống ngoài. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_REPORT_CONFIG` | Cấu hình báo cáo cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_REPORT_FIELD` | Mapping field báo cáo cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `INTG_SIGNATURE_CONFIG` | Cấu hình chữ ký điện tử cho tích hợp. | Operational/system data — không có giá trị nghiệp vụ |
-| Hệ thống / Phân quyền | `LOGINS` | Tài khoản đăng nhập của người dùng IDS (CTĐC và cán bộ UBCKNN). | Operational/system data — không có giá trị nghiệp vụ |
-| Hệ thống / Phân quyền | `LOGIN_PERMISSION_BY_CODE` | Phân quyền theo mã permission cho tài khoản đăng nhập. | Operational/system data — không có giá trị nghiệp vụ |
-| Hệ thống / Phân quyền | `DEPARTMENTS` | Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ). | Operational/system data — không có giá trị nghiệp vụ |
-| Hệ thống / Phân quyền | `SYS_PARAMETERS` | Tham số cấu hình hệ thống IDS. | Operational/system data — không có giá trị nghiệp vụ |
-| Audit Log nguồn | `COMPANY_CHANGE_ROLE_HIS` | Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn. | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
-| Reference Data | `COUNTRIES` | Danh mục quốc gia. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
-| Reference Data | `PROVINCES` | Danh mục tỉnh/thành phố. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
-| Reference Data | `WARDS` | Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
-| Reference Data | `DATA_TYPES` | Danh mục kiểu dữ liệu của trường trong form BCTC. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
-| Reference Data | `HOLIDAY_CALENDAR` | Danh mục ngày lễ/nghỉ. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
-| Form Metadata | `FORM_FIELD_HISTORY` | Lịch sử thay đổi field trong form. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
-| Form Metadata | `FIELDS_MGR` | Quản lý field metadata trong hệ thống. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
-| Operational / System | `SMS_LOG` | Log tin nhắn SMS được gửi từ hệ thống IDS. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `MANUAL_DOCUMENT` | Tài liệu hướng dẫn sử dụng được lưu trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `FILES` | Bảng quản lý file đính kèm (tên file, đường dẫn, loại file). | Operational/system data — không có giá trị nghiệp vụ |
-| Operational / System | `COMPANY_DIGITAL_CERTIFICATES` | Chứng chỉ số của CTĐC dùng để ký điện tử trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
-| Chưa có LLD | `NOTIFICATIONS` | Instance thông báo CBTT đã phát sinh: trạng thái, loại tin, ngày gửi. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | `NOTIFICATIONS_DTL` | Danh sách người nhận của một thông báo CBTT: login, loại đối tượng, email, điện thoại. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | `VIOLATION_PENALTY_CONFIG` | Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn, mã khoản quy định, hình thức xử phạt, thời gian hiệu lực. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Hệ thống / Phân quyền | LOGINS | Tài khoản đăng nhập của người dùng IDS (CTĐC và cán bộ UBCKNN). | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | LOGIN_PERMISSION_BY_CODE | Phân quyền theo mã permission cho tài khoản đăng nhập. | Operational/system data — không có giá trị nghiệp vụ |
+| Hệ thống / Phân quyền | DEPARTMENTS | Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ). | Operational/system data — không có giá trị nghiệp vụ |
+| Audit Log nguồn | COMPANY_CHANGE_ROLE_HIS | Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn. | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
+| Reference Data | COUNTRIES | Danh mục quốc gia. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | PROVINCES | Danh mục tỉnh/thành phố. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | WARDS | Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
+| Reference Data | DATA_TYPES | Danh mục kiểu dữ liệu của trường trong form BCTC. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
+| Reference Data | HOLIDAY_CALENDAR | Danh mục ngày lễ/nghỉ. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
+| Form Metadata | FORM_FIELD_HISTORY | Lịch sử thay đổi field trong form. | Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic |
+| Operational / System | MANUAL_DOCUMENT | Tài liệu hướng dẫn sử dụng được lưu trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | FILES | Bảng quản lý file đính kèm (tên file, đường dẫn, loại file). | Operational/system data — không có giá trị nghiệp vụ |
+| Operational / System | COMPANY_DIGITAL_CERTIFICATES | Chứng chỉ số của CTĐC dùng để ký điện tử trong IDS. | Operational/system data — không có giá trị nghiệp vụ |
+| Chưa có LLD | VIOLATION_PENALTY_CONFIG | Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn, mã khoản quy định, hình thức xử phạt, thời gian hiệu lực. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
+| Chưa có LLD | ALERT_TEMPLATE_AUDIT_DTL | Danh sách rule cấu hình cảnh báo | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | ALERT_TEMPLATE_AUDIT_HDR | Danh sách mẫu template cảnh báo | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | APPRAISAL_CRITERIA | Chưa có mô tả trong BRD. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | BOND_COLLATERAL | Tài sản bảo đảm trái phiếu | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | BOND_LISTING | Chưa có mô tả trong BRD. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | BOND_LISTING_HISTORY_TMP | Chưa có mô tả trong BRD. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | BOND_PAYMENT_STATUS | Trạng thái thanh toán gốc/lãi trái phiếu | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | CAPITAL_INCREASE_DETAIL | Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng vốn (5.3.2.6) | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | CAPITAL_INCREASE_PLAN | Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6) | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | DOSSIER_APPRAISAL_RESULT | Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | DYNAMIC_REPORT_TEMPLATES | Mẫu báo cáo động — header | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | DYNAMIC_REPORT_TEMPLATE_FIELDS | Chỉ tiêu thuộc mẫu báo cáo động | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | EVALUATION_LEVEL_SCORE | Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | FINANCIAL_INDICATOR_MAPPING | Bảng khai báo ánh xạ MÃ SỐ KẾ TOÁN (RROW.ROW_DESC) của chỉ tiêu BCTC sang cột đích của FINANCIAL_RATIOS_DETAIL. Khai theo REPORT_YEAR + REPORT_CD; REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD cụ thể đè base khi trùng ROW_DESC. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | FINANCIAL_RATIOS_DETAIL | Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ (năm/quý). Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS. Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER). | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | LOOKUP_KEY_FINANCIALS | Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty và kỳ (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục vụ tra cứu nhanh (lookup) cho các báo cáo phân tích. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | TENDER_OFFER | Lưu thông tin phương án chào mua công khai (Public Tender Offer) | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | TENDER_OFFER_RESULT | Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result) | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
+| Chưa có LLD | USERS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — BRD IDS đánh out_of_scope |
 
 ---
 
@@ -340,212 +341,218 @@ Không có junction table.
 **Domain Prefix:** Classification
 **Description:** Danh mục ngành nghề của công ty đại chúng theo cấu trúc phân cấp 2 cấp (ngành cha - ngành con), gồm mã, tên và mô tả ngành nghề; BK = INDUSTRY_CD nguồn. Được `Public Company` tham chiếu qua ngành cấp 1/cấp 2.
 
-### 14. Financial Report Column
+### 14. Classification Value
+**Tier:** 1 | **Source:** `LOOKUP_VALUES` | **BCV Concept:** [Classification] Common | **BCO:** Common | **Table Type:** Relative
+**Domain Prefix:** Classification
+**Description:** Entity dùng chung Classification Value (cl_value) lưu các giá trị danh mục thuần mã + tên. IDS đưa vào các LOOKUP_GROUP trong scope từ LOOKUP_VALUES, mỗi nhóm đăng ký thành một scheme `IDS.*`.
+
+### 15. Financial Report Column
 **Tier:** 2 | **Source:** `RCOL` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Financial Report
 **Description:** Định nghĩa từng cột trong template báo cáo tài chính: mã cột, tên, kỳ tham chiếu (hiện tại/kỳ trước). Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem 7e #21. Tên bỏ chữ "Form" (2026-08-05) để khớp physical_name `fr_column_template` và diagram — xem 7e #15.
 
-### 15. Financial Report X Financial Report Field Relationship
+### 16. Financial Report X Financial Report Field Relationship
 **Tier:** 2 | **Source:** `FORM_FIELDS` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** (none)
 **Description:** Quan hệ gắn trường dữ liệu vào form CBTT: form nào dùng trường nào, thứ tự hiển thị, định dạng, cờ bắt buộc/đính chính/công bố/hoạt động và cấu trúc cha-con giữa các dòng gắn. Thiết kế mới (2026-11-04, theo yêu cầu tường minh Data Modeler) — xem 7e #32.
 
-### 16. Financial Report Row
+### 17. Financial Report Row
 **Tier:** 2 | **Source:** `RROW` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Financial Report
 **Description:** Định nghĩa từng hàng trong template báo cáo tài chính: mã hàng, tên, cấp phân cấp, công thức tổng hợp. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem 7e #21. Tên bỏ chữ "Form" (2026-08-05) để khớp physical_name `fr_row_template` và diagram — xem 7e #15.
 
-### 17. Unstructured Financial Report Column
+### 18. Unstructured Financial Report Column
 **Tier:** 2 | **Source:** `REP_COLUMN` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Unstructured Financial Report
 **Description:** Định nghĩa từng cột trong template báo cáo định kỳ. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem 7e #21. Đổi tên từ "Periodic Report Form Column Template" (2026-08-05) — xem 7e #15. Đổi Domain Prefix từ "Financial Report" sang "Unstructured Financial Report" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem 7e #22. Bỏ chữ "Sub" khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem 7e #23.
 
-### 18. Unstructured Financial Report Row
+### 19. Unstructured Financial Report Row
 **Tier:** 2 | **Source:** `REP_ROW` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Unstructured Financial Report
 **Description:** Định nghĩa từng hàng trong template báo cáo định kỳ. Đổi BCV Concept từ "[Condition] Form Definition" (term không tồn tại trong knowledge/terms.csv) sang "[Documentation] Form Document" (2026-08-13, theo yêu cầu tường minh Data Modeler) — xem 7e #21. Đổi tên từ "Periodic Report Form Row Template" (2026-08-05) — xem 7e #15. Đổi Domain Prefix từ "Financial Report" sang "Unstructured Financial Report" (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem 7e #22. Bỏ chữ "Sub" khỏi tên entity/field (2026-08-27, theo yêu cầu tường minh Data Modeler) — xem 7e #23.
 
-### 19. Financial Report Value
+### 20. Financial Report Value
 **Tier:** 2 | **Source:** `DATA` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Classification
 **Domain Prefix:** Financial Report
 **Description:** Giá trị từng ô số liệu trong báo cáo tài chính của CTĐC theo kỳ: mã hàng, mã cột, giá trị, năm/quý báo cáo. FK trực tiếp đến Public Company và Financial Report Catalog — không qua Public Company Report Submission (khác giả định bản LinhLV tham chiếu, xem 7e #15). Đổi tên từ `Public Company Financial Report Value` + Table Type Fact Append → Fundamental (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #16.
 
-### 20. Public Company Bond Evaluation
+### 21. Public Company Bond Evaluation
 **Tier:** 2 | **Source:** `EVALUATION_CBONDS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Chỉ số trái phiếu của công ty đại chúng theo kỳ (năm/tháng): xếp hạng, tỷ lệ trái phiếu đảm bảo/giá trị trái phiếu, tỷ lệ trái phiếu lưu hành/vốn chủ sở hữu. Không FK đến Public Company Evaluation — grain 1 CTĐC × 1 kỳ.
 
-### 21. Public Company Cancellation
+### 22. Public Company Cancellation
 **Tier:** 2 | **Source:** `PUB_COMPANY_CANCELLATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
 **Domain Prefix:** Public Company
 **Description:** Hồ sơ và lịch sử hủy đăng ký tư cách công ty đại chúng với UBCKNN.
 
-### 22. Public Company Capital Increase
+### 23. Public Company Capital Increase
 **Tier:** 2 | **Source:** `COMPANY_ADD_CAPITAL` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Từng đợt tăng vốn điều lệ của CTĐC sau khi niêm yết: phương thức tăng vốn, quyết định, giá trị vốn sau tăng.
 
-### 23. Public Company Capital Mobilization
+### 24. Public Company Capital Mobilization
 **Tier:** 2 | **Source:** `CAPITAL_MOBILIZATION` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Lịch sử huy động vốn trước khi trở thành CTĐC: số lần huy động, tổng giá trị huy động theo năm.
 
-### 24. Public Company Evaluation Criterion
+### 25. Public Company Evaluation Criterion
 **Tier:** 2 | **Source:** `EVALUATION_CRITERIA` | **BCV Concept:** [Condition] Evaluation Criteria | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Public Company Evaluation
 **Description:** Chỉ tiêu đánh giá/xếp hạng công ty đại chúng thuộc một nhóm chỉ tiêu: mã chỉ tiêu, tên, điểm tối đa, thứ tự.
 
-### 25. Public Company Foreign Ownership Limit
+### 26. Public Company Foreign Ownership Limit
 **Tier:** 2 | **Source:** `FOREIGN_OWNER_LIMIT` | **BCV Concept:** [Condition] Ownership Constraint | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Quyết định quy định tỷ lệ tối đa sở hữu nước ngoài tại CTĐC: số quyết định, tỷ lệ giới hạn, thời gian hiệu lực.
 
-### 26. Public Company Inspection
+### 27. Public Company Inspection
 **Tier:** 2 | **Source:** `COMPANY_INSPECTION` | **BCV Concept:** [Business Activity] Inspection | **BCO:** Business Activity | **Table Type:** Fact Append
 **Domain Prefix:** Public Company
 **Description:** Đợt thanh tra/kiểm tra CTĐC do UBCKNN thực hiện: số quyết định, loại thanh tra, phạm vi, đơn vị chủ trì, kết quả.
 
-### 27. Public Company Legal Representative
+### 28. Public Company Legal Representative
 **Tier:** 2 | **Source:** `LEGAL_REPRESENTATIVE` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Người đại diện pháp luật và người phụ trách CBTT của CTĐC: chức danh, thời gian đảm nhiệm.
 
-### 28. Public Company Penalty
+### 29. Public Company Penalty
 **Tier:** 2 | **Source:** `COMPANY_PENALTIES` | **BCV Concept:** [Business Activity] Enforcement Action | **BCO:** Business Activity | **Table Type:** Fact Append
 **Domain Prefix:** Public Company
 **Description:** Quyết định xử phạt hành chính đối với CTĐC hoặc cá nhân liên quan: đối tượng bị xử phạt, số quyết định, hình thức, mức phạt.
 
-### 29. Public Company Registration
+### 30. Public Company Registration
 **Tier:** 2 | **Source:** `PUB_COMPANY_REGISTRATION` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
 **Domain Prefix:** Public Company
 **Description:** Hồ sơ và lịch sử đăng ký tư cách công ty đại chúng với UBCKNN.
 
-### 30. Public Company Related Entity
+### 31. Public Company Related Entity
 **Tier:** 2 | **Source:** `COMPANY_RELATIONSHIP` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Quan hệ sở hữu/liên kết giữa CTĐC và các pháp nhân liên quan: mối quan hệ mẹ/con/liên doanh/liên kết.
 
-### 31. Public Company Report Extension
+### 32. Public Company Report Extension
 **Tier:** 2 | **Source:** `REPORT_EXTENSIONS` | **BCV Concept:** [Documentation] Filing | **BCO:** Documentation | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Hồ sơ xin gia hạn nộp báo cáo định kỳ của CTĐC: lý do xin gia hạn, thời gian gia hạn được chấp thuận.
 
-### 32. Public Company Share Statistics
+### 33. Public Company Share Statistics
 **Tier:** 2 | **Source:** `COMPANY_SHARE_STATISTICS` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Thống kê cấu trúc vốn/cổ phần của CTĐC tại từng thời điểm: tổng số cổ phần, cổ phần lưu hành, cổ phần nước ngoài.
 
-### 33. Public Company State Capital
+### 34. Public Company State Capital
 **Tier:** 2 | **Source:** `STATE_CAPITAL` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Tỷ lệ vốn nhà nước tại CTĐC và cơ quan đại diện phần vốn nhà nước: tỷ lệ sở hữu, ngày hiệu lực.
 
-### 34. Public Company Stock Listing History
+### 35. Public Company Stock Listing History
 **Tier:** 2 | **Source:** `STOCK_LISTING_HISTORY` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fact Append
 **Domain Prefix:** Public Company
 **Description:** Lịch sử các sự kiện niêm yết và hủy niêm yết cổ phiếu của CTĐC trên sàn giao dịch.
 
-### 35. Public Company Tender Offer
+### 36. Public Company Tender Offer
 **Tier:** 2 | **Source:** `COMPANY_TENDER_OFFER` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Phương án chào mua công khai cổ phiếu của CTĐC: bên chào mua, mức giá, số lượng, thời gian chào mua.
 
-### 36. Public Company Treasury Share Transaction
+### 37. Public Company Treasury Share Transaction
 **Tier:** 2 | **Source:** `COMPANY_TREASURY_SHARES` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Đợt (phương án) mua/bán cổ phiếu quỹ của CTĐC: quy trình phê duyệt, số lượng đăng ký, giá, thời gian dự kiến. Khác `Public Company Treasury Stock Activity` (thống kê tổng hợp theo năm) — entity này là từng đợt cụ thể. Cha của `Public Company Treasury Share Transaction Result` (T3). Thiết kế mới (2026-08-09) — xem Tier2.md 6f T2-17.
 
-### 37. Public Company Treasury Stock Activity
+### 38. Public Company Treasury Stock Activity
 **Tier:** 2 | **Source:** `COMPANY_TREASURY_STOCKS` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Hoạt động mua/bán cổ phiếu quỹ của CTĐC theo năm: số lượng đăng ký mua/bán, giá, thời gian.
 
-### 38. Violation Report Template
+### 39. Violation Report Template
 **Tier:** 2 | **Source:** `VIOLATION_TEMPLATES` | **BCV Concept:** [Condition] Compliance Rule | **BCO:** Condition | **Table Type:** Fundamental
 **Domain Prefix:** Violation Report
 **Description:** Mẫu cấu hình quy tắc vi phạm CBTT: loại báo cáo, thời hạn nộp mặc định, điều khoản xử phạt tương ứng. Đổi tên từ "Disclosure Form Definition Violation Template" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #18.
 
-### 39. Legal Entity Position
+### 40. Legal Entity Position
 **Tier:** 2 | **Source:** `POSITIONS` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Legal Entity
 **Description:** Chức vụ của người nội bộ/cổ đông tại công ty: mã chức vụ, ngày bổ nhiệm, ngày miễn nhiệm, trạng thái.
 
-### 40. Public Company Entity Role
+### 41. Public Company Entity Role
 **Tier:** 2 | **Source:** `COMPANY_ENTITY_ROLE` | **BCV Concept:** [Involved Party] Individual Employment Status | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Vai trò của người nội bộ/cổ đông tại CTĐC trong một khoảng thời gian: loại vai trò, trạng thái hoạt động, thời gian hiệu lực.
 
-### 41. Public Company Evaluation
+### 42. Public Company Evaluation
 **Tier:** 2 | **Source:** `EVALUATIONS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company Evaluation
 **Description:** Kết quả đánh giá/xếp hạng tổng thể của một CTĐC trong một kỳ đánh giá: tổng điểm, loại xếp hạng (A/B/C), trạng thái phê duyệt.
 
-### 42. Public Company Securities Offering
+### 43. Public Company Securities Offering
 **Tier:** 2 | **Source:** `SECURITIES_OFFERING` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Hồ sơ đăng ký chào bán/phát hành chứng khoán của CTĐC hoặc cá nhân: số đăng ký, chứng nhận, tổng số lượng đăng ký. APPLICANT_TYPE_FLG phân biệt tổ chức và cá nhân.
 
-### 43. Public Company Shareholding
+### 44. Public Company Shareholding
 **Tier:** 2 | **Source:** `COMPANY_SHAREHOLDING` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Cổ đông của CTĐC và thông tin sở hữu: số lượng cổ phần, tỷ lệ sở hữu, phân loại cổ đông (sáng lập/lớn/chiến lược/nội bộ/nhà nước/liên quan).
 
-### 44. Stock Control
+### 45. Stock Control
 **Tier:** 2 | **Source:** `STOCK_CONTROLS` | **BCV Concept:** [Arrangement] Ownership | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** (none)
 **Description:** Chứng khoán của cổ đông bị đưa vào diện kiểm soát/hạn chế chuyển nhượng: mã CK, loại hạn chế, thời gian hiệu lực.
 
-### 45. Stock Holder Relationship
+### 46. Stock Holder Relationship
 **Tier:** 2 | **Source:** `HOLDER_RELATIONSHIP` | **BCV Concept:** [Involved Party] Involved Party Relationship | **BCO:** Involved Party | **Table Type:** Fundamental
 **Domain Prefix:** Stock Holder
 **Description:** Quan hệ giữa các cổ đông/người liên quan: vợ-chồng, cha-con, ủy quyền, sở hữu chéo — 2 FK tự tham chiếu đến Legal Entity.
 
-### 46. Stock Holder Trading Account
+### 47. Stock Holder Trading Account
 **Tier:** 2 | **Source:** `ACCOUNT_NUMBERS` | **BCV Concept:** [Arrangement] Account | **BCO:** Arrangement | **Table Type:** Fundamental
 **Domain Prefix:** Stock Holder
 **Description:** Tài khoản giao dịch chứng khoán của cổ đông mở tại công ty chứng khoán: số tài khoản, mã CTCK, cờ tài khoản chính.
 
-### 47. Public Company Tender Offer Result
+### 48. Public Company Tender Offer Result
 **Tier:** 3 | **Source:** `COMPANY_TENDER_OFFER_RESULT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kết quả thực hiện của một đợt chào mua công khai: số lượng CP đăng ký bán/thực tế mua, số NĐT tương ứng, tổng vốn thực hiện, tỷ lệ sở hữu sau chào mua, giấy chứng nhận/công văn UBCKNN, trạng thái phê duyệt. FK → Public Company Tender Offer (T2). Thiết kế mới (2026-09-05) — xem Tier3.md 6f T3-10.
 
-### 48. Public Company Treasury Share Transaction Result
+### 49. Public Company Treasury Share Transaction Result
 **Tier:** 3 | **Source:** `TREASURY_SHARE_TRANS_RESULT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kết quả thực hiện thực tế của một đợt mua/bán cổ phiếu quỹ: số lượng đăng ký/thực hiện, giá bình quân, thời gian thực tế. FK → Public Company Treasury Share Transaction (T2). Thiết kế mới (2026-08-09) — xem Tier3.md 6f T3-09.
 
-### 49. Violation Report
+### 50. Violation Report
 **Tier:** 3 | **Source:** `VIOLATION_REPORT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Violation Report
 **Description:** Theo dõi vi phạm nộp báo cáo CBTT định kỳ của CTĐC: hạn nộp, ngày nộp thực tế, trạng thái tuân thủ theo mẫu vi phạm. Đổi tên từ "Public Company Violation Report" (2026-08-05, theo yêu cầu tường minh Data Modeler) — xem 7e #18.
 
-### 50. Public Company Report Submission
+### 51. Public Company Report Submission
 **Tier:** 3 | **Source:** `COMPANY_DATA` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Public Company
 **Description:** Lần nộp báo cáo/tin công bố thông tin (CBTT) của CTĐC: form, trạng thái duyệt, ngày nộp/duyệt/từ chối, tin đính chính. FK đến Public Company + Financial Report (đổi tên từ Disclosure Form Definition, 2026-08-05), self-ref Parent/Correction Reference. BRD hiện tại thiếu 4 FK có trên DDL thực tế (Legal Entity, Securities Offering, Company Tender Offer, Company Treasury Share Transaction — tên entity đích đúng sau khi thiết kế 2026-08-09, xem Tier2.md 6f T2-17) — xem 7e #15. Khôi phục scope 2026-08-05.
 
-### 51. Public Company Evaluation Detail
+### 52. Public Company Evaluation Detail
 **Tier:** 3 | **Source:** `EVALUATION_DETAILS` | **BCV Concept:** [Business Activity] Evaluation | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Chi tiết điểm từng chỉ tiêu trong kết quả đánh giá CTĐC: kết quả định tính, điểm số, cờ đánh giá — grain 1 chỉ tiêu × 1 kỳ đánh giá × 1 công ty.
 
-### 52. Public Company Securities Offering Plan
+### 53. Public Company Securities Offering Plan
 **Tier:** 3 | **Source:** `SECURITIES_OFFERING_PLAN` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kế hoạch chi tiết chào bán chứng khoán: phương thức phân phối, loại CK, số lượng, giá chào bán, thời gian chào bán, điều kiện đặc thù theo loại CK.
 
-### 53. Public Company Securities Offering Result
+### 54. Public Company Securities Offering Result
 **Tier:** 3 | **Source:** `SECURITIES_OFFERING_RESULT` | **BCV Concept:** [Business Activity] Business Activity | **BCO:** Business Activity | **Table Type:** Fundamental
 **Domain Prefix:** Public Company
 **Description:** Kết quả thực tế chào bán chứng khoán: số lượng thành công, giá thực tế, tổng giá trị huy động, phân chia trong nước/nước ngoài, chi phí phát hành.
 
-### 54. Financial Report Field Value
+### 55. Financial Report Field Value
 **Tier:** 4 | **Source:** `DATA_VALUES` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Classification
 **Domain Prefix:** Financial Report
 **Description:** Giá trị dữ liệu công ty đại chúng nhập cho từng trường của form CBTT trong mỗi lần nộp báo cáo/tin: giá trị dạng text, ngày hoặc số, kiểu dữ liệu và quan hệ cha-con. Thiết kế mới (2026-11-03, theo yêu cầu tường minh Data Modeler) — xem 7e #32.
 
-### 55. Unstructured Financial Report Value
+### 56. Unstructured Financial Report Value
 **Tier:** 4 | **Source:** `REP_DATA` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Classification
 **Domain Prefix:** Unstructured Financial Report
 **Description:** Giá trị từng ô số liệu trong báo cáo định kỳ (tháng/quý/năm/bán niên) của CTĐC theo hàng/cột template: mã hàng, mã cột, giá trị số/chuỗi, kỳ báo cáo qua liên kết đến bản ghi nộp báo cáo. Cùng vai trò với `Financial Report Value` (`DATA`) nhưng cho họ template `Unstructured Financial Report`/`Row Template`/`Column Template` (`REP_FORMS`/`REP_ROW`/`REP_COLUMN`) thay vì `Financial Report Catalog`/`Row Template`/`Column Template`. Thiết kế mới (2026-09-05) — xem 7e #24.
+

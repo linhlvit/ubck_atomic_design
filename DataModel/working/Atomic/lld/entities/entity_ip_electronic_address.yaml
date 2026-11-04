@@ -24,9 +24,6 @@ sources:
   source_table: "USERS"
   lld_file: "IAM/lld_IAM_USERS_IP_Electronic_Address.yaml"
 - source_system: "SCMS"
-  source_table: "AUDIT_FIRM"
-  lld_file: "SCMS/lld_SCMS_AUDIT_FIRM_IP_Electronic_Address.yaml"
-- source_system: "SCMS"
   source_table: "BANK"
   lld_file: "SCMS/lld_SCMS_BANK_IP_Electronic_Address.yaml"
 - source_system: "SCMS"
@@ -132,12 +129,7 @@ sources:
   source_table: "SC_FIRM_LICENSED_PRACTITIONER"
   lld_file: "SCMS/lld_SCMS_SC_FIRM_LICENSED_PRACTITIONER_IP_Electronic_Address.yaml"
 consolidation_notes:
-- "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Id' — đặt nullable=true"
-- "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Involved Party Code' — đặt nullable=true"
-- "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Source System Code' — đặt nullable=true"
 - "⚠️ IAM.USERS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=PHONE)\
-  \ — đặt nullable=true"
-- "⚠️ SCMS.AUDIT_FIRM: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=EMAIL)\
   \ — đặt nullable=true"
 - "⚠️ NHNCK.PROFESSIONALS: thiếu attribute 'Electronic Address Type Code' (ctx=IP_ELEC_ADDR_TYPE=FAX)\
   \ — đặt nullable=true"
@@ -173,7 +165,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
     IAM.USERS: "IAM.USERS.ID"
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ID"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.ID"
@@ -223,7 +214,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.ORGANIZATION_CODE"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.ID"
     IAM.USERS: "IAM.USERS.USERNAME"
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.ID"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CODE"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.ID"
@@ -273,7 +263,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -323,7 +312,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -373,7 +361,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.PHONE_NUMBER"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.PHONE_NUMBER"
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.PHONE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PHONE"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.PHONE"
@@ -423,7 +410,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -473,7 +459,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.EMAIL"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.EMAIL"
     IAM.USERS: "IAM.USERS.EMAIL"
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.EMAIL"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.EMAIL"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.EMAIL"
@@ -523,7 +508,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -573,7 +557,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.FAX"
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.FAX"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FAX"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.FAX"
@@ -623,7 +606,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -674,7 +656,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.MOBILE_NUMBER"
     NHNCK.PROFESSIONALS: "NHNCK.PROFESSIONALS.MOBILE_NUMBER"
     IAM.USERS: "IAM.USERS.PHONE"
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -724,7 +705,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -774,7 +754,6 @@ attributes:
     NHNCK.ORGANIZATIONS: "NHNCK.ORGANIZATIONS.WEBSITE"
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: "SCMS.BANK.WEBSITE"
     SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.WEBSITE"
     SCMS.SC_FIRM_BRANCH: "SCMS.SC_FIRM_BRANCH.WEBSITE"
@@ -824,7 +803,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -874,7 +852,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: "IAM.USERS.OFFICE_PHONE"
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -924,7 +901,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -974,7 +950,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -1025,7 +1000,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -1075,7 +1049,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -1125,7 +1098,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -1175,7 +1147,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null
@@ -1225,7 +1196,6 @@ attributes:
     NHNCK.ORGANIZATIONS: null
     NHNCK.PROFESSIONALS: null
     IAM.USERS: null
-    SCMS.AUDIT_FIRM: null
     SCMS.BANK: null
     SCMS.SC_FIRM_INFO: null
     SCMS.SC_FIRM_BRANCH: null

@@ -368,34 +368,16 @@ attributes:
 - attribute_name: "Classification Securities Company Position Id"
   physical_name: "cl_sc_position_id"
   description: "FK đến danh mục chức vụ CTCK (CAT_POSITION)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID"
-  comment: "FK target: cl_securities_company_position.cl_sc_position_id. Cần ETL crosswalk\
-    \ sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID = CAT_POSITION.ID\
-    \ để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE)\
-    \ | Nguồn lưu NVARCHAR2(1000) (cột legacy CHUC_VU_ID) — ETL cần cast sang number\
-    \ để join CAT_POSITION.ID; cần profile dữ liệu (có thể chứa code hoặc nhiều giá\
-    \ trị)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Classification Securities Company Position Code"
-  physical_name: "cl_sc_position_code"
-  description: "Mã chức vụ trong danh mục CTCK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.CAT_POSITION.POSITION_CODE"
-  comment: "Lookup pair: cl_securities_company_position.cl_sc_position_code. Pair\
-    \ with Classification Securities Company Position Id. Giá trị lấy từ SCMS.CAT_POSITION.POSITION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Position\
-    \ Id."
+  - "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID"
+  comment: "Link target: cl_securities_company_position.cl_sc_position_id. Cần ETL crosswalk\
+    \ sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID = CAT_POSITION.ID\
+    \ để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE)\
+    \ | Dữ liệu nguồn ở dạng list."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -97,10 +97,9 @@ entities:
   - name: Investor Type Code
     physical_name: investor_tp_code
     business_meaning_1st: Loại hình (Cá nhân/Tổ chức)
-    comment_1st: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-      sang mã INT (chưa có bảng mã, không đăng ký scheme).
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: SCHEMA_CODE=VSDC.INVESTOR_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -111,8 +110,7 @@ entities:
       - source_table: CLOSED_INVESTORS
         source_column: VSDC.CLOSED_INVESTORS.INVESTOR_TYPE
         business_meaning: Loại hình (Cá nhân/Tổ chức)
-        comment: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-          sang mã INT (chưa có bảng mã, không đăng ký scheme).
+        comment: SCHEMA_CODE=VSDC.INVESTOR_TYPE
   - name: Address
     physical_name: adr
     business_meaning_1st: Địa chỉ
@@ -1402,10 +1400,9 @@ entities:
   - name: Investor Type Code
     physical_name: investor_tp_code
     business_meaning_1st: Loại hình (Cá nhân/Tổ chức)
-    comment_1st: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-      sang mã INT (chưa có bảng mã, không đăng ký scheme).
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: SCHEMA_CODE=VSDC.INVESTOR_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -1416,8 +1413,7 @@ entities:
       - source_table: OPEN_INVESTORS
         source_column: VSDC.OPEN_INVESTORS.INVESTOR_TYPE
         business_meaning: Loại hình (Cá nhân/Tổ chức)
-        comment: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-          sang mã INT (chưa có bảng mã, không đăng ký scheme).
+        comment: SCHEMA_CODE=VSDC.INVESTOR_TYPE
   - name: Address
     physical_name: adr
     business_meaning_1st: Địa chỉ
@@ -3191,7 +3187,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.Id
+        source_column: FIMS.TRADINGAUTHORIZATION.ID
         business_meaning: Khóa chính của bản ghi. BK — nguồn không có mã nghiệp vụ
           riêng biệt, dùng PK kỹ thuật làm BK duy nhất.
         comment: BK chính. PK nguồn.
@@ -3227,7 +3223,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.SystemObject
+        source_column: FIMS.TRADINGAUTHORIZATION.SYSTEMOBJECT
         business_meaning: "Loại đối tượng áp dụng: 1=QLQ, 2=CTCK, 3=NHLK, 4=VSDC,\
           \ 5=Sở GD, 7=CN QLQ NN."
         comment: null
@@ -3250,7 +3246,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.FundComId
+        source_column: FIMS.TRADINGAUTHORIZATION.FUNDCOMID
         business_meaning: "FK đến Fund Management Company: QLQ nơi người hành nghề\
           \ làm việc."
         comment: "FK target: fund_management_company.fund_management_company_id. Nguồn\
@@ -3273,7 +3269,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.FundComId
+        source_column: FIMS.TRADINGAUTHORIZATION.FUNDCOMID
         business_meaning: Mã QLQ nơi người hành nghề làm việc.
         comment: "Lookup pair: fund_management_company.fund_management_company_code.\
           \ Pair with Fund Management Company Id."
@@ -3295,7 +3291,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.SecComId
+        source_column: FIMS.TRADINGAUTHORIZATION.SECCOMID
         business_meaning: "FK đến Securities Company: CTCK nơi người hành nghề làm\
           \ việc."
         comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
@@ -3317,7 +3313,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.SecComId
+        source_column: FIMS.TRADINGAUTHORIZATION.SECCOMID
         business_meaning: Mã CTCK nơi người hành nghề làm việc.
         comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
           \ Id."
@@ -3326,7 +3322,7 @@ entities:
     business_meaning_1st: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong hợp đồng ủy\
       \ quyền."
     comment_1st: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ\
-      \ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
+      \ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode\
       \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
     data_domain_most: Surrogate Key
     data_type_most: string
@@ -3338,11 +3334,11 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.InvestorId
+        source_column: FIMS.TRADINGAUTHORIZATION.INVESTORID
         business_meaning: "FK -> INVESTOR: Nhà đầu tư nước ngoài trong hợp đồng ủy\
           \ quyền."
         comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ\
-          \ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
+          \ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode\
           \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
   - name: Foreign Investor Code
     physical_name: foreign_investor_code
@@ -3359,7 +3355,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.InvestorId
+        source_column: FIMS.TRADINGAUTHORIZATION.INVESTORID
         business_meaning: Mã giao dịch NĐT NN (VSDC) trong hợp đồng ủy quyền.
         comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign\
           \ Investor Id."
@@ -3377,7 +3373,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId
+        source_column: FIMS.TRADINGAUTHORIZATION.AUTHORIZATIONTYPEID
         business_meaning: FK -> loại hình ủy quyền giao dịch (LO).
         comment: null
   - name: Effective Start Date
@@ -3394,7 +3390,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.SDate
+        source_column: FIMS.TRADINGAUTHORIZATION.SDATE
         business_meaning: Ngày bắt đầu hiệu lực hợp đồng ủy quyền.
         comment: null
   - name: Effective End Date
@@ -3411,7 +3407,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.EDate
+        source_column: FIMS.TRADINGAUTHORIZATION.EDATE
         business_meaning: Ngày kết thúc hiệu lực hợp đồng ủy quyền.
         comment: null
   - name: Note
@@ -3428,7 +3424,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.Note
+        source_column: FIMS.TRADINGAUTHORIZATION.NOTE
         business_meaning: Ghi chú bổ sung.
         comment: null
   - name: Trading Representative Id
@@ -3446,7 +3442,7 @@ entities:
     - source_system: FIMS
       source_tables:
       - source_table: TRADINGAUTHORIZATION
-        source_column: FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId
+        source_column: FIMS.TRADINGAUTHORIZATION.TRADINGREPRESENTATIVEID
         business_meaning: FK đến TRADINGREPRESENTATIVE — Người đại diện giao dịch
           được ủy quyền.
         comment: null
@@ -3547,10 +3543,9 @@ entities:
   - name: Investor Type Code
     physical_name: investor_tp_code
     business_meaning_1st: Loại hình (Cá nhân/Tổ chức)
-    comment_1st: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-      sang mã INT (chưa có bảng mã, không đăng ký scheme).
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: SCHEMA_CODE=VSDC.INVESTOR_TYPE
+    data_domain_most: Classification Value
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -3561,8 +3556,7 @@ entities:
       - source_table: UPDATED_INVESTORS
         source_column: VSDC.UPDATED_INVESTORS.INVESTOR_TYPE
         business_meaning: Loại hình (Cá nhân/Tổ chức)
-        comment: Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map
-          sang mã INT (chưa có bảng mã, không đăng ký scheme).
+        comment: SCHEMA_CODE=VSDC.INVESTOR_TYPE
   - name: Address
     physical_name: adr
     business_meaning_1st: Địa chỉ
@@ -28649,7 +28643,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: null
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -55901,8 +55895,7 @@ entities:
   - name: Change Percentage
     physical_name: change_percentage
     business_meaning_1st: Thay đổi (%)
-    comment_1st: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-      DDL nguồn decimal(10,x)).
+    comment_1st: null
     data_domain_most: Percentage
     data_type_most: decimal(5,2)
     nullable_most: true
@@ -55915,8 +55908,7 @@ entities:
       - source_table: MARKET_CAPITALIZATION
         source_column: HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE
         business_meaning: Thay đổi (%)
-        comment: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-          DDL nguồn decimal(10,x)).
+        comment: null
   - name: Even Lot Match Volume
     physical_name: even_lot_match_vol
     business_meaning_1st: Khối lượng giao dịch (Khớp lệnh lô chẵn)
@@ -56073,8 +56065,7 @@ entities:
   - name: Volume Weight Percentage
     physical_name: vol_weight_percentage
     business_meaning_1st: Tỷ trọng khối lượng (%)
-    comment_1st: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-      DDL nguồn decimal(10,x)).
+    comment_1st: null
     data_domain_most: Percentage
     data_type_most: decimal(5,2)
     nullable_most: true
@@ -56087,8 +56078,7 @@ entities:
       - source_table: MARKET_CAPITALIZATION
         source_column: HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng khối lượng (%)
-        comment: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-          DDL nguồn decimal(10,x)).
+        comment: null
   - name: Total Trading Value
     physical_name: total_trading_val
     business_meaning_1st: Tổng giá trị giao dịch
@@ -56109,8 +56099,7 @@ entities:
   - name: Value Weight Percentage
     physical_name: val_weight_percentage
     business_meaning_1st: Tỷ trọng giá trị (%)
-    comment_1st: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-      DDL nguồn decimal(10,x)).
+    comment_1st: null
     data_domain_most: Percentage
     data_type_most: decimal(5,2)
     nullable_most: true
@@ -56123,8 +56112,7 @@ entities:
       - source_table: MARKET_CAPITALIZATION
         source_column: HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng giá trị (%)
-        comment: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-          DDL nguồn decimal(10,x)).
+        comment: null
   - name: Outstanding Share Quantity
     physical_name: outstanding_share_quantity
     business_meaning_1st: Khối lượng lưu hành
@@ -56162,8 +56150,7 @@ entities:
   - name: Market Capitalization Weight Percentage
     physical_name: market_capitalization_weight_percentage
     business_meaning_1st: Tỷ trọng giá trị vốn hóa (%)
-    comment_1st: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-      DDL nguồn decimal(10,x)).
+    comment_1st: null
     data_domain_most: Percentage
     data_type_most: decimal(5,2)
     nullable_most: true
@@ -56176,8 +56163,7 @@ entities:
       - source_table: MARKET_CAPITALIZATION
         source_column: HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng giá trị vốn hóa (%)
-        comment: data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;
-          DDL nguồn decimal(10,x)).
+        comment: null
   - name: Report Year
     physical_name: rpt_year
     business_meaning_1st: Năm báo cáo
@@ -92975,13 +92961,11 @@ entities:
   - name: Classification Securities Company Position Id
     physical_name: cl_sc_position_id
     business_meaning_1st: FK đến danh mục chức vụ CTCK (CAT_POSITION).
-    comment_1st: "FK target: cl_securities_company_position.cl_sc_position_id. Cần\
+    comment_1st: "Link target: cl_securities_company_position.cl_sc_position_id. Cần\
       \ ETL crosswalk sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID\
       \ = CAT_POSITION.ID để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION',\
-      \ POSITION_CODE) | Nguồn lưu NVARCHAR2(1000) (cột legacy CHUC_VU_ID) — ETL cần\
-      \ cast sang number để join CAT_POSITION.ID; cần profile dữ liệu (có thể chứa\
-      \ code hoặc nhiều giá trị)."
-    data_domain_most: Surrogate Key
+      \ POSITION_CODE) | Dữ liệu nguồn ở dạng list."
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -92993,35 +92977,10 @@ entities:
       - source_table: SC_FIRM_SENIOR_PERSONNEL
         source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID
         business_meaning: FK đến danh mục chức vụ CTCK (CAT_POSITION).
-        comment: "FK target: cl_securities_company_position.cl_sc_position_id. Cần\
+        comment: "Link target: cl_securities_company_position.cl_sc_position_id. Cần\
           \ ETL crosswalk sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID\
           \ = CAT_POSITION.ID để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION',\
-          \ POSITION_CODE) | Nguồn lưu NVARCHAR2(1000) (cột legacy CHUC_VU_ID) — ETL\
-          \ cần cast sang number để join CAT_POSITION.ID; cần profile dữ liệu (có\
-          \ thể chứa code hoặc nhiều giá trị)."
-  - name: Classification Securities Company Position Code
-    physical_name: cl_sc_position_code
-    business_meaning_1st: Mã chức vụ trong danh mục CTCK.
-    comment_1st: "Lookup pair: cl_securities_company_position.cl_sc_position_code.\
-      \ Pair with Classification Securities Company Position Id. Giá trị lấy từ SCMS.CAT_POSITION.POSITION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company\
-      \ Position Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.CAT_POSITION.POSITION_CODE
-        business_meaning: Mã chức vụ trong danh mục CTCK.
-        comment: "Lookup pair: cl_securities_company_position.cl_sc_position_code.\
-          \ Pair with Classification Securities Company Position Id. Giá trị lấy từ\
-          \ SCMS.CAT_POSITION.POSITION_CODE sau ETL crosswalk — chi tiết xem comment\
-          \ Classification Securities Company Position Id."
+          \ POSITION_CODE) | Dữ liệu nguồn ở dạng list."
   - name: Position Name
     physical_name: position_nm
     business_meaning_1st: Tên chức vụ (tên tự do, không chuẩn hóa theo danh mục).
@@ -103793,8 +103752,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
-      \ 'int']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -103819,8 +103777,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
-      \ 'int']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -103845,8 +103802,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
-      \ 'int']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:

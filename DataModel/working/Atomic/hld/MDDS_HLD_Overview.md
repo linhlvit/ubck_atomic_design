@@ -141,15 +141,15 @@ erDiagram
 
 | Source Table | Mô tả | BCV Term | Xử lý Atomic |
 |---|---|---|---|
-| MDDS.JAD_STOCKINFOR.stocktype | Loại chứng khoán: ST/BO/MF/FU/OP/EF/W | [Common] Classification Value | Classification Value scheme `MDDS_STOCK_TYPE` |
-| MDDS.JAD_STOCKINFOR.floorcode | Mã sàn: HNX/UPCOM/HOSE/FDS/corp-bond | [Common] Classification Value | Classification Value scheme `MDDS_FLOOR_CODE` |
-| MDDS.JAD_STOCKINFOR.tradingsessionid | Trạng thái phiên giao dịch | [Common] Classification Value | Classification Value scheme `MDDS_TRADING_SESSION_STATUS` |
-| MDDS.JAD_MARKETINFOR.indextypecode | Loại index theo Sở | [Common] Classification Value | Classification Value scheme `MDDS_INDEX_TYPE` |
-| MDDS.JAD_MARKETINFOR.marketstatus | Trạng thái sàn/phiên | [Common] Classification Value | Classification Value scheme `MDDS_MARKET_STATUS` |
-| MDDS.JAD_CORPBONDINFOR.period_unit | Đơn vị kỳ hạn TP | [Common] Classification Value | Classification Value scheme `MDDS_PERIOD_UNIT` |
-| MDDS.JAD_CORPBONDINFOR.interest_coupon_type | Kiểu trả lãi coupon | [Common] Classification Value | Classification Value scheme `MDDS_COUPON_TYPE` |
-| MDDS.JAD_CORPBONDINFOR.interestrate_type | Loại lãi suất | [Common] Classification Value | Classification Value scheme `MDDS_INTEREST_RATE_TYPE` |
-| MDDS.JAD_CORPBONDINFOR.securitytradingstatus | Trạng thái giao dịch CK | [Common] Classification Value | Classification Value scheme `MDDS_SECURITY_TRADING_STATUS` |
+| MDDS.JAD_STOCKINFOR.STOCKTYPE | Loại chứng khoán: ST/BO/MF/FU/OP/EF/W | [Common] Classification Value | Classification Value scheme `MDDS_STOCK_TYPE` |
+| MDDS.JAD_STOCKINFOR.FLOORCODE | Mã sàn: HNX/UPCOM/HOSE/FDS/corp-bond | [Common] Classification Value | Classification Value scheme `MDDS_FLOOR_CODE` |
+| MDDS.JAD_STOCKINFOR.TRADINGSESSIONID | Trạng thái phiên giao dịch | [Common] Classification Value | Classification Value scheme `MDDS_TRADING_SESSION_STATUS` |
+| MDDS.JAD_MARKETINFOR.INDEXTYPECODE | Loại index theo Sở | [Common] Classification Value | Classification Value scheme `MDDS_INDEX_TYPE` |
+| MDDS.JAD_MARKETINFOR.MARKETSTATUS | Trạng thái sàn/phiên | [Common] Classification Value | Classification Value scheme `MDDS_MARKET_STATUS` |
+| MDDS.JAD_CORPBONDINFOR.PERIOD_UNIT | Đơn vị kỳ hạn TP | [Common] Classification Value | Classification Value scheme `MDDS_PERIOD_UNIT` |
+| MDDS.JAD_CORPBONDINFOR.INTEREST_COUPON_TYPE | Kiểu trả lãi coupon | [Common] Classification Value | Classification Value scheme `MDDS_COUPON_TYPE` |
+| MDDS.JAD_CORPBONDINFOR.INTERESTRATE_TYPE | Loại lãi suất | [Common] Classification Value | Classification Value scheme `MDDS_INTEREST_RATE_TYPE` |
+| MDDS.JAD_CORPBONDINFOR.SECURITYTRADINGSTATUS | Trạng thái giao dịch CK | [Common] Classification Value | Classification Value scheme `MDDS_SECURITY_TRADING_STATUS` |
 
 #### 7d. Junction Tables
 

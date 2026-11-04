@@ -73,16 +73,16 @@ attributes:
 - attribute_name: "Investor Type Code"
   physical_name: "investor_tp_code"
   description: "Loại hình (Cá nhân/Tổ chức)"
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "VSDC.CLOSED_INVESTORS.INVESTOR_TYPE"
-  comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang mã INT (chưa có bảng mã, không đăng ký scheme)."
+  comment: "SCHEMA_CODE=VSDC.INVESTOR_TYPE"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Address"
   physical_name: "adr"
   description: "Địa chỉ"

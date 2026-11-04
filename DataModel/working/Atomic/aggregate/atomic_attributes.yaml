@@ -70,17 +70,16 @@ attributes:
   atomic_entity: "Closed Investor Account"
   atomic_attribute: "Investor Type Code"
   description: "Loại hình (Cá nhân/Tổ chức)"
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "CLOSED_INVESTORS"
   source_column: "VSDC.CLOSED_INVESTORS.INVESTOR_TYPE"
-  comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang\
-    \ mã INT (chưa có bảng mã, không đăng ký scheme)."
+  comment: "SCHEMA_CODE=VSDC.INVESTOR_TYPE"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
   atomic_table: "closed_investor_account"
   atomic_column: "investor_tp_code"
 - bcv_core_object: "Arrangement"
@@ -1159,17 +1158,16 @@ attributes:
   atomic_entity: "Open Investor Account"
   atomic_attribute: "Investor Type Code"
   description: "Loại hình (Cá nhân/Tổ chức)"
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "OPEN_INVESTORS"
   source_column: "VSDC.OPEN_INVESTORS.INVESTOR_TYPE"
-  comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang\
-    \ mã INT (chưa có bảng mã, không đăng ký scheme)."
+  comment: "SCHEMA_CODE=VSDC.INVESTOR_TYPE"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
   atomic_table: "open_investor_account"
   atomic_column: "investor_tp_code"
 - bcv_core_object: "Arrangement"
@@ -2674,7 +2672,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.Id"
+  source_column: "FIMS.TRADINGAUTHORIZATION.ID"
   comment: "BK chính. PK nguồn."
   classification_context: null
   etl_derived_value: null
@@ -2707,7 +2705,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.SystemObject"
+  source_column: "FIMS.TRADINGAUTHORIZATION.SYSTEMOBJECT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2723,7 +2721,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.FundComId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
   comment: "FK target: Fund Management Company.Fund Management Company Id. Nguồn lưu\
     \ ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy\
     \ giá trị rồi hash_id('FMS_SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
@@ -2743,7 +2741,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.FundComId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
   comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
     \ with Fund Management Company Id."
   classification_context: null
@@ -2760,7 +2758,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.SecComId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.SECCOMID"
   comment: "FK target: securities_company.sc_id. Hash: hash_id('FIMS_SECURITIESCOMPANY',\
     \ SecComId). Entity Securities Company (FIMS.SECURITIESCOMPANY) có BK = Id nguồn\
     \ nên SecComId hash trực tiếp — thay crosswalk SCMS.SC_FIRM_INFO cũ (quyết định\
@@ -2779,7 +2777,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.SecComId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.SECCOMID"
   comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
     \ Id."
   classification_context: null
@@ -2796,9 +2794,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.INVESTORID"
   comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật\
-    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.Id để lấy TransactionCode\
+    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode\
     \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
   classification_context: null
   etl_derived_value: null
@@ -2814,7 +2812,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.InvestorId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.INVESTORID"
   comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign\
     \ Investor Id."
   classification_context: null
@@ -2831,7 +2829,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.AuthorizationTypeId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.AUTHORIZATIONTYPEID"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2847,7 +2845,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.SDate"
+  source_column: "FIMS.TRADINGAUTHORIZATION.SDATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2863,7 +2861,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.EDate"
+  source_column: "FIMS.TRADINGAUTHORIZATION.EDATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2879,7 +2877,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.Note"
+  source_column: "FIMS.TRADINGAUTHORIZATION.NOTE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2895,7 +2893,7 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.TradingRepresentativeId"
+  source_column: "FIMS.TRADINGAUTHORIZATION.TRADINGREPRESENTATIVEID"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -2971,17 +2969,16 @@ attributes:
   atomic_entity: "Updated Investor Account"
   atomic_attribute: "Investor Type Code"
   description: "Loại hình (Cá nhân/Tổ chức)"
-  data_domain: "Small Counter"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
   source_column: "VSDC.UPDATED_INVESTORS.INVESTOR_TYPE"
-  comment: "Mã loại lưu INT theo DDL atomic đã chốt; nguồn STRING — ETL cần map sang\
-    \ mã INT (chưa có bảng mã, không đăng ký scheme)."
+  comment: "SCHEMA_CODE=VSDC.INVESTOR_TYPE"
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
   atomic_table: "updated_investor_account"
   atomic_column: "investor_tp_code"
 - bcv_core_object: "Arrangement"
@@ -40058,7 +40055,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_adhoc_report"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Periodic Report"
   atomic_attribute: "Securities Company Periodic Report Id"
@@ -47246,8 +47243,7 @@ attributes:
   source_system: "HNX"
   source_table: "MARKET_CAPITALIZATION"
   source_column: "HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE"
-  comment: "data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;\
-    \ DDL nguồn decimal(10,x))."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -47407,8 +47403,7 @@ attributes:
   source_system: "HNX"
   source_table: "MARKET_CAPITALIZATION"
   source_column: "HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE"
-  comment: "data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;\
-    \ DDL nguồn decimal(10,x))."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -47440,8 +47435,7 @@ attributes:
   source_system: "HNX"
   source_table: "MARKET_CAPITALIZATION"
   source_column: "HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE"
-  comment: "data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;\
-    \ DDL nguồn decimal(10,x))."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -47489,8 +47483,7 @@ attributes:
   source_system: "HNX"
   source_table: "MARKET_CAPITALIZATION"
   source_column: "HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE"
-  comment: "data_type decimal(5,2) theo domain Percentage (Data Modeler đổi 2026-11-04;\
-    \ DDL nguồn decimal(10,x))."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -52692,7 +52685,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
   atomic_attribute: "Securities Company Profile Change Id"
@@ -67805,7 +67798,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_insider_related_person"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Major Shareholder Relation"
   atomic_attribute: "Securities Company Major Shareholder Relation Id"
@@ -68142,7 +68135,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Organization Unit"
   atomic_attribute: "Securities Company Organization Unit Id"
@@ -71114,42 +71107,21 @@ attributes:
   atomic_entity: "Securities Company Senior Personnel"
   atomic_attribute: "Classification Securities Company Position Id"
   description: "FK đến danh mục chức vụ CTCK (CAT_POSITION)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_SENIOR_PERSONNEL"
-  source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID"
-  comment: "FK target: cl_securities_company_position.cl_sc_position_id. Cần ETL crosswalk\
-    \ sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID = CAT_POSITION.ID\
-    \ để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE)\
-    \ | Nguồn lưu NVARCHAR2(1000) (cột legacy CHUC_VU_ID) — ETL cần cast sang number\
-    \ để join CAT_POSITION.ID; cần profile dữ liệu (có thể chứa code hoặc nhiều giá\
-    \ trị)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_senior_personnel"
-  atomic_column: "cl_sc_position_id"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Securities Company Senior Personnel"
-  atomic_attribute: "Classification Securities Company Position Code"
-  description: "Mã chức vụ trong danh mục CTCK."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
-  source_column: "SCMS.CAT_POSITION.POSITION_CODE"
-  comment: "Lookup pair: cl_securities_company_position.cl_sc_position_code. Pair\
-    \ with Classification Securities Company Position Id. Giá trị lấy từ SCMS.CAT_POSITION.POSITION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Position\
-    \ Id."
+  source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.POSITION_ID"
+  comment: "Link target: cl_securities_company_position.cl_sc_position_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_POSITION: SC_FIRM_SENIOR_PERSONNEL.POSITION_ID = CAT_POSITION.ID\
+    \ để xác nhận POSITION_CODE sau đó hash_id('SCMS_CAT_POSITION', POSITION_CODE)\
+    \ | Dữ liệu nguồn ở dạng list."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_senior_personnel"
-  atomic_column: "cl_sc_position_code"
+  atomic_column: "cl_sc_position_id"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
   atomic_attribute: "Position Name"
@@ -72049,7 +72021,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_shareholder"
-  atomic_column: "src_record_insert_tms"
+  atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company X Classification Securities Company Firm Service\
     \ Relationship"

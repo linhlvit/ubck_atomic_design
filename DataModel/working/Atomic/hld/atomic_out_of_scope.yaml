@@ -1378,207 +1378,180 @@ entries:
   description: Lịch sử thay đổi phiên bản biểu mẫu báo cáo tổng hợp đầu ra
   group: Xử lý luồng khác
   reason: Thuộc luồng báo cáo tổng hợp đầu ra — đã xử lý ở luồng khác.
-- source_system: HNX
-  source_table: listed_securities_list
-  description: Danh sách chứng khoán niêm yết HNX
-  group: Shared Entity
-  reason: Dùng entity `Listed Share Information` (định nghĩa ở VSDC) — chỉ bổ sung
-    `source_table`, không tạo entity mới tại HNX
-- source_system: HOSE
-  source_table: brokerage_market_share
-  description: Thị phần môi giới theo quý tại HOSE
-  group: Shared Entity
-  reason: Dùng entity `Brokerage Market Share` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
-- source_system: HOSE
-  source_table: listed_securities_list
-  description: Danh sách chứng khoán niêm yết HOSE
-  group: Shared Entity
-  reason: Dùng entity `Listed Share Information` (định nghĩa ở VSDC) — chỉ bổ sung
-    `source_table`
-- source_system: HOSE
-  source_table: listing_status_change
-  description: Quyết định thay đổi niêm yết tại HOSE
-  group: Shared Entity
-  reason: Dùng entity `Listing Status Change` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
-- source_system: HOSE
-  source_table: order_book
-  description: Sổ lệnh chi tiết HOSE
-  group: Shared Entity
-  reason: Dùng entity `Securities Order` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
-- source_system: HOSE
-  source_table: share_auction
-  description: Kết quả đấu giá cổ phiếu tại HOSE
-  group: Shared Entity
-  reason: Dùng entity `Share Auction Result` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
-- source_system: HOSE
-  source_table: trade_book
-  description: Sổ khớp chi tiết HOSE
-  group: Shared Entity
-  reason: Dùng entity `Securities Trade` (định nghĩa ở HNX) — chỉ bổ sung `source_table`
 - source_system: IDS
-  source_table: '`COMPANY_CHANGE_ROLE_HIS`'
+  source_table: COMPANY_CHANGE_ROLE_HIS
   description: Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn.
   group: Audit Log nguồn
   reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
     kiện nghiệp vụ
 - source_system: IDS
-  source_table: '`HISTORY_CHANGE_LOG`'
-  description: Bảng lịch sử thay đổi dữ liệu toàn hệ thống IDS theo cơ chế generic
-    (change_mode = Append).
-  group: Audit Log nguồn
-  reason: Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự
-    kiện nghiệp vụ
-- source_system: IDS
-  source_table: '`NOTIFICATIONS_DTL`'
-  description: 'Danh sách người nhận của một thông báo CBTT: login, loại đối tượng,
-    email, điện thoại.'
+  source_table: ALERT_TEMPLATE_AUDIT_DTL
+  description: Danh sách rule cấu hình cảnh báo
   group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
 - source_system: IDS
-  source_table: '`NOTIFICATIONS`'
-  description: 'Instance thông báo CBTT đã phát sinh: trạng thái, loại tin, ngày gửi.'
+  source_table: ALERT_TEMPLATE_AUDIT_HDR
+  description: Danh sách mẫu template cảnh báo
   group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
 - source_system: IDS
-  source_table: '`VIOLATION_PENALTY_CONFIG`'
+  source_table: APPRAISAL_CRITERIA
+  description: Chưa có mô tả trong BRD.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: BOND_COLLATERAL
+  description: Tài sản bảo đảm trái phiếu
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: BOND_LISTING
+  description: Chưa có mô tả trong BRD.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: BOND_LISTING_HISTORY_TMP
+  description: Chưa có mô tả trong BRD.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: BOND_PAYMENT_STATUS
+  description: Trạng thái thanh toán gốc/lãi trái phiếu
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: CAPITAL_INCREASE_DETAIL
+  description: Chi tiết từng hình thức chào bán/phát hành trong kế hoạch tăng vốn
+    (5.3.2.6)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: CAPITAL_INCREASE_PLAN
+  description: Kế hoạch tăng vốn từ file đính kèm Nghị quyết ĐHĐCĐ (5.3.2.6)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: DOSSIER_APPRAISAL_RESULT
+  description: Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: DYNAMIC_REPORT_TEMPLATES
+  description: Mẫu báo cáo động — header
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: DYNAMIC_REPORT_TEMPLATE_FIELDS
+  description: Chỉ tiêu thuộc mẫu báo cáo động
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: EVALUATION_LEVEL_SCORE
+  description: Cấu hình điểm áp dụng chung cho tất cả chỉ tiêu theo mức đánh giá
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: FINANCIAL_INDICATOR_MAPPING
+  description: Bảng khai báo ánh xạ MÃ SỐ KẾ TOÁN (RROW.ROW_DESC) của chỉ tiêu BCTC
+    sang cột đích của FINANCIAL_RATIOS_DETAIL. Khai theo REPORT_YEAR + REPORT_CD;
+    REPORT_CD dạng 'BASE_<họ>_<loại>' là bản khai chung, bản khai theo REPORT_CD cụ
+    thể đè base khi trùng ROW_DESC.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: FINANCIAL_RATIOS_DETAIL
+  description: Bảng chi tiết số liệu tài chính của công ty đại chúng theo kỳ (năm/quý).
+    Là dữ liệu đầu vào phục vụ tính các chỉ số/tỷ số tài chính lưu trong bảng LOOKUP_KEY_FINANCIALS.
+    Khóa nghiệp vụ (STOCK_CODE, YEAR, QUARTER).
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: LOOKUP_KEY_FINANCIALS
+  description: Bảng lưu kết quả tính các chỉ số/tỷ số tài chính theo công ty và kỳ
+    (năm/quý). Materialize từ FINANCIAL_RATIOS_DETAIL, quan hệ 1-1 qua ID. Phục vụ
+    tra cứu nhanh (lookup) cho các báo cáo phân tích.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: TENDER_OFFER
+  description: Lưu thông tin phương án chào mua công khai (Public Tender Offer)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: TENDER_OFFER_RESULT
+  description: Lưu thông tin kết quả chào mua công khai (Public Tender Offer Result)
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: USERS
+  description: Chưa có mô tả trong BRD.
+  group: Chưa có LLD
+  reason: Không có LLD trong dự án — BRD IDS đánh out_of_scope
+- source_system: IDS
+  source_table: VIOLATION_PENALTY_CONFIG
   description: 'Cấu hình ngưỡng xử phạt cho từng mẫu vi phạm: số ngày quá hạn, mã
     khoản quy định, hình thức xử phạt, thời gian hiệu lực.'
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: IDS
-  source_table: '`FIELDS_MGR`'
-  description: Quản lý field metadata trong hệ thống.
-  group: Form Metadata
-  reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
-- source_system: IDS
-  source_table: '`FORM_FIELD_HISTORY`'
+  source_table: FORM_FIELD_HISTORY
   description: Lịch sử thay đổi field trong form.
   group: Form Metadata
   reason: Form Metadata — cấu hình kỹ thuật form, không phải entity nghiệp vụ Atomic
 - source_system: IDS
-  source_table: '`DEPARTMENTS`'
+  source_table: DEPARTMENTS
   description: Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ).
   group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`LOGINS`'
+  source_table: LOGINS
   description: Tài khoản đăng nhập của người dùng IDS (CTĐC và cán bộ UBCKNN).
   group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`LOGIN_PERMISSION_BY_CODE`'
+  source_table: LOGIN_PERMISSION_BY_CODE
   description: Phân quyền theo mã permission cho tài khoản đăng nhập.
   group: Hệ thống / Phân quyền
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`SYS_PARAMETERS`'
-  description: Tham số cấu hình hệ thống IDS.
-  group: Hệ thống / Phân quyền
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`COMPANY_DIGITAL_CERTIFICATES`'
+  source_table: COMPANY_DIGITAL_CERTIFICATES
   description: Chứng chỉ số của CTĐC dùng để ký điện tử trong IDS.
   group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`FILES`'
+  source_table: FILES
   description: Bảng quản lý file đính kèm (tên file, đường dẫn, loại file).
   group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`INTEGRATION_JOB_DEFINITION`'
-  description: Định nghĩa các job tích hợp hệ thống.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTEGRATION_SYNC_LOG`'
-  description: Log đồng bộ tích hợp giữa các hệ thống.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_FINANCIAL_STATEMENT`'
-  description: Staging bảng BCTC từ hệ thống tích hợp.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_FORM_MAPPING`'
-  description: Mapping form giữa các hệ thống tích hợp.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_IMPORT_DATA_LOG`'
-  description: Log import dữ liệu từ hệ thống ngoài.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_REPORT_CONFIG`'
-  description: Cấu hình báo cáo cho tích hợp.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_REPORT_FIELD`'
-  description: Mapping field báo cáo cho tích hợp.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`INTG_SIGNATURE_CONFIG`'
-  description: Cấu hình chữ ký điện tử cho tích hợp.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`MANUAL_DOCUMENT`'
+  source_table: MANUAL_DOCUMENT
   description: Tài liệu hướng dẫn sử dụng được lưu trong IDS.
   group: Operational / System
   reason: Operational/system data — không có giá trị nghiệp vụ
 - source_system: IDS
-  source_table: '`MIGRATION_EXECUTIONS`'
-  description: Metadata quản lý tiến trình migration dữ liệu vào IDS.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`MIGRATION_LOGS`'
-  description: Log chi tiết từng bước migration (change_mode = Append).
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`SMS_LOG`'
-  description: Log tin nhắn SMS được gửi từ hệ thống IDS.
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`UBCK_SYNC_ITEM_LOG`'
-  description: Log đồng bộ item với hệ thống UBCK khác (change_mode = Append).
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`USER_AUDIT_LOG`'
-  description: Log hành động người dùng trong hệ thống IDS (change_mode = Append).
-  group: Operational / System
-  reason: Operational/system data — không có giá trị nghiệp vụ
-- source_system: IDS
-  source_table: '`COUNTRIES`'
+  source_table: COUNTRIES
   description: Danh mục quốc gia.
   group: Reference Data
   reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
     qua IDS
 - source_system: IDS
-  source_table: '`DATA_TYPES`'
+  source_table: DATA_TYPES
   description: Danh mục kiểu dữ liệu của trường trong form BCTC.
   group: Reference Data
   reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
 - source_system: IDS
-  source_table: '`HOLIDAY_CALENDAR`'
+  source_table: HOLIDAY_CALENDAR
   description: Danh mục ngày lễ/nghỉ.
   group: Reference Data
   reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
 - source_system: IDS
-  source_table: '`PROVINCES`'
+  source_table: PROVINCES
   description: Danh mục tỉnh/thành phố.
   group: Reference Data
   reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
     qua IDS
 - source_system: IDS
-  source_table: '`WARDS`'
+  source_table: WARDS
   description: Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES.
   group: Reference Data
   reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
@@ -2502,7 +2475,7 @@ entries:
   group: Operational / System
   reason: Operational calendar.
 - source_system: SCMS
-  source_table: flyway_schema_history
+  source_table: FLYWAY_SCHEMA_HISTORY
   description: Lịch sử cập nhật schema CSDL
   group: Operational / System
   reason: DB migration metadata.
@@ -2879,13 +2852,8 @@ entries:
     nguồn lỗi thời/sai sót, đã reconcile 2026-07-23. Nghiệp vụ ủy quyền đã nằm sẵn
     trên INVESTOR_ACCOUNT.AUTHORIZED_PERSON_NAME/AUTHORIZATION_DATE.
 - source_system: VSDC
-  source_table: account_opening_closing_status
+  source_table: ACCOUNT_OPENING_CLOSING_STATUS
   description: Trạng thái mở/đóng tài khoản (đã bỏ khỏi mapping)
   group: Fact Data
   reason: Bỏ không còn khai thác theo quyết định Data Modeler — không còn trong DDL
     nguồn hiện tại
-- source_system: VSDC
-  source_table: registered_ownership_type
-  description: Danh mục loại đăng ký sở hữu VSDC (mã + tên)
-  group: Reference Data
-  reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
