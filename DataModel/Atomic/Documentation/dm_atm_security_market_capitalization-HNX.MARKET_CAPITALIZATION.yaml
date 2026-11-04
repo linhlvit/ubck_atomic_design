@@ -1,0 +1,429 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-security_market_capitalization-HNX.MARKET_CAPITALIZATION
+  logical_name: Security Market Capitalization
+  physical_name: security_market_capitalization
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Snapshot
+  etl_pattern: Fact Snapshot
+  source: HNX
+  description: |
+    Báo cáo BM 42 về vốn hóa thị trường HNX theo mã chứng khoán: giá tham chiếu, mở cửa, đóng cửa, trung bình, cao nhất, thấp nhất, thay đổi, khối lượng và giá trị giao dịch (khớp lệnh, thỏa thuận; lô chẵn, lô lẻ), khối lượng lưu hành, giá trị vốn hóa và tỷ trọng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-MARKET_CAPITALIZATION
+
+attributes:
+  - name: Security Market Capitalization Id
+    physical_name: security_market_capitalization_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION', TICKER_SYMBOL). Business Key của entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_MARKET_CAPITALIZATION'"
+    etl_derived_value: HNX_MARKET_CAPITALIZATION
+
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
+    business_meaning: Mã chứng khoán
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL
+    comment: BK nghiệp vụ — tham gia hash Id.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Reference Price
+    physical_name: reference_price
+    business_meaning: Giá tham chiếu
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.REFERENCE_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Open Price
+    physical_name: open_price
+    business_meaning: Giá mở cửa
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.OPEN_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Close Price
+    physical_name: close_price
+    business_meaning: Giá đóng cửa
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.CLOSE_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Average Price
+    physical_name: average_price
+    business_meaning: Giá trung bình
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.AVERAGE_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Highest Price
+    physical_name: highest_price
+    business_meaning: Giá cao nhất
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.HIGHEST_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Lowest Price
+    physical_name: lowest_price
+    business_meaning: Giá thấp nhất
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.LOWEST_PRICE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Change Point
+    physical_name: change_point
+    business_meaning: Thay đổi (điểm)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.CHANGE_POINTS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Change Percentage
+    physical_name: change_percentage
+    business_meaning: "Thay đổi (%)"
+    data_domain: Percentage
+    data_type: decimal(10,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE
+    comment: "data_type chốt theo DDL nguồn: decimal(10,2) (domain Percentage mặc định decimal(5,2))."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Even Lot Match Volume
+    physical_name: even_lot_match_vol
+    business_meaning: Khối lượng giao dịch (Khớp lệnh lô chẵn)
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Even Lot Match Value
+    physical_name: even_lot_match_val
+    business_meaning: Giá trị giao dịch (Khớp lệnh lô chẵn)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Odd Lot Match Volume
+    physical_name: odd_lot_match_vol
+    business_meaning: Khối lượng giao dịch (Khớp lệnh lô lẻ)
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Odd Lot Match Value
+    physical_name: odd_lot_match_val
+    business_meaning: Giá trị giao dịch (Khớp lệnh lô lẻ)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Even Lot Put Through Volume
+    physical_name: even_lot_put_through_vol
+    business_meaning: Khối lượng giao dịch (Thỏa thuận lô chẵn)
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Even Lot Put Through Value
+    physical_name: even_lot_put_through_val
+    business_meaning: Giá trị giao dịch (Thỏa thuận lô chẵn)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Odd Lot Put Through Volume
+    physical_name: odd_lot_put_through_vol
+    business_meaning: Khối lượng giao dịch (Thỏa thuận lô lẻ)
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Odd Lot Put Through Value
+    physical_name: odd_lot_put_through_val
+    business_meaning: Giá trị giao dịch (Thỏa thuận lô lẻ)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Trading Volume
+    physical_name: total_trading_vol
+    business_meaning: Tổng khối lượng giao dịch
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Volume Weight Percentage
+    physical_name: vol_weight_percentage
+    business_meaning: "Tỷ trọng khối lượng (%)"
+    data_domain: Percentage
+    data_type: decimal(10,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE
+    comment: "data_type chốt theo DDL nguồn: decimal(10,2)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Total Trading Value
+    physical_name: total_trading_val
+    business_meaning: Tổng giá trị giao dịch
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Value Weight Percentage
+    physical_name: val_weight_percentage
+    business_meaning: "Tỷ trọng giá trị (%)"
+    data_domain: Percentage
+    data_type: decimal(10,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE
+    comment: "data_type chốt theo DDL nguồn: decimal(10,2)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Outstanding Share Quantity
+    physical_name: outstanding_share_quantity
+    business_meaning: Khối lượng lưu hành
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.OUTSTANDING_SHARES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Market Capitalization Value
+    physical_name: market_capitalization_val
+    business_meaning: Giá trị vốn hóa
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.MARKET_CAPITALIZATION
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Market Capitalization Weight Percentage
+    physical_name: market_capitalization_weight_percentage
+    business_meaning: "Tỷ trọng giá trị vốn hóa (%)"
+    data_domain: Percentage
+    data_type: decimal(10,4)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE
+    comment: "data_type chốt theo DDL nguồn: decimal(10,4)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: MARKET_CAPITALIZATION
+    source_column: HNX.MARKET_CAPITALIZATION.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -218,8 +218,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Match Volume
-    physical_name: pt_match_vol
+  - name: PT Match Quantity
+    physical_name: pt_match_quantity
     business_meaning: Khối lượng khớp thỏa thuận gần nhất.
     data_domain: Large Counter
     data_type: bigint
@@ -232,8 +232,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Total Traded Volume
-    physical_name: pt_total_traded_vol
+  - name: PT Total Traded Quantity
+    physical_name: pt_total_traded_quantity
     business_meaning: Tổng khối lượng khớp thỏa thuận từ đầu ngày.
     data_domain: Large Counter
     data_type: bigint
@@ -302,9 +302,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Total Bid Volume
-    physical_name: total_bid_vol
-    business_meaning: Tổng khối lượng dư mua.
+  - name: Total Bid Quantity
+    physical_name: total_bid_quantity
+    business_meaning: Tổng khối lượng đặt mua chưa khớp toàn bảng giá.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -316,9 +316,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Total Offer Volume
-    physical_name: total_offer_vol
-    business_meaning: Tổng khối lượng dư bán.
+  - name: Total Offer Quantity
+    physical_name: total_offer_quantity
+    business_meaning: Tổng khối lượng đặt bán chưa khớp toàn bảng giá.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -402,7 +402,7 @@ attributes:
 
   - name: Bid Volume 1
     physical_name: bid_vol_1
-    business_meaning: Khối lượng mua top 1.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao nhất (tốt nhất) hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -416,7 +416,7 @@ attributes:
 
   - name: Bid Volume 2
     physical_name: bid_vol_2
-    business_meaning: Khối lượng mua top 2.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 2 hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -430,7 +430,7 @@ attributes:
 
   - name: Bid Volume 3
     physical_name: bid_vol_3
-    business_meaning: Khối lượng mua top 3.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ mua ở mức giá cao thứ 3 hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -486,7 +486,7 @@ attributes:
 
   - name: Close Price
     physical_name: close_price
-    business_meaning: Giá khớp gần nhất.
+    business_meaning: Giá đóng cửa.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: false
@@ -500,7 +500,7 @@ attributes:
 
   - name: Close Volume
     physical_name: close_vol
-    business_meaning: Khối lượng khớp gần nhất.
+    business_meaning: Khối lượng giao dịch phiên đóng cửa.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -610,9 +610,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Foreign Remain Volume
-    physical_name: foreign_remain_vol
-    business_meaning: Room còn lại cho NĐTNN.
+  - name: Foreign Remain Quantity
+    physical_name: foreign_remain_quantity
+    business_meaning: Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống).
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -624,9 +624,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Foreign Room Volume
-    physical_name: foreign_room_vol
-    business_meaning: Tổng room NĐTNN.
+  - name: Foreign Room Quantity
+    physical_name: foreign_room_quantity
+    business_meaning: Tổng khối lượng chứng khoán tối đa mà nhà đầu tư nước ngoài được phép nắm giữ tại mã chứng khoán theo quy định pháp luật hoặc điều lệ công ty (tổng room).
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -710,16 +710,16 @@ attributes:
 
   - name: Last Color
     physical_name: last_color
-    business_meaning: Chiều mua/bán chủ động gần nhất.
-    data_domain: Classification Value
+    business_meaning: "Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu."
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.LASTCOLOR
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với TransLog.lastColor."
-    classification_context: MDDS_TRADE_DIRECTION
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Last Trading Date
@@ -836,7 +836,7 @@ attributes:
 
   - name: Offer Volume 1
     physical_name: offer_vol_1
-    business_meaning: Khối lượng bán top 1.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp nhất (tốt nhất) hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -850,7 +850,7 @@ attributes:
 
   - name: Offer Volume 2
     physical_name: offer_vol_2
-    business_meaning: Khối lượng bán top 2.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 2 hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -864,7 +864,7 @@ attributes:
 
   - name: Offer Volume 3
     physical_name: offer_vol_3
-    business_meaning: Khối lượng bán top 3.
+    business_meaning: Khối lượng (số lượng) cổ phiếu đang đặt chờ bán ở mức giá thấp thứ 3 hiện tại.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -1068,13 +1068,13 @@ attributes:
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.SYMBOLSTATUSCODE
-    comment: "Scheme: MDDS_SYMBOL_STATUS."
-    classification_context: MDDS_SYMBOL_STATUS
+    comment: "Trạng thái mã CK, ghép của 3 tag 30635|30636|30637. 30635 SymbolAdminStatusCode (SCHEMA_CODE=MDDS.SYMBOL_ADMIN_STATUS_CODE): Tình trạng quản lý mã chứng khoán khi vi phạm các quy định về công bố thông tin, 30636 SymbolTradingMethodStatusCode (SCHEMA_CODE=MDDS.SYMBOL_TRADING_METHOD_CODE): Xác định loại giao dịch cho một mã chứng khoán, 30637 SymbolTradingSantionStatusCode (SCHEMA_CODE=MDDS.SYMBOL_TRADING_SANTION_STATUS_CODE): Phân loại tình trạng giao dịch như tạm ngưng, ngưng giao dịch vì một số lý do."
+    classification_context: null
     etl_derived_value: null
 
   - name: Total Buy Volume
     physical_name: total_buy_vol
-    business_meaning: Tổng khối lượng mua.
+    business_meaning: Tổng khối lượng mua đã khớp.
     data_domain: Large Counter
     data_type: bigint
     nullable: true
@@ -1082,13 +1082,13 @@ attributes:
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.TOTALBUYVOL
-    comment: "Cùng ý nghĩa với Total Buy Volume của Security Match Log. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Total Sell Volume
     physical_name: total_sell_vol
-    business_meaning: Tổng khối lượng bán.
+    business_meaning: Tổng khối lượng bán đã khớp.
     data_domain: Large Counter
     data_type: bigint
     nullable: true
@@ -1096,7 +1096,7 @@ attributes:
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.TOTALSELLVOL
-    comment: "Cùng ý nghĩa với Total Sell Volume của Security Match Log. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -1131,15 +1131,15 @@ attributes:
   - name: Trading Session Status Code
     physical_name: trading_session_status_code
     business_meaning: Trạng thái phiên tại thời điểm chụp.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.TRADINGSESSIONID
-    comment: "Scheme: MDDS_TRADING_SESSION_STATUS."
-    classification_context: MDDS_TRADING_SESSION_STATUS
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Trading Time
@@ -1167,20 +1167,6 @@ attributes:
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.TRADINGDATE
     comment: Nguồn lưu dạng string — ETL cần parse sang date. Cần validate format nhất quán (dd/MM/yyyy).
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Trading Timestamp
-    physical_name: trading_tms
-    business_meaning: Ngày giờ giao dịch.
-    data_domain: Timestamp
-    data_type: timestamp
-    nullable: true
-    is_primary_key: false
-    source_system: MDDS
-    source_table: JAD_STOCKINFOR
-    source_column: MDDS.JAD_STOCKINFOR.TRADINGTIMESTAMP
-    comment: null
     classification_context: null
     etl_derived_value: null
 

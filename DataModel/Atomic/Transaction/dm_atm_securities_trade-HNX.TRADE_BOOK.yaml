@@ -1,0 +1,597 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-securities_trade-HNX.TRADE_BOOK
+  logical_name: Securities Trade
+  physical_name: securities_trade
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: HNX
+  description: |
+    Sổ khớp chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 lần khớp thành công với thị trường, bảng giao dịch, mã chứng khoán, giá, khối lượng, giá trị khớp và đồng thời thông tin bên mua và bên bán (thành viên, tài khoản, loại nhà đầu tư, giá/khối lượng lệnh), kèm số hiệu lệnh để liên kết về sổ lệnh.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-TRADE_BOOK
+
+attributes:
+  - name: Securities Trade Id
+    physical_name: securities_trade_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_NUMBER
+    comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Khớp lệnh thành công trên HNX — mỗi trade là 1 bản ghi Fact Append. Hash: hash_id('HNX_TRADE_BOOK', TRADE_NUMBER) — hash từ Business Key (cột TRADE_NUMBER)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Securities Trade Code
+    physical_name: securities_trade_code
+    business_meaning: "ID của giao dịch — dùng làm unique key, audit, tracking trade (BK). BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_NUMBER
+    comment: BK chính. Mã định danh nghiệp vụ duy nhất của Securities Trade; nguồn HNX.TRADE_BOOK.TRADE_NUMBER.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_TRADE_BOOK'"
+    etl_derived_value: HNX_TRADE_BOOK
+
+  - name: Trade Date
+    physical_name: trade_dt
+    business_meaning: Ngày giao dịch của trade. Định dạng yyyymmdd
+    data_domain: Date
+    data_type: date
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_DATE
+    comment: "Gộp với HOSE.TRADE_BOOK.TRADE_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Market Code
+    physical_name: market_code
+    business_meaning: "Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.MARKET_ID
+    comment: "SCHEMA_CODE=HNX.MARKET"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Ticker Symbol
+    physical_name: ticker_symbol
+    business_meaning: "Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.ISSUE_CODE
+    comment: "Gộp với HOSE.TRADE_BOOK.SYMBOL (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HNX ISSUE_CODE thường là mã ISIN (riêng Repo do Sở tự định nghĩa), HOSE SYMBOL là mã giao dịch — chưa xác nhận cùng định dạng giá trị; phân biệt theo src_stm_code."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Board Type Code
+    physical_name: board_tp_code
+    business_meaning: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BOARD_ID
+    comment: "SCHEMA_CODE=HNX.BOARD_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Session Code
+    physical_name: session_code
+    business_meaning: Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SESSION_ID
+    comment: "SCHEMA_CODE=HNX.SESSION"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Trade Time
+    physical_name: trade_time
+    business_meaning: Thời điểm giao dịch xảy ra. Định dạng hh24misss
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_TIME
+    comment: "Gộp với HOSE.TRADE_BOOK.TIME (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Price
+    physical_name: match_price
+    business_meaning: Giá khớp của giao dịch
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_PRICE
+    comment: "Gộp với HOSE.TRADE_BOOK.EXECUTION_EXEC_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Quantity
+    physical_name: match_quantity
+    business_meaning: Khối lượng giao dịch
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.TRADE_QUANTITY
+    comment: "Gộp với HOSE.TRADE_BOOK.EXECUTION_VOLUME (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Message Sequence Number
+    physical_name: message_sequence_nbr
+    business_meaning: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.MESSAGE_SEQUENCE
+    comment: "Nguồn lưu dạng số (DECIMAL(20,0)) — ETL cần convert sang string. Giữ nguyên leading zeros nếu có."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Price Spread First
+    physical_name: match_price_spread_first
+    business_meaning: Giá khớp của leg thứ nhất (First leg) trong spread
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_FIRST
+    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Match Price Spread Second
+    physical_name: match_price_spread_second
+    business_meaning: Giá khớp của leg thứ hai (Second leg)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_SECOND
+    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Reception Code
+    physical_name: buy_order_reception_code
+    business_meaning: Số định danh của lệnh mua tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ORDER_RECEPTION_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.BUY_ORDER_ACCEPT_NO (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Member Code
+    physical_name: buy_member_code
+    business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch mua
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_MEMBER_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.BUY_BRK_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Account Number
+    physical_name: buy_account_nbr
+    business_meaning: Mã tài khoản thực hiện giao dịch mua
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ACCOUNT_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.BUY_ACCT_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Account Type Code
+    physical_name: buy_account_tp_code
+    business_meaning: Lệnh mua của khách hàng (client) hay của chính công ty chứng khoán (house).
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION
+    comment: "SCHEMA_CODE=HNX.ACCOUNT_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Investor Type Code
+    physical_name: buy_investor_tp_code
+    business_meaning: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_INVESTOR_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.INVESTOR_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Foreign Investor Type Code
+    physical_name: buy_foreign_investor_tp_code
+    business_meaning: Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.FOREIGN_INVESTOR_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Price
+    physical_name: buy_order_price
+    business_meaning: Giá đặt mua.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ORDER_PRICE
+    comment: "Gộp với HOSE.TRADE_BOOK.BUY_ORDER_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Quantity
+    physical_name: buy_order_quantity
+    business_meaning: Khối lượng đặt mua
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ORDER_QUANTITY
+    comment: "Gộp với HOSE.TRADE_BOOK.BUY_ORDER_VOL (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Action Type Code
+    physical_name: buy_order_action_tp_code
+    business_meaning: Loại hành động đối với lệnh mua hiện tại. 3 Cancel
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_ACTION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Type Code
+    physical_name: buy_order_tp_code
+    business_meaning: Loại lệnh mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Order Condition Type Code
+    physical_name: buy_order_condition_tp_code
+    business_meaning: Điều kiện thực hiện lệnh mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_ORDER_CONDITION_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_CONDITION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Buy Quote Request Type Code
+    physical_name: buy_quote_request_tp_code
+    business_meaning: Mã xác định loại yêu cầu báo giá của bên mua.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.BUY_QUOTE_REQUEST_CODE
+    comment: "SCHEMA_CODE=HNX.QUOTE_REQUEST_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Reception Code
+    physical_name: sell_order_reception_code
+    business_meaning: Số định danh của lệnh bán tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ORDER_RECEPTION_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.SELL_ORDER_ACCEPT_NO (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Member Code
+    physical_name: sell_member_code
+    business_meaning: Mã định danh của công ty chứng khoán (broker) thực hiện lệnh bán
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_MEMBER_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.SELL_BRK_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Account Number
+    physical_name: sell_account_nbr
+    business_meaning: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ACCOUNT_NUMBER
+    comment: "Gộp với HOSE.TRADE_BOOK.SELL_ACCT_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Account Type Code
+    physical_name: sell_account_tp_code
+    business_meaning: Mã phân loại lệnh bán thuộc về khách hàng (client) hay tự doanh (house) của công ty chứng khoán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION
+    comment: "SCHEMA_CODE=HNX.ACCOUNT_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Investor Type Code
+    physical_name: sell_investor_tp_code
+    business_meaning: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_INVESTOR_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.INVESTOR_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Foreign Investor Type Code
+    physical_name: sell_foreign_investor_tp_code
+    business_meaning: Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.FOREIGN_INVESTOR_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Price
+    physical_name: sell_order_price
+    business_meaning: Giá đặt bán.
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ORDER_PRICE
+    comment: "Gộp với HOSE.TRADE_BOOK.SELL_ORDER_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Quantity
+    physical_name: sell_order_quantity
+    business_meaning: Khối lượng đặt bán
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ORDER_QUANTITY
+    comment: "Gộp với HOSE.TRADE_BOOK.SELL_ORDER_VOL (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Action Type Code
+    physical_name: sell_order_action_tp_code
+    business_meaning: Mã xác định hành động sửa hoặc hủy của lệnh bên BÁN (Sell order) liên quan đến giao dịch hoặc message hiện tại.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_ACTION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Type Code
+    physical_name: sell_order_tp_code
+    business_meaning: "Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý theo cơ chế nào khi vào thị trường."
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Order Condition Type Code
+    physical_name: sell_order_condition_tp_code
+    business_meaning: Là mã xác định điều kiện hiệu lực và cách xử lý của lệnh bán theo thời gian và trạng thái khớp.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_ORDER_CONDITION_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_CONDITION_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Quote Request Type Code
+    physical_name: sell_quote_request_tp_code
+    business_meaning: Mã xác định loại yêu cầu báo giá của bên bán.
+    data_domain: Classification Value
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.SELL_QUOTE_REQUEST_CODE
+    comment: "SCHEMA_CODE=HNX.QUOTE_REQUEST_TYPE"
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: TRADE_BOOK
+    source_column: HNX.TRADE_BOOK.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -10,8 +10,8 @@ ldm:
   status: draft
   bcv_core_object: Arrangement
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
+  table_type: Fact Append
+  etl_pattern: Fact Append
   source: VSDC
   description: |
     Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư mở mới trong kỳ, gồm thông tin chủ tài khoản và ngày mở tài khoản.
@@ -214,6 +214,48 @@ attributes:
     source_system: VSDC
     source_table: OPEN_INVESTORS
     source_column: VSDC.OPEN_INVESTORS.EMAIL
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OPEN_INVESTORS
+    source_column: VSDC.OPEN_INVESTORS.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OPEN_INVESTORS
+    source_column: VSDC.OPEN_INVESTORS.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: OPEN_INVESTORS
+    source_column: VSDC.OPEN_INVESTORS.REPORT_DAY
     comment: null
     classification_context: null
     etl_derived_value: null

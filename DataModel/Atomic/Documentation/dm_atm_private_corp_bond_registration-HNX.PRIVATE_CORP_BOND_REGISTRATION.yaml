@@ -92,6 +92,20 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
+  - name: Business Number
+    physical_name: business_nbr
+    business_meaning: Mã số doanh nghiệp
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_REGISTRATION
+    source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.BUSINESS_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
   - name: Par Value
     physical_name: par_val
     business_meaning: Mệnh giá
@@ -190,8 +204,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Issued Bond Quantity
-    physical_name: issued_bond_quantity
+  - name: Issued Bond Volume
+    physical_name: issued_bond_vol
     business_meaning: Khối lượng phát hành
     data_domain: Large Counter
     data_type: bigint
@@ -274,11 +288,25 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_REGISTRATION
+    source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
   - name: Report Month
     physical_name: rpt_month
     business_meaning: Tháng báo cáo
-    data_domain: Text
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: HNX
@@ -291,41 +319,13 @@ attributes:
   - name: Report Day
     physical_name: rpt_day
     business_meaning: Ngày báo cáo
-    data_domain: Text
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: HNX
     source_table: PRIVATE_CORP_BOND_REGISTRATION
     source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_DAY
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Report Year
-    physical_name: rpt_year
-    business_meaning: Năm báo cáo
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HNX
-    source_table: PRIVATE_CORP_BOND_REGISTRATION
-    source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_YEAR
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Business Number
-    physical_name: business_nbr
-    business_meaning: Mã số doanh nghiệp
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HNX
-    source_table: PRIVATE_CORP_BOND_REGISTRATION
-    source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.BUSINESS_NO
     comment: null
     classification_context: null
     etl_derived_value: null

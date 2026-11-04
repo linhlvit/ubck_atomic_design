@@ -80,7 +80,7 @@ attributes:
 
   - name: Change Color Code
     physical_name: change_color_code
-    business_meaning: Indicator tăng/giảm so với giá tham chiếu.
+    business_meaning: Màu sắc thể hiện trạng thái biến động của khoảng tăng/giảm giá (Change) so với phiên trước.
     data_domain: Text
     data_type: string
     nullable: true
@@ -122,7 +122,7 @@ attributes:
 
   - name: Price Change
     physical_name: price_change
-    business_meaning: Mức thay đổi giá so với giá tham chiếu tại lần khớp.
+    business_meaning: Giá trị chênh lệch tuyệt đối giữa mức giá hiện tại (giá khớp lệnh cuối cùng) so với giá tham chiếu của ngày hôm đó.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: false
@@ -130,7 +130,7 @@ attributes:
     source_system: MDDS
     source_table: JAD_TRANSLOG
     source_column: MDDS.JAD_TRANSLOG.FORMATTEDCHANGEVALUE
-    comment: "Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -178,16 +178,16 @@ attributes:
 
   - name: Trade Direction Code
     physical_name: trade_direction_code
-    business_meaning: Chiều mua/bán chủ động.
-    data_domain: Classification Value
+    business_meaning: "Màu sắc thể hiện trạng thái tăng, giảm hoặc đứng giá của mức giá khớp lệnh gần đây nhất (Last Price) so với giá tham chiếu."
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_TRANSLOG
     source_column: MDDS.JAD_TRANSLOG.LASTCOLOR
-    comment: "Scheme: MDDS_TRADE_DIRECTION. Cùng scheme với StockInfor.lastcolor."
-    classification_context: MDDS_TRADE_DIRECTION
+    comment: null
+    classification_context: null
     etl_derived_value: null
 
   - name: Sequence Message

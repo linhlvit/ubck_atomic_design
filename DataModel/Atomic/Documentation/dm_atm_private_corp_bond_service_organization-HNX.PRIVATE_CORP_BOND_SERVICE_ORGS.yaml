@@ -1,0 +1,261 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-private_corp_bond_service_organization-HNX.PRIVATE_CORP_BOND_SERVICE_ORGS
+  logical_name: Private Corp Bond Service Organization
+  physical_name: private_corp_bond_service_organization
+  layer: Atomic
+  version: "1.0"
+  status: draft
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: HNX
+  description: |
+    Báo cáo BM 34 về các tổ chức dịch vụ của trái phiếu doanh nghiệp riêng lẻ: tổ chức tư vấn, đăng ký lưu ký, đại lý phát hành, đại diện người sở hữu trái phiếu, bảo lãnh phát hành, cùng thông tin trái phiếu, khối lượng phát hành và tài sản bảo đảm tương ứng.
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-HNX-PRIVATE_CORP_BOND_SERVICE_ORGS
+
+attributes:
+  - name: Private Corp Bond Service Organization Id
+    physical_name: private_corp_bond_service_organization_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BOND_CODE
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_SERVICE_ORGS', BOND_CODE). Business Key của entity = BOND_CODE + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'HNX_PRIVATE_CORP_BOND_SERVICE_ORGS'"
+    etl_derived_value: HNX_PRIVATE_CORP_BOND_SERVICE_ORGS
+
+  - name: Bond Code
+    physical_name: bond_code
+    business_meaning: Mã trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BOND_CODE
+    comment: BK nghiệp vụ — tham gia hash Id.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issuer Name
+    physical_name: issuer_nm
+    business_meaning: Tên doanh nghiệp phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUER_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issued Bond Volume
+    physical_name: issued_bond_vol
+    business_meaning: Khối lượng phát hành
+    data_domain: Large Counter
+    data_type: bigint
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUED_VOLUME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Secured Asset
+    physical_name: secured_asset
+    business_meaning: Tài sản bảo đảm (Có/Không)
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.SECURED_ASSET
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Collateral Type
+    physical_name: collateral_tp
+    business_meaning: Hình thức bảo đảm
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.COLLATERAL_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Advisory Organization Name
+    physical_name: advisory_organization_nm
+    business_meaning: Tổ chức tư vấn
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ADVISORY_ORG
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Registrar Depository Organization Name
+    physical_name: registrar_depository_organization_nm
+    business_meaning: "Tổ chức đăng ký, lưu ký"
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REGISTRAR_DEPOSITORY_ORG
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Issuance Agent Organization Name
+    physical_name: issuance_agent_organization_nm
+    business_meaning: Tổ chức đại lý phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUANCE_AGENT_ORG
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Bondholder Representative Organization Name
+    physical_name: bondholder_representative_organization_nm
+    business_meaning: Tổ chức đại diện người sở hữu trái phiếu
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BONDHOLDER_REPRESENTATIVE_ORG
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Underwriting Guarantor Organization Name
+    physical_name: underwriting_guarantor_organization_nm
+    business_meaning: Tổ chức bảo lãnh phát hành
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.UNDERWRITING_GUARANTOR_ORG
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Collateral Value
+    physical_name: collateral_val
+    business_meaning: Giá trị tài sản bảo đảm (VND)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.COLLATERAL_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Registration Number
+    physical_name: business_registration_nbr
+    business_meaning: Mã đăng ký kinh doanh công ty
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BUSINESS_NO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+    source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null

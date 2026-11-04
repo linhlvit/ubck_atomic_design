@@ -78,8 +78,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Additional Bond Quantity
-    physical_name: additional_bond_quantity
+  - name: Additional Bond Volume
+    physical_name: additional_bond_vol
     business_meaning: Khối lượng
     data_domain: Large Counter
     data_type: bigint
@@ -134,16 +134,44 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
   - name: Report Month
     physical_name: rpt_month
     business_meaning: Tháng báo cáo
-    data_domain: Text
-    data_type: string
+    data_domain: Small Counter
+    data_type: int
     nullable: true
     is_primary_key: false
     source_system: HNX
     source_table: GOV_BOND_ADDITIONAL_LISTING
     source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: GOV_BOND_ADDITIONAL_LISTING
+    source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_DAY
     comment: null
     classification_context: null
     etl_derived_value: null

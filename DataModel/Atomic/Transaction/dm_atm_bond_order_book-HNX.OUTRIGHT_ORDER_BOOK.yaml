@@ -330,8 +330,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Order Bond Quantity
-    physical_name: order_bond_quantity
+  - name: Order Bond Volume
+    physical_name: order_bond_vol
     business_meaning: Khối lượng
     data_domain: Large Counter
     data_type: bigint
@@ -621,5 +621,47 @@ attributes:
     source_table: OUTRIGHT_ORDER_BOOK
     source_column: HNX.OUTRIGHT_ORDER_BOOK.EQUIVALENT_BOND_SETTLEMENT_VALUE
     comment: Chỉ có ở một số loại sổ lệnh — NULL với REPO. Cột chỉ có ở OUTRIGHT_ORDER_BOOK + REPO2_ORDER_BOOK.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: OUTRIGHT_ORDER_BOOK
+    source_column: HNX.OUTRIGHT_ORDER_BOOK.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: OUTRIGHT_ORDER_BOOK
+    source_column: HNX.OUTRIGHT_ORDER_BOOK.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: OUTRIGHT_ORDER_BOOK
+    source_column: HNX.OUTRIGHT_ORDER_BOOK.REPORT_DAY
+    comment: null
     classification_context: null
     etl_derived_value: null

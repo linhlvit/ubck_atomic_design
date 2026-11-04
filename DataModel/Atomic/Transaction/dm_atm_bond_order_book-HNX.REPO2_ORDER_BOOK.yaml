@@ -330,8 +330,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Order Bond Quantity
-    physical_name: order_bond_quantity
+  - name: Order Bond Volume
+    physical_name: order_bond_vol
     business_meaning: Khối lượng
     data_domain: Large Counter
     data_type: bigint
@@ -803,5 +803,47 @@ attributes:
     source_table: REPO2_ORDER_BOOK
     source_column: HNX.REPO2_ORDER_BOOK.MARK_SETTLEMENT_BOND
     comment: "Chỉ có ở một số loại sổ lệnh — NULL với OUTRIGHT, REPO. Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REPO2_ORDER_BOOK
+    source_column: HNX.REPO2_ORDER_BOOK.REPORT_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning: Tháng báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REPO2_ORDER_BOOK
+    source_column: HNX.REPO2_ORDER_BOOK.REPORT_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning: Ngày báo cáo
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: REPO2_ORDER_BOOK
+    source_column: HNX.REPO2_ORDER_BOOK.REPORT_DAY
+    comment: null
     classification_context: null
     etl_derived_value: null

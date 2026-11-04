@@ -302,9 +302,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Best Bid Volume
-    physical_name: pt_best_bid_vol
-    business_meaning: Tổng KL chào mua cao nhất GD thỏa thuận Outright.
+  - name: PT Best Bid Quantity
+    physical_name: pt_best_bid_quantity
+    business_meaning: Khối lượng chào mua ở mức giá cao nhất GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -330,9 +330,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Best Offer Volume
-    physical_name: pt_best_offer_vol
-    business_meaning: Tổng KL chào bán thấp nhất GD thỏa thuận Outright.
+  - name: PT Best Offer Quantity
+    physical_name: pt_best_offer_quantity
+    business_meaning: Khối lượng chào bán ở mức giá thấp nhất GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -358,8 +358,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Match Volume
-    physical_name: pt_match_vol
+  - name: PT Match Quantity
+    physical_name: pt_match_quantity
     business_meaning: Khối lượng thực hiện gần nhất GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
@@ -386,9 +386,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Max Volume
-    physical_name: pt_max_vol
-    business_meaning: KL thực hiện tương ứng giá cao nhất GD thỏa thuận Outright.
+  - name: PT Max Quantity
+    physical_name: pt_max_quantity
+    business_meaning: Khối lượng giao dịch tối đa quy định cho một lệnh giao dịch thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -414,9 +414,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Min Volume
-    physical_name: pt_min_vol
-    business_meaning: KL thực hiện tương ứng giá thấp nhất GD thỏa thuận Outright.
+  - name: PT Min Quantity
+    physical_name: pt_min_quantity
+    business_meaning: Khối lượng giao dịch tối thiểu quy định cho một lệnh giao dịch thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -428,8 +428,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Total Traded Volume
-    physical_name: pt_total_traded_vol
+  - name: PT Total Traded Quantity
+    physical_name: pt_total_traded_quantity
     business_meaning: Tổng khối lượng GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
@@ -456,9 +456,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Total Bid Volume
-    physical_name: pt_total_bid_vol
-    business_meaning: Tổng KL chào mua GD thỏa thuận Outright.
+  - name: PT Total Bid Quantity
+    physical_name: pt_total_bid_quantity
+    business_meaning: Tổng khối lượng chào mua GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -470,9 +470,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Total Offer Volume
-    physical_name: pt_total_offer_vol
-    business_meaning: Tổng KL chào bán GD thỏa thuận Outright.
+  - name: PT Total Offer Quantity
+    physical_name: pt_total_offer_quantity
+    business_meaning: Tổng khối lượng chào bán GD thỏa thuận Outright.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -584,7 +584,7 @@ attributes:
 
   - name: Close Volume
     physical_name: close_vol
-    business_meaning: Khối lượng đóng cửa.
+    business_meaning: Khối lượng giao dịch phiên đóng cửa.
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -610,9 +610,9 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Foreign Remain Volume
-    physical_name: foreign_remain_vol
-    business_meaning: Room NĐTNN còn lại.
+  - name: Foreign Remain Quantity
+    physical_name: foreign_remain_quantity
+    business_meaning: Số lượng chứng khoán còn lại mà nhà đầu tư nước ngoài được phép tiếp tục mua vào tại mã chứng khoán (phần room còn trống).
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -753,7 +753,7 @@ attributes:
   - name: Trading Session Id
     physical_name: trading_session_id
     business_meaning: Trạng thái phiên giao dịch HNX.
-    data_domain: Classification Value
+    data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false

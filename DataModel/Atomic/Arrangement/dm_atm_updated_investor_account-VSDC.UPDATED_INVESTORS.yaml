@@ -10,8 +10,8 @@ ldm:
   status: draft
   bcv_core_object: Arrangement
   bcv_concept: "[Arrangement] Trading Account Arrangement"
-  table_type: Fact Snapshot
-  etl_pattern: Fact Snapshot
+  table_type: Fact Append
+  etl_pattern: Fact Append
   source: VSDC
   description: |
     Danh sách tài khoản giao dịch chứng khoán của nhà đầu tư có thay đổi thông tin trong kỳ, gồm thông tin chủ tài khoản, ngày thay đổi và ghi chú thay đổi.
@@ -228,6 +228,90 @@ attributes:
     source_system: VSDC
     source_table: UPDATED_INVESTORS
     source_column: VSDC.UPDATED_INVESTORS.NOTES
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: From Year
+    physical_name: from_year
+    business_meaning: Năm bắt đầu
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.FROM_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: From Month
+    physical_name: from_month
+    business_meaning: Tháng bắt đầu
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.FROM_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: From Day
+    physical_name: from_day
+    business_meaning: Ngày bắt đầu
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.FROM_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: To Year
+    physical_name: to_year
+    business_meaning: Năm kết thúc
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.TO_YEAR
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: To Month
+    physical_name: to_month
+    business_meaning: Tháng kết thúc
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.TO_MONTH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: To Day
+    physical_name: to_day
+    business_meaning: Ngày kết thúc
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: UPDATED_INVESTORS
+    source_column: VSDC.UPDATED_INVESTORS.TO_DAY
     comment: null
     classification_context: null
     etl_derived_value: null

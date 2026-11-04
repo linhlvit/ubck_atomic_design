@@ -134,8 +134,8 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: PT Total Volume
-    physical_name: pt_total_vol
+  - name: PT Total Quantity
+    physical_name: pt_total_quantity
     business_meaning: Tổng khối lượng giao dịch thỏa thuận.
     data_domain: Large Counter
     data_type: bigint
@@ -192,7 +192,7 @@ attributes:
 
   - name: Advances Volume
     physical_name: advances_vol
-    business_meaning: Tổng khối lượng đã khớp của các mã tăng.
+    business_meaning: "Tổng khối lượng khớp của các mã tăng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -220,7 +220,7 @@ attributes:
 
   - name: Declines Volume
     physical_name: declines_vol
-    business_meaning: Tổng khối lượng đã khớp của các mã giảm.
+    business_meaning: "Tổng khối lượng khớp của các mã giảm giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -276,7 +276,7 @@ attributes:
 
   - name: Index Color
     physical_name: index_color
-    business_meaning: Indicator index đang tăng/giảm.
+    business_meaning: "Màu sắc thể hiện trạng thái biến động của một chỉ số chứng khoán (VN-Index, HNX-Index, VN30...) tại thời điểm hiện tại so với mức điểm tham chiếu (điểm đóng cửa phiên trước)."
     data_domain: Text
     data_type: string
     nullable: true
@@ -430,7 +430,7 @@ attributes:
 
   - name: No Change Volume
     physical_name: no_change_vol
-    business_meaning: Khối lượng khớp mã không tăng/giảm.
+    business_meaning: "Tổng khối lượng khớp của các mã đứng giá. Advances + Declines + No Change Volume = tổng khối lượng khớp toàn thị trường."
     data_domain: Large Counter
     data_type: bigint
     nullable: false
@@ -472,7 +472,7 @@ attributes:
 
   - name: Odd Lot Total Value
     physical_name: odd_lot_total_val
-    business_meaning: Giá trị khớp lô lẻ.
+    business_meaning: Tổng giá trị giao dịch lô lẻ.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: false
@@ -486,7 +486,7 @@ attributes:
 
   - name: Odd Lot Total Volume
     physical_name: odd_lot_total_vol
-    business_meaning: Khối lượng khớp lô lẻ.
+    business_meaning: "Khối lượng khớp lô lẻ — chỉ tiêu báo cáo riêng, không nằm trong bộ ba phân loại tăng/giảm/đứng giá."
     data_domain: Large Counter
     data_type: bigint
     nullable: false
