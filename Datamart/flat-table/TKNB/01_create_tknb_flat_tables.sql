@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 6 FACT + 8 operational EAV/danh sách. `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
+-- 14 bảng: 8 FACT + 6 operational EAV/danh sách (2026-11-04: TTLK01/TTLK10 chuyển Operational → Fact). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
 -- Operational: KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác; FACT: JOIN dim theo thiết kế
 -- ============================================================
 
@@ -53,23 +53,30 @@ COMMENT 'Flat table — Listing Trading Report (HSX02)'
 
 
 -- ============================================================
--- 9. OPERATIONAL: ttlk10_cw_outstanding_rpt
---    CW Outstanding Report (TTLK10)
+-- 9. FACT: fct_covered_warrant_outstanding_snpst
+--    Fact Covered Warrant Outstanding Snapshot (Nhóm 14 — TTLK10; grain 1 mã CW × 1 ngày giao dịch, PK covered_warrant_outstanding_snpst_id)
+--    Joins: Calendar Date × Security Trading Snapshot Dimension (reuse GSTT)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_ttlk10_cw_outstanding_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_covered_warrant_outstanding_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL CW Outstanding Report (TTLK10)
-    report_code             String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt        Date                     COMMENT 'BK — kỳ báo cáo',
-    listed_cw_code          String                   COMMENT 'PK — mã chứng quyền niêm yết, khóa nghiệp vụ danh sách (không dùng item_code vì đây là bảng danh sách, không phải EAV)',
-    covered_warrant_nm      String                   COMMENT 'Tên chứng quyền',
-    outstanding_quantity    Nullable(Int64)          COMMENT 'Khối lượng chứng quyền đang lưu hành = Σ outstanding_shares (VSDC) theo mã CW và tháng báo cáo — theo SQL BA TTLK10',
-    src_stm_code            String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+    -- From: FACT Fact Covered Warrant Outstanding Snapshot
+    covered_warrant_outstanding_snpst_id  String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_trading_snpst_dim_id, src_stm_code); grain 1 mã chứng quyền × 1 ngày giao dịch',
+    snpst_dt_dim_id                       String                  COMMENT 'Snapshot Date Dimension Id',
+    security_trading_snpst_dim_id         String                  COMMENT 'Security Trading Snapshot Dimension Id',
+    outstanding_quantity                  Nullable(Int64)         COMMENT 'Outstanding Quantity',
+    src_stm_code                          String                  COMMENT 'Source System Code',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                          Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                                Nullable(String)        COMMENT 'Mã chứng khoán/chứng quyền — từ Security Trading Snapshot Dimension',
+    security_full_nm                      Nullable(String)        COMMENT 'Tên đầy đủ chứng khoán/chứng quyền — từ Security Trading Snapshot Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, listed_cw_code)
-COMMENT 'Flat table — CW Outstanding Report (TTLK10)'
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), covered_warrant_outstanding_snpst_id)
+COMMENT 'Flat table — Fact Covered Warrant Outstanding Snapshot × Calendar Date × Security Trading Snapshot Dimension'
 ;
 
 
@@ -456,37 +463,44 @@ COMMENT 'Flat table — Fact Derivatives Security Detail Snapshot × Calendar Da
 
 
 -- ============================================================
--- 25. OPERATIONAL: ttlk01_account_open_close_rpt
---    Custody Account Open Close Report (TTLK01)
+-- 25. FACT: fct_custody_account_open_close_snpst
+--    Fact Custody Account Open Close Snapshot (Nhóm 13 — TTLK01; grain 1 TVLK × 1 tháng báo cáo, PK custody_account_open_close_snpst_id)
+--    Joins: Calendar Date × Depository Member Dimension (TKNB)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_ttlk01_account_open_close_rpt_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.tknb_fct_custody_account_open_close_snpst_flat ON CLUSTER 'my_cluster'
 (
-    -- From: OPERATIONAL Custody Account Open Close Report (TTLK01)
-    report_code                               String             COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt                          Date               COMMENT 'BK — kỳ báo cáo (tháng) = ngày cuối tháng của tháng báo cáo (nguồn lưu dạng MM/yyyy).',
-    depository_member_nm                      String             COMMENT 'PK — Thành viên lưu ký (TVLK) nộp báo cáo, lấy từ cột `TVLK` của biểu mẫu TTLK01; mỗi TVLK là 1 dòng trong kỳ báo cáo.',
-    row_nbr                                   Int32              COMMENT 'Số thứ tự dòng (STT) của TVLK trong biểu mẫu TTLK01.',
-    opening_domestic_individual_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước cá nhân`).',
-    opening_domestic_institution_account_qty  Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước tổ chức`).',
-    opening_foreign_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài cá nhân`).',
-    opening_foreign_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đầu kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài tổ chức`).',
-    opened_domestic_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Trong nước cá nhân`).',
-    opened_domestic_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Trong nước tổ chức`).',
-    opened_foreign_individual_account_qty     Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài cá nhân`).',
-    opened_foreign_institution_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký mở trong kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài tổ chức`).',
-    closed_domestic_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Trong nước cá nhân`).',
-    closed_domestic_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Trong nước tổ chức`).',
-    closed_foreign_individual_account_qty     Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài cá nhân`).',
-    closed_foreign_institution_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký đóng trong kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài tổ chức`).',
-    closing_domestic_individual_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Trong nước, Cá nhân của TVLK (cột biểu mẫu `Số lượng cuối kỳ Trong nước cá nhân`).',
-    closing_domestic_institution_account_qty  Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Trong nước, Tổ chức của TVLK (cột biểu mẫu `Số lượng cuối kỳ Trong nước tổ chức`).',
-    closing_foreign_individual_account_qty    Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Nước ngoài, Cá nhân của TVLK (cột biểu mẫu `Số lượng cuối kỳ Nước ngoài cá nhân`).',
-    closing_foreign_institution_account_qty   Nullable(Int32)    COMMENT 'Số lượng tài khoản lưu ký cuối kỳ — Nước ngoài, Tổ chức của TVLK (cột biểu mẫu `Số lượng cuối kỳ Nước ngoài tổ chức`).',
-    total_account_qty                         Nullable(Int32)    COMMENT 'Tổng cộng số lượng tài khoản lưu ký của TVLK theo cột `Tổng cộng` của biểu mẫu (đọc nguyên giá trị nguồn, không tự cộng).',
-    src_stm_code                              String             COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
+    -- From: FACT Fact Custody Account Open Close Snapshot
+    custody_account_open_close_snpst_id            String                  COMMENT 'PK — hash(snpst_dt_dim_id, depository_member_dim_id, src_stm_code); grain 1 TVLK × 1 tháng báo cáo',
+    snpst_dt_dim_id                                String                  COMMENT 'Snapshot Date Dimension Id',
+    depository_member_dim_id                       String                  COMMENT 'Depository Member Dimension Id',
+    row_nbr                                        Int64                   COMMENT 'Row Number',
+    opening_domestic_individual_account_quantity   Nullable(Int64)         COMMENT 'Opening Domestic Individual Account Quantity',
+    opening_domestic_institution_account_quantity  Nullable(Int64)         COMMENT 'Opening Domestic Institution Account Quantity',
+    opening_foreign_individual_account_quantity    Nullable(Int64)         COMMENT 'Opening Foreign Individual Account Quantity',
+    opening_foreign_institution_account_quantity   Nullable(Int64)         COMMENT 'Opening Foreign Institution Account Quantity',
+    opened_domestic_individual_account_quantity    Nullable(Int64)         COMMENT 'Opened Domestic Individual Account Quantity',
+    opened_domestic_institution_account_quantity   Nullable(Int64)         COMMENT 'Opened Domestic Institution Account Quantity',
+    opened_foreign_individual_account_quantity     Nullable(Int64)         COMMENT 'Opened Foreign Individual Account Quantity',
+    opened_foreign_institution_account_quantity    Nullable(Int64)         COMMENT 'Opened Foreign Institution Account Quantity',
+    closed_domestic_individual_account_quantity    Nullable(Int64)         COMMENT 'Closed Domestic Individual Account Quantity',
+    closed_domestic_institution_account_quantity   Nullable(Int64)         COMMENT 'Closed Domestic Institution Account Quantity',
+    closed_foreign_individual_account_quantity     Nullable(Int64)         COMMENT 'Closed Foreign Individual Account Quantity',
+    closed_foreign_institution_account_quantity    Nullable(Int64)         COMMENT 'Closed Foreign Institution Account Quantity',
+    closing_domestic_individual_account_quantity   Nullable(Int64)         COMMENT 'Closing Domestic Individual Account Quantity',
+    closing_domestic_institution_account_quantity  Nullable(Int64)         COMMENT 'Closing Domestic Institution Account Quantity',
+    closing_foreign_individual_account_quantity    Nullable(Int64)         COMMENT 'Closing Foreign Individual Account Quantity',
+    closing_foreign_institution_account_quantity   Nullable(Int64)         COMMENT 'Closing Foreign Institution Account Quantity',
+    total_account_quantity                         Nullable(Int64)         COMMENT 'Total Account Quantity',
+    src_stm_code                                   String                  COMMENT 'Source System Code',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                                   Nullable(Date)          COMMENT 'Ngày snapshot — từ Calendar Date Dimension',
+
+    -- From: DEPOSITORY MEMBER DIMENSION
+    depository_member_nm                           Nullable(String)        COMMENT 'Tên Thành viên lưu ký (TVLK) — từ Depository Member Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, depository_member_nm)
-COMMENT 'Flat table — Custody Account Open Close Report (TTLK01)'
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), custody_account_open_close_snpst_id)
+COMMENT 'Flat table — Fact Custody Account Open Close Snapshot × Calendar Date × Depository Member Dimension'
 ;

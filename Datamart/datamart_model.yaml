@@ -16521,57 +16521,134 @@ entities:
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.src_stm_code"
 
-  - id: "DTM-ttlk01_account_open_close_rpt"
-    logical_name: "Custody Account Open Close Report (TTLK01)"
-    datamart_table: "ttlk01_account_open_close_rpt"
-    table_type: "operational"
+  - id: "DTM-depository_member_dim"
+    logical_name: "Depository Member Dimension"
+    datamart_table: "depository_member_dim"
+    table_type: "dim"
     module: "TKNB"
     status: "draft"
     reuse_status: "new"
-    description: "Báo cáo tình hình đóng/mở tài khoản lưu ký theo Thành viên lưu ký (TTLK01) — bảng danh sách (list-detail), không phải EAV. [MỚI 2026-11-03, BA cập nhật mapping] Grain 1 TVLK × 1 tháng báo cáo; nguồn ISS flat_report ← Atomic internal_statistical_report."
+    description: "Danh mục Thành viên lưu ký (TVLK) — 1 dòng/1 TVLK (SCD4A current-state); BK `depository_member_nm` = chuỗi cột `TVLK` của biểu mẫu TTLK01 (ISS); PK `depository_member_dim_id` (hash BK). [MỚI 2026-11-04, TKNB Nhóm 13]"
     source_atomic:
       - "internal_statistical_report"
     modules_using:
       - "TKNB"
     columns:
-      - logical_name: "Report Code"
-        physical_name: "report_code"
-        data_domain: "Text"
+      - logical_name: "Depository Member Dimension Id"
+        physical_name: "depository_member_dim_id"
+        data_domain: "Surrogate Key"
         data_type: "string"
         nullable: false
-        key: "BK"
-        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
+        key: "PK"
+        description: "PK — surrogate key sinh tại Datamart (hash của BK `depository_member_nm`), 1 dòng/1 Thành viên lưu ký (TVLK). Driving: internal_statistical_report"
         source_atomic_table: null
         source_atomic_column: null
-      - logical_name: "Report Period Date"
-        physical_name: "report_period_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: false
-        key: "BK"
-        description: "BK — kỳ báo cáo (tháng) = ngày cuối tháng của tháng báo cáo (nguồn lưu dạng MM/yyyy)."
-        source_atomic_table: "internal_statistical_report"
-        source_atomic_column: "internal_statistical_report.period_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index"
       - logical_name: "Depository Member Name"
         physical_name: "depository_member_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: false
-        key: "PK"
-        description: "PK — Thành viên lưu ký (TVLK) nộp báo cáo, lấy từ cột `TVLK` của biểu mẫu TTLK01; mỗi TVLK là 1 dòng trong kỳ báo cáo."
+        key: "BK"
+        description: "BK — tên Thành viên lưu ký (TVLK), lấy nguyên văn từ cột `TVLK` của biểu mẫu TTLK01; chưa xác nhận là tên hay mã."
         source_atomic_table: "internal_statistical_report"
-        source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
+        source_atomic_column: "internal_statistical_report.cell_val"
+      - logical_name: "Source System Code"
+        physical_name: "src_stm_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Mã hệ thống nguồn dữ liệu — Driving: internal_statistical_report"
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.src_stm_code"
+      - logical_name: "Record Status"
+        physical_name: "ds_rcrd_st"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: false
+        key: ""
+        description: "Trạng thái bản ghi ('ACTIVE' = Active, 'INACTIVE' = Deleted) — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Insert Date"
+        physical_name: "ds_rcrd_isrt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày insert bản ghi lần đầu — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Record Update Date"
+        physical_name: "ds_rcrd_udt_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: false
+        key: ""
+        description: "Ngày update bản ghi gần nhất — audit field SCD4A"
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "ETL Process Timestamp"
+        physical_name: "ds_etl_pcs_tms"
+        data_domain: "Timestamp"
+        data_type: "timestamp"
+        nullable: false
+        key: ""
+        description: "Timestamp xử lý ETL — audit field"
+        source_atomic_table: null
+        source_atomic_column: null
+
+  - id: "DTM-fct_custody_account_open_close_snpst"
+    logical_name: "Fact Custody Account Open Close Snapshot"
+    datamart_table: "fct_custody_account_open_close_snpst"
+    table_type: "fact"
+    module: "TKNB"
+    status: "draft"
+    reuse_status: "new"
+    description: "Số lượng tài khoản lưu ký đầu kỳ/mở/đóng/cuối kỳ × Trong nước/Nước ngoài × Cá nhân/Tổ chức + Tổng cộng theo Thành viên lưu ký. Grain: 1 TVLK × 1 tháng báo cáo (snpst_dt_dim_id = ngày cuối tháng + depository_member_dim_id); PK custody_account_open_close_snpst_id (Dạng B: hash 2 cột grain + src_stm_code). [MỚI 2026-11-04, TKNB Nhóm 13 TTLK01, thay Custody Account Open Close Report — DEPRECATED]"
+    source_atomic:
+      - "internal_statistical_report"
+    modules_using:
+      - "TKNB"
+    columns:
+      - logical_name: "Custody Account Open Close Snapshot Id"
+        physical_name: "custody_account_open_close_snpst_id"
+        data_domain: "Surrogate Key"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK — hash(snpst_dt_dim_id, depository_member_dim_id, src_stm_code). Grain = 1 Thành viên lưu ký (TVLK) × 1 tháng báo cáo (ngày cuối tháng); khóa MERGE của ETL. `row_nbr` (STT) không thuộc grain — chỉ là thứ tự hiển thị của biểu mẫu, mỗi TVLK có đúng 1 dòng trong kỳ."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Snapshot Date Dimension Id"
+        physical_name: "snpst_dt_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: false
+        key: "FK"
+        description: "FK tới Calendar Date Dimension — ngày cuối tháng của tháng báo cáo (nguồn lưu dạng MM/yyyy)."
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.period_val"
+      - logical_name: "Depository Member Dimension Id"
+        physical_name: "depository_member_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: false
+        key: "FK"
+        description: "FK tới Depository Member Dimension — Thành viên lưu ký của dòng báo cáo (qua BK tên TVLK)."
+        source_atomic_table: "internal_statistical_report"
+        source_atomic_column: "internal_statistical_report.column_path / cell_val / row_index / period_val"
       - logical_name: "Row Number"
         physical_name: "row_nbr"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: false
         key: ""
-        description: "Số thứ tự dòng (STT) của TVLK trong biểu mẫu TTLK01."
+        description: "Số thứ tự dòng (STT) của TVLK trong biểu mẫu TTLK01 — thuộc tính hiển thị, không thuộc grain."
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.row_index / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / period_val"
       - logical_name: "Opening Domestic Individual Account Quantity"
-        physical_name: "opening_domestic_individual_account_qty"
+        physical_name: "opening_domestic_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16580,7 +16657,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opening Domestic Institution Account Quantity"
-        physical_name: "opening_domestic_institution_account_qty"
+        physical_name: "opening_domestic_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16589,7 +16666,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opening Foreign Individual Account Quantity"
-        physical_name: "opening_foreign_individual_account_qty"
+        physical_name: "opening_foreign_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16598,7 +16675,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opening Foreign Institution Account Quantity"
-        physical_name: "opening_foreign_institution_account_qty"
+        physical_name: "opening_foreign_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16607,7 +16684,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opened Domestic Individual Account Quantity"
-        physical_name: "opened_domestic_individual_account_qty"
+        physical_name: "opened_domestic_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16616,7 +16693,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opened Domestic Institution Account Quantity"
-        physical_name: "opened_domestic_institution_account_qty"
+        physical_name: "opened_domestic_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16625,7 +16702,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opened Foreign Individual Account Quantity"
-        physical_name: "opened_foreign_individual_account_qty"
+        physical_name: "opened_foreign_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16634,7 +16711,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Opened Foreign Institution Account Quantity"
-        physical_name: "opened_foreign_institution_account_qty"
+        physical_name: "opened_foreign_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16643,7 +16720,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closed Domestic Individual Account Quantity"
-        physical_name: "closed_domestic_individual_account_qty"
+        physical_name: "closed_domestic_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16652,7 +16729,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closed Domestic Institution Account Quantity"
-        physical_name: "closed_domestic_institution_account_qty"
+        physical_name: "closed_domestic_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16661,7 +16738,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closed Foreign Individual Account Quantity"
-        physical_name: "closed_foreign_individual_account_qty"
+        physical_name: "closed_foreign_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16670,7 +16747,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closed Foreign Institution Account Quantity"
-        physical_name: "closed_foreign_institution_account_qty"
+        physical_name: "closed_foreign_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16679,7 +16756,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closing Domestic Individual Account Quantity"
-        physical_name: "closing_domestic_individual_account_qty"
+        physical_name: "closing_domestic_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16688,7 +16765,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closing Domestic Institution Account Quantity"
-        physical_name: "closing_domestic_institution_account_qty"
+        physical_name: "closing_domestic_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16697,7 +16774,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closing Foreign Individual Account Quantity"
-        physical_name: "closing_foreign_individual_account_qty"
+        physical_name: "closing_foreign_individual_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16706,7 +16783,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Closing Foreign Institution Account Quantity"
-        physical_name: "closing_foreign_institution_account_qty"
+        physical_name: "closing_foreign_institution_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16715,7 +16792,7 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.column_path / cell_val / src_stm_code / rpt_code / rpt_submission_stm_code / submission_status_code / row_index / period_val"
       - logical_name: "Total Account Quantity"
-        physical_name: "total_account_qty"
+        physical_name: "total_account_quantity"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
@@ -16733,63 +16810,54 @@ entities:
         source_atomic_table: "internal_statistical_report"
         source_atomic_column: "internal_statistical_report.src_stm_code"
 
-  - id: "DTM-ttlk10_cw_outstanding_rpt"
-    logical_name: "CW Outstanding Report (TTLK10)"
-    datamart_table: "ttlk10_cw_outstanding_rpt"
-    table_type: "operational"
+  - id: "DTM-fct_covered_warrant_outstanding_snpst"
+    logical_name: "Fact Covered Warrant Outstanding Snapshot"
+    datamart_table: "fct_covered_warrant_outstanding_snpst"
+    table_type: "fact"
     module: "TKNB"
     status: "draft"
     reuse_status: "new"
-    description: "Danh sách chứng quyền đang lưu hành — bảng danh sách (list-detail), không phải EAV. [SỬA 2026-11-03, BA đổi nguồn] Grain 1 mã chứng quyền × 1 tháng báo cáo; nguồn VSDC outstanding_shares + MDDS jad_stockinfor (CW HOSE)."
+    description: "Khối lượng chứng quyền đang lưu hành theo mã CW (HOSE). Grain: 1 mã CW × 1 ngày giao dịch (snpst_dt_dim_id + security_trading_snpst_dim_id); PK covered_warrant_outstanding_snpst_id (Dạng B: hash 2 cột grain + src_stm_code); SUM theo tháng của BA nằm ở Detail Mapping. [MỚI 2026-11-04, TKNB Nhóm 14 TTLK10, thay CW Outstanding Report — DEPRECATED]"
     source_atomic:
       - "listed_share_information"
       - "security_trading_snapshot"
     modules_using:
       - "TKNB"
     columns:
-      - logical_name: "Report Code"
-        physical_name: "report_code"
-        data_domain: "Text"
-        data_type: "string"
-        nullable: false
-        key: "BK"
-        description: "BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này"
-        source_atomic_table: null
-        source_atomic_column: null
-      - logical_name: "Report Period Date"
-        physical_name: "report_period_dt"
-        data_domain: "Date"
-        data_type: "date"
-        nullable: false
-        key: "BK"
-        description: "BK — kỳ báo cáo (tháng) = ngày cuối tháng của ngày giao dịch. [SỬA 2026-11-03, BA cập nhật mapping TTLK10] BA lọc tháng/năm của `transaction_date`; trước đây lấy `disclosure_dt` của SCMS."
-        source_atomic_table: "listed_share_information"
-        source_atomic_column: "listed_share_information.transaction_dt"
-      - logical_name: "Listed CW Code"
-        physical_name: "listed_cw_code"
-        data_domain: "Text"
+      - logical_name: "Covered Warrant Outstanding Snapshot Id"
+        physical_name: "covered_warrant_outstanding_snpst_id"
+        data_domain: "Surrogate Key"
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — mã chứng quyền (BA: `o.ticker_symbol as MA_CK`). [SỬA 2026-11-03, BA cập nhật mapping TTLK10] Chứng quyền xác định qua MDDS: sàn HOSE (`floor_code` = 10) + loại chứng khoán chứng quyền (`stock_tp_code` = 4)."
-        source_atomic_table: "listed_share_information"
-        source_atomic_column: "listed_share_information.ticker_symbol"
-      - logical_name: "Covered Warrant Name"
-        physical_name: "covered_warrant_nm"
-        data_domain: "Text"
+        description: "PK — hash(snpst_dt_dim_id, security_trading_snpst_dim_id, src_stm_code). Grain = 1 mã chứng quyền HOSE × 1 ngày giao dịch; khóa MERGE của ETL. Không dùng id Atomic `listed_share_information_id` làm PK vì Atomic chỉ hash theo `ticker_symbol`, không duy nhất theo ngày."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Snapshot Date Dimension Id"
+        physical_name: "snpst_dt_dim_id"
+        data_domain: "Surrogate Dimension Key"
         data_type: "string"
         nullable: false
-        key: ""
-        description: "Tên chứng quyền (BA: `s.fullname as TEN_CK`, MDDS `jad_stockinfor`). [SỬA 2026-11-03, BA cập nhật mapping TTLK10] Thay nguồn SCMS `covered_warrant_nm`."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.full_nm"
+        key: "FK"
+        description: "FK tới Calendar Date Dimension — ngày giao dịch của số liệu lưu hành VSDC (Fact lưu theo ngày, kỳ tháng tổng hợp ở tầng khai thác)."
+        source_atomic_table: "listed_share_information"
+        source_atomic_column: "listed_share_information.transaction_dt"
+      - logical_name: "Security Trading Snapshot Dimension Id"
+        physical_name: "security_trading_snpst_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: false
+        key: "FK"
+        description: "FK tới Security Trading Snapshot Dimension (conformed, sở hữu GSTT) qua Symbol — Mã và Tên chứng quyền."
+        source_atomic_table: "listed_share_information"
+        source_atomic_column: "listed_share_information.ticker_symbol"
       - logical_name: "Outstanding Quantity"
         physical_name: "outstanding_quantity"
         data_domain: "Large Counter"
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng chứng quyền đang lưu hành = Σ `outstanding_shares` theo (mã CW, tháng) đúng SQL BA. [SỬA 2026-11-03, BA cập nhật mapping TTLK10] BA cộng MỌI ngày giao dịch trong tháng — nếu bảng có dữ liệu theo ngày thì tổng là KL cộng dồn nhiều ngày; xem vấn đề (1) ở HLD Nhóm 14. Lát cắt Atomic: BA cố định `ds_snpst_dt` ('2026-09-17', lát cắt mới nhất) — ETL lấy lát cắt hiện hành; cột kỹ thuật `ds_snpst_dt` không khai ở etl_logic vì không có trong YAML Atomic."
+        description: "Khối lượng chứng quyền đang lưu hành tại ngày giao dịch (VSDC OUTSTANDING_SHARES)."
         source_atomic_table: "listed_share_information"
         source_atomic_column: "listed_share_information.outstanding_share_quantity"
       - logical_name: "Source System Code"
@@ -16798,7 +16866,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu của báo cáo"
+        description: "Mã hệ thống nguồn dữ liệu của số liệu lưu hành"
         source_atomic_table: "listed_share_information"
         source_atomic_column: "listed_share_information.src_stm_code"
 

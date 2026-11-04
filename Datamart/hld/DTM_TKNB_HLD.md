@@ -116,7 +116,7 @@ flowchart LR
 
 > Nguồn biểu mẫu (HNX.BM24/BM32/BM23/BM34/BM25, VSDC.BM1) chưa có Atomic — không vẽ trong Cụm 4 (chỉ vẽ nguồn Atomic thật đã READY, theo `flowchart_rules.md`).
 
-> Nhóm 7 (HNX10), Nhóm 8 (HNX11) và Nhóm 13 (TTLK01) 100% PENDING (Nhóm 5 HNX06 và Nhóm 19 BM030b đã có bảng EAV và READY một phần từ 2026-10-10 theo rule dev — xem Cụm 5/19) (Nhóm 9 HNX12 đã READY 2026-09-24 — Star Schema riêng, xem Nhóm 9) — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
+> Nhóm 7 (HNX10) và Nhóm 8 (HNX11) 100% PENDING (Nhóm 13 TTLK01 đã thiết kế Star Schema 2026-11-04 — xem Cụm 13) (Nhóm 5 HNX06 và Nhóm 19 BM030b đã có bảng EAV và READY một phần từ 2026-10-10 theo rule dev — xem Cụm 5/19) (Nhóm 9 HNX12 đã READY 2026-09-24 — Star Schema riêng, xem Nhóm 9) — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
 
 ##### Cụm 5: HNX06 — Báo cáo thống kê hoạt động đấu thầu Trái phiếu
 
@@ -292,25 +292,67 @@ flowchart LR
     A2 --> G1
 ```
 
-> Nhóm 13 (TTLK01) 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING).
-> Nhóm 19 (BM030b_MSS) cũng 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING). **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — Atomic bổ sung `Internal Statistical Report` (ISS.FLAT_REPORT), xem Cụm 21.
-
-##### Cụm 14: TTLK10 — Danh sách chứng quyền đang lưu hành
+##### Cụm 13: TTLK01 — Báo cáo tình hình đóng/mở tài khoản lưu ký (Fact Custody Account Open Close Snapshot)
 
 ```mermaid
 flowchart LR
     subgraph SRC["Staging"]
-        S1["SCMS.DISCLOSURE_SECURITIES_OFFERING"]
+        S1["ISS.FLAT_REPORT (ods.uat_iss_ods.flat_report)"]
+        S2["ECAT.ECAT_29_HolidayInfo"]
     end
     subgraph SIL["Atomic"]
-        A1["Sc Disclosure Securities Offering"]
+        A1["Internal Statistical Report"]
+        A2["Calendar Date"]
     end
     subgraph GOLD["Datamart"]
-        G1["ttlk10_cw_outstanding_rpt"]
+        G1["Fact Custody Account Open Close Snapshot"]
+        G2["Depository Member Dimension"]
+        G3["Calendar Date Dimension"]
     end
     S1 --> A1
+    S2 --> A2
     A1 --> G1
+    A1 --> G2
+    A2 --> G3
+    G2 --> G1
+    G3 --> G1
 ```
+
+> **[THIẾT KẾ LẠI 2026-11-04]** Star Schema thay bảng Operational `ttlk01_account_open_close_rpt`; `Depository Member Dimension` (mới) sinh từ cột `TVLK` của chính `Internal Statistical Report`.
+
+> Nhóm 19 (BM030b_MSS) 100% PENDING — chưa có Fact/Atomic thật, không vẽ Cụm Data Lineage (theo checklist Nhóm 100% PENDING). **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — Atomic bổ sung `Internal Statistical Report` (ISS.FLAT_REPORT), xem Cụm 21.
+
+##### Cụm 14: TTLK10 — Danh sách chứng quyền đang lưu hành (Fact Covered Warrant Outstanding Snapshot)
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        S1["VSDC.OUTSTANDING_SHARES"]
+        S2["MDDS.JAD_STOCKINFOR"]
+        S3["ECAT.ECAT_29_HolidayInfo"]
+    end
+    subgraph SIL["Atomic"]
+        A1["Listed Share Information"]
+        A2["Security Trading Snapshot"]
+        A3["Calendar Date"]
+    end
+    subgraph GOLD["Datamart"]
+        G1["Fact Covered Warrant Outstanding Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    S1 --> A1
+    S2 --> A2
+    S3 --> A3
+    A1 --> G1
+    A2 --> G1
+    A2 --> G2
+    A3 --> G3
+    G2 --> G1
+    G3 --> G1
+```
+
+> **[THIẾT KẾ LẠI 2026-11-04]** Star Schema thay bảng Operational `ttlk10_cw_outstanding_rpt` (nguồn SCMS cũ → VSDC + MDDS theo BA 2026-11-03); `Security Trading Snapshot Dimension` sở hữu GSTT (reuse).
 
 ##### Cụm 15: Biểu 0513.H.UBCK.QG — Báo cáo kết quả thực hiện phát hành
 
@@ -2018,86 +2060,220 @@ flowchart LR
 
 #### Nhóm 13 - Báo cáo về tình hình đóng/mở tài khoản lưu ký (TTLK01)
 
-**Phân loại:** Báo cáo thống kê định kỳ về số lượng tài khoản lưu ký (TKLK) tại Thành viên lưu ký (TVLK), breakdown: Số dư đầu kỳ, Số mở trong kỳ, Số đóng trong kỳ, Số dư cuối kỳ — mỗi mục × 2 chiều (Trong nước/Nước ngoài) × 2 loại NĐT (Cá nhân/Tổ chức) = 4 tổ hợp, + Tổng cộng.
+**Phân loại:** Phân tích — báo cáo thống kê định kỳ về số lượng tài khoản lưu ký (TKLK) tại Thành viên lưu ký (TVLK), breakdown: Số dư đầu kỳ, Số mở trong kỳ, Số đóng trong kỳ, Số dư cuối kỳ — mỗi mục × 2 chiều (Trong nước/Nước ngoài) × 2 loại NĐT (Cá nhân/Tổ chức) = 4 tổ hợp, + Tổng cộng.
 
-> **[SỬA 2026-11-03, BA cập nhật mapping TTLK01 — PENDING → READY]** BA chuyển toàn bộ 22 dòng (dòng 1193–1214) từ biểu mẫu `VSDC.BM 45_TTLK_01` ("Chưa có CSDL - Map biểu mẫu") sang bảng **ISS `uat_iss_ods.flat_report`**, trạng thái mapping Done, và thêm 1 dòng BA mới `STT` (dòng 1192, `ROW_NUM AS STT`). Nguồn này đã có ở Atomic: `Internal Statistical Report` (`internal_statistical_report`, `src_stm_code = 'ISS_INTERNAL_STATISTICAL_REPORT'`, dạng EAV `column_path`/`row_index`/`cell_val`; tiền lệ Nhóm 21 và NDTNN). Đường đọc: `rpt_code = 'TTLK01'` AND `rpt_submission_stm_code = 'ICP'` (BA `SUBMIT_SOURCE`) AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')`; tháng báo cáo từ `period_val` (BA `ORIGIN_DATE_VALUE`, dạng MM/yyyy). Mỗi chỉ tiêu lá = `MAX(CASE WHEN column_path = '<nhãn cột BA>' THEN cell_val END)` gom theo (`row_index`, `period_val`) — đúng cách BA viết cho cột `TVLK`. 4 dòng tiêu đề (Số lượng đầu kỳ/mở/đóng/cuối kỳ) BA không còn nguồn → tính phái sinh bằng tổng 4 tổ hợp con. Thiết kế (cùng hướng TTLK10 đã chốt 2026-11-03): **bảng tác nghiệp mới `ttlk01_account_open_close_rpt`** (quy ước 'mỗi báo cáo 1 bảng phẳng'; TTLK01 chưa có trong pipeline dev `item_rule`/`item_value`) với LLD per-table `DTM_TKNB_ttlk01_account_open_close_rpt_ISS_INTERNAL_STATISTICAL_REPORT.csv`.
+> **[THIẾT KẾ LẠI 2026-11-04, theo yêu cầu Data Modeler — Star Schema thay bảng Operational]** Bảng Operational `ttlk01_account_open_close_rpt` (thiết kế 2026-11-03) bị bãi bỏ (All-Tier Cleanup, Section 4), thay bằng **`Fact Custody Account Open Close Snapshot`** (grain 1 TVLK × 1 tháng báo cáo, PK `custody_account_open_close_snpst_id`) + Dimension mới **`Depository Member Dimension`** (1 TVLK) + `Calendar Date Dimension` (reuse). Fact rộng 16 measure (4 khối Đầu kỳ/Mở/Đóng/Cuối kỳ × Trong nước/Nước ngoài × Cá nhân/Tổ chức) + `total_account_quantity`, khớp biểu mẫu và 1 dòng Detail Mapping mỗi KPI (không tách Dimension phân khúc để tránh nhân dòng DM). KPI ID giữ nguyên. Ngoại lệ thứ 7 của quy ước 'mỗi báo cáo 1 bảng phẳng' theo yêu cầu Data Modeler (TVLK là chiều dùng lại được cho báo cáo VSDC khác; kỳ báo cáo nối `cdr_dt_dim`). Vấn đề mở xem Section 5 mục 42.
+
+> **[SỬA 2026-11-03, BA cập nhật mapping TTLK01 — PENDING → READY]** BA chuyển toàn bộ 22 dòng (dòng 1193–1214) từ biểu mẫu `VSDC.BM 45_TTLK_01` ("Chưa có CSDL - Map biểu mẫu") sang bảng **ISS `uat_iss_ods.flat_report`**, trạng thái mapping Done, và thêm 1 dòng BA mới `STT` (dòng 1192, `ROW_NUM AS STT`). Nguồn đã có ở Atomic: `Internal Statistical Report` (`internal_statistical_report`, `src_stm_code = 'ISS_INTERNAL_STATISTICAL_REPORT'`, dạng EAV `column_path`/`row_index`/`cell_val`; tiền lệ Nhóm 21, NDTNN, VP). Đường đọc: `rpt_code = 'TTLK01'` AND `rpt_submission_stm_code = 'ICP'` (BA `SUBMIT_SOURCE`) AND `submission_status_code IN ('SUBMITTED','LATE_SUBMITTED')`; tháng báo cáo từ `period_val` (BA `ORIGIN_DATE_VALUE`, dạng MM/yyyy). Mỗi chỉ tiêu lá = `MAX(CASE WHEN column_path = '<nhãn>' THEN cell_val END)` gom theo (`row_index`, `period_val`) — đúng cách BA viết trong SQL tham khảo dòng 1192. 4 dòng tiêu đề (Số lượng đầu kỳ/mở/đóng/cuối kỳ) BA không còn nguồn → phái sinh bằng tổng 4 tổ hợp con. *(Lịch sử 2026-11-03: lúc này thiết kế là bảng Operational `ttlk01_account_open_close_rpt` + flat `tknb_ttlk01_account_open_close_rpt_flat` — đã thay bằng Fact/Dimension ở khối trên.)*
+
+> **[SỬA 2026-11-04 — nhãn `column_path`]** Nhãn `column_path` của 16 cột số lượng và `Tổng cộng` đổi sang **đúng literal trong SQL tham khảo của BA** (dạng phân cấp in hoa, ví dụ `'SỐ LƯỢNG ĐẦU KỲ > TRONG NƯỚC > CN'`, `'TỔNG CỘNG'`), thay nhãn phẳng chép từ cột "Trường nguồn" của dòng BA (ví dụ `'Số lượng tài khoản đầu kỳ Trong nước cá nhân'`) ở thiết kế 2026-11-03. Căn cứ: (1) SQL BA là truy vấn chạy được trên `flat_report`; (2) YAML Atomic định nghĩa `column_path` là 'tên đầy đủ chỉ tiêu cột theo cây chỉ tiêu'; (3) tiền lệ VP đọc ISS bằng nhãn phân cấp in hoa. Chưa đối chiếu dữ liệu thật — xem Section 5 mục 42(1).
 
 **Atomic:**
 - `Internal Statistical Report` (`internal_statistical_report`) ← `uat_iss_ods.flat_report` (ISS) — READY: `rpt_code`, `rpt_submission_stm_code`, `submission_status_code`, `period_val`, `row_index`, `column_path`, `cell_val`, `src_stm_code`. (Gate 0 đã kiểm các cột này tồn tại trong YAML Atomic.)
 
 **Mockup:** Báo cáo TTLK01 — user cung cấp template thật, cấu trúc bảng theo TVLK (mỗi dòng = 1 Thành viên lưu ký), 4 khối Đầu kỳ/Mở/Đóng/Cuối kỳ × 2 cột (Trong nước, Nước ngoài) × 2 sub-cột (CN, TC) + cột Tổng cộng — khớp đúng 22 dòng BA (+ 1 dòng STT).
 
-**Mart:** `ttlk01_account_open_close_rpt` — bảng phẳng rộng, grain 1 dòng/1 TVLK/1 tháng báo cáo (`report_period_dt` = ngày cuối tháng; PK `depository_member_nm`; 22 cột: 3 khóa BK/PK + `row_nbr` + 16 cột số lượng + `total_account_qty` + `src_stm_code`). Flat ClickHouse: `tknb_ttlk01_account_open_close_rpt_flat`.
+> Presentation Grain: mỗi dòng báo cáo = 1 TVLK (đứng cạnh cột `TVLK`) trong 1 tháng báo cáo — bằng Storage Grain của Fact (Iso-Grain: Presentation ≤ Storage).
+
+**Source:** `Fact Custody Account Open Close Snapshot` → `Calendar Date Dimension`, `Depository Member Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_821 | TVLK | - | Chiều | `depository_member_nm` ← `internal_statistical_report.cell_val` lọc `column_path = 'TVLK'` | [STT=1] **[SỬA 2026-11-03]** PENDING → READY. BA dòng 1193: `MAX(CASE WHEN column_path='TVLK' THEN field_value END)`; BA đổi Phân loại sang 'Chỉ tiêu phái sinh' nhưng giữ Chiều | READY |
-| K_TKNB_822 | Số lượng đầu kỳ | TK | Phái sinh | Σ 4 cột `opening_*_account_qty` (K_TKNB_823–826) theo (TVLK, tháng) | [STT=2] **[SỬA 2026-11-03]** Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con | READY |
-| K_TKNB_823 | Số lượng đầu kỳ — Trong nước, Cá nhân | TK | Cơ sở | `opening_domestic_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng tài khoản đầu kỳ Trong nước cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=2.1] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước cá nhân` (ISS flat_report) | READY |
-| K_TKNB_824 | Số lượng đầu kỳ — Trong nước, Tổ chức | TK | Cơ sở | `opening_domestic_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng tài khoản đầu kỳ Trong nước tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=2.2] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước tổ chức` (ISS flat_report) | READY |
-| K_TKNB_825 | Số lượng đầu kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `opening_foreign_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng tài khoản đầu kỳ Nước ngoài cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=2.3] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài cá nhân` (ISS flat_report) | READY |
-| K_TKNB_826 | Số lượng đầu kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `opening_foreign_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng tài khoản đầu kỳ Nước ngoài tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=2.4] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài tổ chức` (ISS flat_report) | READY |
-| K_TKNB_827 | Số lượng mở trong kỳ | TK | Phái sinh | Σ 4 cột `opened_*_account_qty` (K_TKNB_828–831) theo (TVLK, tháng) | [STT=3] **[SỬA 2026-11-03]** Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con | READY |
-| K_TKNB_828 | Số lượng mở trong kỳ — Trong nước, Cá nhân | TK | Cơ sở | `opened_domestic_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng mở trong kỳ Trong nước cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=3.1] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng mở trong kỳ Trong nước cá nhân` (ISS flat_report) | READY |
-| K_TKNB_829 | Số lượng mở trong kỳ — Trong nước, Tổ chức | TK | Cơ sở | `opened_domestic_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng mở trong kỳ Trong nước tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=3.2] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng mở trong kỳ Trong nước tổ chức` (ISS flat_report) | READY |
-| K_TKNB_830 | Số lượng mở trong kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `opened_foreign_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng mở trong kỳ Nước ngoài cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=3.3] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài cá nhân` (ISS flat_report) | READY |
-| K_TKNB_831 | Số lượng mở trong kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `opened_foreign_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng mở trong kỳ Nước ngoài tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=3.4] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài tổ chức` (ISS flat_report) | READY |
-| K_TKNB_832 | Số lượng đóng trong kỳ | TK | Phái sinh | Σ 4 cột `closed_*_account_qty` (K_TKNB_833–836) theo (TVLK, tháng) | [STT=4] **[SỬA 2026-11-03]** Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con | READY |
-| K_TKNB_833 | Số lượng đóng trong kỳ — Trong nước, Cá nhân | TK | Cơ sở | `closed_domestic_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng đóng trong kỳ Trong nước cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=4.1] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng đóng trong kỳ Trong nước cá nhân` (ISS flat_report) | READY |
-| K_TKNB_834 | Số lượng đóng trong kỳ — Trong nước, Tổ chức | TK | Cơ sở | `closed_domestic_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng đóng trong kỳ Trong nước tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=4.2] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng đóng trong kỳ Trong nước tổ chức` (ISS flat_report) | READY |
-| K_TKNB_835 | Số lượng đóng trong kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `closed_foreign_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng đóng trong kỳ Nước ngoài cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=4.3] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài cá nhân` (ISS flat_report) | READY |
-| K_TKNB_836 | Số lượng đóng trong kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `closed_foreign_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng đóng trong kỳ Nước ngoài tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=4.4] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài tổ chức` (ISS flat_report) | READY |
-| K_TKNB_837 | Số lượng cuối kỳ | TK | Phái sinh | Σ 4 cột `closing_*_account_qty` (K_TKNB_838–841) theo (TVLK, tháng) | [STT=5] **[SỬA 2026-11-03]** Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con | READY |
-| K_TKNB_838 | Số lượng cuối kỳ — Trong nước, Cá nhân | TK | Cơ sở | `closing_domestic_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng cuối kỳ Trong nước cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=5.1] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng cuối kỳ Trong nước cá nhân` (ISS flat_report) | READY |
-| K_TKNB_839 | Số lượng cuối kỳ — Trong nước, Tổ chức | TK | Cơ sở | `closing_domestic_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng cuối kỳ Trong nước tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=5.2] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng cuối kỳ Trong nước tổ chức` (ISS flat_report) | READY |
-| K_TKNB_840 | Số lượng cuối kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `closing_foreign_individual_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng cuối kỳ Nước ngoài cá nhân'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=5.3] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng cuối kỳ Nước ngoài cá nhân` (ISS flat_report) | READY |
-| K_TKNB_841 | Số lượng cuối kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `closing_foreign_institution_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Số lượng cuối kỳ Nước ngoài tổ chức'`, kỳ = `report_period_dt = :cuoi_thang` | [STT=5.4] **[SỬA 2026-11-03]** PENDING → READY. BA: cột biểu mẫu `Số lượng cuối kỳ Nước ngoài tổ chức` (ISS flat_report) | READY |
-| K_TKNB_842 | Tổng cộng | TK | Phái sinh | `total_account_qty` ← `internal_statistical_report.cell_val` lọc `column_path = 'Tổng cộng'` | [STT=6] **[SỬA 2026-11-03]** PENDING → READY. BA dòng 1214: cột `Tổng cộng` đọc nguyên giá trị nguồn — xem vấn đề (5) | READY |
-| K_TKNB_1300 | STT | - | Chiều | `row_nbr` ← `internal_statistical_report.row_index` | [STT=0] **[MỚI 2026-11-03]** Dòng BA mới (dòng 1192): `ROW_NUM AS STT` — số thứ tự dòng TVLK; Chiều/nhãn, không phải chỉ tiêu phái sinh dù BA phân loại như vậy | READY |
+| K_TKNB_821 | TVLK | - | Chiều | `depository_member_dim.depository_member_nm` (qua FK `depository_member_dim_id`) ← `internal_statistical_report.cell_val` lọc `column_path = 'TVLK'` | [STT=1] BA dòng 1193: `MAX(CASE WHEN column_path='TVLK' THEN field_value END)`; BA đổi Phân loại sang 'Chỉ tiêu phái sinh' nhưng giữ Chiều. **[SỬA 2026-11-04]** cột chuyển từ bảng Operational sang Dimension `Depository Member Dimension` | READY |
+| K_TKNB_822 | Số lượng đầu kỳ | TK | Phái sinh | Σ 4 cột `opening_*_account_quantity` (K_TKNB_823–826) theo (TVLK, tháng) | [STT=2] Header phái sinh — BA bỏ nguồn dòng tiêu đề (dòng 1194), tính bằng tổng 4 tổ hợp con; Case 2 — tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
+| K_TKNB_823 | Số lượng đầu kỳ — Trong nước, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.opening_domestic_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐẦU KỲ > TRONG NƯỚC > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=2.1] BA SQL dòng 1192 (`COT2`); cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước cá nhân` (BA dòng 1195). **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_824 | Số lượng đầu kỳ — Trong nước, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.opening_domestic_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐẦU KỲ > TRONG NƯỚC > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=2.2] BA SQL dòng 1192 (`COT3`); cột biểu mẫu `Số lượng tài khoản đầu kỳ Trong nước tổ chức` (BA dòng 1196). **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_825 | Số lượng đầu kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.opening_foreign_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐẦU KỲ > NƯỚC NGOÀI > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=2.3] BA SQL dòng 1192 (`COT4`); cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài cá nhân` (BA dòng 1197). **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_826 | Số lượng đầu kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.opening_foreign_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐẦU KỲ > NƯỚC NGOÀI > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=2.4] BA SQL dòng 1192 (`COT5`); cột biểu mẫu `Số lượng tài khoản đầu kỳ Nước ngoài tổ chức` (BA dòng 1198). **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_827 | Số lượng mở trong kỳ | TK | Phái sinh | Σ 4 cột `opened_*_account_quantity` (K_TKNB_828–831) theo (TVLK, tháng) | [STT=3] Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con; Case 2 — tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
+| K_TKNB_828 | Số lượng mở trong kỳ — Trong nước, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.opened_domestic_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG MỞ TRONG KỲ > TRONG NƯỚC > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=3.1] BA SQL dòng 1192 (`COT6`); cột biểu mẫu `Số lượng mở trong kỳ Trong nước cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_829 | Số lượng mở trong kỳ — Trong nước, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.opened_domestic_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG MỞ TRONG KỲ > TRONG NƯỚC > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=3.2] BA SQL dòng 1192 (`COT7`); cột biểu mẫu `Số lượng mở trong kỳ Trong nước tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_830 | Số lượng mở trong kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.opened_foreign_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG MỞ TRONG KỲ > NƯỚC NGOÀI > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=3.3] BA SQL dòng 1192 (`COT8`); cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_831 | Số lượng mở trong kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.opened_foreign_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG MỞ TRONG KỲ > NƯỚC NGOÀI > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=3.4] BA SQL dòng 1192 (`COT9`); cột biểu mẫu `Số lượng mở trong kỳ Nước ngoài tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_832 | Số lượng đóng trong kỳ | TK | Phái sinh | Σ 4 cột `closed_*_account_quantity` (K_TKNB_833–836) theo (TVLK, tháng) | [STT=4] Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con; Case 2 — tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
+| K_TKNB_833 | Số lượng đóng trong kỳ — Trong nước, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.closed_domestic_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐÓNG TRONG KỲ > TRONG NƯỚC > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=4.1] BA SQL dòng 1192 (`COT10`); cột biểu mẫu `Số lượng đóng trong kỳ Trong nước cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_834 | Số lượng đóng trong kỳ — Trong nước, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.closed_domestic_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐÓNG TRONG KỲ > TRONG NƯỚC > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=4.2] BA SQL dòng 1192 (`COT11`); cột biểu mẫu `Số lượng đóng trong kỳ Trong nước tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_835 | Số lượng đóng trong kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.closed_foreign_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐÓNG TRONG KỲ > NƯỚC NGOÀI > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=4.3] BA SQL dòng 1192 (`COT12`); cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_836 | Số lượng đóng trong kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.closed_foreign_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG ĐÓNG TRONG KỲ > NƯỚC NGOÀI > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=4.4] BA SQL dòng 1192 (`COT13`); cột biểu mẫu `Số lượng đóng trong kỳ Nước ngoài tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_837 | Số lượng cuối kỳ | TK | Phái sinh | Σ 4 cột `closing_*_account_quantity` (K_TKNB_838–841) theo (TVLK, tháng) | [STT=5] Header phái sinh — BA bỏ nguồn dòng tiêu đề, tính bằng tổng 4 tổ hợp con; Case 2 — tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
+| K_TKNB_838 | Số lượng cuối kỳ — Trong nước, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.closing_domestic_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=5.1] BA SQL dòng 1192 (`COT14`); cột biểu mẫu `Số lượng cuối kỳ Trong nước cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_839 | Số lượng cuối kỳ — Trong nước, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.closing_domestic_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=5.2] BA SQL dòng 1192 (`COT15`); cột biểu mẫu `Số lượng cuối kỳ Trong nước tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_840 | Số lượng cuối kỳ — Nước ngoài, Cá nhân | TK | Cơ sở | `fct_custody_account_open_close_snpst.closing_foreign_individual_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI > CN'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=5.3] BA SQL dòng 1192 (`COT16`); cột biểu mẫu `Số lượng cuối kỳ Nước ngoài cá nhân`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_841 | Số lượng cuối kỳ — Nước ngoài, Tổ chức | TK | Cơ sở | `fct_custody_account_open_close_snpst.closing_foreign_institution_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI > TC'`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) = ngày cuối tháng | [STT=5.4] BA SQL dòng 1192 (`COT17`); cột biểu mẫu `Số lượng cuối kỳ Nước ngoài tổ chức`. **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA | READY |
+| K_TKNB_842 | Tổng cộng | TK | Phái sinh | `fct_custody_account_open_close_snpst.total_account_quantity` ← `internal_statistical_report.cell_val` lọc `column_path = 'TỔNG CỘNG'` | [STT=6] BA dòng 1214 / SQL dòng 1192 (`TONG_CONG`): đọc nguyên giá trị nguồn, không tự cộng — xem Section 5 mục 42(5). **[SỬA 2026-11-04]** nhãn `column_path` theo SQL BA (`'TỔNG CỘNG'` in hoa) | READY |
+| K_TKNB_1300 | STT | - | Chiều | `fct_custody_account_open_close_snpst.row_nbr` ← `internal_statistical_report.row_index` | [STT=0] Dòng BA mới (dòng 1192): `ROW_NUM AS STT` — số thứ tự dòng TVLK, degenerate attribute trên Fact (không thuộc grain, chỉ phục vụ thứ tự hiển thị); Chiều/nhãn, không phải chỉ tiêu phái sinh dù BA phân loại như vậy | READY |
 
-**Vấn đề cần BA/dev xác nhận (chưa có số trong Section 5 — cần đăng ký thêm):**
-1. **Khớp `column_path`:** BA viết tên cột như cột phẳng của `flat_report` (`"Số lượng tài khoản đầu kỳ Trong nước cá nhân"`…), còn Atomic là bảng EAV. Thiết kế khớp chính xác `column_path` = nhãn BA (đúng cách BA viết cho `TVLK`). Dev xác nhận `column_path` thật là nhãn phẳng này hay nhãn phân cấp (header + sub-header); nếu khác thì 16 cột số lượng + `Tổng cộng` đọc NULL.
-2. **Nhiều bản nộp trong tháng:** `SUBMIT_STATUS` gồm SUBMITTED và LATE_SUBMITTED, Atomic không có khóa bản nộp/phiên bản trong `internal_statistical_report` nên GROUP BY (`row_index`, `period_val`) như BA sẽ gộp nhầm các TVLK cùng số thứ tự nếu 1 tháng có nhiều bản nộp. Dev xác nhận 1 bản nộp hợp lệ/tháng hoặc bổ sung khóa bản nộp.
-3. **`TVLK` là tên hay mã:** thiết kế lưu nguyên chuỗi của cột `TVLK` làm PK `depository_member_nm`; nếu biểu mẫu chứa mã (hoặc cả mã lẫn tên) thì cần đổi tên cột/tách mã.
-4. **Tham số kỳ:** BA `ORIGIN_DATE_VALUE = '05/2026'` cứng → DM dùng `:cuoi_thang`; Mart nạp mọi tháng (`report_period_dt = LAST_DAY(TO_DATE(CONCAT('01/', period_val), 'dd/MM/yyyy'))`).
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Depository_Member_Dimension {
+        string Depository_Member_Dimension_Id PK
+        string Depository_Member_Name
+        string Source_System_Code
+    }
+    Fact_Custody_Account_Open_Close_Snapshot {
+        string Custody_Account_Open_Close_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Depository_Member_Dimension_Id FK
+        int Row_Number
+        int Opening_Domestic_Individual_Account_Quantity
+        int Opening_Domestic_Institution_Account_Quantity
+        int Opening_Foreign_Individual_Account_Quantity
+        int Opening_Foreign_Institution_Account_Quantity
+        int Opened_Domestic_Individual_Account_Quantity
+        int Opened_Domestic_Institution_Account_Quantity
+        int Opened_Foreign_Individual_Account_Quantity
+        int Opened_Foreign_Institution_Account_Quantity
+        int Closed_Domestic_Individual_Account_Quantity
+        int Closed_Domestic_Institution_Account_Quantity
+        int Closed_Foreign_Individual_Account_Quantity
+        int Closed_Foreign_Institution_Account_Quantity
+        int Closing_Domestic_Individual_Account_Quantity
+        int Closing_Domestic_Institution_Account_Quantity
+        int Closing_Foreign_Individual_Account_Quantity
+        int Closing_Foreign_Institution_Account_Quantity
+        int Total_Account_Quantity
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Custody_Account_Open_Close_Snapshot : "Snapshot_Date_Dimension_Id"
+    Depository_Member_Dimension ||--o{ Fact_Custody_Account_Open_Close_Snapshot : "Depository_Member_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Custody Account Open Close Snapshot"]
+        G2["Depository Member Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["TTLK01 - Nhom 13: K_TKNB_821-842,1300"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Custody Account Open Close Snapshot | 1 row = 1 TVLK × 1 tháng báo cáo (`snpst_dt_dim_id` = ngày cuối tháng + `depository_member_dim_id`); PK `custody_account_open_close_snpst_id` = hash 2 cột grain trên + `src_stm_code` (Dạng B, A22). `row_nbr` (STT) không thuộc grain — chỉ là thứ tự hiển thị của biểu mẫu |
+| Depository Member Dimension | 1 row = 1 TVLK (SCD4A current-state; BK `depository_member_nm` = chuỗi cột `TVLK` của ISS); PK `depository_member_dim_id` = hash BK |
+| Calendar Date Dimension | 1 row = 1 ngày |
+
+**Vấn đề cần BA/dev xác nhận (đăng ký tại Section 5 mục 42):**
+1. **Khớp `column_path`:** thiết kế dùng literal phân cấp in hoa của SQL BA (dòng 1192) thay nhãn phẳng ở "Trường nguồn" các dòng 1195–1214. Dev xác nhận bằng `SELECT DISTINCT column_path FROM internal_statistical_report WHERE rpt_code = 'TTLK01'`; nếu khác cả hai thì 16 cột số lượng + `Tổng cộng` đọc NULL.
+2. **Nhiều bản nộp trong tháng:** `SUBMIT_STATUS` gồm SUBMITTED và LATE_SUBMITTED; BK Atomic (`report_code || sheet_nm || field_code || row_index || origin_dt_val`) không có khóa bản nộp nên nạp lại ghi đè (Upsert), nhưng GROUP BY (`row_index`, `period_val`) như BA vẫn gộp nhầm các TVLK cùng số thứ tự nếu có hơn 1 bản hợp lệ/tháng. Dev xác nhận 1 bản nộp hợp lệ/tháng.
+3. **`TVLK` là tên hay mã:** BK `depository_member_nm` lưu nguyên chuỗi cột `TVLK`; nếu biểu mẫu chứa mã (hoặc cả mã lẫn tên) thì cần tách mã vào Dimension. Dòng tổng/TVLK rỗng (nếu có) phải bị chặn khi nạp.
+4. **Tham số kỳ:** BA `ORIGIN_DATE_VALUE = '05/2026'` cứng → DM dùng `:cuoi_thang`; Fact nạp mọi tháng.
 5. **Cột `Tổng cộng`:** BA vẫn map như cột nguồn (không phải tổng các khối); chưa rõ bằng tổng của khối nào (cuối kỳ?). Thiết kế đọc nguyên giá trị nguồn, dev/BA đối chiếu với Σ khối Cuối kỳ.
-6. **Phân loại BA lệch bản chất:** `STT` (số thứ tự) và `TVLK` (tên TVLK) đều được BA đổi Phân loại thành 'Chỉ tiêu phái sinh' — thiết kế giữ Chiều/nhãn; đề nghị BA xác nhận hai dòng này không cần tính toán.
-7. **`SUBMIT_SOURCE = 'ICP'`:** ánh xạ `rpt_submission_stm_code = 'ICP'` (đã có tiền lệ ở NDTNN — báo cáo HNX09).
-8. **[YÊU CẦU DEV]** Bảng Mart `ttlk01_account_open_close_rpt` và flat `tknb_ttlk01_account_open_close_rpt_flat` chưa tồn tại — tạo theo LLD mới và DDL flat bổ sung.
+6. **Phân loại BA lệch bản chất:** `STT` và `TVLK` đều được BA đổi Phân loại thành 'Chỉ tiêu phái sinh' — thiết kế giữ Chiều/nhãn; đề nghị BA xác nhận hai dòng này không cần tính toán.
+7. **`SUBMIT_SOURCE = 'ICP'`:** ánh xạ `rpt_submission_stm_code = 'ICP'` (tiền lệ NDTNN HNX09, VP).
+8. **[YÊU CẦU DEV]** Tạo Dimension `depository_member_dim`, Fact `fct_custody_account_open_close_snpst` và flat ClickHouse `tknb_fct_custody_account_open_close_snpst_flat` theo LLD mới. Bảng Operational `ttlk01_account_open_close_rpt` + flat `tknb_ttlk01_account_open_close_rpt_flat` (thiết kế 2026-11-03, chưa dựng) không tạo.
 
 **Bảng mapping nguồn:** Không có dòng PENDING — toàn bộ 23/23 KPI READY.
 
 #### Nhóm 14 - Danh sách chứng quyền đang lưu hành (TTLK10)
 
-**Phân loại:** Báo cáo danh sách (list-detail) — mỗi dòng STT = 1 mã chứng quyền (CW), gồm 3 cột: Tên chứng quyền, Mã chứng quyền, Khối lượng đang lưu hành.
+**Phân loại:** Phân tích — báo cáo danh sách (list-detail), mỗi dòng STT = 1 mã chứng quyền (CW), gồm 3 cột: Tên chứng quyền, Mã chứng quyền, Khối lượng đang lưu hành.
 
-> **[SỬA 2026-11-03, BA cập nhật mapping TTLK10 — đổi nguồn]** BA đổi cả 3 dòng (dòng 1215–1217) từ SCMS `DISCLOSURE_SECURITIES_OFFERING` (KL cho phép phát hành − KL đã phân phối) sang **MDDS `jad_stockinfor`** (tên CK; chứng quyền = sàn HOSE `FloorCode='10'` + `StockType='4'`) kết hợp **VSDC `outstanding_shares`** (`SUM(outstanding_shares)` theo mã, tháng báo cáo), trạng thái mapping Done. Thiết kế (Data Modeler chốt 2026-11-03): **giữ bảng tác nghiệp `ttlk10_cw_outstanding_rpt`** (quy ước 'mỗi báo cáo 1 bảng phẳng') và viết lại LLD per-table theo mapping mới (file `DTM_TKNB_ttlk10_cw_outstanding_rpt_VSDC_OUTSTANDING_SHARES.csv`; LLD cũ theo nguồn SCMS đã bị gỡ ở commit 63feed11 nên bảng từng không có LLD/registry). Giữ đúng `SUM` của SQL BA.
+> **[THIẾT KẾ LẠI 2026-11-04, theo yêu cầu Data Modeler — Star Schema thay bảng Operational]** Bảng Operational `ttlk10_cw_outstanding_rpt` (thiết kế 2026-11-03) bị bãi bỏ (All-Tier Cleanup, Section 4), thay bằng **`Fact Covered Warrant Outstanding Snapshot`** (grain 1 mã CW × 1 ngày giao dịch, PK `covered_warrant_outstanding_snpst_id`) + Dimension dùng chung `Security Trading Snapshot Dimension` (reuse GSTT — Tên CW = `security_full_nm`, Mã CW = `symbol`) + `Calendar Date Dimension` (reuse). Fact chỉ có 1 measure `outstanding_quantity` lưu **theo ngày** đúng grain Atomic (`listed_share_information`: mã × `transaction_dt`); phép **SUM theo (mã CW, tháng) của BA chuyển sang Detail Mapping** (MEASURE, kỳ `:cuoi_thang`) theo A31 (kỳ báo cáo/as-of là việc của DM, không nằm trong `etl_logic`). Giữ đúng SUM của BA (Data Modeler chốt 2026-11-03); nếu BA đổi sang 'giá trị ngày cuối tháng' thì chỉ sửa Detail Mapping, không đổi Fact. Ngoại lệ thứ 8 của quy ước 'mỗi báo cáo 1 bảng phẳng' theo yêu cầu Data Modeler. Vấn đề mở xem Section 5 mục 43.
+
+> **[SỬA 2026-11-03, BA cập nhật mapping TTLK10 — đổi nguồn]** BA đổi cả 3 dòng (dòng 1215–1217) từ SCMS `DISCLOSURE_SECURITIES_OFFERING` (KL cho phép phát hành − KL đã phân phối) sang **MDDS `jad_stockinfor`** (tên CK; chứng quyền = sàn HOSE `FloorCode='10'` + `StockType='4'`) kết hợp **VSDC `outstanding_shares`** (`SUM(outstanding_shares)` theo mã, tháng báo cáo), trạng thái mapping Done. *(Lịch sử 2026-11-03: thiết kế khi đó giữ bảng Operational `ttlk10_cw_outstanding_rpt` + flat `tknb_ttlk10_cw_outstanding_rpt_flat`; LLD SCMS cũ đã gỡ ở commit 63feed11 — nay thay bằng Fact/Dimension ở khối trên.)*
 
 **Atomic:**
-- `Listed Share Information` (`listed_share_information`) ← `uat_vsdc_stg.outstanding_shares` (`src_stm_code = 'VSDC_OUTSTANDING_SHARES'`) — READY: `ticker_symbol`, `outstanding_share_quantity`, `transaction_dt`, `ds_snpst_dt`.
-- `Security Trading Snapshot` (`security_trading_snapshot`) ← `uat_mdds_stg.jad_stockinfor` — READY: `ticker_symbol`, `full_nm`, `floor_code`, `stock_tp_code`, `trading_dt`, `trading_time` (lấy bản ghi cuối phiên mỗi mã/ngày, nối với VSDC theo `ticker_symbol` + ngày).
+- `Listed Share Information` (`listed_share_information`) ← `uat_vsdc_stg.outstanding_shares` (`src_stm_code = 'VSDC_OUTSTANDING_SHARES'`) — READY: `ticker_symbol`, `outstanding_share_quantity`, `transaction_dt`. Bảng driving của Fact (1 dòng/mã/ngày giao dịch). Cột kỹ thuật `ds_snpst_dt` (BA ghim '2026-09-17') chưa khai trong YAML Atomic — xem Section 5 mục 43(4).
+- `Security Trading Snapshot` (`security_trading_snapshot`) ← `uat_mdds_stg.jad_stockinfor` — READY: `ticker_symbol`, `full_nm`, `floor_code`, `stock_tp_code`, `trading_dt`, `trading_time` (lấy bản ghi cuối phiên mỗi mã/ngày; chỉ dùng để xác định tập chứng quyền HOSE khi nạp Fact và nối `Security Trading Snapshot Dimension` theo `symbol`).
 
 **Mockup:** Báo cáo TTLK10 — user cung cấp template thật (2 bảng con giống nhau, có thể là 2 loại CW hoặc cùng 1 báo cáo lặp mẫu), 3 cột khớp đúng BA.
 
-**Mart:** `ttlk10_cw_outstanding_rpt` — bảng phẳng, grain 1 dòng/1 mã chứng quyền/1 tháng báo cáo (`report_period_dt` = ngày cuối tháng; không phải EAV item_code mà là danh sách chi tiết từng mã).
+> Presentation Grain: mỗi dòng báo cáo = 1 mã CW (đứng cạnh `Mã chứng quyền`) trong 1 tháng báo cáo, được cộng gộp từ Fact grain ngày — Presentation thô hơn Storage (Iso-Grain hợp lệ).
+
+**Source:** `Fact Covered Warrant Outstanding Snapshot` → `Calendar Date Dimension`, `Security Trading Snapshot Dimension`
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_TKNB_843 | Tên chứng quyền | - | Chiều | `covered_warrant_nm` ← `security_trading_snapshot.full_nm` lọc `floor_code='10'`, `stock_tp_code='4'` | [STT=1] **[SỬA 2026-11-03]** BA dòng 1215: MDDS `jad_stockinfor.fullname`; trước đây `sc_disclosure_securities_offering.covered_warrant_nm` | READY |
-| K_TKNB_844 | Mã chứng quyền | - | Chiều | `listed_cw_code` ← `listed_share_information.ticker_symbol` lọc `floor_code='10'`, `stock_tp_code='4'` | [STT=2] **[SỬA 2026-11-03]** BA dòng 1216: `o.ticker_symbol as MA_CK` (VSDC `outstanding_shares`) | READY |
-| K_TKNB_845 | Khối lượng đang lưu hành (chứng quyền) | CQ | Cơ sở | `outstanding_quantity` = `SUM(listed_share_information.outstanding_share_quantity)` theo (mã CW, tháng), kỳ = `report_period_dt = :cuoi_thang` | [STT=3] **[SỬA 2026-11-03]** BA dòng 1217: `SUM(o.outstanding_shares)`; trước đây `cw_permitted_quantity - cw_distributed_quantity`. Rủi ro cộng dồn nhiều ngày — xem vấn đề (1) | READY |
+| K_TKNB_843 | Tên chứng quyền | - | Chiều | `security_trading_snpst_dim.security_full_nm` (qua FK `security_trading_snpst_dim_id`) | [STT=1] BA dòng 1215: MDDS `jad_stockinfor.fullname` (`s.fullname as TEN_CK`); tập CW = HOSE (`floor_code='10'`) + `stock_tp_code='4'` được lọc khi nạp Fact, Dimension dùng chung GSTT. **[SỬA 2026-11-04]** chuyển từ cột Operational sang Dimension reuse | READY |
+| K_TKNB_844 | Mã chứng quyền | - | Chiều | `security_trading_snpst_dim.symbol` (qua FK `security_trading_snpst_dim_id`) | [STT=2] BA dòng 1216: `o.ticker_symbol as MA_CK` (VSDC `outstanding_shares`) — BK Dimension nối Fact theo `symbol` = `ticker_symbol`. **[SỬA 2026-11-04]** chuyển từ cột Operational sang Dimension reuse | READY |
+| K_TKNB_845 | Khối lượng đang lưu hành (chứng quyền) | CQ | Cơ sở | `SUM(fct_covered_warrant_outstanding_snpst.outstanding_quantity)` theo (mã CW, tháng); `outstanding_quantity` ← `listed_share_information.outstanding_share_quantity`; kỳ = `cdr_dt_dim.cdr_dt` (qua `snpst_dt_dim_id`) trong tháng báo cáo (`:cuoi_thang`) | [STT=3] BA dòng 1217: `SUM(o.outstanding_shares)`. **[SỬA 2026-11-04]** Fact lưu theo ngày; SUM theo tháng nằm ở Detail Mapping. Rủi ro BA cộng mọi ngày trong tháng — xem Section 5 mục 43(1) | READY |
 
-**Vấn đề cần BA/dev xác nhận (chưa có số trong Section 5 — cần đăng ký thêm):**
-1. **`SUM` theo tháng:** SQL BA cộng `outstanding_shares` của MỌI `transaction_date` trong tháng (`right(left(transaction_date,7),2) = '08'`). Nếu `outstanding_shares` có dữ liệu theo ngày thì kết quả là KL cộng dồn nhiều ngày, không phải KL tại cuối kỳ. Thiết kế giữ đúng SQL BA (Data Modeler chốt 2026-11-03); dev kiểm dữ liệu xem 1 dòng/mã/tháng hay theo ngày; nếu theo ngày, đề nghị BA đổi sang giá trị tại ngày giao dịch lớn nhất của tháng.
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        string Source_System_Code
+    }
+    Security_Trading_Snapshot_Dimension {
+        string Security_Trading_Snapshot_Dimension_Id PK
+        string Symbol
+        string Security_Full_Name
+        string Floor_Code
+        string ISIN_Code
+        date Maturity_Date
+        decimal Contract_Multiplier
+        string Source_System_Code
+    }
+    Fact_Covered_Warrant_Outstanding_Snapshot {
+        string Covered_Warrant_Outstanding_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Security_Trading_Snapshot_Dimension_Id FK
+        bigint Outstanding_Quantity
+        string Source_System_Code
+    }
+
+    Calendar_Date_Dimension ||--o{ Fact_Covered_Warrant_Outstanding_Snapshot : "Snapshot_Date_Dimension_Id"
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Covered_Warrant_Outstanding_Snapshot : "Security_Trading_Snapshot_Dimension_Id"
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph Datamart["Datamart"]
+        G1["Fact Covered Warrant Outstanding Snapshot"]
+        G2["Security Trading Snapshot Dimension"]
+        G3["Calendar Date Dimension"]
+    end
+    subgraph RPT["Báo cáo"]
+        R1["TTLK10 - Nhom 14: K_TKNB_843-845"]
+    end
+    G1 --> R1
+    G2 --> R1
+    G3 --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Covered Warrant Outstanding Snapshot | 1 row = 1 mã chứng quyền × 1 ngày giao dịch (`snpst_dt_dim_id` = `listed_share_information.transaction_dt` + `security_trading_snpst_dim_id`); PK `covered_warrant_outstanding_snpst_id` = hash 2 cột grain trên + `src_stm_code` (Dạng B, A22 — không dùng Dạng A vì PK Atomic `listed_share_information_id` chỉ hash theo `ticker_symbol`, không duy nhất theo ngày) |
+| Security Trading Snapshot Dimension | 1 row = 1 mã CK (SCD4A current-state) — sở hữu GSTT, dùng chung |
+| Calendar Date Dimension | 1 row = 1 ngày |
+
+**Vấn đề cần BA/dev xác nhận (đăng ký tại Section 5 mục 43):**
+1. **`SUM` theo tháng:** SQL BA cộng `outstanding_shares` của MỌI `transaction_date` trong tháng (`right(left(transaction_date,7),2) = '08'`). Nếu `outstanding_shares` có dữ liệu theo ngày thì kết quả là KL cộng dồn nhiều ngày, không phải KL tại cuối kỳ. Thiết kế giữ đúng SQL BA ở Detail Mapping (Data Modeler chốt 2026-11-03); dev kiểm dữ liệu: 1 dòng/mã/tháng hay theo ngày; nếu theo ngày, đề nghị BA đổi sang giá trị tại ngày giao dịch lớn nhất của tháng (chỉ sửa Detail Mapping).
 2. **Chỉ CW trên HOSE:** CASE của BA chỉ gán 'CW' cho `FloorCode = '10' AND StockType = '4'`; chứng quyền trên sàn khác (nếu có) bị loại.
-3. **Tham số kỳ:** BA ghi điều kiện `THANG_BC = :P_THANG_BC` nhưng SQL cứng tháng 08/năm 2026 → DM dùng `:cuoi_thang`; Mart nạp mọi tháng.
-4. **Lát cắt Atomic:** BA cố định `ds_snpst_dt = '2026-09-17'` ('lát cắt mới nhất') → thiết kế lấy lát cắt hiện hành của Atomic; cột kỹ thuật `ds_snpst_dt` không được khai trong `etl_logic` vì không có trong YAML Atomic (Gate 0 báo `L0-ATOMIC-COLUMN-NOT-FOUND` nếu khai).
+3. **Tham số kỳ:** BA ghi điều kiện `THANG_BC = :P_THANG_BC` nhưng SQL cứng tháng 08/năm 2026 → DM dùng `:cuoi_thang`; Fact nạp mọi ngày theo `:etl_date`.
+4. **Lát cắt Atomic `ds_snpst_dt`:** BA cố định `ds_snpst_dt = '2026-09-17'` ('lát cắt mới nhất'); YAML Atomic `listed_share_information` không khai `ds_snpst_dt` và PK hash chỉ theo `ticker_symbol` (không duy nhất theo ngày). Datamart không sửa Atomic — đề nghị Atomic team khai `ds_snpst_dt` và PK theo (mã, ngày); đến lúc đó `etl_logic` chưa viết được dedup lát cắt (Gate 0 `L0-ATOMIC-COLUMN-NOT-FOUND` nếu khai).
 5. **Nối INNER theo ngày:** `s.Trade_Date = o.transaction_date` — ngày không có bản ghi MDDS của mã bị loại (như BA).
-6. **[YÊU CẦU DEV]** Bảng Mart `ttlk10_cw_outstanding_rpt` chưa được tạo (trước đây không có LLD): tạo theo LLD mới; flat `tknb_ttlk10_cw_outstanding_rpt_flat` giữ nguyên cột (`outstanding_quantity` Int64), nạp lại từ Mart.
+6. **[YÊU CẦU DEV]** Tạo Fact `fct_covered_warrant_outstanding_snpst` và flat ClickHouse `tknb_fct_covered_warrant_outstanding_snpst_flat` theo LLD mới (cột `outstanding_quantity` Int64). Bảng Operational `ttlk10_cw_outstanding_rpt` + flat `tknb_ttlk10_cw_outstanding_rpt_flat` (thiết kế 2026-11-03, chưa dựng) không tạo.
 
 **Bảng mapping nguồn:** Không có dòng PENDING — toàn bộ 3/3 KPI READY.
 
@@ -3160,7 +3336,6 @@ graph TB
     OpItemValue["Report Item Value"]:::oper
     OpHNX04["Market Scale Report (HNX04)"]:::oper
     OpHSX02["Listing Trading Report (HSX02)"]:::oper
-    OpTTLK10["CW Outstanding Report (TTLK10)"]:::oper
     OpQG0513["Offering Result Report (QG0513)"]:::oper
     OpTK04BTC["Market Summary Report (TK-04.BTC)"]:::oper
     OpNienGiam["Market Annual Report (Niên giám)"]:::oper
@@ -3175,6 +3350,9 @@ graph TB
     FactDerivDetail["Fact Derivatives Security Detail Snapshot"]:::fact
     FactPcbIssuance["Fact Private Corporate Bond Issuance Snapshot"]:::fact
     FactPcbIntl["Fact Private Corporate Bond International Offering Snapshot"]:::fact
+    DimDepMember["Depository Member Dimension"]:::dim
+    FactCustody["Fact Custody Account Open Close Snapshot"]:::fact
+    FactCwOutstanding["Fact Covered Warrant Outstanding Snapshot"]:::fact
 
     DimIdxConst --> FactMktTrading
     DimIdxConst --> FactFrgnPropIdx
@@ -3182,9 +3360,11 @@ graph TB
     DimPcb --> FactPcbIntl
     DimSecTrading --> FactSecDetail
     DimSecTrading --> FactDerivDetail
+    DimSecTrading --> FactCwOutstanding
+    DimDepMember --> FactCustody
 ```
 
-> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10), Nhóm 13 (TTLK01) và Nhóm 19 (BM030b_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ. **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — thêm Operational `OTC Corp Bond Trading Report (BM030d)` (nguồn Atomic mới `Internal Statistical Report`) vào graph TB. **[MỚI 2026-10-05]** Nhóm 8 (HNX11) không còn PENDING — thiết kế Star Schema dùng chung `Private Corporate Bond Dimension` với Nhóm 9 (graph TB bổ sung `Private Corporate Bond Dimension` + 2 Fact của Nhóm 8/9 — trước đây Nhóm 9 chưa có trong Section 3). **[SỬA 2026-10-25]** 14 node Operational của 14 báo cáo dev (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) gộp thành 1 node `Report Item Value` (`item_value`) — Open Issue 41; 7 node Operational còn lại giữ nguyên.
+> Nhóm 2 (HNX02), Nhóm 5 (HNX06), Nhóm 7 (HNX10) và Nhóm 19 (BM030b_MSS) 100% PENDING — chưa có bảng vật lý, không đưa vào graph TB (theo checklist Nhóm 100% PENDING). **[MỚI 2026-09-22]** `Fact Market Index Snapshot`/`Market Index Dimension` (reuse — sở hữu QLKD) và `Index Constituent Dimension` (reuse — sở hữu GSTT) là ngoại lệ duy nhất trong module dùng Fact/Dim Star Schema thay vì bảng phẳng Tác nghiệp — xem Section 4 lý do ngoại lệ. **[SỬA 2026-10-08]** Nhóm 21 (BM030d_MSS) không còn PENDING — thêm Operational `OTC Corp Bond Trading Report (BM030d)` (nguồn Atomic mới `Internal Statistical Report`) vào graph TB. **[MỚI 2026-10-05]** Nhóm 8 (HNX11) không còn PENDING — thiết kế Star Schema dùng chung `Private Corporate Bond Dimension` với Nhóm 9 (graph TB bổ sung `Private Corporate Bond Dimension` + 2 Fact của Nhóm 8/9 — trước đây Nhóm 9 chưa có trong Section 3). **[SỬA 2026-10-25]** 14 node Operational của 14 báo cáo dev (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) gộp thành 1 node `Report Item Value` (`item_value`) — Open Issue 41; 7 node Operational còn lại giữ nguyên. **[SỬA 2026-11-04]** Nhóm 13 (TTLK01) và Nhóm 14 (TTLK10) chuyển sang Star Schema (Section 5 mục 42–43): bỏ node `CW Outstanding Report (TTLK10)` (còn 6 node Operational ngoài `Report Item Value`), thêm `Depository Member Dimension`, `Fact Custody Account Open Close Snapshot`, `Fact Covered Warrant Outstanding Snapshot`.
 
 ### 3.2 Bảng Phân tích (chỉ liệt kê Fact)
 
@@ -3198,6 +3378,8 @@ graph TB
 | `fct_security_trading_detail_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã CK × 1 ngày giao dịch | K_TKNB_1187–1239 (Nhóm 28; 49 cột — giá, cung cầu, quy mô GD, NĐTNN, tự doanh) | READY |
 | `fct_derivatives_security_detail_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã hợp đồng CKPS × 1 ngày giao dịch | K_TKNB_1240–1257 (Nhóm 29; 14 cột — open interest, KL/GT, NĐTNN, tự doanh) | READY |
 | `fct_private_corporate_bond_international_offering_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã TP × 1 thị trường phát hành × 1 tháng báo cáo | K_TKNB_553, 558–560 (Nhóm 9; thuộc tính còn lại qua `private_corporate_bond_dim`) | READY |
+| `fct_custody_account_open_close_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 TVLK × 1 tháng báo cáo (`snpst_dt_dim_id` = ngày cuối tháng + `depository_member_dim_id`); PK `custody_account_open_close_snpst_id` (hash grain, Dạng B) | K_TKNB_821–842, 1300 (Nhóm 13; 16 measure số lượng + `total_account_quantity` + `row_nbr`; TVLK qua `depository_member_dim`) | READY |
+| `fct_covered_warrant_outstanding_snpst` (mới — sở hữu TKNB) | Periodic Snapshot | 1 row = 1 mã chứng quyền × 1 ngày giao dịch (`snpst_dt_dim_id` + `security_trading_snpst_dim_id`); PK `covered_warrant_outstanding_snpst_id` (hash grain, Dạng B); SUM theo tháng của BA nằm ở Detail Mapping | K_TKNB_843–845 (Nhóm 14; 1 measure `outstanding_quantity`; Tên/Mã CW qua `security_trading_snpst_dim`) | READY |
 
 ```mermaid
 erDiagram
@@ -3254,13 +3436,12 @@ erDiagram
 | `item_value` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 báo cáo (`report_code`) / 1 ngày tính (`calc_date`) — bảng dùng chung cho 14 báo cáo dev; ETL engine đọc `item_rule` (Atomic, nạp từ `full_items.csv`), chạy cột `rule` rồi ghi kết quả (Iceberg, PARTITIONED BY `calc_date`); ClickHouse đẩy theo `report_code` sang bảng flat riêng từng báo cáo | K_TKNB_1–108 (Nhóm 1), 109–273 và 1258–1299 (Nhóm 2), 274–286 (Nhóm 3), 472–496 (Nhóm 5), 497–519 (Nhóm 6), 571–695 (Nhóm 10), 793–820 (Nhóm 12), 1023–1036 (Nhóm 19), 1037–1045 (Nhóm 20), 1046–1052 (Nhóm 21), 1053–1067 (Nhóm 22), 1094–1112 (Nhóm 24), 1113–1122 (Nhóm 25), 1174–1186 (Nhóm 27) | READY 431 KPI (358 KPI gắn item_rule dev; 73 KPI READY chưa có item trong item_rule — 37 chiều/nhãn không cần dòng + 36 chỉ tiêu cần dev bổ sung, xem Open Issue 41) / PENDING 185 KPI |
 | `hnx04_market_scale_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) / 1 loại kỳ (`period_type` ∈ {trong_ky, cong_don}) — mở rộng thêm chiều `period_type` so với 2 bảng trên vì báo cáo HNX04 có cả số liệu "Trong kỳ - Phát sinh" và "Cộng dồn đến cuối kỳ - Phát sinh" cho cùng 1 chỉ tiêu (riêng mục 6-11 chỉ có `period_type=trong_ky`, không có `cong_don`) | K_TKNB_290–471 (Nhóm 4) | READY (80 KPI, +3 — K_TKNB_313/314/315 sửa 2026-09-16 — 23 KPI gốc + 54 KPI mục 6-11 theo mapping BA 2026-09-10, nguồn `Listing Status Change`/`Additional Gov Bond Listing`/`Bond Trading Registration Status` VSDC) / PENDING (102 KPI — biểu mẫu BM24/BM32/BM23/BM34/BM25, mục 1/4-5) |
 | `hsx02_listing_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) / 1 loại kỳ (`period_type` ∈ {trong_ky, cong_don}) — cùng cấu trúc EAV mở rộng `period_type` với `hnx04_market_scale_rpt` | K_TKNB_696–792 (Nhóm 11) | READY (85 KPI, gồm N/A theo nghiệp vụ + tránh double-count) / PENDING (12 KPI — biểu mẫu HOSE.BM15/BM16, VSDC.BM1) |
-| `ttlk10_cw_outstanding_rpt` | 1 dòng / 1 mã chứng quyền (`listed_cw_code`) / 1 kỳ báo cáo (`report_period_dt`) — bảng DANH SÁCH (list-detail), khác cấu trúc EAV `item_code` của các bảng trên; mỗi dòng là 1 mã CW với đầy đủ thuộc tính (tên, mã, KL lưu hành) trên cùng 1 dòng | K_TKNB_843–845 (Nhóm 14) | READY (3/3 KPI) |
 | `0513hubckqg_offering_result_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với `hnx01_stock_trading_rpt` | K_TKNB_846–874 (Nhóm 15) | READY (29/29 KPI) |
 | `tk04btc_market_summary_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ gốc (`period_marker` ∈ {Q1, Q2, Q3}, KHÔNG lưu H1/9M — derive lúc đọc theo `measure_type`) | K_TKNB_875–917 (Nhóm 16) | READY (17/43 KPI, +2 — K_TKNB_876/877 sửa 2026-09-16) / PENDING (26/43 KPI — 8 nhóm gap biểu mẫu/entity riêng biệt, xem Bảng mapping) |
 | `tkniengiam_market_annual_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 năm báo cáo (`report_period_dt`) — EAV cơ bản theo năm, không cần `period_marker`/`period_type` | K_TKNB_918–1011 (Nhóm 17) | READY (74/94 KPI, +4 — K_TKNB_923/924/925/926 sửa 2026-09-16) / PENDING (20/94 KPI — 8 nhóm gap biểu mẫu TPCP/TPDNRL, xem Bảng mapping) |
 | `bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt` | 1 dòng / 1 chỉ tiêu (`item_code`) / 1 kỳ báo cáo (`report_period_dt`) — cùng cấu trúc EAV với các bảng `mss031x` | K_TKNB_1123–1173 (Nhóm 26) | READY (51/51 KPI) |
 
-**Khóa nghiệp vụ**: `item_value` = `report_code + item_code + calc_date` (3 cột BK, không surrogate key; dev không có cột `item_stt`/`item_unit`/`src_stm_code` — STT, đơn vị ghi ở Ghi chú KPI/`item_rule.note`; **[SỬA 2026-10-25]** thay 14 bảng EAV riêng); `0513hubckqg_offering_result_rpt`/`tkniengiam_market_annual_rpt` = `report_code + report_period_dt + item_code`; `bm035mss_security_trading_detail_rpt`/`bm043mss_derivatives_security_detail_rpt` đã DEPRECATED (thay bằng Fact, xem Section 4); `hnx04_market_scale_rpt`/`hsx02_listing_trading_rpt` = `report_code + report_period_dt + item_code + period_type`; `tk04btc_market_summary_rpt` = `report_code + report_period_dt + item_code + period_marker` (period_marker khác period_type — 3 giá trị Q1/Q2/Q3 cố định, không phải trong_ky/cong_don); `ttlk10_cw_outstanding_rpt` = `report_code + report_period_dt + listed_cw_code` (khóa nghiệp vụ mã CW, không dùng `item_code` vì đây là bảng danh sách không phải EAV). Không dùng surrogate key riêng cho các bảng Tác nghiệp còn lại. **[SỬA 2026-09-22]** `bm030amss_market_trading_rpt`/`bm031amss_foreign_proprietary_trading_rpt` đã DEPRECATED, thay bằng Fact có surrogate key chuẩn (xem 3.2 và Section 4).
+**Khóa nghiệp vụ**: `item_value` = `report_code + item_code + calc_date` (3 cột BK, không surrogate key; dev không có cột `item_stt`/`item_unit`/`src_stm_code` — STT, đơn vị ghi ở Ghi chú KPI/`item_rule.note`; **[SỬA 2026-10-25]** thay 14 bảng EAV riêng); `0513hubckqg_offering_result_rpt`/`tkniengiam_market_annual_rpt` = `report_code + report_period_dt + item_code`; `bm035mss_security_trading_detail_rpt`/`bm043mss_derivatives_security_detail_rpt` đã DEPRECATED (thay bằng Fact, xem Section 4); `hnx04_market_scale_rpt`/`hsx02_listing_trading_rpt` = `report_code + report_period_dt + item_code + period_type`; `tk04btc_market_summary_rpt` = `report_code + report_period_dt + item_code + period_marker` (period_marker khác period_type — 3 giá trị Q1/Q2/Q3 cố định, không phải trong_ky/cong_don); `ttlk10_cw_outstanding_rpt`/`ttlk01_account_open_close_rpt` đã DEPRECATED (thay bằng Fact, xem 3.2 và Section 4). Không dùng surrogate key riêng cho các bảng Tác nghiệp còn lại. **[SỬA 2026-09-22]** `bm030amss_market_trading_rpt`/`bm031amss_foreign_proprietary_trading_rpt` đã DEPRECATED, thay bằng Fact có surrogate key chuẩn (xem 3.2 và Section 4).
 
 **`tk04btc_market_summary_rpt` — cột `measure_type` quyết định cách derive H1 (6 tháng)/9M (9 tháng) ở tầng BI, KHÔNG lưu vật lý 2 giá trị này**: `measure_type='flow'` → H1=SUM(Q1,Q2), 9M=SUM(Q1,Q2,Q3); `measure_type='snapshot'` → H1=giá trị Q2, 9M=giá trị Q3 (lookup, không SUM). Quyết định thiết kế này (phương án C trong 3 phương án đã so sánh) nhằm tránh trùng lặp vật lý và khớp đúng granularity nguồn thật (đa số nguồn biểu mẫu chỉ có sẵn theo Quý/6-tháng/9-tháng, không có breakdown ngày/tháng).
 
@@ -3298,14 +3479,6 @@ erDiagram
         int item_stt
         string item_unit
         float item_value
-        string Source_System_Code
-    }
-    ttlk10_cw_outstanding_rpt {
-        string report_code PK
-        date report_period_dt PK
-        string listed_cw_code PK
-        string covered_warrant_nm
-        float outstanding_quantity
         string Source_System_Code
     }
     0513hubckqg_offering_result_rpt {
@@ -3374,13 +3547,14 @@ erDiagram
 
 *Tất cả Dimension áp dụng SCD Type 4A.*
 
-8 bảng Tác nghiệp của TKNB (`item_value` + 7 bảng EAV/danh sách chưa có trong pipeline dev) không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp. **[MỚI 2026-09-22]** 2 Dimension dưới đây là ngoại lệ, phục vụ riêng 2 Fact của Nhóm 18/23 — xem Section 4 lý do ngoại lệ.
+7 bảng Tác nghiệp của TKNB (`item_value` + 6 bảng EAV chưa có trong pipeline dev) không tách Dimension dùng chung (theo quyết định thiết kế ở đầu file), toàn bộ chiều (Sàn, Chỉ số, Loại CK...) nằm trong `item_code` của từng bảng Tác nghiệp. **[MỚI 2026-09-22]** 2 Dimension dưới đây là ngoại lệ, phục vụ riêng 2 Fact của Nhóm 18/23 — xem Section 4 lý do ngoại lệ.
 
 | Dimension | Loại | Mô tả | Scheme | Trạng thái |
 |---|---|---|---|---|
 | Index Constituent Dimension (`index_constituent_dim`, reuse — sở hữu GSTT) | Dùng chung (conformed, cross-module) | Danh mục rổ chỉ số — 1 row / Index Code | — | READY |
 | Private Corporate Bond Dimension (`private_corporate_bond_dim`, sở hữu TKNB) | Dimension TPDN riêng lẻ — dùng chung Nhóm 8, 9 | 1 row / 1 mã trái phiếu (SCD4A) | — | READY |
 | Security Trading Snapshot Dimension (`security_trading_snpst_dim`, reuse — sở hữu GSTT) | Dùng chung (conformed, cross-module) | Hồ sơ chứng khoán — 1 row / mã CK (SCD4A) | — | READY |
+| Depository Member Dimension (`depository_member_dim`, sở hữu TKNB) | Dimension TVLK — dùng cho Nhóm 13 | 1 row / 1 TVLK (SCD4A current-state; BK = chuỗi cột `TVLK` của ISS) | — | READY |
 
 ---
 
@@ -3391,7 +3565,11 @@ erDiagram
 | Giá trị chỉ tiêu 14 báo cáo TKNB theo cấu hình item_rule (Report Item Value) | item_value | new | **[MỚI 2026-10-25]** Bảng dùng chung cho 14 báo cáo dev (TK-HNX01, HNX02, TK-HNX03, HNX06, TK-HNX07, TK-HSX01, TK-HSX04, BM030b/c/d/e/f_MSS, BM031b/c_MSS) — pipeline dev `item_rule` (Atomic) → `datamart.uat_dtm.item_value` → ClickHouse `tknb_fct_*_snpst_flat`; thay 14 bảng EAV riêng từng báo cáo. **Ngoại lệ thứ 6 của quy ước 'mỗi báo cáo 1 bảng phẳng'** (Data Modeler yêu cầu 2026-10-25 theo triển khai dev; đảo quyết định Open Issue 37(5)): dev đã chạy và lưu kết quả 14 báo cáo vào 1 bảng, giữ 2 cấu trúc song song cho cùng báo cáo chỉ gây lệch. Không reuse Fact/Dimension module khác (báo cáo mẫu cố định). Tên vật lý `item_value` do pipeline dev cố định nên không theo hậu tố `_rpt` (naming_conventions); cột chỉ có 8 trường dev (không `item_stt`/`item_unit`/`src_stm_code`). Nguồn Atomic: `securities_trade`, `market_index_snapshot`, `security_trading_snapshot` + 4 entity VSDC/HNX/ISS chưa YAML Atomic (`bond_order_book`, `gov_bond_bidding_result`, `end_of_day_open_interest`, `internal_statistical_report`). |
 | Báo cáo tổng hợp về quy mô TTCK (HNX04) | hnx04_market_scale_rpt | new | Cùng quyết định thiết kế TKNB — bảng phẳng riêng, không reuse Fact module khác dù cùng nguồn Atomic (`securities_trade`, `security_trading_snapshot`). Mở rộng composite key thêm `period_type` (trong_ky/cong_don) do đặc thù báo cáo có cả số liệu phát sinh trong kỳ và lũy kế — khác 2 bảng HNX01/HNX03 chỉ có 1 period_type. |
 | Báo cáo về niêm yết và giao dịch chứng khoán HOSE, kỳ tháng (HSX02) | hsx02_listing_trading_rpt | new | Cùng quyết định thiết kế TKNB — bảng phẳng riêng, không reuse `hnx04_market_scale_rpt` dù cùng cấu trúc EAV mở rộng `period_type` và tương tự nguồn Atomic — HSX02 là báo cáo riêng cho HOSE với danh mục TPCQĐP (khác TPCP của HNX04), không share bảng vật lý. |
-| Danh sách chứng quyền đang lưu hành (TTLK10) | ttlk10_cw_outstanding_rpt | new | Bảng phẳng mới, cấu trúc DANH SÁCH (không phải EAV) — khác hẳn 7 bảng EAV còn lại trong module. Không reuse Atomic entity nào từ module khác vì đây là lần đầu module TKNB dùng nguồn `Sc Disclosure Securities Offering` (SCMS). |
+| ~~Danh sách chứng quyền đang lưu hành (TTLK10)~~ | ~~ttlk10_cw_outstanding_rpt~~ | **DEPRECATED** | **[SỬA 2026-11-04 — All-Tier Cleanup]** Bãi bỏ bảng Operational (thiết kế 2026-11-03, Mart chưa dựng) — thay bằng `fct_covered_warrant_outstanding_snpst` (Star Schema; Tên/Mã CW lấy từ `security_trading_snpst_dim` reuse GSTT). *(Lịch sử: bản đầu theo nguồn SCMS `Sc Disclosure Securities Offering`; BA đổi sang VSDC + MDDS ngày 2026-11-03.)* Cleanup 5 tầng (LLD, master, Detail Mapping đổi `mart_table`/`mart_column`, model.yaml, Entities/flat SQL) thực hiện cùng đợt LLD 2026-11-04 |
+| ~~Báo cáo tình hình đóng/mở tài khoản lưu ký (TTLK01)~~ | ~~ttlk01_account_open_close_rpt~~ | **DEPRECATED** | **[SỬA 2026-11-04 — All-Tier Cleanup]** Bãi bỏ bảng Operational (thiết kế 2026-11-03 sau khi BA chuyển nguồn sang ISS, Mart chưa dựng) — thay bằng `fct_custody_account_open_close_snpst` + `depository_member_dim` (Star Schema). Cleanup 5 tầng (LLD, master, Detail Mapping đổi `mart_table`/`mart_column`, model.yaml, Entities/flat SQL) thực hiện cùng đợt LLD 2026-11-04 |
+| Depository Member Dimension (Nhóm 13) | depository_member_dim | new | **[MỚI 2026-11-04]** Dimension mới, sở hữu TKNB — 1 dòng/1 TVLK (SCD4A current-state; BK `depository_member_nm` = chuỗi cột `TVLK` của ISS; PK `depository_member_dim_id` = hash BK). Nguồn Atomic `internal_statistical_report` (cùng entity với Fact — Dimension sinh từ `column_path = 'TVLK'`). Chưa có Dimension TVLK ở module nào (`datamart_model.yaml`); không reuse `securities_company_dim` (QLKD) vì ISS chỉ có chuỗi tên TVLK, không có ID/mã CTCK để nối (H7) và TVLK gồm cả ngân hàng lưu ký; không reuse `custodian_bank_dim` (QLQ) vì chỉ gồm ngân hàng lưu ký/giám sát quỹ |
+| Fact Custody Account Open Close Snapshot (Nhóm 13) | fct_custody_account_open_close_snpst | new | **[MỚI 2026-11-04]** Fact mới, sở hữu TKNB — thiết kế TTLK01 dạng Star Schema (ngoại lệ thứ 7 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo yêu cầu Data Modeler). Grain 1 TVLK × 1 tháng báo cáo; PK `custody_account_open_close_snpst_id` (Dạng B: hash `snpst_dt_dim_id` + `depository_member_dim_id` + `src_stm_code`); 16 measure số lượng + `total_account_quantity` + `row_nbr` (degenerate, không thuộc grain). Fact rộng, không tách Dimension phân khúc (Trong nước/Nước ngoài × Cá nhân/Tổ chức) để mỗi KPI = 1 dòng Detail Mapping (tránh nhân dòng như Quy tắc L18). Không reuse Fact module khác: chưa có Fact số lượng tài khoản lưu ký theo TVLK |
+| Fact Covered Warrant Outstanding Snapshot (Nhóm 14) | fct_covered_warrant_outstanding_snpst | new | **[MỚI 2026-11-04]** Fact mới, sở hữu TKNB — thiết kế TTLK10 dạng Star Schema (ngoại lệ thứ 8 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo yêu cầu Data Modeler). Grain 1 mã CW × 1 ngày giao dịch (`transaction_dt`); PK `covered_warrant_outstanding_snpst_id` (Dạng B: hash `snpst_dt_dim_id` + `security_trading_snpst_dim_id` + `src_stm_code`; không dùng Dạng A vì PK Atomic `listed_share_information_id` chỉ hash theo `ticker_symbol`); 1 measure `outstanding_quantity`; SUM theo tháng của BA ở Detail Mapping (A31). Đã đối chiếu Lớp 3 cùng nguồn `listed_share_information`: không reuse `fct_listed_equity_snpst` (VP — chỉ nạp `stock_tp_code` 2/3/6, không có CW) và `fct_public_company_listed_share_snpst` (GSDC — grain công ty đại chúng, FK `public_company_dim`, không có CW) |
 | Báo cáo kết quả thực hiện phát hành (Biểu 0513.H.UBCK.QG) | 0513hubckqg_offering_result_rpt | new | Bảng phẳng EAV mới — lần đầu module TKNB dùng nguồn `Public Company Securities Offering Result` (IDS). Không reuse entity này với bất kỳ Fact/Dim module khác dù cùng nguồn Atomic — theo quyết định thiết kế TKNB (mỗi báo cáo = 1 bảng phẳng riêng). |
 | Báo cáo tổng hợp thị trường chứng khoán theo quý/lũy kế (Biểu TK-04.BTC) | tk04btc_market_summary_rpt | new | Bảng phẳng EAV mở rộng `period_marker`+`measure_type` — không reuse `item_value` dù dùng chung entity `Securities Trade` cho các measure III/VII/VIII, vì đây là báo cáo tổng hợp toàn thị trường quốc gia (cộng cả 2 sàn) khác grain/mục đích với 2 bảng theo từng sàn riêng. |
 | Niên giám thống kê thị trường chứng khoán (TK_NienGiam) | tkniengiam_market_annual_rpt | new | Bảng phẳng EAV theo năm — không reuse `item_value`/`tk04btc_market_summary_rpt` dù dùng chung entity `Securities Trade`/`Market Index Snapshot`/`Security Trading Snapshot`, vì đây là báo cáo năm tổng hợp riêng biệt, breakdown theo sàn khác grain 2 bảng HNX/HSX theo từng sàn và khác `period_marker` của TK-04.BTC. Lần đầu module TKNB dùng nguồn `Public Company` (IDS), `Securities Company` (SCMS), `Fund Management Company` (FMS) — 3 entity Involved Party mới cho module này. |
@@ -3409,7 +3587,7 @@ erDiagram
 | Fact Private Corporate Bond Issuance Snapshot (Nhóm 8) | fct_private_corporate_bond_issuance_snpst | new | **[MỚI 2026-10-05]** Fact mới, sở hữu TKNB — Nhóm 8 (HNX11) thiết kế dạng Dim/Fact như Nhóm 9 (ngoại lệ thứ 4 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo tiền lệ yêu cầu Data Modeler 2026-09-24). Grain 1 mã TP × 1 tháng báo cáo; nguồn `private_corp_bond_registration` (mapping md Bảng 16). Không gộp vào Fact quốc tế của Nhóm 9 vì khác nguồn, khác grain (không có `market_type`) và khác measure (giá trị phát hành vs khối lượng chào bán) |
 | Fact Security Trading Detail Snapshot (Nhóm 28) | fct_security_trading_detail_snpst | new | **[MỚI 2026-10-06]** Fact mới, sở hữu TKNB — thiết kế lại BM035 dạng Star Schema (ngoại lệ thứ 5 của quy ước 'mỗi báo cáo 1 bảng phẳng', theo yêu cầu Data Modeler). Grain 1 mã CK × 1 ngày; 49 cột. Không reuse `fct_stock_portfolio_snpst` (GSTT): thiếu ~30 cột và khác bộ lọc (H11). Không reuse `fct_market_trading_snpst`/`fct_foreign_proprietary_trading_index_snpst` (TKNB): grain Index Code, không phải mã CK |
 | Fact Derivatives Security Detail Snapshot (Nhóm 29) | fct_derivatives_security_detail_snpst | new | **[MỚI 2026-10-06]** Fact mới, sở hữu TKNB — thiết kế lại BM043 dạng Star Schema. Grain 1 mã hợp đồng CKPS × 1 ngày; 14 cột. Không reuse `fct_futures_investor_flow_snpst` (PTTT): chỉ HĐTL chỉ số, chỉ khối lượng |
-| Security Trading Snapshot Dimension (Nhóm 28, 29) | security_trading_snpst_dim | reuse | **[MỚI 2026-10-06]** Conformed Dimension sở hữu GSTT (Lớp 3 reuse, cùng nguồn Atomic `security_trading_snapshot`) — 1 dòng/mã CK (SCD4A); TKNB dùng `Symbol`, `Maturity Date`; giá hiện hành trong Dimension KHÔNG dùng (giá theo ngày nằm ở Fact) |
+| Security Trading Snapshot Dimension (Nhóm 14, 28, 29) | security_trading_snpst_dim | reuse | **[MỚI 2026-10-06]** Conformed Dimension sở hữu GSTT (Lớp 3 reuse, cùng nguồn Atomic `security_trading_snapshot`) — 1 dòng/mã CK (SCD4A); TKNB dùng `Symbol`, `Maturity Date` (Nhóm 28, 29) và `Symbol`, `Security Full Name` (Nhóm 14 — Mã/Tên chứng quyền, thêm 2026-11-04); giá hiện hành trong Dimension KHÔNG dùng (giá theo ngày nằm ở Fact) |
 ---
 
 ## Section 5 — Vấn đề mở
@@ -3457,4 +3635,6 @@ erDiagram
 38. **[MỚI 2026-10-10] Đồng bộ item-level đợt 1 với rule dev (Nhóm 3, 20, 21, 22, 24, 25 — 52 item; chưa làm: HNX01, HNX02, HNX06, HNX07, HSX01, HSX04, BM030b, BM030f):** (1) **Logic = SQL dev đã chuẩn hóa** (bỏ tiền tố `atomic.uat_atm.`, `{etl_date}` → `:etl_date`, giữ alias của dev); phần Ghi chú cũ của từng KPI bị thay bằng `item_code` thiết kế + mã item dev (nội dung cũ xem lịch sử git). Ghi chú `a` của dev ở BM031b/c là giá trị rác, bỏ qua. (2) **Cách tính GT:** dev dùng `execution_vol × execution_price` thay `execution_val` ở BM030c (3 item), BM030e (6), HNX07 (6), HNX01 (30) nhưng dùng `execution_val` ở HSX01, HSX04, BM031c — thiết kế cũ dùng `execution_val`; thiết kế theo dev (Vuong xác nhận 2026-10-10 "theo dev"); vẫn cần dev xác nhận có khác biệt số liệu không (đơn vị giá trái phiếu/lô lẻ/thỏa thuận). `ba_hld_sync_check` S5 báo 3 lỗi ở Nhóm 20 (K_TKNB_1042/1043/1045) — đã giải trình trong Ghi chú. (3) **Nhóm 24 (BM031b) — 12 KPI (K_TKNB_1096–1099, 1101–1108) chuyển PENDING → READY** nhờ nguồn dev `bond_order_book` (mới có trong `mapping_vsdc_ods_atm.md`, chưa YAML Atomic, Gate 0 cảnh báo — cùng khoảng trống O_NDTNN_37); dòng header K_TKNB_1094/1095/1100 giữ PENDING (dev không có item cho header). (4) **Tên báo cáo phái sinh — ĐÃ ĐỔI 2026-10-10 theo dev:** dev và BA hiện hành (17 dòng, không có dòng `BM031f` nào) đều gọi `BM030f_MSS`; HLD Nhóm 27 trước đây ghi nhầm `BM031f_MSS`. Đã đổi toàn bộ: bảng `bm031fmss_derivatives_foreign_proprietary_trading_rpt` → `bm030fmss_derivatives_trading_rpt` (flat `tknb_bm030fmss_derivatives_trading_rpt_flat`), logical name `Derivatives Trading Report (BM030f)`, mã `BM030f_MSS`/`BM030F`, hậu tố item_code `_mss031f` → `_mss030f`, mermaid `OpMSS030f` (HLD, master, yaml, Entities, Detail Mapping, kpi_index, flat 01/02, catalog). Bảng đã triển khai trên ClickHouse/Iceberg cần đổi tên hoặc tạo lại. (5) Item dev có rule rỗng (chưa tính): HNX01_6_01, HNX01_6_02, HNX01_9_01, HNX01_9_02, HNX06_3_08, HNX06_4_09 — xử lý khi đồng bộ Nhóm 1 và 5.
 39. **[MỚI 2026-10-10] Đồng bộ item-level đợt 2 với rule dev (Nhóm 6 HNX07, 12 HSX04, 27 BM030f — 49 item) và việc còn lại:** (1) Đã xong: Nhóm 6 (21 KPI; theo dev, Vuong xác nhận 2026-10-10: 3 header K_TKNB_505/506/513 đổi LABEL → DERIVED, Tính chất Chiều → Phái sinh, giá trị = tổng các con như `HNX07_3`, `HNX07_3_1`, `HNX07_3_2`; 9 KPI đổi MEASURE/LABEL → DERIVED. **Nghi lỗi phía dev:** `HNX07_3_1 = KL khớp lệnh + GT khớp lệnh` và `HNX07_3_2` tương tự — cộng khối lượng với giá trị (khác đơn vị) nên `HNX07_3` cũng vô nghĩa; thiết kế vẫn theo dev, cần dev xác nhận), Nhóm 12 (16 KPI cơ sở; các dòng tổng DERIVED của thiết kế không có item dev nên giữ nguyên), Nhóm 27 (12 KPI, ghép tay 4 KPI đầu vì thứ tự thiết kế K_TKNB_1175/1176 đảo; K_TKNB_1178 OI chuyển READY theo ngoại lệ VSDC `end_of_day_open_interest`, đóng nghi vấn mục 27). (2) **[ĐÃ LÀM XONG ở Open Issue 40 — 2026-10-10]** ~~Chưa làm vì chưa có bảng vật lý~~ (Nhóm PENDING 100%, cần thiết kế bảng EAV + LLD + master + yaml + Entities + flat trước khi chuyển READY): Nhóm 19 (BM030b — 12 item dev, nguồn `bond_order_book`) và Nhóm 5 (HNX06 — 22 item dev, nguồn `gov_bond_bidding_result`; 2 item `HNX06_3_08`, `HNX06_4_09` Tín phiếu có rule rỗng). (3) **[ĐÃ LÀM XONG ở Open Issue 40 — 2026-10-10]** ~~Chưa làm vì ghép tự động chưa đủ tin cậy, cần xác nhận bảng ghép bằng tay:~~ Nhóm 10 (HSX01, 75 item — khối khớp lệnh/thỏa thuận `HSX01_7_*`/`8_*` bố cục khác thiết kế), Nhóm 1 (HNX01, 104 item — 4 item rule rỗng và 4 item giá trị `HNX01_10_*_02` không có KPI tương ứng), Nhóm 2 (HNX02, 42 item dạng cột c1..cN của bảng 4.1 khác bố cục BA 165 KPI). (4) Hạn chế công cụ ghép: ghép theo thứ tự (quy hoạch động) + chữ ký rule + tên; mapping tay bổ sung qua `OVERRIDE` trong `tknb_dev_align.py`.
 40. **[MỚI 2026-10-10] Đồng bộ item-level đợt 3 — HOÀN TẤT 14/14 báo cáo dev (355/363 item có thẻ đồng bộ; 8 item dev để rule rỗng: `HNX01_6`, `HNX01_6_01`, `HNX01_6_02`, `HNX01_9`, `HNX01_9_01`, `HNX01_9_02`, `HNX06_3_08`, `HNX06_4_09` — thiết kế giữ nguyên K_TKNB_20–22, 47, 48, 108, 485, 495):** (1) **Nhóm 10 (HSX01):** 75 KPI ghép tay theo khối (chỉ số, tổng GT/KL, khớp lệnh, thỏa thuận, NĐTNN khớp lệnh/thỏa thuận/TPDN); dev dùng `execution_val`. (2) **Nhóm 1 (HNX01):** 98 KPI; 13 header SLICER label-only (K_TKNB_23, 34, 49, 50, 51, 58, 65, 72, 73, 80, 87, 94, 101) đổi sang DERIVED theo dev. **Nghi lỗi dev:** header cộng khối lượng với giá trị (`HNX01_7 = HNX01_7_a + HNX01_7_b`, `HNX01_8`, `HNX01_10_a`...) khác đơn vị. `HNX01_10_c` (UpCom) dev lọc `board_tp_code = G1` (khớp lệnh) trong khi thiết kế K_TKNB_101–107 ghi 'thỏa thuận' — theo dev, cần BA/dev xác nhận. (3) **Nhóm 2 (HNX02):** dev có 42 item tổng theo loại TP (bảng 4.1–4.3: TPCP, bảo lãnh, CQĐP × trong kỳ/từ đầu năm × KL/GT/lợi suất min-max/NĐTNN) không trùng bố cục BA 165 KPI (cột × loại hình GD × loại TP) → thêm 42 KPI mới K_TKNB_1258–1299 (READY theo ngoại lệ VSDC, nguồn `bond_order_book`), giữ nguyên 165 KPI BA; hai bộ có thể trùng ý — cần BA xác nhận giữ bộ nào. (4) **Nhóm 19 (BM030b) và Nhóm 5 (HNX06)** chuyển từ PENDING 100% sang READY một phần (12/14, 20/25): thiết kế bảng EAV mới `bm030bmss_gov_bond_trading_rpt` và `hnx06_gov_bond_bidding_rpt` theo mẫu `bm030cmss_*`/`hnx07_*` (master, yaml, Entities, HLD Cụm 5/19, Section 3, erDiagram, Section 4, flat DDL/DML, catalog). Giả định: `hnx06_gov_bond_bidding_rpt.report_period_dt` = `gov_bond_bidding_result.ds_snpst_dt` (dev lọc kỳ tháng theo `report_month`, không có cột cộng dồn từ đầu năm). Đã sửa nguồn bảng `bm031bmss_gov_bond_foreign_proprietary_trading_rpt` sang `bond_order_book` cho khớp rule dev. (5) **3 entity VSDC/HNX chỉ có trong `mapping_vsdc_ods_atm.md`, chưa YAML Atomic:** `bond_order_book`, `gov_bond_bidding_result`, `end_of_day_open_interest` — Gate 0 cảnh báo, cùng khoảng trống O_NDTNN_37. (6) `ba_hld_sync_check` S5 báo 34 lỗi (7 ở Nhóm 6/20 và 27 ở Nhóm 1), toàn bộ do dev dùng `execution_vol × execution_price` thay `execution_val` — đã giải trình trong Ghi chú từng KPI (Open Issue 38). (7) Công cụ đồng bộ: `Datamart/context/tools/tknb_dev_*.py`, `tknb_add_report_tables.py`, `tknb_reindex.py` (gitignored).
-41. **[MỚI 2026-10-25] Chuyển 14 bảng EAV sang bảng dùng chung `item_value` theo pipeline dev (`item_rule` → `datamart.uat_dtm.item_value` → ClickHouse `tknb_fct_{report}_snpst_flat`) — đảo quyết định mục 37(5) (Data Modeler yêu cầu 2026-10-25):** (1) **Phạm vi:** 14 bảng EAV (`hnx01_stock_trading_rpt`, `hnx02_gov_bond_otc_trading_rpt`, `hnx03_derivative_trading_rpt`, `hnx06_gov_bond_bidding_rpt`, `hnx07_corp_bond_trading_rpt`, `hsx01_stock_trading_rpt`, `hsx04_proprietary_trading_rpt`, `bm030b/c/d/e/f`, `bm031b/c` `*_rpt`) → 1 bảng `item_value` (entity `Report Item Value`, LLD `DTM_TKNB_item_value.csv`, 8 cột: `report_code`, `report_name`, `item_code`, `item_name`, `item_type`, `calc_date`, `value` DECIMAL(23,2), `ds_etl_pcs_tms`; khóa nghiệp vụ `report_code + item_code + calc_date`). 7 bảng EAV/danh sách chưa có trong pipeline dev (HNX04, HSX02, TTLK10, 0513, TK-04.BTC, TK_NienGiam, BM031d) giữ nguyên; các Fact/Dimension không đổi. (2) **Detail Mapping:** 417 dòng của 14 bảng trỏ về `Report Item Value`: MEASURE/DERIVED → cột `Value`, nhãn header (LABEL) và Chiều Loại CK/Chỉ số → `Item Name`, Chiều Sàn → `Report Code`, Chiều thời gian → `Calculation Date`, lọc `src_stm_code` → lọc `Report Code` (nguồn HNX/HOSE nằm trong rule SQL của `item_rule`); Ghi chú mỗi dòng nêu `report_code` + `item_code`. (3) **`item_code` = mã dev** (`HNX03_1`, `BM030CMSS_03`…) thay tên ngữ nghĩa cũ (`derivative_symbol_count`…) cho 355 KPI có item trong `item_rule`; các item giả của bảng cũ (`floor_hnx`, `dim_trade_date_*`, `security_type*`, `market_index_type`) bỏ vì `item_value` không có dòng nhãn/chiều — Chiều Sàn lấy từ `report_code`, Chiều thời gian từ `calc_date`. (4) **KPI READY chưa có item trong `item_rule` (73):** 37 chiều/nhãn (không cần dòng) và **36 chỉ tiêu cần dev bổ sung vào `item_rule`** (giữ `item_code` đề xuất cũ, đánh dấu 'đề xuất — chưa có trong item_rule'): TK-HNX01 K_TKNB_3 (giá trị chỉ số); HNX02 K_TKNB_113, 117, 121, 136, 159, 163, 167 (7 KPI BA theo loại hình GD — dev chỉ có 42 item theo loại TP, xem mục 40(3)); TK-HSX01 K_TKNB_588 (tổng vốn hóa), 589 (vốn hóa CP niêm yết) và 18 dòng tổng NĐTNN K_TKNB_633, 636, 640, 643, 647, 650, 654, 657, 662, 665, 669, 672, 676, 679, 683, 686, 690, 693 (tổng 2 KPI con); TK-HSX04 K_TKNB_794, 797, 801, 804, 808, 811, 815, 818 (tổng mua + bán). (5) **8 item dev rule rỗng** (`HNX01_6`, `HNX01_6_01`, `HNX01_6_02`, `HNX01_9`, `HNX01_9_01`, `HNX01_9_02`, `HNX06_3_08`, `HNX06_4_09`): đã gắn `item_code` dev cho K_TKNB_20/21/22 (READY), 47/48/108 và 485/495 (PENDING) — `item_value` chưa có dữ liệu cho tới khi dev điền rule. (6) **Khác biệt dev so với thiết kế EAV cũ, cần dev/BA xác nhận:** (a) `item_value` không có `item_stt`/`item_unit`/`item_order`/`note` — đơn vị và thứ tự hiển thị chỉ nằm ở `item_rule`, BI cần JOIN `item_rule` hoặc dev thêm cột; (b) `value` DECIMAL(23,2) ở Datamart nhưng Float64 ở ClickHouse (mất chính xác khi > 2^53); (c) tên bảng flat dùng `report_code` có dấu '-' (`TK-HNX01`) — thiết kế giả định đổi '-' thành '_' (`tknb_fct_tk_hnx01_snpst_flat`); (d) flat theo dev nằm ở db `default`, cluster `ssc_cluster`, engine ReplicatedMergeTree, PARTITION BY `ds_snpst_dt`, ORDER BY (`item_code`, `ds_snpst_dt`) — khác quy ước repo (`datamart`/`my_cluster`/ReplacingMergeTree); (e) kiểu `Phai sinh` tính từ các `Co so` cùng `calc_date` — engine phải chạy theo thứ tự phụ thuộc; (f) báo cáo kỳ tháng (HNX06, HNX02) không có cột kỳ báo cáo riêng: `calc_date` = ngày chạy kỳ tháng — cần dev xác nhận. (7) **Cổng kiểm:** LLD per-table `item_value` thay 14 bảng 'ghost' (Gate 3/TC7/Gate 0 giảm lỗi phần này); 7 bảng EAV còn lại vẫn thiếu LLD per-table (nợ có từ trước). `docs/datamart_data_source_catalog.md` và `docs/output/*` sinh tự động — chưa regenerate. (8) **Không có flat gộp cho `item_value` (Data Modeler quyết định 2026-10-25, giữ ngoại lệ, không sửa whitelist Gate):** serving chỉ qua 14 flat ClickHouse theo báo cáo của dev (`Datamart/flat-table/TKNB/03_clickhouse_per_report_flat_from_item_value.sql`, ngoài luồng Gate 3/4/9). Hệ quả chấp nhận: Gate 9 FAIL (`build_flat_tables.py` đòi mỗi bảng LLD có 1 khối flat — thiếu `item_value`) và Gate 3 báo `Report Item Value` Branch A (thiếu flat); chủ xử lý: Data Modeler, gỡ khi có quyết định thêm ngoại lệ cho `item_value` ở whitelist Gate hoặc tạo flat gộp. Công cụ: `Datamart/context/tools/tknb_iv_step*.py` (gitignored).
+41. **[MỚI 2026-10-25] Chuyển 14 bảng EAV sang bảng dùng chung `item_value` theo pipeline dev (`item_rule` → `datamart.uat_dtm.item_value` → ClickHouse `tknb_fct_{report}_snpst_flat`) — đảo quyết định mục 37(5) (Data Modeler yêu cầu 2026-10-25):** (1) **Phạm vi:** 14 bảng EAV (`hnx01_stock_trading_rpt`, `hnx02_gov_bond_otc_trading_rpt`, `hnx03_derivative_trading_rpt`, `hnx06_gov_bond_bidding_rpt`, `hnx07_corp_bond_trading_rpt`, `hsx01_stock_trading_rpt`, `hsx04_proprietary_trading_rpt`, `bm030b/c/d/e/f`, `bm031b/c` `*_rpt`) → 1 bảng `item_value` (entity `Report Item Value`, LLD `DTM_TKNB_item_value.csv`, 8 cột: `report_code`, `report_name`, `item_code`, `item_name`, `item_type`, `calc_date`, `value` DECIMAL(23,2), `ds_etl_pcs_tms`; khóa nghiệp vụ `report_code + item_code + calc_date`). 7 bảng EAV/danh sách chưa có trong pipeline dev (HNX04, HSX02, 0513, TK-04.BTC, TK_NienGiam, BM031d) giữ nguyên *(Lịch sử 2026-10-25: danh sách còn có TTLK10 — đã chuyển Star Schema 2026-11-04, mục 43)*; các Fact/Dimension không đổi. (2) **Detail Mapping:** 417 dòng của 14 bảng trỏ về `Report Item Value`: MEASURE/DERIVED → cột `Value`, nhãn header (LABEL) và Chiều Loại CK/Chỉ số → `Item Name`, Chiều Sàn → `Report Code`, Chiều thời gian → `Calculation Date`, lọc `src_stm_code` → lọc `Report Code` (nguồn HNX/HOSE nằm trong rule SQL của `item_rule`); Ghi chú mỗi dòng nêu `report_code` + `item_code`. (3) **`item_code` = mã dev** (`HNX03_1`, `BM030CMSS_03`…) thay tên ngữ nghĩa cũ (`derivative_symbol_count`…) cho 355 KPI có item trong `item_rule`; các item giả của bảng cũ (`floor_hnx`, `dim_trade_date_*`, `security_type*`, `market_index_type`) bỏ vì `item_value` không có dòng nhãn/chiều — Chiều Sàn lấy từ `report_code`, Chiều thời gian từ `calc_date`. (4) **KPI READY chưa có item trong `item_rule` (73):** 37 chiều/nhãn (không cần dòng) và **36 chỉ tiêu cần dev bổ sung vào `item_rule`** (giữ `item_code` đề xuất cũ, đánh dấu 'đề xuất — chưa có trong item_rule'): TK-HNX01 K_TKNB_3 (giá trị chỉ số); HNX02 K_TKNB_113, 117, 121, 136, 159, 163, 167 (7 KPI BA theo loại hình GD — dev chỉ có 42 item theo loại TP, xem mục 40(3)); TK-HSX01 K_TKNB_588 (tổng vốn hóa), 589 (vốn hóa CP niêm yết) và 18 dòng tổng NĐTNN K_TKNB_633, 636, 640, 643, 647, 650, 654, 657, 662, 665, 669, 672, 676, 679, 683, 686, 690, 693 (tổng 2 KPI con); TK-HSX04 K_TKNB_794, 797, 801, 804, 808, 811, 815, 818 (tổng mua + bán). (5) **8 item dev rule rỗng** (`HNX01_6`, `HNX01_6_01`, `HNX01_6_02`, `HNX01_9`, `HNX01_9_01`, `HNX01_9_02`, `HNX06_3_08`, `HNX06_4_09`): đã gắn `item_code` dev cho K_TKNB_20/21/22 (READY), 47/48/108 và 485/495 (PENDING) — `item_value` chưa có dữ liệu cho tới khi dev điền rule. (6) **Khác biệt dev so với thiết kế EAV cũ, cần dev/BA xác nhận:** (a) `item_value` không có `item_stt`/`item_unit`/`item_order`/`note` — đơn vị và thứ tự hiển thị chỉ nằm ở `item_rule`, BI cần JOIN `item_rule` hoặc dev thêm cột; (b) `value` DECIMAL(23,2) ở Datamart nhưng Float64 ở ClickHouse (mất chính xác khi > 2^53); (c) tên bảng flat dùng `report_code` có dấu '-' (`TK-HNX01`) — thiết kế giả định đổi '-' thành '_' (`tknb_fct_tk_hnx01_snpst_flat`); (d) flat theo dev nằm ở db `default`, cluster `ssc_cluster`, engine ReplicatedMergeTree, PARTITION BY `ds_snpst_dt`, ORDER BY (`item_code`, `ds_snpst_dt`) — khác quy ước repo (`datamart`/`my_cluster`/ReplacingMergeTree); (e) kiểu `Phai sinh` tính từ các `Co so` cùng `calc_date` — engine phải chạy theo thứ tự phụ thuộc; (f) báo cáo kỳ tháng (HNX06, HNX02) không có cột kỳ báo cáo riêng: `calc_date` = ngày chạy kỳ tháng — cần dev xác nhận. (7) **Cổng kiểm:** LLD per-table `item_value` thay 14 bảng 'ghost' (Gate 3/TC7/Gate 0 giảm lỗi phần này); 7 bảng EAV còn lại vẫn thiếu LLD per-table (nợ có từ trước). `docs/datamart_data_source_catalog.md` và `docs/output/*` sinh tự động — chưa regenerate. (8) **Không có flat gộp cho `item_value` (Data Modeler quyết định 2026-10-25, giữ ngoại lệ, không sửa whitelist Gate):** serving chỉ qua 14 flat ClickHouse theo báo cáo của dev (`Datamart/flat-table/TKNB/03_clickhouse_per_report_flat_from_item_value.sql`, ngoài luồng Gate 3/4/9). Hệ quả chấp nhận: Gate 9 FAIL (`build_flat_tables.py` đòi mỗi bảng LLD có 1 khối flat — thiếu `item_value`) và Gate 3 báo `Report Item Value` Branch A (thiếu flat); chủ xử lý: Data Modeler, gỡ khi có quyết định thêm ngoại lệ cho `item_value` ở whitelist Gate hoặc tạo flat gộp. Công cụ: `Datamart/context/tools/tknb_iv_step*.py` (gitignored).
+42. **[MỚI 2026-11-04] Nhóm 13 (TTLK01) chuyển bảng Operational `ttlk01_account_open_close_rpt` → Star Schema `Fact Custody Account Open Close Snapshot` + `Depository Member Dimension` (Data Modeler yêu cầu 2026-11-04; ngoại lệ thứ 7 của quy ước 'mỗi báo cáo 1 bảng phẳng'; Data Modeler duyệt Fact rộng 16 measure thay vì Fact tách theo phân khúc):** (1) **Khớp `column_path`:** thiết kế dùng literal phân cấp in hoa của SQL tham khảo BA (dòng 1192, ví dụ `'SỐ LƯỢNG ĐẦU KỲ > TRONG NƯỚC > CN'`, `'TỔNG CỘNG'`) thay nhãn phẳng ở 'Trường nguồn' các dòng 1195–1214 (thiết kế 2026-11-03). Dev xác nhận bằng `SELECT DISTINCT column_path FROM internal_statistical_report WHERE rpt_code = 'TTLK01'`; nếu khác cả hai thì 16 cột số lượng + `Tổng cộng` đọc NULL. Đơn vị chủ trì: Dev ETL / BA. (2) **Nhiều bản nộp trong tháng:** `SUBMIT_STATUS` gồm SUBMITTED và LATE_SUBMITTED; BK Atomic không có khóa bản nộp nên nạp lại ghi đè (Upsert), nhưng GROUP BY (`row_index`, `period_val`) như BA gộp nhầm các TVLK cùng số thứ tự nếu có hơn 1 bản hợp lệ/tháng — dev xác nhận 1 bản hợp lệ/tháng. (3) **`TVLK` là tên hay mã; dòng tổng/TVLK rỗng:** BK Dimension là chuỗi cột `TVLK` nguyên văn; nếu biểu mẫu chứa mã (hoặc cả mã lẫn tên) thì tách mã vào Dimension; dòng tổng hoặc TVLK rỗng (nếu có) phải bị chặn khi nạp (PK/BK `nullable = false`). (4) **Tham số kỳ:** BA `ORIGIN_DATE_VALUE = '05/2026'` cứng → DM dùng `:cuoi_thang`; Fact nạp mọi tháng. (5) **Cột `Tổng cộng`:** BA vẫn map như cột nguồn (không phải tổng các khối); chưa rõ bằng tổng của khối nào — thiết kế đọc nguyên giá trị nguồn, BA/dev đối chiếu với Σ khối Cuối kỳ. (6) **Phân loại BA lệch bản chất:** `STT` và `TVLK` được BA đổi Phân loại thành 'Chỉ tiêu phái sinh' — thiết kế giữ Chiều/nhãn; BA xác nhận. (7) **`SUBMIT_SOURCE = 'ICP'`** ↔ `rpt_submission_stm_code = 'ICP'` (tiền lệ NDTNN HNX09, VP). (8) **[YÊU CẦU DEV]** Tạo Dimension `depository_member_dim`, Fact `fct_custody_account_open_close_snpst` và flat ClickHouse `tknb_fct_custody_account_open_close_snpst_flat` theo LLD mới; bảng Operational cũ và flat `tknb_ttlk01_account_open_close_rpt_flat` (chưa dựng) không tạo.
+43. **[MỚI 2026-11-04] Nhóm 14 (TTLK10) chuyển bảng Operational `ttlk10_cw_outstanding_rpt` → Star Schema `Fact Covered Warrant Outstanding Snapshot` (grain mã CW × ngày) + reuse `Security Trading Snapshot Dimension` (Data Modeler yêu cầu 2026-11-04; ngoại lệ thứ 8 của quy ước 'mỗi báo cáo 1 bảng phẳng'):** (1) **`SUM` theo tháng:** SQL BA cộng `outstanding_shares` của MỌI `transaction_date` trong tháng; nếu bảng có dữ liệu theo ngày thì kết quả là KL cộng dồn nhiều ngày, không phải KL tại cuối kỳ. Thiết kế giữ đúng SUM của BA nhưng đặt ở Detail Mapping (Fact lưu theo ngày — A31; Data Modeler chốt giữ SUM 2026-11-03); dev kiểm dữ liệu (1 dòng/mã/tháng hay theo ngày); nếu theo ngày, đề nghị BA đổi sang giá trị ngày giao dịch lớn nhất của tháng — chỉ sửa Detail Mapping. Đơn vị chủ trì: BA / Dev ETL. (2) **Chỉ CW trên HOSE:** BA chỉ gán 'CW' cho `FloorCode = '10' AND StockType = '4'`. (3) **Tham số kỳ:** BA ghi `THANG_BC = :P_THANG_BC` nhưng SQL cứng tháng 08/2026 → DM dùng `:cuoi_thang`; Fact nạp theo `:etl_date`. (4) **Lát cắt Atomic `ds_snpst_dt` và PK:** BA ghim `ds_snpst_dt = '2026-09-17'`; YAML Atomic `listed_share_information` không khai `ds_snpst_dt` và PK hash chỉ theo `ticker_symbol` (không duy nhất theo ngày) — Fact dùng PK Dạng B; Datamart không sửa Atomic, đề nghị Atomic team khai `ds_snpst_dt` và PK theo (mã, ngày) để `etl_logic` viết được dedup lát cắt. Đơn vị chủ trì: Atomic Modeling Team. (5) **Nối INNER theo ngày:** `s.Trade_Date = o.transaction_date` — ngày không có bản ghi MDDS của mã bị loại (như BA). (6) **[YÊU CẦU DEV]** Tạo Fact `fct_covered_warrant_outstanding_snpst` và flat ClickHouse `tknb_fct_covered_warrant_outstanding_snpst_flat` theo LLD mới; bảng Operational cũ và flat `tknb_ttlk10_cw_outstanding_rpt_flat` (chưa dựng) không tạo.

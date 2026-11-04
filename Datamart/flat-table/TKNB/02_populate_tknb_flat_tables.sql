@@ -2,7 +2,7 @@
 -- TKNB Flat Tables — POPULATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 13 bảng: 6 FACT + 7 operational EAV/danh sách. `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
+-- 14 bảng: 8 FACT + 6 operational EAV/danh sách (2026-11-04: TTLK01/TTLK10 chuyển Operational → Fact). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
 -- ============================================================
 
 -- ============================================================
@@ -42,18 +42,33 @@ FROM datamart.hsx02_listing_trading_rpt o
 
 
 -- ============================================================
--- 9. OPERATIONAL: ttlk10_cw_outstanding_rpt
+-- 9. FACT: fct_covered_warrant_outstanding_snpst
+--    Nạp theo ngày snapshot :etl_date (DELETE + INSERT)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_ttlk10_cw_outstanding_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_ttlk10_cw_outstanding_rpt_flat
+DELETE FROM datamart.tknb_fct_covered_warrant_outstanding_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.tknb_fct_covered_warrant_outstanding_snpst_flat
 SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.listed_cw_code,
-    o.covered_warrant_nm,
-    o.outstanding_quantity,
-    o.src_stm_code
-FROM datamart.ttlk10_cw_outstanding_rpt o
+    -- From: FACT Fact Covered Warrant Outstanding Snapshot
+    f.covered_warrant_outstanding_snpst_id,
+    f.snpst_dt_dim_id,
+    f.security_trading_snpst_dim_id,
+    f.outstanding_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sd.symbol                          AS symbol,
+    sd.security_full_nm                AS security_full_nm
+
+FROM datamart.fct_covered_warrant_outstanding_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim sd
+    ON sd.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+WHERE snpst_cal.cdr_dt = :etl_date
 ;
 
 
@@ -434,32 +449,45 @@ WHERE snpst_cal.cdr_dt = :etl_date
 
 
 -- ============================================================
--- 25. OPERATIONAL: ttlk01_account_open_close_rpt
+-- 25. FACT: fct_custody_account_open_close_snpst
+--    Nạp lại toàn bộ từ Fact (Fact nạp lại mọi tháng <= :etl_date theo PK) — không lọc ngày
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_ttlk01_account_open_close_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_ttlk01_account_open_close_rpt_flat
+TRUNCATE TABLE IF EXISTS datamart.tknb_fct_custody_account_open_close_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.tknb_fct_custody_account_open_close_snpst_flat
 SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.depository_member_nm,
-    o.row_nbr,
-    o.opening_domestic_individual_account_qty,
-    o.opening_domestic_institution_account_qty,
-    o.opening_foreign_individual_account_qty,
-    o.opening_foreign_institution_account_qty,
-    o.opened_domestic_individual_account_qty,
-    o.opened_domestic_institution_account_qty,
-    o.opened_foreign_individual_account_qty,
-    o.opened_foreign_institution_account_qty,
-    o.closed_domestic_individual_account_qty,
-    o.closed_domestic_institution_account_qty,
-    o.closed_foreign_individual_account_qty,
-    o.closed_foreign_institution_account_qty,
-    o.closing_domestic_individual_account_qty,
-    o.closing_domestic_institution_account_qty,
-    o.closing_foreign_individual_account_qty,
-    o.closing_foreign_institution_account_qty,
-    o.total_account_qty,
-    o.src_stm_code
-FROM datamart.ttlk01_account_open_close_rpt o
+    -- From: FACT Fact Custody Account Open Close Snapshot
+    f.custody_account_open_close_snpst_id,
+    f.snpst_dt_dim_id,
+    f.depository_member_dim_id,
+    f.row_nbr,
+    f.opening_domestic_individual_account_quantity,
+    f.opening_domestic_institution_account_quantity,
+    f.opening_foreign_individual_account_quantity,
+    f.opening_foreign_institution_account_quantity,
+    f.opened_domestic_individual_account_quantity,
+    f.opened_domestic_institution_account_quantity,
+    f.opened_foreign_individual_account_quantity,
+    f.opened_foreign_institution_account_quantity,
+    f.closed_domestic_individual_account_quantity,
+    f.closed_domestic_institution_account_quantity,
+    f.closed_foreign_individual_account_quantity,
+    f.closed_foreign_institution_account_quantity,
+    f.closing_domestic_individual_account_quantity,
+    f.closing_domestic_institution_account_quantity,
+    f.closing_foreign_individual_account_quantity,
+    f.closing_foreign_institution_account_quantity,
+    f.total_account_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cal.cdr_dt                   AS snpst_cdr_dt,
+
+    -- From: DEPOSITORY MEMBER DIMENSION
+    dm.depository_member_nm            AS depository_member_nm
+
+FROM datamart.fct_custody_account_open_close_snpst f
+JOIN datamart.cdr_dt_dim snpst_cal
+    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.depository_member_dim dm
+    ON dm.depository_member_dim_id = f.depository_member_dim_id AND dm.ds_rcrd_st = 'ACTIVE'
 ;
