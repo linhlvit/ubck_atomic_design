@@ -214,7 +214,6 @@ Không có junction table.
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Isolated | NATIONAL | Danh sách quốc gia/quốc tịch | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Isolated | LOCATION | Danh sách tỉnh/thành phố Việt Nam | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Operational / System | USERS | Tài khoản người dùng đăng nhập hệ thống FIMS | Operational/system data — không có giá trị nghiệp vụ. |
 | Operational / System | USERSMENUS | Phân quyền menu cho từng người dùng | Operational/system data — không có giá trị nghiệp vụ. |
@@ -278,13 +277,7 @@ Không có junction table.
 | Chưa có cột | RPT_EVENT_TYPE_SCHEDULE | Lịch nộp báo cáo theo loại sự vụ | Chưa có thông tin cột đầy đủ. |
 | Chưa có cột | RPT_EVENT_TYPE_STATUS_LINK | Liên kết trạng thái loại sự vụ | Chưa có thông tin cột đầy đủ. |
 | Reference Data | DEPARTMENT | Danh mục phòng ban nội bộ FIMS (phân quyền) | Không có quan hệ FK đến bảng nghiệp vụ nào — phục vụ phân quyền người dùng hệ thống FIMS, không phải thành viên thị trường. |
-| Xử lý luồng khác | FUNDCOMPANY | Danh sách công ty quản lý quỹ — đối tượng thành viên thị trường gửi báo cáo | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
-| Xử lý luồng khác | DEPOSITORYCENTER | Danh sách Trung tâm lưu ký chứng khoán (VSDC) | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
-| Xử lý luồng khác | STOCKEXCHANGE | Danh sách sở giao dịch chứng khoán | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
-| Xử lý luồng khác | BRANCHS | Danh sách chi nhánh/VPĐD của công ty QLQ nước ngoài tại Việt Nam | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
-| Xử lý luồng khác | INFODISCREPRES | Danh sách đối tượng ủy quyền CBTT/giao dịch (cá nhân và tổ chức) | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
 | Chưa có LLD | TLPROFILES | Danh sách nhân sự chủ chốt tại các tổ chức thành viên thị trường | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Xử lý luồng khác | TRADINGREPRESENTATIVE | Danh sách đại diện giao dịch cho NĐT nước ngoài tại công ty chứng khoán | Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY` — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a), không thiết kế entity riêng. |
 | Chưa có LLD | RPTPERIOD | Danh sách kỳ của báo cáo đầu vào (kỳ tháng/quý/năm) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | RPT_EVENT_TYPE | Danh sách loại sự vụ/nghĩa vụ báo cáo (CBTT, hồ sơ, báo cáo định kỳ) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | PARAWARN | Danh sách tham số cảnh báo giám sát thành viên thị trường | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |

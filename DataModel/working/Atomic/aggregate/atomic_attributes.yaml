@@ -53364,8 +53364,8 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE"
-  source_column: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NGAY_HIEU_LUC"
-  comment: "DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null."
+  source_column: "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.EFFECTIVE_DATE"
+  comment: "DATE. EFFECTIVE_DATE = Ngày Hiệu Lực — mô tả gốc BRD null."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -60441,8 +60441,8 @@ attributes:
   is_primary_key: false
   source_system: "IAM"
   source_table: "USERS"
-  source_column: "IAM.USERS.POSTION_ID"
-  comment: "Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK constraint\
+  source_column: "IAM.USERS.POSITION_ID"
+  comment: "Nguồn VARCHAR2(36). Chưa có FK constraint\
     \ rõ — giữ dạng Text (xem T1-01 HLD)."
   classification_context: null
   etl_derived_value: null
@@ -61235,8 +61235,8 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "REPRESENT"
-  source_column: "FMS.REPRESENT.JOBS_ID"
-  comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOBS_ID)."
+  source_column: "FMS.REPRESENT.JOB_ID"
+  comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOB_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61252,7 +61252,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "REPRESENT"
-  source_column: "FMS.REPRESENT.JOBS_ID"
+  source_column: "FMS.REPRESENT.JOB_ID"
   comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification FMS\
     \ Job Id."
   classification_context: null
@@ -68482,7 +68482,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
-  source_column: "SCMS.SC_FIRM_BRANCH.NHAN_SU_GIAM_DOC_ID"
+  source_column: "SCMS.SC_FIRM_BRANCH.DIRECTOR_PERSONNEL_ID"
   comment: "Denormalized — không có FK target trong scope. Nguồn lưu NUMBER(10) —\
     \ ETL convert sang string."
   classification_context: null
@@ -68499,7 +68499,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_BRANCH"
-  source_column: "SCMS.SC_FIRM_BRANCH.CO_QUAN_CAP"
+  source_column: "SCMS.SC_FIRM_BRANCH.ISSUING_AUTHORITY"
   comment: "Mô tả gốc BRD: 'co_quan_cap — xem thêm tài liệu đặc tả SCMS'."
   classification_context: null
   etl_derived_value: null
@@ -71074,13 +71074,13 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
   atomic_attribute: "Disclosure Person Indicator"
-  description: "Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không."
+  description: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có; 0=Không."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_SENIOR_PERSONNEL"
-  source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.NGUOI_CONG_BO_TT"
+  source_column: "SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID"
   comment: "NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
@@ -92094,9 +92094,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "PROFESSIONALS"
-  source_column: "NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBE"
+  source_column: "NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBER"
   comment: "Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER\
-    \ WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END."
+    \ WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBER END."
   classification_context: "Source System Code = 'NHNCK_PROFESSIONALS' | Identification\
     \ Type Code = '(RULE)'"
   etl_derived_value: null

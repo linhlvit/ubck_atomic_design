@@ -231,9 +231,6 @@ Không có junction table.
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Isolated | CAT_PROVINCE | Danh mục tỉnh/thành phố trực thuộc trung ương | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
-| Isolated | CAT_DISTRICT | Danh mục quận/huyện/thị xã | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
-| Isolated | CAT_WARD | Danh mục phường/xã/thị trấn | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
 | Form Metadata | FORM_REPORT_PERIODIC | Cấu hình kỳ báo cáo của biểu mẫu | Cascade — cần review lý do loại-scope độc lập (FORM_REPORT không còn ngoài scope, xem 7e #12). Chưa đánh giá lại trong lượt #23 (2026-09-16) — chỉ nhóm FORM_SHEET*/FORM_INDICATOR_*/LNK_EVENT_TYPE_FORM được xử lý. |
 | Form Metadata | MEMBER_REPORT | Báo cáo đã nộp của đơn vị thành viên | Loại theo yêu cầu người thiết kế. |
 | Form Metadata | REPORT_CELL_VALUE | Giá trị dữ liệu từng ô báo cáo | Loại theo yêu cầu người thiết kế — khác REPORT_INPUT_CELL_VALUE (đã vào scope, xem 7e #22), giữ nguyên ngoài scope theo quyết định #22. |
@@ -317,7 +314,6 @@ Không có junction table.
 | Chưa có LLD | ALERT_RUN | Lần chạy batch hệ thống cảnh báo tự động kiểm tra ngưỡng vi phạm cho 1 chỉ tiêu cảnh báo | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | AUDITOR | Kiểm toán viên cá nhân trực thuộc công ty kiểm toán | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | AUDIT_FIRM | Danh mục công ty kiểm toán được UBCKNN chấp thuận | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | CAT_NATIONALITY | Danh mục quốc tịch | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | CUSTODIAN_BANK | Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | DISCLOSURE_REPORT | Báo cáo công bố thông tin (CBTT) của CTCK gửi lên UBCKNN | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | DISCLOSURE_SHAREHOLDER | Thông tin công bố về cổ đông lớn hoặc thay đổi sở hữu CTCK | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |

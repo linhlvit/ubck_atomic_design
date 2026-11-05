@@ -66906,7 +66906,7 @@ entities:
   - name: Effective Date
     physical_name: effective_dt
     business_meaning_1st: Ngày hiệu lực của thay đổi sở hữu.
-    comment_1st: DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null.
+    comment_1st: DATE. EFFECTIVE_DATE = Ngày Hiệu Lực — mô tả gốc BRD null.
     data_domain_most: Date
     data_type_most: date
     nullable_most: true
@@ -66917,9 +66917,9 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE
-        source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NGAY_HIEU_LUC
+        source_column: SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.EFFECTIVE_DATE
         business_meaning: Ngày hiệu lực của thay đổi sở hữu.
-        comment: DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null.
+        comment: DATE. EFFECTIVE_DATE = Ngày Hiệu Lực — mô tả gốc BRD null.
   - name: Document Number
     physical_name: document_nbr
     business_meaning_1st: Số văn bản pháp lý (QĐ/GP/CV/Thông tư) của giao dịch thay
@@ -77300,7 +77300,7 @@ entities:
   - name: Position Id
     physical_name: position_id
     business_meaning_1st: Chức vụ người dùng — chưa xác định FK target.
-    comment_1st: Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK
+    comment_1st: Nguồn VARCHAR2(36). Chưa có FK
       constraint rõ — giữ dạng Text (xem T1-01 HLD).
     data_domain_most: Text
     data_type_most: string
@@ -77312,9 +77312,9 @@ entities:
     - source_system: IAM
       source_tables:
       - source_table: USERS
-        source_column: IAM.USERS.POSTION_ID
+        source_column: IAM.USERS.POSITION_ID
         business_meaning: Chức vụ người dùng — chưa xác định FK target.
-        comment: Nguồn VARCHAR2(36). Tên cột nguồn có typo 'POSTION_ID'. Chưa có FK
+        comment: Nguồn VARCHAR2(36). Chưa có FK
           constraint rõ — giữ dạng Text (xem T1-01 HLD).
   - name: Stock Code
     physical_name: stock_code
@@ -78228,7 +78228,7 @@ entities:
   - name: Classification FMS Job Id
     physical_name: cl_fms_job_id
     business_meaning_1st: "FK -> JOBS: Chức danh/vị trí công tác của nhân sự."
-    comment_1st: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOBS_ID)."
+    comment_1st: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOB_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -78239,9 +78239,9 @@ entities:
     - source_system: FMS
       source_tables:
       - source_table: REPRESENT
-        source_column: FMS.REPRESENT.JOBS_ID
+        source_column: FMS.REPRESENT.JOB_ID
         business_meaning: "FK -> JOBS: Chức danh/vị trí công tác của nhân sự."
-        comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOBS_ID)."
+        comment: "FK target: cl_fms_job.cl_fms_job_id. Hash: hash_id('FMS_JOBS', JOB_ID)."
   - name: Classification FMS Job Code
     physical_name: cl_fms_job_code
     business_meaning_1st: Mã chức danh/vị trí công tác của nhân sự (BK của bảng JOBS
@@ -78258,7 +78258,7 @@ entities:
     - source_system: FMS
       source_tables:
       - source_table: REPRESENT
-        source_column: FMS.REPRESENT.JOBS_ID
+        source_column: FMS.REPRESENT.JOB_ID
         business_meaning: Mã chức danh/vị trí công tác của nhân sự (BK của bảng JOBS
           — chính là ID nguồn).
         comment: "Lookup pair: cl_fms_job.cl_fms_job_code. Pair with Classification\
@@ -79822,10 +79822,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
-        source_column: NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBE
+        source_column: NHNCK.PROFESSIONALS.IDENTITY_NUMBER, NHNCK.PROFESSIONALS.PASSPORT_NUMBER
         business_meaning: Số giấy tờ định danh (CMND/CCCD/Hộ chiếu).
         comment: Xử lí CASE WHEN ID_TYPE = 0 OR ID_TYPE = 1 THEN PROFESSIONALS.IDENTITY_NUMBER
-          WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBE END.
+          WHEN ID_TYPE = 2 THEN PROFESSIONALS.PASSPORT_NUMBER END.
     - source_system: SCMS
       source_tables:
       - source_table: BANK
@@ -90664,7 +90664,7 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.NHAN_SU_GIAM_DOC_ID
+        source_column: SCMS.SC_FIRM_BRANCH.DIRECTOR_PERSONNEL_ID
         business_meaning: ID nhân sự giám đốc (liên kết nội bộ SCMS, không phải FK
           chính thức).
         comment: Denormalized — không có FK target trong scope. Nguồn lưu NUMBER(10)
@@ -90684,7 +90684,7 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_BRANCH
-        source_column: SCMS.SC_FIRM_BRANCH.CO_QUAN_CAP
+        source_column: SCMS.SC_FIRM_BRANCH.ISSUING_AUTHORITY
         business_meaning: "Tên cơ quan cấp phép/quản lý chi nhánh (VD: UBCKNN, Sở\
           \ KH)."
         comment: "Mô tả gốc BRD: 'co_quan_cap — xem thêm tài liệu đặc tả SCMS'."
@@ -92926,7 +92926,7 @@ entities:
           — cần xác nhận team.
   - name: Disclosure Person Indicator
     physical_name: disclosure_person_ind
-    business_meaning_1st: "Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không."
+    business_meaning_1st: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có; 0=Không."
     comment_1st: NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống.
     data_domain_most: Small Counter
     data_type_most: int
@@ -92938,8 +92938,8 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_SENIOR_PERSONNEL
-        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.NGUOI_CONG_BO_TT
-        business_meaning: "Là người công bố thông tin (NGUOI_CONG_BO_TT): 1=Có; 0=Không."
+        source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID
+        business_meaning: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có; 0=Không."
         comment: NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống.
   - name: Department
     physical_name: department

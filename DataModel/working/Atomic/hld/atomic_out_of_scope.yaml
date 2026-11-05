@@ -247,11 +247,6 @@ entries:
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: ECAT
-  source_table: UBCK_STAFF
-  description: Danh mục nhân sự UBCKNN
-  group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
-- source_system: ECAT
   source_table: VIOLATION_TYPE
   description: Danh mục loại vi phạm (kèm mức tiền phạt)
   group: Chưa có LLD
@@ -491,12 +486,6 @@ entries:
   reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
     tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: FIMS
-  source_table: NATIONAL
-  description: Danh sách quốc gia/quốc tịch
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: FIMS
   source_table: API_MAPPINGS
   description: Cấu hình ánh xạ API
   group: Operational / System
@@ -682,49 +671,6 @@ entries:
   description: Tham số cấu hình hệ thống
   group: Reference Data
   reason: Operational/system data — config hệ thống.
-- source_system: FIMS
-  source_table: BRANCHS
-  description: Danh sách chi nhánh/VPĐD của công ty QLQ nước ngoài tại Việt Nam
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
-- source_system: FIMS
-  source_table: DEPOSITORYCENTER
-  description: Danh sách Trung tâm lưu ký chứng khoán (VSDC)
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
-- source_system: FIMS
-  source_table: FUNDCOMPANY
-  description: Danh sách công ty quản lý quỹ — đối tượng thành viên thị trường gửi
-    báo cáo
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
-- source_system: FIMS
-  source_table: INFODISCREPRES
-  description: Danh sách đối tượng ủy quyền CBTT/giao dịch (cá nhân và tổ chức)
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
-- source_system: FIMS
-  source_table: STOCKEXCHANGE
-  description: Danh sách sở giao dịch chứng khoán
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
-- source_system: FIMS
-  source_table: TRADINGREPRESENTATIVE
-  description: Danh sách đại diện giao dịch cho NĐT nước ngoài tại công ty chứng khoán
-  group: Xử lý luồng khác
-  reason: Bảng đầu vào (1 trong 9 bảng danh mục UNION) của ODS `CL_FOREIGN_INVESTOR_REPORTING_ENTITY`
-    — được tổng hợp vào entity Classification Foreign Investor Reporting Entity (7a),
-    không thiết kế entity riêng.
 - source_system: FMS
   source_table: BANK_EMPLOY_HISTORY
   description: Lịch sử thay đổi field nhân sự ngân hàng lưu ký
@@ -1069,12 +1015,6 @@ entries:
   description: Danh sách tỉnh/thành phố
   group: Isolated
   reason: Reference data địa giới thu thập từ ECAT — không collect tại FMS.
-- source_system: FMS
-  source_table: NATIONAL
-  description: Danh sách quốc gia/quốc tịch
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: FMS
   source_table: PARVALUE
   description: Danh sách mệnh giá cổ phần
@@ -1545,12 +1485,6 @@ entries:
   group: Reference Data
   reason: Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value
 - source_system: IDS
-  source_table: PROVINCES
-  description: Danh mục tỉnh/thành phố.
-  group: Reference Data
-  reason: Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không
-    qua IDS
-- source_system: IDS
   source_table: WARDS
   description: Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES.
   group: Reference Data
@@ -1795,31 +1729,6 @@ entries:
   reason: Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn
     còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau.
 - source_system: NHNCK
-  source_table: USERS
-  description: Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK
-  group: Involved Party
-  reason: Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng.
-    Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS)
-    cho mọi FK "officer/user" trong hệ thống.
-- source_system: NHNCK
-  source_table: COUNTRIES
-  description: Danh mục quốc gia/vùng lãnh thổ theo ISO 3166
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: NHNCK
-  source_table: DISTRICTS
-  description: Danh mục quận/huyện/thị xã
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: NHNCK
-  source_table: PROVINCES
-  description: Danh mục tỉnh/thành phố trực thuộc trung ương
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: NHNCK
   source_table: CERTIFICATE_CONVERSION_REQUESTS
   description: Yêu cầu chuyển đổi CCHN bản giấy sang bản điện tử
   group: Operational
@@ -2060,11 +1969,6 @@ entries:
   group: Chưa có LLD
   reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
 - source_system: SCMS
-  source_table: CAT_NATIONALITY
-  description: Danh mục quốc tịch
-  group: Chưa có LLD
-  reason: Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21
-- source_system: SCMS
   source_table: CUSTODIAN_BANK
   description: Thỏa thuận lưu ký/thanh toán giữa CTCK và ngân hàng được chỉ định
   group: Chưa có LLD
@@ -2228,24 +2132,6 @@ entries:
   group: Form Metadata
   reason: 'Loại theo yêu cầu người thiết kế — khác REPORT_INPUT_CELL_VALUE (đã vào
     scope, xem 7e #22), giữ nguyên ngoài scope theo quyết định #22.'
-- source_system: SCMS
-  source_table: CAT_DISTRICT
-  description: Danh mục quận/huyện/thị xã
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: SCMS
-  source_table: CAT_PROVINCE
-  description: Danh mục tỉnh/thành phố trực thuộc trung ương
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
-- source_system: SCMS
-  source_table: CAT_WARD
-  description: Danh mục phường/xã/thị trấn
-  group: Isolated
-  reason: Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ
-    tra cứu qua mã tham chiếu (2026-07-10).
 - source_system: SCMS
   source_table: DISCLOSURE_NEWS
   description: Tin tức công bố thông tin
