@@ -50,6 +50,9 @@ sources:
 - source_system: "AUDIT"
   source_table: "LOOKUP_VALUES"
   lld_file: "AUDIT/lld_AUDIT_LOOKUP_VALUES.yaml"
+- source_system: "FMS"
+  source_table: "RELATION"
+  lld_file: "FMS/lld_FMS_RELATION.yaml"
 consolidation_notes: []
 attributes:
 - attribute_name: "Classification Code"
@@ -76,6 +79,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_CD"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_CD"
+    FMS.RELATION: "FMS.RELATION.ID"
 - attribute_name: "Schema Code"
   physical_name: "schema_code"
   description: "Mã loại phân loại (scheme). BK phụ."
@@ -99,6 +103,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+    FMS.RELATION: null
 - attribute_name: "Schema Name"
   physical_name: "schema_nm"
   description: "Tên loại phân loại."
@@ -122,6 +127,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_GROUP"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_GROUP"
+    FMS.RELATION: null
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã nguồn dữ liệu."
@@ -145,6 +151,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: null
     AUDIT.LOOKUP_VALUES: null
+    FMS.RELATION: null
 - attribute_name: "Classification Name"
   physical_name: "cl_nm"
   description: "Tên giá trị phân loại (tiếng Việt)."
@@ -168,6 +175,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_NAME"
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_VN"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_VN"
+    FMS.RELATION: "FMS.RELATION.ITEM_NAME"
 - attribute_name: "Classification Name English"
   physical_name: "cl_nm_english"
   description: "Tên giá trị phân loại (tiếng Anh)."
@@ -191,6 +199,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.LOOKUP_VALUE_EN"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.LOOKUP_VALUE_EN"
+    FMS.RELATION: null
 - attribute_name: "Classification Description"
   physical_name: "cl_description"
   description: "Diễn giải chi tiết ý nghĩa giá trị phân loại."
@@ -214,6 +223,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: "IDS.LOOKUP_VALUES.DESCRIPTION"
     AUDIT.LOOKUP_VALUES: "AUDIT.LOOKUP_VALUES.DESCRIPTION"
+    FMS.RELATION: "FMS.RELATION.DESCRIPTION"
 - attribute_name: "Record Status"
   physical_name: "ds_rcrd_st"
   description: "Trạng thái hiệu lực bản ghi (ACTIVE/INACTIVE)."
@@ -237,6 +247,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: null
     AUDIT.LOOKUP_VALUES: null
+    FMS.RELATION: null
 - attribute_name: "Record Effective Date"
   physical_name: "ds_rcrd_eff_dt"
   description: "Ngày bản ghi bắt đầu có hiệu lực."
@@ -260,6 +271,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: null
     AUDIT.LOOKUP_VALUES: null
+    FMS.RELATION: null
 - attribute_name: "Record End Date"
   physical_name: "ds_rcrd_end_dt"
   description: "Ngày bản ghi hết hiệu lực (2400-01-01 nếu còn hiệu lực)."
@@ -283,6 +295,7 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: null
     AUDIT.LOOKUP_VALUES: null
+    FMS.RELATION: null
 - attribute_name: "ETL Process Timestamp"
   physical_name: "ds_etl_pcs_tms"
   description: "Thời điểm ETL xử lý bản ghi."
@@ -306,3 +319,4 @@ attributes:
     SCMS.CAT_COMPANY_TYPE: null
     IDS.LOOKUP_VALUES: null
     AUDIT.LOOKUP_VALUES: null
+    FMS.RELATION: null

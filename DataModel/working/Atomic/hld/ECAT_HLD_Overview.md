@@ -84,8 +84,8 @@ erDiagram
         string cl_ecat_department_code
     }
     ClassificationEcatAdministrativeProcedure {
-        bigint cl_ecat_administrative_procedure_id PK
-        string cl_ecat_administrative_procedure_code
+        bigint cl_ecat_ap_id PK
+        string cl_ecat_ap_code
     }
 
     GeographicArea ||--o{ GeographicArea : "self-join"
@@ -150,7 +150,6 @@ Không có junction table.
 | Chưa có LLD | WORKING_SCHEDULE | Danh mục Lịch làm việc | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | VIOLATION_TYPE | Danh mục loại vi phạm (kèm mức tiền phạt) | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | SECURITY | Danh mục Chứng khoán | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | UBCK_STAFF | Danh mục nhân sự UBCKNN | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | BUSINESS_EVENT_ENTERPRISE_TYPE | N-N: Sự vụ - Loại hình doanh nghiệp | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | OPERATIONAL_STATUS_TYPE_ENTERPRISE_TYPE | N-N: Loại trạng thái hoạt động - Loại hình doanh nghiệp | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | ADMINISTRATIVE_PROCEDURE_COMPONENT_MAPPING | N-N: TTHC - Thành phần TTHC | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |

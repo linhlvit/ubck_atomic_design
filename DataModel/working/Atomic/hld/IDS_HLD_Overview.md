@@ -243,7 +243,6 @@ Không có junction table.
 | Hệ thống / Phân quyền | DEPARTMENTS | Phòng ban nội bộ của IDS (không phải đơn vị nghiệp vụ). | Operational/system data — không có giá trị nghiệp vụ |
 | Audit Log nguồn | COMPANY_CHANGE_ROLE_HIS | Lịch sử thay đổi vai trò tại CTĐC — cơ chế audit log nguồn. | Audit Log nguồn — cơ chế ghi lịch sử đặc thù source system, không phải sự kiện nghiệp vụ |
 | Reference Data | COUNTRIES | Danh mục quốc gia. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
-| Reference Data | PROVINCES | Danh mục tỉnh/thành phố. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
 | Reference Data | WARDS | Danh mục phường/xã — cấp địa lý chi tiết hơn PROVINCES. | Dùng shared entity Geographic Area từ NHNCK — thu thập tại source gốc, không qua IDS |
 | Reference Data | DATA_TYPES | Danh mục kiểu dữ liệu của trường trong form BCTC. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |
 | Reference Data | HOLIDAY_CALENDAR | Danh mục ngày lễ/nghỉ. | Không có FK inbound từ bảng nghiệp vụ — xử lý thành Classification Value |

@@ -236,7 +236,7 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 **Domain Prefix:** (none)
 **Description:** Sổ văn bản phòng chống tham nhũng đi và đến của UBCKNN, ghi nhận số hiệu, ngày ban hành, trích yếu, năm, quý ban hành và đơn vị nhận của từng văn bản.
 
-### 1b. Anti Money Laundering Document
+### 1. Anti Money Laundering Document
 **Tier:** 1 | **Source:** `ANTI_MONEY_LAUNDERING_DOCUMENT` | **BCV Concept:** [Documentation] Documentation Item | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** (none)
 **Description:** Sổ văn bản phòng chống rửa tiền đi và đến của UBCKNN, cấu trúc tương tự văn bản phòng chống tham nhũng, kèm mã bộ hồ sơ phòng chống rửa tiền (nếu có) mà văn bản thuộc về.

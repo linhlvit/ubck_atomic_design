@@ -162,9 +162,9 @@ erDiagram
     }
 
     ClassificationEcatAdministrativeProcedure {
-        bigint cl_ecat_administrative_procedure_id PK
-        string cl_ecat_administrative_procedure_code
-        string cl_ecat_administrative_procedure_nm
+        bigint cl_ecat_ap_id PK
+        string cl_ecat_ap_code
+        string cl_ecat_ap_nm
         string procedure_level_code
         string fee_currency_code
     }

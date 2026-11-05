@@ -20,7 +20,7 @@ metadata:
   notes: "[MỚI 2026-10-29] Theo yêu cầu Data Modeler: thiết kế ECAT.ADMINISTRATIVE_PROCEDURE (Danh mục Thủ tục hành chính - TTHC) thành entity Classification ECAT Administrative Procedure, cùng pattern Classification ECAT Department. Map toàn bộ cột nghiệp vụ; loại trừ PK kỹ thuật, cột versioning, cờ trạng thái và audit (ghi trong pending_design.yaml, chờ Data Modeler xác nhận — xem HLD Tier1 mục 6f T1-07). Nguồn có cơ chế version (ID theo từng version, STABLE_ID xuyên version): BK = CODE, ETL chỉ nạp dòng hiện hành (DELETED = 0, EFFECTIVE = 1, VERSION lớn nhất theo CODE). FEE_UNIT_CURRENCY_ID là FK suy luận (fk_src: inferred) tới CURRENCY.ID — cần Data Modeler xác nhận. Các bảng con ADMINISTRATIVE_PROCEDURE_COMPONENT / _COMPONENT_MAPPING vẫn ngoài scope."
 attributes:
 - attribute_name: "Classification ECAT Administrative Procedure Id"
-  physical_name: "cl_ecat_administrative_procedure_id"
+  physical_name: "cl_ecat_ap_id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
@@ -32,7 +32,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification ECAT Administrative Procedure Code"
-  physical_name: "cl_ecat_administrative_procedure_code"
+  physical_name: "cl_ecat_ap_code"
   description: "Mã thủ tục hành chính (TTHC). BK."
   data_domain: "Text"
   nullable: false
@@ -57,7 +57,7 @@ attributes:
   etl_derived_value: "ECAT_ADMINISTRATIVE_PROCEDURE"
   data_type: "string"
 - attribute_name: "Classification ECAT Administrative Procedure Name"
-  physical_name: "cl_ecat_administrative_procedure_nm"
+  physical_name: "cl_ecat_ap_nm"
   description: "Tên thủ tục hành chính (TTHC)."
   data_domain: "Text"
   nullable: true
@@ -161,7 +161,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Processing Time Amount"
-  physical_name: "processing_time_amount"
+  physical_name: "processing_time_amt"
   description: "Thời gian giải quyết thủ tục hành chính (số lượng theo đơn vị tính ở Processing Time Unit)."
   data_domain: "Small Counter"
   nullable: true
@@ -187,7 +187,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Fee Amount"
-  physical_name: "fee_amount"
+  physical_name: "fee_amt"
   description: "Lệ phí thực hiện thủ tục hành chính."
   data_domain: "Currency Amount"
   nullable: true

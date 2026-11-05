@@ -21,7 +21,7 @@ metadata:
     \ Fact Append — mỗi giao dịch là 1 dòng insert-only. FKs: SC_FIRM_INFO_ID→Securities\
     \ Company (T1); SHAREHOLDER_ID→Securities Company Shareholder (T2) — được xác\
     \ nhận FK qua HLD diagram mặc dù BRD key:null. TRANSACTION_TYPE → SCMS_SHAREHOLDER_TXN_TYPE\
-    \ (TANG_VON/GIAM_VON/CHUYEN_NHUONG/TANG_VON_DIEU_LE). NGAY_HIEU_LUC (DATE): null\
+    \ (TANG_VON/GIAM_VON/CHUYEN_NHUONG/TANG_VON_DIEU_LE). EFFECTIVE_DATE (DATE): null\
     \ desc = 'Ngày hiệu lực' của thay đổi. DATA_SOURCE → SCMS_DATA_SOURCE. ATTACHMENT_PATH:\
     \ reference path. Audit: chỉ CREATED_AT + CREATED_BY pair (Fact Append — không\
     \ có LAST_MODIFIED). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities\
@@ -234,8 +234,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.NGAY_HIEU_LUC"
-  comment: "DATE. NGAY_HIEU_LUC = Ngày Hiệu Lực — mô tả gốc BRD null."
+  - "SCMS.SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE.EFFECTIVE_DATE"
+  comment: "DATE. EFFECTIVE_DATE = Ngày Hiệu Lực — mô tả gốc BRD null."
   classification_context: null
   etl_derived_value: null
   data_type: "date"

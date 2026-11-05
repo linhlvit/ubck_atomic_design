@@ -140,7 +140,7 @@ Không có junction table.
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | T1 | `DEPARTMENT_ID` và `POSTION_ID` (có typo "POSTION") — FK đến bảng nào? Nếu có bảng DEPARTMENTS/POSITIONS riêng trong IAM → cần bổ sung source và tạo Tier 2. | Phát sinh Tier 2 nếu có bảng phụ thuộc |
+| 1 | T1 | `DEPARTMENT_ID` và `POSITION_ID` — FK đến bảng nào? Nếu có bảng DEPARTMENTS/POSITIONS riêng trong IAM → cần bổ sung source và tạo Tier 2. | Phát sinh Tier 2 nếu có bảng phụ thuộc |
 | 2 | T1 | `PRACTICE_CERTIFICATE_TYPE_ID` — trỏ về source nào? Nếu là bảng từ NHNCK (chứng chỉ hành nghề) → cần cross-source FK mapping trong LLD. | Ảnh hưởng FK cross-source trong LLD |
 | 3 | T1 | `REPRESENTATIVE_*` — người đại diện pháp lý khi USER_TYPE là tổ chức, hay là người giám sát nội bộ? Nếu là Involved Party thực sự → cần tách entity Tier 2 `Identity and Access Management User Representative`. | Phát sinh entity Tier 2 mới |
 | 4 | T1 | `ORGANIZATION_CODE` — có FK đến bảng tổ chức nào (SCMS, NHNCK) không, hay chỉ là text denormalized? | Ảnh hưởng FK cross-source, không phát sinh entity IAM mới |
@@ -168,4 +168,4 @@ GROUP: dùng từ danh sách chuẩn (xem reference/group_classification.md).
 
 **Grain:** 1 dòng = 1 người dùng hệ thống (1 tài khoản IAM).
 
-**Attributes chính:** user_code (CODE), username, full_name, date_of_birth, gender_code (ETL-derived từ GENDER), user_type_code (ETL-derived từ USER_TYPE), user_sub_type_code, keycloak_id (KEY_CLOAK_ID), organization_code, department_id, position_id (POSTION_ID), stock_code, practice_certificate_type_code, representative_name, representative_citizen_id, is_super_admin_ind (IS_SUPER_ADMIN), status_reason, count_login_fail, expire_lock_ts, last_login_ts.
+**Attributes chính:** user_code (CODE), username, full_name, date_of_birth, gender_code (ETL-derived từ GENDER), user_type_code (ETL-derived từ USER_TYPE), user_sub_type_code, keycloak_id (KEY_CLOAK_ID), organization_code, department_id, position_id (POSITION_ID), stock_code, practice_certificate_type_code, representative_name, representative_citizen_id, is_super_admin_ind (IS_SUPER_ADMIN), status_reason, count_login_fail, expire_lock_ts, last_login_ts.

@@ -235,10 +235,6 @@ Không có junction table.
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
-| Isolated | COUNTRIES | Danh mục quốc gia/vùng lãnh thổ theo ISO 3166 | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
-| Isolated | PROVINCES | Danh mục tỉnh/thành phố trực thuộc trung ương | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
-| Isolated | DISTRICTS | Danh mục quận/huyện/thị xã | Dữ liệu địa giới chuẩn hóa tại ECAT — không tự thiết kế Atomic entity, chỉ tra cứu qua mã tham chiếu (2026-07-10). |
-| Involved Party | USERS | Thông tin cán bộ/chuyên viên UBCKNN có tài khoản trong hệ thống NHNCK | Quyết định Data Modeler (2026-07-07) — không thiết kế Atomic entity riêng. Định hướng dùng chung entity Identity and Access Management User (nguồn IAM.USERS) cho mọi FK "officer/user" trong hệ thống. |
 | Involved Party | IDENTITY_INFO_C06S | Lịch sử kiểm tra xác thực danh tính với C06 (CSDL quốc gia về dân cư) | **Quyết định Data Modeler (2026-09-12) — trả về out_of_scope**, đảo ngược quyết định đưa vào scope trước đó (2026-07-23, xem Entities #5f). Entity `Individual` (Fundamental) đã gỡ khỏi `manifest.yaml`/`atomic_entities.yaml`; LLD `lld_NHNCK_IDENTITY_INFO_C06S*.yaml` không còn trong dự án. |
 | Involved Party | APPLICATION_EXPERIENCES | Kinh nghiệm làm việc khai báo trong hồ sơ xin cấp CCHN | Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau. |
 | Involved Party | APPLICATION_PROFESSIONALS | Snapshot thông tin cá nhân người đăng ký tại thời điểm nộp hồ sơ | Quyết định Data Modeler (2026-08-13) — loại khỏi thiết kế Atomic 3NF; vẫn còn nhu cầu khai thác nghiệp vụ nên sẽ đánh giá lại hướng thiết kế khác sau. |
