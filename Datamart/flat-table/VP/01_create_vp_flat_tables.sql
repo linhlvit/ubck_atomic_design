@@ -589,3 +589,37 @@ PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), foreign_capital_flow_summary_snpst_id)
 COMMENT 'Flat table — fct_foreign_capital_flow_summary_snpst — sinh tự động từ master registry + Entities.csv'
 ;
+
+
+-- ==========================================================
+-- 14. FACT: vp_fct_government_bond_listing_snpst_flat
+--    fct_government_bond_listing_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_listing_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_GOVERNMENT_BOND_LISTING_SNPST
+    government_bond_listing_snpst_id             String                  COMMENT '[MỚI 2026-11-05] PK — hash(bond_code, rpt_year, rpt_month, src_stm_code). Grain = 1 mã trái phiếu Chính phủ ni',
+    snpst_dt_dim_id                              String                  COMMENT '[MỚI 2026-11-05] FK tới Calendar Date Dimension — ngày cuối tháng của tháng báo cáo (suy ra từ năm và tháng bá',
+    bond_code                                    String                  COMMENT '[MỚI 2026-11-05] Mã trái phiếu Chính phủ niêm yết trong danh sách tháng của HNX; cùng với năm và tháng báo cáo',
+    rpt_year                                     Int64                   COMMENT '[MỚI 2026-11-05] Năm báo cáo của danh sách niêm yết tháng (BA: report_year); Atomic bổ sung cột này 2026-11-04',
+    rpt_month                                    Int64                   COMMENT '[MỚI 2026-11-05] Tháng báo cáo (1–12) của danh sách niêm yết tháng (BA: report_month)',
+    listed_bond_quantity                         Nullable(Int64)         COMMENT '[MỚI 2026-11-05] Khối lượng trái phiếu Chính phủ niêm yết của mã trong tháng báo cáo (BA: listed_volume); giữ ',
+    listed_bond_val                              Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-11-05] Giá trị niêm yết của mã = Khối lượng niêm yết × mệnh giá TPCP 100.000 đồng (BA: `SUM(listed_v',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), government_bond_listing_snpst_id)
+COMMENT 'Flat table — fct_government_bond_listing_snpst — sinh tự động từ master registry + Entities.csv'
+;
