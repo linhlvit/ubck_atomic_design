@@ -64,7 +64,7 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (dòng động `dynamic_row_nbr`) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo; lọc `fmc_id` khi drill-down từ Nhóm 3 (O_QLQ_68) | K_QLQ_36,37,38 |
+| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (bảng `table_idx`, O_QLQ_75) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo; lọc `fmc_id` khi drill-down từ Nhóm 3 (O_QLQ_68) | K_QLQ_36,37,38 |
 
 ---
 

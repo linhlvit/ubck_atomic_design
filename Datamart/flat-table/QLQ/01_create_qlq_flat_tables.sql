@@ -328,14 +328,14 @@ COMMENT 'Flat table — Operational Investment Fund Distribution Agent List'
 -- ============================================================
 -- 16. OPERATIONAL: qlq_opr_fund_management_company_contract_list_flat
 --    Operational Fund Management Company Contract List
---    Grain: 1 hợp đồng UTDM (dòng động) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo
+--    Grain: 1 hợp đồng UTDM (bảng table_idx) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo (O_QLQ_75: khóa đổi từ dynamic_row_nbr sang table_idx — DROP + CREATE bảng vì ORDER BY đổi)
 --    Khai thác ClickHouse (K_QLQ_36–38, O_QLQ_33/O_QLQ_68): bảng giữ mọi kỳ nên trên môi trường có cột partition loader ds_snpst_dt luôn đọc max(ds_snpst_dt) (không chặn theo tháng chọn vì báo cáo tháng M nộp đầu tháng M+1); lọc kỳ bằng period_tp_code = '3', rpt_year, period_val; khử trùng part chưa merge bằng LIMIT 1 BY fmr_submission_code, dynamic_row_nbr
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Fund Management Company Contract List
     fmr_submission_code      String                  COMMENT 'PK (composite) — mã bản nộp báo cáo',
-    dynamic_row_nbr          Int64                   COMMENT 'PK (composite) — số thứ tự dòng động, mỗi dòng là 1 hợp đồng UTDM',
+    table_idx                Int64                   COMMENT 'PK (composite) — chỉ số bảng hợp đồng trong sheet @QLDMDT (mỗi bảng = 1 hợp đồng UTDM; = dynamic_row_nbr nếu giá trị tĩnh, = dynamic_row_nbr / 1000 nếu giá trị động)',
     investment_fund_code     Nullable(String)        COMMENT 'Mã quỹ của dòng báo cáo (nếu có; bản nộp của CTQLQ có thể để trống)',
     fmc_code                 Nullable(String)        COMMENT 'Mã CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID, không phải SECURITIES.CODE của Profile) — không dùng làm khóa lọc theo CTQLQ, dùng fmc_id (O_QLQ_68)',
     record_tp                Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo (sheet @QLDMDT: 2 = CTQLQ, BA xác nhận 2026-10-30)',
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_lis
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (fmr_submission_code, dynamic_row_nbr)
+ORDER BY (fmr_submission_code, table_idx)
 COMMENT 'Flat table — Operational Fund Management Company Contract List'
 ;
 

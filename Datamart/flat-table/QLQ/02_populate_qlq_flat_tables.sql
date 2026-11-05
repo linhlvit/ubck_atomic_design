@@ -260,7 +260,7 @@ TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_contract_list_
 INSERT INTO datamart.qlq_opr_fund_management_company_contract_list_flat
 SELECT
     o.fmr_submission_code,
-    o.dynamic_row_nbr,
+    o.table_idx,
     o.investment_fund_code,
     o.fmc_code,
     o.record_tp,
