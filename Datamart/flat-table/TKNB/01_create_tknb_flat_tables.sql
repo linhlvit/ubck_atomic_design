@@ -150,13 +150,14 @@ COMMENT 'Flat table — Market Annual Report (TK_NienGiam)'
 
 -- ============================================================
 -- 13. FACT: fct_market_trading_snpst
---    Fact Market Trading Snapshot
+--    Fact Market Trading Snapshot; grain 1 ngày giao dịch × 1 chỉ số (Index Code), PK market_trading_snpst_id
 --    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm030amss_market_trading_rpt
 --    (EAV, DEPRECATED — đã gộp sai 2 grain khác nhau) bằng Fact chuẩn Star Schema.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Market Trading Snapshot
+    market_trading_snpst_id  String      COMMENT 'PK — hash(snpst_dt_dim_id, index_constituent_dim_id, src_stm_code); grain 1 ngày giao dịch × 1 chỉ số (Index Code)',
     snpst_dt_dim_id         String      COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
     index_constituent_dim_id String     COMMENT '[SỬA 2026-09-23] FK tới Index Constituent Dimension — Loại chỉ số K_TKNB_1013 (grain Trade Date × Index Code)',
     total_trading_val       Decimal(23,2) COMMENT 'Tổng giá trị giao dịch cổ phiếu của các mã thuộc chỉ số (Index Code) trong ngày — BA BM030a 27/10',
@@ -179,20 +180,21 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTE
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
-ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id)
+ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id, market_trading_snpst_id)
 COMMENT 'Flat table — Fact Market Trading Snapshot × Calendar Date × Index Constituent Dimension'
 ;
 
 
 -- ============================================================
 -- 16. FACT: fct_foreign_proprietary_trading_index_snpst
---    Fact Foreign Proprietary Trading Index Snapshot
+--    Fact Foreign Proprietary Trading Index Snapshot; grain 1 ngày giao dịch × 1 chỉ số (Index Code), PK foreign_proprietary_trading_index_snpst_id
 --    [SỬA 2026-09-22, datamart-review — Kịch bản D] Thay thế bm031amss_foreign_proprietary_trading_rpt
 --    (EAV, DEPRECATED) bằng Fact chuẩn Star Schema, reuse Index Constituent Dimension (GSTT).
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_foreign_proprietary_trading_index_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Foreign Proprietary Trading Index Snapshot
+    foreign_proprietary_trading_index_snpst_id  String      COMMENT 'PK — hash(snpst_dt_dim_id, index_constituent_dim_id, src_stm_code); grain 1 ngày giao dịch × 1 chỉ số (Index Code)',
     snpst_dt_dim_id                         String      COMMENT 'FK tới Calendar Date Dimension theo ngày giao dịch',
     index_constituent_dim_id                String      COMMENT 'FK tới Index Constituent Dimension',
     foreign_investor_total_buy_vol          Int64       COMMENT 'Khối lượng mua của NĐTNN theo chỉ số trong ngày',
@@ -231,7 +233,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_foreign_proprietary_trading_index_s
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
-ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id)
+ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id, foreign_proprietary_trading_index_snpst_id)
 COMMENT 'Flat table — Fact Foreign Proprietary Trading Index Snapshot'
 ;
 
@@ -260,12 +262,13 @@ COMMENT 'Flat table — Fund Cert ETF CW Foreign Proprietary Trading Report (BM0
 
 -- ============================================================
 -- 21. FACT: fct_private_corporate_bond_international_offering_snpst
---    Fact Private Corporate Bond International Offering Snapshot (HNX12 — Nhóm 9)
+--    Fact Private Corporate Bond International Offering Snapshot (HNX12 — Nhóm 9); grain 1 mã trái phiếu × 1 thị trường phát hành × 1 kỳ báo cáo (rpt_year + rpt_month), PK private_corporate_bond_international_offering_snpst_id
 --    Joins: Calendar Date × Private Corporate Bond Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Private Corporate Bond International Offering Snapshot
+    private_corporate_bond_international_offering_snpst_id  String                  COMMENT 'PK — hash(private_corporate_bond_dim_id, market_tp, rpt_year, rpt_month, src_stm_code); grain 1 mã trái phiếu × 1 thị trường phát hành × 1 kỳ báo cáo (rpt_year + rpt_month)',
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
     private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
     rpt_year                        Int64                   COMMENT 'Năm báo cáo — cùng rpt_month; khai thác lọc theo rpt_year + rpt_month (không theo ngày snapshot)',
@@ -298,19 +301,20 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_internationa
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month, rpt_year)
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month, rpt_year, private_corporate_bond_international_offering_snpst_id)
 COMMENT 'Flat table — Fact Private Corporate Bond International Offering Snapshot × Calendar Date × Private Corporate Bond Dimension'
 ;
 
 
 -- ============================================================
 -- 22. FACT: fct_private_corporate_bond_issuance_snpst
---    Fact Private Corporate Bond Issuance Snapshot (HNX11 — Nhóm 8)
+--    Fact Private Corporate Bond Issuance Snapshot (HNX11 — Nhóm 8); grain 1 mã trái phiếu × 1 kỳ báo cáo (rpt_year + rpt_month), PK private_corporate_bond_issuance_snpst_id
 --    Joins: Calendar Date × Private Corporate Bond Dimension
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Private Corporate Bond Issuance Snapshot
+    private_corporate_bond_issuance_snpst_id                String                  COMMENT 'PK — hash(private_corporate_bond_dim_id, rpt_year, rpt_month, src_stm_code); grain 1 mã trái phiếu × 1 kỳ báo cáo (rpt_year + rpt_month)',
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
     private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
     rpt_year                        Int64                   COMMENT 'Năm báo cáo — cùng rpt_month; khai thác lọc theo rpt_year + rpt_month (không theo ngày snapshot)',
@@ -342,19 +346,20 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_issuance_snp
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, rpt_month, rpt_year)
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, rpt_month, rpt_year, private_corporate_bond_issuance_snpst_id)
 COMMENT 'Flat table — Fact Private Corporate Bond Issuance Snapshot × Calendar Date × Private Corporate Bond Dimension'
 ;
 
 
 -- ============================================================
 -- 23. FACT: fct_security_trading_detail_snpst
---    Fact Security Trading Detail Snapshot (Nhóm 28 — BM035_MSS)
+--    Fact Security Trading Detail Snapshot (Nhóm 28 — BM035_MSS); grain 1 mã chứng khoán × 1 ngày giao dịch, PK security_trading_detail_snpst_id
 --    Joins: Calendar Date × Security Trading Snapshot Dimension (reuse GSTT)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_security_trading_detail_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Security Trading Detail Snapshot
+    security_trading_detail_snpst_id        String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_trading_snpst_dim_id, src_stm_code); grain 1 mã chứng khoán × 1 ngày giao dịch',
     snpst_dt_dim_id                         String                  COMMENT 'Snapshot Date Dimension Id',
     security_trading_snpst_dim_id           String                  COMMENT 'Security Trading Snapshot Dimension Id',
     trading_status_code                     Nullable(String)        COMMENT 'Trading Status Code',
@@ -417,7 +422,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_security_trading_detail_snpst_flat 
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id, security_trading_detail_snpst_id)
 COMMENT 'Flat table — Fact Security Trading Detail Snapshot × Calendar Date × Security Trading Snapshot Dimension'
 ;
 
@@ -425,12 +430,13 @@ COMMENT 'Flat table — Fact Security Trading Detail Snapshot × Calendar Date �
 
 -- ============================================================
 -- 24. FACT: fct_derivatives_security_detail_snpst
---    Fact Derivatives Security Detail Snapshot (Nhóm 29 — BM043_MSS)
+--    Fact Derivatives Security Detail Snapshot (Nhóm 29 — BM043_MSS); grain 1 mã hợp đồng CKPS × 1 ngày giao dịch, PK derivatives_security_detail_snpst_id
 --    Joins: Calendar Date × Security Trading Snapshot Dimension (reuse GSTT)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.tknb_fct_derivatives_security_detail_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Derivatives Security Detail Snapshot
+    derivatives_security_detail_snpst_id    String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_trading_snpst_dim_id, src_stm_code); grain 1 mã hợp đồng CKPS × 1 ngày giao dịch',
     snpst_dt_dim_id                         String                  COMMENT 'Snapshot Date Dimension Id',
     security_trading_snpst_dim_id           String                  COMMENT 'Security Trading Snapshot Dimension Id',
     open_interest_quantity                  Nullable(Int64)         COMMENT 'Open Interest Quantity',
@@ -459,7 +465,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_derivatives_security_detail_snpst_f
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id)
+ORDER BY (assumeNotNull(snpst_cdr_dt), security_trading_snpst_dim_id, derivatives_security_detail_snpst_id)
 COMMENT 'Flat table — Fact Derivatives Security Detail Snapshot × Calendar Date × Security Trading Snapshot Dimension'
 ;
 

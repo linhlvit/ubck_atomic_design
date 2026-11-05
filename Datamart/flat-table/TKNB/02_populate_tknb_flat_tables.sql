@@ -134,6 +134,7 @@ TRUNCATE TABLE IF EXISTS datamart.tknb_fct_market_trading_snpst_flat ON CLUSTER 
 INSERT INTO datamart.tknb_fct_market_trading_snpst_flat
 SELECT
     -- From: FACT Fact Market Trading Snapshot
+    f.market_trading_snpst_id,
     f.snpst_dt_dim_id,
     f.index_constituent_dim_id,
     f.total_trading_val,
@@ -172,6 +173,7 @@ TRUNCATE TABLE IF EXISTS datamart.tknb_fct_foreign_proprietary_trading_index_snp
 INSERT INTO datamart.tknb_fct_foreign_proprietary_trading_index_snpst_flat
 SELECT
     -- From: FACT Fact Foreign Proprietary Trading Index Snapshot
+    f.foreign_proprietary_trading_index_snpst_id,
     f.snpst_dt_dim_id,
     f.index_constituent_dim_id,
     f.foreign_investor_total_buy_vol,
@@ -243,6 +245,7 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.tknb_fct_private_corporate_bond_international_offering_snpst_flat
 SELECT
     -- From: FACT Fact Private Corporate Bond International Offering Snapshot
+    f.private_corporate_bond_international_offering_snpst_id,
     f.snpst_dt_dim_id,
     f.private_corporate_bond_dim_id,
     f.rpt_year,
@@ -290,6 +293,7 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.tknb_fct_private_corporate_bond_issuance_snpst_flat
 SELECT
     -- From: FACT Fact Private Corporate Bond Issuance Snapshot
+    f.private_corporate_bond_issuance_snpst_id,
     f.snpst_dt_dim_id,
     f.private_corporate_bond_dim_id,
     f.rpt_year,
@@ -337,6 +341,7 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.tknb_fct_security_trading_detail_snpst_flat
 SELECT
     -- From: FACT Fact Security Trading Detail Snapshot
+    f.security_trading_detail_snpst_id,
     f.snpst_dt_dim_id,
     f.security_trading_snpst_dim_id,
     f.trading_status_code,
@@ -415,6 +420,7 @@ WHERE snpst_cdr_dt = :etl_date;
 INSERT INTO datamart.tknb_fct_derivatives_security_detail_snpst_flat
 SELECT
     -- From: FACT Fact Derivatives Security Detail Snapshot
+    f.derivatives_security_detail_snpst_id,
     f.snpst_dt_dim_id,
     f.security_trading_snpst_dim_id,
     f.open_interest_quantity,
