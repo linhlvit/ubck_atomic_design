@@ -1,8 +1,8 @@
 # DTM_VP_Entities — Danh mục thực thể Datamart Phân hệ VP (Thống kê thị trường chứng khoán)
 
-**Phiên bản:** 2.6 (bổ sung Nhóm 30, 31 — chỉ tiêu phát hành/đấu thầu TPCP theo tháng-quý-năm, thêm cột calling_val vào Fact kết quả đấu thầu; Nhóm 45 — Fact kết quả đấu giá cổ phần; trước đó: Nhóm 19 — vốn hóa cổ phiếu; Nhóm 47–48 — Fact kết quả đấu thầu TPCP; Nhóm 49 — quy mô niêm yết/giao dịch TPCP; Nhóm 55c/55d — GTGD bình quân TPCP, số tài khoản NĐT)  
-**Ngày cập nhật:** 2026-11-03  
-**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2), Nhóm 32–37, 51 (Lô 3), Nhóm 19, 30, 31, 45, 47–49, 55 (Lô 4). Đồng bộ với `DTM_VP_HLD.md` (khối Nhóm). Lưu ý: HLD Section 3 + Section 4 chưa liệt kê các Fact của Lô 3–4 (Listing Status Change, Investor Account Movement, Listed Equity, Bidding Result, Share Auction Result) — nợ có từ trước, chưa sửa trong lượt này.
+**Phiên bản:** 2.7 (bổ sung Nhóm 38, 39, 41, 44, 54 — BA 2026-11-05: 2 Fact mới Derivatives Account Snapshot và Foreign Capital Flow Summary Snapshot; trước đó: Nhóm 30, 31 — chỉ tiêu phát hành/đấu thầu TPCP theo tháng-quý-năm, thêm cột calling_val vào Fact kết quả đấu thầu; Nhóm 45 — Fact kết quả đấu giá cổ phần; trước đó: Nhóm 19 — vốn hóa cổ phiếu; Nhóm 47–48 — Fact kết quả đấu thầu TPCP; Nhóm 49 — quy mô niêm yết/giao dịch TPCP; Nhóm 55c/55d — GTGD bình quân TPCP, số tài khoản NĐT)  
+**Ngày cập nhật:** 2026-11-05  
+**Phạm vi:** Nhóm 1–16 (Lô 1 + Lô 2), Nhóm 32–37, 51 (Lô 3), Nhóm 19, 30, 31, 45, 47–49, 55 (Lô 4), Nhóm 38, 39, 41, 44, 54 (Lô 5). Đồng bộ với `DTM_VP_HLD.md` (khối Nhóm). Lưu ý: HLD Section 3 + Section 4 chưa liệt kê các Fact của Lô 3–4 (Listing Status Change, Investor Account Movement, Listed Equity, Bidding Result, Share Auction Result) và của Lô 5 (Derivatives Account, Foreign Capital Flow Summary) — nợ có từ trước, chưa sửa trong lượt này.
 
 ---
 
@@ -411,6 +411,30 @@ erDiagram
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_147–159 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_147–159 |
 
+## Nhóm 38 - Dòng tiền NĐTNN >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Capital_Flow_Summary_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Foreign Capital Flow Summary Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Dòng tiền NĐTNN theo báo cáo FIMS IBOU9 (PLIV-TT51), dòng 'Tổng= (1) + (2)' — vào ròng, dòng tiền vào, dòng tiền ra (USD) (Nhóm 38, 39); grain 1 TVLK nộp báo cáo × 1 kỳ báo cáo nửa tháng (period_val, rpt_year), bản nộp mới nhất của kỳ; PK foreign_capital_flow_summary_snpst_id (Dạng B: hash reporting_entity_code, period_val, rpt_year, src_stm_code) | 1 TVLK nộp báo cáo × 1 kỳ báo cáo nửa tháng; PK = hash(reporting_entity_code, period_val, rpt_year, src_stm_code) | K_VP_288–295 |
+
+## Nhóm 39 - Dòng tiền NĐTNN >> Biểu đồ thống kê dòng tiền vào/ra của NĐTNN theo thời gian
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Capital_Flow_Summary_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Foreign Capital Flow Summary Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Dòng tiền NĐTNN theo báo cáo FIMS IBOU9 (PLIV-TT51), dòng 'Tổng= (1) + (2)' — vào ròng, dòng tiền vào, dòng tiền ra (USD) (Nhóm 38, 39); grain 1 TVLK nộp báo cáo × 1 kỳ báo cáo nửa tháng (period_val, rpt_year), bản nộp mới nhất của kỳ; PK foreign_capital_flow_summary_snpst_id (Dạng B: hash reporting_entity_code, period_val, rpt_year, src_stm_code) | 1 TVLK nộp báo cáo × 1 kỳ báo cáo nửa tháng; PK = hash(reporting_entity_code, period_val, rpt_year, src_stm_code) | K_VP_296–299 |
+
 ## Nhóm 40 - Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường cơ sở
 
 ```mermaid
@@ -422,6 +446,18 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_212–234 |
+
+## Nhóm 41 - Tài khoản giao dịch >> Chỉ tiêu tổng hợp - Thị trường phái sinh
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Derivatives Account Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Số tài khoản phái sinh cuối kỳ (tổng, trong nước, nước ngoài) theo báo cáo thống kê ISS TTLK01_1 (Nhóm 41, 44, 54) — grain 1 dòng báo cáo (row_index) × 1 tháng báo cáo (ngày cuối tháng); PK derivatives_account_snpst_id (Dạng B: hash snpst_dt_dim_id, row_nbr, src_stm_code) | 1 dòng báo cáo TTLK01_1 × 1 tháng báo cáo; PK = hash(snpst_dt_dim_id, row_nbr, src_stm_code) | K_VP_300–329 (READY: 300, 301, 303–305, 312–314, 321–323; PENDING 19 dòng không có nguồn) |
 
 ## Nhóm 42 - Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản theo thời gian
 
@@ -446,6 +482,18 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Account Movement Snapshot | Fact Snapshot | new | Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_237–238 |
+
+## Nhóm 44 - Tài khoản giao dịch >> Biểu đồ Tổng số tài khoản phái sinh theo thời gian
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Derivatives Account Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Số tài khoản phái sinh cuối kỳ (tổng, trong nước, nước ngoài) theo báo cáo thống kê ISS TTLK01_1 (Nhóm 41, 44, 54) — grain 1 dòng báo cáo (row_index) × 1 tháng báo cáo (ngày cuối tháng); PK derivatives_account_snpst_id (Dạng B: hash snpst_dt_dim_id, row_nbr, src_stm_code) | 1 dòng báo cáo TTLK01_1 × 1 tháng báo cáo; PK = hash(snpst_dt_dim_id, row_nbr, src_stm_code) | K_VP_330–331 |
 
 ## Nhóm 45 - Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá
 
@@ -524,6 +572,20 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_161–164 |
 | Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
+
+## Nhóm 54 - Data Explorer Tài khoản giao dịch
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
+| Fact Investor Account Movement Snapshot | Fact Snapshot | reuse | [MỚI 2026-11-05] Số tài khoản giao dịch mở và đóng theo ngày × loại nhà đầu tư VSDC (Nhóm 40, 42, 43) — kết hợp VSDC.OPEN_INVESTORS và VSDC.CLOSED_INVESTORS; grain 1 ngày phát sinh × 1 loại NĐT (3 Cá nhân trong nước, 4 Cá nhân nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, NA); số tài khoản lũy kế = Σ mở − Σ đóng đến ngày; dựng lại toàn bộ mỗi lần chạy | 1 ngày phát sinh × 1 loại NĐT VSDC; PK = hash(snpst_dt_dim_id, investor_tp_code) | K_VP_332–338 |
+| Fact Derivatives Account Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Số tài khoản phái sinh cuối kỳ (tổng, trong nước, nước ngoài) theo báo cáo thống kê ISS TTLK01_1 (Nhóm 41, 44, 54) — grain 1 dòng báo cáo (row_index) × 1 tháng báo cáo (ngày cuối tháng); PK derivatives_account_snpst_id (Dạng B: hash snpst_dt_dim_id, row_nbr, src_stm_code) | 1 dòng báo cáo TTLK01_1 × 1 tháng báo cáo; PK = hash(snpst_dt_dim_id, row_nbr, src_stm_code) | K_VP_332–338 |
 
 ## Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường (lô 55a–55d: chỉ số, vốn hóa, GDP, GTGD bình quân, niêm yết, HĐTL VN30, chứng quyền, GT NĐTNN ròng, GTGD bình quân TPCP, số tài khoản NĐT; niêm yết TPCP PENDING)
 

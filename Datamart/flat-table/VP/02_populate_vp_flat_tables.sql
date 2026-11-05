@@ -529,3 +529,69 @@ FROM datamart.fct_share_auction_result_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;
+
+
+-- ==========================================================
+-- 12. FACT: vp_fct_derivatives_account_snpst_flat
+-- ==========================================================
+-- [O_VP_58] nạp mọi tháng báo cáo (TRUNCATE + INSERT), không khóa theo ngày chạy ETL: báo cáo TTLK01_1 nạp lại cùng tháng ghi đè theo PK nên Fact dựng lại toàn bộ mỗi lần chạy
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_derivatives_account_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_derivatives_account_snpst_flat
+SELECT
+    -- From: FCT_DERIVATIVES_ACCOUNT_SNPST
+    f.derivatives_account_snpst_id,
+    f.snpst_dt_dim_id,
+    f.row_nbr,
+    f.total_account_quantity,
+    f.domestic_account_quantity,
+    f.foreign_account_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_derivatives_account_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+;
+
+
+-- ==========================================================
+-- 13. FACT: vp_fct_foreign_capital_flow_summary_snpst_flat
+-- ==========================================================
+-- [O_VP_60] nạp mọi kỳ (TRUNCATE + INSERT), không khóa theo ngày chạy ETL: bản nộp IBOU9 mới nhất của kỳ ghi đè theo PK, dữ liệu kỳ trước có thể về trễ
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_foreign_capital_flow_summary_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_foreign_capital_flow_summary_snpst_flat
+SELECT
+    -- From: FCT_FOREIGN_CAPITAL_FLOW_SUMMARY_SNPST
+    f.foreign_capital_flow_summary_snpst_id,
+    f.snpst_dt_dim_id,
+    f.reporting_entity_code,
+    f.period_val,
+    f.rpt_year,
+    f.capital_flow_net_val,
+    f.capital_inflow_val,
+    f.capital_outflow_val,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_foreign_capital_flow_summary_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+;

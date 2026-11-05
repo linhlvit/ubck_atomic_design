@@ -3132,6 +3132,165 @@ flowchart LR
 | Fact Private Corporate Bond Trading Snapshot | 1 ngày báo cáo HNX09 (báo cáo ngày TPDN riêng lẻ, nguồn nộp ICP); PK Private Corporate Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id) (Dạng B, A22) |
 | Fact Government Bond Trading Snapshot | 1 ngày giao dịch × 1 loại sổ lệnh (Order Book Type Code ∈ OUTRIGHT, REPO); PK Government Bond Trading Snapshot Id = hash (Snapshot Date Dimension Id, Order Book Type Code) (Dạng B, A22) |
 
+#### Nhóm 38 - Dòng tiền NĐTNN >> Chỉ tiêu tổng hợp
+
+> Phân loại: **Phân tích**
+> Atomic: `Foreign Investor Report Value` (`fir_value`) + `Foreign Investor Report Structure` (`fir_structure`) + `Foreign Investor Report` (`foreign_investor_report`) ← FIMS báo cáo IBOU9 (PLIV-TT51), dòng 'Tổng= (1) + (2)' — **READY** (Fact mới `Fact Foreign Capital Flow Summary Snapshot`; không phụ thuộc Securities Trade)
+
+**[GHI CHÚ 2026-11-05 — BA VP mapping Nhóm 38/39 từ FIMS IBOU9]** BA chuyển Nhóm 38 (8 dòng, 431–438) và Nhóm 39 (4 dòng, 439–442) sang báo cáo FIMS `IBOU9` — 'Báo cáo hoạt động chu chuyển vốn của NĐTNN' (PLIV-TT51/2021/TT-BTC), `uat_fims_ods.fir_value`, dòng `row_path = 'Tổng= (1) + (2)'`, 3 cột USD (vào ròng (+/-), ngoại tệ đổi sang VND, VND đổi ra ngoại tệ), kỳ nửa tháng (`period_type = 'NUA_THANG'`), lấy bản nộp mới nhất của từng TVLK trong kỳ. Data Modeler chọn 2026-11-05: Fact VP mới `Fact Foreign Capital Flow Summary Snapshot` (grain 1 TVLK × 1 kỳ nửa tháng, khử trùng ở ETL) — không dùng `fct_foreign_investor_report_value` (NDTNN, thiếu `reporting_entity_code` nên không khử trùng theo TVLK được) và không dùng `fct_foreign_investor_capital_flow_snpst` (Data Explorer, bỏ dòng tổng, chỉ 1 chỉ tiêu). Giả định cần dev xác nhận: O_VP_60.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Nửa tháng / Tháng / Quý / Năm) · Kỳ
+
+| Chỉ tiêu | Kỳ tra cứu | % so với kỳ trước | YTD |
+|---|---|---|---|
+| Vào ròng/Rút ròng (USD) | … | … | … |
+| Dòng tiền vào (USD) | … | … | — |
+| Dòng tiền ra (USD) | … | … | — |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu (vào ròng, dòng tiền vào, dòng tiền ra) tại 1 kỳ (nửa tháng / tháng / quý / năm), toàn thị trường. Storage Grain: xem Bảng grain — mịn hơn (TVLK × kỳ nửa tháng), đạt Iso-Grain.
+
+**Source:** `Fact Foreign Capital Flow Summary Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_288 | Kỳ | — | Chiều | Calendar Date Dimension + Period Value: nhãn kỳ theo loại kỳ HM / M / Q / Y (nửa tháng yyyy-MM-H1/H2, tháng yyyy-MM, quý yyyy-Qn, năm yyyy) | BA dòng 431 (Tại kỳ; có thêm loại Nửa tháng) — Case 1, dùng lại Calendar Date Dimension; H1/H2 suy từ `period_val` như BA — O_VP_60 | READY |
+| K_VP_289 | Vào ròng/Rút ròng YTD (USD) | USD | Cơ sở | SUM(Capital Flow Net Value) các kỳ từ kỳ đầu năm đến hết kỳ tra cứu | Case 1 — measure Capital Flow Net Value; BA dòng 432 'Trùng'; ô nguồn `Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)` | READY |
+| K_VP_290 | Vào ròng/Rút ròng (USD) | USD | Cơ sở | SUM(Capital Flow Net Value) của kỳ tra cứu | Case 1 — đọc nguyên ô (+/−) của báo cáo IBOU9 (không tính vào − ra); BA dòng 433 | READY |
+| K_VP_291 | Vào ròng/Rút ròng - % thay đổi so với kỳ trước | % | Phái sinh | (Vào ròng/Rút ròng kỳ này − kỳ trước) / kỳ trước × 100 | Case 2 — từ K_VP_290 tại 2 kỳ; mẫu số có thể âm, theo BA không lấy trị tuyệt đối — O_VP_60; BA dòng 434 'Trùng' | READY |
+| K_VP_292 | Dòng tiền vào (USD) | USD | Cơ sở | SUM(Capital Inflow Value) của kỳ tra cứu | Case 1 — ô `Tổng giá trị ngoại tệ đổi sang VND trong kỳ báo cáo (đơn vị USD)`; BA dòng 435 | READY |
+| K_VP_293 | Dòng tiền vào - % thay đổi so với kỳ trước | % | Phái sinh | (Dòng tiền vào kỳ này − kỳ trước) / kỳ trước × 100 | Case 2 — từ K_VP_292 tại 2 kỳ; BA dòng 436 'Trùng' | READY |
+| K_VP_294 | Dòng tiền ra (USD) | USD | Cơ sở | SUM(Capital Outflow Value) của kỳ tra cứu | Case 1 — ô `Tổng giá trị VND đổi ra ngoại tệ và chuyển ra trong kỳ báo cáo (đơn vị USD)`; BA dòng 437 | READY |
+| K_VP_295 | Dòng tiền ra - % thay đổi so với kỳ trước | % | Phái sinh | (Dòng tiền ra kỳ này − kỳ trước) / kỳ trước × 100 | Case 2 — từ K_VP_294 tại 2 kỳ; BA dòng 438 'Trùng' | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Foreign_Capital_Flow_Summary_Snapshot {
+        string Foreign_Capital_Flow_Summary_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Reporting_Entity_Code
+        string Period_Value
+        int Report_Year
+        decimal Capital_Flow_Net_Value
+        decimal Capital_Inflow_Value
+        decimal Capital_Outflow_Value
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Capital_Flow_Summary_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Foreign_Capital_Flow_Summary_Snapshot["Fact Foreign Capital Flow Summary Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 38"]
+        R1["K_VP_288–295: Dòng tiền NĐTNN: chỉ tiêu tổng hợp"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Foreign_Capital_Flow_Summary_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Foreign Capital Flow Summary Snapshot | 1 TVLK nộp báo cáo IBOU9 (Reporting Entity Code) × 1 kỳ báo cáo nửa tháng (Period Value, Report Year); PK Foreign Capital Flow Summary Snapshot Id = hash (Reporting Entity Code, Period Value, Report Year, Source System Code) (Dạng B, A22); bản nộp mới nhất của kỳ ghi đè |
+
+#### Nhóm 39 - Dòng tiền NĐTNN >> Biểu đồ thống kê dòng tiền vào/ra của NĐTNN theo thời gian
+
+> Phân loại: **Phân tích**
+> Atomic: `Foreign Investor Report Value` + `Foreign Investor Report Structure` + `Foreign Investor Report` ← FIMS IBOU9 — **READY** (dùng lại `Fact Foreign Capital Flow Summary Snapshot` của Nhóm 38, Case 1)
+
+**[GHI CHÚ 2026-11-05 — BA VP mapping Nhóm 39]** BA 439–442 (4 dòng: Kỳ + 3 chỉ tiêu) cùng nguồn và quy tắc khử trùng với Nhóm 38 (FIMS IBOU9, dòng 'Tổng= (1) + (2)'), theo chuỗi kỳ 'Từ kỳ - Đến kỳ'; cả 4 dòng 'Đánh giá: Trùng' theo tên Nhóm 38 nhưng khác ngữ nghĩa thời gian → KPI riêng. Giả định: O_VP_60.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Nửa tháng / Tháng / Quý / Năm) · Từ kỳ — Đến kỳ
+
+| Kỳ | Vào ròng/Rút ròng (USD) | Dòng tiền vào (USD) | Dòng tiền ra (USD) |
+|---|---|---|---|
+| 2026-09-H1 | … | … | … |
+| 2026-09-H2 | … | … | … |
+
+> ⚠️ Presentation Grain: 1 điểm biểu đồ = 1 kỳ (nửa tháng / tháng / quý / năm), toàn thị trường. Storage Grain: xem Bảng grain — mịn hơn (TVLK × kỳ nửa tháng), đạt Iso-Grain.
+
+**Source:** `Fact Foreign Capital Flow Summary Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_296 | Kỳ | — | Chiều | Calendar Date Dimension + Period Value: chuỗi kỳ HM / M / Q / Y trong khoảng Từ kỳ — Đến kỳ | Tham số lọc 'Từ kỳ - Đến kỳ' (BA dòng 439, 'Trùng' theo tên K_VP_288 nhưng khác 'Tại kỳ'); Case 1 reuse Calendar Date Dimension — O_VP_60 | READY |
+| K_VP_297 | Vào ròng/Rút ròng (USD) | USD | Cơ sở | SUM(Capital Flow Net Value) theo từng kỳ trong khoảng Từ kỳ — Đến kỳ | Case 1 — như K_VP_290 nhưng theo chuỗi kỳ; BA dòng 440 'Trùng' | READY |
+| K_VP_298 | Dòng tiền vào (USD) | USD | Cơ sở | SUM(Capital Inflow Value) theo từng kỳ trong khoảng Từ kỳ — Đến kỳ | Case 1 — như K_VP_292 nhưng theo chuỗi kỳ; BA dòng 441 'Trùng' | READY |
+| K_VP_299 | Dòng tiền ra (USD) | USD | Cơ sở | SUM(Capital Outflow Value) theo từng kỳ trong khoảng Từ kỳ — Đến kỳ | Case 1 — như K_VP_294 nhưng theo chuỗi kỳ; BA dòng 442 'Trùng' | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Foreign_Capital_Flow_Summary_Snapshot {
+        string Foreign_Capital_Flow_Summary_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Reporting_Entity_Code
+        string Period_Value
+        int Report_Year
+        decimal Capital_Flow_Net_Value
+        decimal Capital_Inflow_Value
+        decimal Capital_Outflow_Value
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Capital_Flow_Summary_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Foreign_Capital_Flow_Summary_Snapshot["Fact Foreign Capital Flow Summary Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 39"]
+        R1["K_VP_296–299: Dòng tiền NĐTNN: biểu đồ theo thời gian"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Foreign_Capital_Flow_Summary_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Foreign Capital Flow Summary Snapshot | 1 TVLK nộp báo cáo IBOU9 (Reporting Entity Code) × 1 kỳ báo cáo nửa tháng (Period Value, Report Year); PK Foreign Capital Flow Summary Snapshot Id = hash (Reporting Entity Code, Period Value, Report Year, Source System Code) (Dạng B, A22); bản nộp mới nhất của kỳ ghi đè |
+
 #### Nhóm 40 - Chỉ tiêu tổng hợp - Thị trường cơ sở
 
 > Phân loại: **Phân tích**
@@ -3225,6 +3384,109 @@ flowchart LR
 |---|---|
 | Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
 | Fact Investor Account Movement Snapshot | 1 ngày phát sinh (ngày mở hoặc ngày đóng tài khoản) × 1 loại NĐT VSDC (3–7, NA); PK Investor Account Movement Snapshot Id = hash (Snapshot Date Dimension Id, Investor Type Code) (Dạng B, A22); dựng lại toàn bộ mỗi lần chạy |
+
+#### Nhóm 41 - Chỉ tiêu tổng hợp - Thị trường phái sinh
+
+> Phân loại: **Phân tích**
+> Atomic: `Internal Statistical Report` (`internal_statistical_report`) ← ISS báo cáo `TTLK01_1` (Tài khoản phái sinh, `uat_iss_ods.flat_report`) — **READY** một phần (Fact mới `Fact Derivatives Account Snapshot`; 11/30 dòng BA có nguồn, 19 dòng 'không có dữ liệu' PENDING Nhóm 2)
+
+**[GHI CHÚ 2026-11-05 — BA VP mapping Nhóm 41 (Thị trường phái sinh)]** BA đóng O_VP_47: Nhóm 41 từ 8 lên 30 dòng (BA 466–495), nguồn chuyển từ biểu mẫu VSDC 'BM 45_TTLK_01' sang ISS `TTLK01_1`; 11 dòng có nguồn (Kỳ, Phân loại trong nước / nước ngoài, Tổng số TK, Trong nước, Nước ngoài và các dòng % của chúng), 19 dòng 'Không có dữ liệu, trên chart hiển thị N/A' (Loại nhà đầu tư, TK mới/đóng, Trong nước/Nước ngoài × Cá nhân/Tổ chức) — mỗi dòng có KPI riêng PENDING [Nhóm 2] (O_VP_59). Các dòng % mang 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → thiết kế KPI riêng khớp từng dòng BA (như Nhóm 19/40). Fact mới `Fact Derivatives Account Snapshot` (grain 1 dòng báo cáo × 1 tháng, Data Modeler chọn 2026-11-05); giả định cần dev xác nhận: O_VP_58.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Kỳ
+
+| Chỉ tiêu | Tổng | Trong nước | Nước ngoài |
+|---|---|---|---|
+| Số TK phái sinh cuối kỳ | … | … | … |
+| % so với kỳ trước | … | … | … |
+| % so với cuối năm trước | … | … | … |
+| SL TK mới / đóng; Cá nhân / Tổ chức | N/A | N/A | N/A |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 chỉ tiêu (tổng / trong nước / nước ngoài) tại 1 kỳ (tháng / quý / năm). Storage Grain: xem Bảng grain — 1 dòng báo cáo × 1 tháng, mịn hơn hoặc bằng, đạt Iso-Grain.
+
+**Source:** `Fact Derivatives Account Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_300 | Kỳ | — | Chiều | Calendar Date Dimension: kỳ tra cứu M / Q / Y (kỳ Ngày không có dữ liệu) | BA dòng 466 ('Tại kỳ'); Case 1 reuse Calendar Date Dimension — O_VP_58 | READY |
+| K_VP_301 | Phân loại trong nước / nước ngoài | — | Chiều | Trong nước ↔ Domestic Account Quantity (cột `SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC`); Nước ngoài ↔ Foreign Account Quantity (cột `SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI`) | BA dòng 467; chiều biểu diễn bằng 2 cột đo của Fact (mỗi giá trị chiều ↔ 1 cột), không có cột phân loại — O_VP_58 | READY |
+| K_VP_302 | Loại nhà đầu tư | — | Chiều | Nhãn Cá nhân / Tổ chức | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 468 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột phân loại hoặc cột đo theo loại NĐT | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_303 | Tổng số tài khoản phái sinh | TK | Cơ sở | Total Account Quantity tại tháng báo cáo mới nhất có dữ liệu trong kỳ tra cứu | Case 1 — measure Total Account Quantity; BA dòng 469; ô `TỔNG CỘNG` của TTLK01_1 — O_VP_58 | READY |
+| K_VP_304 | Tổng số tài khoản phái sinh - % so với kỳ trước | % | Phái sinh | (K_VP_303 kỳ tra cứu − K_VP_303 cuối kỳ trước) / K_VP_303 cuối kỳ trước × 100 | Case 2 — từ K_VP_303 tại 2 mốc; BA dòng 470 'Trùng' | READY |
+| K_VP_305 | Tổng số tài khoản phái sinh - % so với cuối năm trước | % | Phái sinh | (K_VP_303 kỳ tra cứu − K_VP_303 cuối năm trước) / K_VP_303 cuối năm trước × 100 | Case 2 — từ K_VP_303 tại 2 mốc; BA dòng 471 'Trùng' | READY |
+| K_VP_306 | SL TK phái sinh mới | TK | Cơ sở | Số TK phái sinh mở mới trong kỳ | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 472 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột TK mở trong kỳ | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_307 | SL TK phái sinh mới - % so với kỳ trước | % | Phái sinh | (SL TK mới kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_306, cùng blocker O_VP_59 (BA dòng 473: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_308 | SL TK phái sinh mới - % so với cùng kỳ năm trước | % | Phái sinh | (SL TK mới kỳ này − cùng kỳ năm trước) / cùng kỳ năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_306, cùng blocker O_VP_59 (BA dòng 474: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_309 | SL TK phái sinh đóng | TK | Cơ sở | Số TK phái sinh đóng trong kỳ | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 475 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột TK đóng trong kỳ | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_310 | SL TK phái sinh đóng - % so với kỳ trước | % | Phái sinh | (SL TK đóng kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_309, cùng blocker O_VP_59 (BA dòng 476: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_311 | SL TK phái sinh đóng - % so với cùng kỳ năm trước | % | Phái sinh | (SL TK đóng kỳ này − cùng kỳ năm trước) / cùng kỳ năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_309, cùng blocker O_VP_59 (BA dòng 477: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_312 | Tổng số TK phái sinh - Trong nước | TK | Cơ sở | Domestic Account Quantity tại tháng báo cáo mới nhất có dữ liệu trong kỳ tra cứu | Case 1 — measure Domestic Account Quantity; BA dòng 478; ô `SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC` của TTLK01_1 — O_VP_58 | READY |
+| K_VP_313 | Tổng số TK phái sinh - Trong nước - % so với kỳ trước | % | Phái sinh | (K_VP_312 kỳ tra cứu − K_VP_312 cuối kỳ trước) / K_VP_312 cuối kỳ trước × 100 | Case 2 — từ K_VP_312 tại 2 mốc; BA dòng 479 'Trùng' | READY |
+| K_VP_314 | Tổng số TK phái sinh - Trong nước - % so với năm trước | % | Phái sinh | (K_VP_312 kỳ tra cứu − K_VP_312 cuối năm trước) / K_VP_312 cuối năm trước × 100 | Case 2 — từ K_VP_312 tại 2 mốc; BA dòng 480 'Trùng' | READY |
+| K_VP_315 | Tổng số TK phái sinh - Trong nước - Cá nhân | TK | Cơ sở | Số TK phái sinh NĐT cá nhân trong nước | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 481 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột theo loại NĐT | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_316 | Tổng số TK phái sinh - Trong nước - Cá nhân - % so với kỳ trước | % | Phái sinh | (kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_315, cùng blocker O_VP_59 (BA dòng 482: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_317 | Tổng số TK phái sinh - Trong nước - Cá nhân - % so với năm trước | % | Phái sinh | (kỳ này − cuối năm trước) / cuối năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_315, cùng blocker O_VP_59 (BA dòng 483: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_318 | Tổng số TK phái sinh - Trong nước - Tổ chức | TK | Cơ sở | Số TK phái sinh NĐT tổ chức trong nước | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 484 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột theo loại NĐT | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_319 | Tổng số TK phái sinh - Trong nước - Tổ chức - % so với kỳ trước | % | Phái sinh | (kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_318, cùng blocker O_VP_59 (BA dòng 485: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_320 | Tổng số TK phái sinh - Trong nước - Tổ chức - % so với năm trước | % | Phái sinh | (kỳ này − cuối năm trước) / cuối năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_318, cùng blocker O_VP_59 (BA dòng 486: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_321 | Tổng số TK phái sinh - Nước ngoài | TK | Cơ sở | Foreign Account Quantity tại tháng báo cáo mới nhất có dữ liệu trong kỳ tra cứu | Case 1 — measure Foreign Account Quantity; BA dòng 487; ô `SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI` của TTLK01_1 — O_VP_58 | READY |
+| K_VP_322 | Tổng số TK phái sinh - Nước ngoài - % so với kỳ trước | % | Phái sinh | (K_VP_321 kỳ tra cứu − K_VP_321 cuối kỳ trước) / K_VP_321 cuối kỳ trước × 100 | Case 2 — từ K_VP_321 tại 2 mốc; BA dòng 488 'Trùng' | READY |
+| K_VP_323 | Tổng số TK phái sinh - Nước ngoài - % so với năm trước | % | Phái sinh | (K_VP_321 kỳ tra cứu − K_VP_321 cuối năm trước) / K_VP_321 cuối năm trước × 100 | Case 2 — từ K_VP_321 tại 2 mốc; BA dòng 489 'Trùng' | READY |
+| K_VP_324 | Tổng số TK phái sinh - Nước ngoài - Cá nhân | TK | Cơ sở | Số TK phái sinh NĐT cá nhân nước ngoài | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 490 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột theo loại NĐT | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_325 | Tổng số TK phái sinh - Nước ngoài - Cá nhân - % so với kỳ trước | % | Phái sinh | (kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_324, cùng blocker O_VP_59 (BA dòng 491: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_326 | Tổng số TK phái sinh - Nước ngoài - Cá nhân - % so với năm trước | % | Phái sinh | (kỳ này − cuối năm trước) / cuối năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_324, cùng blocker O_VP_59 (BA dòng 492: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_327 | Tổng số TK phái sinh - Nước ngoài - Tổ chức | TK | Cơ sở | Số TK phái sinh NĐT tổ chức nước ngoài | **Lý do pending:** [Nhóm 2 - Chưa có mapping nguồn từ BA]: BA dòng 493 'Trạng thái mapping = Done' nhưng Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A'; TTLK01_1 chỉ có 3 cột TỔNG CỘNG / TRONG NƯỚC / NƯỚC NGOÀI, xem O_VP_59. **Atomic cần bổ sung:** TBD. **Mart dự kiến:** Fact Derivatives Account Snapshot — thêm cột theo loại NĐT | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_328 | Tổng số TK phái sinh - Nước ngoài - Tổ chức - % so với kỳ trước | % | Phái sinh | (kỳ này − kỳ trước) / kỳ trước × 100 | **Lý do pending:** phái sinh từ K_VP_327, cùng blocker O_VP_59 (BA dòng 494: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+| K_VP_329 | Tổng số TK phái sinh - Nước ngoài - Tổ chức - % so với năm trước | % | Phái sinh | (kỳ này − cuối năm trước) / cuối năm trước × 100 | **Lý do pending:** phái sinh từ K_VP_327, cùng blocker O_VP_59 (BA dòng 495: không có dữ liệu, chart hiển thị N/A) | PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA] |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Derivatives_Account_Snapshot {
+        string Derivatives_Account_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        int Row_Number
+        int Total_Account_Quantity
+        int Domestic_Account_Quantity
+        int Foreign_Account_Quantity
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Derivatives_Account_Snapshot["Fact Derivatives Account Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 41"]
+        R1["K_VP_300–329: Tài khoản giao dịch: chỉ tiêu tổng hợp thị trường phái sinh"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Derivatives_Account_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Derivatives Account Snapshot | 1 dòng báo cáo TTLK01_1 (Row Number) × 1 tháng báo cáo (ngày cuối tháng); PK Derivatives Account Snapshot Id = hash (Snapshot Date Dimension Id, Row Number, Source System Code) (Dạng B, A22); nạp lại cùng tháng ghi đè |
 
 #### Nhóm 42 - Biểu đồ Tổng số tài khoản theo thời gian
 
@@ -3370,6 +3632,79 @@ flowchart LR
 | Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
 | Fact Investor Account Movement Snapshot | 1 ngày phát sinh (ngày mở hoặc ngày đóng tài khoản) × 1 loại NĐT VSDC (3–7, NA); PK Investor Account Movement Snapshot Id = hash (Snapshot Date Dimension Id, Investor Type Code) (Dạng B, A22); dựng lại toàn bộ mỗi lần chạy |
 
+#### Nhóm 44 - Biểu đồ Tổng số tài khoản phái sinh theo thời gian
+
+> Phân loại: **Phân tích**
+> Atomic: `Internal Statistical Report` (`internal_statistical_report`) ← ISS báo cáo `TTLK01_1` — **READY** (dùng lại `Fact Derivatives Account Snapshot` của Nhóm 41, Case 1)
+
+**[GHI CHÚ 2026-11-05 — BA VP mapping Nhóm 44]** BA đóng O_VP_47 cho Nhóm 44: thêm dòng Kỳ (500), nguồn chuyển sang ISS `TTLK01_1` (`uat_iss_ods.flat_report`, ô `TỔNG CỘNG`); cả 2 dòng 'Đánh giá: Trùng' theo tên K_VP_300/K_VP_303 (Nhóm 41) nhưng khác ngữ nghĩa (chuỗi kỳ 'Từ kỳ - Đến kỳ' thay vì một kỳ) → KPI riêng, như K_VP_235–236 so với K_VP_212–214 (O_VP_46). Giả định cần dev xác nhận: O_VP_58.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Từ kỳ — Đến kỳ
+
+| Kỳ | Tổng số tài khoản phái sinh |
+|---|---|
+| 2026-08 | … |
+| 2026-09 | … |
+
+> ⚠️ Presentation Grain: 1 điểm biểu đồ = 1 kỳ (tháng / quý / năm), toàn thị trường phái sinh. Storage Grain: xem Bảng grain — mịn hơn (dòng báo cáo × tháng), đạt Iso-Grain.
+
+**Source:** `Fact Derivatives Account Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_330 | Kỳ | — | Chiều | Calendar Date Dimension: chuỗi kỳ M / Q / Y từ Từ kỳ đến Đến kỳ | Tham số lọc 'Từ kỳ - Đến kỳ' (BA dòng 500, 'Trùng' theo tên K_VP_300 nhưng khác 'Tại kỳ'); chỉ kỳ có dữ liệu — O_VP_58 | READY |
+| K_VP_331 | Tổng số tài khoản phái sinh | TK | Cơ sở | Total Account Quantity tại tháng báo cáo mới nhất có dữ liệu của từng kỳ trong khoảng Từ kỳ — Đến kỳ | Case 1 — như K_VP_303 nhưng theo chuỗi kỳ; BA dòng 501 'Trùng' theo tên — O_VP_58 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Derivatives_Account_Snapshot {
+        string Derivatives_Account_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        int Row_Number
+        int Total_Account_Quantity
+        int Domestic_Account_Quantity
+        int Foreign_Account_Quantity
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Derivatives_Account_Snapshot["Fact Derivatives Account Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 44"]
+        R1["K_VP_330–331: Tài khoản giao dịch: biểu đồ tổng số tài khoản phái sinh theo thời gian"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Derivatives_Account_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Derivatives Account Snapshot | 1 dòng báo cáo TTLK01_1 (Row Number) × 1 tháng báo cáo (ngày cuối tháng); PK Derivatives Account Snapshot Id = hash (Snapshot Date Dimension Id, Row Number, Source System Code) (Dạng B, A22); nạp lại cùng tháng ghi đè |
+
 #### Nhóm 45 - Tổng quan thị trường >> Biểu đồ Tổng giá trị cổ phần bán được qua đấu giá
 
 > Phân loại: **Phân tích**
@@ -3393,7 +3728,7 @@ Tham số: Từ năm · Đến năm
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_VP_160 | Kỳ (Năm) | — | Chiều | Calendar Date Dimension: Year (từ năm — đến năm) trên ngày cuối tháng báo cáo | Reuse K_VP_160 (Nhóm 47–51) — Case 1; BA dòng 479; Điều kiện BA ghi report_month nhưng SQL lọc report_year — O_VP_55 | READY |
+| K_VP_160 | Kỳ (Năm) | — | Chiều | Calendar Date Dimension: Year (từ năm — đến năm) trên ngày cuối tháng báo cáo | Reuse K_VP_160 (Nhóm 47–51) — Case 1; BA dòng 479; **[SỬA 2026-11-05]** BA đã sửa Điều kiện và Trường nguồn dòng 479 thành `report_year` (khớp thiết kế) — O_VP_55(e) | READY |
 | K_VP_281 | Nhóm loại hình đấu giá | — | Chiều | Auction Type Group Name trên Fact Share Auction Result Snapshot (IPO, Thoái vốn, Phát hành ra công chúng - quyền mua, Khác), kèm dòng Tổng | Nhóm tính tại ETL theo danh sách chuỗi 'LOẠI HÌNH ĐẤU GIÁ' của BA; chuỗi ngoài danh sách → Khác; BA bản trước có chiều 'Loại hình đấu giá' đã bỏ | READY |
 | K_VP_282 | Số phiên đấu giá | Phiên | Cơ sở | COUNT(dòng) trên Fact Share Auction Result Snapshot, GROUP BY năm | Case 1 — mỗi dòng biểu mẫu là 1 đợt đấu giá; HNX05 + HSX03 cộng chung; BA row_num ≡ Atomic row_index (giả định) — O_VP_55 | READY |
 | K_VP_283 | Giá trị trúng giá | VND | Phái sinh | SUM(Domestic Winning Value) + SUM(Foreign Winning Value) trên Fact Share Auction Result Snapshot, GROUP BY năm | Case 2 — BA ghi 'Chỉ tiêu cơ sở' nhưng là tổng 2 cột nhà đầu tư trong nước + nước ngoài → Phái sinh | READY |
@@ -3946,6 +4281,95 @@ flowchart LR
 | Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
 | Fact Listing Status Change Snapshot | 1 quyết định thay đổi niêm yết × 1 mã chứng khoán × 1 Sở (HNX gồm UPCoM, HOSE); PK Listing Status Change Snapshot Id = id dòng Atomic `listing_status_change_id` (Dạng A, direct); kỳ theo ngày hiệu lực (Effective Date) |
 
+#### Nhóm 54 - Data Explorer Tài khoản giao dịch
+
+> Phân loại: **Phân tích**
+> Atomic: `Open Investor Account` / `Closed Investor Account` ← VSDC (dùng lại `Fact Investor Account Movement Snapshot`, Nhóm 40/42/43) và `Internal Statistical Report` ← ISS `TTLK01_1` (dùng lại `Fact Derivatives Account Snapshot`, Nhóm 41/44) — **READY** (Case 1/Case 2, không Fact mới)
+
+**[GHI CHÚ 2026-11-05 — BA VP mapping Nhóm 54 (Data Explorer Tài khoản giao dịch)]** BA 595–601: thêm dòng Kỳ, Phân loại Trong nước / Nước ngoài, Loại nhà đầu tư; SQL ghép 2 thị trường — CO_SO (VSDC `open_investors`/`closed_investors`, chiều phân loại theo `investor_type` 3–6) và PHAI_SINH (ISS `TTLK01_1`, chỉ dòng tổng, `origin_type`/`investor_kind` NULL). Cả 2 nhánh đã có Fact: không thêm Fact/Dimension; nhãn Thị trường gán theo Fact nguồn. SL TK mới/đóng chỉ có thị trường cơ sở. Chi tiết O_VP_61.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Ngày / Tháng / Quý / Năm) · Từ kỳ — Đến kỳ
+
+| Kỳ | Thị trường | Phân loại TN/NN | Loại NĐT | Số lượng tài khoản | SL TK mới | SL TK đóng |
+|---|---|---|---|---|---|---|
+| 2026-09 | CO_SO | TRONG_NUOC | CA_NHAN | … | … | … |
+| 2026-09 | PHAI_SINH | — | — | … | — | — |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 kỳ × 1 thị trường × (cơ sở: 1 phân loại trong nước / nước ngoài × 1 loại NĐT). Storage Grain: xem Bảng grain — mịn hơn (ngày × loại NĐT; dòng báo cáo × tháng), đạt Iso-Grain.
+
+**Source:** `Fact Investor Account Movement Snapshot`, `Fact Derivatives Account Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_332 | Kỳ | — | Chiều | Calendar Date Dimension: chuỗi kỳ D / M / Q / Y từ Từ kỳ đến Đến kỳ | Tham số lọc 'Từ kỳ - Đến kỳ' (BA dòng 595); kỳ Ngày chỉ có thị trường cơ sở — O_VP_61 | READY |
+| K_VP_333 | Thị trường | — | Chiều | CO_SO ← Investor Account Movement Snapshot; PHAI_SINH ← Derivatives Account Snapshot | BA dòng 596; nhãn cố định theo Fact nguồn, không có cột thị trường — O_VP_61 | READY |
+| K_VP_334 | Phân loại Trong nước / Nước ngoài | — | Chiều | Investor Type Code: 3, 5 → TRONG_NUOC; 4, 6 → NUOC_NGOAI; thị trường phái sinh = NULL | BA dòng 597; Case 1 — Investor Type Code của Fact Investor Account Movement Snapshot | READY |
+| K_VP_335 | Loại nhà đầu tư | — | Chiều | Investor Type Code: 3, 4 → CA_NHAN; 5, 6 → TO_CHUC; thị trường phái sinh = NULL | BA dòng 598; Case 1 — Investor Type Code | READY |
+| K_VP_336 | Số lượng tài khoản | TK | Cơ sở | Cơ sở: Σ Open Account Count − Σ Close Account Count lũy kế đến cuối kỳ; Phái sinh: Total Account Quantity tại tháng báo cáo mới nhất có dữ liệu trong kỳ (chỉ dòng tổng) | Case 2 — gộp 2 Fact (VSDC mở/đóng + ISS TTLK01_1); như K_VP_214 và K_VP_303 theo chiều của Data Explorer — O_VP_61 | READY |
+| K_VP_337 | Số lượng tài khoản mới | TK | Cơ sở | Σ Open Account Count trong kỳ (chỉ thị trường cơ sở) | Case 1 — measure Open Account Count; phái sinh không có (BA SQL chỉ nhánh cơ sở) — O_VP_61 | READY |
+| K_VP_338 | Số lượng tài khoản đóng | TK | Cơ sở | Σ Close Account Count trong kỳ (chỉ thị trường cơ sở) | Case 1 — measure Close Account Count; phái sinh không có — O_VP_61 | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Investor_Account_Movement_Snapshot {
+        string Investor_Account_Movement_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Investor_Type_Code
+        int Open_Account_Count
+        int Close_Account_Count
+    }
+    Fact_Derivatives_Account_Snapshot {
+        string Derivatives_Account_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        int Row_Number
+        int Total_Account_Quantity
+        int Domestic_Account_Quantity
+        int Foreign_Account_Quantity
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Investor_Account_Movement_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Derivatives_Account_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Investor_Account_Movement_Snapshot["Fact Investor Account Movement Snapshot"]
+        Fact_Derivatives_Account_Snapshot["Fact Derivatives Account Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 54"]
+        R1["K_VP_332–338: Data Explorer: tài khoản giao dịch"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Investor_Account_Movement_Snapshot --> R1
+    Fact_Derivatives_Account_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
+| Fact Investor Account Movement Snapshot | 1 ngày phát sinh (ngày mở hoặc ngày đóng tài khoản) × 1 loại NĐT VSDC (3–7, NA); PK Investor Account Movement Snapshot Id = hash (Snapshot Date Dimension Id, Investor Type Code) (Dạng B, A22); dựng lại toàn bộ mỗi lần chạy |
+| Fact Derivatives Account Snapshot | 1 dòng báo cáo TTLK01_1 (Row Number) × 1 tháng báo cáo (ngày cuối tháng); PK Derivatives Account Snapshot Id = hash (Snapshot Date Dimension Id, Row Number, Source System Code) (Dạng B, A22); nạp lại cùng tháng ghi đè |
+
 #### Nhóm 55 - Báo cáo VP_TK02 – TTCK bất thường
 
 > Phân loại: **Phân tích**
@@ -4384,7 +4808,7 @@ Không có.
 | O_VP_44 | Nhóm 50/51 - BA cập nhật 2026-10-30 | BA VP cung cấp SQL chính thức cho Nhóm 50 & 51 (Báo cáo thường niên): (a) Kỳ theo NGÀY HIỆU LỰC (`effective_date`); (b) Đã bỏ điều kiện `exchange_transfer NOT LIKE 'Có%'`; (c) Đã sửa lỗi mất mã khi nối MDDS bằng cách dùng `s_new` (tại `first_trading_date`) và `s_add` (giao dịch gần nhất $\le$ `effective_date`); (d) Đã sửa lỗi đếm lặp bảng bằng `COUNT(IF(...))` trên bảng union `ls` cả HOSE và HNX. | Thiết kế Datamart khớp hoàn toàn: dùng Fact `fct_listing_status_change_snpst` liên kết `cdr_dt_dim` (theo `effective_dt`), `security_trading_snpst_dim` (lọc `stock_tp_code = '2'`). Đã chốt và đóng item *(Cập nhật 2026-11-02: phần mã sàn KHÔNG khớp — Dimension là current-state; đã sửa bằng cột Listing Floor Code của Fact, xem O_VP_53)*. | K_VP_160–164, K_VP_208–211 | Datamart Modeling Team | Resolved |
 | O_VP_45 | Nhóm 50 - Mâu thuẫn BA | Nhóm 50: Trước đây BA mâu thuẫn giữa Trường nguồn ghi GIÁ TRỊ (`listed_value`) và Mô tả ghi KHỐI LƯỢNG (`new_listed_shares`). | SQL chính thức 2026-10-30 của BA đã CHỐT sử dụng KHỐI LƯỢNG (`SUM(ls.new_listed_shares)`, `SUM(ls.additional_listed_shares)`). Khớp 100% với thiết kế của Datamart. Đã đóng item. | K_VP_208–211 | Datamart Modeling Team | Resolved |
 | O_VP_46 | Nhóm 40/42/43 - Fact mới và giả định | Cụm Tài khoản giao dịch (BA 2026-10-29, VSDC): Fact mới `Fact Investor Account Movement Snapshot` (1 ngày phát sinh × 1 loại NĐT; cột `open_account_count`, `close_account_count`) gộp Atomic `open_investor_account` + `closed_investor_account`. Giả định / điểm cần chốt: (1) số TK lũy kế = Σ mở − Σ đóng đến ngày (đúng công thức BA) — không bắt trạng thái mở lại sau đóng; (2) lịch ngày `cdr_dt_dim` phải phủ ngày mở sớm nhất của VSDC, sự kiện ngoài lịch có FK trống làm lệch số lũy kế; (3) Fact dựng lại TOÀN BỘ mỗi lần chạy (sự kiện đóng/mở khai báo lùi ngày), flat TRUNCATE + INSERT; (4) loại NĐT: 3 CN trong nước, 4 CN nước ngoài, 5 Pháp nhân trong nước, 6 Pháp nhân nước ngoài, 7 Nhà nước, khác → 'NA'; BA dòng 456 'Tổ chức nước ngoài' ghi `investor_type = '5'` (gõ nhầm, SQL BA dùng '6'); 'Tổ chức trong nước' chỉ gồm '5' (Nhà nước '7' không có KPI riêng nhưng nằm trong tổng); (5) BA Mô tả dòng 439 'so với cuối THÁNG trước' còn SQL dùng cuối KỲ trước — theo SQL; (6) dòng 468/470 'Loại dữ liệu: Chưa có CSDL - Map biểu mẫu' mâu thuẫn Nguồn VSDC + bảng `open/closed_investors`; (7) Atomic `investor_tp_code` mô tả 'Cá nhân/Tổ chức' nhưng giá trị là mã 3–7 theo BA; (8) KPI Nhóm 42/43 trùng TÊN với Nhóm 40 nhưng là chuỗi kỳ (khác ngữ nghĩa) nên KPI riêng. | Theo công thức BA; ghi vào K_VP_212–238. [YÊU CẦU DEV] tạo bảng + flat `vp_fct_investor_account_movement_snpst_flat` (TRUNCATE + INSERT) và nạp; kiểm phạm vi `cdr_dt_dim`. | K_VP_212–238 | BA Team / Dev | Open |
-| O_VP_47 | Nhóm 41/44/55d - BA chưa mapping xong | Nhóm 41 (8 dòng) và Nhóm 44 (2 dòng) — tài khoản giao dịch thị trường PHÁI SINH: BA cấu trúc lại (thêm dòng Kỳ, đổi tên dòng % thành 'so với kỳ trước/cùng kỳ năm trước', thêm Nhóm 43/44) nhưng 'Mapping (nghiệp vụ)' = #NAME?, Trạng thái mapping để trống, nguồn là biểu mẫu VSDC 'BM 45_TTLK_01 — Báo cáo về tình hình đóng mở tài khoản' >> Sheet2 chưa có Atomic. Nhóm 55 'Số lượng tài khoản NĐT' (BA 643–644) nay công thức giản lược COUNT(open_investors) − COUNT(closed_investors) với ngày ≤ ngày báo cáo — cùng nguồn Fact tài khoản mới (O_VP_46), lô 55d chưa thiết kế *(Lịch sử — đã thiết kế 2026-11-02: K_VP_269–270, O_VP_52)*. | Giữ PENDING Nhóm 41/44 chờ BA mapping và Atomic cho biểu mẫu; Nhóm 55d (K_VP_269–270) đã đọc `Fact Investor Account Movement Snapshot` (Σ mở − Σ đóng đến ngày báo cáo / cuối năm trước) từ 2026-11-02. | K_VP (Nhóm 41, 44, 55d chưa đánh số) | BA Team | Open |
+| O_VP_47 | Nhóm 41/44/55d - BA chưa mapping xong | Nhóm 41 (8 dòng) và Nhóm 44 (2 dòng) — tài khoản giao dịch thị trường PHÁI SINH: BA cấu trúc lại (thêm dòng Kỳ, đổi tên dòng % thành 'so với kỳ trước/cùng kỳ năm trước', thêm Nhóm 43/44) nhưng 'Mapping (nghiệp vụ)' = #NAME?, Trạng thái mapping để trống, nguồn là biểu mẫu VSDC 'BM 45_TTLK_01 — Báo cáo về tình hình đóng mở tài khoản' >> Sheet2 chưa có Atomic. Nhóm 55 'Số lượng tài khoản NĐT' (BA 643–644) nay công thức giản lược COUNT(open_investors) − COUNT(closed_investors) với ngày ≤ ngày báo cáo — cùng nguồn Fact tài khoản mới (O_VP_46), lô 55d chưa thiết kế *(Lịch sử — đã thiết kế 2026-11-02: K_VP_269–270, O_VP_52)*. | **[ĐÃ ĐÓNG 2026-11-05 — BA mapping Nhóm 41/44 xong, nguồn ISS `TTLK01_1`: thiết kế K_VP_300–331, giả định ở O_VP_58–59]** *(Lịch sử — giữ PENDING Nhóm 41/44 chờ BA mapping và Atomic cho biểu mẫu;)* Nhóm 55d (K_VP_269–270) đã đọc `Fact Investor Account Movement Snapshot` (Σ mở − Σ đóng đến ngày báo cáo / cuối năm trước) từ 2026-11-02. | K_VP_300–331 (Nhóm 41, 44); K_VP_269–270 (Nhóm 55d) | BA Team | Resolved |
 | O_VP_48 | Nhóm 19 - Mâu thuẫn BA | Nhóm 19 (BA 2026-11-02, vốn hóa cổ phiếu): (a) dòng 258 Mô tả ghi mẫu số 'vốn hóa tại ngày cuối NĂM trước' trong khi tên dòng ('so với KỲ trước'), SQL (`/ marketcap_prev`) và dòng 264/267/270 dùng cuối KỲ trước; dòng 259 Mô tả 'vốn hóa tại ngày cuối năm này' (SQL dùng marketcap_cur tại ngày giao dịch cuối kỳ); dòng 265/268/271 Mô tả ghi tử số '− Vốn hóa kỳ trước' nhưng mẫu số 'năm trước' (lẫn kỳ trước / cuối năm trước); (b) dòng 261–262 (đơn vị điểm %) SQL `marketcap_cur/gdp_cur − marketcap_prev/gdp_prev` KHÔNG nhân 100 trong khi dòng 260 nhân 100; (c) SQL tham khảo lỗi: CTE `params` thiếu dấu phẩy trước `YEAR(q.period_end) - 1 AS gdp_year_cur`, `GROUPING SETS ((e.period_tag, e.san), …)` dùng alias `san` không tồn tại (cột là `floorcode`); (d) dòng 263/266 Điều kiện `s.floorcode = 'HOSE'`/'HNX' (tên sàn) nhưng MDDS lưu mã 10/02 (dòng 256, 269 dùng mã); (e) SQL GDP cố định `ds_snpst_dt = '2026-10-23'` và `deleted = '0'` (cùng O_VP_41); (f) lịch ngày giao dịch trong SQL = ngày có Sổ lệnh HNX (`trade_book`) ∪ bản tin `jad_marketinfor`, thiết kế dùng Is Trading Date của Calendar Date Dimension (cùng O_VP_30); (g) 13 dòng 'Đánh giá: Trùng' (258, 259, 261–271) không nêu trùng với chỉ tiêu nào. | Theo tên dòng + SQL: (a) mẫu số = vốn hóa kỳ trước (dòng 258, 264, 267, 270) / cuối năm trước (dòng 259, 265, 268, 271), tử số = vốn hóa tại ngày giao dịch cuối kỳ; (b) nhân 100 (điểm %); (c) hiểu theo ý định, không chép lỗi cú pháp; (d) dùng mã sàn 10/02/04; (e) như O_VP_41; (f) Is Trading Date làm proxy; (g) thiết kế KPI riêng từng dòng. BA sửa Mô tả/SQL và xác nhận (a), (b). | K_VP_239–254 | BA Team | Open |
 | O_VP_49 | Nhóm 47/48 - Thiếu nguồn Atomic / Ngoại lai (khóa, định dạng kỳ hạn) | Fact mới `Fact Government Bond Bidding Result Snapshot` ← Atomic `gov_bond_bidding_result` (HNX.GOV_BOND_OFFERING, draft): (a) khóa thay thế `gov_bond_bidding_result_id` chỉ băm từ `BIDDING_SESSION` (BK = đợt đấu thầu) trong khi 1 đợt có nhiều mã trái phiếu/kỳ hạn — nếu loader upsert theo khóa này thì mỗi đợt chỉ còn 1 dòng và bình quân gia quyền K_VP_255–256 sai; (b) `bond_term` là chuỗi tự do ('10 năm', '26 tuần', '6 tháng'): ETL quy đổi tuần/52, tháng/12, còn lại là năm theo CASE của BA, chưa kiểm tập giá trị thật (chuỗi không có số → NULL: loại khỏi tử số nhưng giá trị trúng thầu vẫn nằm trong mẫu số như SQL BA); (c) HNX gửi theo báo cáo tháng (`rpt_month`) nên đợt có ngày phát hành trong quá khứ đến muộn: Fact nạp đủ lịch sử theo PK (`issue_dt <= :etl_date`), flat TRUNCATE + INSERT (không lọc `cdr_dt = :etl_date`); (d) SQL BA không lọc trạng thái/loại trái phiếu: mọi dòng `gov_bond_offering` (kể cả đợt không trúng thầu, `winning_value` = 0 hoặc NULL) đều vào tử/mẫu. | Giữ theo BA. Atomic team bổ sung `bond_code` (và phương thức đấu thầu) vào BK; dev xác nhận tập giá trị `bond_term` trên UAT. [YÊU CẦU DEV] tạo bảng `fct_government_bond_bidding_result_snpst` + flat `vp_fct_government_bond_bidding_result_snpst_flat` (TRUNCATE + INSERT) và nạp lịch sử. | K_VP_160,255–256 | Data Architecture / Atomic Team, Dev | Open |
 | O_VP_50 | Nhóm 49/55 - Thiếu nguồn Atomic / Ngoại lai (danh mục TPCP niêm yết) | KPI niêm yết TPCP (Nhóm 49 dòng 501; Nhóm 55 dòng 600–603): SQL BA lọc `report_year` và `report_month` của `uat_hnx_stg.gov_bond_listed_list` (tháng mới nhất trong năm / tháng của ngày báo cáo / tháng cuối năm trước), nhưng schema UAT (`Source/HNX_UAT_schema.txt`), BRD (`brd_HNX_gov_bond_listed_list.yaml`) và Atomic `gov_bond_listing` chỉ có `report_month` (string), KHÔNG có năm; khóa thay thế `gov_bond_listing_id` chỉ băm từ `BOND_CODE` nên mỗi mã chỉ còn dòng tháng mới nhất — mất lịch sử theo tháng cần cho 'cuối năm trước' và 'tháng của ngày báo cáo' (cùng dạng O_VP_12/15/26). | PENDING [Nhóm 3 - Thiếu nguồn Atomic / Ngoại lai] (Data Modeler chốt 2026-11-02, không giả định định dạng `rpt_month`): Atomic bổ sung năm báo cáo (`rpt_year` hoặc `rpt_month` dạng yyyyMM) và đưa tháng báo cáo vào khóa/BK `gov_bond_listing`; sau đó thiết kế `Fact Government Bond Listing Snapshot` (grain 1 mã TPCP × 1 tháng báo cáo; Listed Bond Quantity, Listed Bond Value = KL × 100.000 đ) và mở K_VP_257, 265–268. Dev xác nhận UAT có cột `report_year` hay không. | K_VP_257,265–268 | Data Architecture / Atomic Team | Open |
@@ -4392,6 +4816,10 @@ Không có.
 | O_VP_52 | Nhóm 55c/55d - Giả định và lỗi BA (K_VP_260–270) | (1) TPCP GTGD bình quân (K_VP_260–264): GTGD = Σ Outright + Σ Repo (thanh toán lần 1) đọc `Fact Government Bond Trading Snapshot`; BA đếm số phiên bằng số ngày có Sổ lệnh HNX `trade_book` hoặc bản tin MDDS `jad_marketinfor` ('do không đủ dữ liệu sổ lệnh TPCP'), thiết kế dùng `cdr_dt_dim.is_trading_date` (cùng O_VP_30/42); (2) dòng 597 Mô tả ghi nhãn 'so với bình quân tháng trước' nhưng là cùng tháng năm trước (lỗi copy); dòng 598 Điều kiện tham chiếu 'GTGD bình tháng năm báo cáo' (gõ lệch tên chỉ tiêu) và nhãn '(Tỷ đồng)' trong khi SQL xuất VND; dòng 596, 597, 599 SQL chia ABS(mẫu số), Mô tả không dùng; (3) dòng 595, 598, 626 ghi 'Chỉ tiêu cơ sở' nhưng là Σ / số phiên hoặc hiệu 2 Σ → thiết kế Phái sinh; (4) dòng 603 'Đánh giá: Trùng' không nêu chỉ tiêu trùng; (5) tài khoản NĐT (dòng 626–627) đọc `Fact Investor Account Movement Snapshot`, giả định như O_VP_46. | Theo tên dòng + Điều kiện + SQL: (1) Is Trading Date làm proxy số phiên; (2) cùng kỳ năm trước cho dòng 597, VND ở Fact; (3) Tính chất Phái sinh (Case 2); (4) KPI riêng, PENDING theo O_VP_50; (5) như O_VP_46. BA sửa CSV và xác nhận. | K_VP_260–264,269–270 | BA Team / Datamart Modeling Team | Open |
 | O_VP_53 | Nhóm 50/51 - Mã sàn tại ngày sự kiện (sửa thiết kế) | SQL BA Nhóm 50–51 (BA 2026-11-02) lấy mã sàn từ `jad_stockinfor` TẠI NGÀY SỰ KIỆN: niêm yết mới = bản tin cuối ngày tại `first_trading_date` (`s_new`), bổ sung / hủy = phiên giao dịch gần nhất <= `effective_date` (`s_add`), sàn = `IF(new_listed_shares > 0, s_new.floorcode, s_add.floorcode)`, nhóm theo năm × sàn. Thiết kế 2026-10-30 lọc sàn bằng `Security Trading Snapshot Dimension.Floor Code` (current-state) và O_VP_44 ghi 'khớp hoàn toàn' — SAI ở phần mã sàn: mã đã chuyển sàn (VD UPCoM → HNX/HOSE, hủy ở sàn này để niêm yết ở sàn khác) mang sàn hiện tại nên bị đếm sai sàn hoặc rơi khỏi cả 3 cột sàn; BA đã BỎ điều kiện loại chuyển sàn nên các trường hợp này nay nằm trong số liệu. Điểm cần chốt khi sửa: (a) phiên gần nhất <= ngày hiệu lực KHÔNG giới hạn dưới — BA chủ ý (SQL BA không có cận dưới), ghi marker DATE-BOUND-REVIEWED ở cột Listing Floor Code theo A19 R4; (b) dòng không có bản tin MDDS tại ngày sự kiện: Listing Floor Code NULL → vẫn vào K_VP_208/161 (tổng mọi sàn, như O_VP_44; BA loại dòng này) nhưng không vào cột sàn nào (BA cũng vậy); (c) HOSE: BA 2026-11-02 thêm `s.floorcode = '10'` — giữ cả `Source System Code = 'HOSE_LISTING_STATUS_CHANGE'` và Listing Floor Code = '10' (chỉ khác SQL BA, vốn nhóm theo sàn bất kể nguồn, khi sàn tại ngày ≠ Sở nguồn). | Đã sửa 2026-11-02: Fact `fct_listing_status_change_snpst` thêm cột Listing Floor Code (tên có tiền tố để không trùng `floor_code` của Dimension trên flat), K_VP_209–211 và K_VP_162–164 lọc theo cột này. [YÊU CẦU DEV] ALTER TABLE `fct_listing_status_change_snpst` và `vp_fct_listing_status_change_snpst_flat` ADD COLUMN `listing_floor_code` (String, nullable); cập nhật ETL (LEFT JOIN `security_trading_snapshot` theo `first_trading_dt` và phiên giao dịch gần nhất <= `effective_dt`, không cận dưới); nạp lại toàn bộ lịch sử. BA/Data Modeler xác nhận cách đếm dòng không có bản tin MDDS. | K_VP_160–164,208–211 | Datamart Modeling Team / Dev | Open |
 | O_VP_54 | Nhóm 36 - Lỗi SQL BA | Nhóm 36 (BA 2026-11-02): SQL tham khảo dòng 411 có (a) thiếu `UNION ALL` giữa SELECT HOSE (`GROUP BY t.trade_date`) và SELECT HNX; (b) nhãn quý dùng `month(period_fromdate)` — cột không tồn tại ở subquery (nên là `trade_date`); (c) `stock_portfolio` chỉ giữ mã có bản tin MDDS trong khoảng Từ kỳ — Đến kỳ (bản ghi mới nhất mỗi symbol) rồi INNER JOIN với sổ lệnh, còn thiết kế dùng Security Trading Snapshot Dimension current-state không giới hạn khoảng kỳ (chỉ khác khi mã có giao dịch mà không có bản tin MDDS trong kỳ). | (a), (b) hiểu theo ý định (gộp 2 sàn; nhãn quý theo ngày giao dịch), không chép lỗi; (c) giữ Dimension current-state. BA sửa SQL và xác nhận. | K_VP_1,144–146 | BA Team | Open |
-| O_VP_55 | Nhóm 45 - Thiếu nguồn Atomic / Ngoại lai (eForm đấu giá cổ phần) | **[MỚI 2026-11-03]** Nhóm 45 (BA 2026-11-03) đọc `uat_iss_ods.flat_report` (HNX05 của HNX, HSX03 của HOSE); thiết kế đọc Atomic `internal_statistical_report` (cùng cách VP đọc HNX09, TKNB đọc TTLK01) và dựng `Fact Share Auction Result Snapshot` (1 dòng biểu mẫu = 1 đợt đấu giá của 1 tổ chức). (a) `flat_report` không có trong `BRD/Source/ISS`; BA `row_num` ≡ Atomic `row_index` (ROW_INDEX) là GIẢ ĐỊNH chưa kiểm — nếu dev xác nhận khác thì khóa dòng của Fact phải đổi; (b) khóa Atomic `internal_statistical_report` chưa gồm nguồn nộp/trạng thái nộp (như O_VP_21): nộp lại biểu mẫu cùng tháng có thể tạo dòng lặp, SQL BA cũng không khử lặp; (c) SQL BA ghim `ds_snpst_dt = '2026-10-22'` (bản test) → bản hiện hành `ds_rcrd_st = 'ACTIVE'` như O_VP_20; (d) phân nhóm loại hình so khớp CHÍNH XÁC sau TRIM theo danh sách chuỗi của BA — chuỗi mới hoặc biến thể chính tả rơi vào 'Khác'; (e) lỗi BA: dòng 479 Điều kiện ghi `report_month` (SQL lọc `report_year`), dòng 486 Mô tả chép của nhóm Phát hành ra công chúng, dòng 483–486 Điều kiện chép chung một câu, BA bỏ chiều 'Loại hình đấu giá' từng loại. | (a) READY với giả định row_num ≡ row_index; (b)(d) giữ như SQL BA; (c) dùng `ds_rcrd_st = 'ACTIVE'`; (e) theo SQL và tên chỉ tiêu. Dev xác nhận row_index và cách khử trùng khi nộp lại; BA sửa dòng 479/486. | K_VP_160,281–287 | Dev / BA Team | Open |
+| O_VP_55 | Nhóm 45 - Thiếu nguồn Atomic / Ngoại lai (eForm đấu giá cổ phần) | **[MỚI 2026-11-03]** Nhóm 45 (BA 2026-11-03) đọc `uat_iss_ods.flat_report` (HNX05 của HNX, HSX03 của HOSE); thiết kế đọc Atomic `internal_statistical_report` (cùng cách VP đọc HNX09, TKNB đọc TTLK01) và dựng `Fact Share Auction Result Snapshot` (1 dòng biểu mẫu = 1 đợt đấu giá của 1 tổ chức). (a) `flat_report` không có trong `BRD/Source/ISS`; BA `row_num` ≡ Atomic `row_index` (ROW_INDEX) là GIẢ ĐỊNH chưa kiểm — nếu dev xác nhận khác thì khóa dòng của Fact phải đổi; (b) khóa Atomic `internal_statistical_report` chưa gồm nguồn nộp/trạng thái nộp (như O_VP_21): nộp lại biểu mẫu cùng tháng có thể tạo dòng lặp, SQL BA cũng không khử lặp; (c) SQL BA ghim `ds_snpst_dt = '2026-10-22'` (bản test) → bản hiện hành `ds_rcrd_st = 'ACTIVE'` như O_VP_20; (d) phân nhóm loại hình so khớp CHÍNH XÁC sau TRIM theo danh sách chuỗi của BA — chuỗi mới hoặc biến thể chính tả rơi vào 'Khác'; (e) lỗi BA: dòng 479 Điều kiện ghi `report_month` (SQL lọc `report_year`) **[ĐÃ SỬA 2026-11-05: BA đổi Điều kiện và Trường nguồn sang `report_year`; BA cũng sửa lỗi gõ `colum_path` → `column_path` ở 7 dòng 503–509]**, dòng 486 Mô tả chép của nhóm Phát hành ra công chúng, dòng 483–486 Điều kiện chép chung một câu, BA bỏ chiều 'Loại hình đấu giá' từng loại. | (a) READY với giả định row_num ≡ row_index; (b)(d) giữ như SQL BA; (c) dùng `ds_rcrd_st = 'ACTIVE'`; (e) theo SQL và tên chỉ tiêu. Dev xác nhận row_index và cách khử trùng khi nộp lại; BA sửa dòng 479/486. | K_VP_160,281–287 | Dev / BA Team | Open |
 | O_VP_56 | Nhóm 30/31 - Giả định và lỗi BA (TPCP theo kỳ) | **[MỚI 2026-11-03]** (1) Nhóm 30/31 (BA 2026-11-03) đọc `uat_hnx_stg.gov_bond_offering`; thiết kế đọc `Fact Government Bond Bidding Result Snapshot` (Nhóm 47/48) và THÊM cột `calling_val` (Atomic `gov_bond_bidding_result.calling_val`) cho Nhóm 31 — dev ALTER `fct_government_bond_bidding_result_snpst_flat` ADD COLUMN `calling_val` (Decimal(23,2), nullable) và nạp lại; (2) Tổng dư nợ TPCP (K_VP_271–272) PENDING cùng blocker O_VP_50 — BA Nhóm 30 lấy tháng báo cáo MỚI NHẤT trong kỳ (DENSE_RANK theo report_month) nên khi Atomic có năm báo cáo thì Fact Listing cần grain 1 mã × 1 tháng; (3) lỗi/giả định BA: dòng 363 (Kỳ hạn bình quân % so với kỳ trước) Điều kiện ghi nhầm công thức Lãi suất; SQL Nhóm 31 dùng `:period_from/:period_to` còn Điều kiện ghi `:from_period/:to_period`; SQL Nhóm 30 chỉ có loại kỳ M/Q/Y (không D); Tỷ lệ trúng thầu BA đổi chiều từ gọi/trúng sang trúng/gọi; BA không ghi đơn vị của `winning_value`/`calling_value`; (4) các dòng 'Trùng' (Nhóm 30: 359, 360, 361, 363, 365; Nhóm 31: 368, 369) vẫn có KPI riêng nên Δ Gate 10 là CÓ CHỦ Ý. | (1) thêm cột, flat đồng bộ theo A20; (2) giữ PENDING; (3) theo Mô tả và SQL, đơn vị giả định VND; (4) KPI riêng. BA xác nhận tên tham số và đơn vị; dev xác nhận ALTER + nạp lại. | K_VP_1,271–280 | Dev / BA Team | Open |
 | O_VP_57 | BA VP 2026-11-03 - Lỗi file BA (xuất từ Excel) | **[MỚI 2026-11-03]** `BA_analyst_VP.csv` (chuẩn hóa còn 18 cột) có 2 lỗi xuất file: (a) Nhóm 17 dòng 201 và 204 (TPCP: Số mã niêm yết hiện tại; KL niêm yết/ĐKGD hiện tại) cột Điều kiện = `#NAME?` (Excel hiểu chuỗi bắt đầu bằng '- TPCP:' là công thức; bản trước ghi nguồn HNX BM 23 danh sách TPCP niêm yết); (b) Nhóm 55 ô SQL của dòng 'Ngày báo cáo' (BA dòng 577) bị cắt ngay sau `'TPCP ` ở dòng 21 của khối `VALUES` (chèn dấu `"`), phần còn lại (danh sách tên chỉ tiêu) tràn thành 36 dòng giả (khóa '2'–'6' ở ba_diff và ba_hld_sync_check S2); logic SQL (CTE, 514 dòng đầu) giống hệt bản 2026-11-02. | Thiết kế KHÔNG đổi: dòng Nhóm 17 là 'Trùng' và mapping trống; Nhóm 55 chỉ mất phần đuôi hiển thị. Cảnh báo S2 khóa '2'–'6' ở Gate 10 do lỗi file này. BA xuất lại file (escape dấu `"` trong ô SQL, ép ô Điều kiện dạng văn bản). | — (Nhóm 17 chưa thiết kế; Nhóm 55 không đổi) | BA Team | Closed 2026-11-03 — bỏ qua theo Data Modeler (Nhóm 17 chưa thiết kế xong, Nhóm 55 không đổi) |
+| O_VP_58 | Nhóm 41/44/54 - Fact mới `Fact Derivatives Account Snapshot` (ISS TTLK01_1) — giả định cần dev xác nhận | BA 2026-11-05 chuyển Nhóm 41/44/54 sang báo cáo ISS `TTLK01_1` ('Tài khoản phái sinh', `uat_iss_ods.flat_report`, MONTHLY, nguồn nộp ICP, SUBMITTED/LATE_SUBMITTED). Thiết kế (Data Modeler chọn 2026-11-05): Fact mới `fct_derivatives_account_snpst`, grain 1 dòng báo cáo (`row_index`) × 1 tháng báo cáo, PK Dạng B hash(snpst_dt_dim_id, row_nbr, src_stm_code), 3 cột đo đọc nguyên ô `TỔNG CỘNG` / `SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC` / `SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI`. Repo không có tài liệu về cấu trúc dòng của TTLK01_1 nên còn 5 điểm chưa chắc: (1) số dòng mỗi kỳ — BA mô tả `SUM(field_value)` (Nhóm 41 dòng 469, Nhóm 44 dòng 501) nhưng SQL dùng `PIVOT (MAX(val))`; Detail Mapping dùng SUM theo mô tả BA (đúng cả khi báo cáo chỉ có 1 dòng, sai nếu có thêm dòng tổng riêng); (2) `period_tp_code = 'MONTHLY'` suy từ BA `date_type = 'MONTHLY'`; (3) BA chọn snapshot mới nhất theo `ds_snpst_dt` (DENSE_RANK) — Atomic ISS nạp lại ghi đè theo BK nên Fact không khử trùng; (4) SQL BA Nhóm 41 đặt trùng alias `sl_tk_phaisinh_so_ky_truoc_pct` cho cả % so với kỳ trước lẫn % so với cuối năm trước; (5) kỳ Ngày không có dữ liệu vì báo cáo chỉ theo tháng. | Dev chạy `SELECT DISTINCT column_path, row_index FROM internal_statistical_report WHERE rpt_code = 'TTLK01_1'` để xác nhận số dòng/kỳ và có dòng tổng riêng hay không; nếu có dòng tổng thì lọc khỏi Fact hoặc đổi Detail Mapping sang MAX. | K_VP_300, 301, 303–305, 312–314, 321–323, 330–331, 332–338 | Dev ETL / Data Modeler | Open |
+| O_VP_59 | Nhóm 41 - 19 dòng BA 'Không có dữ liệu, trên chart hiển thị N/A' | 19 dòng Nhóm 41 (BA 468, 472–477, 481–486, 490–495) có 'Trạng thái mapping = Done' nhưng Bảng nguồn trống, Trường nguồn NULL, Điều kiện 'Không có dữ liệu, trên chart hiển thị N/A': Loại nhà đầu tư, SL TK phái sinh mới/đóng, Trong nước/Nước ngoài × Cá nhân/Tổ chức, kể cả các dòng % của chúng. TTLK01_1 chỉ có 3 cột `TỔNG CỘNG` / `TRONG NƯỚC` / `NƯỚC NGOÀI` nên không có nguồn. Mỗi dòng có KPI riêng (K_VP_302, 306–311, 315–320, 324–329) trạng thái PENDING [Nhóm 2 - Chưa có mapping nguồn từ BA], không gắn cột Fact; UI hiển thị N/A theo BA. | BA xác nhận giữ N/A hay bổ sung nguồn (VD biểu mẫu VSDC chi tiết cá nhân/tổ chức, TK mở/đóng phái sinh); khi có nguồn thì thêm cột vào `fct_derivatives_account_snpst` hoặc Fact mới và nâng READY (đủ 5 tầng + flat). | K_VP_302, 306–311, 315–320, 324–329 | BA Team | Open |
+| O_VP_60 | Nhóm 38/39 - Fact mới `Fact Foreign Capital Flow Summary Snapshot` (FIMS IBOU9) — giả định cần dev xác nhận | BA 2026-11-05 chuyển Nhóm 38/39 sang FIMS `IBOU9` (PLIV-TT51), dòng `row_path = 'Tổng= (1) + (2)'`, 3 cột USD, kỳ `NUA_THANG`, lấy bản nộp mới nhất của từng TVLK (`object_name`) mỗi kỳ. Data Modeler chọn 2026-11-05: Fact VP mới `fct_foreign_capital_flow_summary_snpst` (grain 1 TVLK × 1 kỳ nửa tháng, PK Dạng B hash(reporting_entity_code, period_val, rpt_year, src_stm_code), bản nộp mới nhất ghi đè); không dùng `fct_foreign_investor_report_value` (NDTNN, thiếu `reporting_entity_code`) và `fct_foreign_investor_capital_flow_snpst` (bỏ dòng tổng, 1 chỉ tiêu). Giả định: (1) `object_name` (BA) ≡ Atomic `reporting_entity_code` (FIMS OBJECT_ID); (2) lọc thêm `sheet_nm = 'I'` như NDTNN (BA không nêu sheet); (3) `period_tp_code = 'NUA_THANG'` theo BA; (4) BA khử trùng còn chia theo tháng của ngày báo cáo (`DATE_FORMAT(day_report, 'yyyy-MM')`) — PK không có thành phần này, coi `period_val` + `rpt_year` đủ phân biệt kỳ nửa tháng; (5) nửa đầu/nửa cuối tháng giữ nguyên biểu thức BA `SUBSTR(period_val, 3, 2) <= 15` (BA ghi chú định dạng NT01..NT31); kỳ Năm lấy `rpt_year` (BA Nhóm 38 dòng 431 và Nhóm 39 dùng `year_value`, SQL Nhóm 38 dùng `YEAR(day_report)`); (6) % so với kỳ trước chia cho giá trị kỳ trước có thể âm (Vào ròng/Rút ròng) nên dấu % đảo, đúng theo BA. | Dev xác nhận 6 giả định và dựng bảng/flat `fct_foreign_capital_flow_summary_snpst`; BA xác nhận có cần ABS ở mẫu số. | K_VP_288–299 | Dev ETL / Data Modeler | Open |
+| O_VP_61 | Nhóm 54 - Data Explorer Tài khoản giao dịch: ghép 2 thị trường, phái sinh chỉ có tổng | BA 595–601: SQL ghép thị trường cơ sở (VSDC `open_investors`/`closed_investors`) và phái sinh (ISS `TTLK01_1`). Không thêm Fact/Dimension: cơ sở đọc `Fact Investor Account Movement Snapshot`, phái sinh đọc `Fact Derivatives Account Snapshot`; nhãn Thị trường (CO_SO/PHAI_SINH) gán theo Fact nguồn. Điểm cần lưu ý: (1) phái sinh chỉ có Số lượng tài khoản dòng tổng (origin_type, investor_kind NULL), không có SL TK mới/đóng; (2) kỳ Ngày chỉ có cơ sở; (3) loại NĐT '7' (Nhà nước) và 'NA' không có nhãn Trong nước/Nước ngoài hay Cá nhân/Tổ chức (BA MAP trả NULL); (4) BA lọc năm của TTLK01_1 bằng `report_year BETWEEN` năm Từ kỳ và năm Đến kỳ ('Lọc tạm giới hạn năm'); (5) kế thừa giả định O_VP_46 (ngày sự kiện ngoài lịch làm lệch số lũy kế) và O_VP_58. | Data Modeler xác nhận cách trình bày thị trường phái sinh (chỉ dòng tổng) với BA; không cần Atomic/Fact mới. | K_VP_332–338 | Data Modeler / BA Team | Open |

@@ -521,3 +521,71 @@ PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), share_auction_result_snpst_id)
 COMMENT 'Flat table — fct_share_auction_result_snpst — sinh tự động từ master registry + Entities.csv'
 ;
+
+
+-- ==========================================================
+-- 12. FACT: vp_fct_derivatives_account_snpst_flat
+--    fct_derivatives_account_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_derivatives_account_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_DERIVATIVES_ACCOUNT_SNPST
+    derivatives_account_snpst_id                 String                  COMMENT '[MỚI 2026-11-05] PK — hash(snpst_dt_dim_id, row_nbr, src_stm_code). Grain = 1 dòng báo cáo TTLK01_1 (Tài khoản',
+    snpst_dt_dim_id                              String                  COMMENT '[MỚI 2026-11-05] FK tới Calendar Date Dimension — ngày cuối tháng của tháng báo cáo (`rpt_year`, `rpt_month`).',
+    row_nbr                                      Int64                   COMMENT '[MỚI 2026-11-05] Số thứ tự dòng của biểu mẫu TTLK01_1 (`row_index`) — thuộc khóa PK để phân biệt các dòng báo ',
+    total_account_quantity                       Nullable(Int64)         COMMENT '[MỚI 2026-11-05] Tổng số tài khoản phái sinh cuối kỳ theo cột `TỔNG CỘNG` của TTLK01_1 (BA Nhóm 41 dòng 469, N',
+    domestic_account_quantity                    Nullable(Int64)         COMMENT '[MỚI 2026-11-05] Số tài khoản phái sinh cuối kỳ của nhà đầu tư trong nước, cột `SỐ LƯỢNG CUỐI KỲ > TRONG NƯỚC`',
+    foreign_account_quantity                     Nullable(Int64)         COMMENT '[MỚI 2026-11-05] Số tài khoản phái sinh cuối kỳ của nhà đầu tư nước ngoài, cột `SỐ LƯỢNG CUỐI KỲ > NƯỚC NGOÀI`',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), derivatives_account_snpst_id)
+COMMENT 'Flat table — fct_derivatives_account_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 13. FACT: vp_fct_foreign_capital_flow_summary_snpst_flat
+--    fct_foreign_capital_flow_summary_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_foreign_capital_flow_summary_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_FOREIGN_CAPITAL_FLOW_SUMMARY_SNPST
+    foreign_capital_flow_summary_snpst_id        String                  COMMENT '[MỚI 2026-11-05] PK — hash(reporting_entity_code, period_val, rpt_year, src_stm_code). Grain = 1 đối tượng nộp',
+    snpst_dt_dim_id                              String                  COMMENT '[MỚI 2026-11-05] FK tới Calendar Date Dimension — ngày báo cáo `rpt_day` (BA: day_report) của bản nộp mới nhất',
+    reporting_entity_code                        String                  COMMENT '[MỚI 2026-11-05] Mã đối tượng đã nộp báo cáo IBOU9 (FIMS OBJECT_ID; BA gọi `object_name` — TVLK)',
+    period_val                                   String                  COMMENT '[MỚI 2026-11-05] Giá trị kỳ báo cáo nửa tháng của FIMS (BA: `period_value`); Detail Mapping suy kỳ nửa đầu/nửa',
+    rpt_year                                     Int64                   COMMENT '[MỚI 2026-11-05] Năm báo cáo (BA: `year_value`); thuộc khóa PK cùng `period_val`',
+    capital_flow_net_val                         Nullable(Decimal(38,15)) COMMENT '[MỚI 2026-11-05] Giá trị dòng vốn vào ròng (+/−) của NĐTNN trong kỳ, USD — dòng Tổng= (1) + (2), cột `Giá trị ',
+    capital_inflow_val                           Nullable(Decimal(38,15)) COMMENT '[MỚI 2026-11-05] Dòng tiền vào của NĐTNN trong kỳ, USD — dòng Tổng= (1) + (2), cột `Tổng giá trị ngoại tệ đổi ',
+    capital_outflow_val                          Nullable(Decimal(38,15)) COMMENT '[MỚI 2026-11-05] Dòng tiền ra của NĐTNN trong kỳ, USD — dòng Tổng= (1) + (2), cột `Tổng giá trị VND đổi ra ngo',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), foreign_capital_flow_summary_snpst_id)
+COMMENT 'Flat table — fct_foreign_capital_flow_summary_snpst — sinh tự động từ master registry + Entities.csv'
+;

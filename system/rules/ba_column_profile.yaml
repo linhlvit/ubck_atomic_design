@@ -254,7 +254,7 @@ modules:
 
   VP:
     delimiter: ","
-    expect_columns: 18
+    expect_columns: 19
     stt_column: "TT"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
@@ -279,3 +279,6 @@ modules:
       2 Dashboard/báo cáo, 3 Thông tin, 4 Mô tả, 5 Nhóm yêu cầu, 6 Phân loại, 7 Đánh giá, 8 Độ chi tiết, 9 Nguồn, 10 Cần phân tích?, 11 Cần test?,
       12 DL lịch sử?, 13 Trạng thái mapping, 14 Bảng nguồn, 15 Trường nguồn, 16 Điều kiện, 17 Câu lệnh tham khảo. HEAD vẫn là bản 26 cột nên ba_diff
       phải dùng bản HEAD đã quy đổi về 18 cột (bỏ index 0, 15, 20–25). BA đang sửa trực tiếp — kiểm lại MD5/mtime trước khi ghi thiết kế.
+      [CẬP NHẬT 2026-11-05 17:02, xác minh qua header sống: 692 bản ghi đều 19 cột, delimiter ',', dòng 0 banner 'Khai thác nguồn' (ô index 15), header dòng 1, legend dòng 2,
+      md5 b70a9fdc] BA THÊM LẠI cột 'Mapping (nghiệp vụ)' (index 14, ngay sau 'Trạng thái mapping') → expect_columns 18 → 19; 'Bảng nguồn' 15, 'Trường nguồn' 16,
+      'Điều kiện' 17, 'Câu lệnh tham khảo' 18. Parser tra theo TÊN nên chỉ đổi expect_columns. ba_diff so với HEAD (18 cột) phải dùng bản HEAD đã chèn 1 cột rỗng ở index 14.
