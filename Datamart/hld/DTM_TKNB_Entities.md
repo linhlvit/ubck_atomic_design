@@ -104,7 +104,8 @@ erDiagram
     Fact_Private_Corporate_Bond_International_Offering_Snapshot {
         string Snapshot_Date_Dimension_Id FK
         string Private_Corporate_Bond_Dimension_Id FK
-        string Report_Month
+        int Report_Year
+        int Report_Month
         string Market_Type
         string Currency_Code
         bigint Offering_Bond_Quantity
@@ -164,8 +165,8 @@ erDiagram
 | — | Fact Market Trading Snapshot | Fact | new | GTGD/KLGD cổ phiếu theo chỉ số + giá trị chỉ số theo ngày [SỬA 2026-11-03: KL/GT của các cổ phiếu thuộc từng chỉ số] | 1 dòng/Trade Date × Index Code | K_TKNB_1013–1022 (Nhóm 18) |
 | — | Fact Foreign Proprietary Trading Index Snapshot | Fact | new | GD NĐTNN/tự doanh theo chỉ số | 1 dòng/Trade Date × Index Code | K_TKNB_1070–1093 (Nhóm 23) |
 | — | Private Corporate Bond Dimension | Dimension | new | [MỚI 2026-09-24] Danh mục TPDN riêng lẻ phát hành ra thị trường quốc tế | 1 dòng/1 mã TP (SCD4A) | K_TKNB_554–557, 561–570 (Nhóm 9); K_TKNB_538–541, 543–552 (Nhóm 8) |
-| — | Fact Private Corporate Bond International Offering Snapshot | Fact | new | [MỚI 2026-09-24] Tình hình chào bán TPDN riêng lẻ ra thị trường quốc tế (HNX12) | 1 dòng/1 mã TP × 1 thị trường × 1 tháng báo cáo | K_TKNB_553, 558–560 (Nhóm 9) |
-| — | Fact Private Corporate Bond Issuance Snapshot | Fact | new | [MỚI 2026-10-05, TKNB Nhóm 8 HNX11] Khối lượng/giá trị phát hành TPDN riêng lẻ trong nước (HNX11) | 1 dòng/1 mã TP × 1 tháng báo cáo | K_TKNB_537, 542 (Nhóm 8) |
+| — | Fact Private Corporate Bond International Offering Snapshot | Fact | new | [MỚI 2026-09-24] Tình hình chào bán TPDN riêng lẻ ra thị trường quốc tế (HNX12) | 1 dòng/1 mã TP × 1 thị trường × 1 kỳ báo cáo (`rpt_year` + `rpt_month`) | K_TKNB_553, 558–560 (Nhóm 9) |
+| — | Fact Private Corporate Bond Issuance Snapshot | Fact | new | [MỚI 2026-10-05, TKNB Nhóm 8 HNX11] Khối lượng/giá trị phát hành TPDN riêng lẻ trong nước (HNX11) | 1 dòng/1 mã TP × 1 kỳ báo cáo (`rpt_year` + `rpt_month`) | K_TKNB_537, 542 (Nhóm 8) |
 | — | Security Trading Snapshot Dimension | Dimension | reuse (GSTT) | Hồ sơ chứng khoán — Symbol/ISIN/Sàn/Ngày đáo hạn/Hệ số hợp đồng | 1 dòng/mã CK (SCD4A) | K_TKNB_843–844 (Nhóm 14), K_TKNB_1188 (Nhóm 28), K_TKNB_1240, 1242 (Nhóm 29) |
 | — | Fact Security Trading Detail Snapshot | Fact | new | [THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 28] Thống kê giao dịch từng mã CK (giá, cung cầu, quy mô GD, NĐTNN, tự doanh) | 1 dòng/mã CK × 1 ngày | K_TKNB_1187–1239 (Nhóm 28) |
 | — | Fact Derivatives Security Detail Snapshot | Fact | new | [THIẾT KẾ LẠI 2026-10-06, TKNB Nhóm 29] Thống kê giao dịch CKPS từng mã hợp đồng (open interest, KL/GT, NĐTNN, tự doanh) | 1 dòng/mã hợp đồng × 1 ngày | K_TKNB_1240–1257 (Nhóm 29) |

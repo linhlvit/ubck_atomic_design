@@ -268,7 +268,8 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_internationa
     -- From: FACT Fact Private Corporate Bond International Offering Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
     private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
-    rpt_month                       String                  COMMENT 'Tháng báo cáo (số lũy kế từ đầu năm) — Quý = 03/06/09/12',
+    rpt_year                        Int64                   COMMENT 'Năm báo cáo — cùng rpt_month; khai thác lọc theo rpt_year + rpt_month (không theo ngày snapshot)',
+    rpt_month                       Int64                   COMMENT 'Tháng báo cáo 1–12 (số lũy kế từ đầu năm) — Quý = 3/6/9/12',
     market_tp                       String                  COMMENT 'Thị trường phát hành quốc tế',
     currency_code                   Nullable(String)        COMMENT 'Đồng tiền phát hành',
     offering_bond_quantity          Nullable(Int64)         COMMENT 'Khối lượng phát hành (lũy kế tại tháng báo cáo)',
@@ -297,7 +298,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_internationa
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month)
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, market_tp, rpt_month, rpt_year)
 COMMENT 'Flat table — Fact Private Corporate Bond International Offering Snapshot × Calendar Date × Private Corporate Bond Dimension'
 ;
 
@@ -312,7 +313,8 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_issuance_snp
     -- From: FACT Fact Private Corporate Bond Issuance Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày chụp dữ liệu biểu mẫu',
     private_corporate_bond_dim_id   String                  COMMENT 'FK mã trái phiếu',
-    rpt_month                       String                  COMMENT 'Tháng báo cáo (số lũy kế từ đầu năm) — Quý = 03/06/09/12',
+    rpt_year                        Int64                   COMMENT 'Năm báo cáo — cùng rpt_month; khai thác lọc theo rpt_year + rpt_month (không theo ngày snapshot)',
+    rpt_month                       Int64                   COMMENT 'Tháng báo cáo 1–12 (số lũy kế từ đầu năm) — Quý = 3/6/9/12',
     issued_bond_quantity            Nullable(Int64)         COMMENT 'Khối lượng phát hành (lũy kế tại tháng báo cáo)',
     par_value                       Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu',
     issued_bond_val_amt             Nullable(Decimal(23,2)) COMMENT 'Giá trị phát hành = khối lượng phát hành × mệnh giá',
@@ -340,7 +342,7 @@ CREATE TABLE IF NOT EXISTS datamart.tknb_fct_private_corporate_bond_issuance_snp
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
-ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, rpt_month)
+ORDER BY (assumeNotNull(snpst_cdr_dt), private_corporate_bond_dim_id, rpt_month, rpt_year)
 COMMENT 'Flat table — Fact Private Corporate Bond Issuance Snapshot × Calendar Date × Private Corporate Bond Dimension'
 ;
 

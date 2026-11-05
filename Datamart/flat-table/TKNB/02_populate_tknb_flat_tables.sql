@@ -245,6 +245,7 @@ SELECT
     -- From: FACT Fact Private Corporate Bond International Offering Snapshot
     f.snpst_dt_dim_id,
     f.private_corporate_bond_dim_id,
+    f.rpt_year,
     f.rpt_month,
     f.market_tp,
     f.currency_code,
@@ -291,6 +292,7 @@ SELECT
     -- From: FACT Fact Private Corporate Bond Issuance Snapshot
     f.snpst_dt_dim_id,
     f.private_corporate_bond_dim_id,
+    f.rpt_year,
     f.rpt_month,
     f.issued_bond_quantity,
     f.par_value,
