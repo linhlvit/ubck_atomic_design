@@ -2516,8 +2516,8 @@ entities:
         nullable: true
         key: ""
         description: "Mã chức vụ CHÍNH của nhân sự theo danh mục (`CAT_POSITION.POSITION_CODE` của `POSITION_ID` đơn trị): HĐQT = 6/7/8, HĐTV = 10/11, BKS/UB Kiểm toán = 23–28 (BA STT 31, SQL 1–3). XẤP XỈ so với BA: BA tách `POSITION_IDS` (CLOB, nhiều chức vụ → 1 dòng/chức vụ), Atomic chưa map. Số liệu K31-1 (28/10/2026, nhân sự đương nhiệm): 85k bản ghi, 41k không có `POSITION_IDS`, 3,6k nhiều chức vụ, 40k có `POSITION_ID` nằm trong `POSITION_IDS` (≈91% số bản ghi có `POSITION_IDS`) → thiếu các vai trò không phải chức vụ chính. Dùng cho FILTER nhóm nhân sự (`:nhom_nhan_su`) của K_QLKD_156–160."
-        source_atomic_table: "sc_senior_personnel"
-        source_atomic_column: "sc_senior_personnel.cl_sc_position_code"
+        source_atomic_table: "cl_securities_company_position"
+        source_atomic_column: "cl_securities_company_position.cl_sc_position_code"
       - logical_name: "Position Name"
         physical_name: "position_nm"
         data_domain: "Text"
@@ -3033,7 +3033,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân CHÍNH (nhân sự cấp cao) — khóa chọn cá nhân trên dashboard (BA: `AND sp.NATIONAL_ID = :cccd`); đã mã hóa từ nguồn. Ưu tiên dòng type `NATIONAL_ID` (`SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID` = CCCD/CMND/hộ chiếu hiện hành — BA dùng `sp.NATIONAL_ID`; Data Modeler xác nhận Atomic đã map 2026-10-26, O_QLKD_60(i)); nếu không có thì lấy dòng `IDENTIFICATION` (`ID_NUMBER` = CMND cũ)."
+        description: "Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân CHÍNH (nhân sự cấp cao) — khóa chọn cá nhân trên dashboard (BA: `AND sp.NATIONAL_ID = :cccd`); đã mã hóa từ nguồn. Lấy dòng loại `IDENTIFICATION` của nguồn SC_FIRM_SENIOR_PERSONNEL — Atomic không còn loại `NATIONAL_ID`, `IDENTIFICATION` chính là `NATIONAL_ID` của nguồn (BA dùng `sp.NATIONAL_ID`; Data Modeler xác nhận 2026-11-06, O_QLKD_60(i))."
         source_atomic_table: "ip_alternative_identification"
         source_atomic_column: "ip_alternative_identification.identification_nbr"
       - logical_name: "Individual Full Name"
@@ -3412,7 +3412,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard Lịch sử công tác (BA STT 43: `AND p.NATIONAL_ID = <CCCD>`); đã mã hóa từ nguồn. KHÔNG loại bản ghi thiếu số giấy tờ (BA chỉ lọc CCCD ở mệnh đề chọn cá nhân, subquery BA không lọc). Ưu tiên dòng type `NATIONAL_ID` (`SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID` — BA dùng `p.NATIONAL_ID`; Data Modeler xác nhận Atomic đã map 2026-10-26, O_QLKD_60(i)); nếu không có thì lấy dòng `IDENTIFICATION` (`ID_NUMBER` = CMND cũ). Khuôn theo Operational Individual Listed Company Role."
+        description: "Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard Lịch sử công tác (BA STT 43: `AND p.NATIONAL_ID = <CCCD>`); đã mã hóa từ nguồn. KHÔNG loại bản ghi thiếu số giấy tờ (BA chỉ lọc CCCD ở mệnh đề chọn cá nhân, subquery BA không lọc). Lấy dòng loại `IDENTIFICATION` — Atomic không còn loại `NATIONAL_ID`, `IDENTIFICATION` chính là `NATIONAL_ID` của nguồn (BA dùng `p.NATIONAL_ID`; Data Modeler xác nhận 2026-11-06, O_QLKD_60(i)). Khuôn theo Operational Individual Listed Company Role."
         source_atomic_table: "ip_alternative_identification"
         source_atomic_column: "ip_alternative_identification.identification_nbr"
       - logical_name: "Securities Company Code"
