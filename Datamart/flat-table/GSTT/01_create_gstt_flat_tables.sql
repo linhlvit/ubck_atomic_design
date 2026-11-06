@@ -372,7 +372,7 @@ COMMENT 'Flat table — Fact Instrument Price Daily × Calendar Date Dimension �
 -- ============================================================
 -- 3b. FACT: gstt_fct_security_trading_daily_flat
 --    [v4.35 2026-10-06] Chỉ còn dùng cho Nhóm 48 (K_GSTT_352 — Giá đóng cửa trái phiếu); Nhóm 3/34/47 chuyển sang #3 / #3a (mã CK và chỉ số).
---    Nến NGÀY thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TRADINGVIEWHISTORY1DAY'), grain 1 row / Symbol / Trading Date;
+--    Nến NGÀY thật MDDS.JAD_TRADINGVIEWHISTORY1DAY (filter src_stm_code='MDDS_JAD_TVHISTORY1D'), grain 1 row / Symbol / Trading Date;
 --    cột open/high/low/vol giữ đủ nến nhưng không còn KPI dùng.
 --    Joins: Calendar Date (trade_dt_dim_id JOIN) × Security Trading Snapshot Dimension (LEFT)
 -- ============================================================
