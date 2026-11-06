@@ -4,7 +4,9 @@
 
 19/20 bảng còn lại là `operational` (bảng phẳng theo từng báo cáo — EAV `item_code` hoặc danh sách) theo quyết định thiết kế module TKNB "mỗi báo cáo 1 bảng phẳng riêng, không tách Dimension dùng chung". **[SỬA 2026-09-22, datamart-review — Kịch bản D]** Ngoại lệ duy nhất: qua review phát hiện `Market Trading Report (BM030a)` gộp sai 2 grain khác nhau vào cùng 1 bảng EAV (Nhóm 18), và `Foreign Proprietary Trading Report (BM031a)` (Nhóm 23) không tận dụng được Dimension dùng chung đã có sẵn cross-module — cả 2 bảng đã DEPRECATED và **xóa khỏi bảng dưới đây** (theo All-Tier Cleanup Protocol — orphan checker yêu cầu xóa hẳn khỏi Entities.csv/.md, không giữ dòng ghost; lịch sử bãi bỏ vẫn lưu đầy đủ ở Section 4 `DTM_TKNB_HLD.md`), thay bằng 3 Fact + 2 Dimension chuẩn Star Schema (2 Fact mới sở hữu TKNB, 1 Fact + 2 Dimension reuse từ QLKD/GSTT). 19 bảng operational còn lại không có FK/relationship với nhau — mỗi bảng độc lập theo layout báo cáo gốc.
 
-**[MỚI 2026-10-25 — đồng bộ pipeline dev `item_rule` → `item_value` → ClickHouse]** 14 bảng Operational EAV của 14 báo cáo dev (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) được thay bằng **1 bảng dùng chung `item_value`** (Report Item Value): cột `report_code`, `report_name`, `item_code`, `item_name`, `item_type`, `calc_date`, `value` DECIMAL(23,2), `ds_etl_pcs_tms`; ETL engine đọc cấu hình `item_rule` (Atomic, nạp từ `full_items.csv`) và ghi kết quả; ClickHouse đẩy theo `report_code` sang bảng flat riêng từng báo cáo. 6 bảng EAV còn lại (HNX04, HSX02, 0513, TK-04.BTC, TK_NienGiam, BM031d) chưa có trong pipeline dev nên giữ nguyên. **[MỚI 2026-11-03 → SỬA 2026-11-04]** TTLK01 (Nhóm 13) và TTLK10 (Nhóm 14) từng là bảng Operational `ttlk01_account_open_close_rpt`/`ttlk10_cw_outstanding_rpt` (chưa thuộc pipeline dev); đã DEPRECATED và **xóa khỏi bảng dưới đây** (All-Tier Cleanup), thay bằng Star Schema `Depository Member Dimension` + `Fact Custody Account Open Close Snapshot` + `Fact Covered Warrant Outstanding Snapshot` (reuse `Security Trading Snapshot Dimension` GSTT) theo yêu cầu Data Modeler 2026-11-04 — lịch sử bãi bỏ ở Section 4 `DTM_TKNB_HLD.md`.
+**[MỚI 2026-10-25 — đồng bộ pipeline dev `item_rule` → `item_value` → ClickHouse]** 14 bảng Operational EAV của 14 báo cáo dev (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) được thay bằng **1 bảng dùng chung `item_value`** (Report Item Value): cột `report_code`, `report_name`, `item_code`, `item_name`, `item_type`, `calc_date`, `value` DECIMAL(23,2), `ds_etl_pcs_tms`; ETL engine đọc cấu hình `item_rule` (Atomic, nạp từ `full_items.csv`) và ghi kết quả; ClickHouse đẩy theo `report_code` sang bảng flat riêng từng báo cáo. **[SỬA 2026-11-06]** 6 báo cáo còn lại (HNX04, HSX02, 0513.H.UBCK.QG, TK-04.BTC, TK_NienGiam, BM031d) trước đây có bảng EAV riêng (LLD đã xóa 2026-09-24, chưa khôi phục) — nay cũng gộp vào `item_value` theo Data Modeler (Atomic = `item_rule`, Datamart = `item_value`, bảng flat trải riêng từng báo cáo); dev CHƯA có `item_rule` cho 6 báo cáo này nên mã báo cáo/`item_code` là đề xuất — Open Issue 47 `DTM_TKNB_HLD.md`. **[MỚI 2026-11-03 → SỬA 2026-11-04]** TTLK01 (Nhóm 13) và TTLK10 (Nhóm 14) từng là bảng Operational `ttlk01_account_open_close_rpt`/`ttlk10_cw_outstanding_rpt` (chưa thuộc pipeline dev); đã DEPRECATED và **xóa khỏi bảng dưới đây** (All-Tier Cleanup), thay bằng Star Schema `Depository Member Dimension` + `Fact Custody Account Open Close Snapshot` + `Fact Covered Warrant Outstanding Snapshot` (reuse `Security Trading Snapshot Dimension` GSTT) theo yêu cầu Data Modeler 2026-11-04 — lịch sử bãi bỏ ở Section 4 `DTM_TKNB_HLD.md`.
+
+**[MỚI 2026-11-06 — HNX06 (Nhóm 5) chuyển Star Schema, yêu cầu Data Modeler]** HNX06 rút khỏi `item_value` (còn 19 báo cáo) và đọc `Fact Government Bond Bidding Result Snapshot` (reuse `partial` — sở hữu VP; TKNB thêm 3 cột `rpt_year`, `rpt_month`, `government_bond_term_dim_id` vào Fact của VP) cùng Dimension mới `Government Bond Term Dimension` (sở hữu TKNB) — xem Section 4/Section 5 mục 48 `DTM_TKNB_HLD.md`.
 
 ## erDiagram (entity Star Schema — các bảng Operational không vẽ, không có quan hệ)
 
@@ -153,13 +155,37 @@ erDiagram
         bigint Outstanding_Quantity
         string Source_System_Code
     }
+    Government_Bond_Term_Dimension {
+        string Government_Bond_Term_Dimension_Id PK
+        string Bond_Term
+        decimal Bond_Term_Years
+        string Bond_Term_Unit
+        string Source_System_Code
+    }
+    Fact_Government_Bond_Bidding_Result_Snapshot {
+        string Government_Bond_Bidding_Result_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
+        string Bidding_Session
+        string Bond_Code
+        string Bond_Term
+        decimal Issue_Term_Years
+        decimal Calling_Value
+        decimal Winning_Value
+        decimal Winning_Interest_Rate
+        string Source_System_Code
+    }
     Calendar_Date_Dimension ||--o{ Fact_Custody_Account_Open_Close_Snapshot : "Snapshot_Date_Dimension_Id"
     Depository_Member_Dimension ||--o{ Fact_Custody_Account_Open_Close_Snapshot : "Depository_Member_Dimension_Id"
     Calendar_Date_Dimension ||--o{ Fact_Covered_Warrant_Outstanding_Snapshot : "Snapshot_Date_Dimension_Id"
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Covered_Warrant_Outstanding_Snapshot : "Security_Trading_Snapshot_Dimension_Id"
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : "Snapshot_Date_Dimension_Id"
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : "Government_Bond_Term_Dimension_Id"
 ```
 
-## Bảng entity tóm tắt (20 bảng: 13 Dimension/Fact (Star Schema, gồm 3 Dimension reuse) + 7 Operational — **[SỬA 2026-10-25]** 14 bảng Operational EAV của 14 báo cáo dev đã gộp vào 1 bảng `item_value`; 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
+## Bảng entity tóm tắt (16 bảng: 15 Dimension/Fact (Star Schema, gồm 3 Dimension reuse + 1 Fact partial của VP) + 1 Operational `item_value` — **[SỬA 2026-11-06 — HNX06]** thêm `Government Bond Term Dimension` + `Fact Government Bond Bidding Result Snapshot` (Nhóm 5), HNX06 rút khỏi `item_value`; **[SỬA 2026-11-06]** 6 bảng Operational EAV còn lại (HNX04, HSX02, 0513, TK-04.BTC, TK_NienGiam, BM031d) cũng gộp vào `item_value`; **[SỬA 2026-10-25]** 14 bảng Operational EAV của 14 báo cáo dev đã gộp vào 1 bảng `item_value`; 2 bảng Operational cũ (BM030a/BM031a) đã DEPRECATED, xem lịch sử tại Section 4 `DTM_TKNB_HLD.md`, sắp theo thứ tự Nhóm trong HLD)
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
@@ -176,16 +202,12 @@ erDiagram
 | — | Depository Member Dimension | Dimension | new | [MỚI 2026-11-04] Danh mục Thành viên lưu ký (TVLK) từ ISS — BK `depository_member_nm` | 1 dòng/1 TVLK (SCD4A) | K_TKNB_821 (Nhóm 13) |
 | — | Fact Custody Account Open Close Snapshot | Fact | new | [MỚI 2026-11-04, TKNB Nhóm 13 TTLK01] Số lượng tài khoản lưu ký đầu kỳ/mở/đóng/cuối kỳ × Trong nước/Nước ngoài × Cá nhân/Tổ chức theo TVLK (16 measure + Tổng cộng) | 1 dòng/1 TVLK × 1 tháng báo cáo (PK `custody_account_open_close_snpst_id`) | K_TKNB_821–842, K_TKNB_1300 (Nhóm 13) |
 | — | Fact Covered Warrant Outstanding Snapshot | Fact | new | [MỚI 2026-11-04, TKNB Nhóm 14 TTLK10] Khối lượng chứng quyền đang lưu hành theo mã CW (SUM theo tháng ở Detail Mapping) | 1 dòng/1 mã CW × 1 ngày giao dịch (PK `covered_warrant_outstanding_snpst_id`) | K_TKNB_843–845 (Nhóm 14) |
+| — | Government Bond Term Dimension | Dimension | new | [MỚI 2026-11-06, TKNB Nhóm 5 HNX06] Kỳ hạn trái phiếu đấu thầu (quy đổi năm/tuần/tháng) | 1 dòng/1 kỳ hạn nguyên văn `bond_term` (SCD4A) | K_TKNB_478–484, 487–494 (Nhóm 5) |
+| — | Fact Government Bond Bidding Result Snapshot | Fact | partial (VP) | [MỚI 2026-11-06, TKNB Nhóm 5 HNX06] Kết quả đấu thầu phát hành TPCP — sở hữu VP, TKNB thêm `rpt_year`, `rpt_month`, `government_bond_term_dim_id` | 1 dòng kết quả đấu thầu (PK `government_bond_bidding_result_snpst_id` = id dòng Atomic, Dạng A) | K_TKNB_472–496 (Nhóm 5) |
 
 | STT | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|---|
-| 1 | Report Item Value | Operational | new | Giá trị chỉ tiêu 14 báo cáo TKNB theo cấu hình `item_rule` (HNX01, HNX02, HNX03, HNX06, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c) — thay 14 bảng EAV riêng từng báo cáo | 1 dòng/1 chỉ tiêu (`item_code`)/1 báo cáo (`report_code`)/1 ngày tính (`calc_date`) | K_TKNB_1–108, 109–273, 274–286, 472–496, 497–519, 571–695, 793–820, 1025–1067, 1094–1122, 1174–1186, 1258–1299 (14 báo cáo) |
-| 4 | Market Scale Report (HNX04) | Operational | new | Báo cáo tổng hợp quy mô TTCK HNX | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_290–471 |
-| 11 | Listing Trading Report (HSX02) | Operational | new | Báo cáo niêm yết và giao dịch chứng khoán HOSE kỳ tháng | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo/1 period_type | K_TKNB_696–792 |
-| 15 | Offering Result Report (0513.H.UBCK.QG) | Operational | new | Báo cáo kết quả thực hiện phát hành chứng khoán | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_846–874 |
-| 16 | Market Summary Report (TK-04.BTC) | Operational | new | Báo cáo tổng hợp TTCK theo quý/lũy kế | 1 dòng/1 chỉ tiêu/1 kỳ gốc (period_marker) | K_TKNB_875–917 |
-| 17 | Market Annual Report (TK_NienGiam) | Operational | new | Niên giám thống kê thị trường chứng khoán theo năm | 1 dòng/1 chỉ tiêu/1 năm báo cáo | K_TKNB_918–1011 |
-| 26 | Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | Operational | new | Giao dịch NĐTNN/tự doanh thị trường CCQ/ETF/CW theo ngày | 1 dòng/1 chỉ tiêu/1 kỳ báo cáo | K_TKNB_1123–1173 |
+| 1 | Report Item Value | Operational | new | Giá trị chỉ tiêu 19 báo cáo TKNB theo cấu hình `item_rule` (HNX01, HNX02, HNX03, HNX07, HSX01, HSX04, BM030b/c/d/e/f, BM031b/c; + HNX04, HSX02, 0513.H.UBCK.QG, TK-04.BTC, TK_NienGiam, BM031d chưa có `item_rule`) — thay 20 bảng EAV riêng từng báo cáo | 1 dòng/1 chỉ tiêu (`item_code`)/1 báo cáo (`report_code`)/1 ngày tính (`calc_date`) | K_TKNB_1–108, 109–273, 274–286, 497–519, 571–695, 793–820, 1025–1067, 1094–1122, 1174–1186, 1258–1299 (13 báo cáo dev), 290–471 (Nhóm 4), 696–792 (Nhóm 11), 846–874 (Nhóm 15), 875–917 (Nhóm 16), 918–1011 (Nhóm 17), 1123–1173 (Nhóm 26) (6 báo cáo chưa có `item_rule`) |
 
 ## Nguồn Atomic theo bảng
 
@@ -203,11 +225,7 @@ erDiagram
 | Depository Member Dimension | internal_statistical_report |
 | Fact Custody Account Open Close Snapshot | internal_statistical_report |
 | Fact Covered Warrant Outstanding Snapshot | listed_share_information / security_trading_snapshot |
+| Government Bond Term Dimension | gov_bond_bidding_result |
+| Fact Government Bond Bidding Result Snapshot (partial — sở hữu VP) | gov_bond_bidding_result |
 | Security Trading Snapshot Dimension (reuse GSTT) | security_trading_snapshot |
-| Report Item Value | securities_trade / market_index_snapshot / security_trading_snapshot / bond_order_book / gov_bond_bidding_result / internal_statistical_report / end_of_day_open_interest |
-| Market Scale Report (HNX04) | securities_trade / security_trading_snapshot |
-| Listing Trading Report (HSX02) | market_index_snapshot / securities_trade / security_trading_snapshot |
-| Offering Result Report (0513.H.UBCK.QG) | pc_securities_offering_result |
-| Market Summary Report (TK-04.BTC) | securities_trade |
-| Market Annual Report (TK_NienGiam) | market_index_snapshot / securities_trade / security_trading_snapshot / public_company / securities_company / fund_management_company |
-| Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d) | securities_trade / security_trading_snapshot |
+| Report Item Value | securities_trade / market_index_snapshot / security_trading_snapshot / bond_order_book / internal_statistical_report / end_of_day_open_interest / pc_securities_offering_result / public_company / securities_company / fund_management_company |

@@ -2,44 +2,8 @@
 -- TKNB Flat Tables — POPULATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 8 FACT + 6 operational EAV/danh sách (2026-11-04: TTLK01/TTLK10 chuyển Operational → Fact). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
+-- 8 bảng FACT (2026-11-06: 6 bảng operational EAV HNX04/HSX02/0513/TK-04.BTC/TK_NienGiam/BM031d gộp vào `item_value` — không còn flat riêng ở file này; TTLK01/TTLK10 đã chuyển Operational → Fact 2026-11-04). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 20 flat ClickHouse theo báo cáo (IV1–IV20) nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
 -- ============================================================
-
--- ============================================================
--- 4. OPERATIONAL: hnx04_market_scale_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_hnx04_market_scale_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_hnx04_market_scale_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.period_type,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.hnx04_market_scale_rpt o
-;
-
-
--- ============================================================
--- 7. OPERATIONAL: hsx02_listing_trading_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_hsx02_listing_trading_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_hsx02_listing_trading_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.period_type,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.hsx02_listing_trading_rpt o
-;
-
 
 -- ============================================================
 -- 9. FACT: fct_covered_warrant_outstanding_snpst
@@ -69,59 +33,6 @@ JOIN datamart.cdr_dt_dim snpst_cal
 LEFT JOIN datamart.security_trading_snpst_dim sd
     ON sd.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
 WHERE snpst_cal.cdr_dt = :etl_date
-;
-
-
--- ============================================================
--- 10. OPERATIONAL: 0513hubckqg_offering_result_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_0513hubckqg_offering_result_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_0513hubckqg_offering_result_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.0513hubckqg_offering_result_rpt o
-;
-
-
--- ============================================================
--- 11. OPERATIONAL: tk04btc_market_summary_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_tk04btc_market_summary_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_tk04btc_market_summary_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.period_marker,
-    o.measure_type,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.tk04btc_market_summary_rpt o
-;
-
-
--- ============================================================
--- 12. OPERATIONAL: tkniengiam_market_annual_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_tkniengiam_market_annual_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_tkniengiam_market_annual_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.tkniengiam_market_annual_rpt o
 ;
 
 
@@ -216,23 +127,6 @@ JOIN datamart.cdr_dt_dim trade_cal
 LEFT JOIN datamart.index_constituent_dim idx_dim
     ON idx_dim.index_constituent_dim_id = f.index_constituent_dim_id
 WHERE trade_cal.cdr_dt = :etl_date
-;
-
-
--- ============================================================
--- 19. OPERATIONAL: bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt
--- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.tknb_bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.tknb_bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt_flat
-SELECT
-    o.report_code,
-    o.report_period_dt,
-    o.item_code,
-    o.item_stt,
-    o.item_unit,
-    o.item_value,
-    o.src_stm_code
-FROM datamart.bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt o
 ;
 
 

@@ -479,6 +479,9 @@ SELECT
     f.winning_interest_rate,
     f.src_stm_code,
     f.calling_val,
+    f.rpt_year,
+    f.rpt_month,
+    f.government_bond_term_dim_id,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -488,11 +491,18 @@ SELECT
     cal.day_of_week AS day_of_week,
     cal.is_weekend AS is_weekend,
     cal.holiday_flag AS holiday_flag,
-    cal.is_trading_date AS is_trading_date
+    cal.is_trading_date AS is_trading_date,
+
+    -- From: GOVERNMENT BOND TERM DIMENSION
+    gbt.bond_term_years AS bond_term_years,
+    gbt.bond_term_unit AS bond_term_unit
 
 FROM datamart.fct_government_bond_bidding_result_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.government_bond_term_dim gbt
+    ON gbt.government_bond_term_dim_id = f.government_bond_term_dim_id
+    AND gbt.ds_rcrd_st = 'ACTIVE'
 ;
 
 

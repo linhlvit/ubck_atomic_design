@@ -2136,9 +2136,19 @@ erDiagram
         boolean Holiday_Flag
         string Source_System_Code
     }
+    Government_Bond_Term_Dimension {
+        string Government_Bond_Term_Dimension_Id PK
+        string Bond_Term
+        decimal Bond_Term_Years
+        string Bond_Term_Unit
+        string Source_System_Code
+    }
     Fact_Government_Bond_Bidding_Result_Snapshot {
         string Government_Bond_Bidding_Result_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
         string Bidding_Session
         string Bond_Code
         string Bond_Term
@@ -2158,6 +2168,7 @@ erDiagram
         decimal Listed_Bond_Value
     }
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Snapshot : " "
 ```
 
@@ -2227,9 +2238,19 @@ erDiagram
         boolean Holiday_Flag
         string Source_System_Code
     }
+    Government_Bond_Term_Dimension {
+        string Government_Bond_Term_Dimension_Id PK
+        string Bond_Term
+        decimal Bond_Term_Years
+        string Bond_Term_Unit
+        string Source_System_Code
+    }
     Fact_Government_Bond_Bidding_Result_Snapshot {
         string Government_Bond_Bidding_Result_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
         string Bidding_Session
         string Bond_Code
         string Bond_Term
@@ -2240,6 +2261,7 @@ erDiagram
         string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -3837,9 +3859,19 @@ erDiagram
         boolean Holiday_Flag
         string Source_System_Code
     }
+    Government_Bond_Term_Dimension {
+        string Government_Bond_Term_Dimension_Id PK
+        string Bond_Term
+        decimal Bond_Term_Years
+        string Bond_Term_Unit
+        string Source_System_Code
+    }
     Fact_Government_Bond_Bidding_Result_Snapshot {
         string Government_Bond_Bidding_Result_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
         string Bidding_Session
         string Bond_Code
         string Bond_Term
@@ -3850,6 +3882,7 @@ erDiagram
         string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -3913,9 +3946,19 @@ erDiagram
         boolean Holiday_Flag
         string Source_System_Code
     }
+    Government_Bond_Term_Dimension {
+        string Government_Bond_Term_Dimension_Id PK
+        string Bond_Term
+        decimal Bond_Term_Years
+        string Bond_Term_Unit
+        string Source_System_Code
+    }
     Fact_Government_Bond_Bidding_Result_Snapshot {
         string Government_Bond_Bidding_Result_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
         string Bidding_Session
         string Bond_Code
         string Bond_Term
@@ -3926,6 +3969,7 @@ erDiagram
         string Source_System_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 **Lineage Mart → Báo cáo:**
@@ -4862,3 +4906,5 @@ Không có.
 | O_VP_60 | Nhóm 38/39 - Fact mới `Fact Foreign Capital Flow Summary Snapshot` (FIMS IBOU9) — giả định cần dev xác nhận | BA 2026-11-05 chuyển Nhóm 38/39 sang FIMS `IBOU9` (PLIV-TT51), dòng `row_path = 'Tổng= (1) + (2)'`, 3 cột USD, kỳ `NUA_THANG`, lấy bản nộp mới nhất của từng TVLK (`object_name`) mỗi kỳ. Data Modeler chọn 2026-11-05: Fact VP mới `fct_foreign_capital_flow_summary_snpst` (grain 1 TVLK × 1 kỳ nửa tháng, PK Dạng B hash(reporting_entity_code, period_val, rpt_year, src_stm_code), bản nộp mới nhất ghi đè); không dùng `fct_foreign_investor_report_value` (NDTNN, thiếu `reporting_entity_code`) và `fct_foreign_investor_capital_flow_snpst` (bỏ dòng tổng, 1 chỉ tiêu). Giả định: (1) `object_name` (BA) ≡ Atomic `reporting_entity_code` (FIMS OBJECT_ID); (2) lọc thêm `sheet_nm = 'I'` như NDTNN (BA không nêu sheet); (3) `period_tp_code = 'NUA_THANG'` theo BA; (4) BA khử trùng còn chia theo tháng của ngày báo cáo (`DATE_FORMAT(day_report, 'yyyy-MM')`) — PK không có thành phần này, coi `period_val` + `rpt_year` đủ phân biệt kỳ nửa tháng; (5) nửa đầu/nửa cuối tháng giữ nguyên biểu thức BA `SUBSTR(period_val, 3, 2) <= 15` (BA ghi chú định dạng NT01..NT31); kỳ Năm lấy `rpt_year` (BA Nhóm 38 dòng 431 và Nhóm 39 dùng `year_value`, SQL Nhóm 38 dùng `YEAR(day_report)`); (6) % so với kỳ trước chia cho giá trị kỳ trước có thể âm (Vào ròng/Rút ròng) nên dấu % đảo, đúng theo BA. | Dev xác nhận 6 giả định và dựng bảng/flat `fct_foreign_capital_flow_summary_snpst`; BA xác nhận có cần ABS ở mẫu số. | K_VP_288–299 | Dev ETL / Data Modeler | Open |
 | O_VP_61 | Nhóm 54 - Data Explorer Tài khoản giao dịch: ghép 2 thị trường, phái sinh chỉ có tổng | BA 595–601: SQL ghép thị trường cơ sở (VSDC `open_investors`/`closed_investors`) và phái sinh (ISS `TTLK01_1`). Không thêm Fact/Dimension: cơ sở đọc `Fact Investor Account Movement Snapshot`, phái sinh đọc `Fact Derivatives Account Snapshot`; nhãn Thị trường (CO_SO/PHAI_SINH) gán theo Fact nguồn. Điểm cần lưu ý: (1) phái sinh chỉ có Số lượng tài khoản dòng tổng (origin_type, investor_kind NULL), không có SL TK mới/đóng; (2) kỳ Ngày chỉ có cơ sở; (3) loại NĐT '7' (Nhà nước) và 'NA' không có nhãn Trong nước/Nước ngoài hay Cá nhân/Tổ chức (BA MAP trả NULL); (4) BA lọc năm của TTLK01_1 bằng `report_year BETWEEN` năm Từ kỳ và năm Đến kỳ ('Lọc tạm giới hạn năm'); (5) kế thừa giả định O_VP_46 (ngày sự kiện ngoài lịch làm lệch số lũy kế) và O_VP_58. | Data Modeler xác nhận cách trình bày thị trường phái sinh (chỉ dòng tổng) với BA; không cần Atomic/Fact mới. | K_VP_332–338 | Data Modeler / BA Team | Open |
 | O_VP_62 | Nhóm 30/49/55 - Fact mới `Fact Government Bond Listing Snapshot`: khóa Atomic chưa có tháng | Atomic `gov_bond_listing` (HNX.GOV_BOND_LISTED_LIST) đã có `rpt_year`, `rpt_month`, `rpt_day` (int, 2026-11-04) nhưng khóa `gov_bond_listing_id` vẫn = hash_id('HNX_GOV_BOND_LISTED_LIST', BOND_CODE), không có tháng báo cáo — cùng dạng O_VP_12/15/26. Thiết kế (mở O_VP_50): Fact `fct_government_bond_listing_snpst`, grain 1 mã TPCP × 1 tháng báo cáo, PK Dạng B hash(bond_code, rpt_year, rpt_month, src_stm_code), khóa ngày = ngày cuối tháng báo cáo, Listed Bond Value = KL niêm yết × 100.000 (mệnh giá theo BA); ETL lọc `LAST_DAY(MAKE_DATE(rpt_year, rpt_month, 1)) = :etl_date` như Fact đăng ký TPDN riêng lẻ. Nếu loader upsert theo khóa Atomic thì mỗi mã chỉ còn tháng mới nhất: Tổng dư nợ (K_VP_271) vẫn tính được cho tháng mới nhất, còn kỳ trước (K_VP_272), cuối năm trước (K_VP_267) và các năm cũ (K_VP_257) có thể thiếu dữ liệu. | Báo Atomic team đưa tháng báo cáo vào khóa/BK `gov_bond_listing` trước khi nạp lịch sử; dev xác nhận cách loader nạp và mệnh giá 100.000 đồng. | K_VP_257, 265–268, 271–272 | Data Architecture / Atomic Team | Open |
+| O_VP_63 | Quy chuẩn LLD | **[MỚI 2026-11-06 — đồng bộ Atomic commit 0075c3a2 (04/11), cùng đợt O_GSTT_79]** Atomic THÊM entity `securities_trade`/`securities_order` (HNX, HOSE) và đổi tên cột. Gate 0 VP trước đó báo 147 CRITICAL ở 4 file LLD (`fct_listed_corporate_bond_snpst`, `fct_investor_group_trading_snpst`, `fct_derivative_contract_snpst`, `fct_government_bond_trading_snpst`). | **Đã sửa LLD + ghi chú Detail Mapping K_VP_71 (giữ nguyên tên cột Mart):** (1) cột Atomic cũ → mới theo `source_column` YAML Atomic (`security_symbol_code`→`ticker_symbol`, `market_id_code`→`market_code`, `execution_val`→`match_amt`, `execution_vol`→`match_quantity`, `bond_order_book.order_bond_quantity`→`order_bond_vol`); (2) literal `src_stm_code` `ORDERTRADE_TRADE_BOOK_HOSE`/`_HNX` → `HOSE_TRADE_BOOK`/`HNX_TRADE_BOOK` (Gate 0 không bắt lệch literal này — nếu không đổi thì Fact rỗng); (3) `listed_share_information.rpt_dt` và `end_of_day_open_interest.rpt_dt` → `make_date(rpt_year, rpt_month, rpt_day)` (Atomic tách ngày thành 3 cột int). Gate 0 VP: 147 → 0 CRITICAL; Gate 0–10 VP PASS. **Cần dev:** cột Mart `src_stm_code` (direct) nay mang giá trị mới — API/ClickHouse đang lọc theo giá trị cũ phải đổi và flat nạp lại; cột `execution_val` ở nhánh HNX lấy cột vật lý `match_amt` (YAML Atomic chỉ khai nguồn HOSE; Data Modeler xác nhận 2026-11-06). | K_VP (Fact Listed Corporate Bond, Investor Group Trading, Derivative Contract, Government Bond Trading) | Dev / Datamart Modeling Team | Open |
+| O_VP_64 | Nhóm 30/31/47/48 - TKNB thêm cột vào Fact kết quả đấu thầu TPCP (phụ thuộc xuyên module) | **[MỚI 2026-11-06]** TKNB Nhóm 5 (HNX06) reuse `Fact Government Bond Bidding Result Snapshot` và thêm 3 cột cuối: `rpt_year`, `rpt_month` (kỳ báo cáo HNX BM 25 — HNX06 lọc theo `report_month`, không theo `issue_dt`) và `government_bond_term_dim_id` (FK → `Government Bond Term Dimension`, sở hữu TKNB). Grain/PK không đổi; KPI VP (K_VP_160, 255–256, 271–280) không đổi, vẫn dùng `bond_term`/`issue_term_years`/`winning_val`/`calling_val`. Flat `vp_fct_government_bond_bidding_result_snpst_flat` đã thêm 3 cột + `bond_term_years`/`bond_term_unit` (denormalize từ Dimension, LEFT JOIN `ds_rcrd_st = 'ACTIVE'`); flat vẫn INNER JOIN `cdr_dt_dim` theo ngày phát hành nên dòng `issue_dt` NULL/ngoài lịch bị loại | Giữ thiết kế; [YÊU CẦU DEV] ALTER ADD COLUMN `rpt_year`, `rpt_month`, `government_bond_term_dim_id`, `bond_term_years`, `bond_term_unit` trên flat đã triển khai và nạp lại; tạo `government_bond_term_dim`; Atomic xác nhận kiểu `rpt_month` (YAML int, mapping md string). Chi tiết: Section 5 mục 48 `DTM_TKNB_HLD.md` | K_TKNB_472–496 (TKNB Nhóm 5) | Dev / TKNB Data Modeler | Open |

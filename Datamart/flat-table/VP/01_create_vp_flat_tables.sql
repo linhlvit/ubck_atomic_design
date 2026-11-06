@@ -455,7 +455,7 @@ COMMENT 'Flat table — fct_investor_account_movement_snpst — sinh tự độn
 -- ==========================================================
 -- 10. FACT: vp_fct_government_bond_bidding_result_snpst_flat
 --    fct_government_bond_bidding_result_snpst — Grain: 1 dòng kết quả đấu thầu phát hành trái phiếu Chính phủ (id dòng Atomic gov_bond_bidding_result); FK ngày = ngày phát hành; PK government_bond_bidding_result_snpst_id
---    Joins: Calendar Date Dimension
+--    Joins: Calendar Date Dimension × Government Bond Term Dimension (sở hữu TKNB; [2026-11-06] thêm 3 cột rpt_year, rpt_month, government_bond_term_dim_id cho TKNB Nhóm 5 HNX06 — ALTER ADD COLUMN cho bảng đã triển khai)
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_flat ON CLUSTER 'my_cluster'
 (
@@ -470,6 +470,9 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_
     winning_interest_rate                        Nullable(Decimal(5,2))  COMMENT 'Lãi suất trúng thầu (%) (WINNING_INTEREST_RATE) — BA Nhóm 48: lãi suất phát hành = lãi suất trúng thầu.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: ''HNX_GOV_BOND_OFFERING'' (kết quả đấu thầu trái phiếu Chính phủ HNX).',
     calling_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị gọi thầu (CALLING_VALUE) — BA Nhóm 31: cộng theo kỳ làm mẫu số của tỷ lệ trúng thầu.',
+    rpt_year                                     Nullable(Int64)         COMMENT '[MỚI 2026-11-06, TKNB Nhóm 5 HNX06] Năm báo cáo của HNX BM 25 (Atomic `rpt_year`), đi cùng `rpt_month` — kỳ báo cáo HNX06 = `rpt_year` + `rpt_month`; KHÔNG phải năm của ngày phát hành (`snpst_dt_dim_id`): HNX gửi theo báo cáo tháng nên đợt phát hành quá khứ đến muộn (O_VP_49(c)).',
+    rpt_month                                    Nullable(Int64)         COMMENT '[MỚI 2026-11-06, TKNB Nhóm 5 HNX06] Tháng báo cáo của HNX BM 25 (số nguyên 1–12 theo Atomic `rpt_month`), đi cùng `rpt_year` — BA HNX06 lọc/nhóm theo `report_month`; mapping md cũ ghi kiểu chuỗi, dev xác nhận kiểu thực (Section 5 mục 48 `DTM_TKNB_HLD.md`).',
+    government_bond_term_dim_id                  Nullable(String)        COMMENT '[MỚI 2026-11-06, TKNB Nhóm 5 HNX06] FK tới Government Bond Term Dimension (sở hữu TKNB) qua BK `bond_term` (kỳ hạn nguyên văn) — breakdown kỳ hạn của HNX06 lọc theo `bond_term_years` của Dimension. Để trống khi `bond_term` NULL. Fact VP vẫn giữ `bond_term`/`issue_term_years` (Nhóm 30/31/47/48).',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -479,12 +482,16 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_bidding_result_snpst_
     day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
     is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
     holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
-    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension',
+
+    -- From: GOVERNMENT BOND TERM DIMENSION (sở hữu TKNB, LEFT JOIN theo government_bond_term_dim_id)
+    bond_term_years                              Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn quy đổi ra năm — từ Government Bond Term Dimension (TKNB HNX06 lọc breakdown kỳ hạn theo cột này)',
+    bond_term_unit                               Nullable(String)        COMMENT 'Đơn vị kỳ hạn: WEEK/MONTH/YEAR — từ Government Bond Term Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), government_bond_bidding_result_snpst_id)
-COMMENT 'Flat table — fct_government_bond_bidding_result_snpst × Calendar Date; grain 1 dòng kết quả đấu thầu TPCP, PK government_bond_bidding_result_snpst_id'
+COMMENT 'Flat table — fct_government_bond_bidding_result_snpst × Calendar Date × Government Bond Term Dimension; grain 1 dòng kết quả đấu thầu TPCP, PK government_bond_bidding_result_snpst_id'
 ;
 
 

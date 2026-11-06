@@ -2,55 +2,9 @@
 -- TKNB Flat Tables — CREATE
 -- Module: Thống kê nội bộ (TKNB)
 -- Generated: Phase 3 LLD Datamart
--- 14 bảng: 8 FACT + 6 operational EAV/danh sách (2026-11-04: TTLK01/TTLK10 chuyển Operational → Fact). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 14 flat ClickHouse theo báo cáo của pipeline dev nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
+-- 8 bảng FACT (2026-11-06: 6 bảng operational EAV HNX04/HSX02/0513/TK-04.BTC/TK_NienGiam/BM031d gộp vào `item_value` — không còn flat riêng ở file này; TTLK01/TTLK10 đã chuyển Operational → Fact 2026-11-04). `item_value` KHÔNG có flat gộp (Data Modeler bỏ 2026-10-25): 20 flat ClickHouse theo báo cáo (IV1–IV20) nằm ở file 03_clickhouse_per_report_flat_from_item_value.sql
 -- Operational: KHÔNG JOIN Calendar Date, KHÔNG JOIN dim nào khác; FACT: JOIN dim theo thiết kế
 -- ============================================================
-
--- ============================================================
--- 4. OPERATIONAL: hnx04_market_scale_rpt
---    Market Scale Report (HNX04)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_hnx04_market_scale_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Market Scale Report (HNX04)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HNX04',
-    period_type         String                   COMMENT 'BK — loại kỳ: trong_ky (phát sinh trong tháng) hoặc cong_don (lũy kế từ đầu năm)',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code và period_type, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng (giá trị/khối lượng giao dịch, thông tin niêm yết, chỉ số thị trường)',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code, period_type)
-COMMENT 'Flat table — Market Scale Report (HNX04)'
-;
-
-
--- ============================================================
--- 7. OPERATIONAL: hsx02_listing_trading_rpt
---    Listing Trading Report (HSX02)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_hsx02_listing_trading_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Listing Trading Report (HSX02)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu HSX02',
-    period_type         String                   COMMENT 'BK — loại kỳ: trong_ky (phát sinh trong tháng) hoặc cong_don (lũy kế từ đầu năm)',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code và period_type, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng (giá trị/khối lượng giao dịch, thông tin niêm yết) trên sàn HOSE',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code, period_type)
-COMMENT 'Flat table — Listing Trading Report (HSX02)'
-;
-
 
 -- ============================================================
 -- 9. FACT: fct_covered_warrant_outstanding_snpst
@@ -77,74 +31,6 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), covered_warrant_outstanding_snpst_id)
 COMMENT 'Flat table — Fact Covered Warrant Outstanding Snapshot × Calendar Date × Security Trading Snapshot Dimension'
-;
-
-
--- ============================================================
--- 10. OPERATIONAL: 0513hubckqg_offering_result_rpt
---    Offering Result Report (0513.H.UBCK.QG)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_0513hubckqg_offering_result_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Offering Result Report (0513.H.UBCK.QG)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo (ngày kết quả phát hành)',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu 0513.H.UBCK.QG',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, số lượng hoặc giá trị kết quả phát hành chứng khoán theo hình thức phát hành',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Offering Result Report (0513.H.UBCK.QG)'
-;
-
-
--- ============================================================
--- 11. OPERATIONAL: tk04btc_market_summary_rpt
---    Market Summary Report (TK-04.BTC)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_tk04btc_market_summary_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Market Summary Report (TK-04.BTC)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu TK-04.BTC',
-    period_marker       String                   COMMENT 'BK — kỳ gốc: Q1, Q2 hoặc Q3 (không lưu H1/9M vật lý, derive lúc đọc theo measure_type)',
-    measure_type        String                   COMMENT 'Loại đo lường quyết định cách derive H1/9M ở tầng BI: flow (cộng dồn được, VD KLGD/GTGD) hoặc snapshot (tại 1 thời điểm chốt, VD vốn hóa, OI)',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, period_marker và measure_type, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng (vốn hóa, số TK NĐT, giao dịch, niêm yết, CKPS, cổ phần hóa, huy động vốn, doanh thu CTCK/CTQLQ)',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code, period_marker)
-COMMENT 'Flat table — Market Summary Report (TK-04.BTC)'
-;
-
-
--- ============================================================
--- 12. OPERATIONAL: tkniengiam_market_annual_rpt
---    Market Annual Report (TK_NienGiam)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_tkniengiam_market_annual_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Market Annual Report (TK_NienGiam)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo (năm)',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu TK_NienGiam',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code theo năm báo cáo, mỗi chỉ tiêu lấy nguồn nghiệp vụ tương ứng (chỉ số, vốn hóa, giao dịch, niêm yết, số lượng công ty/CTCK/CTQLQ) breakdown theo sàn',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Market Annual Report (TK_NienGiam)'
 ;
 
 
@@ -235,28 +121,6 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(trade_cdr_dt))
 ORDER BY (assumeNotNull(trade_cdr_dt), index_constituent_dim_id, foreign_proprietary_trading_index_snpst_id)
 COMMENT 'Flat table — Fact Foreign Proprietary Trading Index Snapshot'
-;
-
-
--- ============================================================
--- 19. OPERATIONAL: bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt
---    Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)
--- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.tknb_bm031dmss_fund_cert_etf_cw_foreign_proprietary_trading_rpt_flat ON CLUSTER 'my_cluster'
-(
-    -- From: OPERATIONAL Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)
-    report_code         String                   COMMENT 'BK — mã báo cáo, hằng số cố định cho mọi dòng bảng này',
-    report_period_dt    Date                     COMMENT 'BK — kỳ báo cáo',
-    item_code           String                   COMMENT 'PK — mã chỉ tiêu EAV, gán theo danh mục cố định của mẫu biểu BM031d_MSS',
-    item_stt            Int64                    COMMENT 'Số thứ tự hiển thị của chỉ tiêu theo đúng layout mẫu biểu gốc',
-    item_unit           Nullable(String)         COMMENT 'Đơn vị tính của chỉ tiêu',
-    item_value          Nullable(Float64)        COMMENT 'Giá trị chỉ tiêu — populate theo item_code, khối lượng/giá trị giao dịch NĐTNN/tự doanh thị trường CCQ/ETF/CW',
-    src_stm_code        String                   COMMENT 'Mã hệ thống nguồn dữ liệu của báo cáo'
-)
-ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(report_period_dt)
-ORDER BY (report_code, report_period_dt, item_code)
-COMMENT 'Flat table — Fund Cert ETF CW Foreign Proprietary Trading Report (BM031d)'
 ;
 
 

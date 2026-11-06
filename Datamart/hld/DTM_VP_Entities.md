@@ -285,13 +285,14 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (kỳ tháng/quý/năm của ngày phát hành) | 1 ngày dương lịch | K_VP_1 |
-| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — GT phát hành = giá trị trúng thầu, kỳ hạn và lãi suất bình quân gia quyền theo kỳ; dùng chung với Nhóm 31, 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_273–278 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — GT phát hành = giá trị trúng thầu, kỳ hạn và lãi suất bình quân gia quyền theo kỳ; dùng chung với Nhóm 31, 47, 48 [2026-11-06: TKNB Nhóm 5 HNX06 thêm 3 cột `rpt_year`, `rpt_month`, `government_bond_term_dim_id` (FK Government Bond Term Dimension, sở hữu TKNB); grain/PK không đổi] | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_273–278 |
 | Fact Government Bond Listing Snapshot | Fact Snapshot | new | [MỚI 2026-11-05] Danh sách trái phiếu Chính phủ niêm yết tại HNX theo tháng báo cáo (Atomic gov_bond_listing ← HNX.GOV_BOND_LISTED_LIST): khối lượng niêm yết và giá trị niêm yết (KL × mệnh giá 100.000 đồng) — phục vụ Tổng dư nợ TPCP (Nhóm 30), Giá trị niêm yết TPCP (Nhóm 49), Số mã / Giá trị niêm yết TPCP (Nhóm 55); grain 1 mã TPCP × 1 tháng báo cáo; PK government_bond_listing_snpst_id (Dạng B: hash bond_code, rpt_year, rpt_month, src_stm_code) | 1 mã TPCP × 1 tháng báo cáo; PK = hash(bond_code, rpt_year, rpt_month, src_stm_code) | K_VP_271–272 |
 
 ## Nhóm 31 - Huy động vốn >> TPCP >> Biểu đồ Giá trị trúng thầu TPCP
@@ -299,12 +300,13 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (kỳ tháng/quý/năm của ngày phát hành) | 1 ngày dương lịch | K_VP_1 |
-| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — thêm cột Calling Value (giá trị gọi thầu) cho Nhóm 31; dùng chung với Nhóm 30, 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_279–280 (K_VP_273 dùng lại) |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — thêm cột Calling Value (giá trị gọi thầu) cho Nhóm 31; dùng chung với Nhóm 30, 47, 48 [2026-11-06: TKNB Nhóm 5 HNX06 thêm 3 cột `rpt_year`, `rpt_month`, `government_bond_term_dim_id` (FK Government Bond Term Dimension, sở hữu TKNB); grain/PK không đổi] | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_279–280 (K_VP_273 dùng lại) |
 
 ## Nhóm 32 - Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp
 
@@ -513,24 +515,26 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày phát hành) | 1 ngày dương lịch | K_VP_160 |
-| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — kỳ hạn quy đổi năm, giá trị và lãi suất trúng thầu; dùng cho Nhóm 47, 48 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_255 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — kỳ hạn quy đổi năm, giá trị và lãi suất trúng thầu; dùng cho Nhóm 47, 48 [2026-11-06: TKNB Nhóm 5 HNX06 thêm 3 cột `rpt_year`, `rpt_month`, `government_bond_term_dim_id` (FK Government Bond Term Dimension, sở hữu TKNB); grain/PK không đổi] | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_255 |
 
 ## Nhóm 48 - Tổng quan thị trường >> Biểu đồ Lãi suất phát hành bình quân TPCP
 
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Government_Bond_Term_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (năm của ngày phát hành) | 1 ngày dương lịch | K_VP_160 |
-| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — dùng chung với Nhóm 47 | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_256 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | new | Kết quả đấu thầu phát hành trái phiếu Chính phủ (HNX) — dùng chung với Nhóm 47 [2026-11-06: TKNB Nhóm 5 HNX06 thêm 3 cột `rpt_year`, `rpt_month`, `government_bond_term_dim_id` (FK Government Bond Term Dimension, sở hữu TKNB); grain/PK không đổi] | 1 dòng kết quả đấu thầu (PK = id dòng Atomic `gov_bond_bidding_result`) | K_VP_256 |
 
 ## Nhóm 49 - Tổng quan thị trường >> Biểu đồ Quy mô niêm yết và giao dịch TPCP
 
