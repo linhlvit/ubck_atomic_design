@@ -76943,8 +76943,7 @@ entities:
   - name: Classification FMS Company Type Id
     physical_name: cl_fms_company_tp_id
     business_meaning_1st: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
-    comment_1st: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Hash: hash_id('FMS_COMPANY_TYPE',\
-      \ CT_ID)."
+    comment_1st: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -76957,8 +76956,7 @@ entities:
       - source_table: SECURITIES
         source_column: FMS.SECURITIES.CT_ID
         business_meaning: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
-        comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Hash: hash_id('FMS_COMPANY_TYPE',\
-          \ CT_ID)."
+        comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
   - name: Classification FMS Company Type Code
     physical_name: cl_fms_company_tp_code
     business_meaning_1st: Mã loại hình doanh nghiệp (cột CODE của bảng danh mục COMPANY_TYPE).
