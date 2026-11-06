@@ -2235,7 +2235,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK CTCK (thành viên môi giới) — BA: JOIN SC_FIRM_INFO f ON f.CODE = bms.member_code."
+        description: "FK CTCK (thành viên môi giới) — nối thuộc tính CTCK của Datamart theo `sc_member_code` = `sc_code`. BA cũ JOIN SC_FIRM_INFO ON f.CODE = bms.member_code; BA cập nhật 2026-11-06 không còn JOIN này (tên CTCK lấy ở `broker_nm`) — xử lý thành viên không có trong dim: xem O_QLKD_71."
         source_atomic_table: "brokerage_market_share"
         source_atomic_column: "brokerage_market_share.sc_member_code"
       - logical_name: "Report Quarter"
@@ -2253,9 +2253,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Sàn/nhóm giao dịch hiển thị: 'HOSE - CP niêm yết', 'HNX - CP niêm yết', 'UPCOM - CP đăng ký giao dịch', 'HNX - Chứng khoán phái sinh' (BA dòng 103/105). src_stm_code = HOSE_BROKERAGE_MARKET_SHARE (HOSE) / HNX_BROKERAGE_MARKET_SHARE (HNX) theo quy ước hệ thống nguồn + bảng nguồn — Data Modeler xác nhận 2026-10-19 (O_QLKD_46)."
+        description: "Sàn/nhóm giao dịch hiển thị: 'HOSE - CP niêm yết', 'HNX - CP niêm yết', 'UPCOM - CP đăng ký giao dịch', 'HNX - Chứng khoán phái sinh' (BA dòng 104/106). src_stm_code = HOSE_BROKERAGE_MARKET_SHARE (HOSE) / HNX_BROKERAGE_MARKET_SHARE (HNX) theo quy ước hệ thống nguồn + bảng nguồn — Data Modeler xác nhận 2026-10-19 (O_QLKD_46). Nhóm HNX nhận diện theo chuỗi trong `classification` (Atomic `security_tp_code` giữ nguyên giá trị nguồn): `CP NY` → 'HNX - CP niêm yết', `UPCoM` → 'UPCOM - CP đăng ký giao dịch', `TTCKPS` → 'HNX - Chứng khoán phái sinh' (BA 2026-11-06, so khớp phân biệt hoa/thường); không khớp mẫu nào → NULL (BA loại dòng này)."
         source_atomic_table: "brokerage_market_share"
         source_atomic_column: "brokerage_market_share.security_tp_code"
+      - logical_name: "Broker Name"
+        physical_name: "broker_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Tên thành viên môi giới theo chính bảng thị phần VSDC/HNX/HOSE (BA STT 17 dòng 106: `bms.broker_name AS ten_ctck`). Từ 2026-11-06 BA không còn JOIN SC_FIRM_INFO nên tên hiển thị lấy trực tiếp ở đây, không lấy từ `securities_company_dim`; đồng thời là tiêu chí phân hạng phụ của K_QLKD_96 (`ORDER BY market_share_pct DESC, broker_nm`). Atomic `brokerage_market_share.sc_nm` ← `broker_name` (mapping md Bảng 20/28)."
+        source_atomic_table: "brokerage_market_share"
+        source_atomic_column: "brokerage_market_share.sc_nm"
       - logical_name: "Market Share Percentage"
         physical_name: "market_share_pct"
         data_domain: "Percentage"

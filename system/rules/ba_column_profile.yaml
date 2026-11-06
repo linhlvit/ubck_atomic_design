@@ -188,7 +188,7 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 28
+    expect_columns: 21
     ma_column: "PIC"
     sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
@@ -214,6 +214,11 @@ modules:
       BA THÊM LẠI cột đầu 'UC' (index 0) → 28 cột; STT index 1, PIC index 2, 'Trạng thái mapping' index 14,
       'Câu lệnh tham khảo (SIT)' index 19, 'Trạng thái' index 20, 'Loại dữ liệu' 26, 'Kết quả SIT' 27. Parser tra theo TÊN nên chỉ đổi
       expect_columns 27 → 28 (lần thứ 3 BA bật/tắt cột UC: 14/10 thêm, 22/10 bỏ, 28/10 thêm).
+      [CẬP NHẬT 2026-11-06 15:03, xác minh qua header sống: 8102 dòng đều 21 cột, delimiter ',', header dòng 1, legend dòng 2]
+      BA BỎ 7 cột cuối sau 'Trạng thái' (index 20): 'Note', 'Kết quả Test', 'Model', 'DMT', 'Hoàn thành DEV', 'Loại dữ liệu', 'Kết quả SIT'
+      → 21 cột (vẫn giữ cột đầu 'UC'; STT index 1, PIC 2, 'Trạng thái mapping' 14, 'Câu lệnh tham khảo (SIT)' 19, 'Trạng thái' 20).
+      Số dòng không đổi (8102). Parser tra theo TÊN nên chỉ đổi expect_columns 28 → 21. HỆ QUẢ: trường `note` của BA luôn rỗng từ đây;
+      ghi chú BA kiểu '4/8: Sửa lấy theo Code' (cột Note cũ) không còn trong file — chỉ đọc được qua `git show HEAD:BRD/BA/BA_analyst_QLKD.csv`.
 
   TKNB:
     expect_columns: 29

@@ -730,6 +730,7 @@ SELECT
     f.securities_company_dim_id,
     f.report_quarter,
     f.trading_venue_nm,
+    f.broker_nm,
     f.market_share_pct,
     f.src_stm_code,
 

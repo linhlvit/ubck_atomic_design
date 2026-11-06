@@ -728,6 +728,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_brokerage_market
     securities_company_dim_id                    String                  COMMENT 'FK CTCK (thành viên môi giới) — BA: JOIN SC_FIRM_INFO f ON f.CODE = bms.member_code.',
     report_quarter                               String                  COMMENT 'Kỳ quý của báo cáo thị phần, nhãn Qn/yyyy (BA: report_quarter) — trục K_QLKD_92.',
     trading_venue_nm                             Nullable(String)        COMMENT 'Sàn/nhóm giao dịch hiển thị: HOSE - CP niêm yết, HNX - CP niêm yết, UPCOM - CP đăng ký giao dịch, HNX - Chứng ',
+    broker_nm                                    Nullable(String)        COMMENT 'Tên thành viên môi giới theo chính bảng thị phần VSDC/HNX/HOSE (BA STT 17 dòng 106: `bms.broker_name AS ten_ctck`). Từ 2026-11-06 BA không còn JOIN SC_FIRM_INFO nên tên hiển thị lấy trực tiếp ở đây, không lấy từ `securities_company_dim`; đồng thời là tiêu chí phân hạng phụ của K_QLKD_96 (`ORDER BY market_share_pct DESC, broker_nm`). Atomic `brokerage_market_share.sc_nm` ← `broker_name` (mapping md Bảng 20/28).',
     market_share_pct                             Nullable(Decimal(5,2))  COMMENT 'Thị phần môi giới theo giá trị giao dịch (%) — BA: market_share_by_value / thi_phan_pct.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn: HOSE_BROKERAGE_MARKET_SHARE (HOSE) / HNX_BROKERAGE_MARKET_SHARE (HNX) — O_QLKD_46.',
 
