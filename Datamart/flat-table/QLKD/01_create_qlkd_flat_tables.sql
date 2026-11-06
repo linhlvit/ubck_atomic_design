@@ -480,7 +480,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON C
     identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Operational Individual Profile',
     decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
     issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
-    violation_description                        Nullable(String)        COMMENT '[SỬA 2026-10-19 — BA STT 44 cập nhật 19/10] Nội dung vi phạm — PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION (BA dòng 243); K_QLKD_221 đọc cột này (trước đây lấy tên hành vi danh mục, lệch BA).',
+    violation_description                        Nullable(String)        COMMENT 'Nội dung vi phạm — [TẠM 2026-11-06, O_QLKD_72] lấy violation_behavior.description (mô tả chung của danh mục hành vi, không có thời gian/địa điểm từng vụ); BA STT 44 cần PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION nhưng Atomic đã bỏ cột này (commit 3ba206d3); K_QLKD_221 đọc cột này.',
     violation_behavior_nm           Nullable(String)        COMMENT 'Nội dung vi phạm',
     penalty_tp_nm                   Nullable(String)        COMMENT 'Hình thức xử phạt chính',
     decision_status_code            Nullable(String)        COMMENT 'Trạng thái quyết định — LEFT JOIN Violation Case',
