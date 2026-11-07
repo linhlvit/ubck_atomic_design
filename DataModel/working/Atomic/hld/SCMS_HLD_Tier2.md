@@ -39,6 +39,7 @@
 | Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_OWNERSHIP_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ bưu chính (trụ sở/địa chỉ liên hệ) của các Involved Party trong SCMS: CTCK, chi nhánh/PGD/VPĐD, ngân hàng, nhân sự, cổ đông. | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
 | Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Địa chỉ điện tử (điện thoại/fax/email/website) của các Involved Party trong SCMS. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
 | Involved Party | Shared Entity | Shared Entity | `BANK`, `SC_FIRM_BRANCH`, `SC_FIRM_FOREIGN_BRANCH`, `SC_FIRM_FOREIGN_BRANCH_PERSONNEL`, `SC_FIRM_FOREIGN_REP_OFFICE`, `SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL`, `SC_FIRM_INFO`, `SC_FIRM_INSIDER_RELATION`, `SC_FIRM_LICENSED_PRACTITIONER`, `SC_FIRM_MAJOR_SHAREHOLDER_RELATION`, `SC_FIRM_OWNERSHIP_RELATION`, `SC_FIRM_RELATED_PERSON`, `SC_FIRM_REP_OFFICE`, `SC_FIRM_SENIOR_PERSONNEL`, `SC_FIRM_SHAREHOLDER`, `SC_FIRM_TRANSACTION_OFFICE` | Giấy tờ định danh/giấy phép (GPKD, mã số thuế, CCCD/hộ chiếu...) của các Involved Party trong SCMS. | Involved Party Alternative Identification | Fundamental | Shared Entity — extend source_table SCMS (theo các file `lld_SCMS_<TABLE>_IP_*.yaml`). |
+| Event | [Event] Business Activity | Event | SC_FIRM_ALERT_VIOLATION | Cảnh báo vi phạm phát sinh từ hệ thống cảnh báo tự động (alert engine) | Securities Company Alert Violation | Fact Append | (1) SC_FIRM_ALERT_VIOLATION ghi nhận vi phạm ngưỡng được hệ thống phát hiện tự động — mỗi dòng là 1 lần phát hiện vi phạm, insert-only. (2) Có ALERT_INDICATOR_ID, ENTITY_TYPE, ENTITY_ID, ALERT_RUN_ID. (3) Chọn `[Event] Business Activity`, Fact Append. |
 
 ---
 
@@ -229,6 +230,17 @@ erDiagram
     SC_FIRM_FOREIGN_BRANCH ||--o{ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE : "SC_FIRM_FOREIGN_BRANCH_ID"
     CAT_SERVICE_LEGAL_CAPITAL ||--o{ LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE : "SERVICE_ID"
     SC_FIRM_INFO ||--o{ SC_FIRM_MAJOR_SHAREHOLDER_RELATION : "SC_FIRM_INFO_ID"
+
+    SC_FIRM_ALERT_VIOLATION {
+        int ID PK
+        int SC_FIRM_INFO_ID FK
+        int ALERT_INDICATOR_ID FK
+    }
+    ALERT_INDICATOR {
+        int ID PK
+    }
+    SC_FIRM_INFO ||--o{ SC_FIRM_ALERT_VIOLATION : "SC_FIRM_INFO_ID"
+    ALERT_INDICATOR ||--o{ SC_FIRM_ALERT_VIOLATION : "ALERT_INDICATOR_ID"
 ```
 
 ---
@@ -418,6 +430,17 @@ erDiagram
     Securities_Company ||--o{ Securities_Company_Administrative_Sanction : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Practitioner : "securities_company_id"
     Securities_Company ||--o{ Securities_Company_Ownership_Relation : "securities_company_id"
+
+    Securities_Company_Alert_Violation {
+        bigint sc_alert_violation_id PK
+        bigint sc_id FK
+        bigint sc_alert_ind_id FK
+    }
+    Securities_Company_Alert_Indicator {
+        bigint sc_alert_ind_id PK
+    }
+    Securities_Company ||--o{ Securities_Company_Alert_Violation : "sc_id"
+    Securities_Company_Alert_Indicator ||--o{ Securities_Company_Alert_Violation : "sc_alert_ind_id"
 ```
 
 ---
@@ -460,3 +483,4 @@ erDiagram
 | T2-21 | **[2026-10-21]** Đồng bộ HLD Tier 2 theo LLD (LLD là chuẩn). | Gỡ khỏi HLD (không có LLD, chuyển 7f Overview nhóm `Chưa có LLD`): chế tài/khiếu nại/kiểm tra (Administrative Penalty Decision/Sanction, Complaint Petition, Inspection Schedule), Disclosure Report/Shareholder Change, Report Violation, Alert Violation/Run/Indicator Condition, Custodian Bank, Licensed Service, Practitioner, Ownership Relation, Audit Firm Auditor, Risk Summary/Scoring Scale, Business Transaction Relationship, Report Input Source/Output Filter, và các dòng Organization Unit từ SC_FIRM_DOMESTIC_REP_OFFICE/SC_FIRM_FOREIGN_REP_OFFICE_VN. Thêm `Securities Company Foreign Branch Personnel`/`Foreign Representative Office Personnel` (đã có LLD), 3 shared entity IP. Adhoc/Periodic Report: BCO Documentation, `[Documentation] Regulatory Report`, Relative; Disclosure Securities Offering: Relative; Organization Unit/Insider/Related Person/Senior Personnel/Shareholder: Fundamental. |
 | T2-22 | **[2026-10-24]** `REPORT_INPUT_SUBMISSION` — Table Type đổi `Relative` → `Fact Append` theo yêu cầu Data Modeler. Nguồn `data_change_mode: Update` nhưng Atomic insert-only. | **Quyết định Data Modeler (chốt, 2026-10-24).** Không còn SCD2 (`ds_rcrd_eff_dt`/`ds_rcrd_end_dt`). **Còn mở:** ETL xác nhận cách xử lý bản ghi nguồn bị sửa sau khi nạp. Xem Overview 7e #27. |
 | T2-23 | **[2026-10-28]** Khôi phục 3 entity theo LLD (commit 660df05b): `SC_FIRM_ADMIN_SANCTION` → `Securities Company Administrative Sanction`; `SC_FIRM_LICENSED_PRACTITIONER` → `Securities Company Practitioner`; `SC_FIRM_OWNERSHIP_RELATION` → `Securities Company Ownership Relation`. | **Quyết định Data Modeler (chốt, 2026-10-28), LLD là chuẩn.** Sanction: `[Event] Business Activity`, Relative. Practitioner: `[Involved Party] Individual`, Fundamental độc lập — KHÔNG extend `Securities Practitioner` (NHNCK); `NHN_ID` chỉ là bridge FK nullable. Ownership Relation: `[Involved Party] Connected Entity`, Relative; `ENTERPRISE_TYPE_ID`/`COUNTRY_ID` pending. Cả 3 FK→`Securities Company` (T1) → Tier 2. Shared IP entity extend thêm source (Postal: Practitioner + Ownership Relation; Electronic: Practitioner; Alt Identification: Practitioner + Ownership Relation). **Đã xử lý 2026-10-29:** LLD Sanction `Remediation Measures` đã đổi sang cột nguồn `REMEDIAL_MEASURE` (khớp BRD). Xem Overview 7e #29. |
+| T2-22 | **[MỚI 2026-11-07]** `SC_FIRM_ALERT_VIOLATION` — ALERT_RUN_ID và ALERT_CONDITION_ID | **Quyết định Data Modeler (2026-11-07):** không thiết kế ALERT_RUN và ALERT_INDICATOR_CONDITION; loại 2 cột FK này (và cặp Id/Code tương ứng) khỏi `Securities Company Alert Violation`, ghi vào `pending_design.yaml`. Hai bảng nằm ở 7f Overview, nhóm `Chưa có LLD`. |

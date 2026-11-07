@@ -22,6 +22,7 @@
 | Documentation | [Documentation] Form Document | Documentation | FORM_INDICATOR_INPUT | Định nghĩa 1 chỉ tiêu/trường dữ liệu có thể gắn vào ô (cell) của biểu mẫu báo cáo — mã, tên, kiểu dữ liệu, nguồn giá trị tham chiếu | Securities Company Report Indicator | Relative | (1) Tái dùng term `Form Document` (id 9348, category Documentation) — đã dùng cho FORM_REPORT và cả family Sheet/Row/Column/Cell; FORM_INDICATOR_INPUT là thành phần định nghĩa 1 trường dữ liệu cần điền trong biểu mẫu, cùng concept Documentation với entity cha. (2) Cấu trúc bảng: CODE, ITEM_NAME, DESCRIPTION, DATA_TYPE (TEXT/NUMBER/DATE/BOOLEAN/SELECT), REFERENCE_CATALOG_ID, REFERENCE_CATALOG_TYPE (PROVINCE/NATIONALITY/SC_FIRM_STATUS/CUSTOM), CATEGORY, SOURCE_ENTITY_CODE, FIELD_METADATA_ID, SELECTION_LIST_SOURCE — định nghĩa chỉ tiêu/trường dữ liệu (metadata), không lưu giá trị cụ thể theo từng CTCK/kỳ báo cáo. (3) Theo chỉ đạo Data Modeler: BCV Core Object = Documentation (không dùng Business Activity dù có tiền lệ Risk/Alert Indicator trong SCMS). Table Type = Relative — **ngoại lệ tường minh** cùng pattern CAT_EVENT_TYPE/FORM_REPORT (T1-07/T1-12): bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental khác còn trong scope (REFERENCE_CATALOG_ID→FORM_INDICATOR_REFERENCE_VALUE và FIELD_METADATA_ID→FORM_INDICATOR_FIELD_META đều trỏ bảng ngoài scope, không model làm FK Atomic — xem 6f). Đặt tên `Securities Company Report Indicator` theo chỉ đạo Data Modeler. |
 | Documentation | [Documentation] Form Document | Documentation | FORM_REPORT | Biểu mẫu báo cáo (định kỳ/bất thường/theo yêu cầu/CBTT) mà CTCK/CN/VPĐD phải nộp cho UBCKNN, gồm căn cứ pháp lý, phiên bản, phân cấp biểu mẫu cha-con | Securities Company Report | Relative | (1) BCV term `Form Document` (id 9348, category Documentation) — "Identifies a Documentation Item presented in a standard template layout which requires additional information to be supplied; e.g. a loan application form, ... a questionnaire." Tiền lệ IDS: toàn bộ family template báo cáo (FORMS/RROW/RCOL/REP_FORMS) dùng đúng term này — thay thế term tự đặt `[Condition] Regulatory Reporting Requirement` trước đây (không có thật trong BCV, vi phạm rule #6). (2) Cấu trúc bảng: REPORT_CODE/NAME, LEGAL_BASIS, REPORT_TYPE (ĐỊNH_KỲ/BẤT_THƯỜNG/THEO_YÊU_CẦU/CBTT), REPORT_STYLE (input/output), VERSION/VERSION_DATE, PARENT_ID tự tham chiếu phân cấp, EFORM_ENABLED, STRUCTURE_FORMAT — đúng bản chất 1 biểu mẫu chuẩn hóa cần điền thông tin, khớp Form Document hơn khái niệm "yêu cầu/quy định" (Condition). (3) Sửa BCV Concept theo chỉ đạo Data Modeler (đối chiếu tiền lệ IDS, 2026-09-15). Đổi tên entity `Securities Company Form Report` → `Securities Company Report` theo chỉ đạo Data Modeler. Table Type giữ Relative (ngoại lệ tự tham chiếu qua PARENT_ID, không FK đến Fundamental khác — xem T1-07/T1-12), áp dụng chung Relative cho cả 2 entity con mới `Securities Company Report Input Submission` (Tier 2) và `Securities Company Report Input Value` (Tier 3) theo chỉ đạo Data Modeler. Đảo ngược quyết định loại-scope trước đây (xem 7f/7e Overview) — riêng `REPORT_CELL_VALUE` không nằm trong lượt thiết kế này, giữ nguyên ngoài scope. |
 | Common | [Common] Position | — | CAT_POSITION | Danh mục chức vụ nhân sự CTCK (nhóm chức vụ, mã, tên, các cờ người đại diện/thành viên Ban lãnh đạo/giám đốc chi nhánh) | Classification Securities Company Position | Classification | (1) Term BCV gần nhất `Employment Position Type` (id 11300, Involved Party) — không dùng để giữ nhất quán pattern Classification-naming; gán Common theo chỉ đạo Data Modeler. (2) Bảng: POSITION_GROUP, POSITION_CODE, POSITION_NAME, NOTE, REPRESENTATIVE, BOARD_MEMBER, BRANCH_DIRECTOR, ECATALOG_ID — danh mục Code+Name có cờ phân loại. (3) Nâng cấp từ Classification Value (scheme SCMS_POSITION_TYPE, deprecated) lên entity thật theo `lld_SCMS_CAT_POSITION.yaml` (2026-10-08). |
+| Event | [Event] Alert Indicator | Event | ALERT_INDICATOR | Chỉ tiêu cảnh báo tài chính/phi tài chính (master) để phát hiện vi phạm ngưỡng | Securities Company Alert Indicator | Fundamental | (1) BCV có term `Alert Indicator` hoặc `Monitoring Indicator` trong Event. (2) ALERT_INDICATOR là bảng master định nghĩa chỉ tiêu cảnh báo — có tên, ngưỡng, loại chỉ tiêu. FK đến đây từ ALERT_INDICATOR_CONDITION và ALERT_RUN. (3) Chọn `[Event] Alert Indicator` — entity định nghĩa chỉ tiêu giám sát cảnh báo. |
 
 ---
 
@@ -116,6 +117,12 @@ erDiagram
     CAT_PROVINCE ||--o{ CAT_WARD : "PROVINCE_ID"
     CAT_DISTRICT ||--o{ CAT_WARD : "DISTRICT_ID"
     SC_FIRM_INFO }o--o{ CAT_SERVICE_LEGAL_CAPITAL : "LNK_SC_FIRM_BUSINESS_LINE (M:N, xem 6f T1-11)"
+
+    ALERT_INDICATOR {
+        int ID PK
+        nvarchar INDICATOR_NAME
+        varchar INDICATOR_TYPE
+    }
 ```
 
 ---
@@ -185,6 +192,13 @@ erDiagram
 
     Securities_Company ||--o{ Geographic_Area : "geographic_area_id"
     Securities_Company_Report ||--o{ Securities_Company_Report : "parent_securities_company_report_id"
+
+    Securities_Company_Alert_Indicator {
+        bigint sc_alert_ind_id PK
+        string sc_alert_ind_code
+        string sc_alert_ind_nm
+        string alert_ind_tp_code
+    }
 ```
 
 ---
@@ -204,6 +218,7 @@ erDiagram
 | FORM_INDICATOR_INPUT.DATA_TYPE | Kiểu dữ liệu chỉ tiêu (TEXT/NUMBER/DATE/BOOLEAN/SELECT) | `SCMS_FORM_DATA_TYPE` | source_table | Scheme dùng chung cho mọi cột DATA_TYPE trong family FORM_* (FORM_SHEET_COLUMN, FORM_SHEET_CELL — xem Tier 3) vì cùng value set. |
 | CAT_SC_FIRM_STATUS | Trạng thái pháp lý cho Chi nhánh, VPDD, PGD | ~~`SCMS_SC_FIRM_STATUS`~~ (deprecated) | source_table | Dùng chung entity `Classification Securities Company Firm Status` với SC_FIRM_INFO.RECORD_STATUS — xem dòng trên. |
 | CAT_PROFILE_STATUS | Trạng thái hồ sơ trong luồng phê duyệt | `SCMS_PROFILE_STATUS` | source_table | FK từ SC_FIRM_PROFILE_HISTORY |
+| ALERT_INDICATOR.INDICATOR_TYPE | Loại chỉ tiêu cảnh báo (Tài chính/Phi tài chính) | `SCMS_ALERT_INDICATOR_TYPE` | source_table | Values suy luận: FINANCIAL, NON_FINANCIAL |
 
 ---
 

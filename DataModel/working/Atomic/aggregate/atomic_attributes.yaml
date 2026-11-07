@@ -52282,6 +52282,922 @@ attributes:
   atomic_table: "sc_administrative_sanction"
   atomic_column: "processing_unit"
 - bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Securities Company Alert Indicator Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài\
+    \ chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE). Đổi hash\
+    \ key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh Data Modeler (2026-09-18)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "sc_alert_ind_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Securities Company Alert Indicator Code"
+  description: "Mã chỉ tiêu. BK của entity — Id hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data Modeler,\
+    \ 2026-09-18 — xem Securities Company Alert Indicator Id). Trước đây map nhầm\
+    \ từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của Id — đã sửa cùng\
+    \ lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "sc_alert_ind_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_ALERT_INDICATOR'"
+  etl_derived_value: "SCMS_ALERT_INDICATOR"
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Securities Company Alert Indicator Name"
+  description: "Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_NAME"
+  comment: "BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt với\
+    \ team nguồn. Giữ cả 2."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "sc_alert_ind_nm"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Alert Code"
+  description: "Mã chỉ tiêu cảnh báo (trường thứ cấp, có thể trùng với Indicator Code)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.ALERT_CODE"
+  comment: "Không còn là BK của entity — BK đã đổi sang INDICATOR_CODE (Securities\
+    \ Company Alert Indicator Code) theo yêu cầu Data Modeler 2026-09-18. Giữ lại\
+    \ làm trường denormalized thứ cấp, bảo toàn dữ liệu nguồn. BRD có cả ALERT_CODE\
+    \ và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "alert_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Alert Name"
+  description: "Tên chỉ tiêu cảnh báo (tên chính)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.ALERT_NAME"
+  comment: "Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "alert_nm"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Alert Indicator Type Code"
+  description: "Loại chỉ tiêu cảnh báo: 0-Tính theo công thức BC; 1-NHNCK (legacy\
+    \ LOAI_CHI_TIEU_CB)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
+  comment: "SCHEMA_CODE=SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "alert_ind_tp_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Indicator Type Id"
+  description: "ID loại chỉ tiêu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_TYPE_ID"
+  comment: "FK target chưa xác định trong BRD — lưu dạng text denormalized. Nguồn\
+    \ lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "ind_tp_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Legal Reference"
+  description: "Tham chiếu văn bản pháp luật liên quan (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "legal_reference"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Legal Reference Id"
+  description: "ID văn bản pháp luật tham chiếu (nguồn không khai báo FK target)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.LEGAL_REFERENCE_ID"
+  comment: "BRD ghi chú 'Chưa liên kết đến bảng khác' — lưu dạng text denormalized.\
+    \ Nguồn lưu NUMBER(10) — ETL convert sang string. Đã review 2026-07-10 — giữ nguyên\
+    \ map 1:1 dạng Text, KHÔNG tạo FK do tài liệu BRD không đủ thông tin xác định\
+    \ target. Sẽ đánh giá lại khi có thêm tài liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "legal_reference_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Legal Basis"
+  description: "Căn cứ pháp lý (tên/số thông tư, nghị định áp dụng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.LEGAL_BASIS"
+  comment: "Nguồn lưu NCLOB — ETL cần xử lý large object."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "legal_basis"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Severity Level"
+  description: "Mức độ cảnh báo: Cấp 1, 2 hoặc 3."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.SEVERITY_LEVEL"
+  comment: "NUMBER(3). BRD có cả SEVERITY_LEVEL và SEVERITY — dùng SEVERITY_LEVEL\
+    \ là trường chính (NUMBER(3), mô tả rõ Cấp 1/2/3)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "severity_level"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Severity Code"
+  description: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.SEVERITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "severity_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Lower Threshold"
+  description: "Ngưỡng cảnh báo dưới."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.LOWER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau (Triệu đồng/Phần\
+    \ trăm/Số lượng)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "lower_threshold"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Upper Threshold"
+  description: "Ngưỡng cảnh báo trên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.UPPER_THRESHOLD"
+  comment: "NUMBER(38,2) — lưu dạng text để đồng nhất khi unit khác nhau. Xem Lower\
+    \ Threshold."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "upper_threshold"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Unit"
+  description: "Đơn vị tính (Triệu đồng/Tỷ đồng/Phần trăm/Số lượng)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.UNIT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "unit"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Default Value"
+  description: "Giá trị mặc định của ô khi khởi tạo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.DEFAULT_VALUE"
+  comment: "Nguồn lưu NUMBER — ETL convert sang string để đồng nhất."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "default_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Description"
+  description: "Mô tả chi tiết nội dung/mục đích của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "description"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.NOTE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "note"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Weight"
+  description: "Trọng số của chỉ tiêu trong công thức tính điểm (%)."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.WEIGHT"
+  comment: "NUMBER(38,2) — trọng số phần trăm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "weight"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Alert Violation Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: null
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_alert_violation_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Alert Violation Code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ID"
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_alert_violation_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_SC_FIRM_ALERT_VIOLATION'"
+  etl_derived_value: "SCMS_SC_FIRM_ALERT_VIOLATION"
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Data Date"
+  description: "Thời điểm tạo bản ghi (nguồn: CREATED_AT). Dùng làm căn cứ partition\
+    \ Delta Lake / incremental filter — bảng nguồn có data_change_mode=Append, filter_logic\
+    \ theo created_at (xem BRD/Source/brd_SCMS.yaml)."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.CREATED_AT"
+  comment: "BCV: không có term riêng. Reinstated 2026-07-15 — CREATED_AT bị loại theo\
+    \ quyết định audit-block SCMS (xem pending_design.yaml) nhưng bảng dùng Append/incremental\
+    \ filter theo created_at, cần giữ lại làm partition key. Đổi tên từ 'created_at'\
+    \ sang 'Data Date' để phản ánh vai trò ngày dữ liệu/phân vùng, tách biệt khỏi\
+    \ audit block (CREATED_BY vẫn loại trừ). Nguồn lưu TIMESTAMP(6) — ETL truncate\
+    \ về Date (00:00:00) khi map vào Data Date, phù hợp granularity partition theo\
+    \ ngày."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "data_dt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Id"
+  description: "FK đến Công ty chứng khoán có vi phạm cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID"
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE sau\
+    \ đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_INFO.CODE"
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Alert Indicator Id"
+  description: "FK đến chỉ tiêu cảnh báo kích hoạt vi phạm."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
+  comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk sang\
+    \ SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
+    \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_alert_ind_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Securities Company Alert Indicator Code"
+  description: "Mã chỉ tiêu cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
+    \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
+    \ Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "sc_alert_ind_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Violation Severity Code"
+  description: "Mức độ nghiêm trọng của vi phạm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "violation_severity_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Severity Level"
+  description: "Cấp độ cảnh báo (theo TC-CB-74, TC-VP-73) - ánh xạ cùng mức độ vi\
+    \ phạm."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "severity_level"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Entity Type Code"
+  description: "Loại đối tượng cảnh báo: CTCK | NGAN_HANG | CN_CTCK_NN | VPDD_CTCK_NN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_entity_tp_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Entity Code"
+  description: "Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID"
+  comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company;\
+    \ khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI\
+    \ trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE.\
+    \ NUMBER(10) — convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_entity_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Condition Expression"
+  description: "Biểu thức điều kiện logic đã kích hoạt cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.CONDITION"
+  comment: "NVARCHAR2(1000). Chuỗi logic expression dạng text từ hệ thống."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "condition_expression"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Comparison Value"
+  description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE"
+  comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
+    \ là integer."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "comparison_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Actual Value"
+  description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ACTUAL_VALUE"
+  comment: "NUMBER(38,2). Có thể là số tài chính hoặc tỉ lệ — dùng Currency Amount\
+    \ vì có decimal scale."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "actual_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Threshold Value"
+  description: "Ngưỡng cảnh báo được cấu hình."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.THRESHOLD"
+  comment: "NUMBER(38,2)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "threshold_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Deducted Score"
+  description: "Điểm trừ do vi phạm cảnh báo."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.DEDUCTED_SCORE"
+  comment: "NUMBER(38,2). Điểm rủi ro bị trừ — dùng Currency Amount vì có decimal\
+    \ scale."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "deducted_score"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Year"
+  description: "Năm của cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_YEAR"
+  comment: "VARCHAR2(40) (DDL UAT 2026-08 widen từ VARCHAR2(10)). Lưu dạng Text để\
+    \ bảo toàn format — nguồn cho phép chuỗi dài hơn 4 ký tự, cần profile để xác nhận\
+    \ format thực tế (năm đơn hoặc khoảng năm)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_year"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo liên quan đến cảnh báo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_YEAR"
+  comment: "NUMBER (integer). Dùng số nguyên, khác ALERT_YEAR (text 4 char)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Report Period Code"
+  description: "Kỳ báo cáo của cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "rpt_period_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Report Period Value"
+  description: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng 1-12)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "rpt_period_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Period"
+  description: "Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD"
+  comment: "VARCHAR2(20). Mô tả gốc BRD trống — cần xác nhận format (VD: '2024Q1',\
+    \ '202401')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "period"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Resolved Indicator"
+  description: "Cờ đánh dấu vi phạm đã được xử lý: 1=Đã xử lý; 0=Chưa xử lý."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLVED"
+  comment: "NUMBER(1). ETL: 1→true, 0/null→false."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "resolved_ind"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Resolution Note"
+  description: "Ghi chú về cách xử lý vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.RESOLUTION_NOTE"
+  comment: "VARCHAR2(4000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "resolution_note"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Violation Description"
+  description: "Mô tả chi tiết về vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION"
+  comment: "VARCHAR2(4000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "violation_description"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Note"
+  description: "Ghi chú bổ sung về vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.NOTE"
+  comment: "NVARCHAR2(4000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "note"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Processing Timestamp"
+  description: "Thời điểm xử lý vi phạm cảnh báo."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSING_DATE"
+  comment: "TIMESTAMP. Tên cột PROCESSING_DATE nhưng data type là TIMESTAMP."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "processing_tms"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Processor IAM User Id"
+  description: "FK đến người xử lý vi phạm cảnh báo."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
+  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
+    \ Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "processor_iam_user_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Processor IAM User Code"
+  description: "Mã người xử lý vi phạm cảnh báo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
+  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
+    \ Pair with Processor IAM User Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "processor_iam_user_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Period Type Code"
+  description: "Loại kỳ của cảnh báo (mã số)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_period_tp_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Period Value"
+  description: "Giá trị kỳ của cảnh báo (số thứ tự)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_VALUE"
+  comment: "NUMBER(10) (integer). Cột mới trong DDL UAT 2026-08 — cần xác nhận có\
+    \ trùng ý nghĩa với Report Period Value (REPORT_PERIOD_VALUE) hay không trước\
+    \ go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_period_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Alert Date"
+  description: "Ngày phát sinh cảnh báo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_DATE"
+  comment: "DATE. Cột mới trong DDL UAT 2026-08."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "alert_dt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "Severity Level Alt Code"
+  description: "Mức độ nghiêm trọng của vi phạm. 1-warning, 2-violation."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
+  comment: "SCHEMA_CODE=SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "severity_level_alt_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Violation"
+  atomic_attribute: "String Result Value"
+  description: "Giá trị kết quả dạng chuỗi khi kết quả điều kiện cảnh báo không phải\
+    \ dạng số."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_ALERT_VIOLATION"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.STRING_RESULT_VALUE"
+  comment: "VARCHAR2(4000). Cột mới trong DDL UAT 2026-08 — đối xứng với Comparison\
+    \ Value/Actual Value (dạng số) khi kết quả điều kiện là chuỗi."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_violation"
+  atomic_column: "string_result_val"
+- bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering"
   atomic_attribute: "Securities Company Disclosure Securities Offering Id"
   description: "Khóa đại diện (surrogate key)."
