@@ -550,7 +550,7 @@ _Không có dim join (operational / self-contained table)._
 
 ## NHNCK
 
-**11 bảng flat** (2 fact + 9 operational) · **123 KPI unique**
+**12 bảng flat** (2 fact + 10 operational) · **123 KPI unique**
 
 *(Sửa 2026-08) Đồng bộ lại toàn bộ theo `Datamart/flat-table/NHNCK/01_create_nhnck_flat_tables.sql` + `Datamart/lld/DTM_NHNCK_Detail_Mapping.csv` hiện tại — bản trước lệch tên bảng/cột và thiếu 1 bảng so với SQL thực tế.*
 
@@ -610,7 +610,6 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm 1b — Thống kê tổng hợp (KPI thẻ NHN) | 2 |
 | Nhóm 2 — Biểu đồ Trình độ chuyên môn | 3 |
 | Nhóm 4 — Biểu đồ Phân bổ độ tuổi | 10 |
-| Nhóm 13 — Practitioner Data Explorer | 1 |
 
 ---
 
@@ -633,7 +632,6 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 5 — Thông tin chung của NHNCK | 9 |
-| Nhóm 13 — Practitioner Data Explorer | 9 |
 
 ---
 
@@ -702,6 +700,28 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
+### `datamart.nhnck_opr_practitioner_data_explorer_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` |
+| **Entity nguồn** | Operational Practitioner Data Explorer |
+| **Bảng fact/operational** | `datamart.opr_practitioner_data_explorer` |
+| **PK** | `practitioner_data_explorer_id` |
+| **Số dim join** | 0 |
+
+_Không có dim join (operational / self-contained table)._
+
+*(Khôi phục 2026-11-07) Gold-to-Gold: JOIN 360 Profile × Certificate/Employment/Exam/Violation History × Fact Daily Snapshot đã thực hiện ở ETL Datamart, flat chỉ 1-1 từ bảng mart. Grain NHN × CCHN × lần thi × vi phạm (fan-out) — O_NHNCK_47.*
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 13 — Practitioner Data Explorer | 22 |
+
+---
+
 ### `datamart.nhnck_opr_practitioner_certificate_hist_flat`
 
 | Thuộc tính | Giá trị |
@@ -740,7 +760,6 @@ _Không có dim join (operational / self-contained table)._
 |------|:-------------:|
 | Nhóm 6 — Sub-tab Mạng lưới người liên quan | 2 |
 | Nhóm 8 — Sub-tab Quá trình hành nghề | 7 |
-| Nhóm 13 — Practitioner Data Explorer | 1 |
 
 ---
 
@@ -761,7 +780,6 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 12 — Sub-tab Lịch sử vi phạm & xử phạt hành chính | 4 |
-| Nhóm 13 — Practitioner Data Explorer | 3 |
 
 ---
 
@@ -782,7 +800,6 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 10 — Sub-tab Đợt thi sát hạch | 8 |
-| Nhóm 13 — Practitioner Data Explorer | 5 |
 
 ---
 

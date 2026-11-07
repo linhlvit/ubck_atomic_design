@@ -2,8 +2,8 @@
 -- NHNCK Flat Tables — POPULATE
 -- Module: Người Hành Nghề Chứng Khoán (NHNCK)
 -- Generated: Phase 3 LLD Datamart
--- 11 bảng: 2 fact + 9 operational
--- (Sửa 2026-11-03) NHNCK Nhóm 7/13: xem ghi chú file 01_create — list_company_role đổi cột/PK, thêm account_holding, bỏ data_explorer
+-- 12 bảng: 2 fact + 10 operational
+-- (Sửa 2026-11-03) NHNCK Nhóm 7/13: xem ghi chú file 01_create — list_company_role đổi cột/PK, thêm account_holding; (Sửa 2026-11-07) khôi phục data_explorer 1-1 từ bảng mart Gold-to-Gold (khối 12, O_NHNCK_47)
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- Grain 2 fact Snapshot (license_certificate_snpst, daily_snpst) = APPEND
 -- theo Snapshot_Date (HLD: "ETL append 1 row per NHN mỗi ngày") — phục vụ
@@ -311,4 +311,47 @@ SELECT
     f.src_stm_code
 
 FROM datamart.opr_practitioner_account_holding f
+;
+
+
+-- ==========================================================
+-- 12. OPERATIONAL: nhnck_opr_practitioner_data_explorer_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.nhnck_opr_practitioner_data_explorer_flat
+SELECT
+    -- From: OPR_PRACTITIONER_DATA_EXPLORER
+    f.practitioner_data_explorer_id,
+    f.practitioner_code,
+    f.license_certificate_document_code,
+    f.examination_assessment_result_code,
+    f.conduct_violation_code,
+    f.full_nm,
+    f.birth_dt,
+    f.age,
+    f.nationality_nm,
+    f.identification_nbr,
+    f.identification_tp_code,
+    f.education_level_nm,
+    f.practice_status_code,
+    f.practice_status_nm,
+    f.certificate_nbr,
+    f.certificate_tp_code,
+    f.certificate_tp_nm,
+    f.issue_dt,
+    f.current_organization_nm,
+    f.concurrent_employment_indicator,
+    f.insufficient_training_indicator,
+    f.no_practice_3_years_indicator,
+    f.exam_assessment_nm,
+    f.exam_examination_period,
+    f.exam_examination_start_dt,
+    f.exam_examination_end_dt,
+    f.exam_overall_result_nm,
+    f.violation_decision_nbr,
+    f.violation_decision_signed_dt,
+    f.violation_note,
+    f.src_stm_code
+
+FROM datamart.opr_practitioner_data_explorer f
 ;

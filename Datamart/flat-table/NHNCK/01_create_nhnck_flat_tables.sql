@@ -2,8 +2,8 @@
 -- NHNCK Flat Tables — CREATE
 -- Module: Người Hành Nghề Chứng Khoán (NHNCK)
 -- Generated: Phase 3 LLD Datamart
--- 11 bảng: 2 fact + 9 operational
--- (Sửa 2026-11-03) NHNCK Nhóm 7/13: opr_practitioner_list_company_role đổi driving về SCMS sc_shareholder (PK/ORDER BY và cột đổi — DROP rồi CREATE lại), tách cột VSDC sang bảng mới nhnck_opr_practitioner_account_holding_flat; bãi bỏ nhnck_opr_practitioner_data_explorer_flat (Nhóm 13 JOIN các bảng đã có) — dev cần DROP flat Data Explorer; thêm identification_tp_code (360 Profile), practitioner_workplace_at_rpt (Employment History). Xem O_NHNCK_43/44/45
+-- 12 bảng: 2 fact + 10 operational
+-- (Sửa 2026-11-03) NHNCK Nhóm 7/13: opr_practitioner_list_company_role đổi driving về SCMS sc_shareholder (PK/ORDER BY và cột đổi — DROP rồi CREATE lại), tách cột VSDC sang bảng mới nhnck_opr_practitioner_account_holding_flat; bãi bỏ tạm nhnck_opr_practitioner_data_explorer_flat (2026-11-03, O_NHNCK_45) — (Sửa 2026-11-07) khôi phục dạng 1-1 từ bảng mart Gold-to-Gold opr_practitioner_data_explorer (O_NHNCK_47, khối 12 bên dưới), JOIN đã chuyển lên ETL Datamart; thêm identification_tp_code (360 Profile), practitioner_workplace_at_rpt (Employment History). Xem O_NHNCK_43/44/45
 -- ============================================================
 
 
@@ -333,4 +333,50 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_account_holding_flat 
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (practitioner_account_holding_id)
 COMMENT 'Flat table — opr_practitioner_account_holding — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 12. OPERATIONAL: nhnck_opr_practitioner_data_explorer_flat
+--    opr_practitioner_data_explorer — Gold-to-Gold (Nhóm 13): JOIN 360 Profile x Certificate/Employment/Exam/Violation History x Fact Daily Snapshot
+--    đã thực hiện ở ETL Datamart; flat chỉ 1-1 từ bảng mart. Joins: không JOIN dimension ở flat
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_PRACTITIONER_DATA_EXPLORER
+    practitioner_data_explorer_id                String                  COMMENT 'PK — Driving: opr_practitioner_360_profile (1 dòng/NHN, kể cả NHN chưa có CCHN nào). Grain: 1 NHN × 1 CCHN × 1',
+    practitioner_code                            String                  COMMENT 'BK người hành nghề — join anchor tới các bảng Operational/Fact khác của NHN. Driving: opr_practitioner_360_pro',
+    license_certificate_document_code            Nullable(String)        COMMENT 'Mã CCHN của dòng (BK bản ghi CCHN, thành phần grain) — NULL khi NHN chưa có CCHN nào',
+    examination_assessment_result_code           Nullable(String)        COMMENT 'Mã kết quả thi sát hạch của dòng (thành phần grain) — NULL khi NHN chưa dự thi lần nào',
+    conduct_violation_code                       Nullable(String)        COMMENT 'Mã vi phạm của dòng (thành phần grain) — NULL khi NHN không có vi phạm',
+    full_nm                                      Nullable(String)        COMMENT 'Họ tên NHN',
+    birth_dt                                     Nullable(Date)          COMMENT 'Ngày sinh NHN',
+    age                                          Nullable(Int64)         COMMENT 'Tuổi NHN — lấy từ 360 Profile, không tính lại',
+    nationality_nm                               Nullable(String)        COMMENT 'Tên quốc tịch NHN',
+    identification_nbr                           Nullable(String)        COMMENT 'Số định danh/Hộ chiếu của NHN',
+    identification_tp_code                       Nullable(String)        COMMENT 'Loại giấy tờ định danh (scheme IP_ALT_ID_TYPE: NATIONAL_ID=CMND, CITIZEN_ID=CCCD, PASSPORT=Hộ chiếu)',
+    education_level_nm                           Nullable(String)        COMMENT 'Tên trình độ học vấn của NHN',
+    practice_status_code                         Nullable(String)        COMMENT 'Trạng thái hành nghề dẫn xuất (0=Chưa hành nghề, 1=Đang hoạt động, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp l',
+    practice_status_nm                           Nullable(String)        COMMENT 'Tên trạng thái hành nghề — nhãn cố định ứng với practice_status_code',
+    certificate_nbr                              Nullable(String)        COMMENT 'Số CCHN của dòng — NULL khi NHN chưa có CCHN',
+    certificate_tp_code                          Nullable(String)        COMMENT 'Mã loại hình hành nghề của CCHN — NULL khi NHN chưa có CCHN',
+    certificate_tp_nm                            Nullable(String)        COMMENT 'Tên loại hình hành nghề của CCHN',
+    issue_dt                                     Nullable(Date)          COMMENT 'Ngày cấp CCHN — slicer từ ngày … đến ngày … lọc trên cột này',
+    current_organization_nm                      Nullable(String)        COMMENT 'Tên tổ chức nơi công tác hiện tại — báo cáo tổ chức đang mở (termination_dt IS NULL) có hire_dt mới nhất của N',
+    concurrent_employment_indicator              Nullable(String)        COMMENT 'Y nếu NHN làm việc đồng thời tại 2 tổ chức trở lên tại snapshot ETL — đọc Fact Practitioner Daily Snapshot (cù',
+    insufficient_training_indicator              Nullable(String)        COMMENT 'Y nếu NHN chưa đáp ứng yêu cầu tập huấn tối thiểu hàng năm tại snapshot ETL — đọc Fact Practitioner Daily Snap',
+    no_practice_3_years_indicator                Nullable(String)        COMMENT 'Y nếu NHN không hành nghề 3 năm liên tục tại snapshot ETL — đọc Fact Practitioner Daily Snapshot',
+    exam_assessment_nm                           Nullable(String)        COMMENT 'Tên đợt thi sát hạch (1-N per NHN) — NULL khi NHN chưa dự thi',
+    exam_examination_period                      Nullable(String)        COMMENT 'Kỳ thi (năm/đợt) của lần thi',
+    exam_examination_start_dt                    Nullable(Date)          COMMENT 'Ngày bắt đầu kỳ thi sát hạch',
+    exam_examination_end_dt                      Nullable(Date)          COMMENT 'Ngày kết thúc kỳ thi sát hạch',
+    exam_overall_result_nm                       Nullable(String)        COMMENT 'Kết quả thi chung của lần thi',
+    violation_decision_nbr                       Nullable(String)        COMMENT 'Số quyết định xử lý vi phạm (1-N per NHN) — NULL khi NHN không có vi phạm',
+    violation_decision_signed_dt                 Nullable(Date)          COMMENT 'Ngày ký quyết định xử lý vi phạm',
+    violation_note                               Nullable(String)        COMMENT 'Nội dung vi phạm',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của driving — NHNCK_PROFESSIONALS'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (practitioner_data_explorer_id)
+COMMENT 'Flat table — opr_practitioner_data_explorer — Nhóm 13 Data Explorer, grain NHN x CCHN x lan thi x vi pham (JOIN o ETL Datamart)'
 ;

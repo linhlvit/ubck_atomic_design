@@ -32,6 +32,7 @@ graph TB
     OPR7["Practitioner Exam History"]:::oper
     OPR8["Practitioner Training History"]:::oper
     OPR9["Practitioner Account Holding"]:::oper
+    OPR10["Practitioner Data Explorer"]:::oper
 
     DIM_DATE --> FACT_CERT
     DIM_DATE --> FACT_ANN
@@ -219,7 +220,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| *(Không có bảng riêng — Sửa 2026-11-03 bãi bỏ Practitioner Data Explorer)* | — | — | Nhóm 13 tổng hợp từ Practitioner 360 Profile (driving), Certificate History, Employment History, Exam History, Violation History và Fact Practitioner Daily Snapshot qua Practitioner Code | 1 NHN × 1 CCHN (hiển thị) | K_NHNCK_68–74, 101, 104–117, 123 |
+| Practitioner Data Explorer | Operational | new | (Khôi phục 2026-11-07, O_NHNCK_47) Bảng tra cứu tổng hợp Gold-to-Gold từ Practitioner 360 Profile (driving), Certificate/Employment/Exam/Violation History và Fact Practitioner Daily Snapshot; không đọc Atomic | 1 NHN × 1 CCHN × 1 lần thi × 1 vi phạm (LEFT JOIN, PK surrogate) | K_NHNCK_68–74, 101, 104–117, 123 |
 
 ---
 
@@ -237,6 +238,7 @@ erDiagram
 | Practitioner Related Party Profile | Operational | new | Mạng lưới người liên quan per NHN | 1 người liên quan per NHN | K_NHNCK_75–80, K_NHNCK_86 |
 | Practitioner Listed Company Role | Operational | new | Vai trò của NHN tại DN niêm yết (cổ đông cá nhân) | 1 NHN × 1 bản ghi cổ đông cá nhân | K_NHNCK_81–85 |
 | Practitioner Account Holding | Operational | new | (Mới 2026-11-03) Tài khoản giao dịch và mã CK nắm giữ của NHN (VSDC) | 1 NHN × 1 tài khoản × (0..n mã CK cổ đông lớn) | K_NHNCK_87–89, 103 |
+| Practitioner Data Explorer | Operational | new | (Khôi phục 2026-11-07) Bảng tra cứu tổng hợp Data Explorer — Gold-to-Gold từ các bảng Datamart | 1 NHN × 1 CCHN × 1 lần thi × 1 vi phạm | K_NHNCK_68–74, 101, 104–117, 123 |
 | Practitioner Certificate History | Operational | new | Lịch sử cấp CCHN per NHN | 1 CCHN per NHN | K_NHNCK_43–48, K_NHNCK_92 |
 | Practitioner Employment History | Operational | new | Quá trình hành nghề per NHN | 1 lần công tác per NHN | K_NHNCK_49–53, K_NHNCK_90, K_NHNCK_91, K_NHNCK_132–133 (Nhóm 6) |
 | Practitioner Violation History | Operational | new | Lịch sử vi phạm & xử phạt per NHN | 1 vi phạm per NHN | K_NHNCK_54–58 |
