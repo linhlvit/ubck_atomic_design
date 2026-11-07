@@ -1,0 +1,247 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dr_value-FMS.ITEM_VALUE
+  logical_name: Dynamic Report Value
+  physical_name: dr_value
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: FMS
+  description: |
+    Giá trị đã nộp của từng ô chỉ tiêu báo cáo động FMS — 1 dòng = 1 ô × 1 lần nộp (× dòng động). BK = item_id ‖ report_log_id ‖ row_order. Nguồn ODS item_value (Upsert theo BK).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-ITEM_VALUE
+
+attributes:
+  - name: Dynamic Report Value Id
+    physical_name: dr_val_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('FMS_ITEM_VALUE', ITEM_ID || REPORT_LOG_ID || ROW_ORDER)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Value Code
+    physical_name: dr_val_code
+    business_meaning: "Mã nghiệp vụ ô giá trị = ITEM_ID || REPORT_LOG_ID || ROW_ORDER. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: "FMS.ITEM_VALUE.ITEM_ID, FMS.ITEM_VALUE.REPORT_LOG_ID, FMS.ITEM_VALUE.ROW_ORDER"
+    comment: "ETL-derived: concat(ITEM_ID, REPORT_LOG_ID, ROW_ORDER) từ ODS ITEM_VALUE — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_ITEM_VALUE'"
+    etl_derived_value: FMS_ITEM_VALUE
+
+  - name: Dynamic Report Structure Id
+    physical_name: dr_structure_id
+    business_meaning: "FK → Dynamic Report Structure: ô chỉ tiêu tương ứng."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ITEM_ID
+    comment: "FK target: dr_structure.dr_structure_id. Hash: hash_id('FMS_ITEM_LIST', ITEM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Structure Code
+    physical_name: dr_structure_code
+    business_meaning: Mã chỉ tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ITEM_ID
+    comment: "Lookup pair: dr_structure.dr_structure_code. Pair with Dynamic Report Structure Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Submission History Id
+    physical_name: dr_submission_history_id
+    business_meaning: "FK → Dynamic Report Submission History: lần nộp chứa ô giá trị."
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.REPORT_LOG_ID
+    comment: "FK target: dr_submission_history.dr_submission_history_id. Hash: hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Submission History Code
+    physical_name: dr_submission_history_code
+    business_meaning: Mã lần nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.REPORT_LOG_ID
+    comment: "Lookup pair: dr_submission_history.dr_submission_history_code. Pair with Dynamic Report Submission History Id."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Dynamic Index
+    physical_name: row_dynamic_index
+    business_meaning: Thứ tự dòng trong band động.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ROW_ORDER
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Path
+    physical_name: row_path
+    business_meaning: Đường dẫn CHA→CON của dòng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ROW_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Entity Code
+    physical_name: entity_code
+    business_meaning: Mã đối tượng của dòng dữ liệu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ENTITY_CODE
+    comment: Mã tham chiếu mềm — chưa xác định entity đích duy nhất; cần profile giá trị trước khi cân nhắc FK.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Label Column Indicator
+    physical_name: label_column_ind
+    business_meaning: "1 = ô thuộc cột nhãn."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.IS_LABEL_COL
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Value
+    physical_name: val
+    business_meaning: Giá trị ô báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning: Mã ngân hàng lưu ký đi kèm giá trị ô.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.ACC_VALUE
+    comment: "Theo bản map Data Modeler không có cặp Id. Giá trị nguồn ACC_VALUE — tra custodian_bank.custodian_bank_code; chưa xác nhận ACC_VALUE luôn là mã NHLK — cần profile trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Indicator
+    physical_name: dynamic_ind
+    business_meaning: "1 = ô thuộc dòng động."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.IS_DYNAMIC
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Type
+    physical_name: data_tp
+    business_meaning: Kiểu dữ liệu của ô.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.DATA_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày THỰC TẾ nộp báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_VALUE
+    source_column: FMS.ITEM_VALUE.SUBMISSION_DATE
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null

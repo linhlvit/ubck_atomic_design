@@ -1,0 +1,135 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-status_threshold_config-FMS.THRESHOLD_CONFIG
+  logical_name: Status Threshold Config
+  physical_name: status_threshold_config
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Cấu hình ngưỡng giá trị (từ–đến) ánh xạ sang trạng thái của chỉ tiêu. BK = indicator_code ‖ status. Nguồn ODS threshold_config (SCD2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-THRESHOLD_CONFIG
+
+attributes:
+  - name: Status Threshold Config Id
+    physical_name: status_threshold_config_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_THRESHOLD_CONFIG', INDICATOR_CODE || STATUS)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Status Threshold Config Code
+    physical_name: status_threshold_config_code
+    business_meaning: "Mã nghiệp vụ cấu hình ngưỡng = INDICATOR_CODE || STATUS. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: "FMS.THRESHOLD_CONFIG.INDICATOR_CODE, FMS.THRESHOLD_CONFIG.STATUS"
+    comment: "ETL-derived: concat(INDICATOR_CODE, STATUS) từ ODS THRESHOLD_CONFIG — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_THRESHOLD_CONFIG'"
+    etl_derived_value: FMS_THRESHOLD_CONFIG
+
+  - name: Index Code
+    physical_name: index_code
+    business_meaning: Mã chỉ tiêu áp ngưỡng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: FMS.THRESHOLD_CONFIG.INDICATOR_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Index Name
+    physical_name: index_nm
+    business_meaning: Tên chỉ tiêu áp ngưỡng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: FMS.THRESHOLD_CONFIG.INDICATOR_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: From Value
+    physical_name: from_val
+    business_meaning: Giá trị cận dưới của ngưỡng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: FMS.THRESHOLD_CONFIG.VALUE_FROM
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: To Value
+    physical_name: to_val
+    business_meaning: Giá trị cận trên của ngưỡng.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: FMS.THRESHOLD_CONFIG.VALUE_TO
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Status
+    physical_name: status
+    business_meaning: Trạng thái ứng với khoảng ngưỡng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: THRESHOLD_CONFIG
+    source_column: FMS.THRESHOLD_CONFIG.STATUS
+    comment: null
+    classification_context: null
+    etl_derived_value: null

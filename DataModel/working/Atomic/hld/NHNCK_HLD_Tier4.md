@@ -20,7 +20,6 @@
 | Group | [Group] Group | Group | CERTIFICATE_RECORD_GROUP_MEMBERS | Update | Chứng chỉ hành nghề (CCHN) là thành viên trong 1 nhóm cấp/thu hồi tập thể | Certificate Group X Securities Practitioner License Certificate Document Relationship | Relative | (1) Term candidate: `[Group] Group` — tái dùng concept từ phía entity cha Tier 2 `Securities Practitioner License Certificate Group`, đối xứng với `Application Group X Securities Practitioner License Application Relationship`. (2) Cấu trúc trường: CERTIFICATE_RECORD_GROUP_ID (FK cha), CERTIFICATE_RECORD_ID (FK) — chỉ giữ 2 FK Id/Code theo pattern entity link khác; ADDED_DATE/ADDED_BY/STATUS/IS_REISSUE/REVOCATION_REASON/ORDER_INDEX bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (không còn cần xác nhận REVOCATION_REASON trùng lặp — xem 6f #5, đã moot). (3) Đổi tên từ "...Group Member" sang pattern link/relationship `_x_` + Table Type Fundamental → Relative theo quyết định Data Modeler (2026-08-14, lần 3). BCV Concept: `[Group] Group` → `[Documentation] Gov. Registration Document` (2026-08-14) → trở lại `[Group] Group` (2026-08-15) — quyết định cuối cùng, tên đặt Group lên trước. |
 | Business Activity | [Business Activity] Status Review | Status Review | VERIFY_APPLICATION_STATUSES | Update | Kết quả thẩm định/phê duyệt hồ sơ CCHN tại từng cấp xét duyệt | Securities Practitioner License Application Status Review | Fundamental | (1) Term candidate: `[Business Activity] Status Review` — *"Identifies a Business Activity in which the status of an item is reviewed to determine if it is still valid."* (2) Cấu trúc trường: APPLICATION_ID (FK), STATUS_ID/PREV_STATUS_ID (Classification Value, scheme APPLICATION_STATUS — revert từ FK Tier 1 2026-08-20, xem Overview.md 5c/7c), 4 trường lý do theo cấp xét duyệt (REASON/SPEC_REASON/ORG_REASON/OVERVIEW_REASON), VERIFIED_BY — đúng cấu trúc 1 lần xét duyệt chuyển trạng thái hồ sơ. (3) Chọn `[Business Activity] Status Review`. Quyết định Data Modeler (2026-08-13) — đảo lại out_of_scope trước đó (Source Process Log). |
 | Communication | [Communication] Notification | Notification | MCDT_RESULT_OUTBOX | Update | Outbox đẩy kết quả xử lý hồ sơ CCHN ra Cổng Dịch vụ công quốc gia (MCĐT) | Securities Practitioner License Application Result Notification | Relative | Bảng mới trong DDL (2026-09-10). BCV term "Notification" (Communication, terms.csv id 8536). Cấu trúc trường: APPLICATION_ID (FK), SENDER_IDENTITY (denormalized), STATUS (Classification Value — value set chưa xác nhận qua DDL), ATTEMPTS, NEXT_RETRY_AT, LAST_ERROR. Quyết định Data Modeler: thiết kế theo SCD2 (Table Type Relative) để lưu lịch sử thay đổi trạng thái gửi thay vì overwrite. |
-| Documentation | [Documentation] Gov. Registration Document | Government Registration Document | APPLICATION_DECISIONS | Update | Liên kết hồ sơ CCHN với quyết định hành chính tương ứng | Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship | Relative | (1) Term candidate: tái dùng `[Documentation] Gov. Registration Document` từ entity cha Tier 1 `Securities Practitioner License Decision Document` — 1 quyết định bao gồm nhiều hồ sơ CCHN, đặt Decision lên trước tên entity. (2) Cấu trúc trường: ID (kỹ thuật, không map), APPLICATION_ID (FK), DECISION_ID (FK) — pure junction 2 FK, không attribute riêng nào khác → theo pattern entity link "_x_" (rule 3e), PK composite 2 FK Id, không có Id/Code riêng của entity. (3) **[MỚI 2026-09-12]** Data Modeler quyết định thiết kế thành entity Relative riêng (không denormalize ARRAY trên DECISIONS) (mirror `APPLICATION_GROUP_MEMBERS`/`FMS.JOB_TL_PRO`). |
 
 ---
 
@@ -39,7 +38,6 @@ graph LR
     CERTIFICATE_RECORD_GROUP_MEMBERS["**CERTIFICATE_RECORD_GROUP_MEMBERS**\nThành viên nhóm CCHN"]:::src
     VERIFY_APPLICATION_STATUSES["**VERIFY_APPLICATION_STATUSES**\nXét duyệt trạng thái hồ sơ"]:::src
     MCDT_RESULT_OUTBOX["**MCDT_RESULT_OUTBOX**\nOutbox kết quả MCĐT"]:::src
-    APPLICATION_DECISIONS["**APPLICATION_DECISIONS**\nLiên kết hồ sơ CCHN với quyết định"]:::src
 
     APPLICATIONS["**APPLICATIONS** (Tier 3)"]:::outscope
     CERTIFICATE_RECORDS["**CERTIFICATE_RECORDS** (Tier 3)"]:::outscope
@@ -67,8 +65,6 @@ graph LR
     VERIFY_APPLICATION_STATUSES -->|"STATUS_ID, PREV_STATUS_ID"| APPLICATION_STATUSES
     VERIFY_APPLICATION_STATUSES -->|"VERIFIED_BY"| USERS
     MCDT_RESULT_OUTBOX -->|"APPLICATION_ID"| APPLICATIONS
-    APPLICATION_DECISIONS -->|"APPLICATION_ID"| APPLICATIONS
-    APPLICATION_DECISIONS -->|"DECISION_ID"| DECISIONS
 ```
 
 ---
@@ -88,7 +84,6 @@ graph TD
     CERTGRPMEM["**Certificate Group\nX License Certificate Document**\n[Group] Group\nCERTIFICATE_RECORD_GROUP_MEMBERS"]:::atomic
     APPSTREV["**License Application\nStatus Review**\n[Business Activity] Status Review\nVERIFY_APPLICATION_STATUSES"]:::atomic
     APPRESNOTIF["**License Application\nResult Notification**\n[Communication] Notification\nMCDT_RESULT_OUTBOX"]:::atomic
-    DECAPPREL["**License Decision Document\nX License Application**\n[Documentation] Gov. Registration Document\nAPPLICATION_DECISIONS"]:::atomic
 
     APP["**License Application** (Tier 3)"]:::outscope
     CERTDOC["**License Certificate Document** (Tier 3)"]:::outscope
@@ -115,8 +110,6 @@ graph TD
     APPSTREV -->|"License Application FK"| APP
     APPSTREV -->|"Verified By Officer FK"| OFFICER
     APPRESNOTIF -->|"License Application FK"| APP
-    DECAPPREL -->|"License Decision Document FK"| DECISION
-    DECAPPREL -->|"License Application FK"| APP
 ```
 
 ---

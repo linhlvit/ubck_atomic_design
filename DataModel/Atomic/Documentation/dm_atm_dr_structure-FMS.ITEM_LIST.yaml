@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dr_structure-FMS.ITEM_LIST
+  logical_name: Dynamic Report Structure
+  physical_name: dr_structure
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Cây chỉ tiêu mẫu báo cáo động FMS — 1 dòng = 1 ô chỉ tiêu (item) của 1 sheet trong mẫu báo cáo. BK = item_id. Nguồn ODS item_list (SCD2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-ITEM_LIST
+
+attributes:
+  - name: Dynamic Report Structure Id
+    physical_name: dr_structure_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FMS_ITEM_LIST', ITEM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Structure Code
+    physical_name: dr_structure_code
+    business_meaning: Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.ITEM_ID
+    comment: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_ITEM_LIST'"
+    etl_derived_value: FMS_ITEM_LIST
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.REPORT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.REPORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Name
+    physical_name: sheet_nm
+    business_meaning: Tên sheet chứa ô chỉ tiêu.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.SHEET_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Path
+    physical_name: column_path
+    business_meaning: Đường dẫn header của cột.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.COLUMN_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Path
+    physical_name: row_path
+    business_meaning: Đường dẫn CHA→CON của dòng — tên nhóm chỉ tiêu hiển thị.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.ROW_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Cell Id
+    physical_name: cell_id
+    business_meaning: Mã định danh ô trong template.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.UID_CELL
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: Vị trí dòng của ô trong template.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.ROW
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Index
+    physical_name: column_index
+    business_meaning: Vị trí cột của ô trong template.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.COL
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning: Cơ sở pháp lý của mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.LEGAL_BASIS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Label Column Indicator
+    physical_name: label_column_ind
+    business_meaning: "1 = ô thuộc cột nhãn."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.IS_LABEL_COL
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Label Row
+    physical_name: dynamic_label_row
+    business_meaning: Mã chỉ tiêu của dòng nhãn gắn với ô động.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: ITEM_LIST
+    source_column: FMS.ITEM_LIST.LABEL_ITEM_ID
+    comment: "Tham chiếu mềm tới Dynamic Report Structure Code của chính entity (self-reference) — giữ Text theo bản map Data Modeler, không tạo cặp Id + Code."
+    classification_context: null
+    etl_derived_value: null

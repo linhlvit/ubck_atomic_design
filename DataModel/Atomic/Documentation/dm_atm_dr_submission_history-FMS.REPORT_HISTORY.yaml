@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dr_submission_history-FMS.REPORT_HISTORY
+  logical_name: Dynamic Report Submission History
+  physical_name: dr_submission_history
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  description: |
+    Lịch sử nộp báo cáo động FMS — 1 dòng = 1 lần nộp báo cáo của 1 đối tượng theo kỳ. BK = report_log_id. Nguồn ODS report_history (Fact Append, partition submission_date).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-REPORT_HISTORY
+
+attributes:
+  - name: Dynamic Report Submission History Id
+    physical_name: dr_submission_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Submission History Code
+    physical_name: dr_submission_history_code
+    business_meaning: Mã lần nộp báo cáo. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.REPORT_LOG_ID
+    comment: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_REPORT_HISTORY'"
+    etl_derived_value: FMS_REPORT_HISTORY
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.REPORT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Type
+    physical_name: rpt_tp
+    business_meaning: Loại báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.REPORT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Audit Report Indicator
+    physical_name: audit_rpt_ind
+    business_meaning: "1 = báo cáo kiểm toán."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.AUDIT
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Id
+    physical_name: object_id
+    business_meaning: Mã định danh đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.OBJECT_ID
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Name
+    physical_name: object_nm
+    business_meaning: Tên đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.OBJECT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Type
+    physical_name: object_tp
+    business_meaning: Loại đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.OBJECT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Sub Type
+    physical_name: object_sub_tp
+    business_meaning: Phân loại con của đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.OBJECT_SUBTYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Type
+    physical_name: period_tp
+    business_meaning: Loại kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.PERIOD_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: period_val
+    business_meaning: Giá trị kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.PERIOD_VALUE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày THỰC TẾ nộp báo cáo; partition ODS.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.SUBMISSION_DATE
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Version
+    physical_name: rpt_version
+    business_meaning: Phiên bản báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: REPORT_HISTORY
+    source_column: FMS.REPORT_HISTORY.RPT_VERSION
+    comment: null
+    classification_context: null
+    etl_derived_value: null

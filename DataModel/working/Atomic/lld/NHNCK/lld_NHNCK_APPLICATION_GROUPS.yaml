@@ -98,11 +98,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.APPLICATION_GROUPS.DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -114,11 +110,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+  - "NHNCK.APPLICATION_GROUPS.DECISION_ID"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

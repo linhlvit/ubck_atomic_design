@@ -117,7 +117,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK_DECISIONS', ISSUE_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -129,8 +129,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Issue Securities Practitioner License Decision Document Id."
+  - "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Issue Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -143,7 +143,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK_DECISIONS', REVOCATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -155,8 +155,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Revocation Securities Practitioner License Decision Document Id."
+  - "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Revocation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -169,7 +169,7 @@ attributes:
   status: "draft"
   source_columns:
   - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id. Hash: hash_id('NHNCK_DECISIONS', CANCELLATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -181,8 +181,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment Cancellation Securities Practitioner License Decision Document Id."
+  - "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
+  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code. Pair with Cancellation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

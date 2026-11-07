@@ -1699,11 +1699,8 @@ brd_entries:
   content:
     table_meaning: Liên kết hồ sơ CCHN với quyết định tương ứng
     functional_group: UID03 Quản lý hồ sơ
-    scope_status: in_scope
-    scope_reason: Quyết định Data Modeler (2026-09-12) — thiết kế thành entity link/relationship
-      "Securities Practitioner License Decision Document X Securities Practitioner
-      License Application Relationship" (đảo ngược quyết định denormalize ARRAY
-      trước đó ở Overview §7d). Xem lld_NHNCK_APPLICATION_DECISIONS.yaml.
+    scope_status: out_of_scope
+    scope_reason: Quyết định Data Modeler (2026-11-07) — bỏ thiết kế entity link/relationship "Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship" (pure junction 2 FK APPLICATION_ID, DECISION_ID); LLD chuyển vào DataModel/working/Backup/. Không còn nhu cầu model hóa riêng ở tầng Atomic.
     table: APPLICATION_DECISIONS
     related_tables:
     - table: APPLICATIONS

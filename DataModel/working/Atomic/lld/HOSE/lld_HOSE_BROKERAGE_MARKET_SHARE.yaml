@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HOSE/brd_HOSE_BROKERAGE_MARKET_SHARE.yaml. HLD: HOSE_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity định nghĩa ở HLD của source đầu tiên (HNX/VSDC); HOSE bổ sung source_table."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HOSE/brd_HOSE_BROKERAGE_MARKET_SHARE.yaml. HLD: HOSE_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity định nghĩa ở HLD của source đầu tiên (HNX/VSDC); HOSE bổ sung source_table. Cập nhật 2026-11-06 theo DDL HOSE mới (Data Modeler duyệt, hạ approved→draft để sửa): nguồn bỏ TOTAL_TRADING_VALUE → HOSE không còn map Total Trading Value (total_trading_val vẫn do HNX map, HOSE để NULL, không suy diễn mua+bán); thêm BUY_TRADING_VALUE/SELL_TRADING_VALUE → attribute mới Buy/Sell Trading Value trên entity dùng chung (HNX/VSDC để NULL, không sửa LLD HNX/VSDC); MARKET_SHARE_BY_VALUE nguồn DECIMAL(10,2)→DECIMAL(18,14), giữ domain Percentage."
 attributes:
 - attribute_name: "Brokerage Market Share Id"
   physical_name: "brokerage_market_share_id"
@@ -70,16 +70,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Total Trading Value"
-  physical_name: "total_trading_val"
-  description: "Tổng giá trị giao dịch"
+- attribute_name: "Buy Trading Value"
+  physical_name: "buy_trading_val"
+  description: "Giá trị giao dịch mua (tỷ đồng)"
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
-  comment: null
+  - "HOSE.BROKERAGE_MARKET_SHARE.BUY_TRADING_VALUE"
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+- attribute_name: "Sell Trading Value"
+  physical_name: "sell_trading_val"
+  description: "Giá trị giao dịch bán (tỷ đồng)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE"
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"

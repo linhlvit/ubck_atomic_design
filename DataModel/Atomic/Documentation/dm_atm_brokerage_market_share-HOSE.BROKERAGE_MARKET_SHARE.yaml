@@ -78,17 +78,31 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Total Trading Value
-    physical_name: total_trading_val
-    business_meaning: Tổng giá trị giao dịch
+  - name: Buy Trading Value
+    physical_name: buy_trading_val
+    business_meaning: Giá trị giao dịch mua (tỷ đồng)
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: BROKERAGE_MARKET_SHARE
-    source_column: HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE
-    comment: null
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.BUY_TRADING_VALUE
+    comment: Chỉ HOSE có cột này; HNX/VSDC để NULL.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sell Trading Value
+    physical_name: sell_trading_val
+    business_meaning: Giá trị giao dịch bán (tỷ đồng)
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE
+    comment: Chỉ HOSE có cột này; HNX/VSDC để NULL.
     classification_context: null
     etl_derived_value: null
 

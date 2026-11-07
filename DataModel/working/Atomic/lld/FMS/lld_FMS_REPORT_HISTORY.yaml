@@ -1,0 +1,210 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  atomic_entity: "Dynamic Report Submission History"
+  entity_physical_name: "dr_submission_history"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Append"
+  group: "T6"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-11-07"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler\
+    \ 2026-11-07, nguồn 'FIMS báo cáo động.xlsx'). Không có DDL trong Source/*.txt\
+    \ nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo\
+    \ ý nghĩa mô tả cột. Không thiết kế technical fields ds_* và cột kỹ thuật ODS\
+    \ (_source_system, _loaded_at) theo quyết định Data Modeler 2026-11-07 (cùng quy\
+    \ tắc fir_value/fir_structure 2026-09-30)."
+attributes:
+- attribute_name: "Dynamic Report Submission History Id"
+  physical_name: "dr_submission_history_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('FMS_REPORT_HISTORY',\
+    \ REPORT_LOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Dynamic Report Submission History Code"
+  physical_name: "dr_submission_history_code"
+  description: "Mã lần nộp báo cáo. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.REPORT_LOG_ID"
+  comment: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu xác\
+    \ nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_REPORT_HISTORY"
+  etl_derived_value: "FMS_REPORT_HISTORY"
+  data_type: "string"
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.REPORT_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Type"
+  physical_name: "rpt_tp"
+  description: "Loại báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.REPORT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Audit Report Indicator"
+  physical_name: "audit_rpt_ind"
+  description: "1 = báo cáo kiểm toán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.AUDIT"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Object Id"
+  physical_name: "object_id"
+  description: "Mã định danh đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.OBJECT_ID"
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Name"
+  physical_name: "object_nm"
+  description: "Tên đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.OBJECT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Type"
+  physical_name: "object_tp"
+  description: "Loại đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.OBJECT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Object Sub Type"
+  physical_name: "object_sub_tp"
+  description: "Phân loại con của đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.OBJECT_SUBTYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Type"
+  physical_name: "period_tp"
+  description: "Loại kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.PERIOD_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Period Value"
+  physical_name: "period_val"
+  description: "Giá trị kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày THỰC TẾ nộp báo cáo; partition ODS."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.SUBMISSION_DATE"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Version"
+  physical_name: "rpt_version"
+  description: "Phiên bản báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.REPORT_HISTORY.RPT_VERSION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"

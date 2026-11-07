@@ -1,0 +1,121 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  atomic_entity: "Risk Weight Config"
+  entity_physical_name: "risk_weight_config"
+  bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Criterion"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-11-07"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler\
+    \ 2026-11-07, nguồn 'FIMS báo cáo động.xlsx'). Không có DDL trong Source/*.txt\
+    \ nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo\
+    \ ý nghĩa mô tả cột. Không thiết kế technical fields ds_* và cột kỹ thuật ODS\
+    \ (_source_system, _loaded_at) theo quyết định Data Modeler 2026-11-07 (cùng quy\
+    \ tắc fir_value/fir_structure 2026-09-30)."
+attributes:
+- attribute_name: "Risk Weight Config Id"
+  physical_name: "risk_weight_config_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_WEIGHT_CONFIG',\
+    \ INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Risk Weight Config Code"
+  physical_name: "risk_weight_config_code"
+  description: "Mã nghiệp vụ cấu hình trọng số = INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE.\
+    \ BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE"
+  - "FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE"
+  comment: "ETL-derived: concat(INPUT_INDICATOR_CODE, OUTPUT_INDICATOR_CODE) từ ODS\
+    \ WEIGHT_CONFIG — BK composite theo bản map Data Modeler. Cần profile dữ liệu\
+    \ xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=FMS_WEIGHT_CONFIG"
+  etl_derived_value: "FMS_WEIGHT_CONFIG"
+  data_type: "string"
+- attribute_name: "Risk Factor Code"
+  physical_name: "risk_factor_code"
+  description: "Mã yếu tố rủi ro đầu vào."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Risk Factor Name"
+  physical_name: "risk_factor_nm"
+  description: "Tên yếu tố rủi ro đầu vào."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Risk Factor Group"
+  physical_name: "risk_factor_group"
+  description: "Mã chỉ tiêu đầu ra (nhóm rủi ro) mà yếu tố đầu vào đóng góp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Weight"
+  physical_name: "weight"
+  description: "Trọng số của yếu tố đầu vào."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "FMS.WEIGHT_CONFIG.WEIGHT"
+  comment: "Nguồn decimal(5,2) theo bản map Data Modeler. Cần xác nhận thang đo (%\
+    \ hay hệ số) trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"

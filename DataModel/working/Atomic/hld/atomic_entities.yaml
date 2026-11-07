@@ -758,6 +758,17 @@ entities:
   source_table: "IDS.FOREIGN_OWNER_LIMIT"
   status: "draft"
 - bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Criterion"
+  atomic_entity: "Risk Weight Config"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "risk_weight_config"
+  description: "Cấu hình trọng số của yếu tố rủi ro đầu vào đóng góp vào chỉ tiêu\
+    \ đầu ra. BK = input_indicator_code ‖ output_indicator_code. Nguồn ODS weight_config\
+    \ (SCD2)."
+  source_table: "FMS.WEIGHT_CONFIG"
+  status: "approved"
+- bcv_core_object: "Condition"
   bcv_concept: "[Condition] Financial Charge"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
   table_type: "Fundamental"
@@ -767,6 +778,16 @@ entities:
     \ (Condition). Phân biệt với License Application Fee là phí thực tế thu từng hồ\
     \ sơ (Transaction)."
   source_table: "NHNCK.EXAM_SESSION_FEES"
+  status: "approved"
+- bcv_core_object: "Condition"
+  bcv_concept: "[Condition] Criterion"
+  atomic_entity: "Status Threshold Config"
+  table_type: "Relative"
+  domain_prefix: ""
+  entity_physical_name: "status_threshold_config"
+  description: "Cấu hình ngưỡng giá trị (từ–đến) ánh xạ sang trạng thái của chỉ tiêu.\
+    \ BK = indicator_code ‖ status. Nguồn ODS threshold_config (SCD2)."
+  source_table: "FMS.THRESHOLD_CONFIG"
   status: "approved"
 - bcv_core_object: "Condition"
   bcv_concept: "[Condition] Compliance Rule"
@@ -870,6 +891,38 @@ entities:
     \ gian được phép nộp lại."
   source_table: "TMS.COMPLIANCE_REPORT_MASTER"
   status: "draft"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Dynamic Report Structure"
+  table_type: "Relative"
+  domain_prefix: "Dynamic Report"
+  entity_physical_name: "dr_structure"
+  description: "Cây chỉ tiêu mẫu báo cáo động FMS — 1 dòng = 1 ô chỉ tiêu (item) của\
+    \ 1 sheet trong mẫu báo cáo. BK = item_id. Nguồn ODS item_list (SCD2)."
+  source_table: "FMS.ITEM_LIST"
+  status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  atomic_entity: "Dynamic Report Submission History"
+  table_type: "Fact Append"
+  domain_prefix: "Dynamic Report"
+  entity_physical_name: "dr_submission_history"
+  description: "Lịch sử nộp báo cáo động FMS — 1 dòng = 1 lần nộp báo cáo của 1 đối\
+    \ tượng theo kỳ. BK = report_log_id. Nguồn ODS report_history (Fact Append, partition\
+    \ submission_date)."
+  source_table: "FMS.REPORT_HISTORY"
+  status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  atomic_entity: "Dynamic Report Value"
+  table_type: "Classification"
+  domain_prefix: "Dynamic Report"
+  entity_physical_name: "dr_value"
+  description: "Giá trị đã nộp của từng ô chỉ tiêu báo cáo động FMS — 1 dòng = 1 ô\
+    \ × 1 lần nộp (× dòng động). BK = item_id ‖ report_log_id ‖ row_order. Nguồn ODS\
+    \ item_value (Upsert theo BK)."
+  source_table: "FMS.ITEM_VALUE"
+  status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
   atomic_entity: "End Of Day Open Interest"
@@ -1567,20 +1620,6 @@ entities:
     \ định, chức vụ/tên người ký, ngày ký, đường dẫn file. Tái dùng BCV concept của\
     \ entity cha License Decision Document."
   source_table: "NHNCK.DECISION_DOCUMENTS"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "sp_license_decision_document_x_sp_license_application_relationship"
-  description: "Quan hệ giữa 1 quyết định hành chính (License Decision Document) và\
-    \ 1 hồ sơ CCHN (License Application) — pure junction 2 FK, không có attribute\
-    \ nghiệp vụ riêng. Tái dùng BCV concept của entity cha License Decision Document.\
-    \ Đảo lại quyết định denormalize ARRAY trước đó (Overview §7d) theo yêu cầu Data\
-    \ Modeler (2026-09-12)."
-  source_table: "NHNCK.APPLICATION_DECISIONS"
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Employer Registration"

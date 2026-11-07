@@ -8,7 +8,7 @@
 > - [NHNCK_HLD_Tier1.md](NHNCK_HLD_Tier1.md) — Reference Data: Regulatory Authority Organization Unit, Securities Organization Reference, License Decision Document, Securities Practitioner License Certificate Type (Geographic Area đã chuyển sang nguồn ECAT — xem mục 7f)
 > - [NHNCK_HLD_Tier2.md](NHNCK_HLD_Tier2.md) — Securities Practitioner, Securities Practitioner Reason Change History, Professional Training Class, Qualification Examination Assessment, Organization Annual Report, License Application Group, License Certificate Group, License Decision Document Attachment, Organization Unit X License Certificate Type Relationship, License Certificate Type X Classification Specialization Relationship, Post Certification Training Course
 > - [NHNCK_HLD_Tier3.md](NHNCK_HLD_Tier3.md) — License Certificate Document, License Application, Employment Status, Related Party, Violation, Organization Employment Report, Training Class Enrollment, Examination Assessment Result, Examination Assessment Fee, Post Certification Training Result
-> - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×3), License Certificate Status Change History, License Application/Certificate Group Member, License Application Status Review, License Application Result Notification, License Decision Document X License Application Relationship
+> - [NHNCK_HLD_Tier4.md](NHNCK_HLD_Tier4.md) — License Application sub-entities (×3), License Certificate Status Change History, License Application/Certificate Group Member, License Application Status Review, License Application Result Notification
 
 ---
 
@@ -54,7 +54,6 @@
 | 4 | Group | [Group] Group | Group | CERTIFICATE_RECORD_GROUP_MEMBERS | Update | CCHN là thành viên trong 1 nhóm cấp/thu hồi tập thể | Certificate Group X Securities Practitioner License Certificate Document Relationship | Relative | Group — chỉ giữ 2 FK Id/Code (License Certificate Document + Certificate Group); ADDED_DATE/ADDED_BY/STATUS/IS_REISSUE/REVOCATION_REASON/ORDER_INDEX bỏ khỏi thiết kế theo yêu cầu Data Modeler. Đổi tên pattern link/relationship `_x_` + Table Type Fundamental → Relative + BCV Concept `[Group] Group` → `[Documentation] Gov. Registration Document` (2026-08-14) → trở lại `[Group] Group` (2026-08-15). |
 | 4 | Business Activity | [Business Activity] Status Review | Status Review | VERIFY_APPLICATION_STATUSES | Update | Kết quả thẩm định/phê duyệt hồ sơ CCHN tại từng cấp xét duyệt | Securities Practitioner License Application Status Review | Fundamental | Status Review — FK đến License Application (Tier 3), Officer (Tier 1); trạng thái hồ sơ dùng Classification Value (scheme APPLICATION_STATUS, xem 7c) thay vì FK Tier 1. Quyết định Data Modeler (2026-08-13) — đảo out_of_scope (Source Process Log). |
 | 4 | Communication | [Communication] Notification | Notification | MCDT_RESULT_OUTBOX | Update | Outbox đẩy kết quả xử lý hồ sơ CCHN ra Cổng Dịch vụ công quốc gia (MCĐT) | Securities Practitioner License Application Result Notification | Relative | Bảng mới trong DDL (2026-09-10). BCV term "Notification" (Communication, terms.csv id 8536). Cấu trúc trường: APPLICATION_ID (FK), SENDER_IDENTITY (denormalized), STATUS (Classification Value — value set chưa xác nhận qua DDL), ATTEMPTS, NEXT_RETRY_AT, LAST_ERROR. Quyết định Data Modeler: thiết kế theo SCD2 (Table Type Relative) để lưu lịch sử thay đổi trạng thái gửi thay vì overwrite. |
-| 4 | Documentation | [Documentation] Gov. Registration Document | Government Registration Document | APPLICATION_DECISIONS | Update | Liên kết hồ sơ CCHN với quyết định hành chính tương ứng | Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship | Relative | (1) Term candidate: tái dùng `[Documentation] Gov. Registration Document` từ entity cha Tier 1 `Securities Practitioner License Decision Document` — 1 quyết định bao gồm nhiều hồ sơ CCHN, đặt Decision lên trước tên entity. (2) Cấu trúc trường: ID (kỹ thuật, không map), APPLICATION_ID (FK), DECISION_ID (FK) — pure junction 2 FK, không attribute riêng nào khác → theo pattern entity link "_x_" (rule 3e), PK composite 2 FK Id, không có Id/Code riêng của entity. (3) **[MỚI 2026-09-12]** Data Modeler quyết định thiết kế thành entity Relative riêng (mirror `APPLICATION_GROUP_MEMBERS`). |
 
 ---
 
@@ -110,7 +109,6 @@ graph TD
     CERTGRPMEM["**License Certificate Document X Certificate Group**"]:::atomic
     APPSTREV["**License Application Status Review**"]:::atomic
     APPRESNOTIF["**License Application Result Notification**"]:::atomic
-    DECAPPREL["**License Decision Document X License Application Relationship**"]:::atomic
 
     %% Tier 1
     ORGUNIT -->|self-ref| ORGUNIT
@@ -184,8 +182,6 @@ graph TD
     APPSTREV -->|License Application FK| APP
     APPSTREV -->|Verified By Officer FK| OFFICER
     APPRESNOTIF -->|License Application FK| APP
-    DECAPPREL -->|License Decision Document FK| DECISION
-    DECAPPREL -->|License Application FK| APP
 ```
 
 ---
@@ -284,6 +280,7 @@ Không có junction table.
 | Uncertain scope | CERTIFICATE_CONVERSION_REQUEST_LOGS | Nhật ký hành động xử lý yêu cầu chuyển đổi CCHN (log theo từng ACTION/DETAIL) | Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending` từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
 | Uncertain scope | REPORT_TEMPLATES | Mẫu biểu báo cáo (report template) cấu hình JSON theo từng module | Bảng mới phát hiện qua đối chiếu DDL UAT (2026-07-15), `scope_status: pending` từ đó đến 2026-09-12. **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope`:** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
 | Operational | VERIFY_CERTIFICATE_CONVERSION_STATUSES | Kết quả thẩm định/xác minh yêu cầu chuyển đổi trạng thái CCHN (lý do thẩm định theo từng cấp xét duyệt) | Thiết kế thử 2026-08-13, tạm dừng 2026-08-14 vì FK cha `CERTIFICATE_CONVERSION_REQUESTS` vẫn `out_of_scope` (xem `## Entities` #24). **Quyết định Data Modeler (2026-09-12) — chốt `out_of_scope` (không còn chờ bảng cha nữa):** không có nhu cầu khai thác nghiệp vụ trên báo cáo. |
+| Junction | APPLICATION_DECISIONS | Liên kết hồ sơ CCHN với quyết định hành chính tương ứng (pure junction 2 FK: APPLICATION_ID, DECISION_ID) | Quyết định Data Modeler (2026-11-07) — bỏ thiết kế entity link/relationship `Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship` (đảo quyết định 2026-09-12); LLD chuyển vào `DataModel/working/Backup/`. Không còn nhu cầu model hóa riêng ở tầng Atomic. |
 
 ---
 
@@ -491,9 +488,3 @@ Không có junction table.
 **Tier:** 4 | **Source:** `CERTIFICATE_RECORD_STATUS_HISTORIES` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Fact Append
 **Domain Prefix:** Securities Practitioner
 **Description:** Lịch sử thay đổi trạng thái chứng chỉ hành nghề — ghi nhận trạng thái trước/sau (OLD_STATUS/NEW_STATUS), quyết định liên quan và lý do thay đổi. Tái dùng BCV concept của entity cha License Certificate Document (không có BCV term riêng cho "status history").
-
-### 38. Securities Practitioner License Decision Document X Securities Practitioner License Application Relationship
-**Tier:** 4 | **Source:** `APPLICATION_DECISIONS` | **BCV Concept:** [Documentation] Gov. Registration Document | **BCO:** Documentation | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Quan hệ giữa 1 quyết định hành chính (License Decision Document, Tier 1) và 1 hồ sơ CCHN (License Application, Tier 3) — pure junction 2 FK (APPLICATION_ID, DECISION_ID), không có attribute nghiệp vụ nào khác. Tái dùng BCV concept của entity cha License Decision Document. Theo yêu cầu Data Modeler (2026-09-12) — thiết kế thành entity link/relationship "_x_" riêng, PK composite 2 FK Id (Decision Document Id + Application Id), theo pattern đã dùng cho `Application Group X Securities Practitioner License Application Relationship` / `Certificate Group X Securities Practitioner License Certificate Document Relationship` (rule 3e, skill atomic-lld-design). ID kỹ thuật nguồn không map — xem `pending_design.yaml`.
-

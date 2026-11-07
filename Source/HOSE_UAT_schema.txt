@@ -9,15 +9,16 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 broker_name                   STRING              YES                                      Tên công ty chứng khoán
 member_code                   STRING              YES                                      Mã thành viên
-total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
-market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
+buy_trading_value             DECIMAL(20,2)       YES                                      Giá trị giao dịch mua (tỷ đồng)
+sell_trading_value            DECIMAL(20,2)       YES                                      Giá trị giao dịch bán (tỷ đồng)
+market_share_by_value         DECIMAL(18,14)      YES                                      Tỷ trọng theo tổng GTGD (%)
 classification                STRING              YES                                      Phân loại
-report_quarter                STRING              YES                                      Quý báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_quarter                STRING              YES                                      Quý báo cáo                                   
 report_day                    INT                 YES                                      Ngày báo cáo
 report_month                  INT                 YES                                      Tháng báo cáo
 report_year                   INT                 YES                                      Năm báo cáo
+ds_snpst_dt                   DATE                YES                                      
+ds_etl_pcs_tms                TIMESTAMP           YES
 
 BANG: listed_securities_list
 Mo ta: BM 12 (HOSE)

@@ -21868,10 +21868,7 @@ entities:
     physical_name: sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định xử lý vi phạm.
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID\
-      \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-      \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với\
-      \ Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -21885,18 +21882,12 @@ entities:
         source_column: NHNCK.VIOLATIONS.DECISION_ID
         business_meaning: FK đến quyết định xử lý vi phạm.
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID\
-          \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-          \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch\
-          \ với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
-          \ 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định xử lý vi phạm.
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -21907,12 +21898,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: VIOLATIONS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.VIOLATIONS.DECISION_ID
         business_meaning: Mã quyết định xử lý vi phạm.
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Full Name
     physical_name: full_nm
     business_meaning_1st: Họ tên người hành nghề tại thời điểm vi phạm (snapshot).
@@ -28643,7 +28632,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['draft', 'approved']"
+    conflict_review: null
     sources:
     - AUDIT
     - FMS
@@ -30221,7 +30210,7 @@ entities:
       source_tables:
       - source_table: ORDER_BOOK
         source_column: HOSE.ORDER_BOOK.SIDE
-        business_meaning: Loại lệnh.
+        business_meaning: "Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán."
         comment: SCHEMA_CODE=HOSE.SIDE
   - name: Order Action Type Code
     physical_name: order_action_tp_code
@@ -31789,10 +31778,7 @@ entities:
     physical_name: sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ liên quan đợt thi
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-      \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-      \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với\
-      \ Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -31806,18 +31792,12 @@ entities:
         source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
         business_meaning: FK đến quyết định cấp chứng chỉ liên quan đợt thi
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-          \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-          \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch\
-          \ với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
-          \ 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định cấp chứng chỉ
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -31828,12 +31808,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: EXAM_SESSIONS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.EXAM_SESSIONS.DECISION_ID
         business_meaning: Mã quyết định cấp chứng chỉ
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Bank Code
     physical_name: bank_code
     business_meaning_1st: Mã ngân hàng thu phí
@@ -32700,6 +32678,161 @@ entities:
         business_meaning: Thời gian áp dụng (đến ngày).
         comment: null
 - ldm:
+    id: ATM-risk_weight_config
+    logical_name_1st: Risk Weight Config
+    physical_name_1st: risk_weight_config
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Cấu hình trọng số của yếu tố rủi ro đầu vào đóng góp vào chỉ
+      tiêu đầu ra. BK = input_indicator_code ‖ output_indicator_code. Nguồn ODS weight_config
+      (SCD2).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Condition
+    bcv_concept_most: "[Condition] Criterion"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-WEIGHT_CONFIG
+  attributes:
+  - name: Risk Weight Config Id
+    physical_name: risk_weight_config_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_WEIGHT_CONFIG',\
+      \ INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_WEIGHT_CONFIG',\
+          \ INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE)."
+  - name: Risk Weight Config Code
+    physical_name: risk_weight_config_code
+    business_meaning_1st: Mã nghiệp vụ cấu hình trọng số = INPUT_INDICATOR_CODE ||
+      OUTPUT_INDICATOR_CODE. BK.
+    comment_1st: "ETL-derived: concat(INPUT_INDICATOR_CODE, OUTPUT_INDICATOR_CODE)\
+      \ từ ODS WEIGHT_CONFIG — BK composite theo bản map Data Modeler. Cần profile\
+      \ dữ liệu xác nhận NOT NULL/unique trước go-live."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE, FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE
+        business_meaning: Mã nghiệp vụ cấu hình trọng số = INPUT_INDICATOR_CODE ||
+          OUTPUT_INDICATOR_CODE. BK.
+        comment: "ETL-derived: concat(INPUT_INDICATOR_CODE, OUTPUT_INDICATOR_CODE)\
+          \ từ ODS WEIGHT_CONFIG — BK composite theo bản map Data Modeler. Cần profile\
+          \ dữ liệu xác nhận NOT NULL/unique trước go-live."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_WEIGHT_CONFIG
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Risk Factor Code
+    physical_name: risk_factor_code
+    business_meaning_1st: Mã yếu tố rủi ro đầu vào.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE
+        business_meaning: Mã yếu tố rủi ro đầu vào.
+        comment: null
+  - name: Risk Factor Name
+    physical_name: risk_factor_nm
+    business_meaning_1st: Tên yếu tố rủi ro đầu vào.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: FMS.WEIGHT_CONFIG.INPUT_INDICATOR_NAME
+        business_meaning: Tên yếu tố rủi ro đầu vào.
+        comment: null
+  - name: Risk Factor Group
+    physical_name: risk_factor_group
+    business_meaning_1st: Mã chỉ tiêu đầu ra (nhóm rủi ro) mà yếu tố đầu vào đóng
+      góp.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE
+        business_meaning: Mã chỉ tiêu đầu ra (nhóm rủi ro) mà yếu tố đầu vào đóng
+          góp.
+        comment: null
+  - name: Weight
+    physical_name: weight
+    business_meaning_1st: Trọng số của yếu tố đầu vào.
+    comment_1st: Nguồn decimal(5,2) theo bản map Data Modeler. Cần xác nhận thang
+      đo (% hay hệ số) trước go-live.
+    data_domain_most: Percentage
+    data_type_most: decimal(5,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: WEIGHT_CONFIG
+        source_column: FMS.WEIGHT_CONFIG.WEIGHT
+        business_meaning: Trọng số của yếu tố đầu vào.
+        comment: Nguồn decimal(5,2) theo bản map Data Modeler. Cần xác nhận thang
+          đo (% hay hệ số) trước go-live.
+- ldm:
     id: ATM-sp_qualification_examination_assessment_fee
     logical_name_1st: Securities Practitioner Qualification Examination Assessment
       Fee
@@ -32901,6 +33034,173 @@ entities:
       - source_table: EXAM_SESSION_FEES
         source_column: NHNCK.EXAM_SESSION_FEES.FEE_APPEAL
         business_meaning: Mức phí phúc khảo (VNĐ)
+        comment: null
+- ldm:
+    id: ATM-status_threshold_config
+    logical_name_1st: Status Threshold Config
+    physical_name_1st: status_threshold_config
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Cấu hình ngưỡng giá trị (từ–đến) ánh xạ sang trạng thái của chỉ
+      tiêu. BK = indicator_code ‖ status. Nguồn ODS threshold_config (SCD2).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Condition
+    bcv_concept_most: "[Condition] Criterion"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-THRESHOLD_CONFIG
+  attributes:
+  - name: Status Threshold Config Id
+    physical_name: status_threshold_config_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_THRESHOLD_CONFIG',\
+      \ INDICATOR_CODE || STATUS)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_THRESHOLD_CONFIG',\
+          \ INDICATOR_CODE || STATUS)."
+  - name: Status Threshold Config Code
+    physical_name: status_threshold_config_code
+    business_meaning_1st: Mã nghiệp vụ cấu hình ngưỡng = INDICATOR_CODE || STATUS.
+      BK.
+    comment_1st: "ETL-derived: concat(INDICATOR_CODE, STATUS) từ ODS THRESHOLD_CONFIG\
+      \ — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT\
+      \ NULL/unique trước go-live."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.INDICATOR_CODE, FMS.THRESHOLD_CONFIG.STATUS
+        business_meaning: Mã nghiệp vụ cấu hình ngưỡng = INDICATOR_CODE || STATUS.
+          BK.
+        comment: "ETL-derived: concat(INDICATOR_CODE, STATUS) từ ODS THRESHOLD_CONFIG\
+          \ — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận\
+          \ NOT NULL/unique trước go-live."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_THRESHOLD_CONFIG
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Index Code
+    physical_name: index_code
+    business_meaning_1st: Mã chỉ tiêu áp ngưỡng.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.INDICATOR_CODE
+        business_meaning: Mã chỉ tiêu áp ngưỡng.
+        comment: null
+  - name: Index Name
+    physical_name: index_nm
+    business_meaning_1st: Tên chỉ tiêu áp ngưỡng.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.INDICATOR_NAME
+        business_meaning: Tên chỉ tiêu áp ngưỡng.
+        comment: null
+  - name: From Value
+    physical_name: from_val
+    business_meaning_1st: Giá trị cận dưới của ngưỡng.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.VALUE_FROM
+        business_meaning: Giá trị cận dưới của ngưỡng.
+        comment: null
+  - name: To Value
+    physical_name: to_val
+    business_meaning_1st: Giá trị cận trên của ngưỡng.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.VALUE_TO
+        business_meaning: Giá trị cận trên của ngưỡng.
+        comment: null
+  - name: Status
+    physical_name: status
+    business_meaning_1st: Trạng thái ứng với khoảng ngưỡng.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: THRESHOLD_CONFIG
+        source_column: FMS.THRESHOLD_CONFIG.STATUS
+        business_meaning: Trạng thái ứng với khoảng ngưỡng.
         comment: null
 - ldm:
     id: ATM-vr_template
@@ -35056,12 +35356,6 @@ entities:
         source_column: HNX.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE
         business_meaning: Tổng giá trị giao dịch
         comment: null
-    - source_system: HOSE
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE
-        business_meaning: Tổng giá trị giao dịch
-        comment: null
   - name: Market Share By Value
     physical_name: market_share_by_val
     business_meaning_1st: Tỷ trọng theo tổng GTGD (%)
@@ -35200,6 +35494,40 @@ entities:
         source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Buy Trading Value
+    physical_name: buy_trading_val
+    business_meaning_1st: Giá trị giao dịch mua (tỷ đồng)
+    comment_1st: Chỉ HOSE có cột này; HNX/VSDC để NULL.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.BUY_TRADING_VALUE
+        business_meaning: Giá trị giao dịch mua (tỷ đồng)
+        comment: Chỉ HOSE có cột này; HNX/VSDC để NULL.
+  - name: Sell Trading Value
+    physical_name: sell_trading_val
+    business_meaning_1st: Giá trị giao dịch bán (tỷ đồng)
+    comment_1st: Chỉ HOSE có cột này; HNX/VSDC để NULL.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE
+        business_meaning: Giá trị giao dịch bán (tỷ đồng)
+        comment: Chỉ HOSE có cột này; HNX/VSDC để NULL.
 - ldm:
     id: ATM-compliance_report
     logical_name_1st: Compliance Report
@@ -35667,6 +35995,886 @@ entities:
         business_meaning: Số lần chỉnh sửa bản nháp báo cáo (nguồn không có mô tả).
         comment: Nguồn lưu dạng NUMBER(10,0) — ETL cast sang integer. Nguồn không
           mô tả ý nghĩa — cần xác nhận.
+- ldm:
+    id: ATM-dr_structure
+    logical_name_1st: Dynamic Report Structure
+    physical_name_1st: dr_structure
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Cây chỉ tiêu mẫu báo cáo động FMS — 1 dòng = 1 ô chỉ tiêu (item)
+      của 1 sheet trong mẫu báo cáo. BK = item_id. Nguồn ODS item_list (SCD2).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Form Document"
+    table_type_most: Relative
+    etl_pattern_most: SCD2
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-ITEM_LIST
+  attributes:
+  - name: Dynamic Report Structure Id
+    physical_name: dr_structure_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FMS_ITEM_LIST',\
+      \ ITEM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FMS_ITEM_LIST',\
+          \ ITEM_ID)."
+  - name: Dynamic Report Structure Code
+    physical_name: dr_structure_code
+    business_meaning_1st: Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK.
+    comment_1st: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận\
+      \ NOT NULL/unique trước go-live."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.ITEM_ID
+        business_meaning: Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK.
+        comment: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận\
+          \ NOT NULL/unique trước go-live."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_ITEM_LIST
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning_1st: Mã mẫu báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.REPORT_CODE
+        business_meaning: Mã mẫu báo cáo.
+        comment: null
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning_1st: Tên mẫu báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.REPORT_NAME
+        business_meaning: Tên mẫu báo cáo.
+        comment: null
+  - name: Sheet Name
+    physical_name: sheet_nm
+    business_meaning_1st: Tên sheet chứa ô chỉ tiêu.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.SHEET_NAME
+        business_meaning: Tên sheet chứa ô chỉ tiêu.
+        comment: null
+  - name: Column Path
+    physical_name: column_path
+    business_meaning_1st: Đường dẫn header của cột.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.COLUMN_PATH
+        business_meaning: Đường dẫn header của cột.
+        comment: null
+  - name: Row Path
+    physical_name: row_path
+    business_meaning_1st: Đường dẫn CHA→CON của dòng — tên nhóm chỉ tiêu hiển thị.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.ROW_PATH
+        business_meaning: Đường dẫn CHA→CON của dòng — tên nhóm chỉ tiêu hiển thị.
+        comment: null
+  - name: Cell Id
+    physical_name: cell_id
+    business_meaning_1st: Mã định danh ô trong template.
+    comment_1st: Mã kỹ thuật nguồn, không phải surrogate key Atomic.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.UID_CELL
+        business_meaning: Mã định danh ô trong template.
+        comment: Mã kỹ thuật nguồn, không phải surrogate key Atomic.
+  - name: Row Index
+    physical_name: row_index
+    business_meaning_1st: Vị trí dòng của ô trong template.
+    comment_1st: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+      tạm chọn theo mô tả cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.ROW
+        business_meaning: Vị trí dòng của ô trong template.
+        comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+          tạm chọn theo mô tả cột.
+  - name: Column Index
+    physical_name: column_index
+    business_meaning_1st: Vị trí cột của ô trong template.
+    comment_1st: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+      tạm chọn theo mô tả cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.COL
+        business_meaning: Vị trí cột của ô trong template.
+        comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+          tạm chọn theo mô tả cột.
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning_1st: Cơ sở pháp lý của mẫu báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.LEGAL_BASIS
+        business_meaning: Cơ sở pháp lý của mẫu báo cáo.
+        comment: null
+  - name: Label Column Indicator
+    physical_name: label_column_ind
+    business_meaning_1st: 1 = ô thuộc cột nhãn.
+    comment_1st: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+      nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả
+      cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.IS_LABEL_COL
+        business_meaning: 1 = ô thuộc cột nhãn.
+        comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+          nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô
+          tả cột.
+  - name: Dynamic Label Row
+    physical_name: dynamic_label_row
+    business_meaning_1st: Mã chỉ tiêu của dòng nhãn gắn với ô động.
+    comment_1st: Tham chiếu mềm tới Dynamic Report Structure Code của chính entity
+      (self-reference) — giữ Text theo bản map Data Modeler, không tạo cặp Id + Code.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_LIST
+        source_column: FMS.ITEM_LIST.LABEL_ITEM_ID
+        business_meaning: Mã chỉ tiêu của dòng nhãn gắn với ô động.
+        comment: Tham chiếu mềm tới Dynamic Report Structure Code của chính entity
+          (self-reference) — giữ Text theo bản map Data Modeler, không tạo cặp Id
+          + Code.
+- ldm:
+    id: ATM-dr_submission_history
+    logical_name_1st: Dynamic Report Submission History
+    physical_name_1st: dr_submission_history
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Lịch sử nộp báo cáo động FMS — 1 dòng = 1 lần nộp báo cáo của
+      1 đối tượng theo kỳ. BK = report_log_id. Nguồn ODS report_history (Fact Append,
+      partition submission_date).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Report"
+    table_type_most: Fact Append
+    etl_pattern_most: Fact Append
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-REPORT_HISTORY
+  attributes:
+  - name: Dynamic Report Submission History Id
+    physical_name: dr_submission_history_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
+      \ hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
+          \ hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+  - name: Dynamic Report Submission History Code
+    physical_name: dr_submission_history_code
+    business_meaning_1st: Mã lần nộp báo cáo. BK.
+    comment_1st: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu\
+      \ xác nhận NOT NULL/unique trước go-live."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.REPORT_LOG_ID
+        business_meaning: Mã lần nộp báo cáo. BK.
+        comment: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu\
+          \ xác nhận NOT NULL/unique trước go-live."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_REPORT_HISTORY
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning_1st: Mã mẫu báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.REPORT_CODE
+        business_meaning: Mã mẫu báo cáo.
+        comment: null
+  - name: Report Type
+    physical_name: rpt_tp
+    business_meaning_1st: Loại báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.REPORT_TYPE
+        business_meaning: Loại báo cáo.
+        comment: null
+  - name: Audit Report Indicator
+    physical_name: audit_rpt_ind
+    business_meaning_1st: 1 = báo cáo kiểm toán.
+    comment_1st: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+      nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả
+      cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.AUDIT
+        business_meaning: 1 = báo cáo kiểm toán.
+        comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+          nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô
+          tả cột.
+  - name: Object Id
+    physical_name: object_id
+    business_meaning_1st: Mã định danh đối tượng nộp báo cáo.
+    comment_1st: Mã kỹ thuật nguồn, không phải surrogate key Atomic.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.OBJECT_ID
+        business_meaning: Mã định danh đối tượng nộp báo cáo.
+        comment: Mã kỹ thuật nguồn, không phải surrogate key Atomic.
+  - name: Object Name
+    physical_name: object_nm
+    business_meaning_1st: Tên đối tượng nộp báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.OBJECT_NAME
+        business_meaning: Tên đối tượng nộp báo cáo.
+        comment: null
+  - name: Object Type
+    physical_name: object_tp
+    business_meaning_1st: Loại đối tượng nộp báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.OBJECT_TYPE
+        business_meaning: Loại đối tượng nộp báo cáo.
+        comment: null
+  - name: Object Sub Type
+    physical_name: object_sub_tp
+    business_meaning_1st: Phân loại con của đối tượng nộp báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.OBJECT_SUBTYPE
+        business_meaning: Phân loại con của đối tượng nộp báo cáo.
+        comment: null
+  - name: Period Type
+    physical_name: period_tp
+    business_meaning_1st: Loại kỳ báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.PERIOD_TYPE
+        business_meaning: Loại kỳ báo cáo.
+        comment: null
+  - name: Period Value
+    physical_name: period_val
+    business_meaning_1st: Giá trị kỳ báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.PERIOD_VALUE
+        business_meaning: Giá trị kỳ báo cáo.
+        comment: null
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning_1st: Ngày THỰC TẾ nộp báo cáo; partition ODS.
+    comment_1st: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+      tạm chọn theo mô tả cột.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.SUBMISSION_DATE
+        business_meaning: Ngày THỰC TẾ nộp báo cáo; partition ODS.
+        comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+          tạm chọn theo mô tả cột.
+  - name: Report Version
+    physical_name: rpt_version
+    business_meaning_1st: Phiên bản báo cáo.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: REPORT_HISTORY
+        source_column: FMS.REPORT_HISTORY.RPT_VERSION
+        business_meaning: Phiên bản báo cáo.
+        comment: null
+- ldm:
+    id: ATM-dr_value
+    logical_name_1st: Dynamic Report Value
+    physical_name_1st: dr_value
+    layer_1st: Atomic
+    version_1st: "1.0"
+    status_1st: approved
+    description_1st: Giá trị đã nộp của từng ô chỉ tiêu báo cáo động FMS — 1 dòng
+      = 1 ô × 1 lần nộp (× dòng động). BK = item_id ‖ report_log_id ‖ row_order. Nguồn
+      ODS item_value (Upsert theo BK).
+    owner_1st:
+      steward: username@ubck.com.vn
+      data_modeler: username@fssc.com.vn
+    bcv_core_object_most: Documentation
+    bcv_concept_most: "[Documentation] Regulatory Information"
+    table_type_most: Classification
+    etl_pattern_most: Upsert
+    conflict_review: null
+    sources:
+    - FMS
+    references:
+      brd:
+      - BRD-SRC-FMS-ITEM_VALUE
+  attributes:
+  - name: Dynamic Report Value Id
+    physical_name: dr_val_id
+    business_meaning_1st: Khóa đại diện (surrogate key).
+    comment_1st: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash:\
+      \ hash_id('FMS_ITEM_VALUE', ITEM_ID || REPORT_LOG_ID || ROW_ORDER)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: true
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: null
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash:\
+          \ hash_id('FMS_ITEM_VALUE', ITEM_ID || REPORT_LOG_ID || ROW_ORDER)."
+  - name: Dynamic Report Value Code
+    physical_name: dr_val_code
+    business_meaning_1st: Mã nghiệp vụ ô giá trị = ITEM_ID || REPORT_LOG_ID || ROW_ORDER.
+      BK.
+    comment_1st: "ETL-derived: concat(ITEM_ID, REPORT_LOG_ID, ROW_ORDER) từ ODS ITEM_VALUE\
+      \ — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT\
+      \ NULL/unique trước go-live."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ITEM_ID, FMS.ITEM_VALUE.REPORT_LOG_ID, FMS.ITEM_VALUE.ROW_ORDER
+        business_meaning: Mã nghiệp vụ ô giá trị = ITEM_ID || REPORT_LOG_ID || ROW_ORDER.
+          BK.
+        comment: "ETL-derived: concat(ITEM_ID, REPORT_LOG_ID, ROW_ORDER) từ ODS ITEM_VALUE\
+          \ — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận\
+          \ NOT NULL/unique trước go-live."
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
+    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: FMS_ITEM_VALUE
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  - name: Dynamic Report Structure Id
+    physical_name: dr_structure_id
+    business_meaning_1st: "FK → Dynamic Report Structure: ô chỉ tiêu tương ứng."
+    comment_1st: "FK target: dr_structure.dr_structure_id. Hash: hash_id('FMS_ITEM_LIST',\
+      \ ITEM_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ITEM_ID
+        business_meaning: "FK → Dynamic Report Structure: ô chỉ tiêu tương ứng."
+        comment: "FK target: dr_structure.dr_structure_id. Hash: hash_id('FMS_ITEM_LIST',\
+          \ ITEM_ID)."
+  - name: Dynamic Report Structure Code
+    physical_name: dr_structure_code
+    business_meaning_1st: Mã chỉ tiêu.
+    comment_1st: "Lookup pair: dr_structure.dr_structure_code. Pair with Dynamic Report\
+      \ Structure Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ITEM_ID
+        business_meaning: Mã chỉ tiêu.
+        comment: "Lookup pair: dr_structure.dr_structure_code. Pair with Dynamic Report\
+          \ Structure Id."
+  - name: Dynamic Report Submission History Id
+    physical_name: dr_submission_history_id
+    business_meaning_1st: "FK → Dynamic Report Submission History: lần nộp chứa ô\
+      \ giá trị."
+    comment_1st: "FK target: dr_submission_history.dr_submission_history_id. Hash:\
+      \ hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+    data_domain_most: Surrogate Key
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.REPORT_LOG_ID
+        business_meaning: "FK → Dynamic Report Submission History: lần nộp chứa ô\
+          \ giá trị."
+        comment: "FK target: dr_submission_history.dr_submission_history_id. Hash:\
+          \ hash_id('FMS_REPORT_HISTORY', REPORT_LOG_ID)."
+  - name: Dynamic Report Submission History Code
+    physical_name: dr_submission_history_code
+    business_meaning_1st: Mã lần nộp báo cáo.
+    comment_1st: "Lookup pair: dr_submission_history.dr_submission_history_code. Pair\
+      \ with Dynamic Report Submission History Id."
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.REPORT_LOG_ID
+        business_meaning: Mã lần nộp báo cáo.
+        comment: "Lookup pair: dr_submission_history.dr_submission_history_code. Pair\
+          \ with Dynamic Report Submission History Id."
+  - name: Row Dynamic Index
+    physical_name: row_dynamic_index
+    business_meaning_1st: Thứ tự dòng trong band động.
+    comment_1st: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+      tạm chọn theo mô tả cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ROW_ORDER
+        business_meaning: Thứ tự dòng trong band động.
+        comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+          tạm chọn theo mô tả cột.
+  - name: Row Path
+    physical_name: row_path
+    business_meaning_1st: Đường dẫn CHA→CON của dòng.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ROW_PATH
+        business_meaning: Đường dẫn CHA→CON của dòng.
+        comment: null
+  - name: Entity Code
+    physical_name: entity_code
+    business_meaning_1st: Mã đối tượng của dòng dữ liệu.
+    comment_1st: Mã tham chiếu mềm — chưa xác định entity đích duy nhất; cần profile
+      giá trị trước khi cân nhắc FK.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ENTITY_CODE
+        business_meaning: Mã đối tượng của dòng dữ liệu.
+        comment: Mã tham chiếu mềm — chưa xác định entity đích duy nhất; cần profile
+          giá trị trước khi cân nhắc FK.
+  - name: Label Column Indicator
+    physical_name: label_column_ind
+    business_meaning_1st: 1 = ô thuộc cột nhãn.
+    comment_1st: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+      nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả
+      cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.IS_LABEL_COL
+        business_meaning: 1 = ô thuộc cột nhãn.
+        comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+          nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô
+          tả cột.
+  - name: Value
+    physical_name: val
+    business_meaning_1st: Giá trị ô báo cáo.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.VALUE
+        business_meaning: Giá trị ô báo cáo.
+        comment: null
+  - name: Custodian Bank Code
+    physical_name: custodian_bank_code
+    business_meaning_1st: Mã ngân hàng lưu ký đi kèm giá trị ô.
+    comment_1st: Theo bản map Data Modeler không có cặp Id. Giá trị nguồn ACC_VALUE
+      — tra custodian_bank.custodian_bank_code; chưa xác nhận ACC_VALUE luôn là mã
+      NHLK — cần profile trước go-live.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.ACC_VALUE
+        business_meaning: Mã ngân hàng lưu ký đi kèm giá trị ô.
+        comment: Theo bản map Data Modeler không có cặp Id. Giá trị nguồn ACC_VALUE
+          — tra custodian_bank.custodian_bank_code; chưa xác nhận ACC_VALUE luôn là
+          mã NHLK — cần profile trước go-live.
+  - name: Dynamic Indicator
+    physical_name: dynamic_ind
+    business_meaning_1st: 1 = ô thuộc dòng động.
+    comment_1st: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+      nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả
+      cột.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.IS_DYNAMIC
+        business_meaning: 1 = ô thuộc dòng động.
+        comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type
+          nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô
+          tả cột.
+  - name: Data Type
+    physical_name: data_tp
+    business_meaning_1st: Kiểu dữ liệu của ô.
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.DATA_TYPE
+        business_meaning: Kiểu dữ liệu của ô.
+        comment: null
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning_1st: Ngày THỰC TẾ nộp báo cáo.
+    comment_1st: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+      tạm chọn theo mô tả cột.
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: FMS
+      source_tables:
+      - source_table: ITEM_VALUE
+        source_column: FMS.ITEM_VALUE.SUBMISSION_DATE
+        business_meaning: Ngày THỰC TẾ nộp báo cáo.
+        comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain
+          tạm chọn theo mô tả cột.
 - ldm:
     id: ATM-end_of_day_open_interest
     logical_name_1st: End Of Day Open Interest
@@ -58431,11 +59639,7 @@ entities:
     physical_name: issue_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định cấp chứng chỉ
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ\
-      \ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
-      \ sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', ISSUE_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -58449,18 +59653,12 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
         business_meaning: FK đến quyết định cấp chứng chỉ
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID\
-          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER)\
-          \ — đã sửa sang crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', ISSUE_DECISION_ID)."
   - name: Issue Securities Practitioner License Decision Document Code
     physical_name: issue_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định cấp
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Issue Securities Practitioner License Decision Document Id. Giá\
-      \ trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-      \ comment Issue Securities Practitioner License Decision Document Id."
+      \ Pair with Issue Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -58471,22 +59669,15 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATE_RECORDS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định cấp
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Issue Securities Practitioner License Decision Document Id.\
-          \ Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi\
-          \ tiết xem comment Issue Securities Practitioner License Decision Document\
-          \ Id."
+          \ Pair with Issue Securities Practitioner License Decision Document Id."
   - name: Revocation Securities Practitioner License Decision Document Id
     physical_name: revocation_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định thu hồi chứng chỉ
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID\
-      \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã\
-      \ sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', REVOCATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -58500,18 +59691,12 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
         business_meaning: FK đến quyết định thu hồi chứng chỉ
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID\
-          \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER)\
-          \ — đã sửa sang crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', REVOCATION_DECISION_ID)."
   - name: Revocation Securities Practitioner License Decision Document Code
     physical_name: revocation_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định thu hồi
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Revocation Securities Practitioner License Decision Document Id.\
-      \ Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết\
-      \ xem comment Revocation Securities Practitioner License Decision Document Id."
+      \ Pair with Revocation Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -58522,22 +59707,16 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATE_RECORDS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định thu hồi
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
           \ Pair with Revocation Securities Practitioner License Decision Document\
-          \ Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk —\
-          \ chi tiết xem comment Revocation Securities Practitioner License Decision\
-          \ Document Id."
+          \ Id."
   - name: Cancellation Securities Practitioner License Decision Document Id
     physical_name: cancellation_sp_license_decision_document_id
     business_meaning_1st: FK đến quyết định hủy chứng chỉ
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID\
-      \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER)\
-      \ — đã sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', CANCELLATION_DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -58551,19 +59730,12 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
         business_meaning: FK đến quyết định hủy chứng chỉ
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID\
-          \ (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER)\
-          \ — đã sửa sang crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', CANCELLATION_DECISION_ID)."
   - name: Cancellation Securities Practitioner License Decision Document Code
     physical_name: cancellation_sp_license_decision_document_code
     business_meaning_1st: Mã nghiệp vụ của quyết định hủy
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Cancellation Securities Practitioner License Decision Document Id.\
-      \ Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết\
-      \ xem comment Cancellation Securities Practitioner License Decision Document\
-      \ Id."
+      \ Pair with Cancellation Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -58574,13 +59746,11 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATE_RECORDS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID
         business_meaning: Mã nghiệp vụ của quyết định hủy
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
           \ Pair with Cancellation Securities Practitioner License Decision Document\
-          \ Id. Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk —\
-          \ chi tiết xem comment Cancellation Securities Practitioner License Decision\
-          \ Document Id."
+          \ Id."
   - name: Issue Date
     physical_name: issue_dt
     business_meaning_1st: Ngày cấp chứng chỉ hành nghề
@@ -58977,12 +60147,9 @@ entities:
     business_meaning_1st: FK đến quyết định hành chính liên quan đến lần thay đổi
       trạng thái
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-      \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-      \ crosswalk 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không\
-      \ (VD: hết hiệu lực tự động có thể không có quyết định)."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID). Nullable — cần xác nhận có\
+      \ luôn gắn quyết định hay không (VD: hết hiệu lực tự động có thể không có quyết\
+      \ định)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -58997,19 +60164,14 @@ entities:
         business_meaning: FK đến quyết định hành chính liên quan đến lần thay đổi
           trạng thái
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-          \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-          \ crosswalk 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay\
-          \ không (VD: hết hiệu lực tự động có thể không có quyết định)."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID). Nullable — cần xác nhận\
+          \ có luôn gắn quyết định hay không (VD: hết hiệu lực tự động có thể không\
+          \ có quyết định)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định (denormalized lookup)
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -59020,12 +60182,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATE_RECORD_STATUS_HISTORIES
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID
         business_meaning: Mã quyết định (denormalized lookup)
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Change Reason
     physical_name: change_reason
     business_meaning_1st: Lý do thực hiện thao tác hoặc thay đổi
@@ -59375,7 +60535,7 @@ entities:
   - name: Securities Practitioner License Decision Document Id
     physical_name: sp_license_decision_document_id
     business_meaning_1st: Surrogate key cho quyết định hành chính
-    comment_1st: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
+    comment_1st: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -59388,14 +60548,12 @@ entities:
       - source_table: DECISIONS
         source_column: null
         business_meaning: Surrogate key cho quyết định hành chính
-        comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
+        comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
-    business_meaning_1st: "Khóa chính. BK của entity — số quyết định hành chính (VD:\
-      \ 123/QĐ-UBCK)."
-    comment_1st: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang DECISION_NUMBER
-      theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-      trước go-live (DECISION_NUMBER hiện không khai báo NOT NULL trong nguồn).
+    business_meaning_1st: Khóa chính. BK của entity — mã định danh quyết định hành
+      chính (PK nguồn DECISIONS.ID).
+    comment_1st: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -59406,12 +60564,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: DECISIONS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
-        business_meaning: "Khóa chính. BK của entity — số quyết định hành chính (VD:\
-          \ 123/QĐ-UBCK)."
-        comment: BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang DECISION_NUMBER
-          theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-          trước go-live (DECISION_NUMBER hiện không khai báo NOT NULL trong nguồn).
+        source_column: NHNCK.DECISIONS.ID
+        business_meaning: Khóa chính. BK của entity — mã định danh quyết định hành
+          chính (PK nguồn DECISIONS.ID).
+        comment: BK chính. Nguồn lưu NUMBER — ETL convert sang string.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn của bản ghi
@@ -59429,6 +60585,23 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn của bản ghi
         comment: "ETL-derived: NHNCK.DECISIONS."
+  - name: Decision Number
+    physical_name: decision_nbr
+    business_meaning_1st: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: DECISIONS
+        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        business_meaning: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
+        comment: null
   - name: Decision Title
     physical_name: decision_title
     business_meaning_1st: Tiêu đề/tên quyết định hành chính
@@ -59701,10 +60874,7 @@ entities:
     physical_name: sp_license_decision_document_id
     business_meaning_1st: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: DECISION_DOCUMENTS.DECISION_ID = DECISIONS.ID\
-      \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-      \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với\
-      \ Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -59718,18 +60888,12 @@ entities:
         source_column: NHNCK.DECISION_DOCUMENTS.DECISION_ID
         business_meaning: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: DECISION_DOCUMENTS.DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-          \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-          \ crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định liên quan (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -59740,12 +60904,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: DECISION_DOCUMENTS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.DECISION_DOCUMENTS.DECISION_ID
         business_meaning: Mã quyết định liên quan (denormalized lookup).
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Attachment Type Code
     physical_name: attachment_tp_code
     business_meaning_1st: Loại/phân loại của bản ghi tài liệu.
@@ -59848,146 +61010,6 @@ entities:
         source_column: NHNCK.DECISION_DOCUMENTS.STATUS
         business_meaning: Trạng thái bản ghi
         comment: SCHEMA_CODE=NHNCK.DECISION_DOCUMENTS.STATUS
-- ldm:
-    id: ATM-sp_license_decision_document_x_sp_license_application_relationship
-    logical_name_1st: Securities Practitioner License Decision Document X Securities
-      Practitioner License Application Relationship
-    physical_name_1st: sp_license_decision_document_x_sp_license_application_relationship
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Quan hệ giữa 1 quyết định hành chính (License Decision Document)
-      và 1 hồ sơ CCHN (License Application) — pure junction 2 FK, không có attribute
-      nghiệp vụ riêng. Tái dùng BCV concept của entity cha License Decision Document.
-      Đảo lại quyết định denormalize ARRAY trước đó (Overview §7d) theo yêu cầu Data
-      Modeler (2026-09-12).
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Documentation
-    bcv_concept_most: "[Documentation] Gov. Registration Document"
-    table_type_most: Relative
-    etl_pattern_most: SCD2
-    conflict_review: null
-    sources:
-    - NHNCK
-    references:
-      brd:
-      - BRD-SRC-NHNCK-APPLICATION_DECISIONS
-  attributes:
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: NHNCK_APPLICATION_DECISIONS
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_DECISIONS
-        source_column: null
-        business_meaning: Mã hệ thống nguồn.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Securities Practitioner License Decision Document Id
-    physical_name: sp_license_decision_document_id
-    business_meaning_1st: "FK -> DECISIONS: Quyết định hành chính liên quan."
-    comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_DECISIONS.DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Composite PK cùng Securities Practitioner License Application\
-      \ Id."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_DECISIONS
-        source_column: NHNCK.APPLICATION_DECISIONS.DECISION_ID
-        business_meaning: "FK -> DECISIONS: Quyết định hành chính liên quan."
-        comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_DECISIONS.DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Composite PK cùng Securities Practitioner License Application\
-          \ Id."
-  - name: Securities Practitioner License Decision Document Code
-    physical_name: sp_license_decision_document_code
-    business_meaning_1st: Số quyết định hành chính liên quan (denormalized lookup).
-    comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_DECISIONS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
-        business_meaning: Số quyết định hành chính liên quan (denormalized lookup).
-        comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
-  - name: Securities Practitioner License Application Id
-    physical_name: sp_license_application_id
-    business_meaning_1st: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_DECISIONS.APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE) | Composite PK cùng Securities Practitioner License Decision\
-      \ Document Id."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_DECISIONS
-        source_column: NHNCK.APPLICATION_DECISIONS.APPLICATION_ID
-        business_meaning: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_DECISIONS.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Composite PK cùng Securities Practitioner License\
-          \ Decision Document Id."
-  - name: Securities Practitioner License Application Code
-    physical_name: sp_license_application_code
-    business_meaning_1st: Mã hồ sơ CCHN liên quan (denormalized lookup).
-    comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: NHNCK
-      source_tables:
-      - source_table: APPLICATION_DECISIONS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
-        business_meaning: Mã hồ sơ CCHN liên quan (denormalized lookup).
-        comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
 - ldm:
     id: ATM-sp_organization_annual_report
     logical_name_1st: Securities Practitioner Organization Annual Report
@@ -68604,10 +69626,7 @@ entities:
     physical_name: sp_license_decision_document_id
     business_meaning_1st: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
-      \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-      \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với\
-      \ Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -68621,18 +69640,12 @@ entities:
         source_column: NHNCK.APPLICATION_GROUPS.DECISION_ID
         business_meaning: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-          \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-          \ crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định liên quan đến nhóm (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -68643,12 +69656,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_GROUPS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.APPLICATION_GROUPS.DECISION_ID
         business_meaning: Mã quyết định liên quan đến nhóm (denormalized lookup).
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Group Created Date
     physical_name: group_created_dt
     business_meaning_1st: Ngày tạo nhóm hồ sơ/CCHN.
@@ -68945,11 +69956,7 @@ entities:
     physical_name: sp_license_decision_document_id
     business_meaning_1st: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
     comment_1st: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-      \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_GROUPS.DECISION_ID\
-      \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-      \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-      \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-      \ crosswalk 2026-08-14."
+      \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -68963,18 +69970,12 @@ entities:
         source_column: NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID
         business_meaning: "FK -> DECISIONS: Quyết định hành chính liên quan đến nhóm."
         comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-          \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_GROUPS.DECISION_ID\
-          \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-          \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật)\
-          \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang\
-          \ crosswalk 2026-08-14."
+          \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   - name: Securities Practitioner License Decision Document Code
     physical_name: sp_license_decision_document_code
     business_meaning_1st: Mã quyết định liên quan đến nhóm (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-      \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-      \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-      \ Securities Practitioner License Decision Document Id."
+      \ Pair with Securities Practitioner License Decision Document Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -68985,12 +69986,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: CERTIFICATE_RECORD_GROUPS
-        source_column: NHNCK.DECISIONS.DECISION_NUMBER
+        source_column: NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID
         business_meaning: Mã quyết định liên quan đến nhóm (denormalized lookup).
         comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-          \ Pair with Securities Practitioner License Decision Document Id. Giá trị\
-          \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Decision Document Id."
+          \ Pair with Securities Practitioner License Decision Document Id."
   - name: Group Created Date
     physical_name: group_created_dt
     business_meaning_1st: Ngày tạo nhóm hồ sơ/CCHN.
@@ -76943,7 +77942,9 @@ entities:
   - name: Classification FMS Company Type Id
     physical_name: cl_fms_company_tp_id
     business_meaning_1st: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
-    comment_1st: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
+    comment_1st: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk\
+      \ sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE\
+      \ sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -76956,7 +77957,9 @@ entities:
       - source_table: SECURITIES
         source_column: FMS.SECURITIES.CT_ID
         business_meaning: "FK -> COMPANY_TYPE: Loại hình công ty QLQ."
-        comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
+        comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk\
+          \ sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận\
+          \ CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
   - name: Classification FMS Company Type Code
     physical_name: cl_fms_company_tp_code
     business_meaning_1st: Mã loại hình doanh nghiệp (cột CODE của bảng danh mục COMPANY_TYPE).
@@ -77298,8 +78301,8 @@ entities:
   - name: Position Id
     physical_name: position_id
     business_meaning_1st: Chức vụ người dùng — chưa xác định FK target.
-    comment_1st: Nguồn VARCHAR2(36). Chưa có FK
-      constraint rõ — giữ dạng Text (xem T1-01 HLD).
+    comment_1st: Nguồn VARCHAR2(36). Chưa có FK constraint rõ — giữ dạng Text (xem
+      T1-01 HLD).
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -77312,8 +78315,8 @@ entities:
       - source_table: USERS
         source_column: IAM.USERS.POSITION_ID
         business_meaning: Chức vụ người dùng — chưa xác định FK target.
-        comment: Nguồn VARCHAR2(36). Chưa có FK
-          constraint rõ — giữ dạng Text (xem T1-01 HLD).
+        comment: Nguồn VARCHAR2(36). Chưa có FK constraint rõ — giữ dạng Text (xem
+          T1-01 HLD).
   - name: Stock Code
     physical_name: stock_code
     business_meaning_1st: Mã chứng khoán (mã giao dịch của tổ chức).
@@ -92924,7 +93927,8 @@ entities:
           — cần xác nhận team.
   - name: Disclosure Person Indicator
     physical_name: disclosure_person_ind
-    business_meaning_1st: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có; 0=Không."
+    business_meaning_1st: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có;\
+      \ 0=Không."
     comment_1st: NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống.
     data_domain_most: Small Counter
     data_type_most: int
@@ -92937,7 +93941,8 @@ entities:
       source_tables:
       - source_table: SC_FIRM_SENIOR_PERSONNEL
         source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.DISCLOSURE_PERSON_ID
-        business_meaning: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có; 0=Không."
+        business_meaning: "Là người công bố thông tin (DISCLOSURE_PERSON_ID): 1=Có;\
+          \ 0=Không."
         comment: NUMBER(1). Cột tên tiếng Việt — mô tả gốc BRD trống.
   - name: Department
     physical_name: department
@@ -103750,7 +104755,8 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
+      \ 'int']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -103775,7 +104781,8 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
+      \ 'int']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -103800,7 +104807,8 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['string',\
+      \ 'int']"
     source_mappings:
     - source_system: HNX
       source_tables:

@@ -1,0 +1,121 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-risk_weight_config-FMS.WEIGHT_CONFIG
+  logical_name: Risk Weight Config
+  physical_name: risk_weight_config
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  description: |
+    Cấu hình trọng số của yếu tố rủi ro đầu vào đóng góp vào chỉ tiêu đầu ra. BK = input_indicator_code ‖ output_indicator_code. Nguồn ODS weight_config (SCD2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-FMS-WEIGHT_CONFIG
+
+attributes:
+  - name: Risk Weight Config Id
+    physical_name: risk_weight_config_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_WEIGHT_CONFIG', INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Risk Weight Config Code
+    physical_name: risk_weight_config_code
+    business_meaning: "Mã nghiệp vụ cấu hình trọng số = INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE. BK."
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE, FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE"
+    comment: "ETL-derived: concat(INPUT_INDICATOR_CODE, OUTPUT_INDICATOR_CODE) từ ODS WEIGHT_CONFIG — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'FMS_WEIGHT_CONFIG'"
+    etl_derived_value: FMS_WEIGHT_CONFIG
+
+  - name: Risk Factor Code
+    physical_name: risk_factor_code
+    business_meaning: Mã yếu tố rủi ro đầu vào.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Risk Factor Name
+    physical_name: risk_factor_nm
+    business_meaning: Tên yếu tố rủi ro đầu vào.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: FMS.WEIGHT_CONFIG.INPUT_INDICATOR_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Risk Factor Group
+    physical_name: risk_factor_group
+    business_meaning: Mã chỉ tiêu đầu ra (nhóm rủi ro) mà yếu tố đầu vào đóng góp.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Weight
+    physical_name: weight
+    business_meaning: Trọng số của yếu tố đầu vào.
+    data_domain: Percentage
+    data_type: decimal(5,2)
+    nullable: true
+    is_primary_key: false
+    source_system: FMS
+    source_table: WEIGHT_CONFIG
+    source_column: FMS.WEIGHT_CONFIG.WEIGHT
+    comment: "Nguồn decimal(5,2) theo bản map Data Modeler. Cần xác nhận thang đo (% hay hệ số) trước go-live."
+    classification_context: null
+    etl_derived_value: null

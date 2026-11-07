@@ -1497,6 +1497,19 @@ entries:
   attribute_count: 8
   brd_ref: BRD-SRC-IDS-FOREIGN_OWNER_LIMIT
 - subfolder: Condition
+  file_name: dm_atm_risk_weight_config-FMS.WEIGHT_CONFIG.yaml
+  id: ATM-risk_weight_config-FMS.WEIGHT_CONFIG
+  physical_name: risk_weight_config
+  logical_name: Risk Weight Config
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: approved
+  attribute_count: 7
+  brd_ref: BRD-SRC-FMS-WEIGHT_CONFIG
+- subfolder: Condition
   file_name: dm_atm_sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES.yaml
   id: ATM-sp_qualification_examination_assessment_fee-NHNCK.EXAM_SESSION_FEES
   physical_name: sp_qualification_examination_assessment_fee
@@ -1509,6 +1522,19 @@ entries:
   status: approved
   attribute_count: 9
   brd_ref: BRD-SRC-NHNCK-EXAM_SESSION_FEES
+- subfolder: Condition
+  file_name: dm_atm_status_threshold_config-FMS.THRESHOLD_CONFIG.yaml
+  id: ATM-status_threshold_config-FMS.THRESHOLD_CONFIG
+  physical_name: status_threshold_config
+  logical_name: Status Threshold Config
+  bcv_core_object: Condition
+  bcv_concept: "[Condition] Criterion"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: approved
+  attribute_count: 8
+  brd_ref: BRD-SRC-FMS-THRESHOLD_CONFIG
 - subfolder: Condition
   file_name: dm_atm_vr_template-IDS.VIOLATION_TEMPLATES.yaml
   id: ATM-vr_template-IDS.VIOLATION_TEMPLATES
@@ -1624,7 +1650,7 @@ entries:
   etl_pattern: Fact Snapshot
   source: HOSE
   status: draft
-  attribute_count: 11
+  attribute_count: 12
   brd_ref: BRD-SRC-HOSE-BROKERAGE_MARKET_SHARE
 - subfolder: Documentation
   file_name: dm_atm_compliance_report-TMS.COMPLIANCE_REPORT_MASTER.yaml
@@ -1639,6 +1665,45 @@ entries:
   status: draft
   attribute_count: 25
   brd_ref: BRD-SRC-TMS-COMPLIANCE_REPORT_MASTER
+- subfolder: Documentation
+  file_name: dm_atm_dr_structure-FMS.ITEM_LIST.yaml
+  id: ATM-dr_structure-FMS.ITEM_LIST
+  physical_name: dr_structure
+  logical_name: Dynamic Report Structure
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: FMS
+  status: approved
+  attribute_count: 14
+  brd_ref: BRD-SRC-FMS-ITEM_LIST
+- subfolder: Documentation
+  file_name: dm_atm_dr_submission_history-FMS.REPORT_HISTORY.yaml
+  id: ATM-dr_submission_history-FMS.REPORT_HISTORY
+  physical_name: dr_submission_history
+  logical_name: Dynamic Report Submission History
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: FMS
+  status: approved
+  attribute_count: 14
+  brd_ref: BRD-SRC-FMS-REPORT_HISTORY
+- subfolder: Documentation
+  file_name: dm_atm_dr_value-FMS.ITEM_VALUE.yaml
+  id: ATM-dr_value-FMS.ITEM_VALUE
+  physical_name: dr_value
+  logical_name: Dynamic Report Value
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: FMS
+  status: approved
+  attribute_count: 16
+  brd_ref: BRD-SRC-FMS-ITEM_VALUE
 - subfolder: Documentation
   file_name: dm_atm_end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST.yaml
   id: ATM-end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST
@@ -2485,7 +2550,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 14
+  attribute_count: 15
   brd_ref: BRD-SRC-NHNCK-DECISIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_decision_document_attachment-NHNCK.DECISION_DOCUMENTS.yaml
@@ -2500,20 +2565,6 @@ entries:
   status: draft
   attribute_count: 11
   brd_ref: BRD-SRC-NHNCK-DECISION_DOCUMENTS
-- subfolder: Documentation
-  file_name: dm_atm_sp_license_decision_document_x_sp_license_application_relationship-NHNCK.APPLICATION_DECISIONS.yaml
-  id: ATM-sp_license_decision_document_x_sp_license_application_relationship-NHNCK.APPLICATION_DECISIONS
-  physical_name: sp_license_decision_document_x_sp_license_application_relationship
-  logical_name: Securities Practitioner License Decision Document X Securities Practitioner
-    License Application Relationship
-  bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Gov. Registration Document"
-  table_type: Relative
-  etl_pattern: SCD2
-  source: NHNCK
-  status: draft
-  attribute_count: 5
-  brd_ref: BRD-SRC-NHNCK-APPLICATION_DECISIONS
 - subfolder: Documentation
   file_name: dm_atm_sp_organization_annual_report-NHNCK.ORGANIZATION_REPORT_YEARLYS.yaml
   id: ATM-sp_organization_annual_report-NHNCK.ORGANIZATION_REPORT_YEARLYS

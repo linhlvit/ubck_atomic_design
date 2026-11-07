@@ -19025,10 +19025,7 @@ attributes:
   source_table: "VIOLATIONS"
   source_column: "NHNCK.VIOLATIONS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: VIOLATIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -19043,11 +19040,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "VIOLATIONS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.VIOLATIONS.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -21796,7 +21791,7 @@ attributes:
 - bcv_core_object: "Communication"
   atomic_entity: "Securities Order"
   atomic_attribute: "Side"
-  description: "Loại lệnh."
+  description: "Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
@@ -22917,10 +22912,7 @@ attributes:
   source_table: "EXAM_SESSIONS"
   source_column: "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: EXAM_SESSIONS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -22935,11 +22927,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "EXAM_SESSIONS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.EXAM_SESSIONS.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -23658,6 +23648,123 @@ attributes:
   atomic_table: "pc_foreign_ownership_limit"
   atomic_column: "effective_to_dt"
 - bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Risk Weight Config Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_WEIGHT_CONFIG',\
+    \ INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "risk_weight_config_id"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Risk Weight Config Code"
+  description: "Mã nghiệp vụ cấu hình trọng số = INPUT_INDICATOR_CODE || OUTPUT_INDICATOR_CODE.\
+    \ BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE, FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE"
+  comment: "ETL-derived: concat(INPUT_INDICATOR_CODE, OUTPUT_INDICATOR_CODE) từ ODS\
+    \ WEIGHT_CONFIG — BK composite theo bản map Data Modeler. Cần profile dữ liệu\
+    \ xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "risk_weight_config_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_WEIGHT_CONFIG'"
+  etl_derived_value: "FMS_WEIGHT_CONFIG"
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Risk Factor Code"
+  description: "Mã yếu tố rủi ro đầu vào."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "risk_factor_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Risk Factor Name"
+  description: "Tên yếu tố rủi ro đầu vào."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: "FMS.WEIGHT_CONFIG.INPUT_INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "risk_factor_nm"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Risk Factor Group"
+  description: "Mã chỉ tiêu đầu ra (nhóm rủi ro) mà yếu tố đầu vào đóng góp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: "FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "risk_weight_config"
+  atomic_column: "risk_factor_group"
+- bcv_core_object: "Condition"
+  atomic_entity: "Risk Weight Config"
+  atomic_attribute: "Weight"
+  description: "Trọng số của yếu tố đầu vào."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "WEIGHT_CONFIG"
+  source_column: "FMS.WEIGHT_CONFIG.WEIGHT"
+  comment: "Nguồn decimal(5,2) theo bản map Data Modeler. Cần xác nhận thang đo (%\
+    \ hay hệ số) trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+  atomic_table: "risk_weight_config"
+  atomic_column: "weight"
+- bcv_core_object: "Condition"
   atomic_entity: "Securities Practitioner Qualification Examination Assessment Fee"
   atomic_attribute: "Securities Practitioner Qualification Examination Assessment\
     \ Fee Id"
@@ -23816,6 +23923,137 @@ attributes:
   data_type: "decimal(23,2)"
   atomic_table: "sp_qualification_examination_assessment_fee"
   atomic_column: "appeal_fee_amt"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Status Threshold Config Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Condition] Criterion\". Hash: hash_id('FMS_THRESHOLD_CONFIG',\
+    \ INDICATOR_CODE || STATUS)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "status_threshold_config_id"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Status Threshold Config Code"
+  description: "Mã nghiệp vụ cấu hình ngưỡng = INDICATOR_CODE || STATUS. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.INDICATOR_CODE, FMS.THRESHOLD_CONFIG.STATUS"
+  comment: "ETL-derived: concat(INDICATOR_CODE, STATUS) từ ODS THRESHOLD_CONFIG —\
+    \ BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "status_threshold_config_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_THRESHOLD_CONFIG'"
+  etl_derived_value: "FMS_THRESHOLD_CONFIG"
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Index Code"
+  description: "Mã chỉ tiêu áp ngưỡng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.INDICATOR_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "index_code"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Index Name"
+  description: "Tên chỉ tiêu áp ngưỡng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.INDICATOR_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "index_nm"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "From Value"
+  description: "Giá trị cận dưới của ngưỡng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.VALUE_FROM"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "status_threshold_config"
+  atomic_column: "from_val"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "To Value"
+  description: "Giá trị cận trên của ngưỡng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.VALUE_TO"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "status_threshold_config"
+  atomic_column: "to_val"
+- bcv_core_object: "Condition"
+  atomic_entity: "Status Threshold Config"
+  atomic_attribute: "Status"
+  description: "Trạng thái ứng với khoảng ngưỡng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "THRESHOLD_CONFIG"
+  source_column: "FMS.THRESHOLD_CONFIG.STATUS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "status_threshold_config"
+  atomic_column: "status"
 - bcv_core_object: "Condition"
   atomic_entity: "Violation Report Template"
   atomic_attribute: "Violation Report Template Id"
@@ -25735,20 +25973,36 @@ attributes:
   atomic_column: "sc_nm"
 - bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
-  atomic_attribute: "Total Trading Value"
-  description: "Tổng giá trị giao dịch"
+  atomic_attribute: "Buy Trading Value"
+  description: "Giá trị giao dịch mua (tỷ đồng)"
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "HOSE"
   source_table: "BROKERAGE_MARKET_SHARE"
-  source_column: "HOSE.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
-  comment: null
+  source_column: "HOSE.BROKERAGE_MARKET_SHARE.BUY_TRADING_VALUE"
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "brokerage_market_share"
-  atomic_column: "total_trading_val"
+  atomic_column: "buy_trading_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Brokerage Market Share"
+  atomic_attribute: "Sell Trading Value"
+  description: "Giá trị giao dịch bán (tỷ đồng)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  source_column: "HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE"
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "brokerage_market_share"
+  atomic_column: "sell_trading_val"
 - bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
   atomic_attribute: "Market Share By Value"
@@ -26253,6 +26507,734 @@ attributes:
   data_type: "int"
   atomic_table: "compliance_report"
   atomic_column: "draft_revision"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Dynamic Report Structure Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FMS_ITEM_LIST',\
+    \ ITEM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "dr_structure_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Dynamic Report Structure Code"
+  description: "Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.ITEM_ID"
+  comment: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "dr_structure_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_ITEM_LIST'"
+  etl_derived_value: "FMS_ITEM_LIST"
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Report Code"
+  description: "Mã mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.REPORT_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "rpt_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Report Name"
+  description: "Tên mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.REPORT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "rpt_nm"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Sheet Name"
+  description: "Tên sheet chứa ô chỉ tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.SHEET_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "sheet_nm"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Column Path"
+  description: "Đường dẫn header của cột."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.COLUMN_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "column_path"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Row Path"
+  description: "Đường dẫn CHA→CON của dòng — tên nhóm chỉ tiêu hiển thị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.ROW_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "row_path"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Cell Id"
+  description: "Mã định danh ô trong template."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.UID_CELL"
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "cell_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Row Index"
+  description: "Vị trí dòng của ô trong template."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.ROW"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_structure"
+  atomic_column: "row_index"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Column Index"
+  description: "Vị trí cột của ô trong template."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.COL"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_structure"
+  atomic_column: "column_index"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Legal Basis"
+  description: "Cơ sở pháp lý của mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.LEGAL_BASIS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "legal_basis"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Label Column Indicator"
+  description: "1 = ô thuộc cột nhãn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.IS_LABEL_COL"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_structure"
+  atomic_column: "label_column_ind"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Dynamic Label Row"
+  description: "Mã chỉ tiêu của dòng nhãn gắn với ô động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_LIST"
+  source_column: "FMS.ITEM_LIST.LABEL_ITEM_ID"
+  comment: "Tham chiếu mềm tới Dynamic Report Structure Code của chính entity (self-reference)\
+    \ — giữ Text theo bản map Data Modeler, không tạo cặp Id + Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_structure"
+  atomic_column: "dynamic_label_row"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Dynamic Report Submission History Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('FMS_REPORT_HISTORY',\
+    \ REPORT_LOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "dr_submission_history_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Dynamic Report Submission History Code"
+  description: "Mã lần nộp báo cáo. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.REPORT_LOG_ID"
+  comment: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu xác\
+    \ nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "dr_submission_history_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_REPORT_HISTORY'"
+  etl_derived_value: "FMS_REPORT_HISTORY"
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Report Code"
+  description: "Mã mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.REPORT_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "rpt_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Report Type"
+  description: "Loại báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.REPORT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "rpt_tp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Audit Report Indicator"
+  description: "1 = báo cáo kiểm toán."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.AUDIT"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_submission_history"
+  atomic_column: "audit_rpt_ind"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Object Id"
+  description: "Mã định danh đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.OBJECT_ID"
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "object_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Object Name"
+  description: "Tên đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.OBJECT_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "object_nm"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Object Type"
+  description: "Loại đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.OBJECT_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "object_tp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Object Sub Type"
+  description: "Phân loại con của đối tượng nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.OBJECT_SUBTYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "object_sub_tp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Period Type"
+  description: "Loại kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.PERIOD_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "period_tp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Period Value"
+  description: "Giá trị kỳ báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.PERIOD_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_submission_history"
+  atomic_column: "period_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Submission Date"
+  description: "Ngày THỰC TẾ nộp báo cáo; partition ODS."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.SUBMISSION_DATE"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "dr_submission_history"
+  atomic_column: "submission_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Submission History"
+  atomic_attribute: "Report Version"
+  description: "Phiên bản báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "REPORT_HISTORY"
+  source_column: "FMS.REPORT_HISTORY.RPT_VERSION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_submission_history"
+  atomic_column: "rpt_version"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Value Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('FMS_ITEM_VALUE',\
+    \ ITEM_ID || REPORT_LOG_ID || ROW_ORDER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_val_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Value Code"
+  description: "Mã nghiệp vụ ô giá trị = ITEM_ID || REPORT_LOG_ID || ROW_ORDER. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ITEM_ID, FMS.ITEM_VALUE.REPORT_LOG_ID, FMS.ITEM_VALUE.ROW_ORDER"
+  comment: "ETL-derived: concat(ITEM_ID, REPORT_LOG_ID, ROW_ORDER) từ ODS ITEM_VALUE\
+    \ — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_val_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'FMS_ITEM_VALUE'"
+  etl_derived_value: "FMS_ITEM_VALUE"
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Structure Id"
+  description: "FK → Dynamic Report Structure: ô chỉ tiêu tương ứng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ITEM_ID"
+  comment: "FK target: dr_structure.dr_structure_id. Hash: hash_id('FMS_ITEM_LIST',\
+    \ ITEM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_structure_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Structure Code"
+  description: "Mã chỉ tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ITEM_ID"
+  comment: "Lookup pair: dr_structure.dr_structure_code. Pair with Dynamic Report\
+    \ Structure Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_structure_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Submission History Id"
+  description: "FK → Dynamic Report Submission History: lần nộp chứa ô giá trị."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.REPORT_LOG_ID"
+  comment: "FK target: dr_submission_history.dr_submission_history_id. Hash: hash_id('FMS_REPORT_HISTORY',\
+    \ REPORT_LOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_submission_history_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Report Submission History Code"
+  description: "Mã lần nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.REPORT_LOG_ID"
+  comment: "Lookup pair: dr_submission_history.dr_submission_history_code. Pair with\
+    \ Dynamic Report Submission History Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "dr_submission_history_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Row Dynamic Index"
+  description: "Thứ tự dòng trong band động."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ROW_ORDER"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_value"
+  atomic_column: "row_dynamic_index"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Row Path"
+  description: "Đường dẫn CHA→CON của dòng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ROW_PATH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "row_path"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Entity Code"
+  description: "Mã đối tượng của dòng dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ENTITY_CODE"
+  comment: "Mã tham chiếu mềm — chưa xác định entity đích duy nhất; cần profile giá\
+    \ trị trước khi cân nhắc FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "entity_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Label Column Indicator"
+  description: "1 = ô thuộc cột nhãn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.IS_LABEL_COL"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_value"
+  atomic_column: "label_column_ind"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Value"
+  description: "Giá trị ô báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Custodian Bank Code"
+  description: "Mã ngân hàng lưu ký đi kèm giá trị ô."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.ACC_VALUE"
+  comment: "Theo bản map Data Modeler không có cặp Id. Giá trị nguồn ACC_VALUE — tra\
+    \ custodian_bank.custodian_bank_code; chưa xác nhận ACC_VALUE luôn là mã NHLK\
+    \ — cần profile trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "custodian_bank_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Dynamic Indicator"
+  description: "1 = ô thuộc dòng động."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.IS_DYNAMIC"
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_value"
+  atomic_column: "dynamic_ind"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Data Type"
+  description: "Kiểu dữ liệu của ô."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.DATA_TYPE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "dr_value"
+  atomic_column: "data_tp"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Value"
+  atomic_attribute: "Submission Date"
+  description: "Ngày THỰC TẾ nộp báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "FMS"
+  source_table: "ITEM_VALUE"
+  source_column: "FMS.ITEM_VALUE.SUBMISSION_DATE"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "dr_value"
+  atomic_column: "submission_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "End Of Day Open Interest"
   atomic_attribute: "End Of Day Open Interest Id"
@@ -40055,7 +41037,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_adhoc_report"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Periodic Report"
   atomic_attribute: "Securities Company Periodic Report Id"
@@ -45026,11 +46008,7 @@ attributes:
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.ISSUE_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo ISSUE_DECISION_ID (ID kỹ thuật)\
-    \ gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
-    \ 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', ISSUE_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45045,11 +46023,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.CERTIFICATE_RECORDS.ISSUE_DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Issue Securities Practitioner License Decision Document Id. Giá trị\
-    \ lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Issue Securities Practitioner License Decision Document Id."
+    \ Pair with Issue Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45067,11 +46043,7 @@ attributes:
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.REVOCATION_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo REVOCATION_DECISION_ID (ID\
-    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
-    \ sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', REVOCATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45087,11 +46059,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.CERTIFICATE_RECORDS.REVOCATION_DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Revocation Securities Practitioner License Decision Document Id. Giá\
-    \ trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem\
-    \ comment Revocation Securities Practitioner License Decision Document Id."
+    \ Pair with Revocation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45109,11 +46079,7 @@ attributes:
   source_table: "CERTIFICATE_RECORDS"
   source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo CANCELLATION_DECISION_ID (ID\
-    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa\
-    \ sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', CANCELLATION_DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45129,11 +46095,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORDS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.CERTIFICATE_RECORDS.CANCELLATION_DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Cancellation Securities Practitioner License Decision Document Id.\
-    \ Giá trị lấy từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết\
-    \ xem comment Cancellation Securities Practitioner License Decision Document Id."
+    \ Pair with Cancellation Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45474,12 +46438,8 @@ attributes:
   source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
   source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
-    \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
-    \ 2026-08-14. Nullable — cần xác nhận có luôn gắn quyết định hay không (VD: hết\
-    \ hiệu lực tự động có thể không có quyết định)."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID). Nullable — cần xác nhận có luôn\
+    \ gắn quyết định hay không (VD: hết hiệu lực tự động có thể không có quyết định)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45494,11 +46454,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_STATUS_HISTORIES"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45759,7 +46717,7 @@ attributes:
   source_system: "NHNCK"
   source_table: "DECISIONS"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', DECISION_NUMBER)."
+  comment: "PK surrogate. Hash: hash_id('NHNCK_DECISIONS', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45768,16 +46726,15 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Decision Document"
   atomic_attribute: "Securities Practitioner License Decision Document Code"
-  description: "Khóa chính. BK của entity — số quyết định hành chính (VD: 123/QĐ-UBCK)."
+  description: "Khóa chính. BK của entity — mã định danh quyết định hành chính (PK\
+    \ nguồn DECISIONS.ID)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "DECISIONS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang DECISION_NUMBER\
-    \ theo quyết định 2026-08-14. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
-    \ trước go-live (DECISION_NUMBER hiện không khai báo NOT NULL trong nguồn)."
+  source_column: "NHNCK.DECISIONS.ID"
+  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu NUMBER — ETL convert sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45799,6 +46756,22 @@ attributes:
   data_type: "string"
   atomic_table: "sp_license_decision_document"
   atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Decision Document"
+  atomic_attribute: "Decision Number"
+  description: "Số hiệu quyết định hành chính (VD: 123/QĐ-UBCK)"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "DECISIONS"
+  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sp_license_decision_document"
+  atomic_column: "decision_nbr"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Decision Document"
   atomic_attribute: "Decision Title"
@@ -46037,10 +47010,7 @@ attributes:
   source_table: "DECISION_DOCUMENTS"
   source_column: "NHNCK.DECISION_DOCUMENTS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: DECISION_DOCUMENTS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -46055,11 +47025,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "DECISION_DOCUMENTS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.DECISION_DOCUMENTS.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -46161,103 +47129,6 @@ attributes:
   data_type: "string"
   atomic_table: "sp_license_decision_document_attachment"
   atomic_column: "status_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_DECISIONS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'NHNCK_APPLICATION_DECISIONS'"
-  etl_derived_value: "NHNCK_APPLICATION_DECISIONS"
-  data_type: "string"
-  atomic_table: "sp_license_decision_document_x_sp_license_application_relationship"
-  atomic_column: "src_stm_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  atomic_attribute: "Securities Practitioner License Decision Document Id"
-  description: "FK -> DECISIONS: Quyết định hành chính liên quan."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "APPLICATION_DECISIONS"
-  source_column: "NHNCK.APPLICATION_DECISIONS.DECISION_ID"
-  comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_DECISIONS.DECISION_ID =\
-    \ DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Composite PK cùng Securities Practitioner License Application Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sp_license_decision_document_x_sp_license_application_relationship"
-  atomic_column: "sp_license_decision_document_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  atomic_attribute: "Securities Practitioner License Decision Document Code"
-  description: "Số quyết định hành chính liên quan (denormalized lookup)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_DECISIONS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
-  comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sp_license_decision_document_x_sp_license_application_relationship"
-  atomic_column: "sp_license_decision_document_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  atomic_attribute: "Securities Practitioner License Application Id"
-  description: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "NHNCK"
-  source_table: "APPLICATION_DECISIONS"
-  source_column: "NHNCK.APPLICATION_DECISIONS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_DECISIONS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Composite PK cùng Securities Practitioner License Decision Document Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sp_license_decision_document_x_sp_license_application_relationship"
-  atomic_column: "sp_license_application_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner License Decision Document X Securities Practitioner\
-    \ License Application Relationship"
-  atomic_attribute: "Securities Practitioner License Application Code"
-  description: "Mã hồ sơ CCHN liên quan (denormalized lookup)."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "APPLICATION_DECISIONS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sp_license_decision_document_x_sp_license_application_relationship"
-  atomic_column: "sp_license_application_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Annual Report"
   atomic_attribute: "Securities Practitioner Organization Annual Report Id"
@@ -52685,7 +53556,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_disclosure_securities_offering"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
   atomic_attribute: "Securities Company Profile Change Id"
@@ -58441,7 +59312,9 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.CT_ID"
-  comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau đó hash_id('FMS_COMPANY_TYPE', CODE)."
+  comment: "FK target: cl_fms_company_type.cl_fms_company_tp_id. Cần ETL crosswalk\
+    \ sang FMS.COMPANY_TYPE: SECURITIES.CT_ID = COMPANY_TYPE.ID để xác nhận CODE sau\
+    \ đó hash_id('FMS_COMPANY_TYPE', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -60441,8 +61314,8 @@ attributes:
   source_system: "IAM"
   source_table: "USERS"
   source_column: "IAM.USERS.POSITION_ID"
-  comment: "Nguồn VARCHAR2(36). Chưa có FK constraint\
-    \ rõ — giữ dạng Text (xem T1-01 HLD)."
+  comment: "Nguồn VARCHAR2(36). Chưa có FK constraint rõ — giữ dạng Text (xem T1-01\
+    \ HLD)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -67797,7 +68670,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_insider_related_person"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Major Shareholder Relation"
   atomic_attribute: "Securities Company Major Shareholder Relation Id"
@@ -68134,7 +69007,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_major_shareholder_relation"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Organization Unit"
   atomic_attribute: "Securities Company Organization Unit Id"
@@ -72020,7 +72893,7 @@ attributes:
   etl_derived_value: null
   data_type: "timestamp"
   atomic_table: "sc_shareholder"
-  atomic_column: "src_rcrd_isrt_tms"
+  atomic_column: "src_record_insert_tms"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company X Classification Securities Company Firm Service\
     \ Relationship"
@@ -90216,10 +91089,7 @@ attributes:
   source_table: "APPLICATION_GROUPS"
   source_column: "NHNCK.APPLICATION_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: APPLICATION_GROUPS.DECISION_ID = DECISIONS.ID\
-    \ để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS', DECISION_NUMBER)\
-    \ | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây sai lệch với Id\
-    \ của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90234,11 +91104,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUPS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.APPLICATION_GROUPS.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90502,11 +91370,7 @@ attributes:
   source_table: "CERTIFICATE_RECORD_GROUPS"
   source_column: "NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID"
   comment: "FK target: sp_license_decision_document.sp_license_decision_document_id.\
-    \ Cần ETL crosswalk sang NHNCK.DECISIONS: CERTIFICATE_RECORD_GROUPS.DECISION_ID\
-    \ = DECISIONS.ID để xác nhận DECISION_NUMBER sau đó hash_id('NHNCK_DECISIONS',\
-    \ DECISION_NUMBER) | Trước đây hash trực tiếp theo DECISION_ID (ID kỹ thuật) gây\
-    \ sai lệch với Id của bảng main (hash từ DECISION_NUMBER) — đã sửa sang crosswalk\
-    \ 2026-08-14."
+    \ Hash: hash_id('NHNCK_DECISIONS', DECISION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -90521,11 +91385,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "CERTIFICATE_RECORD_GROUPS"
-  source_column: "NHNCK.DECISIONS.DECISION_NUMBER"
+  source_column: "NHNCK.CERTIFICATE_RECORD_GROUPS.DECISION_ID"
   comment: "Lookup pair: sp_license_decision_document.sp_license_decision_document_code.\
-    \ Pair with Securities Practitioner License Decision Document Id. Giá trị lấy\
-    \ từ NHNCK.DECISIONS.DECISION_NUMBER sau ETL crosswalk — chi tiết xem comment\
-    \ Securities Practitioner License Decision Document Id."
+    \ Pair with Securities Practitioner License Decision Document Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
