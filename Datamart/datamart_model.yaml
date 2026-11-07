@@ -9811,9 +9811,9 @@ entities:
         physical_name: "form_tp_code"
         data_domain: "Classification Value"
         data_type: "string"
-        nullable: false
+        nullable: true
         key: ""
-        description: "(Sửa 2026-08-08) Loại hình — ETL-derived: nếu Violation Case.Inspection_Team_Id NOT NULL lấy Inspection Team.Form_Type_Code; nếu Examination_Team_Id NOT NULL lấy Examination Team.Form_Type_Code; 'Không xác định' nếu hồ sơ không từ đoàn TT/KT (trước đây NULL)"
+        description: "Loại hình — mã hình thức PERIODIC/UNSCHEDULED (scheme TT_REVIEW_FORM_TYPE) lấy từ đoàn thanh tra hoặc đoàn kiểm tra của hồ sơ: Violation Case.Inspection_Team_Id NOT NULL thì lấy Inspection Team.Form_Type_Code, Examination_Team_Id NOT NULL thì lấy Examination Team.Form_Type_Code, NULL nếu hồ sơ không từ đoàn TT/KT. Nhãn Định kỳ/Đột xuất/'Không xác định' ánh xạ ở Detail Mapping (K_TT_53), không lưu nhãn trong cột này (Sửa 2026-11-07)"
         source_atomic_table: "inspection_team / examination_team"
         source_atomic_column: "inspection_team / examination_team.form_tp_code / form_tp_code"
       - logical_name: "Life Cycle Status Code"
@@ -9822,7 +9822,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "(Sửa 2026-08-11) Trạng thái — đổi nguồn từ Penalty Decision sang Violation Case, khớp SQL BA cập nhật. ETL-derived CASE WHEN map code → nhãn tiếng Việt cố định theo SQL BA (không còn Classification Value scheme — nhãn đã cố định trong ETL, không cần scheme quản lý riêng)"
+        description: "Trạng thái hồ sơ — mã gốc (NEW/PROCESSING/DECISION_ISSUED/ENFORCED/CLOSED) lấy từ Violation Case (nguồn Violation Case, khớp SQL BA, không phải Penalty Decision). Nhãn tiếng Việt (Mới tiếp nhận/Đang xử lý/Đã ban hành quyết định/Đang cưỡng chế/Đã kết thúc/'Không xác định') ánh xạ ở Detail Mapping (K_TT_54), không còn CASE WHEN trong ETL (Sửa 2026-11-07)"
         source_atomic_table: "violation_case"
         source_atomic_column: "violation_case.life_cycle_status_code"
       - logical_name: "Issued Date"
@@ -9858,7 +9858,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK (ghép với pd_subject_code) — Hành vi vi phạm: ưu tiên hành vi của đối tượng bị xử phạt, fallback hành vi của biên bản vi phạm liên kết QĐ, 'Không xác định' khi không có (cùng quy tắc violation_behavior_group_nm ở Fact Nhóm 13, mức dòng). Mỗi lượt QĐ × đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03)"
+        description: "PK (ghép với pd_subject_code) — Hành vi vi phạm: ưu tiên hành vi của đối tượng bị xử phạt, fallback hành vi của biên bản vi phạm liên kết QĐ, 'Không xác định' khi không có (cùng quy tắc violation_behavior_group_nm ở Fact Nhóm 13, mức dòng). Mỗi lượt QĐ × đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03). CASE WHEN chọn nhánh hành vi giữ ở ETL (không chuyển lên Detail Mapping) vì quyết định giá trị cột khóa PK và hợp nhất 2 nhánh JOIN, không phải ánh xạ code → nhãn (2026-11-07)"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
