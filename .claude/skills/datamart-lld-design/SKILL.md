@@ -18,20 +18,20 @@ description: |
 
 # Skill: Thiết kế LLD Datamart
 
-File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A31 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
+File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A36 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
 
 ## Đọc gì, khi nào
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A35 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A36 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
 | | [`reference/physical_naming.md`](reference/physical_naming.md) | Quy tắc tên physical, role-playing date FK, Kịch bản C (sửa tên/logic) |
 | | [`reference/phase1_selfreview.md`](reference/phase1_selfreview.md) | SELF-REVIEW TC1–TC14, chạy trước khi trình bày từng file |
 | Phase 2 — Detail Mapping | [`reference/phase2_workflow.md`](reference/phase2_workflow.md) | Input/Output, ghi qua `apply_patch.py` / `apply_kpi_patch.py`, Checklist + SELF-REVIEW Phase 2 |
-| | [`reference/phase2_detail_mapping.md`](reference/phase2_detail_mapping.md) | `column_role`, 4 trường hợp đặc biệt, lỗi tái diễn L1–L18 |
+| | [`reference/phase2_detail_mapping.md`](reference/phase2_detail_mapping.md) | `column_role`, 4 trường hợp đặc biệt, lỗi tái diễn L1–L19 |
 | Phase 3 — Flat table | [`reference/phase3_workflow.md`](reference/phase3_workflow.md) | Đồng bộ khép kín LLD ↔ flat, Trigger 1–5, Checklist Phase 3, All-Tier Cleanup |
 | | [`reference/phase3_flat_table.md`](reference/phase3_flat_table.md) | Type mapping ClickHouse, ENGINE/PARTITION, pattern CREATE + POPULATE |
 | Ví dụ | [`examples/etl_logic_correct.md`](examples/etl_logic_correct.md), [`examples/etl_logic_wrong.md`](examples/etl_logic_wrong.md), [`examples/key_constraints.md`](examples/key_constraints.md) | Mẫu đúng/sai `etl_logic`, ràng buộc key theo loại bảng |
@@ -155,7 +155,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A35 (tóm tắt)
+## Luật A1–A36 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -196,6 +196,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A33 | **Idiom ClickHouse:** `lowerUTF8` (không `LOWER`), nhãn cột khớp prefix `' >> '` sau truy vấn đếm (`datamart-review/reference/clickhouse_idioms.md`), `LIMIT 1 BY` thay `ROW_NUMBER()`; phát hiện ở 1 Nhóm → quét mọi Nhóm cùng sheet/`record_tp`; SQL dev dán 2 lần mâu thuẫn → hỏi bản nào mới. Gate 8 D20/D21. |
 | A34 | **Quét câu cũ mâu thuẫn** ở `ghi_chu` DM + HLD kể cả Open Items (ghi bằng `apply_open_item.py`); AI không ghi suy luận như dữ kiện. Gate 8 D22. |
 | A35 | **Vận hành phiên:** mở đúng thư mục để nạp hook/skill/CLAUDE.md (kiểm hook bằng lệnh bị R3 chặn), dừng ở Nhóm thứ 6, `--save-baseline`/`--baseline`, phiên song song chỉ stage file của mình. |
+| A36 | **Nhãn của cột mã — một khái niệm một tầng:** cột `*_code` chỉ chứa mã gốc (`etl_logic` không có `THEN/ELSE '<nhãn>'`, `ELSE NULL`, `nullable = true`); ánh xạ code → nhãn bằng `CASE WHEN … ELSE 'Không xác định' END` ở `logic` Detail Mapping (mặc định, khớp SQL BA; `ELSE` theo BA từng Nhóm); nhãn ở ETL chỉ ở cột `*_nm` riêng theo quy ước module; CASE chọn nguồn / quyết định khóa PK vẫn ở ETL. Trước khi thiết kế: grep cùng cột mã trong module và làm giống chỗ đã có, đối chiếu SQL BA từng Nhóm, mockup hiển thị nhãn | 1, 2 | Gate 8 D23 `L2-CODE-COL-HAS-LABEL` (ERROR), D24 `L3-CODE-LABEL-INCONSISTENT` + D25 `L3-ETL-CODE-SHOWN-RAW` (WARNING) |
 
 ---
 
@@ -280,8 +281,8 @@ Phase 3:   Sau khi tất cả nhóm đã duyệt → báo số bảng flat
 
 **Phase 0 — Plan** → `reference/phase0_plan.md`. Lấy danh sách Nhóm bằng `lld_selfcheck.py --module {MODULE} --tc 5` (không Read cả HLD). Plan phải đủ mọi Nhóm, kể cả Nhóm PENDING toàn bộ. Chốt một token physical chuẩn cho mỗi entity xuất hiện trong tên ≥ 2 bảng (Bước P2b). Dừng chờ human duyệt Plan.
 
-**Phase 1 — Attributes** → `reference/phase1_workflow.md`. BA đọc qua `ba_slice.py --module {MODULE} --nhom {N} --print`, loại chỉ tiêu `Delete`. Với mỗi bảng: đọc `reuse_status` (bảng `partial` thuộc module khác thì sửa thẳng file gốc của module sở hữu, không tạo `_delta.csv`), xác định Driving Table và giới hạn ngày (A19), thêm `src_stm_code` có `WHERE` cho Dimension/Operational, tra YAML Atomic, xuất 15 cột UTF-8 BOM. Đặt tên theo `reference/physical_naming.md`. Trước khi trình bày từng file: chạy đủ 14 TC trong `reference/phase1_selfreview.md`. Sửa `etl_logic` / `description` của file Attributes đã tồn tại: sửa file per-module (nguồn sự thật), rồi sinh lại master bằng `build_registry.py --check` → ghi thật và chạy TC7 Sub-check E — không chép chuỗi vào master bằng tay.
+**Phase 1 — Attributes** → `reference/phase1_workflow.md`. BA đọc qua `ba_slice.py --module {MODULE} --nhom {N} --print`, loại chỉ tiêu `Delete`. Với mỗi bảng: đọc `reuse_status` (bảng `partial` thuộc module khác thì sửa thẳng file gốc của module sở hữu, không tạo `_delta.csv`), xác định Driving Table và giới hạn ngày (A19), thêm `src_stm_code` có `WHERE` cho Dimension/Operational, tra YAML Atomic, xuất 15 cột UTF-8 BOM. Đặt tên theo `reference/physical_naming.md`. Trước khi trình bày từng file: chạy đủ 14 TC trong `reference/phase1_selfreview.md`. Sửa `etl_logic` / `description` của file Attributes đã tồn tại: sửa file per-module (nguồn sự thật), rồi sinh lại master bằng `build_registry.py --check` → ghi thật và chạy TC7 Sub-check E — không chép chuỗi vào master bằng tay. Cột `*_code` chỉ chứa mã gốc, nhãn ánh xạ ở Detail Mapping (A36).
 
-**Phase 2 — Detail Mapping** → `reference/phase2_workflow.md`. Bước 0 lập todo list toàn module, độc lập với Plan Phase 0. Mỗi Nhóm: chạy `ba_hld_sync_check.py --module {MODULE} --nhom {N}`, đọc BA kèm SQL (`ba_slice.py --with-sql`), không map chỉ tiêu `Delete`, không tự sinh KPI_ID mới. Ghi bằng `apply_patch.py --target dm` (cả Nhóm) hoặc `apply_kpi_patch.py` (1 KPI vào Nhóm đã có), luôn `--dry-run` trước. SELF-REVIEW 5 TC mỗi Nhóm; hết module thì TC5 + TC6 bằng `lld_selfcheck.py --tc 5,6`.
+**Phase 2 — Detail Mapping** → `reference/phase2_workflow.md`. Bước 0 lập todo list toàn module, độc lập với Plan Phase 0. Mỗi Nhóm: chạy `ba_hld_sync_check.py --module {MODULE} --nhom {N}`, đọc BA kèm SQL (`ba_slice.py --with-sql`), không map chỉ tiêu `Delete`, không tự sinh KPI_ID mới. Ghi bằng `apply_patch.py --target dm` (cả Nhóm) hoặc `apply_kpi_patch.py` (1 KPI vào Nhóm đã có), luôn `--dry-run` trước. SELF-REVIEW 5 TC mỗi Nhóm; hết module thì TC5 + TC6 bằng `lld_selfcheck.py --tc 5,6`. Cột mã hiển thị: `CASE WHEN … THEN '<nhãn>'` ở `logic`, đối chiếu SQL BA từng Nhóm và cùng cột mã ở Nhóm khác (A36, L19).
 
 **Phase 3 — Flat table** → `reference/phase3_workflow.md`. Báo số bảng flat và chờ xác nhận trước khi sinh. Thêm cột vào bảng đã có dùng `build_flat_tables.py --sync-columns` (A20). Hậu kiểm Column Coverage, 1-1 Projection Alignment, Orphan Check 3 chiều.

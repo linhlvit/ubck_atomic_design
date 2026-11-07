@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A35 — LLD Datamart
+# Luật chống tái diễn A1–A36 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -39,6 +39,7 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A33 — Idiom ClickHouse trong Detail Mapping: `lowerUTF8`, nhãn cột khớp prefix `' >> '`, `LIMIT 1 BY`; phát hiện ở 1 Nhóm thì quét cả Nhóm cùng sheet; SQL dev dán 2 lần mâu thuẫn → hỏi (D20/D21)
 - A34 — Sửa 1 KPI thì quét câu cũ mâu thuẫn ở DM + HLD kể cả Open Items (`apply_open_item.py`); AI không ghi suy luận như dữ kiện (D22)
 - A35 — Vận hành phiên: mở đúng thư mục để nạp hook/skill/CLAUDE.md, ngưỡng 6 Nhóm, `--baseline` gate, phiên song song
+- A36 — Nhãn của cột mã: một khái niệm một tầng; cột `*_code` chỉ chứa mã gốc; mặc định nhãn ở Detail Mapping (`CASE WHEN … ELSE 'Không xác định' END`); CASE chọn nguồn/quyết định khóa PK vẫn ở ETL (D23/D24/D25)
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -646,6 +647,28 @@ Sự cố thật (2026-10-28): phiên mở ở **thư mục cha** `C:\Workspace\
 3. Đếm Nhóm có thay đổi thiết kế trong phiên; tới Nhóm thứ 6 → dừng, tóm tắt, hỏi tiếp/mở phiên mới (CLAUDE.md 'Ngưỡng cấp phiên').
 4. Đầu phiên `check_references.py --save-baseline` (Gate 0) rồi `--baseline` các lần sau; báo Gate FAIL theo **delta so với baseline** để tách lỗi của mình khỏi lỗi phiên song song.
 5. Phiên song song trên cùng working tree: `git status` đầu/cuối phiên; `build_kpi_index/registry/flat` sinh lại gồm cả thay đổi chưa commit của phiên kia — chỉ stage file của mình; không sửa/commit file module khác.
+
+### A36 — Nhãn của cột mã: một khái niệm một tầng; cột `*_code` chỉ chứa mã; mặc định nhãn ở Detail Mapping `[L2-CODE-COL-HAS-LABEL / L3-CODE-LABEL-INCONSISTENT]`
+
+Sự cố thật (2026-11-07, TT Nhóm 15): BA đặt 4 phép `CASE WHEN` nhãn trong SELECT ngoài cùng của một SQL; thiết kế tách thành 3 cách. K_TT_52 (Phân loại đối tượng) ánh xạ nhãn ở Detail Mapping — đúng quy ước TT
+(K_TT_14/17/18/33/36/49/69). K_TT_54 (Trạng thái) nhúng nhãn vào ETL: `life_cycle_status_code` chứa 'Mới tiếp nhận…', cột `*_code` duy nhất của LLD TT chứa nhãn. K_TT_53 (Loại hình) ETL trả mã `form_tp_code`
+trộn literal 'Không xác định' còn Detail Mapping không có CASE ⇒ màn hình ra `PERIODIC`/`UNSCHEDULED` thay vì Định kỳ/Đột xuất như SQL BA. Gốc: mỗi lần BA đổi SQL (O_TT_14 8/8, O_TT_15 11/8, 3/11) sửa tại chỗ theo cách
+nhanh nhất, không đối chiếu cách module đã làm; không Gate nào bắt (Gate 0 chỉ kiểm tên cột). Quét sau khi sửa còn K_TT_37 (Nhóm 10, cùng `form_tp_code`) hiển thị mã thô — cùng lỗi, ở Nhóm khác; rà tiếp thấy K_TT_19/K_TT_38 hiển thị thô `status_code` (mã NOT_STARTED/IN_PROGRESS/COMPLETED do ETL tự sinh từ ngày) trong khi BA xuất 'Chưa thực hiện/Đang thực hiện/Đã hoàn thành' — D24 không thấy vì không có KPI anh em nào ánh xạ.
+
+**Quy tắc**
+1. **Một khái niệm = một tầng, quyết một lần theo module.** Trước khi thiết kế cột mã có nhãn (INDIVIDUAL/ORGANIZATION, PERIODIC/UNSCHEDULED, trạng thái…): `grep -n "<tên cột>" Datamart/lld/DTM_{M}_Detail_Mapping.csv Datamart/lld/{M}/*.csv`
+   và làm giống chỗ đã có. Cùng cột mã ở nhiều Nhóm → sửa đồng loạt trong cùng lượt (H11, A33 mục 2).
+2. **Cột `*_code` chỉ chứa mã gốc.** `etl_logic` không có nhánh `THEN/ELSE '<nhãn tiếng Việt>'`; không dùng literal 'Không xác định'/'Khác' làm giá trị thay thế (phần còn lại `ELSE NULL`, `nullable = true`).
+3. **Mặc định: nhãn ở Detail Mapping** — `CASE WHEN <bảng>.<cột>_code = '…' THEN '<nhãn>' … ELSE 'Không xác định' END` trong `logic` (khớp SQL BA đặt nhãn ở SELECT ngoài; BA đổi nhãn chỉ sửa 1 dòng DM, không chạy lại ETL).
+   `ELSE` đúng theo SQL BA của TỪNG Nhóm (Nhóm 10 TT không có ELSE ⇒ NULL), không chép ELSE từ Nhóm khác.
+4. Nhãn lưu trong ETL chỉ ở cột **`*_nm`** (hoặc `*_text`) riêng, theo quy ước đã có của module (QLKD `role_nm`/`status_nm`, GSTT `stock_tp_nm`, NHNCK `practice_status_nm`) — không đổi nghĩa cột `*_code`.
+5. **CASE ở lại ETL khi không phải ánh xạ nhãn:** (a) chọn nhánh nguồn/JOIN (`form_tp_code` lấy từ đoàn thanh tra hay đoàn kiểm tra); (b) quyết định giá trị cột khóa PK (`violation_behavior_nm` — PK không NULL);
+   (c) dẫn xuất từ ngày/số liệu (`status_code` của case list). Ghi lý do 1 mệnh đề vào `description`.
+6. **Đối chiếu SQL BA từng Nhóm** cho mọi SLICER/GROUP_BY hiển thị cột `*_code`: SELECT ngoài có CASE nhãn → `logic` phải có CASE tương ứng (hiển thị mã thô khi BA ánh xạ nhãn = thiếu CASE; mã do ETL tự sinh như `status_code` NOT_STARTED/IN_PROGRESS/COMPLETED càng không được hiện thô — luôn cần CASE nhãn). Mockup HLD hiển thị nhãn như BA, không hiển thị mã thô.
+7. **Đổi tầng nhãn = sửa đồng bộ:** LLD (`etl_logic`, `nullable`, `description`) → Detail Mapping (`logic` + `ghi_chu`) → HLD (bullet + bảng KPI + mockup) → flat COMMENT → Open Item yêu cầu dev bỏ CASE khỏi ETL
+   (`apply_open_item.py`) → `build_registry.py` / `build_model_yaml.py` (A34).
+
+**Máy kiểm:** Gate 8 D23 `L2-CODE-COL-HAS-LABEL` (ERROR, nợ 0 toàn repo — vi phạm mới không có baseline), D24 `L3-CODE-LABEL-INCONSISTENT` (WARNING — cùng cột mã, nơi ánh xạ nơi hiển thị thô), D25 `L3-ETL-CODE-SHOWN-RAW` (WARNING — mã ETL tự sinh ≥ 2 giá trị hiển thị thô; bỏ qua KPI đã có cột `*_nm` đi cặp theo mẫu Code + Name như K_QLKD_1). Nợ hiện có: 0 (TT K_TT_37/38/19 đã sửa 2026-11-07). Test: `tests/test_design_lint_code_label.py`.
 
 ---
 ## Ghi chú lịch sử

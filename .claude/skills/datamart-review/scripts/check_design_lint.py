@@ -96,7 +96,16 @@ Bổ sung 2026-10-28 (phiên QLQ Nhóm 7/8/9/11/12 + QLKD Nhóm 1/19/20/31 — 4
                               trong khi module đã có cột `sheet_code` — câu cũ đứng cạnh thiết kế mới (cùng họ H16). WARNING; bỏ qua câu có nhãn lịch sử
                               ("trước đây", "[SỬA", "đã đóng").
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19 = ERROR; D18, D20, D21, D22 = WARNING; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-11-07 (TT Nhóm 15 — cùng một khái niệm 'nhãn của cột mã' xử lý ở hai tầng, Gate 0–10 PASS mà user phải tự hỏi):
+  D23 [L2-CODE-COL-HAS-LABEL]        (A36) — cột LLD tên `*_code` có `etl_logic` chứa nhánh `THEN/ELSE '<nhãn tiếng Việt>'` (VD `life_cycle_status_code` lưu 'Mới tiếp nhận…',
+                              `form_tp_code` trộn mã PERIODIC/UNSCHEDULED với literal 'Không xác định'). Cột `*_code` chỉ chứa mã gốc (ELSE NULL); nhãn ánh xạ ở Detail Mapping.
+                              Cột `*_nm` lưu nhãn trong ETL vẫn hợp lệ. ERROR.
+  D24 [L3-CODE-LABEL-INCONSISTENT]   (A36) — cùng tên cột mã `X_code` trong 1 module: KPI này ánh xạ `CASE WHEN X_code = '…' THEN '<nhãn>'` nhưng KPI khác (SLICER/GROUP_BY)
+                              hiển thị `bảng.X_code` thô (TT K_TT_18/K_TT_53 có nhãn, K_TT_37 ra mã PERIODIC/UNSCHEDULED). WARNING — đối chiếu SQL BA của từng Nhóm.
+  D25 [L3-ETL-CODE-SHOWN-RAW]        (A36) — cột `*_code` mà `etl_logic` TỰ SINH ≥ 2 mã ALL_CAPS bằng CASE (VD `status_code` suy từ ngày: NOT_STARTED/IN_PROGRESS/COMPLETED) nhưng KPI
+                              SLICER/GROUP_BY hiển thị thô `bảng.cột` (TT K_TT_19/K_TT_38 trước 2026-11-07; D24 không thấy vì không có KPI anh em nào ánh xạ). WARNING.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -875,6 +884,115 @@ def check_stale_sheet_claims(root: Path, module: str):
              f"(luật A34: sửa/đánh dấu 'trước đây' cùng lượt thêm sheet_code): {ex}" + (" …" if len(hits) > 6 else ""))]
 
 
+# ── D23–D24 (2026-11-07) — cột mã và nhãn hiển thị (luật A36) ─────────────────────────────
+_RE_ETL_LABEL_BRANCH = re.compile(r"\b(?:THEN|ELSE)\s+'([^']*)'", re.I)
+_RE_CASE_CODE_LABEL = re.compile(r"CASE\s+WHEN\s+(?:\w+\.)?(\w+_code)\s*=\s*'[^']*'\s+THEN\s+'([^']*)'", re.I)
+_RE_PLAIN_CODE_COL = re.compile(r"^\s*\w+\.(\w+_code)\s*$")
+
+
+def _has_diacritic(s: str) -> bool:
+    return any(ord(c) > 127 for c in s)
+
+
+def code_column_label_issues(rows):
+    """D23 — rows: [(nơi, cột, etl_logic)]. Cột tên `*_code` mà `etl_logic` có nhánh `THEN/ELSE '<nhãn có dấu>'` ⇒ cột mã bị nhét nhãn. Hàm thuần (dùng cho test)."""
+    out = []
+    for where, col, etl in rows:
+        if not col.endswith("_code"):
+            continue
+        labs = [m for m in _RE_ETL_LABEL_BRANCH.findall(etl or "") if _has_diacritic(m)]
+        if labs:
+            out.append(("ERROR", "L2-CODE-COL-HAS-LABEL",
+                        f"{where}: cột mã `{col}` có nhánh CASE trả nhãn {sorted(set(labs))[:4]} trong etl_logic — cột `*_code` chỉ chứa mã gốc (không literal 'Không xác định'/'Khác': dùng ELSE NULL). "
+                        "Luật A36: ánh xạ code → nhãn ở Detail Mapping (CASE WHEN trong `logic`); nếu ETL buộc phải lưu nhãn thì thêm cột `*_nm` riêng, không đổi nghĩa cột `*_code`."))
+    return out
+
+
+def code_label_inconsistency(dm_rows):
+    """D24 — dm_rows: [(kpi_id, column_role, logic)] của 1 module. Cùng tên cột mã `X_code`: có KPI ánh xạ nhãn bằng `CASE WHEN … X_code = '…' THEN '<nhãn có dấu>'`
+    nhưng KPI khác (SLICER/GROUP_BY) hiển thị `bảng.X_code` thô. Hàm thuần."""
+    mapped, raw = {}, {}
+    for kpi, role, logic in dm_rows:
+        lg = _RE_BRACKET_NOTE.sub(" ", logic or "")
+        for m in _RE_CASE_CODE_LABEL.finditer(lg):
+            if _has_diacritic(m.group(2)):
+                mapped.setdefault(m.group(1), set()).add(kpi)
+        m = _RE_PLAIN_CODE_COL.match(lg)
+        if m and (role or "").strip() in ("SLICER", "GROUP_BY"):
+            raw.setdefault(m.group(1), set()).add(kpi)
+    out = []
+    for col in sorted(set(mapped) & set(raw)):
+        a, b = sorted(mapped[col]), sorted(raw[col])
+        out.append(("WARNING", "L3-CODE-LABEL-INCONSISTENT",
+                    f"cột mã `{col}`: {', '.join(a[:6])} ánh xạ code → nhãn bằng CASE WHEN nhưng {', '.join(b[:6])} hiển thị mã thô (SLICER/GROUP_BY) — cùng một khái niệm xử lý hai cách: "
+                    "hoặc thiếu CASE nhãn (màn hình ra mã như PERIODIC/UNSCHEDULED thay vì Định kỳ/Đột xuất), hoặc nhãn nằm sai tầng. Luật A36: đối chiếu SQL BA của từng Nhóm rồi thống nhất một tầng (Detail Mapping)."))
+    return out
+
+
+_RE_ETL_CODE_LIT = re.compile(r"\bTHEN\s+'([A-Z][A-Z0-9_]{2,})'")
+_RE_PLAIN_TABLE_CODE_COL = re.compile(r"^\s*(\w+)\.(\w+_code)\s*$")
+
+
+def derived_code_columns(lld_rows):
+    """D25 — lld_rows: [(bảng, cột, etl_logic)] → {(bảng, cột): [mã…]} cho cột `*_code` mà `etl_logic` TỰ SINH ≥ 2 mã ALL_CAPS bằng CASE (VD `status_code`: NOT_STARTED/IN_PROGRESS/COMPLETED
+    suy ra từ ngày). Mã do ETL tự đặt không phải dữ liệu nguồn nên người dùng không bao giờ muốn thấy nó trên màn hình. Hàm thuần."""
+    out = {}
+    for tbl, col, etl in lld_rows:
+        if col.endswith("_code"):
+            codes = sorted(set(_RE_ETL_CODE_LIT.findall(etl or "")))
+            if len(codes) >= 2:
+                out[(tbl, col)] = codes
+    return out
+
+
+def derived_code_shown_raw(derived, dm_rows):
+    """D25 — dm_rows: [(kpi_id, column_role, logic)]: KPI SLICER/GROUP_BY hiển thị thô `bảng.cột` mà cột là mã do ETL tự sinh. Hàm thuần."""
+    hits, plain_by_kpi = {}, {}
+    for kpi, role, logic in dm_rows:
+        lg = _RE_BRACKET_NOTE.sub(" ", logic or "")
+        pm = re.match(r"^\s*(\w+)\.(\w+)\s*$", lg)
+        if pm:
+            plain_by_kpi.setdefault(kpi, set()).add((pm.group(1), pm.group(2)))
+        m = _RE_PLAIN_TABLE_CODE_COL.match(lg)
+        if m and (role or "").strip() in ("SLICER", "GROUP_BY") and (m.group(1), m.group(2)) in derived:
+            hits.setdefault((m.group(1), m.group(2)), set()).add(kpi)
+    # KPI đã có cột `<gốc>_nm` đi cặp (mẫu Code + Name: lọc theo mã, hiển thị theo nhãn — VD K_QLKD_1) thì không phải lỗi
+    for (t, c), ks in list(hits.items()):
+        nm = (t, c[: -len("_code")] + "_nm")
+        ks -= {k for k in ks if nm in plain_by_kpi.get(k, set())}
+        if not ks:
+            del hits[(t, c)]
+    out = []
+    for (t, c), ks in sorted(hits.items()):
+        out.append(("WARNING", "L3-ETL-CODE-SHOWN-RAW",
+                    f"{', '.join(sorted(ks))}: hiển thị thô `{t}.{c}` — cột do ETL tự sinh mã {derived[(t, c)][:4]} (suy ra từ dữ liệu, không phải mã nguồn) nên màn hình ra "
+                    "'NOT_STARTED'-kiểu thay vì nhãn BA xuất (VD 'Chưa thực hiện'). Luật A36: đối chiếu SQL BA rồi thêm CASE nhãn ở `logic` Detail Mapping."))
+    return out
+
+
+def check_code_labels(root: Path, module: str):
+    rows, lld3 = [], []
+    d = root / "Datamart" / "lld" / module
+    if d.exists():
+        for f in sorted(d.glob("*.csv")):
+            try:
+                with open(f, encoding="utf-8-sig", newline="") as fh:
+                    for r in csv.DictReader(fh):
+                        col = (r.get("datamart_column") or "").strip()
+                        rows.append((f"{f.name} [{r.get('datamart_table')}.{col}]", col, r.get("etl_logic") or ""))
+                        lld3.append(((r.get("datamart_table") or "").strip(), col, r.get("etl_logic") or ""))
+            except Exception:
+                continue
+    issues = code_column_label_issues(rows)
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if dm and Path(dm).exists():
+        with open(dm, encoding="utf-8-sig", newline="") as fh:
+            dm_rows = [((r.get("kpi_id") or "").strip(), r.get("column_role") or "", r.get("logic") or "") for r in csv.DictReader(fh)]
+        issues += code_label_inconsistency(dm_rows)
+        issues += derived_code_shown_raw(derived_code_columns(lld3), dm_rows)
+    return issues
+
+
 _RE_IDENT_PAIR = [
     re.compile(r"identification_tp_code\s*=\s*'([^']+)'\s+AND\s+(?:\w+\.)?src_stm_code\s*=\s*'([^']+)'"),
     re.compile(r"(?:\w+\.)?src_stm_code\s*=\s*'([^']+)'\s+AND\s+(?:\w+\.)?identification_tp_code\s*=\s*'([^']+)'"),
@@ -1013,6 +1131,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_cell_ids(root, module)
     issues += check_sheet_and_idioms(root, module)
     issues += check_stale_sheet_claims(root, module)
+    issues += check_code_labels(root, module)
     issues += check_atomic_literals(root, module)
     issues += check_etl_bi_boundary(root, module)
     return issues

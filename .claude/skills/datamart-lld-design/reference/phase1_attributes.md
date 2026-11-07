@@ -227,6 +227,14 @@ Mỗi Fact có **đúng 1** cột `key = PK` (`nullable = false`, `data_domain =
 | `pivot` | ETL fanout 1 row thành nhiều rows theo branch key | Xem mục Pivot bên dưới |
 | `pending` | Chưa có Atomic source | *(để trống)* |
 
+### Cột mã (`*_code`) và nhãn hiển thị (A36)
+
+- Cột tên `*_code` chỉ chứa **mã gốc** của nguồn. `etl_logic` không có nhánh `THEN/ELSE '<nhãn tiếng Việt>'` và không dùng literal 'Không xác định'/'Khác' làm giá trị thay thế — phần còn lại `ELSE NULL`, `nullable = true`.
+- Nhãn hiển thị (Cá nhân/Tổ chức, Định kỳ/Đột xuất, trạng thái…) là `CASE WHEN … THEN '<nhãn>' … ELSE 'Không xác định' END` ở cột `logic` Detail Mapping (Phase 2): khớp SQL BA, đổi nhãn không phải chạy lại ETL.
+- Cần lưu nhãn trong ETL → thêm cột **`*_nm` riêng** theo quy ước đã có của module (QLKD `role_nm`/`status_nm`, GSTT `stock_tp_nm`, NHNCK `practice_status_nm`); không đổi nghĩa cột `*_code`.
+- CASE ở lại ETL khi không phải ánh xạ nhãn: chọn nhánh nguồn/JOIN (`form_tp_code` lấy từ đoàn thanh tra hay đoàn kiểm tra), quyết định giá trị cột khóa PK (`violation_behavior_nm`), dẫn xuất từ ngày — ghi lý do 1 mệnh đề vào `description`.
+- Trước khi thiết kế: `grep -n "<tên cột>" Datamart/lld/DTM_{MODULE}_Detail_Mapping.csv Datamart/lld/{MODULE}/*.csv` để làm theo cách module đã dùng; cùng cột mã ở nhiều Nhóm thì sửa đồng loạt trong cùng lượt. Máy kiểm Gate 8 D23 (ERROR) / D24 (WARNING); chi tiết `rules.md` mục A36.
+
 ### Phân định Role-Playing Date FK vs Degenerate Date Attribute
 
 | Tiêu chí | Role-Playing Date FK | Degenerate Date Attribute |

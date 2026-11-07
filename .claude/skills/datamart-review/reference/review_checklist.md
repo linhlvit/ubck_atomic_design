@@ -390,6 +390,9 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 
 □ Kiểm kê điều kiện SQL BA ở `logic` (A26 / L17(e)): `ON` của LEFT JOIN, CTE, `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`, biểu thức tính
   → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
+
+□ Cột mã `*_code` hiển thị (SLICER/GROUP_BY) và nhãn (A36): SQL BA của Nhóm có CASE nhãn ở SELECT ngoài? → `logic` phải có CASE tương ứng (ELSE theo BA từng Nhóm); LLD cột `*_code` chỉ chứa mã; cùng cột mã ở Nhóm khác cùng cách xử lý — D23/D24 của `check_design_lint.py` trả lời sẵn
+  → Hiển thị mã thô khi BA ánh xạ nhãn → 🟠 Warning (`L3-CODE-LABEL-INCONSISTENT`, hoặc `L3-ETL-CODE-SHOWN-RAW` với mã ETL tự sinh như `status_code`); cột `*_code` chứa nhãn → 🔴 Critical (`L2-CODE-COL-HAS-LABEL`)
 ```
 
 ---

@@ -568,6 +568,23 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 
 ---
 
+### L19 — Nhãn của cột mã: thiếu CASE (hiển thị mã thô) hoặc nhãn nằm sai tầng `[L3-CODE-LABEL-INCONSISTENT / L2-CODE-COL-HAS-LABEL]`
+
+Sự cố thật (2026-11-07, TT Nhóm 15; sau đó rà thêm K_TT_37/K_TT_38/K_TT_19 cùng lỗi, trong đó `status_code` là mã NOT_STARTED/IN_PROGRESS/COMPLETED do ETL tự sinh): K_TT_53 (Loại hình) đọc `form_tp_code` thô nên màn hình ra `PERIODIC`/`UNSCHEDULED` trong khi SQL BA là 'Định kỳ'/'Đột xuất'; K_TT_54 (Trạng thái) có nhãn nhưng nằm trong ETL (cột `life_cycle_status_code` chứa
+'Mới tiếp nhận…'); cùng lúc K_TT_52 và K_TT_18 (Nhóm 5) ánh xạ nhãn ở Detail Mapping. Quét sau đó còn K_TT_37 (Nhóm 10) cùng lỗi. Luật A36.
+
+```
+❌ K_TT_53: logic = opr_penalty_decision_list.form_tp_code            (mã thô lên màn hình; SQL BA có CASE nhãn)
+❌ K_TT_54: LLD life_cycle_status_code etl_logic = CASE … THEN 'Mới tiếp nhận' …   (cột *_code chứa nhãn; đổi nhãn BA phải chạy lại ETL)
+✅ K_TT_53: logic = CASE WHEN opr_penalty_decision_list.form_tp_code = 'UNSCHEDULED' THEN 'Đột xuất' WHEN opr_penalty_decision_list.form_tp_code = 'PERIODIC' THEN 'Định kỳ' ELSE 'Không xác định' END
+            + LLD form_tp_code chỉ trả mã (ELSE NULL, nullable = true)
+```
+
+**Kiểm:** mỗi SLICER/GROUP_BY hiển thị cột `*_code` → SQL BA của Nhóm có CASE nhãn ở SELECT ngoài? có thì `logic` phải có CASE tương ứng, `ELSE` đúng theo BA của từng Nhóm (Nhóm 10 không có ELSE ⇒ NULL — không chép từ Nhóm 15);
+`grep` cùng tên cột ở Nhóm khác cùng module và xử lý giống nhau; LLD `*_code` không chứa nhãn. Máy kiểm: `check_design_lint.py` D23 (ERROR) / D24, D25 (WARNING).
+
+---
+
 ### Checklist bổ sung — kiểm tra trước khi giao file Phase 2
 
 ```
@@ -589,6 +606,7 @@ Khi thiết kế Detail Mapping, nếu người thiết kế chỉ đọc tên c
 □ L16: Mọi chỉ tiêu đã thống nhất bãi bỏ với BA → column_role = DEPRECATED, mart_table/mart_column để trống, logic = 'Đã loại bỏ — không tạo cột/slicer' — TUYỆT ĐỐI KHÔNG đánh tráo thành PENDING
 □ L17: Bám sát Câu lệnh tham khảo (Reference SQL) & Điều kiện chung trong file BA: đọc trọn vẹn SQL tham khảo, đưa WHERE clause vào logic MEASURE (hoặc dòng FILTER với KPI không có MEASURE), ánh xạ đúng số đo trong SELECT (khớp lệnh vs thỏa thuận, mua vs bán vs ròng, rolling window), ghi rõ vào ghi_chu nếu đã lọc ngầm ở ETL Fact
 □ L18: Mỗi kpi_id có dòng MEASURE → đúng 1 dòng (WHERE/GROUP BY nằm trong logic MEASURE), không có dòng FILTER/GROUP_BY cùng kpi_id; chiều dùng chung khai 1 lần bằng KPI SLICER
+□ L19: Mỗi SLICER/GROUP_BY hiển thị cột `*_code` → đối chiếu SQL BA của Nhóm: BA có CASE nhãn thì `logic` có CASE tương ứng (ELSE theo BA từng Nhóm); cùng cột mã ở Nhóm khác cùng cách xử lý; LLD `*_code` chỉ chứa mã — máy kiểm Gate 8 D23/D24 (A36)
 ```
 
 > **L12 và L13 là 2 testcase module-level** (chạy 1 lần sau khi TOÀN BỘ nhóm đã xử lý, tương ứng TC6 và TC5 trong `SKILL.md`) — khác với L1–L11 vốn kiểm tra trong phạm vi từng nhóm/dòng riêng lẻ.

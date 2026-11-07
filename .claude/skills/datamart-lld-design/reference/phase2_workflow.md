@@ -1,6 +1,6 @@
 # Phase 2 — Quy trình Detail Mapping — LLD Datamart
 
-Input/Output, cách ghi file, Checklist và SELF-REVIEW Phase 2. Đọc cùng `phase2_detail_mapping.md` (`column_role`, 4 trường hợp đặc biệt, lỗi tái diễn L1–L18).
+Input/Output, cách ghi file, Checklist và SELF-REVIEW Phase 2. Đọc cùng `phase2_detail_mapping.md` (`column_role`, 4 trường hợp đặc biệt, lỗi tái diễn L1–L19).
 
 ## Mục lục
 
