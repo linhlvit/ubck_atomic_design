@@ -1,0 +1,233 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dr_submission_history-SCMS.REPORT_HISTORY
+  logical_name: Dynamic Report Submission History
+  physical_name: dr_submission_history
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  description: |
+    Lịch sử nộp báo cáo động FMS — 1 dòng = 1 lần nộp báo cáo của 1 đối tượng theo kỳ. BK = report_log_id. Nguồn ODS report_history (Fact Append, partition submission_date).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-REPORT_HISTORY
+
+attributes:
+  - name: Dynamic Report Submission History Id
+    physical_name: dr_submission_history_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('SCMS_REPORT_HISTORY', REPORT_LOG_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Submission History Code
+    physical_name: dr_submission_history_code
+    business_meaning: Mã lần nộp báo cáo (report_log_id). BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.REPORT_LOG_ID
+    comment: "ETL: REPORT_LOG_ID từ ODS REPORT_HISTORY — BK. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_REPORT_HISTORY'"
+    etl_derived_value: SCMS_REPORT_HISTORY
+
+  - name: Form Report Code
+    physical_name: form_rpt_code
+    business_meaning: Mã mẫu báo cáo (form report) mà ô/lần nộp thuộc về.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.FORM_REPORT_ID
+    comment: "Tham chiếu mềm tới mẫu báo cáo SCMS (FORM_REPORT) — theo bản map Data Modeler chỉ giữ Text, không tạo cặp Id + Code. Cần profile giá trị trước khi cân nhắc FK."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.REPORT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning: Năm của kỳ báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.REPORT_YEAR
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Id
+    physical_name: object_id
+    business_meaning: Mã định danh đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.OBJECT_ID
+    comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic. ODS partition theo OBJECT_ID."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Code
+    physical_name: object_code
+    business_meaning: Mã đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.OBJECT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Name
+    physical_name: object_nm
+    business_meaning: Tên đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.OBJECT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Object Type
+    physical_name: object_tp
+    business_meaning: Loại đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.OBJECT_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Listing Exchange
+    physical_name: listing_exchange
+    business_meaning: Sàn niêm yết của đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.LISTING_EXCHANGE
+    comment: Bản map Data Modeler chưa có tên đích — đặt theo tên cột nguồn.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Business Lines
+    physical_name: business_lines
+    business_meaning: Danh sách nghiệp vụ kinh doanh của đối tượng nộp báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.BUSINESS_LINES
+    comment: "Bản map Data Modeler chưa có tên đích — đặt theo tên cột nguồn. Có thể là chuỗi nhiều giá trị — cần profile trước khi cân nhắc tách thành Array<Text>."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Submission Date
+    physical_name: submission_dt
+    business_meaning: Ngày nộp báo cáo.
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.SUBMISSION_DT
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Type
+    physical_name: period_tp
+    business_meaning: Loại kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.REPORT_PERIOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Period Value
+    physical_name: period_val
+    business_meaning: Giá trị kỳ báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: REPORT_HISTORY
+    source_column: SCMS.REPORT_HISTORY.PERIOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null

@@ -1,0 +1,248 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Dynamic Report Structure"
+  physical_name: "dr_structure"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  etl_pattern: "SCD2"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "FMS"
+  source_table: "ITEM_LIST"
+  lld_file: "FMS/lld_FMS_ITEM_LIST.yaml"
+- source_system: "SCMS"
+  source_table: "ITEM_LIST"
+  lld_file: "SCMS/lld_SCMS_ITEM_LIST.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Dynamic Report Structure Id"
+  physical_name: "dr_structure_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('FMS_ITEM_LIST',\
+    \ ITEM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: null
+- attribute_name: "Dynamic Report Structure Code"
+  physical_name: "dr_structure_code"
+  description: "Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.ITEM_ID"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.ITEM_ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "FMS_ITEM_LIST"
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: null
+- attribute_name: "Report Code"
+  physical_name: "rpt_code"
+  description: "Mã mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.REPORT_CODE"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.REPORT_CODE"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.REPORT_NAME"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.REPORT_NAME"
+- attribute_name: "Sheet Name"
+  physical_name: "sheet_nm"
+  description: "Tên sheet trong mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.SHEET_NAME"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.SHEET_NAME"
+- attribute_name: "Column Path"
+  physical_name: "column_path"
+  description: "Đường dẫn CHA→CON của cột."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.COLUMN_PATH"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.COLUMN_PATH"
+- attribute_name: "Row Path"
+  physical_name: "row_path"
+  description: "Đường dẫn CHA→CON của dòng — tên nhóm chỉ tiêu hiển thị."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.ROW_PATH"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.ROW_PATH"
+- attribute_name: "Cell Id"
+  physical_name: "cell_id"
+  description: "Mã định danh ô trong template."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mã kỹ thuật nguồn, không phải surrogate key Atomic."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.UID_CELL"
+    SCMS.ITEM_LIST: null
+- attribute_name: "Row Index"
+  physical_name: "row_index"
+  description: "Vị trí dòng của ô trong template."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.ROW"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.ROW_ORDER"
+- attribute_name: "Column Index"
+  physical_name: "column_index"
+  description: "Vị trí cột của ô trong template."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm\
+    \ chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.COL"
+    SCMS.ITEM_LIST: null
+- attribute_name: "Legal Basis"
+  physical_name: "legal_basis"
+  description: "Căn cứ pháp lý của mẫu báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.LEGAL_BASIS"
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.LEGAL_BASIS"
+- attribute_name: "Label Column Indicator"
+  physical_name: "label_column_ind"
+  description: "1 = ô thuộc cột nhãn."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.IS_LABEL_COL"
+    SCMS.ITEM_LIST: null
+- attribute_name: "Dynamic Label Row"
+  physical_name: "dynamic_label_row"
+  description: "Mã chỉ tiêu của dòng nhãn gắn với ô động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Tham chiếu mềm tới Dynamic Report Structure Code của chính entity (self-reference)\
+    \ — giữ Text theo bản map Data Modeler, không tạo cặp Id + Code."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: "FMS.ITEM_LIST.LABEL_ITEM_ID"
+    SCMS.ITEM_LIST: null
+- attribute_name: "Form Report Code"
+  physical_name: "form_rpt_code"
+  description: "Mã mẫu báo cáo (form report) mà ô/lần nộp thuộc về."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Tham chiếu mềm tới mẫu báo cáo SCMS (FORM_REPORT) — theo bản map Data\
+    \ Modeler chỉ giữ Text, không tạo cặp Id + Code. Cần profile giá trị trước khi\
+    \ cân nhắc FK."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.FORM_REPORT_ID"
+- attribute_name: "Report Version"
+  physical_name: "rpt_version"
+  description: "Phiên bản mẫu báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Cùng attribute Report Version của Dynamic Report Submission History (FMS\
+    \ REPORT_HISTORY.RPT_VERSION). Data type nguồn ODS không khai báo — cần profile\
+    \ trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.VERSION"
+- attribute_name: "Dynamic Indicator"
+  physical_name: "dynamic_ind"
+  description: "1 = ô thuộc dòng động."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn\
+    \ ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.IS_DYNAMIC"
+- attribute_name: "Data Type"
+  physical_name: "data_tp"
+  description: "Kiểu dữ liệu của ô."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.ITEM_LIST: null
+    SCMS.ITEM_LIST: "SCMS.ITEM_LIST.DATA_TYPE"

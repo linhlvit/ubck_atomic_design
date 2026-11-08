@@ -1,0 +1,291 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Custodian Bank"
+  physical_name: "custodian_bank"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Organization"
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "FMS"
+  source_table: "BANK_MONI"
+  lld_file: "FMS/lld_FMS_BANK_MONI.yaml"
+- source_system: "FIMS"
+  source_table: "BANKMONI"
+  lld_file: "FIMS/lld_FIMS_BANKMONI.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Custodian Bank Id"
+  physical_name: "custodian_bank_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Ngân hàng lưu ký,\
+    \ giám sát tài sản quỹ đầu tư và giám sát hoạt động công ty QLQ."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: null
+- attribute_name: "Custodian Bank Code"
+  physical_name: "custodian_bank_code"
+  description: "Khóa chính của bản ghi (UUID dạng RAW(16)). BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính. PK nguồn."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.ID"
+    FIMS.BANKMONI: "FIMS.BANKMONI.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "FMS_BANK_MONI"
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: null
+- attribute_name: "Classification FMS Status Id"
+  physical_name: "cl_fms_status_id"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_fms_status.cl_fms_status_id. Cần ETL crosswalk sang FMS.STATUS:\
+    \ BANK_MONI.STATUS_ID = STATUS.ID để xác nhận CODE sau đó hash_id('FMS_STATUS',\
+    \ CODE)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.STATUS_ID"
+    FIMS.BANKMONI: null
+- attribute_name: "Classification FMS Status Code"
+  physical_name: "cl_fms_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
+    \ mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_fms_status.cl_fms_status_code. Pair with Classification\
+    \ FMS Status Id. Giá trị lấy từ FMS.STATUS.CODE sau ETL crosswalk — chi tiết xem\
+    \ comment Classification FMS Status Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.STATUS.CODE"
+    FIMS.BANKMONI: null
+- attribute_name: "Custodian Bank Full Name"
+  physical_name: "custodian_bank_full_nm"
+  description: "Tên đầy đủ (tiếng Việt)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.ITEM_NAME"
+    FIMS.BANKMONI: "FIMS.BANKMONI.NAME"
+- attribute_name: "Custodian Bank English Name"
+  physical_name: "custodian_bank_english_nm"
+  description: "Tên tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.EN_NAME"
+    FIMS.BANKMONI: "FIMS.BANKMONI.ENAME"
+- attribute_name: "Custodian Bank Short Name"
+  physical_name: "custodian_bank_short_nm"
+  description: "Tên viết tắt của tổ chức."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.SHORT_NAME"
+    FIMS.BANKMONI: "FIMS.BANKMONI.SHORTNAME"
+- attribute_name: "Bank Swift Code"
+  physical_name: "bank_swift_code"
+  description: "Mã ngân hàng lưu ký (SWIFT code hoặc mã BIC)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.BANK_CODE"
+    FIMS.BANKMONI: null
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.NOTE"
+    FIMS.BANKMONI: null
+- attribute_name: "Record Classification Text"
+  physical_name: "record_cl_text"
+  description: "Loại/phân loại của bản ghi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả nguồn chung chung — giữ dạng Text denormalized, cần xác nhận nghiệp\
+    \ vụ nếu có domain giá trị cố định."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.RECORD_TYPE"
+    FIMS.BANKMONI: null
+- attribute_name: "Amendment Document Number"
+  physical_name: "amendment_document_nbr"
+  description: "Số văn bản/giấy phép điều chỉnh (khi cập nhật hồ sơ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.VOUCHER_NO"
+    FIMS.BANKMONI: null
+- attribute_name: "Decision Issue Date"
+  physical_name: "decision_issue_dt"
+  description: "Ngày ban hành quyết định/nghị quyết."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.DEC_DATE"
+    FIMS.BANKMONI: null
+- attribute_name: "Change Description"
+  physical_name: "change_description"
+  description: "Mô tả nội dung thay đổi khi cập nhật hồ sơ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: "FMS.BANK_MONI.DES_CHANGE"
+    FIMS.BANKMONI: null
+- attribute_name: "Classification FIMS Status Id"
+  physical_name: "cl_fims_status_id"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
+    \ BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+    \ CODE)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.BANKMONI.STATUSID"
+- attribute_name: "Classification FIMS Status Code"
+  physical_name: "cl_fims_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
+    \ mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Classification FIMS Status Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.STATUS.CODE"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc gia/quốc tịch)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: BANKMONI.NAID = NATIONAL.ID\
+    \ để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác nhận value\
+    \ set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.BANKMONI.NAID"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+    \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
+    \ Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.NATIONAL.SNAME"
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amt"
+  description: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn NOT NULL — Atomic để nullable do entity gộp thêm nguồn FMS.BANK_MONI\
+    \ không có cột vốn."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.BANKMONI.CAPITAL"
+- attribute_name: "Director Full Name"
+  physical_name: "director_full_nm"
+  description: "Họ tên Giám đốc/Tổng giám đốc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Denormalized — không có FK."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.BANKMONI.DIRECTOR"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết / ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    FMS.BANK_MONI: null
+    FIMS.BANKMONI: "FIMS.BANKMONI.DESCRIPTION"

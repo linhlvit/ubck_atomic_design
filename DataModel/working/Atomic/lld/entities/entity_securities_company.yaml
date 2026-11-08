@@ -1,0 +1,761 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Securities Company"
+  physical_name: "securities_company"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Broker Dealer"
+  table_type: "Fundamental"
+  etl_pattern: "SCD4A"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "SCMS"
+  source_table: "SC_FIRM_INFO"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_INFO.yaml"
+- source_system: "FIMS"
+  source_table: "SECURITIESCOMPANY"
+  lld_file: "FIMS/lld_FIMS_SECURITIESCOMPANY.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Securities Company Id"
+  physical_name: "sc_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. Hash: hash_id('SCMS_SC_FIRM_INFO', CODE). BCV: \"[Involved\
+    \ Party] Broker Dealer\". Công ty chứng khoán được UBCKNN cấp phép."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Securities Company Code"
+  physical_name: "sc_code"
+  description: "Mã định danh (mã viết tắt, mã nghiệp vụ) của CTCK. BK duy nhất — Id\
+    \ hash từ trường này."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) + Unique Key cũ —\
+    \ gộp còn 1 trường Code duy nhất. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique\
+    \ trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CODE"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "SCMS_SC_FIRM_INFO"
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Parent Securities Company Id"
+  physical_name: "parent_sc_id"
+  description: "FK tự tham chiếu — CTCK cha trong cấu trúc phân cấp (nếu có)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: Securities Company.Securities Company Id. Self-referencing.\
+    \ Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS_SC_FIRM_INFO',\
+    \ CODE_CHA)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Parent Securities Company Code"
+  physical_name: "parent_sc_code"
+  description: "Mã CTCK cha."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Parent\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Securities Company Short Name"
+  physical_name: "sc_short_nm"
+  description: "Tên viết tắt (VD: SSI, VPS, MBS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SHORT_NAME"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.SHORTNAME"
+- attribute_name: "Securities Company Name"
+  physical_name: "sc_nm"
+  description: "Tên đầy đủ bằng tiếng Việt."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.NAME_VI"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.NAME"
+- attribute_name: "Securities Company English Name"
+  physical_name: "sc_english_nm"
+  description: "Tên đầy đủ bằng tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.NAME_EN"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.ENAME"
+- attribute_name: "Company Type Code"
+  physical_name: "company_tp_code"
+  description: "Loại hình doanh nghiệp CTCK (FK đến CAT_COMPANY_TYPE)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  comment: "SCHEMA_CODE=SCMS.CAT_COMPANY_TYPE. Cần ETL crosswalk sang SCMS.CAT_COMPANY_TYPE:\
+    \ SC_FIRM_INFO.COMPANY_TYPE_ID = CAT_COMPANY_TYPE.ID để xác nhận COMPANY_TYPE_CODE."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_COMPANY_TYPE.COMPANY_TYPE_CODE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Classification Securities Company Firm Status Id"
+  physical_name: "cl_sc_firm_status_id"
+  description: "Trạng thái pháp lý CTCK — FK tới Classification Securities Company\
+    \ Firm Status (Đang hoạt động, Tạm ngừng, Đình chỉ, Đóng cửa)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_securities_company_firm_status.cl_sc_firm_status_id. Cần\
+    \ ETL crosswalk sang SCMS.CAT_SC_FIRM_STATUS: SC_FIRM_INFO.RECORD_STATUS = CAT_SC_FIRM_STATUS.ID\
+    \ để xác nhận SC_FIRM_STATUS_CODE sau đó hash_id('SCMS_CAT_SC_FIRM_STATUS', SC_FIRM_STATUS_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.RECORD_STATUS"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Classification Securities Company Firm Status Code"
+  physical_name: "cl_sc_firm_status_code"
+  description: "Mã trạng thái pháp lý CTCK."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_securities_company_firm_status.cl_sc_firm_status_code.\
+    \ Pair with Classification Securities Company Firm Status Id. Giá trị lấy từ SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Firm\
+    \ Status Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
+  description: "Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Securities Company\
+    \ Event Type."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Financial Report Type Code"
+  physical_name: "fr_tp_code"
+  description: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất (nhiều\
+    \ giá trị phân cách bởi dấu phẩy)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FINANCIAL_REPORT_TYPE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Foundation License File Path"
+  physical_name: "foundation_license_file_path"
+  description: "Đường dẫn file giấy phép thành lập trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOUNDATION_LICENSE_FILE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Termination Decision Number"
+  physical_name: "termination_decision_nbr"
+  description: "Số quyết định chấm dứt hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.TERMINATION_DECISION_NUMBER"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Charter Capital Amount"
+  physical_name: "charter_capital_amt"
+  description: "Vốn điều lệ/vốn pháp định (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu NUMBER(38) — lưu dạng số nguyên (không có phần thập phân)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CHARTER_CAPITAL"
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.CAPITAL"
+- attribute_name: "Total Shares"
+  physical_name: "total_shares"
+  description: "Tổng số lượng cổ phần (tự động = vốn điều lệ / mệnh giá 10.000đ)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Tạm dùng Currency Amount (decimal(23,2)) dù không phải tiền tệ — 12 domain\
+    \ chuẩn chưa có domain số đếm lớn cho NUMBER(38) (Small Counter/int sẽ overflow).\
+    \ Data Modeler đã quyết định tạm thời (2026-07-16), chờ xác nhận domain 'Quantity'\
+    \ trước khi chính thức hóa."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.TOTAL_SHARES"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Business Lines"
+  physical_name: "business_lines"
+  description: "Danh sách nghiệp vụ kinh doanh chứng khoán được cấp phép."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "bảng CAT_SERVICE_LEGAL_CAPITAL lưu danh mục nghiệp vụ kinh doanh."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.BUSINESS_LINES"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Additional Business Lines"
+  physical_name: "additional_business_lines"
+  description: "Danh sách nghiệp vụ kinh doanh bổ sung được cấp phép."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "bảng CAT_SERVICE_LEGAL_CAPITAL lưu danh mục nghiệp vụ kinh doanh."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ADDITIONAL_BUSINESS_LINES"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Listed Indicator"
+  physical_name: "listed_ind"
+  description: "Cờ niêm yết: 1=Có niêm yết trên sàn; 0=Không niêm yết."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(1) — ETL cần convert sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.LISTED"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Trading Registered Indicator"
+  physical_name: "trading_registered_ind"
+  description: "Cờ có đăng ký giao dịch."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.TRADING_REGISTERED"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Exchange Code"
+  physical_name: "exchange_code"
+  description: "Sàn niêm yết (HOSE, HNX, UPCOM)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.LISTING_EXCHANGE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Securities Code"
+  physical_name: "securities_code"
+  description: "Mã chứng khoán niêm yết."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SECURITIES_CODE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Listing Date"
+  physical_name: "listing_dt"
+  description: "Ngày niêm yết trên sàn giao dịch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.LISTING_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Registration Date"
+  physical_name: "registration_dt"
+  description: "Ngày đăng ký thành lập CTCK."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SC_FIRM_REGISTRATION_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Official Operation Date"
+  physical_name: "official_operation_dt"
+  description: "Ngày bắt đầu hoạt động chính thức."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.OFFICIAL_OPERATION_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Fiscal Year End Date"
+  physical_name: "fiscal_year_end_dt"
+  description: "Ngày kết thúc năm tài chính (VD: 31/12)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu VARCHAR2(5) — lưu dạng text (VD: 12-31). Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FISCAL_YEAR_END_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Electronic Trading Status Code"
+  physical_name: "electronic_trading_status_code"
+  description: "Trạng thái giao dịch điện tử: HOAT_DONG=Đang hoạt động; TAM_NGUNG=Tạm\
+    \ ngừng; DINH_CHI=Đình chỉ hoạt động."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_STATUS"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Electronic Trading Decision Number"
+  physical_name: "electronic_trading_decision_nbr"
+  description: "Số quyết định về giao dịch điện tử."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_DECISION_NUMBER"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Electronic Trading Decision Date"
+  physical_name: "electronic_trading_decision_dt"
+  description: "Ngày quyết định về giao dịch điện tử."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_DECISION_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Electronic Trading Reason"
+  physical_name: "electronic_trading_reason"
+  description: "Lý do thay đổi trạng thái giao dịch điện tử."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ELECTRONIC_TRADING_REASON"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Public Company Indicator"
+  physical_name: "pc_ind"
+  description: "Cờ công ty đại chúng: 1=Là công ty đại chúng; 0=Không phải."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(1) — ETL cần convert sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PUBLIC_COMPANY"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Public Company Registration Date"
+  physical_name: "pc_registration_dt"
+  description: "Ngày đăng ký là công ty đại chúng với UBCKNN."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_REGISTRATION_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Public Company Decision Number"
+  physical_name: "pc_decision_nbr"
+  description: "Số quyết định công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_DECISION_NUMBER"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Public Company End Date"
+  physical_name: "pc_end_dt"
+  description: "Ngày chấm dứt tư cách công ty đại chúng."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_END_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Public Company End Decision Number"
+  physical_name: "pc_end_decision_nbr"
+  description: "Số quyết định chấm dứt tư cách công ty đại chúng."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PUBLIC_COMPANY_END_DECISION_NUMBER"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Custodian Member Code"
+  physical_name: "custodian_member_code"
+  description: "Mã thành viên lưu ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBER_CODE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Custodian Membership Revocation Decision"
+  physical_name: "custodian_membership_revocation_decision"
+  description: "Quyết định thu hồi tư cách thành viên lưu ký."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBERSHIP_REVOCATION_DECISION"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Custodian Membership Revocation Date"
+  physical_name: "custodian_membership_revocation_dt"
+  description: "Ngày thu hồi tư cách thành viên lưu ký."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CUSTODIAN_MEMBERSHIP_REVOCATION_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Foreign Investor Ownership Limit Rate"
+  physical_name: "foreign_investor_ownership_limit_rate"
+  description: "Tỷ lệ sở hữu tối đa của nhà đầu tư nước ngoài."
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(9,4) — tỷ lệ phần trăm."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.FOREIGN_INVESTOR_OWNERSHIP_LIMIT"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Ownership Limit From Date"
+  physical_name: "ownership_limit_from_dt"
+  description: "Ngày bắt đầu áp dụng giới hạn sở hữu nước ngoài."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.OWNERSHIP_LIMIT_FROM_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Ownership Limit To Date"
+  physical_name: "ownership_limit_to_dt"
+  description: "Ngày kết thúc áp dụng giới hạn sở hữu nước ngoài."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.OWNERSHIP_LIMIT_TO_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Declaration Indicator"
+  physical_name: "amendment_declaration_ind"
+  description: "Cờ có khai bổ sung/sửa đổi: 1=Có văn bản sửa đổi; 0=Không có."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(1) — ETL cần convert sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_DECLARATION"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Document Number"
+  physical_name: "amendment_document_nbr"
+  description: "Số văn bản sửa đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_NUMBER"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Document Date"
+  physical_name: "amendment_document_dt"
+  description: "Ngày văn bản sửa đổi."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Effective Date"
+  physical_name: "amendment_effective_dt"
+  description: "Ngày hiệu lực văn bản sửa đổi."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_EFFECTIVE_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Expiry Date"
+  physical_name: "amendment_expiry_dt"
+  description: "Ngày hết hạn văn bản sửa đổi."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_EXPIRY_DATE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Amendment Document File Path"
+  physical_name: "amendment_document_file_path"
+  description: "Đường dẫn file văn bản sửa đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.AMENDMENT_DOCUMENT_FILE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Provisional Indicator"
+  physical_name: "provisional_ind"
+  description: "Cờ bản nháp: 1=Bản nháp; 0=Chính thức."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.PROVISIONAL"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Synced From Admin Process Indicator"
+  physical_name: "synced_from_admin_process_ind"
+  description: "Cờ đã đồng bộ từ Thủ tục hành chính: 1=Đã đồng bộ; 0=Chưa đồng bộ."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(1) — ETL cần convert sang boolean."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SYNCED_FROM_ADMIN_PROC"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Attachment Path"
+  physical_name: "attachment_path"
+  description: "Đường dẫn file đính kèm trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.ATTACHMENT_PATH"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.NOTE"
+    FIMS.SECURITIESCOMPANY: null
+- attribute_name: "Classification FIMS Status Id"
+  physical_name: "cl_fims_status_id"
+  description: "FK -> STATUS: Trạng thái hoạt động của đối tượng (bảng danh mục STATUS)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
+    \ SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
+    \ CODE)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.STATUSID"
+- attribute_name: "Classification FIMS Status Code"
+  physical_name: "cl_fims_status_code"
+  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
+    \ mục STATUS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
+    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
+    \ xem comment Classification FIMS Status Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.STATUS.CODE"
+- attribute_name: "Nationality Id"
+  physical_name: "nationality_id"
+  description: "FK đến Geographic Area (quốc gia/quốc tịch)."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang FIMS.NATIONAL: SECURITIESCOMPANY.NAID =\
+    \ NATIONAL.ID để xác nhận SName sau đó hash_id('ECAT_COUNTRY', SName) | Chưa xác\
+    \ nhận value set khớp danh mục ECAT — cần profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.NAID"
+- attribute_name: "Nationality Code"
+  physical_name: "nationality_code"
+  description: "Mã quốc gia/quốc tịch."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+    \ Id. Giá trị lấy từ FIMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết xem comment\
+    \ Nationality Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.NATIONAL.SNAME"
+- attribute_name: "Director Full Name"
+  physical_name: "director_full_nm"
+  description: "Họ tên Giám đốc/Tổng giám đốc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Denormalized — không có FK."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.DIRECTOR"
+- attribute_name: "Description"
+  physical_name: "description"
+  description: "Mô tả chi tiết / ghi chú bổ sung."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_INFO: null
+    FIMS.SECURITIESCOMPANY: "FIMS.SECURITIESCOMPANY.DESCRIPTION"

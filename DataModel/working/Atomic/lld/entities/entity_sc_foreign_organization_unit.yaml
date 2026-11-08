@@ -1,0 +1,372 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Securities Company Foreign Organization Unit"
+  physical_name: "sc_foreign_organization_unit"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Branch"
+  table_type: "Relative"
+  etl_pattern: "SCD2"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_BRANCH"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_BRANCH.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Securities Company Foreign Organization Unit Id"
+  physical_name: "sc_foreign_ou_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Involved Party] Representative Office\". VPDD CTCK\
+    \ nước ngoài tại Việt Nam."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+- attribute_name: "Securities Company Foreign Organization Unit Code"
+  physical_name: "sc_foreign_ou_code"
+  description: "Khóa chính kỹ thuật (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK chính. PK nguồn (NUMBER — ETL cần convert sang string)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.ID"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "SCMS_SC_FIRM_FOREIGN_REP_OFFICE"
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+- attribute_name: "Organization Unit Type Code"
+  physical_name: "ou_tp_code"
+  description: "Loại đơn vị tổ chức trực thuộc CTCK."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SCMS_ORG_UNIT_TYPE. ETL hardcode. SC_FIRM_FOREIGN_REP_OFFICE →\
+    \ FOREIGN_REP_OFFICE."
+  classification_context: "SCMS_ORG_UNIT_TYPE=FOREIGN_REP_OFFICE"
+  etl_derived_value: "FOREIGN_REP_OFFICE"
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+- attribute_name: "Securities Company Id"
+  physical_name: "sc_id"
+  description: "FK đến Công ty chứng khoán nội địa liên quan."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: securities_company.sc_id. Nullable vì một số VPDD NN có thể\
+    \ chưa liên kết CTCK nội. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO: SC_FIRM_FOREIGN_REP_OFFICE.SC_FIRM_INFO_ID\
+    \ = SC_FIRM_INFO.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)\
+    \ | Trước đây hash trực tiếp theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với\
+    \ Id của bảng main (hash từ CODE) — đã sửa sang crosswalk 2026-07-27."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.SC_FIRM_INFO_ID"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.SC_FIRM_INFO_ID"
+- attribute_name: "Securities Company Code"
+  physical_name: "sc_code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_INFO.CODE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_INFO.CODE"
+- attribute_name: "Organization Unit Name"
+  physical_name: "ou_nm"
+  description: "Tên chi nhánh CTCK nước ngoài tại Việt Nam."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.REP_OFFICE_NAME"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.BRANCH_NAME"
+- attribute_name: "Classification Securities Company Firm Status Id"
+  physical_name: "cl_sc_firm_status_id"
+  description: "Trạng thái pháp lý chi nhánh CTCK nước ngoài — FK tới Classification\
+    \ Securities Company Firm Status."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_securities_company_firm_status.cl_sc_firm_status_id. Cần\
+    \ ETL crosswalk sang SCMS.CAT_SC_FIRM_STATUS: SC_FIRM_FOREIGN_REP_OFFICE.REP_OFFICE_STATUS_ID\
+    \ = CAT_SC_FIRM_STATUS.ID để xác nhận SC_FIRM_STATUS_CODE sau đó hash_id('SCMS_CAT_SC_FIRM_STATUS',\
+    \ SC_FIRM_STATUS_CODE) | Trước đây hash trực tiếp theo REP_OFFICE_STATUS_ID (ID\
+    \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ SC_FIRM_STATUS_CODE) —\
+    \ đã sửa sang crosswalk 2026-09-16."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.REP_OFFICE_STATUS_ID"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.RECORD_STATUS"
+- attribute_name: "Classification Securities Company Firm Status Code"
+  physical_name: "cl_sc_firm_status_code"
+  description: "Mã trạng thái pháp lý chi nhánh CTCK nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_securities_company_firm_status.cl_sc_firm_status_code.\
+    \ Pair with Classification Securities Company Firm Status Id. Giá trị lấy từ SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE\
+    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Firm\
+    \ Status Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.CAT_SC_FIRM_STATUS.SC_FIRM_STATUS_CODE"
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
+  description: "Loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
+- attribute_name: "Official Operation Date"
+  physical_name: "official_operation_dt"
+  description: "Ngày bắt đầu hoạt động chính thức."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.OFFICIAL_OPERATION_DATE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.OFFICIAL_OPERATION_DATE"
+- attribute_name: "Validity End Date"
+  physical_name: "validity_end_dt"
+  description: "Ngày hết hạn giấy phép VPDD."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EXPIRY_DATE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+- attribute_name: "Operation Term Years"
+  physical_name: "operation_term_years"
+  description: "Thời hạn hoạt động (số năm)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu NUMBER(2)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.OPERATION_TERM_YEARS"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: null
+- attribute_name: "Parent Company Name"
+  physical_name: "parent_company_nm"
+  description: "Tên công ty mẹ nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.PARENT_COMPANY_NAME"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.PARENT_COMPANY_NAME"
+- attribute_name: "Parent Company License Number"
+  physical_name: "parent_company_license_nbr"
+  description: "Số giấy phép hoạt động của công ty mẹ nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.PARENT_COMPANY_LICENSE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.PARENT_COMPANY_LICENSE_NUMBER"
+- attribute_name: "Parent Company License Date"
+  physical_name: "parent_company_license_dt"
+  description: "Ngày cấp giấy phép của công ty mẹ nước ngoài."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.PARENT_LICENSE_DATE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.PARENT_COMPANY_LICENSE_DATE"
+- attribute_name: "Parent Company Address"
+  physical_name: "parent_company_adr"
+  description: "Địa chỉ trụ sở chính của công ty mẹ nước ngoài."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Mô tả gốc BRD trống."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.PARENT_HQ_ADDRESS"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.PARENT_COMPANY_ADDRESS"
+- attribute_name: "Country Id"
+  physical_name: "country_id"
+  description: "FK đến Geographic Area (quốc gia) của công ty mẹ nước ngoài."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
+    \ = 'COUNTRY'). Cần ETL crosswalk sang SCMS.CAT_NATIONALITY: SC_FIRM_FOREIGN_REP_OFFICE.COUNTRY\
+    \ = CAT_NATIONALITY.ID để xác nhận NATIONALITY_CODE sau đó hash_id('ECAT_COUNTRY',\
+    \ NATIONALITY_CODE) | Nguồn COUNTRY lưu VARCHAR2(800) — ETL cần cast sang number\
+    \ để join CAT_NATIONALITY.ID; cần profile dữ liệu (có thể chứa tên/mã thay vì\
+    \ ID). Chưa xác nhận value set khớp danh mục ECAT — cần profile dữ liệu trước\
+    \ go-live."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.COUNTRY"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.COUNTRY"
+- attribute_name: "Country Code"
+  physical_name: "country_code"
+  description: "Mã quốc gia của công ty mẹ nước ngoài (denormalized)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
+    \ Country Id. Giá trị lấy từ SCMS.CAT_NATIONALITY.NATIONALITY_CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Country Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.CAT_NATIONALITY.NATIONALITY_CODE"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.NOTE"
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.NOTE"
+- attribute_name: "Organization Unit English Name"
+  physical_name: "ou_english_nm"
+  description: "Tên chi nhánh bằng tiếng Anh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.NAME_EN"
+- attribute_name: "Organization Unit Short Name"
+  physical_name: "ou_short_nm"
+  description: "Tên viết tắt chi nhánh."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.SHORT_NAME"
+- attribute_name: "Allocated Capital Amount"
+  physical_name: "allocated_capital_amt"
+  description: "Vốn được cấp cho chi nhánh (đơn vị: đồng)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu NUMBER(20) — số nguyên."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ALLOCATED_CAPITAL"
+- attribute_name: "Financial Report Type Code"
+  physical_name: "fr_tp_code"
+  description: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp nhất."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.FINANCIAL_REPORT_TYPE"
+- attribute_name: "Fiscal Year End Date"
+  physical_name: "fiscal_year_end_dt"
+  description: "Ngày kết thúc năm tài chính."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn lưu VARCHAR2(5) — lưu dạng text (VD: 12-31)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.FISCAL_YEAR_END_DATE"
+- attribute_name: "Enterprise Code"
+  physical_name: "enterprise_code"
+  description: "Mã số doanh nghiệp đăng ký tại Sở KH."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE: null
+    SCMS.SC_FIRM_FOREIGN_BRANCH: "SCMS.SC_FIRM_FOREIGN_BRANCH.ENTERPRISE_CODE"

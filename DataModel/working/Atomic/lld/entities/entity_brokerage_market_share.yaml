@@ -1,0 +1,177 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Brokerage Market Share"
+  physical_name: "brokerage_market_share"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  etl_pattern: "Fact Snapshot"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "HNX"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  lld_file: "HNX/lld_HNX_BROKERAGE_MARKET_SHARE.yaml"
+- source_system: "HOSE"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  lld_file: "HOSE/lld_HOSE_BROKERAGE_MARKET_SHARE.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Brokerage Market Share Id"
+  physical_name: "brokerage_market_share_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_BROKERAGE_MARKET_SHARE',MEMBER_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "HNX_BROKERAGE_MARKET_SHARE"
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: null
+- attribute_name: "Securities Company Member Code"
+  physical_name: "sc_member_code"
+  description: "Mã thành viên"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.MEMBER_CODE"
+- attribute_name: "Securities Company Name"
+  physical_name: "sc_nm"
+  description: "Tên công ty chứng khoán"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.BROKER_NAME"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.BROKER_NAME"
+- attribute_name: "Total Trading Value"
+  physical_name: "total_trading_val"
+  description: "Tổng giá trị giao dịch"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
+    HOSE.BROKERAGE_MARKET_SHARE: null
+- attribute_name: "Market Share By Value"
+  physical_name: "market_share_by_val"
+  description: "Tỷ trọng theo tổng GTGD (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE"
+- attribute_name: "Security Type Code"
+  physical_name: "security_tp_code"
+  description: "Phân loại"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.CLASSIFICATION"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.CLASSIFICATION"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY"
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY"
+- attribute_name: "Buy Trading Value"
+  physical_name: "buy_trading_val"
+  description: "Giá trị giao dịch mua (tỷ đồng)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.BUY_TRADING_VALUE"
+- attribute_name: "Sell Trading Value"
+  physical_name: "sell_trading_val"
+  description: "Giá trị giao dịch bán (tỷ đồng)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: "Chỉ HOSE có cột này; HNX/VSDC để NULL."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE"

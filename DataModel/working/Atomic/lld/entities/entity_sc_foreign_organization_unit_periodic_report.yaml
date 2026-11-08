@@ -1,0 +1,353 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Securities Company Foreign Organization Unit Periodic Report"
+  physical_name: "sc_foreign_organization_unit_periodic_report"
+  bcv_core_object: "Business Activity"
+  bcv_concept: "[Business Activity] Transaction"
+  table_type: "Relative"
+  etl_pattern: "SCD2"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.yaml"
+- source_system: "SCMS"
+  source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
+  lld_file: "SCMS/lld_SCMS_SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Securities Company Foreign Organization Unit Periodic Report Id"
+  physical_name: "sc_foreign_ou_periodic_rpt_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: null
+- attribute_name: "Securities Company Foreign Organization Unit Periodic Report Code"
+  physical_name: "sc_foreign_ou_periodic_rpt_code"
+  description: "Khóa chính kỹ thuật SCMS (ID tự tăng). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK. NUMBER(10) — ETL convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.ID"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "SCMS_SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: null
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: null
+- attribute_name: "Securities Company Foreign Organization Unit Id"
+  physical_name: "sc_foreign_ou_id"
+  description: "FK đến Văn phòng đại diện nước ngoài CTCK nộp báo cáo này."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  comment: "FK target: sc_foreign_organization_unit.sc_foreign_ou_id. Hash: hash_id('SCMS_SC_FIRM_FOREIGN_BRANCH',\
+    \ SC_FIRM_FOREIGN_BRANCH_ID)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SC_FIRM_FOREIGN_REP_OFFICE_ID"
+- attribute_name: "Securities Company Foreign Organization Unit Code"
+  physical_name: "sc_foreign_ou_code"
+  description: "Mã Văn phòng đại diện nước ngoài CTCK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "Lookup pair: sc_foreign_organization_unit.sc_foreign_ou_code. Pair with\
+    \ Securities Company Foreign Organization Unit Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SC_FIRM_FOREIGN_BRANCH_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SC_FIRM_FOREIGN_REP_OFFICE_ID"
+- attribute_name: "Classification Securities Company Event Type Id"
+  physical_name: "cl_sc_event_tp_id"
+  description: "FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
+- attribute_name: "Classification Securities Company Event Type Code"
+  physical_name: "cl_sc_event_tp_code"
+  description: "Mã loại sự kiện pháp lý."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
+- attribute_name: "Report Name"
+  physical_name: "rpt_nm"
+  description: "Tên báo cáo định kỳ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(500)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.REPORT_NAME"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_NAME"
+- attribute_name: "Category"
+  physical_name: "category"
+  description: "Danh mục/phân loại báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(50). Mô tả gốc BRD null. Cần profile để xem xét có nên chuẩn\
+    \ hóa Classification Value không."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.CATEGORY"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.CATEGORY"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Chu kỳ báo cáo (Ngày/Tuần/Tháng/Quý/Bán niên/Năm)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(20). Giá trị ngắn — cần profile để xem xét chuẩn hóa Classification\
+    \ Value."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.REPORT_PERIOD"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_PERIOD"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm của kỳ báo cáo (4 chữ số)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(10). Giá trị 4 chữ số (VD: 2024)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.REPORT_YEAR"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_YEAR"
+- attribute_name: "Period"
+  physical_name: "period"
+  description: "Số thứ tự kỳ báo cáo trong năm (tuần/tháng/quý tùy report_period)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER(10). Mô tả gốc BRD null. Giá trị tùy thuộc REPORT_PERIOD."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.PERIOD"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.PERIOD"
+- attribute_name: "Quarter"
+  physical_name: "quarter"
+  description: "Số thứ tự quý trong năm (1-4), áp dụng khi báo cáo theo quý."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER. Mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.QUARTER"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.QUARTER"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Số thứ tự tháng trong năm (1-12), áp dụng khi báo cáo theo tháng."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "NUMBER. Mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.REPORT_MONTH"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.REPORT_MONTH"
+- attribute_name: "Start Date"
+  physical_name: "start_dt"
+  description: "Ngày bắt đầu của kỳ báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.START_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.START_DATE"
+- attribute_name: "End Date"
+  physical_name: "end_dt"
+  description: "Ngày kết thúc của kỳ báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.END_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.END_DATE"
+- attribute_name: "Summary"
+  physical_name: "summary"
+  description: "Tóm tắt nội dung báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SUMMARY"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUMMARY"
+- attribute_name: "Eform Data"
+  physical_name: "eform_data"
+  description: "Dữ liệu eForm được điền cho loại báo cáo này."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(4000). DU_LIEU_EFORM = Dữ liệu eForm — mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EFORM_DATA"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EFORM_DATA"
+- attribute_name: "Note"
+  physical_name: "note"
+  description: "Ghi chú bổ sung, không bắt buộc."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(2000). Mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.NOTE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.NOTE"
+- attribute_name: "Document Number"
+  physical_name: "document_nbr"
+  description: "Số văn bản pháp lý của báo cáo (QĐ/GP/CV)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(255)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.DOCUMENT_NUMBER"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.DOCUMENT_NUMBER"
+- attribute_name: "Document Date"
+  physical_name: "document_dt"
+  description: "Ngày của văn bản pháp lý."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "DATE."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.DOCUMENT_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.DOCUMENT_DATE"
+- attribute_name: "Event Date"
+  physical_name: "event_dt"
+  description: "Ngày diễn ra sự kiện pháp lý liên quan đến báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "DATE. Mô tả gốc BRD null."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_DATE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_DATE"
+- attribute_name: "Import File Path"
+  physical_name: "import_file_path"
+  description: "Đường dẫn file import dữ liệu báo cáo trên hệ thống lưu trữ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: "VARCHAR2(1000). Reference path — không load binary vào Atomic."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.IMPORT_FILE_PATH"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.IMPORT_FILE_PATH"
+- attribute_name: "Submission Deadline Date"
+  physical_name: "submission_deadline_dt"
+  description: "Hạn nộp báo cáo (ngày)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: "DATE. Cùng ý nghĩa với SUBMISSION_DEADLINE_AT nhưng ở dạng Date (không\
+    \ có giờ)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SUBMISSION_DEADLINE"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUBMISSION_DEADLINE"
+- attribute_name: "Submission Deadline Timestamp"
+  physical_name: "submission_deadline_tms"
+  description: "Hạn nộp báo cáo (ngày giờ chính xác)."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: "TIMESTAMP(0). Cùng ý nghĩa với SUBMISSION_DEADLINE nhưng lưu cả giờ:phút.\
+    \ Giữ cả hai để dùng tùy ngữ cảnh."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SUBMISSION_DEADLINE_AT"
+- attribute_name: "Sent Timestamp"
+  physical_name: "sent_tms"
+  description: "Thời điểm báo cáo được gửi đi."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  comment: "TIMESTAMP(6). NULL nếu chưa gửi."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.SENT_AT"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.SENT_AT"
+- attribute_name: "Previous Report Submission Status Code"
+  physical_name: "previous_rpt_submission_status_code"
+  description: "Trạng thái nộp báo cáo trước đó (mô tả gốc DDL trống)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS"
+    SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.PREVIOUS_SUBMIT_STATUS"

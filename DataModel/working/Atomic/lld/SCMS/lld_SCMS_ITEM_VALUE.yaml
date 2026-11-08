@@ -1,0 +1,164 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "SCMS"
+  source_table: "ITEM_VALUE"
+  atomic_entity: "Dynamic Report Value"
+  entity_physical_name: "dr_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: "Classification"
+  group: "T6"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-11-08"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler 2026-11-08, nguồn 'FIMS báo cáo động.xlsx', mục SCMS). Cùng entity dùng chung với FMS (Level 2 — shared entity nhiều nguồn). Không có DDL trong Source/*.txt nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo ý nghĩa mô tả cột. Không thiết kế technical fields ds_* và cột kỹ thuật ODS (_source_system, _loaded_at) theo quyết định Data Modeler (cùng quy tắc fir_value/fir_structure 2026-09-30)."
+attributes:
+- attribute_name: "Dynamic Report Value Id"
+  physical_name: "dr_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('SCMS_ITEM_VALUE', ITEM_ID || REPORT_LOG_ID || ROW_ORDER)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Dynamic Report Value Code"
+  physical_name: "dr_val_code"
+  description: "Mã nghiệp vụ ô giá trị = ITEM_ID || REPORT_LOG_ID || ROW_ORDER. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.ITEM_ID"
+  - "SCMS.ITEM_VALUE.REPORT_LOG_ID"
+  - "SCMS.ITEM_VALUE.ROW_ORDER"
+  comment: "ETL-derived: concat(ITEM_ID, REPORT_LOG_ID, ROW_ORDER) từ ODS ITEM_VALUE — BK composite theo bản map Data Modeler. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=SCMS_ITEM_VALUE"
+  etl_derived_value: "SCMS_ITEM_VALUE"
+  data_type: "string"
+- attribute_name: "Dynamic Report Structure Id"
+  physical_name: "dr_structure_id"
+  description: "FK → Dynamic Report Structure: ô chỉ tiêu tương ứng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.ITEM_ID"
+  comment: "FK target: dr_structure.dr_structure_id. Hash: hash_id('SCMS_ITEM_LIST', ITEM_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Dynamic Report Structure Code"
+  physical_name: "dr_structure_code"
+  description: "Mã chỉ tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.ITEM_ID"
+  comment: "Lookup pair: dr_structure.dr_structure_code. Pair with Dynamic Report Structure Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Dynamic Report Submission History Id"
+  physical_name: "dr_submission_history_id"
+  description: "FK → Dynamic Report Submission History: lần nộp chứa ô giá trị."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.REPORT_LOG_ID"
+  comment: "FK target: dr_submission_history.dr_submission_history_id. Hash: hash_id('SCMS_REPORT_HISTORY', REPORT_LOG_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Dynamic Report Submission History Code"
+  physical_name: "dr_submission_history_code"
+  description: "Mã lần nộp báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.REPORT_LOG_ID"
+  comment: "Lookup pair: dr_submission_history.dr_submission_history_code. Pair with Dynamic Report Submission History Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Row Dynamic Index"
+  physical_name: "row_dynamic_index"
+  description: "Thứ tự dòng trong band động."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.ROW_ORDER"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Entity Code"
+  physical_name: "entity_code"
+  description: "Mã đối tượng của dòng dữ liệu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.ENTITY_CODE"
+  comment: "Mã tham chiếu mềm — chưa xác định entity đích duy nhất; cần profile giá trị trước khi cân nhắc FK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Value"
+  physical_name: "val"
+  description: "Giá trị ô báo cáo."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày THỰC TẾ nộp báo cáo."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "SCMS.ITEM_VALUE.SUBMISSION_DT"
+  comment: "Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

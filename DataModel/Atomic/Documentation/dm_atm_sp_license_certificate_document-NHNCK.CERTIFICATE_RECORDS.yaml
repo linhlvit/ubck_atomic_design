@@ -32,21 +32,21 @@ attributes:
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
     source_column: null
-    comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER). Sửa 2026-08-15: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (CERTIFICATE_NUMBER) của entity — gây mismatch cho FK downstream tham chiếu entity này."
+    comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATE_RECORDS', ID). [2026-11-08] Đổi hash từ CERTIFICATE_NUMBER sang ID (PK nguồn), đồng bộ với DECISIONS."
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Document Code
     physical_name: sp_license_certificate_document_code
-    business_meaning: Business key — số chứng chỉ hành nghề (CCHN) thật.
+    business_meaning: Business key — mã định danh bản ghi CCHN trong sổ đăng bộ.
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: NHNCK
     source_table: CERTIFICATE_RECORDS
-    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
-    comment: "BK chính. Mã định danh duy nhất của CCHN — thay cho CERTIFICATE_RECORDS.ID (khóa kỹ thuật) theo quyết định Data Modeler (2026-08-15)."
+    source_column: NHNCK.CERTIFICATE_RECORDS.ID
+    comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu NUMBER — ETL convert sang string. [2026-11-08] Đảo lại theo Data Modeler: Code ← ID (trước đây ← CERTIFICATE_NUMBER); số CCHN thật chuyển sang attribute Certificate Number."
     classification_context: null
     etl_derived_value: null
 
@@ -63,6 +63,20 @@ attributes:
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
     classification_context: "Source System Code = 'NHNCK_CERTIFICATE_RECORDS'"
     etl_derived_value: NHNCK_CERTIFICATE_RECORDS
+
+  - name: Certificate Number
+    physical_name: certificate_nbr
+    business_meaning: Số chứng chỉ hành nghề (CCHN) cấp cho NHN.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: CERTIFICATE_RECORDS
+    source_column: NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER
+    comment: null
+    classification_context: null
+    etl_derived_value: null
 
   - name: Securities Practitioner License Certificate Type Id
     physical_name: sp_license_certificate_tp_id

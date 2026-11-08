@@ -1,0 +1,245 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Listed Share Information"
+  physical_name: "listed_share_information"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  etl_pattern: "Fact Snapshot"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: "2026-11-08"
+sources:
+- source_system: "VSDC"
+  source_table: "OUTSTANDING_SHARES"
+  lld_file: "VSDC/lld_VSDC_OUTSTANDING_SHARES.yaml"
+- source_system: "HNX"
+  source_table: "LISTED_SECURITIES_LIST"
+  lld_file: "HNX/lld_HNX_LISTED_SECURITIES_LIST.yaml"
+- source_system: "HOSE"
+  source_table: "LISTED_SECURITIES_LIST"
+  lld_file: "HOSE/lld_HOSE_LISTED_SECURITIES_LIST.yaml"
+consolidation_notes: []
+attributes:
+- attribute_name: "Listed Share Information Id"
+  physical_name: "listed_share_information_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_OUTSTANDING_SHARES',TICKER_SYMBOL)"
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.TICKER_SYMBOL"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.TICKER_SYMBOL"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.TICKER_SYMBOL"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "VSDC_OUTSTANDING_SHARES"
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: null
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Ticker Symbol"
+  physical_name: "ticker_symbol"
+  description: "Mã cổ phiếu/chứng khoán"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.TICKER_SYMBOL"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.TICKER_SYMBOL"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.TICKER_SYMBOL"
+- attribute_name: "ISIN Code"
+  physical_name: "isin_code"
+  description: "Mã ISIN"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.ISIN_CODE"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Total Issued Share Quantity"
+  physical_name: "total_issued_share_quantity"
+  description: "Tổng khối lượng chứng khoán phát hành"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.TOTAL_ISSUED_SHARES"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Treasury Share Quantity"
+  physical_name: "treasury_share_quantity"
+  description: "Khối lượng chứng khoán mua lại (Cổ phiếu quỹ)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.TREASURY_SHARES"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Outstanding Share Quantity"
+  physical_name: "outstanding_share_quantity"
+  description: "Khối lượng chứng khoán đang lưu hành"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.OUTSTANDING_SHARES"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.OUTSTANDING_SHARES"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.OUTSTANDING_SHARES"
+- attribute_name: "Free Float Share Quantity"
+  physical_name: "free_float_share_quantity"
+  description: "Khối lượng chứng khoán tự do chuyển nhượng"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.FREE_FLOAT_SHARES"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Restricted Share Quantity"
+  physical_name: "restricted_share_quantity"
+  description: "Khối lượng chứng khoán hạn chế chuyển nhượng"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.RESTRICTED_SHARES"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Voting Share Quantity"
+  physical_name: "voting_share_quantity"
+  description: "Khối lượng chứng khoán có quyền biểu quyết"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.VOTING_SHARES"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Transaction Date"
+  physical_name: "transaction_dt"
+  description: "Ngày giao dịch"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.TRANSACTION_DATE"
+    HNX.LISTED_SECURITIES_LIST: null
+    HOSE.LISTED_SECURITIES_LIST: null
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.REPORT_YEAR"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REPORT_YEAR"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.REPORT_YEAR"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.REPORT_MONTH"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REPORT_MONTH"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.REPORT_MONTH"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.REPORT_DAY"
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REPORT_DAY"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.REPORT_DAY"
+- attribute_name: "Issuer Name"
+  physical_name: "issuer_nm"
+  description: "Tổ chức phát hành"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: null
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.ISSUER_NAME"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.ISSUER_NAME"
+- attribute_name: "Listed Share Quantity"
+  physical_name: "listed_share_quantity"
+  description: "Số lượng cổ phiếu niêm yết"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: null
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.LISTED_SHARES"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.LISTED_SHARES"
+- attribute_name: "Reference Price"
+  physical_name: "reference_price"
+  description: "Giá tham chiếu"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: null
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REFERENCE_PRICE"
+    HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.REFERENCE_PRICE"

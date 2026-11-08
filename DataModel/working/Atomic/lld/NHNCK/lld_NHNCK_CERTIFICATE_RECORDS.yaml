@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung trường \"Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ rõ ràng). Cần review/approve lại. Lịch sử trước: STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách Data Modeler (2026-07-07: không thiết kế RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem pending_design.yaml (cập nhật lại source_column 2026-07-24). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft (2026-08-14) để sửa lỗi hash-mismatch tương tự trên 3 FK Issue/Revocation/Cancellation Securities Practitioner License Decision Document Id — trước đây hash trực tiếp theo *_DECISION_ID (ID kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml. [SỬA 2026-08-15] Đổi Business Key của chính entity này từ CERTIFICATE_RECORDS.ID (khóa kỹ thuật) sang CERTIFICATE_RECORDS.CERTIFICATE_NUMBER (mã CCHN thật) theo yêu cầu Data Modeler — attribute \"Certificate Number\" riêng lẻ trước đây (cùng map CERTIFICATE_NUMBER) bị gộp vào Code, không giữ trùng lặp. Đã crosswalk 5 file FK downstream đang hash theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) sang CERTIFICATE_NUMBER — xem lld_NHNCK_ORGANIZATION_REPORTS.yaml, lld_NHNCK_APPLICATIONS.yaml, entity_sp_license_application.yaml, lld_NHNCK_CERTIFICATE_RECORD_GROUP_MEMBERS.yaml, lld_NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES.yaml."
+  notes: "Hạ về draft (2026-08-17, xác nhận tường minh bởi Data Modeler) để bổ sung trường \"Status Code\" (cột nguồn STATUS — trước đây bị loại trừ theo chính sách 2026-07-07, nay map Classification Value vì mang ý nghĩa nghiệp vụ rõ ràng). Cần review/approve lại. Lịch sử trước: STATUS (nguồn) không map — cùng field với RECORD_STATUS đã loại trừ theo chính sách Data Modeler (2026-07-07: không thiết kế RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào), chỉ đổi tên qua DDL UAT remap 2026-07-15/20. Xem pending_design.yaml (cập nhật lại source_column 2026-07-24). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft (2026-08-14) để sửa lỗi hash-mismatch tương tự trên 3 FK Issue/Revocation/Cancellation Securities Practitioner License Decision Document Id — trước đây hash trực tiếp theo *_DECISION_ID (ID kỹ thuật) thay vì Code của bảng đích (DECISION_NUMBER), đồng bộ với đổi BK trên lld_NHNCK_DECISIONS.yaml. [SỬA 2026-08-15] Đổi Business Key của chính entity này từ CERTIFICATE_RECORDS.ID (khóa kỹ thuật) sang CERTIFICATE_RECORDS.CERTIFICATE_NUMBER (mã CCHN thật) theo yêu cầu Data Modeler — attribute \"Certificate Number\" riêng lẻ trước đây (cùng map CERTIFICATE_NUMBER) bị gộp vào Code, không giữ trùng lặp. Đã crosswalk 5 file FK downstream đang hash theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID (ID kỹ thuật) sang CERTIFICATE_NUMBER — xem lld_NHNCK_ORGANIZATION_REPORTS.yaml, lld_NHNCK_APPLICATIONS.yaml, entity_sp_license_application.yaml, lld_NHNCK_CERTIFICATE_RECORD_GROUP_MEMBERS.yaml, lld_NHNCK_CERTIFICATE_RECORD_STATUS_HISTORIES.yaml. [2026-11-08] Đảo lại theo Data Modeler: Id hash từ ID (PK nguồn), Code ← ID, thêm lại attribute Certificate Number ← CERTIFICATE_NUMBER; 5 file FK downstream (ORGANIZATION_REPORTS, APPLICATIONS, entity_sp_license_application, CERTIFICATE_RECORD_GROUP_MEMBERS, CERTIFICATE_RECORD_STATUS_HISTORIES) hash trực tiếp theo CERTIFICATE_RECORD_ID/PREVIOUS_CERTIFICATE_RECORD_ID, bỏ crosswalk."
 attributes:
 - attribute_name: "Securities Practitioner License Certificate Document Id"
   physical_name: "sp_license_certificate_document_id"
@@ -27,20 +27,20 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATE_RECORDS', CERTIFICATE_NUMBER). Sửa 2026-08-15: trước đây hash từ ID kỹ thuật, sai lệch với chính Code (CERTIFICATE_NUMBER) của entity — gây mismatch cho FK downstream tham chiếu entity này."
+  comment: "PK surrogate. Hash: hash_id('NHNCK_CERTIFICATE_RECORDS', ID). [2026-11-08] Đổi hash từ CERTIFICATE_NUMBER sang ID (PK nguồn), đồng bộ với DECISIONS."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Document Code"
   physical_name: "sp_license_certificate_document_code"
-  description: "Business key — số chứng chỉ hành nghề (CCHN) thật."
+  description: "Business key — mã định danh bản ghi CCHN trong sổ đăng bộ."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
-  comment: "BK chính. Mã định danh duy nhất của CCHN — thay cho CERTIFICATE_RECORDS.ID (khóa kỹ thuật) theo quyết định Data Modeler (2026-08-15)."
+  - "NHNCK.CERTIFICATE_RECORDS.ID"
+  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu NUMBER — ETL convert sang string. [2026-11-08] Đảo lại theo Data Modeler: Code ← ID (trước đây ← CERTIFICATE_NUMBER); số CCHN thật chuyển sang attribute Certificate Number."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -55,6 +55,19 @@ attributes:
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
   classification_context: "SOURCE_SYSTEM=NHNCK_CERTIFICATE_RECORDS"
   etl_derived_value: "NHNCK_CERTIFICATE_RECORDS"
+  data_type: "string"
+- attribute_name: "Certificate Number"
+  physical_name: "certificate_nbr"
+  description: "Số chứng chỉ hành nghề (CCHN) cấp cho NHN."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "NHNCK.CERTIFICATE_RECORDS.CERTIFICATE_NUMBER"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
   data_type: "string"
 - attribute_name: "Securities Practitioner License Certificate Type Id"
   physical_name: "sp_license_certificate_tp_id"

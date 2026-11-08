@@ -1,0 +1,219 @@
+schema_type: data_model
+schema_version: "1.0"
+
+ldm:
+  id: ATM-dr_structure-SCMS.ITEM_LIST
+  logical_name: Dynamic Report Structure
+  physical_name: dr_structure
+  layer: Atomic
+  version: "1.0"
+  status: approved
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  description: |
+    Cây chỉ tiêu mẫu báo cáo động FMS — 1 dòng = 1 ô chỉ tiêu (item) của 1 sheet trong mẫu báo cáo. BK = item_id. Nguồn ODS item_list (SCD2).
+  owner:
+    steward: username@ubck.com.vn
+    data_modeler: username@fssc.com.vn
+  references:
+    brd: BRD-SRC-SCMS-ITEM_LIST
+
+attributes:
+  - name: Dynamic Report Structure Id
+    physical_name: dr_structure_id
+    business_meaning: Khóa đại diện (surrogate key).
+    data_domain: Surrogate Key
+    data_type: string
+    nullable: false
+    is_primary_key: true
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: null
+    comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('SCMS_ITEM_LIST', ITEM_ID)."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Report Structure Code
+    physical_name: dr_structure_code
+    business_meaning: Mã chỉ tiêu — mã nghiệp vụ ô chỉ tiêu. BK.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.ITEM_ID
+    comment: "ETL: ITEM_ID từ ODS ITEM_LIST — BK. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Source System Code
+    physical_name: src_stm_code
+    business_meaning: Mã hệ thống nguồn dữ liệu.
+    data_domain: Classification Value
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: null
+    comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+    classification_context: "Source System Code = 'SCMS_ITEM_LIST'"
+    etl_derived_value: SCMS_ITEM_LIST
+
+  - name: Form Report Code
+    physical_name: form_rpt_code
+    business_meaning: Mã mẫu báo cáo (form report) mà ô/lần nộp thuộc về.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.FORM_REPORT_ID
+    comment: "Tham chiếu mềm tới mẫu báo cáo SCMS (FORM_REPORT) — theo bản map Data Modeler chỉ giữ Text, không tạo cặp Id + Code. Cần profile giá trị trước khi cân nhắc FK."
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Code
+    physical_name: rpt_code
+    business_meaning: Mã báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.REPORT_CODE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Name
+    physical_name: rpt_nm
+    business_meaning: Tên báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.REPORT_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Version
+    physical_name: rpt_version
+    business_meaning: Phiên bản mẫu báo cáo.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.VERSION
+    comment: Cùng attribute Report Version của Dynamic Report Submission History (FMS REPORT_HISTORY.RPT_VERSION). Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Legal Basis
+    physical_name: legal_basis
+    business_meaning: Căn cứ pháp lý của mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.LEGAL_BASIS
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Sheet Name
+    physical_name: sheet_nm
+    business_meaning: Tên sheet trong mẫu báo cáo.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.SHEET_NAME
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Path
+    physical_name: row_path
+    business_meaning: Đường dẫn CHA→CON của dòng.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.ROW_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Column Path
+    physical_name: column_path
+    business_meaning: Đường dẫn CHA→CON của cột.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.COLUMN_PATH
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Row Index
+    physical_name: row_index
+    business_meaning: Thứ tự dòng của ô chỉ tiêu.
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.ROW_ORDER
+    comment: Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Dynamic Indicator
+    physical_name: dynamic_ind
+    business_meaning: "1 = ô thuộc dòng động."
+    data_domain: Small Counter
+    data_type: int
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.IS_DYNAMIC
+    comment: Nguồn lưu dạng số (INT 0/1) — giữ nguyên giá trị số 0/1. Data type nguồn ODS không khai báo — cần profile trước ETL; domain tạm chọn theo mô tả cột.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Type
+    physical_name: data_tp
+    business_meaning: Kiểu dữ liệu của ô.
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: SCMS
+    source_table: ITEM_LIST
+    source_column: SCMS.ITEM_LIST.DATA_TYPE
+    comment: null
+    classification_context: null
+    etl_derived_value: null

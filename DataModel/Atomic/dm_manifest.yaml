@@ -1363,7 +1363,7 @@ entries:
   table_type: Relative
   etl_pattern: SCD2
   source: SCMS
-  status: draft
+  status: approved
   attribute_count: 7
   brd_ref: BRD-SRC-SCMS-CAT_COMPANY_TYPE
 - subfolder: Common
@@ -1679,6 +1679,19 @@ entries:
   attribute_count: 14
   brd_ref: BRD-SRC-FMS-ITEM_LIST
 - subfolder: Documentation
+  file_name: dm_atm_dr_structure-SCMS.ITEM_LIST.yaml
+  id: ATM-dr_structure-SCMS.ITEM_LIST
+  physical_name: dr_structure
+  logical_name: Dynamic Report Structure
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Form Document"
+  table_type: Relative
+  etl_pattern: SCD2
+  source: SCMS
+  status: approved
+  attribute_count: 14
+  brd_ref: BRD-SRC-SCMS-ITEM_LIST
+- subfolder: Documentation
   file_name: dm_atm_dr_submission_history-FMS.REPORT_HISTORY.yaml
   id: ATM-dr_submission_history-FMS.REPORT_HISTORY
   physical_name: dr_submission_history
@@ -1692,6 +1705,19 @@ entries:
   attribute_count: 14
   brd_ref: BRD-SRC-FMS-REPORT_HISTORY
 - subfolder: Documentation
+  file_name: dm_atm_dr_submission_history-SCMS.REPORT_HISTORY.yaml
+  id: ATM-dr_submission_history-SCMS.REPORT_HISTORY
+  physical_name: dr_submission_history
+  logical_name: Dynamic Report Submission History
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: Fact Append
+  etl_pattern: Fact Append
+  source: SCMS
+  status: approved
+  attribute_count: 15
+  brd_ref: BRD-SRC-SCMS-REPORT_HISTORY
+- subfolder: Documentation
   file_name: dm_atm_dr_value-FMS.ITEM_VALUE.yaml
   id: ATM-dr_value-FMS.ITEM_VALUE
   physical_name: dr_value
@@ -1702,8 +1728,21 @@ entries:
   etl_pattern: Upsert
   source: FMS
   status: approved
-  attribute_count: 16
+  attribute_count: 15
   brd_ref: BRD-SRC-FMS-ITEM_VALUE
+- subfolder: Documentation
+  file_name: dm_atm_dr_value-SCMS.ITEM_VALUE.yaml
+  id: ATM-dr_value-SCMS.ITEM_VALUE
+  physical_name: dr_value
+  logical_name: Dynamic Report Value
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: SCMS
+  status: approved
+  attribute_count: 11
+  brd_ref: BRD-SRC-SCMS-ITEM_VALUE
 - subfolder: Documentation
   file_name: dm_atm_end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST.yaml
   id: ATM-end_of_day_open_interest-VSDC.END_OF_DAY_OPEN_INTEREST
@@ -2497,7 +2536,7 @@ entries:
   etl_pattern: SCD4A
   source: NHNCK
   status: approved
-  attribute_count: 23
+  attribute_count: 24
   brd_ref: BRD-SRC-NHNCK-CERTIFICATE_RECORDS
 - subfolder: Documentation
   file_name: dm_atm_sp_license_certificate_status_change_history-NHNCK.CERTIFICATE_RECORD_STATUS_HISTORIES.yaml
