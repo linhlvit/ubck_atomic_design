@@ -291,6 +291,7 @@ Bảng `Fundamental`/`Relative` (SCD4A/SCD2 current-state) **không** thuộc A1
 | `security_trading_snapshot`, `market_price_snapshot`, `index_constituent_snapshot`, `market_index_snapshot`, `corporate_bond_trading_snapshot`, `security_match_log` | `trading_dt` |
 | `securities_trade`, `securities_order` | `trade_dt` (sổ lệnh còn có `order_dt` — vẫn khóa theo `trade_dt`) |
 | History `*_hstr`, `listed_share_info` | `ds_snpst_dt` |
+| `dr_submission_history` (FMS.REPORT_HISTORY, Fact Append) | `submission_dt` |
 | Bảng khác | tra YAML Atomic: cột kiểu `Date` đóng vai ngày sự kiện/snapshot |
 
 **6 quy tắc bắt buộc:**

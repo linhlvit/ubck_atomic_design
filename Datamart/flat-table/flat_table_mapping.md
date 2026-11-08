@@ -1592,7 +1592,7 @@ _Không có dim join (operational / self-contained table)._
 
 ## QLQ
 
-**19 bảng flat** (7 fact + 12 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
+**20 bảng flat** (8 fact + 12 operational) · **78 KPI unique** (module sở hữu; ngoài ra reuse thêm 4 KPI qua `Fact Macro Indicator Snapshot`/`Fact Market Index Snapshot` — xem GSTT/PTTT)
 
 > **[SỬA 2026-09-28]** Thay thế toàn bộ nội dung "## FMS" cũ (11 bảng tưởng tượng, tên vật lý `fms_*`, không khớp thiết kế thật) — bản nháp đó không phản ánh HLD/LLD đã duyệt. QLQ dùng nguồn FMS nhưng tên module Datamart chính thức là **QLQ**.
 
@@ -1787,6 +1787,110 @@ _Fact EAV mức ô (1 ô báo cáo × 1 bản nộp). Nạp tăng dần theo ng�
 | Nhóm 21 — Giao dịch thông qua Đại lý phân phối | 3 |
 | Nhóm 24 — Thống kê chung | 2 |
 | Nhóm 25 — Số liệu hợp đồng uỷ thác danh mục | 7 |
+
+---
+
+### `datamart.qlq_opr_dynamic_report_explorer_val_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` (bảng dữ liệu khai thác Data Explorer, thay `default.bc_bao_cao_quy` của job ODS cũ) |
+| **Entity nguồn** | Operational Dynamic Report Explorer Value |
+| **Bảng fact/operational** | `datamart.opr_dynamic_report_explorer_val` — không vật lý hóa riêng ở Datamart; flat tính trực tiếp từ `datamart.fct_dynamic_report_val` + `datamart.dynamic_report_structure_dim` + `datamart.dynamic_report_submission_history_dim` (+ `datamart.cdr_dt_dim` cho ngày nộp) |
+| **PK** | không có cột khóa đơn; khóa tự nhiên = ORDER BY: `period_end_dt, object_id, period_tp, period_val, dr_submission_history_code, table_index, entity_code, custodian_bank_code, indicator_id` |
+| **Số dim join** | 0 (join Dimension nằm trong SELECT, như job ODS cũ) |
+
+_Giữ nguyên cấu trúc bảng `bc_bao_cao_quy` (18 cột), chỉ chuẩn hóa tên bảng và tên cột. Logic biến đổi của job ODS cũ viết lại thành INSERT…SELECT ClickHouse: lần nộp thắng theo `rpt_version` (xét toàn bộ lịch sử nộp, kể cả lần nộp không có dòng giá trị), loại chỉ tiêu mồ côi, `table_index` / `dynamic_index`, đánh số dòng trùng mã (ACB, ACB#2), `indicator_id` md5, `indicator_val`, ngày cuối kỳ, alias dòng Tổng-N sang nhóm Chi tiết, khử trùng theo khóa ORDER BY. Nạp toàn bộ (TRUNCATE + INSERT), PARTITION BY năm của `period_end_dt`. Thêm 2026-11-08 — O_QLQ_80; rủi ro khóa `acc_value` ở Atomic: O_QLQ_81._
+
+**Ánh xạ cột đích: `bc_bao_cao_quy` → `qlq_opr_dynamic_report_explorer_val_flat`**
+
+| Cột cũ | Cột mới | Ghi chú |
+|--------|---------|---------|
+| `date` | `period_end_dt` | Ngày cuối KỲ BÁO CÁO (suy từ `period_tp` + `period_val`; không suy được thì dùng ngày nộp) |
+| `object_id` | `object_id` | |
+| `object_name` | `object_nm` | |
+| `object_type_name` | `object_tp` | |
+| `fund_type_name` | `object_sub_tp` | Loại quỹ — chỉ Quỹ đầu tư |
+| `report_type_name` | `rpt_tp_nm` | Nhãn của `rpt_tp` (1 → Báo cáo định kỳ … 4 → Báo cáo khác) |
+| `period_type` | `period_tp` | |
+| `period_value` | `period_val` | |
+| `table_idx` | `table_index` | Thứ tự bảng lặp trong sheet |
+| `dynamic_idx` | `dynamic_index` | Thứ tự dòng động; ô tĩnh = -1 |
+| `entity_code` | `entity_code` | Dòng trùng mã đánh số `ACB#2` |
+| `acc_value` | `custodian_bank_code` | |
+| `id_chitieu` | `indicator_id` | md5 của mã báo cáo (+ cơ sở pháp lý), sheet, đường dẫn hàng, đường dẫn cột |
+| `gia_tri` | `indicator_val` | Giá trị ô dạng chuỗi |
+| `report_code` | `rpt_code` | |
+| `report_name` | `rpt_nm` | |
+| `report_log_id` | `dr_submission_history_code` | |
+| `updated_at` | `ds_etl_pcs_tms` | |
+
+**Ánh xạ nguồn: ODS cũ → Datamart** (dùng chung cho khối 21 và 22)
+
+| ODS cũ | Cột cũ | Bảng Datamart mới | Cột Datamart |
+|--------|--------|-------------------|--------------|
+| `ods_fms_item_value` | `item_id`, `report_log_id`, `row_order` | `fct_dynamic_report_val` | `dr_structure_code`, `dr_submission_history_code`, `row_dynamic_index` |
+| | `entity_code`, `is_label_col`, `is_dynamic` | | `entity_code`, `label_column_ind`, `dynamic_ind` |
+| | `value`, `acc_value`, `kieu_dl` | | `val`, `custodian_bank_code`, `data_tp` |
+| | `ngay_nop` | `cdr_dt_dim` | `cdr_dt` (qua `submission_dt_dim_id`) |
+| | `gia_tri_tich_luy`, `_loaded_at` | — | Atomic không có (cột đầu không dùng ở đầu ra; dedupe `_loaded_at` thay bằng upsert theo PK) |
+| `ods_fms_item_list` | `item_id`, `report_code`, `report_name`, `sheet_name` | `dynamic_report_structure_dim` (chỉ `ds_rcrd_st = 'ACTIVE'`) | `dr_structure_code`, `rpt_code`, `rpt_nm`, `sheet_nm` |
+| | `column_path`, `row_path`, `_col`, `_row`, `legal_basis` | | `column_path`, `structure_row_path`, `column_index`, `row_index`, `legal_basis` |
+| `ods_fms_report_history` | `report_log_id`, `object_id`, `object_name`, `object_type`, `object_subtype` | `dynamic_report_submission_history_dim` (chỉ `ds_rcrd_st = 'ACTIVE'`) | `dr_submission_history_code`, `object_id`, `object_nm`, `object_tp`, `object_sub_tp` |
+| | `report_type`, `report_code`, `rpt_version` | | `rpt_tp`, `submission_rpt_code`, `rpt_version` |
+| | `period_type`, `period_value`, `ngay_nop` | | `period_tp`, `period_val`, `submission_dt` |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| *(chưa có KPI — chờ BA chuyển nguồn Data Explorer sang engine báo cáo động, O_QLQ_79)* | 0 |
+
+---
+
+### `datamart.qlq_opr_dynamic_report_explorer_indicator_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` (bảng chỉ tiêu / metadata Data Explorer, thay phần `targettable` của QLQ trong `default.metadata_etl`) |
+| **Entity nguồn** | Operational Dynamic Report Explorer Indicator |
+| **Bảng fact/operational** | `datamart.opr_dynamic_report_explorer_indicator` — không vật lý hóa riêng ở Datamart; flat tính trực tiếp từ `datamart.dynamic_report_structure_dim` + `datamart.fct_dynamic_report_val` + `datamart.dynamic_report_submission_history_dim` và đọc `datamart.qlq_opr_dynamic_report_explorer_val_flat` |
+| **PK** | `indicator_id` |
+| **Số dim join** | 0 |
+
+_Giữ nguyên cấu trúc phần QLQ của `metadata_etl` (21 cột), chỉ chuẩn hóa tên bảng và tên cột. Chỉ tiêu = mọi ô của mẫu báo cáo (kể cả chỉ tiêu chưa có dữ liệu): chỉ tiêu có dữ liệu lấy thuộc tính từ ô giá trị của lần nộp thắng, chỉ tiêu chưa có dữ liệu bổ sung từ mẫu (tĩnh trước, động sau, mỗi mã một bản), bỏ chỉ tiêu tĩnh "ma" của sheet thuần dòng động. `unit_nm` rỗng khi chỉ tiêu là số (mọi ô khai báo kiểu số, không phải cột nhãn, không có giá trị chữ có nội dung), còn lại `__text__`. Phải chạy SAU khối 21 (đọc bảng dữ liệu để suy `unit_nm`). Nạp toàn bộ (TRUNCATE + INSERT). Thêm 2026-11-08 — O_QLQ_80._
+
+**Ánh xạ cột đích: `metadata_etl` → `qlq_opr_dynamic_report_explorer_indicator_flat`**
+
+| Cột cũ | Cột mới | Ghi chú |
+|--------|---------|---------|
+| `id_chitieu` | `indicator_id` | Khớp `indicator_id` của bảng dữ liệu |
+| `nhom_chitieu` | `indicator_group_nm` | Tên báo cáo > sheet > nhóm hàng |
+| `ten_chitieu` | `indicator_nm` | Tên cột, hoặc phần tử cuối của đường dẫn hàng |
+| `loai_chi_tieu` | `indicator_tp` | Luôn 1 |
+| `sourcetable` | `source_table_nm` | `datamart.fct_dynamic_report_val` (trước: `uat_fms_ods.ods_fms_item_value`) |
+| `targettable` | `target_table_nm` | `qlq_opr_dynamic_report_explorer_val_flat` (trước: `bc_bao_cao_quy`) |
+| `group_keys` | `group_key_list` | Liệt kê theo tên cột mới của bảng dữ liệu |
+| `logic_function` | `logic_function` | Để trống |
+| `level` | `indicator_level` | Luôn 1 |
+| `active` | `active_ind` | Luôn 1 |
+| `effective_from` | `effective_from_dt` | 2000-01-01 |
+| `effective_to` | `effective_to_dt` | 2099-12-31 |
+| `updated_at` | `ds_etl_pcs_tms` | |
+| `don_vi` | `unit_nm` | Rỗng = số, `__text__` = chữ |
+| `sort_order` | `sort_order_nbr` | |
+| `report_name` | `rpt_nm` | |
+| `sheet_name` | `sheet_nm` | |
+| `row_path` | `row_path` | |
+| `column_path` | `column_path` | |
+| `object_types` | `object_tp_list` | Dạng gạch đứng bao quanh |
+| `fund_types` | `object_sub_tp_list` | Dạng gạch đứng bao quanh |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| *(chưa có KPI — chờ BA chuyển nguồn Data Explorer sang engine báo cáo động, O_QLQ_79)* | 0 |
 
 ---
 

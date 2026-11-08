@@ -2,9 +2,10 @@
 -- QLQ Flat Tables — CREATE
 -- Module: Quản lý Quỹ (Fund Management) — QLQ
 -- Generated: Phase 3 LLD Datamart
--- 19 bảng thực tế (thêm #20 qlq_opr_fund_management_company_employee_investor_account_list_flat, Nhóm 28, 2026-10-28; số thứ tự #n giữ theo lịch sử, #n bãi bỏ không đánh lại)
+-- 20 bảng thực tế (thêm #20 qlq_opr_fund_management_company_employee_investor_account_list_flat, Nhóm 28, 2026-10-28; #21/#22 Data Explorer báo cáo động FMS, 2026-11-08; số thứ tự #n giữ theo lịch sử, #n bãi bỏ không đánh lại)
 -- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
+-- Sửa 2026-11-08: bãi bỏ #21 cũ qlq_fct_dynamic_report_val_flat (gộp Fact + 2 Dim thành 1 bảng); thay bằng 2 bảng đích như job Data Explorer ODS cũ — #21 qlq_opr_dynamic_report_explorer_val_flat (dữ liệu, thay bc_bao_cao_quy) và #22 qlq_opr_dynamic_report_explorer_indicator_flat (chỉ tiêu, thay metadata_etl); cấu trúc giữ nguyên, chỉ chuẩn hóa tên bảng/cột (O_QLQ_80)
 -- ============================================================
 
 -- ============================================================
@@ -512,4 +513,73 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (fmc_employee_code, investor_account_nbr)
 COMMENT 'Flat table — Operational Fund Management Company Employee Investor Account List'
+;
+
+
+-- ============================================================
+-- 21. OPERATIONAL: qlq_opr_dynamic_report_explorer_val_flat
+--    Bảng dữ liệu khai thác Data Explorer QLQ (engine báo cáo động FMS) — cấu trúc giữ nguyên default.bc_bao_cao_quy của job ODS cũ,
+--    chỉ chuẩn hóa tên bảng/cột. Không gộp Fact + Dim: 2 bảng đích (dữ liệu này + bảng chỉ tiêu qlq_opr_dynamic_report_explorer_indicator_flat).
+--    Nguồn: fct_dynamic_report_val + dynamic_report_structure_dim + dynamic_report_submission_history_dim (+ cdr_dt_dim ngày nộp) — O_QLQ_80
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_dynamic_report_explorer_val_flat ON CLUSTER 'my_cluster'
+(
+    period_end_dt                                Date                    COMMENT 'Ngày cuối KỲ BÁO CÁO suy từ period_tp + period_val (không parse được thì dùng ngày nộp); cột Data Explorer lọc khoảng kỳ',
+    object_id                                    String                  COMMENT 'Mã định danh đối tượng nộp báo cáo',
+    object_nm                                    String                  COMMENT 'Tên đối tượng nộp báo cáo',
+    object_tp                                    String                  COMMENT 'Loại đối tượng nộp báo cáo (Công ty QLQ, Quỹ đầu tư, ...)',
+    object_sub_tp                                String                  COMMENT 'Loại quỹ — chỉ đối tượng Quỹ đầu tư',
+    rpt_tp_nm                                    String                  COMMENT 'Nhãn loại báo cáo: 1 Báo cáo định kỳ, 2 bất thường, 3 theo yêu cầu, 4 khác',
+    period_tp                                    String                  COMMENT 'Loại kỳ báo cáo (THANG, QUY, NAM, 6_THANG, TUAN, NGAY, NUA_THANG)',
+    period_val                                   String                  COMMENT 'Giá trị kỳ báo cáo (T03/2026, Q1/2026, NAM_2025 ...)',
+    table_index                                  Int32                   COMMENT 'Thứ tự bảng lặp trong sheet (BA: TABLE_IDX)',
+    dynamic_index                                Int32                   COMMENT 'Thứ tự dòng động trong bảng (BA: DYNAMIC_IDX), ô tĩnh = -1',
+    entity_code                                  String                  COMMENT 'Mã đối tượng của dòng động; dòng trùng mã đánh số ACB#2',
+    custodian_bank_code                          String                  COMMENT 'Mã ngân hàng lưu ký / tài khoản đi kèm ô (nguồn acc_value)',
+    indicator_id                                 String                  COMMENT 'md5 của mã báo cáo, sheet, đường dẫn dòng, đường dẫn cột — khóa nối với bảng chỉ tiêu',
+    indicator_val                                String                  COMMENT 'Giá trị ô dạng chuỗi (chữ giữ nguyên văn, số chuẩn hóa)',
+    rpt_code                                     String                  COMMENT 'Mã mẫu báo cáo',
+    rpt_nm                                       String                  COMMENT 'Tên mẫu báo cáo',
+    dr_submission_history_code                   String                  COMMENT 'Mã lần nộp báo cáo (REPORT_LOG_ID) — mỗi lần nộp là một bản ghi riêng',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYear(period_end_dt)
+ORDER BY (period_end_dt, object_id, period_tp, period_val, dr_submission_history_code, table_index, entity_code, custodian_bank_code, indicator_id)
+COMMENT 'Flat Data Explorer QLQ — giá trị ô báo cáo động FMS (thay bc_bao_cao_quy)'
+;
+
+
+-- ============================================================
+-- 22. OPERATIONAL: qlq_opr_dynamic_report_explorer_indicator_flat
+--    Bảng chỉ tiêu (metadata) của Data Explorer QLQ — cấu trúc giữ nguyên default.metadata_etl của job ODS cũ (phần targettable QLQ),
+--    chỉ chuẩn hóa tên bảng/cột. Nối bảng dữ liệu qua indicator_id.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_dynamic_report_explorer_indicator_flat ON CLUSTER 'my_cluster'
+(
+    indicator_id                                 String                  COMMENT 'Mã chỉ tiêu (md5) — khớp indicator_id của bảng dữ liệu',
+    indicator_group_nm                           String                  COMMENT 'Đường dẫn nhóm chỉ tiêu: tên báo cáo > sheet > nhóm hàng',
+    indicator_nm                                 String                  COMMENT 'Tên chỉ tiêu: tên cột, hoặc phần tử cuối đường dẫn dòng khi không có cột',
+    indicator_tp                                 Int32                   COMMENT 'Loại chỉ tiêu (luôn 1)',
+    source_table_nm                              String                  COMMENT 'Bảng nguồn của chỉ tiêu',
+    target_table_nm                              String                  COMMENT 'Bảng dữ liệu chứa giá trị chỉ tiêu',
+    group_key_list                               String                  COMMENT 'Danh sách cột chiều của bảng dữ liệu, cách nhau dấu phẩy, Data Explorer dựng GROUP BY theo chuỗi này',
+    logic_function                               String                  COMMENT 'Hàm logic tổng hợp (để trống)',
+    indicator_level                              Int32                   COMMENT 'Cấp chỉ tiêu (luôn 1)',
+    active_ind                                   Int32                   COMMENT '1 = chỉ tiêu đang hiệu lực',
+    effective_from_dt                            Date                    COMMENT 'Ngày bắt đầu hiệu lực',
+    effective_to_dt                              Date                    COMMENT 'Ngày hết hiệu lực',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng',
+    unit_nm                                      String                  COMMENT 'Đơn vị: rỗng = chỉ tiêu số, __text__ = chỉ tiêu chữ',
+    sort_order_nbr                               Int64                   COMMENT 'Số thứ tự sắp xếp theo mẫu báo cáo',
+    rpt_nm                                       String                  COMMENT 'Tên mẫu báo cáo',
+    sheet_nm                                     String                  COMMENT 'Tên sheet',
+    row_path                                     String                  COMMENT 'Đường dẫn hàng đầy đủ của chỉ tiêu (dòng động thêm Chi tiết)',
+    column_path                                  String                  COMMENT 'Đường dẫn header của cột',
+    object_tp_list                               String                  COMMENT 'Các loại đối tượng đã nộp báo cáo của chỉ tiêu, dạng gạch đứng bao quanh',
+    object_sub_tp_list                           String                  COMMENT 'Các loại quỹ đã nộp báo cáo của chỉ tiêu, dạng gạch đứng bao quanh'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (indicator_id)
+COMMENT 'Flat Data Explorer QLQ — chỉ tiêu báo cáo động FMS (thay metadata_etl của QLQ)'
 ;

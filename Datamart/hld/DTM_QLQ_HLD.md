@@ -690,6 +690,86 @@ flowchart LR
 
 ---
 
+##### Cụm 20: Báo cáo động FMS — bảng dữ liệu khai thác Data Explorer (`Operational Dynamic Report Explorer Value`)
+
+Phục vụ Tab DATA EXPLORER khi BA chuyển nguồn sang engine báo cáo động FMS. Atomic `dr_value` (FMS.ITEM_VALUE), `dr_structure` (FMS.ITEM_LIST), `dr_submission_history` (FMS.REPORT_HISTORY) kéo 1:1 lên Datamart: 2 Dimension (cấu trúc mẫu, lần nộp báo cáo) và bảng giá trị ô `fct_dynamic_report_val` (nạp vật lý nhưng chỉ làm nguồn, không còn là entity thiết kế). ClickHouse có đúng 2 bảng khai thác giữ cấu trúc của job Data Explorer ODS cũ, chỉ chuẩn hóa tên bảng/cột; logic biến đổi của job cũ nằm trong DML flat (O_QLQ_80). Cụm này là bảng dữ liệu `Operational Dynamic Report Explorer Value` (thay `default.bc_bao_cao_quy`, flat khối 21): giá trị từng ô của lần nộp thắng, đã biến đổi (`indicator_id` md5, `indicator_val`, ngày cuối kỳ, đánh số dòng trùng mã). Bảng chỉ tiêu đi kèm ở Cụm 21. **Chưa có KPI dùng** (O_QLQ_79): BA Data Explorer hiện vẫn ghi nguồn `RPT_MEMBER`/`RPT_TEMP` (engine `fmr_*`, Cụm 16–17).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_ITEMVALUE["FMS.ITEM_VALUE"]
+        FMS_ITEMLIST["FMS.ITEM_LIST"]
+        FMS_REPORTHISTORY["FMS.REPORT_HISTORY"]
+        ECAT_ECAT_29_HolidayInfo["ECAT.ECAT_29_HolidayInfo"]
+    end
+
+    subgraph SIL["Atomic"]
+        Dynamic_Report_Value["Dynamic Report Value"]
+        Dynamic_Report_Structure["Dynamic Report Structure"]
+        Dynamic_Report_Submission_History["Dynamic Report Submission History"]
+        Calendar_Date["Calendar Date"]
+    end
+
+    subgraph GOLD["Datamart"]
+        opr_dynamic_report_explorer_val["Operational Dynamic Report Explorer Value"]
+        dynamic_report_structure_dim["Dynamic Report Structure Dimension"]
+        dynamic_report_submission_history_dim["Dynamic Report Submission History Dimension"]
+        cdr_dt_dim["Calendar Date Dimension"]
+    end
+
+    FMS_ITEMVALUE --> Dynamic_Report_Value
+    FMS_ITEMLIST --> Dynamic_Report_Structure
+    FMS_REPORTHISTORY --> Dynamic_Report_Submission_History
+    ECAT_ECAT_29_HolidayInfo --> Calendar_Date
+
+    Dynamic_Report_Value --> opr_dynamic_report_explorer_val
+    Dynamic_Report_Structure --> dynamic_report_structure_dim
+    Dynamic_Report_Submission_History --> dynamic_report_submission_history_dim
+    Calendar_Date --> cdr_dt_dim
+    dynamic_report_structure_dim --> opr_dynamic_report_explorer_val
+    dynamic_report_submission_history_dim --> opr_dynamic_report_explorer_val
+    cdr_dt_dim --> opr_dynamic_report_explorer_val
+```
+
+---
+
+##### Cụm 21: Báo cáo động FMS — bảng chỉ tiêu khai thác Data Explorer (`Operational Dynamic Report Explorer Indicator`)
+
+Bảng chỉ tiêu (metadata) của Data Explorer QLQ, thay phần `targettable` QLQ của `default.metadata_etl` trong job ODS cũ (flat khối 22, chạy sau khối 21): mỗi ô của mẫu báo cáo động là một chỉ tiêu, kể cả chỉ tiêu chưa có dữ liệu, kèm nhóm hiển thị, đơn vị số/chữ (`unit_nm`), thứ tự sắp xếp, loại đối tượng và loại quỹ đã nộp. PK `indicator_id` khớp `indicator_id` của bảng dữ liệu ở Cụm 20. Nguồn: 2 Dimension dr_* và Atomic `dr_value` (để suy chỉ tiêu số/chữ). **Chưa có KPI dùng** (O_QLQ_79).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        FMS_ITEMVALUE["FMS.ITEM_VALUE"]
+        FMS_ITEMLIST["FMS.ITEM_LIST"]
+        FMS_REPORTHISTORY["FMS.REPORT_HISTORY"]
+    end
+
+    subgraph SIL["Atomic"]
+        Dynamic_Report_Value["Dynamic Report Value"]
+        Dynamic_Report_Structure["Dynamic Report Structure"]
+        Dynamic_Report_Submission_History["Dynamic Report Submission History"]
+    end
+
+    subgraph GOLD["Datamart"]
+        opr_dynamic_report_explorer_indicator["Operational Dynamic Report Explorer Indicator"]
+        dynamic_report_structure_dim["Dynamic Report Structure Dimension"]
+        dynamic_report_submission_history_dim["Dynamic Report Submission History Dimension"]
+    end
+
+    FMS_ITEMVALUE --> Dynamic_Report_Value
+    FMS_ITEMLIST --> Dynamic_Report_Structure
+    FMS_REPORTHISTORY --> Dynamic_Report_Submission_History
+
+    Dynamic_Report_Value --> opr_dynamic_report_explorer_indicator
+    Dynamic_Report_Structure --> dynamic_report_structure_dim
+    Dynamic_Report_Submission_History --> dynamic_report_submission_history_dim
+    dynamic_report_structure_dim --> opr_dynamic_report_explorer_indicator
+    dynamic_report_submission_history_dim --> opr_dynamic_report_explorer_indicator
+```
+
+---
+
 ## Section 2 — Tổng quan báo cáo
 
 ### Tab: TỔNG QUAN CTQLQ
@@ -6531,6 +6611,8 @@ flowchart LR
 
 ## Section 3 — Mô hình tổng thể (READY only)
 
+> **[CẬP NHẬT 2026-11-08 — engine báo cáo động FMS, O_QLQ_79 / O_QLQ_80]** Thêm 2 Dimension `Dynamic Report Structure Dimension` / `Dynamic Report Submission History Dimension` kéo 1:1 từ Atomic `dr_structure` / `dr_submission_history` và 2 bảng khai thác Data Explorer `Operational Dynamic Report Explorer Value` (Cụm 20) / `Operational Dynamic Report Explorer Indicator` (Cụm 21). Bảng giá trị ô `fct_dynamic_report_val` vẫn nạp vật lý ở Datamart nhưng không còn là entity thiết kế (chỉ làm nguồn của 2 bảng khai thác). Chưa có KPI READY dùng: BA Data Explorer vẫn ghi nguồn `RPT_*` (engine `fmr_*`).
+
 > **[CẬP NHẬT 2026-10-14 — Nhóm 27/28 READY]** Thêm `Foreign Fund Management Organization Unit Contract List` (Nhóm 27, K_QLQ_179–181) và `Fund Management Company Staff Trade Report` (Nhóm 28, K_QLQ_106–115) — bảng Operational (Nhóm 27) và bảng Fact báo cáo `_rpt` (Nhóm 28, O_QLQ_38), đều không có FK Dimension; trước đó PENDING toàn bộ (BA để trống tên sheet; Atomic chưa có cầu nối VSDC). Xem Section 5: O_QLQ_35/36/37.
 
 > **[CẬP NHẬT 2026-10-14 — bổ sung đăng ký Section 3/4, Entities và flat]** Thêm `Fact Fund Management Report Cell Value` (`fct_fund_management_rpt_cell_val`, Cụm 17 — 51 KPI READY ở 14 Nhóm: 1, 2, 6, 7, 8, 9, 12, 17, 18, 19, 20, 21, 24, 25) và `Fund Management Report Cell Dimension` (`fund_management_rpt_cell_dim`). LLD, Detail Mapping và Cụm 17 đã có từ 2026-10-13 nhưng Section 3/4, `Entities.csv/.md` và flat SQL bị bỏ sót nên 51 KPI READY không có bảng trên ClickHouse (`check_orphan` báo Nhánh A). Bố cục ô vẫn là giả định (O_QLQ_31).
@@ -6561,6 +6643,8 @@ graph TB
     DIM_SCR_AGT(["Securities Distribution Agent Dimension"]):::dim
     DIM_FND_AGT(["Fund Distribution Agent Dimension"]):::dim
     DIM_RPT_CELL(["Fund Management Report Cell Dimension"]):::dim
+    DIM_DR_STRUCT(["Dynamic Report Structure Dimension"]):::dim
+    DIM_DR_SUBM(["Dynamic Report Submission History Dimension"]):::dim
 
     FACT_FMC(["Fact Fund Management Company Snapshot"]):::fact
     FACT_FND_CNT(["Fact Investment Fund Count Snapshot"]):::fact
@@ -6581,6 +6665,8 @@ graph TB
     OPR_FRGN_PRF(["Foreign Fund Management Organization Unit Profile"]):::operational
     OPR_RPT_SHEET(["Fund Management Report Sheet List"]):::operational
     OPR_FRGN_CTR_LST(["Foreign Fund Management Organization Unit Contract List"]):::operational
+    OPR_DR_EXPL_VAL(["Operational Dynamic Report Explorer Value"]):::operational
+    OPR_DR_EXPL_IND(["Operational Dynamic Report Explorer Indicator"]):::operational
 
     DIM_DATE --> FACT_FMC
     DIM_FUND --> FACT_FMC
@@ -6598,6 +6684,11 @@ graph TB
     DIM_DATE --> FACT_RPT_CELL
     DIM_RPT_CELL --> FACT_RPT_CELL
     DIM_FUND_TYPE --> FACT_RPT_CELL
+    DIM_DATE --> OPR_DR_EXPL_VAL
+    DIM_DR_STRUCT --> OPR_DR_EXPL_VAL
+    DIM_DR_SUBM --> OPR_DR_EXPL_VAL
+    DIM_DR_STRUCT --> OPR_DR_EXPL_IND
+    DIM_DR_SUBM --> OPR_DR_EXPL_IND
 
     DIM_FMC --> OPR_CO_PRF
     DIM_FUND --> OPR_FND_LST
@@ -6623,6 +6714,8 @@ graph TB
 | Fact Fund Distribution Agent Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng (nạp đủ mọi tháng, O_QLQ_53; slicer quý/năm chọn dòng tháng cuối kỳ) | K_QLQ_116, 117 (Nhóm 17) | READY (partial — 2/5 chỉ tiêu) |
 | Fact Foreign Fund Management Organization Unit Snapshot | Periodic Snapshot (Market-Level) | 1 snapshot toàn thị trường × 1 tháng (nạp đủ mọi tháng, O_QLQ_53) | K_QLQ_160, 161 (Nhóm 24) | READY (partial — 2/4 chỉ tiêu) |
 | Fact Fund Management Report Cell Value | Fact EAV mức ô (engine báo cáo định kỳ `RPT_*`) | 1 ô báo cáo × 1 bản nộp (`fmr_value`) | K_QLQ_3, 4, 7 (Nhóm 1); K_QLQ_12–18 (Nhóm 2); K_QLQ_42, 43 (Nhóm 6); K_QLQ_46, 49 (Nhóm 7); K_QLQ_44, 50–55 (Nhóm 8); K_QLQ_44, 56 (Nhóm 9); K_QLQ_81 (Nhóm 12); K_QLQ_118–121 (Nhóm 17); K_QLQ_122–125 (Nhóm 18); K_QLQ_126–129 (Nhóm 19); K_QLQ_130–133 (Nhóm 20); K_QLQ_134–136 (Nhóm 21); K_QLQ_162, 163 (Nhóm 24); K_QLQ_164–170 (Nhóm 25) | READY (51 KPI unique; nhãn dòng/cột là giả định — O_QLQ_31; chọn kỳ/bản nộp — O_QLQ_32; nạp tăng dần theo ngày nộp — O_QLQ_34) |
+| Operational Dynamic Report Explorer Value | Bảng dữ liệu khai thác Data Explorer (engine báo cáo động FMS `dr_*`) — thay `bc_bao_cao_quy` | 1 ô × 1 lần nộp (× dòng động × tài khoản lưu ký) | — (chưa có KPI, O_QLQ_80) | READY (chưa có KPI dùng) |
+| Operational Dynamic Report Explorer Indicator | Bảng chỉ tiêu (metadata) Data Explorer — thay `metadata_etl` của QLQ | 1 chỉ tiêu (`indicator_id`) | — (chưa có KPI, O_QLQ_80) | READY (chưa có KPI dùng) |
 | Fund Management Company Staff Trade Report | Fact Report (append, denormalize; hậu tố `_rpt`) | 1 dòng khử trùng (như UNION của BA) × 1 nhân viên CTQLQ × 1 ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh | K_QLQ_106–115 (Nhóm 28) | READY (thiết kế 2026-10-14, đổi Operational → Fact report cùng ngày — O_QLQ_38; **2026-10-15 làm theo BA**: nối CCCD → `open_investor_account` → sổ lệnh, khử trùng như UNION — O_QLQ_35/36/39) |
 
 > **Reuse xuyên module (không phải bảng của QLQ):** GDP (K_QLQ_47) và Lãi suất liên NH qua đêm (K_QLQ_79) đọc trực tiếp từ `Fact Macro Indicator Snapshot` (module PTTT); VN-Index (K_QLQ_78) đọc từ `Fact Market Index Snapshot` (module GSTT) — xem Section 4.
@@ -6664,6 +6757,8 @@ graph TB
 | Foreign Fund Management Organization Unit Staff Dimension | Nhân viên CN CTQLQ nước ngoài | 1 nhân viên | Foreign Fund Management Organization Unit Staff | Không |
 | Securities Distribution Agent Dimension | ĐLPP (nguồn FMS.DISTRIBUTOR_AGENT) — tên/GP/địa chỉ qua shared IP Alt Identification + IP Postal Address | 1 ĐLPP | Securities Distribution Agent | Không |
 | Fund Management Report Cell Dimension | Ô báo cáo định kỳ — sheet, biểu mẫu, chỉ số dòng/cột, nhãn dòng/cột (**[MỚI 2026-10-14]**, FK của Fact Fund Management Report Cell Value; nhãn dòng/cột là giả định, O_QLQ_31) | 1 ô × 1 sheet | Fund Management Report Sheet + Fund Management Report | Không |
+| Dynamic Report Structure Dimension | Cây chỉ tiêu mẫu báo cáo động — mã/tên mẫu, sheet, đường dẫn cột-dòng, mã ô (**[MỚI 2026-11-07]**, nguồn của 2 bảng khai thác Data Explorer) | 1 ô chỉ tiêu × 1 sheet | Dynamic Report Structure (FMS.ITEM_LIST) | Không |
+| Dynamic Report Submission History Dimension | Lịch sử nộp báo cáo động — đối tượng nộp, kỳ, ngày nộp, phiên bản (**[MỚI 2026-11-07]**, nguồn của 2 bảng khai thác Data Explorer) | 1 lần nộp báo cáo của 1 đối tượng theo kỳ | Dynamic Report Submission History (FMS.REPORT_HISTORY) | Không |
 | Fund Distribution Agent Dimension | ĐLPP (nguồn FMS.AGENCIES) | 1 ĐLPP | Fund Distribution Agent | Không — xem O_QLQ_10 (khả năng trùng với Securities Distribution Agent) |
 
 > **Ghi chú:** `Open Investor Account` / `Discretionary Investment Investor` (FMS.INVES_ACC / FMS.INVES) hiện không còn KPI READY nào dùng (K_QLQ_32, K_QLQ_36–38 hạ PENDING theo BA 2026-10-05, xem O_QLQ_25) — không tạo Dimension, không có bảng Datamart; thiết kế lại khi Atomic có entity cho engine báo cáo định kỳ.
@@ -6710,6 +6805,10 @@ graph TB
 | Fund Distribution Agent Fund List | fnd_dist_agt_fnd_lst | new | Bảng con drill-down mới — Nhóm 23, READY |
 | Fact Foreign Fund Management Organization Unit Snapshot | fct_frgn_fnd_mgt_org_unit_snpst | new | Module đầu tiên — Nhóm 24 |
 | Fact Fund Management Report Cell Value | fct_fund_management_rpt_cell_val | new | **[MỚI 2026-10-14 — bổ sung đăng ký; CẬP NHẬT 2026-11-03, O_QLQ_72]** Cụm 17 — phục vụ hơn 65 KPI READY đọc giá trị ô báo cáo định kỳ `RPT_*` (bao gồm Nhóm 1–4, 6–9, 11–13, 17–22, 24–26). Grain 1 ô × 1 bản nộp (`fmr_value`); FK: ngày cuối kỳ báo cáo (`rpt_period_end_dt_dim_id`), ô báo cáo (`fund_management_rpt_cell_id`), loại hình quỹ (`fund_type_id`); mã CTQLQ/quỹ là cột suy biến. Nạp toàn bộ bản nộp hợp lệ, KHÔNG chặn theo ngày chạy ETL (O_QLQ_72); 4 bảng Tác nghiệp Active-only (Nhóm 4, 13, 22, 26) gỡ 22 cột RPT chuyển sang đọc trực tiếp Fact này. Cột `fund_establishment_license_dt` (ngày cấp GCN lập quỹ ← `ip_alternative_identification`, O_QLQ_48). |
+| Operational Dynamic Report Explorer Value | opr_dynamic_report_explorer_val | new | **[MỚI 2026-11-08, O_QLQ_80]** Cụm 20 — bảng dữ liệu khai thác Data Explorer (thay `bc_bao_cao_quy`); nguồn Atomic `dr_value` + 2 Dimension dr_*; flat khối 21; grain 1 ô × 1 lần nộp (× dòng động × tài khoản lưu ký). Chưa có KPI dùng; đã có trong datamart_model.yaml |
+| Operational Dynamic Report Explorer Indicator | opr_dynamic_report_explorer_indicator | new | **[MỚI 2026-11-08, O_QLQ_80]** Cụm 21 — bảng chỉ tiêu (metadata) Data Explorer (thay `metadata_etl` của QLQ); PK `indicator_id`; flat khối 22. Chưa có KPI dùng; đã có trong datamart_model.yaml |
+| Dynamic Report Structure Dimension | dynamic_report_structure_dim | new | **[MỚI 2026-11-07, O_QLQ_79]** Nguồn `Dynamic Report Structure` (FMS.ITEM_LIST) — 1 ô chỉ tiêu × 1 sheet; PK lấy id Atomic (`dr_structure_id`); nguồn của 2 bảng khai thác Data Explorer; đã có trong datamart_model.yaml |
+| Dynamic Report Submission History Dimension | dynamic_report_submission_history_dim | new | **[MỚI 2026-11-07, O_QLQ_79]** Nguồn `Dynamic Report Submission History` (FMS.REPORT_HISTORY) — 1 lần nộp báo cáo; PK lấy id Atomic (`dr_submission_history_id`); nguồn của 2 bảng khai thác Data Explorer; đã có trong datamart_model.yaml |
 | Foreign Fund Management Organization Unit Profile | frgn_fnd_mgt_org_unit_prf | new | **[CẬP NHẬT 2026-09-26]** Module đầu tiên — Nhóm 26, nay 3/8 chỉ tiêu READY (K_QLQ_174 Số NV CCHN hạ về PENDING — BA đổi sang RPT) |
 | Foreign Fund Management Organization Unit Contract List | opr_foreign_fund_management_organization_unit_contract_list | new | **[THIẾT KẾ 2026-10-14]** Bảng con drill-down popup Nhóm 27 — 3/3 KPI READY (K_QLQ_179–181) qua engine báo cáo `RPT_*` (pivot dòng động `dynamic_row_nbr`, `record_tp` = 4), cùng cách thiết kế `Fund Management Company Contract List` (Nhóm 5). Không có FK Dimension — mang `foreign_fund_management_organization_unit_code` và kỳ báo cáo dạng mã. Không lọc tên sheet vì BA để trống (O_QLQ_37). Trước đó PENDING toàn bộ (O_QLQ_35) |
 | Fund Management Company Staff Trade Report | fund_management_company_staff_trade_rpt | new | **[THIẾT KẾ 2026-10-14; SỬA cùng ngày — O_QLQ_38: Operational `opr_fund_management_company_staff_trade_rpt` → Fact report append, bỏ `opr_`]** Nhóm 28 — 10/10 KPI READY (K_QLQ_106–115). Driving `Securities Trade` (HOSE/HNX, `trade_dt = :etl_date`), **[SỬA 2026-10-15 — làm theo BA]** nối nhân viên qua CCCD → `open_investor_account` (bản ghi mới nhất theo `event_dt`) → số tài khoản trên sổ lệnh (Atomic `open_investor_account` chưa có YAML — O_QLQ_39); khử trùng như `UNION` của SQL BA. Grain 1 dòng khử trùng × nhân viên × ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh. Trước đó PENDING toàn bộ |
@@ -6798,5 +6897,8 @@ graph TB
 | O_QLQ_76 | **[MỚI 2026-11-05]** Nhóm 13/19 — BA đổi SQL. Nhóm 13: 'Lợi nhuận YTD' lấy sheet `BCThuNhap_06203` mã `41` UNION sheet BCKetQuaHoạtDongKinhDoanh = tổng mã `50` và `80` (trước đó `IN ('41','50')`); cột 'Giá trị' (NAV) chọn `col_idx` 5 khi `legal_basis` LIKE '%198%', ngược lại `col_idx` 4. Nhóm 19: STT hàng ĐLPP đổi `3.1`/`3.2`/`3.3` → `2.1`/`2.2`/`2.3` (BA không nêu Nhóm 19 trong danh sách cập nhật, `ba_diff` phát hiện) | **Quyết định Data Modeler 2026-11-05 'theo SQL BA mới':** K_QLQ_102 = mã `41` (BCThuNhap_06203) hoặc `50` + `80` cộng lại (BCKetQuaHoatDongKinhDoanh); K_QLQ_100 giữ chọn cột theo nhãn 'Kỳ báo cáo' (tương đương quy tắc `legal_basis` của BA nếu nhãn đúng vị trí 5/4) — đóng điểm `col_idx` 5 của O_QLQ_61; K_QLQ_127–129 `row_stt_code` `2.1`/`2.2`/`2.3`. Lệch/ghi nhận: BA dòng 108 cột 'Mapping báo cáo đầu vào' chỉ nêu dòng 'III. Kết quả hoạt động ròng đã thực hiện được phân phối trong kỳ' cho BCKQHĐKD, chưa khớp 50 + 80; nhãn cột lợi nhuận lũy kế vẫn chờ O_QLQ_70/71; BA viết sheet 'BCKetQuaHoạtDongKinhDoanh' (có dấu), thiết kế dùng 'BCKetQuaHoatDongKinhDoanh' như các Nhóm khác | K_QLQ_100, K_QLQ_102 (Nhóm 13); K_QLQ_127–129 (Nhóm 19) | **Open — dev xác nhận mã 50/80 và nhãn cột lũy kế của BCKQHĐKD, nhãn cột 'Kỳ báo cáo' theo `legal_basis` 198/khác, STT 2.x trên dữ liệu thật; BA đồng bộ dòng 108 và báo vì sao Nhóm 19 đổi STT** |
 | O_QLQ_77 | **[MỚI 2026-11-05]** Nhóm 28 — BA đổi SQL dòng 178: gộp giao dịch theo (tài khoản `stk`, CTCK `stock_comp_code`, ngày, phương thức, mua/bán, mã CK) rồi `SUM(total)`, `SUM(price)`, `SUM(amount)`; lọc khoảng ngày `dd/MM/yyyy` (trước đó `MM/yyyy`); nhân viên `tl_profiles` lọc `ds_snpst_dt = '2026-10-15'` (ngày cố định) | **Quyết định Data Modeler 2026-11-05:** K_QLQ_113 = `SUM(order_vol)`, K_QLQ_115 = `SUM(order_amt)` theo nhóm gộp; K_QLQ_114 'Giá' = giá bình quân gia quyền `SUM(order_amt) / SUM(order_vol)` thay `SUM(price)` của BA — LỆCH BA CÓ CHỦ Ý (cộng các mức giá không có nghĩa), cần BA xác nhận; K_QLQ_109 giữ `trade_dt BETWEEN :filter_fr AND :filter_to`. Fact `fund_management_company_staff_trade_rpt` không đổi (mức lệnh); `ds_snpst_dt` cố định là lỗi BA, thiết kế dùng danh sách nhân viên hiện hành Active-only. Tồn đọng cũ: Atomic 2026-11-04 đổi tên cột `securities_trade` (`security_symbol_code`, `buy_broker_id`, `buy_order_vol`, `sell_order_vol`…) nên LLD Fact này báo 11 CRITICAL ở Gate 0 — cần đồng bộ lại tên cột Atomic (chưa làm) | K_QLQ_109, K_QLQ_113–115 (Nhóm 28) | **Open — BA xác nhận giá bình quân gia quyền và sửa `ds_snpst_dt` cố định; Datamart đồng bộ lại ETL Fact staff trade với tên cột Atomic mới** |
 | O_QLQ_78 | **[MỚI 2026-11-06 — đồng bộ Atomic commit 0075c3a2 (04/11), cùng đợt O_GSTT_79]** Atomic THÊM entity `securities_trade`/`securities_order` (HNX, HOSE) và đổi tên cột. Gate 0 QLQ trước đó báo 11 CRITICAL ở `fund_management_company_staff_trade_rpt_ORDERTRADE`. | **Đã sửa LLD (giữ nguyên tên cột Mart):** (1) cột Atomic cũ → mới theo `source_column` YAML Atomic (`buy_order_vol`→`buy_order_quantity`, `sell_order_vol`→`sell_order_quantity`, `buy_broker_id`→`buy_member_code`, `sell_broker_id`→`sell_member_code`, `security_symbol_code`→`ticker_symbol`); (2) literal `src_stm_code` `ORDERTRADE_TRADE_BOOK_HOSE`/`_HNX` → `HOSE_TRADE_BOOK`/`HNX_TRADE_BOOK` (Gate 0 không bắt lệch literal này — nếu không đổi thì Fact rỗng); Gate 0 QLQ: 11 → 0 CRITICAL. **Cần dev:** cột Mart `src_stm_code` (direct) nay mang giá trị mới — API/ClickHouse đang lọc theo giá trị cũ phải đổi và flat nạp lại; cột `execution_val` ở nhánh HNX lấy cột vật lý `match_amt` (YAML Atomic chỉ khai nguồn HOSE; Data Modeler xác nhận 2026-11-06). | K_QLQ_106–115 (Staff Trade) | **Open — dev xác nhận literal/nạp lại** |
+| O_QLQ_79 | **[MỚI 2026-11-07 — yêu cầu Data Modeler]** Atomic đã có engine báo cáo động FMS: `dr_structure` (FMS.ITEM_LIST), `dr_submission_history` (FMS.REPORT_HISTORY), `dr_value` (FMS.ITEM_VALUE); cần kéo 1:1 lên Datamart và ClickHouse. Data Explorer (Nhóm 29–91) hiện đọc engine `fmr_*` và BA vẫn ghi nguồn `RPT_MEMBER`/`RPT_TEMP`. | Thêm 2 Dimension đủ cột Atomic: `dynamic_report_structure_dim` (PK `dr_structure_id` lấy thẳng id Atomic) và `dynamic_report_submission_history_dim` (PK `dr_submission_history_id`). Đổi tên 3 cột của Dim trùng tên bảng khác: `structure_row_path`, `structure_label_column_ind` (structure) và `submission_rpt_code` (submission history). Bảng giá trị ô `fct_dynamic_report_val` (grain 1 ô × 1 lần nộp × dòng động, PK `dr_val_id`) ban đầu cũng được thiết kế như Fact và gộp cả 3 bảng thành 1 flat `qlq_fct_dynamic_report_val_flat`. **[CẬP NHẬT 2026-11-08]** Data Modeler yêu cầu đúng 2 bảng khai thác như job Data Explorer ODS cũ: bãi bỏ flat gộp và gỡ Fact khỏi thiết kế (bảng `datamart.fct_dynamic_report_val` vẫn nạp vật lý để 2 flat mới đọc) — xem O_QLQ_80; rủi ro khóa `acc_value` ở O_QLQ_81. **Chưa map KPI/Detail Mapping:** không dòng BA nào ghi nguồn `ITEM_*` nên các bảng này chưa có KPI dùng (Gate 8 `L2-TABLE-ZERO-USAGE` WARNING) cho tới khi BA chuyển nguồn Data Explorer; dòng PENDING 'Fund Management Report Data' ở Entities cần xem lại khi đó. Giả định: (1) `val` kiểu Text, chuyển kiểu theo `data_tp` ở tầng khai thác; (2) Dim lần nộp nạp incremental theo `submission_dt = :etl_date` (A19/R5, SCD4A upsert, lần nạp đầu/backfill chạy từng ngày) trong khi các flat nạp toàn bộ — dev xác nhận khối lượng `dr_value`. | (chưa có KPI) | **Open — BA chuyển nguồn Data Explorer sang `dr_*`; dev xác nhận khối lượng nạp** |
+| O_QLQ_80 | **[MỚI 2026-11-08 — yêu cầu Data Modeler]** Tầng khai thác ClickHouse của Data Explorer hiện do job Python `dag_fms_ods_to_datamart` ghi: đọc 3 bảng ODS Iceberg `ods_fms_item_list` / `ods_fms_report_history` / `ods_fms_item_value`, biến đổi rồi ghi 2 bảng `default.bc_bao_cao_quy` (dữ liệu) và `default.metadata_etl` (chỉ tiêu). Atomic và Datamart đã có `dr_structure` / `dr_submission_history` / `dr_value` (O_QLQ_79) nên logic biến đổi đó phải chuyển thành bước Datamart → ClickHouse flat, giữ nguyên câu khai thác. Bản đầu cùng ngày gộp Fact + 2 Dimension thành 1 flat `qlq_fct_dynamic_report_val_flat` — không đúng yêu cầu 2 bảng. | Đúng 2 flat như job cũ, **giữ nguyên cấu trúc bảng, chỉ chuẩn hóa tên bảng/cột**: #21 `qlq_opr_dynamic_report_explorer_val_flat` (18 cột, thay `bc_bao_cao_quy`) và #22 `qlq_opr_dynamic_report_explorer_indicator_flat` (21 cột, thay `metadata_etl` của QLQ). Đăng ký 2 bảng Operational `opr_dynamic_report_explorer_val` / `opr_dynamic_report_explorer_indicator` ở LLD, master, model, Entities (Gate 4 buộc cột DDL phải có trong LLD); nguồn ghi ở mức Atomic `dr_value` và 2 Dimension. **Bãi bỏ** Fact `fct_dynamic_report_val` khỏi thiết kế (All-Tier Cleanup, Data Modeler duyệt 2026-11-08) cùng flat gộp #21 cũ: bảng `datamart.fct_dynamic_report_val` vẫn nạp vật lý ở Datamart để 2 flat đọc nhưng không còn là entity, vì Gate 3 buộc mọi Fact trong LLD phải có flat. Logic biến đổi của job cũ viết lại thành INSERT…SELECT ClickHouse ở DML khối 21 và 22 (nạp đủ TRUNCATE + INSERT, khối 22 chạy sau khối 21): lần nộp thắng theo `rpt_version` xét toàn bộ lịch sử nộp; loại chỉ tiêu mồ côi; `table_index` / `dynamic_index`; đánh số dòng trùng mã; `indicator_id` md5; `indicator_val`; ngày cuối kỳ; alias dòng Tổng-N; khử trùng theo khóa; chỉ tiêu chưa có dữ liệu bổ sung từ mẫu; `unit_nm`; `sort_order_nbr`; tên nhóm. **Kiểm chứng:** chạy trên ClickHouse 24.8 thật với dữ liệu synthetic (khoảng 1.870 dòng dữ liệu và 285 chỉ tiêu mỗi lần, 10 seed fuzz): kết quả khớp từng ô với logic Python cũ. Khác biệt đã biết: (a) số từ 1e16 trở lên hoặc dưới 1e-4 in dạng thập phân thay vì khoa học (cùng giá trị); (b) NULL ở tên sheet/cột/báo cáo của chỉ tiêu chưa có dữ liệu ghi rỗng thay vì chuỗi `None`; (c) hai chỉ tiêu trùng khóa md5 lấy thuộc tính theo mã chỉ tiêu nhỏ nhất thay vì dòng đọc đầu tiên; (d) `dynamic_ind` NULL coi là ô tĩnh; (e) kỳ ngoài 1970–2149 dùng ngày nộp. **Giả định cần xác nhận:** (1) backend Data Explorer không gọi cứng tên cũ (`bc_bao_cao_quy`, `metadata_etl`, `date`, `gia_tri`, `id_chitieu`) và đọc được bảng chỉ tiêu riêng của QLQ trong database `datamart`; (2) `data_tp` cùng ngữ nghĩa `kieu_dl` cũ (numberic, string, percentage, datasource); (3) Dim lịch sử nạp theo ngày đã backfill đủ; (4) kiểm chứng chạy ReplacingMergeTree thường (không `ON CLUSTER`/Replicated) trên container; (5) PARTITION BY năm của bảng dữ liệu theo `period_end_dt`. | (chưa có KPI) | **Open — dev đối chiếu backend Data Explorer; chờ BA chuyển nguồn Data Explorer sang `dr_*`** |
+| O_QLQ_81 | **[MỚI 2026-11-08 — rủi ro khóa Atomic]** Atomic `dr_value`: `dr_val_code` và `dr_val_id` chỉ hash `ITEM_ID ‖ REPORT_LOG_ID ‖ ROW_ORDER`, không có `ACC_VALUE` (→ `custodian_bank_code`). Job Data Explorer cũ lại dedupe, đánh số dòng trùng mã và đặt khóa `ORDER BY` đều theo `(item_id, report_log_id, row_order, acc_value)` (cùng khóa dedupe của staging → ODS). Nếu 1 ô có nhiều `acc_value` (vd nhiều tài khoản lưu ký) thì các dòng cùng hash đè nhau ở Atomic, ô bị mất ở Datamart và `qlq_opr_dynamic_report_explorer_val_flat` thiếu dữ liệu so với `bc_bao_cao_quy`. Mô phỏng trên dữ liệu synthetic: bỏ `acc_value` khỏi khóa làm mất 1/26 ô. | Profile ODS trước go-live: `SELECT item_id, report_log_id, row_order, COUNT(DISTINCT acc_value) FROM ods_fms_item_value GROUP BY item_id, report_log_id, row_order HAVING COUNT(DISTINCT acc_value) > 1`. Không có dòng nào thì giữ nguyên. Có dòng thì thêm `ACC_VALUE` vào BK `dr_val_code` và công thức hash `dr_val_id` (Atomic `lld_FMS_ITEM_VALUE.yaml`, sau đó đồng bộ bảng Datamart `fct_dynamic_report_val`, 2 Dimension, 2 flat khai thác và mô tả cột), nạp lại Atomic. Chưa sửa Atomic/Datamart vì cần kết quả profile và Data Modeler duyệt đổi BK. | (chưa có KPI) | **Open — chờ profile ODS** |
 
 ---
