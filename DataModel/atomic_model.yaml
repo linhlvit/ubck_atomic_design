@@ -65766,7 +65766,9 @@ entities:
     physical_name: sc_alert_ind_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo\
-      \ tài chính/tuân thủ. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE)."
+      \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE).\
+      \ Đổi hash key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh Data\
+      \ Modeler (2026-09-18)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -65780,11 +65782,16 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo\
-          \ tài chính/tuân thủ. Hash: hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE)."
+          \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE).\
+          \ Đổi hash key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh\
+          \ Data Modeler (2026-09-18)."
   - name: Securities Company Alert Indicator Code
     physical_name: sc_alert_ind_code
-    business_meaning_1st: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
-    comment_1st: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+    business_meaning_1st: Mã chỉ tiêu. BK của entity — Id hash từ trường này.
+    comment_1st: BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data
+      Modeler, 2026-09-18 — xem Securities Company Alert Indicator Id). Trước đây
+      map nhầm từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của Id — đã
+      sửa cùng lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -65795,9 +65802,13 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.ID
-        business_meaning: Khóa chính kỹ thuật (ID tự tăng). BK của entity.
-        comment: BK chính. PK nguồn (NUMBER — ETL cần convert sang string).
+        source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
+        business_meaning: Mã chỉ tiêu. BK của entity — Id hash từ trường này.
+        comment: BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data
+          Modeler, 2026-09-18 — xem Securities Company Alert Indicator Id). Trước
+          đây map nhầm từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của
+          Id — đã sửa cùng lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
+          trước go-live.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -65815,63 +65826,8 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Alert Code
-    physical_name: alert_code
-    business_meaning_1st: Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính).
-    comment_1st: BK của entity — Id hash từ trường này theo chỉ đạo Data Modeler (2026-07-15).
-      Ưu tiên so với INDICATOR_CODE.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.ALERT_CODE
-        business_meaning: Mã chỉ tiêu cảnh báo (mã nghiệp vụ chính).
-        comment: BK của entity — Id hash từ trường này theo chỉ đạo Data Modeler (2026-07-15).
-          Ưu tiên so với INDICATOR_CODE.
-  - name: Indicator Code
-    physical_name: ind_code
-    business_meaning_1st: Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code).
-    comment_1st: BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự khác biệt
-      với team nguồn. Giữ cả 2 để bảo toàn dữ liệu.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
-        business_meaning: Mã chỉ tiêu (trường thứ cấp, có thể trùng với Alert Code).
-        comment: BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự khác biệt
-          với team nguồn. Giữ cả 2 để bảo toàn dữ liệu.
   - name: Securities Company Alert Indicator Name
     physical_name: sc_alert_ind_nm
-    business_meaning_1st: Tên chỉ tiêu cảnh báo (tên chính).
-    comment_1st: Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.ALERT_NAME
-        business_meaning: Tên chỉ tiêu cảnh báo (tên chính).
-        comment: Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME.
-  - name: Indicator Name
-    physical_name: ind_nm
     business_meaning_1st: Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).
     comment_1st: BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt
       với team nguồn. Giữ cả 2.
@@ -65889,13 +65845,36 @@ entities:
         business_meaning: Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).
         comment: BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt
           với team nguồn. Giữ cả 2.
-  - name: Alert Indicator Type Code
-    physical_name: alert_ind_tp_code
-    business_meaning_1st: "Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính;\
-      \ TUAN_THU=Tuân thủ pháp lý; RUI_RO=Rủi ro hoạt động."
-    comment_1st: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map\
-      \ số → text code. Cần profile values thực tế."
-    data_domain_most: Classification Value
+  - name: Alert Code
+    physical_name: alert_code
+    business_meaning_1st: Mã chỉ tiêu cảnh báo (trường thứ cấp, có thể trùng với Indicator
+      Code).
+    comment_1st: Không còn là BK của entity — BK đã đổi sang INDICATOR_CODE (Securities
+      Company Alert Indicator Code) theo yêu cầu Data Modeler 2026-09-18. Giữ lại
+      làm trường denormalized thứ cấp, bảo toàn dữ liệu nguồn. BRD có cả ALERT_CODE
+      và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: ALERT_INDICATOR
+        source_column: SCMS.ALERT_INDICATOR.ALERT_CODE
+        business_meaning: Mã chỉ tiêu cảnh báo (trường thứ cấp, có thể trùng với Indicator
+          Code).
+        comment: Không còn là BK của entity — BK đã đổi sang INDICATOR_CODE (Securities
+          Company Alert Indicator Code) theo yêu cầu Data Modeler 2026-09-18. Giữ
+          lại làm trường denormalized thứ cấp, bảo toàn dữ liệu nguồn. BRD có cả ALERT_CODE
+          và INDICATOR_CODE — cần xác nhận sự khác biệt với team nguồn.
+  - name: Alert Name
+    physical_name: alert_nm
+    business_meaning_1st: Tên chỉ tiêu cảnh báo (tên chính).
+    comment_1st: Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME.
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -65905,11 +65884,26 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: ALERT_INDICATOR
+        source_column: SCMS.ALERT_INDICATOR.ALERT_NAME
+        business_meaning: Tên chỉ tiêu cảnh báo (tên chính).
+        comment: Tên chính của chỉ tiêu cảnh báo. Ưu tiên ALERT_NAME so với INDICATOR_NAME.
+  - name: Alert Indicator Type Code
+    physical_name: alert_ind_tp_code
+    business_meaning_1st: Loại chỉ tiêu cảnh báo.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: ALERT_INDICATOR
         source_column: SCMS.ALERT_INDICATOR.ALERT_INDICATOR_TYPE
-        business_meaning: "Loại chỉ tiêu cảnh báo: AN_TOAN_TAI_CHINH=An toàn tài chính;\
-          \ TUAN_THU=Tuân thủ pháp lý; RUI_RO=Rủi ro hoạt động."
-        comment: "Scheme: SCMS_ALERT_INDICATOR_TYPE. Nguồn lưu NUMBER(1) — ETL map\
-          \ số → text code. Cần profile values thực tế."
+        business_meaning: Loại chỉ tiêu cảnh báo.
+        comment: null
   - name: Indicator Type Id
     physical_name: ind_tp_id
     business_meaning_1st: ID loại chỉ tiêu (nguồn không khai báo FK target).
@@ -66014,10 +66008,9 @@ entities:
   - name: Severity Code
     physical_name: severity_code
     business_meaning_1st: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
-    comment_1st: "Scheme: SCMS_ALERT_INDICATOR_SEVERITY. NUMBER(10). BRD có cả SEVERITY\
-      \ và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
-    data_domain_most: Classification Value
-    data_type_most: string
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -66028,8 +66021,7 @@ entities:
       - source_table: ALERT_INDICATOR
         source_column: SCMS.ALERT_INDICATOR.SEVERITY
         business_meaning: "Mức độ nghiêm trọng: 1=Thấp, 2=Trung bình, 3=Cao."
-        comment: "Scheme: SCMS_ALERT_INDICATOR_SEVERITY. NUMBER(10). BRD có cả SEVERITY\
-          \ và SEVERITY_LEVEL — cần xác nhận sự khác biệt với team nguồn. Giữ cả 2."
+        comment: null
   - name: Lower Threshold
     physical_name: lower_threshold
     business_meaning_1st: Ngưỡng cảnh báo dưới.
@@ -66136,57 +66128,6 @@ entities:
         source_column: SCMS.ALERT_INDICATOR.NOTE
         business_meaning: Ghi chú bổ sung, không bắt buộc.
         comment: null
-  - name: Formula Text
-    physical_name: formula_text
-    business_meaning_1st: Mô tả công thức dạng văn bản để hiển thị cho người dùng.
-    comment_1st: Nguồn lưu CLOB — ETL cần xử lý large object.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.FORMULA_TEXT
-        business_meaning: Mô tả công thức dạng văn bản để hiển thị cho người dùng.
-        comment: Nguồn lưu CLOB — ETL cần xử lý large object.
-  - name: Formula
-    physical_name: formula
-    business_meaning_1st: Công thức tính toán giá trị ô.
-    comment_1st: Nguồn lưu CLOB — ETL cần xử lý large object.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.FORMULA
-        business_meaning: Công thức tính toán giá trị ô.
-        comment: Nguồn lưu CLOB — ETL cần xử lý large object.
-  - name: Sum Formula
-    physical_name: sum_formula
-    business_meaning_1st: Công thức tổng hợp của ô (tính tổng nhiều ô).
-    comment_1st: Nguồn lưu CLOB — ETL cần xử lý large object.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.SUM_FORMULA
-        business_meaning: Công thức tổng hợp của ô (tính tổng nhiều ô).
-        comment: Nguồn lưu CLOB — ETL cần xử lý large object.
   - name: Weight
     physical_name: weight
     business_meaning_1st: Trọng số của chỉ tiêu trong công thức tính điểm (%).
@@ -66204,44 +66145,6 @@ entities:
         source_column: SCMS.ALERT_INDICATOR.WEIGHT
         business_meaning: Trọng số của chỉ tiêu trong công thức tính điểm (%).
         comment: NUMBER(38,2) — trọng số phần trăm.
-  - name: Sort Order
-    physical_name: sort_order
-    business_meaning_1st: Thứ tự sắp xếp hiển thị.
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.SORT_ORDER
-        business_meaning: Thứ tự sắp xếp hiển thị.
-        comment: null
-  - name: Record Status Code
-    physical_name: record_status_code
-    business_meaning_1st: "Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử\
-      \ dụng."
-    comment_1st: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert\
-      \ sang string."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: ALERT_INDICATOR
-        source_column: SCMS.ALERT_INDICATOR.RECORD_STATUS
-        business_meaning: "Trạng thái chỉ tiêu cảnh báo: 0=Không sử dụng; 1=Đang sử\
-          \ dụng."
-        comment: "Scheme: SCMS_USAGE_STATUS. Nguồn lưu NUMBER(1) — ETL cần convert\
-          \ sang string."
 - ldm:
     id: ATM-sc_alert_violation
     logical_name_1st: Securities Company Alert Violation
@@ -66257,8 +66160,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Event
     bcv_concept_most: "[Event] Business Activity"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
+    table_type_most: Relative
+    etl_pattern_most: SCD2
     conflict_review: null
     sources:
     - SCMS
@@ -66355,9 +66258,7 @@ entities:
     business_meaning_1st: FK đến Công ty chứng khoán có vi phạm cảnh báo.
     comment_1st: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
       \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận CODE\
-      \ sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp theo\
-      \ SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash từ CODE)\
-      \ — đã sửa sang crosswalk 2026-07-27."
+      \ sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -66372,15 +66273,13 @@ entities:
         business_meaning: FK đến Công ty chứng khoán có vi phạm cảnh báo.
         comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
           \ SC_FIRM_ALERT_VIOLATION.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác nhận\
-          \ CODE sau đó hash_id('SCMS.SC_FIRM_INFO', CODE) | Trước đây hash trực tiếp\
-          \ theo SC_FIRM_INFO_ID (ID kỹ thuật) gây sai lệch với Id của bảng main (hash\
-          \ từ CODE) — đã sửa sang crosswalk 2026-07-27."
+          \ CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)."
   - name: Securities Company Code
     physical_name: sc_code
     business_meaning_1st: Mã Công ty chứng khoán.
-    comment_1st: "Lookup pair: securities_company.securities_company_code. Pair with\
-      \ Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk\
-      \ — chi tiết xem comment Securities Company Id."
+    comment_1st: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+      \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem\
+      \ comment Securities Company Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -66393,17 +66292,15 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_INFO.CODE
         business_meaning: Mã Công ty chứng khoán.
-        comment: "Lookup pair: securities_company.securities_company_code. Pair with\
-          \ Securities Company Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk\
-          \ — chi tiết xem comment Securities Company Id."
+        comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+          \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
+          \ xem comment Securities Company Id."
   - name: Securities Company Alert Indicator Id
     physical_name: sc_alert_ind_id
     business_meaning_1st: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
-    comment_1st: "FK target: sc_alert_indicator.sc_alert_indicator_id. Cần ETL crosswalk\
+    comment_1st: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk\
       \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
-      \ để xác nhận ALERT_CODE sau đó hash_id('SCMS.ALERT_INDICATOR', ALERT_CODE)\
-      \ | Trước đây hash trực tiếp theo ALERT_INDICATOR_ID (ID kỹ thuật) gây sai lệch\
-      \ với Id của bảng main (hash từ ALERT_CODE) — đã sửa sang crosswalk 2026-07-27."
+      \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -66416,17 +66313,15 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
         business_meaning: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
-        comment: "FK target: sc_alert_indicator.sc_alert_indicator_id. Cần ETL crosswalk\
+        comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk\
           \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID\
-          \ = ALERT_INDICATOR.ID để xác nhận ALERT_CODE sau đó hash_id('SCMS.ALERT_INDICATOR',\
-          \ ALERT_CODE) | Trước đây hash trực tiếp theo ALERT_INDICATOR_ID (ID kỹ\
-          \ thuật) gây sai lệch với Id của bảng main (hash từ ALERT_CODE) — đã sửa\
-          \ sang crosswalk 2026-07-27."
+          \ = ALERT_INDICATOR.ID để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR',\
+          \ INDICATOR_CODE)."
   - name: Securities Company Alert Indicator Code
     physical_name: sc_alert_ind_code
     business_meaning_1st: Mã chỉ tiêu cảnh báo.
-    comment_1st: "Lookup pair: sc_alert_indicator.sc_alert_indicator_code. Pair with\
-      \ Securities Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.ALERT_CODE\
+    comment_1st: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
+      \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
       \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
       \ Id."
     data_domain_most: Text
@@ -66439,19 +66334,18 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_ALERT_VIOLATION
-        source_column: SCMS.ALERT_INDICATOR.ALERT_CODE
+        source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
         business_meaning: Mã chỉ tiêu cảnh báo.
-        comment: "Lookup pair: sc_alert_indicator.sc_alert_indicator_code. Pair with\
-          \ Securities Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.ALERT_CODE\
+        comment: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
+          \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
           \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
           \ Id."
   - name: Violation Severity Code
     physical_name: violation_severity_code
-    business_meaning_1st: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm\
-      \ trọng."
-    comment_1st: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
-    data_domain_most: Classification Value
-    data_type_most: string
+    business_meaning_1st: Mức độ nghiêm trọng của vi phạm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -66461,15 +66355,32 @@ entities:
       source_tables:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.VIOLATION_SEVERITY
-        business_meaning: "Mức độ nghiêm trọng của vi phạm: 1=Nhẹ; 2=Trung bình; 3=Nghiêm\
-          \ trọng."
-        comment: "Scheme: SCMS_VIOLATION_SEVERITY. NUMBER(1) — ETL convert sang string."
+        business_meaning: Mức độ nghiêm trọng của vi phạm.
+        comment: null
   - name: Severity Level
     physical_name: severity_level
-    business_meaning_1st: Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY
-      nhưng dạng text).
-    comment_1st: NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần
-      xác nhận có thể bỏ sau khi profile dữ liệu.
+    business_meaning_1st: Cấp độ cảnh báo (theo TC-CB-74, TC-VP-73) - ánh xạ cùng
+      mức độ vi phạm.
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: SC_FIRM_ALERT_VIOLATION
+        source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL
+        business_meaning: Cấp độ cảnh báo (theo TC-CB-74, TC-VP-73) - ánh xạ cùng
+          mức độ vi phạm.
+        comment: null
+  - name: Alert Entity Type Code
+    physical_name: alert_entity_tp_code
+    business_meaning_1st: "Loại đối tượng cảnh báo: CTCK | NGAN_HANG | CN_CTCK_NN\
+      \ | VPDD_CTCK_NN."
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -66480,32 +66391,10 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_ALERT_VIOLATION
-        source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL
-        business_meaning: Nhãn mức độ nghiêm trọng dạng văn bản (tương ứng VIOLATION_SEVERITY
-          nhưng dạng text).
-        comment: NVARCHAR2(50). Có thể trùng ý nghĩa với VIOLATION_SEVERITY — cần
-          xác nhận có thể bỏ sau khi profile dữ liệu.
-  - name: Alert Entity Type Code
-    physical_name: alert_entity_tp_code
-    business_meaning_1st: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi\
-      \ nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
-    comment_1st: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(64). Xác định ENTITY_ID\
-      \ trỏ về entity nào (polymorphic)."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: SCMS
-      source_tables:
-      - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE
-        business_meaning: "Loại đối tượng cảnh báo: CTCK=Công ty chứng khoán; CN_NUOC_NGOAI=Chi\
-          \ nhánh nước ngoài; VPDD_NUOC_NGOAI=Văn phòng đại diện nước ngoài."
-        comment: "Scheme: SCMS_ALERT_ENTITY_TYPE. NVARCHAR2(64). Xác định ENTITY_ID\
-          \ trỏ về entity nào (polymorphic)."
+        business_meaning: "Loại đối tượng cảnh báo: CTCK | NGAN_HANG | CN_CTCK_NN\
+          \ | VPDD_CTCK_NN."
+        comment: null
   - name: Alert Entity Code
     physical_name: alert_entity_code
     business_meaning_1st: Mã nghiệp vụ của đối tượng cảnh báo (tùy loại ENTITY_TYPE).
@@ -66661,8 +66550,8 @@ entities:
   - name: Report Period Code
     physical_name: rpt_period_code
     business_meaning_1st: Kỳ báo cáo của cảnh báo.
-    comment_1st: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(200)."
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -66674,14 +66563,14 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD
         business_meaning: Kỳ báo cáo của cảnh báo.
-        comment: "Scheme: SCMS_REPORT_PERIOD. VARCHAR2(200)."
+        comment: null
   - name: Report Period Value
     physical_name: rpt_period_val
     business_meaning_1st: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng\
       \ 1-12)."
-    comment_1st: NUMBER (integer). Số thứ tự kỳ trong năm.
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -66693,7 +66582,7 @@ entities:
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.REPORT_PERIOD_VALUE
         business_meaning: "Giá trị kỳ báo cáo (số thứ tự kỳ: quý 1/2/3/4 hoặc tháng\
           \ 1-12)."
-        comment: NUMBER (integer). Số thứ tự kỳ trong năm.
+        comment: null
   - name: Period
     physical_name: period
     business_meaning_1st: Giai đoạn/kỳ của cảnh báo dạng chuỗi ký hiệu.
@@ -66783,8 +66672,8 @@ entities:
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.NOTE
         business_meaning: Ghi chú bổ sung về vi phạm cảnh báo.
         comment: NVARCHAR2(4000).
-  - name: Processing Date
-    physical_name: processing_dt
+  - name: Processing Timestamp
+    physical_name: processing_tms
     business_meaning_1st: Thời điểm xử lý vi phạm cảnh báo.
     comment_1st: TIMESTAMP. Tên cột PROCESSING_DATE nhưng data type là TIMESTAMP.
     data_domain_most: Timestamp
@@ -66804,9 +66693,7 @@ entities:
     physical_name: processor_iam_user_id
     business_meaning_1st: FK đến người xử lý vi phạm cảnh báo.
     comment_1st: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-      \ Hash: hash_id('IAM.USERS', PROCESSOR_ID) | Cross-source FK (SCMS → IAM). Pending\
-      \ — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string); chưa xác\
-      \ nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+      \ Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -66820,9 +66707,7 @@ entities:
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
         business_meaning: FK đến người xử lý vi phạm cảnh báo.
         comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-          \ Hash: hash_id('IAM.USERS', PROCESSOR_ID) | Cross-source FK (SCMS → IAM).\
-          \ Pending — SCMS lưu NUMBER(10) trong khi IAM.USERS.ID là UUIDv7 (string);\
-          \ chưa xác nhận cơ chế crosswalk/join key giữa 2 hệ thống."
+          \ Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
   - name: Processor IAM User Code
     physical_name: processor_iam_user_code
     business_meaning_1st: Mã người xử lý vi phạm cảnh báo.
@@ -66845,11 +66730,8 @@ entities:
   - name: Alert Period Type Code
     physical_name: alert_period_tp_code
     business_meaning_1st: Loại kỳ của cảnh báo (mã số).
-    comment_1st: "Scheme: SCMS_ALERT_PERIOD_TYPE. NUMBER(2) — ETL convert sang string.\
-      \ Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler\
-      \ xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Report Period\
-      \ Code (REPORT_PERIOD) hay không trước go-live."
-    data_domain_most: Classification Value
+    comment_1st: null
+    data_domain_most: Text
     data_type_most: string
     nullable_most: true
     is_primary_key_most: false
@@ -66861,10 +66743,7 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_TYPE
         business_meaning: Loại kỳ của cảnh báo (mã số).
-        comment: "Scheme: SCMS_ALERT_PERIOD_TYPE. NUMBER(2) — ETL convert sang string.\
-          \ Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data Modeler\
-          \ xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Report Period\
-          \ Code (REPORT_PERIOD) hay không trước go-live."
+        comment: null
   - name: Alert Period Value
     physical_name: alert_period_val
     business_meaning_1st: Giá trị kỳ của cảnh báo (số thứ tự).
@@ -66905,12 +66784,8 @@ entities:
         comment: DATE. Cột mới trong DDL UAT 2026-08.
   - name: Severity Level Alt Code
     physical_name: severity_level_alt_code
-    business_meaning_1st: Mức độ nghiêm trọng của vi phạm (mã số thay thế).
-    comment_1st: "Scheme: SCMS_ALERT_SEVERITY_LEVEL_ALT. NUMBER(1) — ETL convert sang\
-      \ string. Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần Data\
-      \ Modeler xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa với Severity\
-      \ Level (SEVERITY_LEVEL) và/hoặc Violation Severity Code (VIOLATION_SEVERITY)\
-      \ hay không trước go-live."
+    business_meaning_1st: Mức độ nghiêm trọng của vi phạm. 1-warning, 2-violation.
+    comment_1st: SCHEMA_CODE=SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -66922,12 +66797,8 @@ entities:
       source_tables:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT
-        business_meaning: Mức độ nghiêm trọng của vi phạm (mã số thay thế).
-        comment: "Scheme: SCMS_ALERT_SEVERITY_LEVEL_ALT. NUMBER(1) — ETL convert sang\
-          \ string. Cột mới trong DDL UAT 2026-08, không có mô tả nghiệp vụ — cần\
-          \ Data Modeler xác nhận danh sách giá trị và đối chiếu có trùng ý nghĩa\
-          \ với Severity Level (SEVERITY_LEVEL) và/hoặc Violation Severity Code (VIOLATION_SEVERITY)\
-          \ hay không trước go-live."
+        business_meaning: Mức độ nghiêm trọng của vi phạm. 1-warning, 2-violation.
+        comment: SCHEMA_CODE=SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT
   - name: String Result Value
     physical_name: string_result_val
     business_meaning_1st: Giá trị kết quả dạng chuỗi khi kết quả điều kiện cảnh báo
@@ -105965,7 +105836,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Text', 'Small Counter']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -105990,7 +105861,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Text', 'Small Counter']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -106015,7 +105886,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_domain: ['Text', 'Small Counter']; data_type: ['int', 'string']"
+    conflict_review: "data_domain: ['Small Counter', 'Text']; data_type: ['int', 'string']"
     source_mappings:
     - source_system: HNX
       source_tables:
