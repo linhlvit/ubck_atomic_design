@@ -283,6 +283,9 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_registration_s
     rpt_year                                     String                  COMMENT 'Năm báo cáo của báo cáo tháng HNX, giữ nguyên dạng chuỗi của nguồn (chưa kiểm có đệm số 0).',
     rpt_month                                    String                  COMMENT 'Tháng báo cáo (1–12) của báo cáo tháng HNX, giữ nguyên dạng chuỗi của nguồn (chưa kiểm có đệm số 0); ngày cuối',
     maturity_dt                                  Nullable(Date)          COMMENT 'Ngày đáo hạn của trái phiếu; chỉ đếm mã có ngày đáo hạn sau ngày cuối kỳ khi tính số mã đăng ký giao dịch. Để ',
+    registered_trading_bond_quantity             Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đăng ký giao dịch của mã trong báo cáo tháng HNX (BA Nhóm 17: registered_trading_volume) — KL niêm yết/ĐKGD của TPDN riêng lẻ. [MỚI 2026-11-08, O_VP_68]',
+    par_val                                      Nullable(Int64)         COMMENT 'Mệnh giá trái phiếu theo báo cáo tháng HNX (BA Nhóm 17: par_value) — dùng tính giá trị đăng ký giao dịch (mệnh giá TPDN riêng lẻ lấy từ báo cáo Quy mô đăng ký giao dịch và khối lượng đang lưu hành). [MỚI 2026-11-08, O_VP_68]',
+    registered_trading_val                       Nullable(Decimal(23,2)) COMMENT 'Giá trị đăng ký giao dịch (VND) = khối lượng đăng ký giao dịch × mệnh giá (BA Nhóm 17: registered_trading_volume * par_value). [MỚI 2026-11-08, O_VP_68]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
@@ -305,16 +308,18 @@ COMMENT 'Flat table — fct_private_corporate_bond_registration_snpst × Calenda
 -- ==========================================================
 -- 7. FACT: vp_fct_listed_equity_snpst_flat
 --    fct_listed_equity_snpst — sinh tự động từ master registry + Entities.csv
---    Joins: Calendar Date Dimension
+--    Joins: Calendar Date Dimension, Industry Dimension
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_equity_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_LISTED_EQUITY_SNPST
     listed_equity_snpst_id                       String                  COMMENT 'PK — hash(snpst_dt_dim_id, ticker_symbol, src_stm_code). Grain = 1 mã cổ phiếu/chứng chỉ quỹ (stock_tp_code 2/',
     snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày giao dịch của bản tin cuối ngày (BA: Vốn hóa/số mã/giá trị niêm yết tính',
+    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của CỔ PHIẾU (BA Nhóm 22); CTCK/CTQLQ đại chúng = 07000; NULL với CCQ/mã chưa có ngành',
     ticker_symbol                                String                  COMMENT 'Mã chứng khoán (SYMBOL của MDDS) — định danh dòng. Fact KHÔNG có khóa ngoại tới Security Trading Snapshot Dime',
     floor_code                                   String                  COMMENT 'Mã sàn của mã tại ngày giao dịch: 02 = HNX, 10 = HOSE, 04 = UPCoM (BA Nhóm 55: floorcode IN (02,04,10)). Lưu T',
     stock_tp_code                                String                  COMMENT 'Loại chứng khoán tại ngày giao dịch: 2 = cổ phiếu, 3/6 = chứng chỉ quỹ (gồm ETF) — Fact chỉ nạp loại 2, 3, 6 (',
+    fund_tp_code                                 Nullable(String)        COMMENT 'Loại quỹ của chứng chỉ quỹ tại ngày giao dịch (FUNDTYPE của MDDS): M = chứng chỉ quỹ (CCQ), E = quỹ ETF — phân biệt CCQ và ETF khi stock_tp_code IN (3,6) (BA Nhóm 17: CCQ = fundtype M, ETF = E); để trống với loại chứng khoán khác. [MỚI 2026-11-08, O_VP_68]',
     outstanding_share_quantity                   Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu đang lưu hành cuối ngày (VSDC OUTSTANDING_SHARES) — nối ĐÚNG ngày: BA `os.transaction_date',
     listed_share_quantity                        Nullable(Int64)         COMMENT 'Khối lượng niêm yết/đăng ký giao dịch cuối ngày giao dịch (LISTEDSHARE của MDDS) — dùng đếm quy mô niêm yết và tính giá trị niêm yết.',
     listed_share_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị niêm yết/đăng ký giao dịch (VND) = khối lượng niêm yết × mệnh giá 10.000 đồng (mệnh giá cổ phiếu, chứng chỉ quỹ).',
@@ -333,7 +338,11 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_equity_snpst_flat ON CLUSTER '
     day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
     is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
     holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
-    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension',
+
+    -- From: INDUSTRY DIMENSION
+    industry_code                                Nullable(String)        COMMENT 'BK — mã ngành nghề cấp 1 (Classification IDS Business Line Code). Chỉ lấy ngành cấp 1 hiện hành (parent_cl_ids — từ Industry Dimension',
+    industry_nm                                  Nullable(String)        COMMENT 'Tên ngành nghề cấp 1 — từ Industry Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
@@ -629,4 +638,68 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), government_bond_listing_snpst_id)
 COMMENT 'Flat table — fct_government_bond_listing_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 15. FACT: vp_fct_government_bond_listing_change_snpst_flat
+--    fct_government_bond_listing_change_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_government_bond_listing_change_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_GOVERNMENT_BOND_LISTING_CHANGE_SNPST
+    government_bond_listing_change_snpst_id      String                  COMMENT 'PK — id dòng Atomic `additional_gov_bond_listing_id` (Dạng A, A22). Grain = 1 sự kiện thay đổi niêm yết của 1 ',
+    snpst_dt_dim_id                              Nullable(String)        COMMENT 'FK tới Calendar Date Dimension — NGÀY thay đổi niêm yết (listing_change_date của HNX); BA Nhóm 17 lọc kỳ theo ',
+    bond_code                                    String                  COMMENT 'Mã trái phiếu Chính phủ có thay đổi niêm yết; dùng đếm số mã niêm yết mới / đáo hạn (BA Nhóm 17: COUNT(bond_co',
+    listing_status_nm                            Nullable(String)        COMMENT 'Trạng thái thay đổi niêm yết giữ nguyên nhãn nguồn của HNX: Niêm yết mới, Niêm yết bổ sung, Đáo hạn (BA Nhóm 1',
+    additional_bond_quantity                     Nullable(Int64)         COMMENT 'Khối lượng trái phiếu của sự kiện (BA: g.volume): KL niêm yết mới / bổ sung hoặc KL đáo hạn tùy trạng thái. [M',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_GOV_BOND_ADDITIONAL_LISTING.',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), government_bond_listing_change_snpst_id)
+COMMENT 'Flat table — fct_government_bond_listing_change_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 16. FACT: vp_fct_private_corporate_bond_registration_status_snpst_flat
+--    fct_private_corporate_bond_registration_status_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_registration_status_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_PRIVATE_CORPORATE_BOND_REGISTRATION_STATUS_SNPST
+    private_corporate_bond_registration_status_snpst_id String                  COMMENT 'PK — id dòng Atomic `bond_trading_registration_status_id` (Dạng A, A22). Grain = 1 mã trái phiếu doanh nghiệp ',
+    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày cuối tháng của tháng báo cáo (suy ra từ năm và tháng báo cáo của HNX); n',
+    bond_code                                    String                  COMMENT 'Mã trái phiếu doanh nghiệp riêng lẻ có trạng thái đăng ký giao dịch trong báo cáo tháng; dùng đếm số mã đăng k',
+    trading_registration_status_nm               Nullable(String)        COMMENT 'Trạng thái đăng ký giao dịch giữ nguyên nhãn nguồn của HNX: Đăng ký giao dịch hoặc Hủy đăng ký giao dịch (BA N',
+    registered_trading_bond_quantity             Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đăng ký/hủy đăng ký giao dịch LŨY KẾ từ đầu năm đến cuối tháng báo cáo (BA: currently_re',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_REGISTRATION_STATUS_CHANGE.',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), private_corporate_bond_registration_status_snpst_id)
+COMMENT 'Flat table — fct_private_corporate_bond_registration_status_snpst — sinh tự động từ master registry + Entities.csv'
 ;

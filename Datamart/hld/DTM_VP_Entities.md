@@ -194,7 +194,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, src_stm_code)) | K_VP_89,91-99 |
-| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | new | Số mã TPDN riêng lẻ đăng ký giao dịch theo báo cáo tháng HNX, factless (Nhóm 11) | 1 mã trái phiếu (Bond Code) × 1 tháng báo cáo (PK private_corporate_bond_registration_snpst_id = hash(bond_code, rpt_year, rpt_month, src_stm_code)) | K_VP_100-101 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | new | Số mã TPDN riêng lẻ đăng ký giao dịch theo báo cáo tháng HNX (Nhóm 11); từ 2026-11-08 có thêm KL, mệnh giá, giá trị đăng ký giao dịch (Nhóm 17, 18, 20; O_VP_68) | 1 mã trái phiếu (Bond Code) × 1 tháng báo cáo (PK private_corporate_bond_registration_snpst_id = hash(bond_code, rpt_year, rpt_month, src_stm_code)) | K_VP_100-101 |
 
 ---
 
@@ -266,6 +266,46 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | new | Khối lượng, giá trị giao dịch và giá trị mua/bán NĐTNN TPCP theo ngày và loại sổ lệnh (Nhóm 14, 15, 16) | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO (PK government_bond_trading_snpst_id = hash(snpst_dt_dim_id, order_book_tp, src_stm_code)) | K_VP_106,108,110 |
 
+## Nhóm 17 - Niêm yết >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Listing_Status_Change_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Change_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Status_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (kỳ tra cứu, kỳ trước) | 1 ngày dương lịch | K_VP_1 |
+| Security Trading Snapshot Dimension | Dimension | reuse | Loại chứng khoán hiện hành của mã có sự kiện niêm yết (cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết); GSTT sở hữu | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state) | K_VP_375, K_VP_382–389 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | Quy mô niêm yết MDDS của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết — mở rộng loại 1/4 và cột `fund_tp_code` [2026-11-08, O_VP_68] | 1 mã chứng khoán × 1 ngày giao dịch (PK hash cột grain) | K_VP_375–381 |
+| Fact Government Bond Listing Snapshot | Fact Snapshot | reuse | Quy mô niêm yết TPCP theo tháng báo cáo | 1 mã TPCP × 1 tháng báo cáo | K_VP_376–381 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse | Quy mô ĐKGD TPDN riêng lẻ — thêm KL, mệnh giá, giá trị đăng ký giao dịch [2026-11-08, O_VP_68] | 1 mã TPDN riêng lẻ × 1 tháng báo cáo | K_VP_376–381 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | reuse | Sự kiện niêm yết mới/bổ sung/hủy của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết (HNX + HOSE) | 1 quyết định thay đổi niêm yết × 1 mã × 1 Sở | K_VP_382–389 |
+| Fact Government Bond Listing Change Snapshot | Fact Snapshot | new | [MỚI 2026-11-08, O_VP_71] Sự kiện niêm yết mới / bổ sung / đáo hạn của TPCP (Atomic additional_gov_bond_listing) | 1 sự kiện (PK = id dòng Atomic, Dạng A) | K_VP_382–389 |
+| Fact Private Corporate Bond Registration Status Snapshot | Fact Snapshot | new | [MỚI 2026-11-08, O_VP_71] Đăng ký / hủy đăng ký giao dịch TPDN riêng lẻ LŨY KẾ từ đầu năm (Atomic bond_trading_registration_status) | 1 mã × 1 trạng thái × 1 tháng báo cáo (PK = id dòng Atomic, Dạng A) | K_VP_382–389 |
+
+## Nhóm 18 - Biểu đồ Khối lượng chứng khoán niêm yết
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (chuỗi kỳ Từ kỳ — Đến kỳ) | 1 ngày dương lịch | K_VP_1 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | KL niêm yết của cổ phiếu (theo sàn), CCQ, ETF, chứng quyền, TPDN niêm yết tại ngày giao dịch cuối mỗi kỳ [mở rộng Fact, O_VP_68] | 1 mã chứng khoán × 1 ngày giao dịch (PK hash cột grain) | K_VP_348–354, 357–359 |
+| Fact Government Bond Listing Snapshot | Fact Snapshot | reuse | KL niêm yết TPCP tại tháng báo cáo mới nhất trong kỳ | 1 mã TPCP × 1 tháng báo cáo | K_VP_350, 356 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse | KL đăng ký giao dịch TPDN riêng lẻ tại tháng báo cáo mới nhất trong kỳ [cột mới, O_VP_68] | 1 mã TPDN riêng lẻ × 1 tháng báo cáo | K_VP_350, 355 |
+
 ## Nhóm 19 - Chỉ tiêu tổng hợp - Vốn hóa cổ phiếu
 
 ```mermaid
@@ -279,6 +319,52 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (mốc ngày giao dịch cuối kỳ, kỳ trước, cuối năm trước) | 1 ngày dương lịch | K_VP_1 |
 | Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 55 | 1 mã × 1 ngày giao dịch | K_VP_239–254 |
 | Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; bổ sung PK macro_indicator_val_id và cột unit_tp_code, O_VP_41 phương án A) — mẫu số tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_243–245 |
+
+## Nhóm 20 - Chỉ tiêu tổng hợp - Giá trị niêm yết trái phiếu
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Listing_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (mốc kỳ này, kỳ trước, cuối năm trước) | 1 ngày dương lịch | K_VP_1 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | GT niêm yết TPDN niêm yết (KL × mệnh giá suy ngược từ giá tham chiếu; loại 1 mở rộng, O_VP_68) | 1 mã chứng khoán × 1 ngày giao dịch (PK hash cột grain) | K_VP_360–363, 365–368 |
+| Fact Government Bond Listing Snapshot | Fact Snapshot | reuse | GT niêm yết TPCP (KL × 100.000) | 1 mã TPCP × 1 tháng báo cáo | K_VP_361–365, 372–374 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse | GT đăng ký giao dịch TPDN riêng lẻ (KL × mệnh giá) [cột mới, O_VP_68] | 1 mã TPDN riêng lẻ × 1 tháng báo cáo | K_VP_361–365, 369–371 |
+| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; K_VP_174, O_VP_41) — mẫu số Quy mô TP/GDP | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_364–365 |
+
+## Nhóm 21 - Biểu đồ Giá trị vốn hóa thị trường cổ phiếu
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Macro_Indicator_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (chuỗi kỳ Từ kỳ — Đến kỳ) | 1 ngày dương lịch | K_VP_1 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày theo sàn tại ngày giao dịch cuối mỗi kỳ (UPCoM theo VWAP T+1) | 1 mã chứng khoán × 1 ngày giao dịch (PK hash cột grain) | K_VP_342–347 |
+| Fact Macro Indicator Snapshot | Fact Snapshot | reuse | GDP_VN (PTTT sở hữu; K_VP_174, O_VP_41) — mẫu số Tỷ lệ Vốn hóa/GDP | 1 chỉ tiêu × 1 kỳ công bố (PK id dòng Atomic) | K_VP_347 |
+
+## Nhóm 22 - Biểu đồ Cơ cấu vốn hóa cổ phiếu theo ngành
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Equity_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (mốc ngày giao dịch cuối kỳ) | 1 ngày dương lịch | K_VP_1 |
+| Industry Dimension | Dimension | reuse | Ngành nghề kinh doanh cấp 1 (GSDC sở hữu) — chiều ngành của cổ phiếu qua FK `industry_dim_id` trên Fact vốn hóa [2026-11-08, O_VP_66] | 1 ngành cấp 1 hiện hành | K_VP_339 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 19, 55; thêm cột FK ngành `industry_dim_id` (nullable, chỉ cổ phiếu; CTCK/CTQLQ đại chúng = 07000), không đổi grain/PK [2026-11-08, O_VP_66] | 1 mã × 1 ngày giao dịch (PK hash cột grain) | K_VP_340–341 |
 
 ## Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
 

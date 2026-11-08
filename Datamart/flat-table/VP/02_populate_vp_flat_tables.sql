@@ -290,6 +290,9 @@ SELECT
     f.rpt_year,
     f.rpt_month,
     f.maturity_dt,
+    f.registered_trading_bond_quantity,
+    f.par_val,
+    f.registered_trading_val,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
@@ -319,9 +322,11 @@ SELECT
     -- From: FCT_LISTED_EQUITY_SNPST
     f.listed_equity_snpst_id,
     f.snpst_dt_dim_id,
+    f.industry_dim_id,
     f.ticker_symbol,
     f.floor_code,
     f.stock_tp_code,
+    f.fund_tp_code,
     f.outstanding_share_quantity,
     f.listed_share_quantity,
     f.listed_share_val,
@@ -340,11 +345,17 @@ SELECT
     cal.day_of_week AS day_of_week,
     cal.is_weekend AS is_weekend,
     cal.holiday_flag AS holiday_flag,
-    cal.is_trading_date AS is_trading_date
+    cal.is_trading_date AS is_trading_date,
+
+    -- From: INDUSTRY DIMENSION
+    ind_dim.industry_code AS industry_code,
+    ind_dim.industry_nm AS industry_nm
 
 FROM datamart.fct_listed_equity_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.industry_dim ind_dim
+    ON ind_dim.industry_dim_id = f.industry_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
 
@@ -637,4 +648,68 @@ SELECT
 FROM datamart.fct_government_bond_listing_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+;
+
+
+-- ==========================================================
+-- 15. FACT: vp_fct_government_bond_listing_change_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.vp_fct_government_bond_listing_change_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.vp_fct_government_bond_listing_change_snpst_flat
+SELECT
+    -- From: FCT_GOVERNMENT_BOND_LISTING_CHANGE_SNPST
+    f.government_bond_listing_change_snpst_id,
+    f.snpst_dt_dim_id,
+    f.bond_code,
+    f.listing_status_nm,
+    f.additional_bond_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_government_bond_listing_change_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 16. FACT: vp_fct_private_corporate_bond_registration_status_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.vp_fct_private_corporate_bond_registration_status_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.vp_fct_private_corporate_bond_registration_status_snpst_flat
+SELECT
+    -- From: FCT_PRIVATE_CORPORATE_BOND_REGISTRATION_STATUS_SNPST
+    f.private_corporate_bond_registration_status_snpst_id,
+    f.snpst_dt_dim_id,
+    f.bond_code,
+    f.trading_registration_status_nm,
+    f.registered_trading_bond_quantity,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_private_corporate_bond_registration_status_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE cal.cdr_dt = :etl_date
 ;
