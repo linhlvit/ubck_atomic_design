@@ -80,6 +80,10 @@ INSERT INTO datamart.qlq_fct_foreign_fund_management_organization_unit_snpst_fla
 SELECT
     f.snpst_dt_dim_id,
     f.branch_count,
+    f.representative_office_count,
+    f.active_representative_office_count,
+    f.pending_closure_representative_office_count,
+    f.closed_representative_office_count,
     snpst_cal.cdr_dt              AS snpst_cdr_dt
 FROM datamart.fct_foreign_fund_management_organization_unit_snpst f
 JOIN datamart.cdr_dt_dim snpst_cal
@@ -352,7 +356,7 @@ TRUNCATE TABLE IF EXISTS datamart.qlq_opr_foreign_fund_management_organization_u
 INSERT INTO datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat
 SELECT
     o.fmr_submission_code,
-    o.dynamic_row_nbr,
+    o.table_idx,
     o.foreign_fund_management_organization_unit_code,
     o.record_tp,
     o.period_tp_code,
@@ -851,4 +855,28 @@ LEFT JOIN
     GROUP BY h3.submission_rpt_code
 ) ft
     ON ft.ft_rc = x.rcode
+;
+
+
+-- ==========================================================
+-- 22. OPERATIONAL: qlq_opr_foreign_fund_management_representative_office_profile_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_foreign_fund_management_representative_office_profile_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_foreign_fund_management_representative_office_profile_flat
+SELECT
+    -- From: OPR_FOREIGN_FUND_MANAGEMENT_REPRESENTATIVE_OFFICE_PROFILE
+    f.foreign_fund_management_organization_unit_code,
+    f.foreign_fund_management_organization_unit_full_nm,
+    f.operation_status_nm,
+    f.license_nbr,
+    f.license_dt,
+    f.address,
+    f.tax_id_nbr,
+    f.src_stm_code,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_etl_pcs_tms
+
+FROM datamart.opr_foreign_fund_management_representative_office_profile f
 ;

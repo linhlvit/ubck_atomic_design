@@ -99,6 +99,10 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_foreign_fund_management_organization
     -- From: FACT Fact Foreign Fund Management Organization Unit Snapshot
     snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot tháng — Calendar Date Dimension',
     branch_count                    Nullable(Int64)         COMMENT 'Số Chi nhánh CTQLQ nước ngoài tại VN (branch_tp_code = BRANCH), hiệu lực tại kỳ',
+    representative_office_count                  Nullable(Int64)         COMMENT 'Số VPĐD CTQLQ nước ngoài tại VN (ou_tp_code = 0, BRANCH_FLAG = 0) có ngày cấp giấy phép (LICENSE_DATE) không muộn hơn cuối tháng của kỳ — theo SQL BA Nhóm 29; đếm cả VPĐD đã đóng cửa (không lọc hiệu lực)',
+    active_representative_office_count           Nullable(Int64)         COMMENT 'Số VPĐD CTQLQ nước ngoài tại VN đang hoạt động tại kỳ (tên trạng thái Hoạt động)',
+    pending_closure_representative_office_count  Nullable(Int64)         COMMENT 'Số VPĐD CTQLQ nước ngoài tại VN đang chờ đóng cửa tại kỳ (tên trạng thái chứa chờ đóng cửa)',
+    closed_representative_office_count           Nullable(Int64)         COMMENT 'Số VPĐD CTQLQ nước ngoài tại VN đã đóng cửa tại kỳ (tên trạng thái đóng cửa/chấm dứt/giải thể, không phải chờ)',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension'
@@ -435,13 +439,13 @@ COMMENT 'Flat table — Fact Fund Management Report Cell Value × Calendar Date 
 -- ============================================================
 -- 18. OPERATIONAL: qlq_opr_foreign_fund_management_organization_unit_contract_list_flat
 --    Operational Foreign Fund Management Organization Unit Contract List
---    Grain: 1 hợp đồng UTQLDM (dòng động) × 1 bản nộp báo cáo của 1 CN CTQLQ NN × 1 kỳ báo cáo (Nhóm 27)
+--    Grain: 1 hợp đồng UTQLDM (bảng table_idx) × 1 bản nộp báo cáo của 1 CN CTQLQ NN × 1 kỳ báo cáo (Nhóm 27; O_QLQ_82: khóa đổi từ dynamic_row_nbr sang table_idx theo BA 2026-11-09 — DROP + CREATE bảng vì ORDER BY đổi)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization_unit_contract_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Foreign Fund Management Organization Unit Contract List
-    fmr_submission_code                      String                     COMMENT 'PK — Driving: fmr_value (composite cùng Dynamic Row Number; lấy DISTINCT theo bản nộp × dòng động)',
-    dynamic_row_nbr                          Int64                      COMMENT 'PK — Driving: fmr_value (composite cùng Fund Management Report Submission Code); số thứ tự dòng động; mỗi…',
+    fmr_submission_code                      String                     COMMENT 'PK — Driving: fmr_value (composite cùng Table Index; lấy DISTINCT theo bản nộp × bảng hợp đồng)',
+    table_idx                                Int64                      COMMENT 'PK (composite) — chỉ số bảng hợp đồng trong sheet @QLDMDT (mỗi bảng = 1 hợp đồng UTQLDM; = dynamic_row_nbr nếu giá trị tĩnh, = dynamic_row_nbr / 1000 nếu giá trị động)',
     foreign_fund_management_organization_unit_code Nullable(String)           COMMENT 'Mã chi nhánh CTQLQ nước ngoài nộp báo cáo (RPT_MEMBER.FR_BR_ID; loại đối tượng = 4 theo Điều kiện BA) —…',
     record_tp                                Nullable(String)           COMMENT 'Loại đối tượng nộp báo cáo (BA: 4 = Chi nhánh CTQLQ nước ngoài)',
     period_tp_code                           Nullable(String)           COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
@@ -455,7 +459,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
-ORDER BY (fmr_submission_code, dynamic_row_nbr)
+ORDER BY (fmr_submission_code, table_idx)
 COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Contract List'
 ;
 
@@ -582,4 +586,31 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_dynamic_report_explorer_indicator_fl
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (indicator_id)
 COMMENT 'Flat Data Explorer QLQ — chỉ tiêu báo cáo động FMS (thay metadata_etl của QLQ)'
+;
+
+
+-- ==========================================================
+-- 22. OPERATIONAL: qlq_opr_foreign_fund_management_representative_office_profile_flat
+--    opr_foreign_fund_management_representative_office_profile — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_representative_office_profile_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FOREIGN_FUND_MANAGEMENT_REPRESENTATIVE_OFFICE_PROFILE
+    foreign_fund_management_organization_unit_code String                  COMMENT 'PK — Driving: foreign_fm_ou',
+    foreign_fund_management_organization_unit_full_nm Nullable(String)        COMMENT 'Tên đầy đủ của VPĐD',
+    operation_status_nm                          Nullable(String)        COMMENT 'Trạng thái hoạt động của VPĐD (tên trạng thái FMS.STATUS)',
+    license_nbr                                  Nullable(String)        COMMENT 'Số giấy phép thành lập của VPĐD',
+    license_dt                                   Nullable(Date)          COMMENT 'Ngày cấp giấy phép thành lập của VPĐD',
+    address                                      Nullable(String)        COMMENT 'Địa chỉ của VPĐD',
+    tax_id_nbr                                   Nullable(String)        COMMENT 'Mã số thuế của VPĐD',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; bộ lọc dòng của bảng: chỉ VPĐD (ou_tp_code = 0, BRANCH_FLAG = 0) có ngày cấp giấy p',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày insert bản ghi lần đầu — audit field SCD4A',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày update bản ghi gần nhất — audit field SCD4A',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Timestamp xử lý ETL — audit field'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (foreign_fund_management_organization_unit_code)
+COMMENT 'Flat table — opr_foreign_fund_management_representative_office_profile — sinh tự động từ master registry + Entities.csv'
 ;

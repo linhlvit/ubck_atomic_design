@@ -213,7 +213,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Foreign Fund Management Organization Unit Snapshot | Fact Snapshot | new | Thống kê chung CN CTQLQ nước ngoài toàn thị trường | 1 snapshot toàn TT × 1 tháng | K_QLQ_160,161 |
+| Fact Foreign Fund Management Organization Unit Snapshot | Fact Snapshot | new | Thống kê chung CN CTQLQ nước ngoài toàn thị trường | 1 snapshot toàn TT × 1 tháng | K_QLQ_160,161 (Nhóm 24); K_QLQ_2701–2704 (Nhóm 29) |
 | Foreign Fund Management Organization Unit Dimension | Dimension | new | CN CTQLQ nước ngoài (SCD4A) | 1 CN (current state) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
 
@@ -232,11 +232,13 @@ erDiagram
 
 > **[THIẾT KẾ 2026-10-14]** Nhóm 27 (K_QLQ_179–181) trước đó PENDING; nay READY qua bảng Operational đọc engine báo cáo định kỳ `RPT_*` theo cách của `Fund Management Company Contract List` (Nhóm 5): 1 hợp đồng UTQLDM = 1 dòng động (`dynamic_row_nbr`), `record_tp = 4`. BA để trống tên sheet nên không lọc sheet; dòng hợp đồng nhận diện bằng nhãn cột "Loại" (O_QLQ_37).
 
+> **[SỬA 2026-11-09, O_QLQ_82/83]** *(Lịch sử: đoạn trên mô tả ghép theo `dynamic_row_nbr` và không lọc sheet.)* Khóa hợp đồng nay là `table_idx` (PK = `fmr_submission_code` + `table_idx`), lọc sheet `@QLDMDT`, `record_tp = 4`; BA bỏ điều kiện cơ sở pháp lý `97/2020/TT`.
+
 ```mermaid
 erDiagram
     Foreign_Fund_Management_Organization_Unit_Contract_List {
         string Fund_Management_Report_Submission_Code PK
-        int Dynamic_Row_Number PK
+        int Table_Index PK
         string Foreign_Fund_Management_Organization_Unit_Code
         string Record_Type
         string Period_Type_Code
@@ -252,7 +254,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Foreign Fund Management Organization Unit Contract List | Operational | new | Danh sách hợp đồng UTQLDM của CN CTQLQ nước ngoài (popup Nhóm 26) | 1 hợp đồng (dòng động) × 1 bản nộp × 1 kỳ báo cáo | K_QLQ_179–181 (Nhóm 27) |
+| Foreign Fund Management Organization Unit Contract List | Operational | new | Danh sách hợp đồng UTQLDM của CN CTQLQ nước ngoài (popup Nhóm 26) | 1 hợp đồng (bảng `table_idx`) × 1 bản nộp × 1 kỳ báo cáo | K_QLQ_178 (Nhóm 26), K_QLQ_179–181 (Nhóm 27) |
 
 ---
 
@@ -289,7 +291,35 @@ erDiagram
 
 ---
 
-## Nhóm 29–33 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
+## Nhóm 29 — Thống kê chung VPĐD CTQLQ nước ngoài (Fact Foreign Fund Management Organization Unit Snapshot)
+
+> **[THIẾT KẾ 2026-11-09, O_QLQ_83]** BA chèn Nhóm 29 (4 chỉ tiêu cơ sở). Dùng lại Fact snapshot chi nhánh của Nhóm 24, thêm 4 cột đếm VPĐD (`ou_tp_code = '0'`) theo `LICENSE_DATE`; không dùng chung KPI VPĐD của Nhóm 1 (K_QLQ_6, 8–10 — mốc `START_DATE`, Fact snapshot CTQLQ).
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Foreign_Fund_Management_Organization_Unit_Snapshot : " "
+    Foreign_Fund_Management_Organization_Unit_Dimension ||--o{ Fact_Foreign_Fund_Management_Organization_Unit_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Foreign Fund Management Organization Unit Snapshot | Fact Snapshot | partial | Thống kê chung CN và VPĐD CTQLQ nước ngoài toàn thị trường (thêm 4 cột đếm VPĐD) | 1 snapshot toàn TT × 1 tháng | K_QLQ_2701–2704 (Nhóm 29) |
+| Foreign Fund Management Organization Unit Dimension | Dimension | reuse | CN/VPĐD CTQLQ nước ngoài (SCD4A) | 1 CN/VPĐD (current state) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+---
+
+## Nhóm 30 — Danh sách VPĐD CTQLQ nước ngoài (Operational)
+
+> **[THIẾT KẾ 2026-11-09, O_QLQ_83]** Bảng tác nghiệp Active-only riêng cho VPĐD (`ou_tp_code = '0'`), cùng khuôn `Foreign Fund Management Organization Unit Profile` của Nhóm 26 (bộ lọc dòng nằm ở `src_stm_code`). Số giấy phép, ngày cấp, MST đọc `ip_alternative_identification`; địa chỉ đọc `ip_postal_address`; trạng thái đọc `cl_fms_status`.
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Foreign Fund Management Representative Office Profile | Operational | new | Hồ sơ VPĐD CTQLQ nước ngoài | Tác nghiệp Active-only — 1 VPĐD (hiện trạng) | K_QLQ_2705–2710 (Nhóm 30) |
+
+---
+
+## Nhóm 31–35 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
 
 > **[MỚI 2026-10-06]** Atomic (commit e9378756) đã có `fund_management_report` (FMS.RPT_TEMP), `fmr_sheet` (FMS.SHEET), `fmr_period`, `fmr_submission`, `fmr_value`. Thiết kế phần **header** của Data Explorer: Loại/Mã/Tên báo cáo + Mã/Tên sheet (5/9 dòng BA mỗi sheet, 26 sheet có BA Done). Kỳ báo cáo, Mã chỉ tiêu, Tên chỉ tiêu, Giá trị vẫn PENDING — xem O_QLQ_27.
 
@@ -309,7 +339,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Report Sheet List | Operational | new | Danh sách sheet biểu mẫu báo cáo định kỳ FMS — Loại/Mã/Tên báo cáo + Mã/Tên sheet | 1 sheet của 1 biểu mẫu (current state) | 130 KPI header Nhóm 29–33 (xem Detail Mapping) |
+| Fund Management Report Sheet List | Operational | new | Danh sách sheet biểu mẫu báo cáo định kỳ FMS — Loại/Mã/Tên báo cáo + Mã/Tên sheet | 1 sheet của 1 biểu mẫu (current state) | 130 KPI header Nhóm 31–35 (xem Detail Mapping) |
 
 ---
 
