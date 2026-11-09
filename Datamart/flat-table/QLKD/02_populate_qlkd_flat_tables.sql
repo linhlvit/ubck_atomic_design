@@ -105,18 +105,23 @@ WHERE cal.cdr_dt = :etl_date
 
 -- ============================================================
 -- 3. FACT: qlkd_fct_securities_company_license_condition_snpst_flat
---    Grain APPEND (Periodic Snapshot — mỗi ngày lấy bản ghi cảnh báo mới nhất
---    per CTCK) — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT.
+--    Grain 1 dòng Atomic sc_alert_violation (PK sc_alert_violation_id) — nạp ĐỦ lịch sử cảnh báo/vi phạm, không lọc ngày.
+--    Xếp loại duy trì (tốt / gần giới hạn / không duy trì) tính ở Detail Mapping, không ở ETL.
+--    TRUNCATE + INSERT toàn bộ (cùng khuôn flat 4 và 16): cảnh báo có thể bổ sung hoặc sửa lùi kỳ nên APPEND theo ngày không đúng.
 -- ============================================================
-DELETE FROM datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster'
-WHERE cdr_dt = :etl_date;
+TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_fct_securities_company_license_condition_snpst_flat
 SELECT
     -- From: FACT Fact Securities Company License Condition Snapshot
+    f.sc_alert_violation_id,
     f.snpst_dt_dim_id,
     f.securities_company_dim_id,
     f.indicator_code,
-    f.severity_level,
+    f.alert_entity_tp_code,
+    f.alert_year,
+    f.rpt_period_code,
+    f.alert_period_val,
+    f.severity_level_alt_code,
     f.alert_dt,
 
     -- From: CALENDAR DATE DIMENSION
@@ -133,14 +138,14 @@ SELECT
     sc_dim.company_status_nm           AS company_status_nm,
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
+    sc_dim.provisional_ind             AS provisional_ind,
     sc_dim.src_stm_code                AS securities_company_src_stm_code
 
 FROM datamart.fct_securities_company_license_condition_snpst f
-JOIN datamart.cdr_dt_dim cal
+LEFT JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 LEFT JOIN datamart.securities_company_dim sc_dim
     ON sc_dim.securities_company_dim_id = f.securities_company_dim_id
-WHERE cal.cdr_dt = :etl_date
 ;
 
 

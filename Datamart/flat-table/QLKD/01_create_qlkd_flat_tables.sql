@@ -98,19 +98,25 @@ COMMENT 'Flat table — Fact Securities Company Compliance Report Snapshot × Ca
 -- ============================================================
 -- 3. FACT: qlkd_fct_securities_company_license_condition_snpst_flat
 --    Fact Securities Company License Condition Snapshot
---    Joins: Calendar Date × Securities Company Dimension
+--    Joins: Calendar Date × Securities Company Dimension (trục thời gian KPI = năm + kỳ dữ liệu K_QLKD_30, không phải cdr_dt)
+--    Grain: 1 dòng Atomic sc_alert_violation; PK = sc_alert_violation_id (ORDER BY phải chứa PK vì ReplacingMergeTree dedup theo ORDER BY)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FACT Fact Securities Company License Condition Snapshot
-    snpst_dt_dim_id                 String                  COMMENT 'FK ngày snapshot D (Processing Date)',
+    sc_alert_violation_id           String                  COMMENT 'PK — id dòng cảnh báo/vi phạm (Atomic sc_alert_violation)',
+    snpst_dt_dim_id                 Nullable(String)        COMMENT 'FK ngày của dòng cảnh báo (Alert Date) — role Snapshot Date',
     securities_company_dim_id       String                  COMMENT 'FK CTCK',
-    indicator_code                  String        COMMENT 'Loại giấy phép — phân biệt Nhóm 5/6/7 trên cùng 1 Fact — JOIN sc_alert_indicator',
-    severity_level                  Nullable(String)        COMMENT 'Mức duy trì điều kiện cấp phép (1/2/3)',
-    alert_dt                                     Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (nguồn SC_FIRM_ALERT_VIOLATION.ALERT_DATE) — ngày của dữ liệu, dùng làm cột ngày của trục Chiều thời gian theo ngày (date-spine Calendar Date Dimension, K_QLKD_30) của Nhóm 5/6/7/36: cận dưới trục = MIN(alert_dt), ngày trục cdr_dt_dim.cdr_dt nối alert_dt (BA STT 5/6/7/36, cập nhật 2026-10-22). Không phải khóa snapshot: snpst_dt_dim_id vẫn là ngày xử lý cảnh báo (processing_dt = :etl_date).',
+    indicator_code                  Nullable(String)        COMMENT 'Mã tham số cảnh báo (ALERT_INDICATOR.INDICATOR_CODE)',
+    alert_entity_tp_code            Nullable(String)        COMMENT 'Loại đối tượng cảnh báo (ENTITY_TYPE: CTCK, NGAN_HANG, CN_CTCK_NN, VPDD_CTCK_NN)',
+    alert_year                      Nullable(String)        COMMENT 'Năm dữ liệu của cảnh báo (ALERT_YEAR)',
+    rpt_period_code                 Nullable(String)        COMMENT 'Loại kỳ của cảnh báo (REPORT_PERIOD)',
+    alert_period_val                Nullable(Int64)         COMMENT 'Giá trị kỳ của cảnh báo (PERIOD_VALUE — số thứ tự kỳ)',
+    severity_level_alt_code         Nullable(String)        COMMENT 'Mức nghiêm trọng của dòng cảnh báo: 1 = cảnh báo, 2 = vi phạm (SEVERITY_LEVEL_ALT)',
+    alert_dt                        Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (ALERT_DATE) — thuộc tính ngày của dòng, không phải trục thời gian',
 
     -- From: CALENDAR DATE DIMENSION
-    cdr_dt                          Nullable(Date)          COMMENT 'FK ngày snapshot D (Processing Date) — từ Calendar Date Dimension',
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày của dòng cảnh báo (Alert Date) — từ Calendar Date Dimension',
 
     -- From: SECURITIES COMPANY DIMENSION
     sc_id                           Nullable(String)        COMMENT 'Business Id CTCK (Atomic surrogate) — từ Securities Company Dimension',
@@ -123,12 +129,13 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     company_status_nm               Nullable(String)        COMMENT 'Nhãn tiếng Việt nhóm trạng thái CTCK (Đã bị thu hồi/Hoạt động bình thường/Kiểm soát đặc biệt/Kiểm soát/Cảnh báo/Đình chỉ hoạt động/Trạng thái khác); NULL khi CTCK không có trạng thái — từ Securities Company Dimension',
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
     stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
+    provisional_ind                 Nullable(Int64)         COMMENT 'Cờ bản nháp hồ sơ CTCK (1 = bản nháp, 0 = chính thức; NULL tính là chính thức) — từ Securities Company Dimension',
     securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
-ORDER BY (assumeNotNull(cdr_dt), securities_company_dim_id, indicator_code)
-COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Calendar Date × Securities Company Dimension'
+PARTITION BY tuple()
+ORDER BY (sc_alert_violation_id)
+COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Calendar Date × Securities Company Dimension (1 dòng = 1 dòng cảnh báo Atomic)'
 ;
 
 

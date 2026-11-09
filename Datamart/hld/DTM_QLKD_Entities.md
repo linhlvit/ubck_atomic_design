@@ -37,7 +37,7 @@ erDiagram
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date) | 1 ngày | — |
 
-### Nhóm 5/6/7 — Duy trì điều kiện cấp phép (GPHL / KDCKPS / BTTT) (K_QLKD_30–40)
+### Nhóm 5/6/7/36 — Duy trì điều kiện cấp phép (GPHL / KDCKPS / BTTT / CN-PGD) (K_QLKD_30, 32–40, 178–180)
 
 ```mermaid
 erDiagram
@@ -47,9 +47,9 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Company License Condition Snapshot | Fact Snapshot | new | Duy trì điều kiện cấp phép — dùng chung 3 nhóm, phân biệt bằng Indicator_Code | 1 CTCK × 1 loại giấy phép × 1 ngày snapshot | K_QLKD_30–40 |
+| Fact Securities Company License Condition Snapshot | Fact (1 dòng Atomic) | new | Cảnh báo/vi phạm duy trì điều kiện cấp phép — dùng chung 4 nhóm, phân biệt nhóm tham số bằng Indicator_Code; xếp loại duy trì tính ở Detail Mapping | 1 dòng Atomic Securities Company Alert Violation (PK Securities Company Alert Violation Id): 1 đối tượng cảnh báo × 1 tham số × 1 kỳ dữ liệu × 1 bản ghi | K_QLKD_30, 32–40, 178–180 |
 | Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
-| Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date = ngày cảnh báo; không phải trục thời gian của KPI) | 1 ngày | — |
 
 ### Nhóm 8/9 — Cơ cấu tài sản và cơ cấu nguồn vốn toàn thị trường (K_QLKD_41–52)
 
