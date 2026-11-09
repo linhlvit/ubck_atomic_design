@@ -10686,9 +10686,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Nội dung/Trích yếu"
+        description: "Nội dung/Trích yếu — lấy tên hành vi vi phạm theo danh mục `violation_behavior.violation_behavior_nm` (THANHTRA.VIOLATION_BEHAVIOR.NAME), JOIN qua `pd_subject_behavior.violation_behavior_id`; mỗi dòng Mart = 1 hành vi (PK `pd_subject_behavior_code`) nên nội dung đi cặp theo hành vi; đối tượng chưa có hành vi thì NULL (LEFT JOIN theo BA). [SỬA 2026-11-09, review 'thiết kế # mapping' (Dũng); Data Modeler chốt lấy `violation_behavior.name`, O_NDTNN_57] BA STT 13 dòng 85 ghi `PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION` nhưng Atomic đã bỏ cột `description` khỏi `pd_subject_behavior` (commit 3ba206d3, 2026-10-21) — cùng cách QLKD Nhóm 44 'Nội dung vi phạm' (O_QLKD_72); BA CSV chưa cập nhật. *(Lịch sử: trước 2026-11-09 đọc `violation_behavior.description` — mô tả chung của danh mục hành vi.)*"
         source_atomic_table: "violation_behavior"
-        source_atomic_column: "violation_behavior.description"
+        source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Life Cycle Status Code"
         physical_name: "life_cycle_status_code"
         data_domain: "Classification Value"
