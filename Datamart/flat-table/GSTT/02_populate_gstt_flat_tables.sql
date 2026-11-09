@@ -473,6 +473,14 @@ SELECT
     f.matched_sell_val,
     f.negotiated_buy_val,
     f.negotiated_sell_val,
+    f.round_lot_buy_vol,
+    f.round_lot_sell_vol,
+    f.round_lot_buy_val,
+    f.round_lot_sell_val,
+    f.odd_lot_buy_vol,
+    f.odd_lot_sell_vol,
+    f.odd_lot_buy_val,
+    f.odd_lot_sell_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                          AS cdr_dt,

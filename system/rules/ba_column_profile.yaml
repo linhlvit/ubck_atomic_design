@@ -105,10 +105,10 @@ modules:
       sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
-    expect_columns: 26
+    expect_columns: 19
     ma_column: null
-    sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
-    expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo", "Câu lệnh màn"]
+    sql_columns: ["Câu lệnh tham khảo"]
+    expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: >-
       Có 'Câu lệnh tham khảo' nhưng KHÔNG có 'Câu lệnh update (SIT)' -> drop_rules không áp dụng.
       [CẬP NHẬT 2026-10-15 lần 2, xác minh qua header sống: 844 dòng đều 26 cột, delimiter ',', header dòng 1,
@@ -126,6 +126,12 @@ modules:
       trên Excel). Parser tra theo TÊN nên không đổi hành vi, chỉ đổi expect_columns 27 → 26. Cùng lần cập nhật: Nhóm 37 cũ
       ('Giao dịch & thanh khoản', 38 dòng) và Nhóm 39–43 có Trạng thái mapping = Deleted; Nhóm 38 mới 'Dataexplorer Giao dịch
       & thanh khoản' (57 dòng, có mapping phái sinh) thay Nhóm 37 cũ; sổ lệnh 43–48 → 44–49. Dòng Deleted BỎ QUA khi thiết kế.
+      [CẬP NHẬT 2026-11-09 14:55, xác minh qua header sống: 1079 dòng đều 19 cột, delimiter ',', header dòng 1, legend
+      dòng 2] BA gửi bản rút gọn: BỎ 7 cột 'Câu lệnh màn', 'Kết quả Test', 'Model', 'DMT', 'Hoàn thành DEV', 'Loại dữ liệu',
+      'Kết quả SIT' (cột cuối còn lại là 'Note') → 19 cột; 18 cột còn lại giữ nguyên tên và nội dung so với HEAD (đã so
+      theo (STT, Thông tin) — không dòng nào đổi nội dung, không dòng nào bị xóa). So với HEAD, MỚI duy nhất 4 dòng
+      Nhóm 23 (lô lẻ/lô chẵn × KLGD/GTGD theo phân loại NĐT, dòng CSV 559–562). 'Câu lệnh màn' trước đây có giá trị ở
+      39/1072 dòng (23 dòng không có 'Câu lệnh tham khảo') — nội dung này không còn trong BA, chỉ còn ở git HEAD.
 
   "GSĐC":
     aliases: [GSDC]
