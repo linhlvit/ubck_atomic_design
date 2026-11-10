@@ -27465,10 +27465,10 @@ entities:
       - logical_name: "Listed Share Quantity"
         physical_name: "listed_share_quantity"
         data_domain: "Large Counter"
-        data_type: "bigint"
+        data_type: "decimal(38,10)"
         nullable: true
         key: ""
-        description: "Khối lượng niêm yết/đăng ký giao dịch cuối ngày giao dịch (LISTEDSHARE của MDDS; cổ phiếu, CCQ/ETF, chứng quyền, TPDN niêm yết) — dùng đếm quy mô niêm yết và tính giá trị niêm yết."
+        description: "Khối lượng niêm yết/đăng ký giao dịch cuối ngày giao dịch (LISTEDSHARE của MDDS; cổ phiếu, CCQ/ETF, chứng quyền, TPDN niêm yết) — dùng đếm quy mô niêm yết và tính giá trị niêm yết. Kiểu decimal(38,10) theo SQL BA Nhóm 17 cập nhật 2026-11-10 (CAST(listedshare AS DECIMAL(38,10)) thay BIGINT); Atomic `listed_share_count` hiện là bigint nên phần thập phân chỉ có khi Atomic đổi kiểu (O_VP_72)."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.listed_share_count"
       - logical_name: "Listed Share Value"
