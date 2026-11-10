@@ -185,16 +185,18 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_certificate_hist_flat
     -- From: OPERATIONAL Practitioner Certificate History
     practitioner_code               String              COMMENT 'PK (1/2) — Mã NHN',
     license_certificate_document_code    String              COMMENT 'PK (2/2) — Mã CCHN',
-    certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN',
+    certificate_nbr                 Nullable(String)    COMMENT 'Số CCHN (CERTIFICATE_NUMBER)',
     certificate_tp_code             Nullable(String)    COMMENT 'Loại CCHN — SP License Certificate Type (Fundamental entity, không phải Classification)',
     certificate_tp_nm               Nullable(String)    COMMENT 'Tên loại CCHN',
     issue_dt                 Nullable(Date)      COMMENT 'Ngày cấp CCHN',
-    revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi — NULL nếu chưa thu hồi',
-    issue_decision_nbr           Nullable(String)    COMMENT 'Số quyết định cấp',
-    revocation_decision_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi',
-    certificate_status_code             Nullable(String)    COMMENT '(Sửa 2026-08) Trạng thái hiệu lực CCHN — scheme: CERTIFICATE_STATUS (đổi tên từ process_status_code, khác ý nghĩa)',
-    certificate_status_nm               Nullable(String)    COMMENT 'Tên trạng thái hiệu lực CCHN',
-    src_stm_code            String              COMMENT 'Mã hệ thống nguồn'
+    revocation_dt           Nullable(Date)      COMMENT 'Ngày thu hồi — chỉ có khi trạng thái CCHN là 2 hoặc 3 (ngày ghi trên bản ghi CCHN, thiếu thì ngày ký quyết định thu hồi); NULL với trạng thái khác',
+    issue_decision_nbr           Nullable(String)    COMMENT 'Số quyết định cấp (DECISIONS.DECISION_NUMBER)',
+    revocation_decision_nbr     Nullable(String)    COMMENT 'Số quyết định thu hồi (DECISIONS.DECISION_NUMBER)',
+    certificate_status_code             Nullable(String)    COMMENT 'Trạng thái CCHN hiện tại của bản ghi (CERTIFICATE_RECORDS.STATUS: 0–5) — scheme: CERTIFICATE_STATUS',
+    certificate_status_nm               Nullable(String)    COMMENT 'Tên trạng thái CCHN',
+    src_stm_code            String              COMMENT 'Mã hệ thống nguồn',
+    cancellation_dt                              Nullable(Date)          COMMENT 'Ngày hủy CCHN — chỉ có khi trạng thái CCHN là 4 (đã hủy): lấy ngày ghi trên bản ghi CCHN (CERTIFICATE_RECORDS không có cột ngày hủy riêng, dùng chung ngày thu hồi), thiếu thì lấy ngày ký quyết định hủy; NULL với trạng thái khác. [MỚI 2026-11-10, O_NHNCK_48]',
+    cancellation_decision_nbr                    Nullable(String)        COMMENT 'Số quyết định hủy CCHN — NULL nếu CCHN chưa có quyết định hủy. ETL-derived: join sp_license_decision_document theo cancellation_sp_license_decision_document_id, lấy số hiệu quyết định (DECISIONS.DECISION_NUMBER). [MỚI 2026-11-10, O_NHNCK_48]'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issue_dt))
