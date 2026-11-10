@@ -18,13 +18,13 @@ description: |
 
 # Skill: Thiết kế LLD Datamart
 
-File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A37 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
+File này giữ phần dùng ở mọi Phase: điều kiện tiên quyết, cách tra Atomic, quy tắc ngữ cảnh, lệnh kiểm sau mỗi thay đổi, bảng tóm tắt luật A1–A38 và quy trình tổng. Chi tiết từng Phase nằm trong `reference/` — chỉ đọc file của Phase đang làm.
 
 ## Đọc gì, khi nào
 
 | Khi | Đọc | Nội dung chính |
 |---|---|---|
-| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A37 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
+| Mọi Phase | [`reference/rules.md`](reference/rules.md) — đúng mục của luật liên quan | Luật A1–A38 đầy đủ, ví dụ sai thực tế, lệnh kiểm |
 | Phase 0 — Plan | [`reference/phase0_plan.md`](reference/phase0_plan.md) | Bước P1–P3, định dạng Plan tổng, bảng physical name chuẩn |
 | Phase 1 — Attributes | [`reference/phase1_workflow.md`](reference/phase1_workflow.md) | Input, Bước 0–3 (driving table, coverage Dimension, `src_stm_code`, xuất CSV), Checklist Phase 1 |
 | | [`reference/phase1_attributes.md`](reference/phase1_attributes.md) | 15 cột CSV, `etl_logic_type`, ràng buộc key/nullable, partial, merge |
@@ -155,7 +155,7 @@ Ghi thật (bỏ `--check`) chỉ khi `--check` cho thấy phần lệch **chỉ
 
 ---
 
-## Luật A1–A37 (tóm tắt)
+## Luật A1–A38 (tóm tắt)
 
 Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết luật nào liên quan; trước khi áp dụng, đọc mục tương ứng trong [`reference/rules.md`](reference/rules.md) (`grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`). Cột "Máy kiểm" ghi Gate/script bắt được lỗi và mã lỗi in ra; "—" nghĩa là chưa có script, phải tự kiểm theo hướng dẫn trong `rules.md`.
 
@@ -198,6 +198,7 @@ Mỗi luật rút từ một lỗi thật. Bảng dưới chỉ để biết lu�
 | A35 | **Vận hành phiên:** mở đúng thư mục để nạp hook/skill/CLAUDE.md (kiểm hook bằng lệnh bị R3 chặn), dừng ở Nhóm thứ 6, `--save-baseline`/`--baseline`, phiên song song chỉ stage file của mình. |
 | A36 | **Nhãn của cột mã — một khái niệm một tầng:** cột `*_code` chỉ chứa mã gốc (`etl_logic` không có `THEN/ELSE '<nhãn>'`, `ELSE NULL`, `nullable = true`); ánh xạ code → nhãn bằng `CASE WHEN … ELSE 'Không xác định' END` ở `logic` Detail Mapping (mặc định, khớp SQL BA; `ELSE` theo BA từng Nhóm); nhãn ở ETL chỉ ở cột `*_nm` riêng theo quy ước module; CASE chọn nguồn / quyết định khóa PK vẫn ở ETL. Trước khi thiết kế: grep cùng cột mã trong module và làm giống chỗ đã có, đối chiếu SQL BA từng Nhóm, mockup hiển thị nhãn | 1, 2 | Gate 8 D23 `L2-CODE-COL-HAS-LABEL` (ERROR), D24 `L3-CODE-LABEL-INCONSISTENT` + D25 `L3-ETL-CODE-SHOWN-RAW` (WARNING) |
 | A37 | **Mọi literal điều kiện trong `logic`/`etl_logic` phải trích từ SQL BA của Nhóm hoặc Atomic/LLD — "theo thiết kế hiện hành" không phải nguồn:** QLKD N5–7/36 lọc `indicator_code IN ('DUY_TRI_DKCP_GPKD')` (mã ước lượng BA v4.1) trong khi BA lọc `ALERT_INDICATOR.ID IN (450, 451)` → KPI luôn sai. BA đổi SQL ⇒ dẫn lại mọi literal từ BA mới; Atomic thiếu cột BA dùng ⇒ cột Datamart `pending` + O_ yêu cầu Atomic, KHÔNG thay bằng mã tự đặt, KHÔNG gạt entity nguồn BA; cần bảng đối chiếu ID ↔ mã mà chưa có ⇒ PENDING. Ngoại lệ có chủ ý ở `datamart-review/reference/dm_literal_exceptions.yaml` | 1, 2 | Gate 8 D26 `L3-DM-LITERAL-NOT-IN-BA` (WARNING); `ba_diff.py` trước khi sửa |
+| A38 | **Điều kiện loại dòng của SQL BA phải có ở MỌI đường đọc; BA gửi SQL mới ⇒ kiểm kê lại cả Nhóm:** VP N17 — Fact quy mô lọc `floor_code <> '03'` ở ETL nhưng KPI sự kiện phân loại qua `security_trading_snpst_dim` (chứa phái sinh) thiếu điều kiện đó; phiên 10/11 chỉ diff văn bản SQL mới/cũ rồi báo 'đã khớp'. 'Đã lọc ở ETL' của bảng A không phủ KPI đọc bảng B/Dimension; ghi chú 'đã lọc tại ETL' nêu tên bảng; SQL mới ⇒ bảng kiểm kê CTE → bảng Datamart → KPI → điều kiện và mở TỪNG file LLD SQL đọc trước khi báo 'không cần sửa' | 1, 2 | Gate 8 D27 `L3-BA-FILTER-NOT-CARRIED` (WARNING; rule ở `datamart-review/reference/ba_filter_carry.yaml`) |
 
 ---
 

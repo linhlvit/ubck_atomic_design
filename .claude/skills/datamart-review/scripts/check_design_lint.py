@@ -111,7 +111,12 @@ Bổ sung 2026-11-10 (QLKD Nhóm 5/6/7/36 — điều kiện không tồn tại 
                               (VD `indicator_code IN ('DUY_TRI_DKCP_GPKD')` trong khi BA lọc `ALERT_INDICATOR.ID IN (450, 451)` — mã tự đặt kế thừa BA v4.1, KPI luôn rỗng/sai).
                               Bỏ qua idiom ('', '#', ' >> ', 'Không xác định'…) và chuỗi định dạng ngày. Ngoại lệ có chủ ý ghi ở reference/dm_literal_exceptions.yaml. WARNING.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25, D26 = WARNING; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-11-10 (VP Nhóm 17 — điều kiện loại dòng của BA mất khi KPI đọc qua bảng khác, Data Modeler phát hiện):
+  D27 [L3-BA-FILTER-NOT-CARRIED]     (A38) — BA của Nhóm có điều kiện loại dòng (VD `floorcode <> '03'`) nhưng `logic` của KPI đọc cùng dữ liệu qua bảng KHÁC bảng đã lọc ở ETL
+                              (VD phân loại theo `security_trading_snpst_dim.stock_tp_code` — Dimension chứa cả phái sinh) mà không mang điều kiện tương ứng
+                              (`security_trading_snpst_dim.floor_code`). Cặp (điều kiện BA, đường đọc, cột bắt buộc) khai ở reference/ba_filter_carry.yaml. WARNING.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25, D26, D27 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -1309,6 +1314,76 @@ def check_literal_provenance(root: Path, module: str):
     return literal_provenance_issues(rows, ba_by, ba_all, _atomic_text(root, module), load_literal_exceptions())
 
 
+# ── D27 (2026-11-10) — điều kiện loại dòng của BA phải đi theo mọi đường đọc (luật A38) ──
+# Sự cố VP Nhóm 17: Fact Listed Equity lọc floor_code <> '03' ở ETL, nhưng K_VP_382–389 phân loại sự kiện qua security_trading_snpst_dim
+# (chứa cả phái sinh) không có điều kiện này; Gate 0–10 PASS vì không Gate nào đối chiếu điều kiện BA với TỪNG đường đọc.
+def filter_carry_issues(dm_rows, ba_by_nhom, rules, exceptions=None):
+    """D27 — dm_rows: [(kpi_id, nhom_label, column_role, logic)]; ba_by_nhom: {số Nhóm: BA text lower};
+    rules: [{id, ba_pattern, reads, require_any, reason}]; exceptions: {(rule_id, kpi_id)}. Trả [(level, code, msg)]. Hàm thuần (dùng cho test)."""
+    exceptions = exceptions or set()
+    out, seen = [], set()
+    compiled = []
+    for r in rules or []:
+        try:
+            compiled.append((r, re.compile(r.get("ba_pattern") or "(?!)", re.I)))
+        except re.error:
+            continue
+    for kpi, nhom_label, role, logic in dm_rows:
+        if (role or "").upper() == "DEPRECATED" or not logic:
+            continue
+        m = _RE_NHOM_NUM.search(nhom_label or "")
+        n = m.group(1) if m else ""
+        ba_txt = ba_by_nhom.get(n, "")
+        if not ba_txt:
+            continue
+        lg = logic.lower()
+        for r, pat in compiled:
+            rid = r.get("id") or "?"
+            if (rid, kpi) in exceptions or (rid, kpi, n) in seen:
+                continue
+            if not any((t or "").lower() in lg for t in r.get("reads") or []):
+                continue
+            if any((t or "").lower() in lg for t in r.get("require_any") or []):
+                continue
+            if not pat.search(ba_txt):
+                continue
+            seen.add((rid, kpi, n))
+            out.append(("WARNING", "L3-BA-FILTER-NOT-CARRIED",
+                        f"{kpi} (Nhóm {n}): BA Nhóm {n} có điều kiện /{r.get('ba_pattern')}/ nhưng `logic` đọc {[t for t in r.get('reads') or [] if t.lower() in lg]} "
+                        f"mà không có {r.get('require_any')} [{rid}] — {r.get('reason') or ''}. Luật A38: điều kiện loại dòng của BA phải có ở MỌI đường đọc; "
+                        "bảng khác đã lọc ở ETL không phủ cho đường đọc này. Miễn có chủ ý → O_ issue + reference/ba_filter_carry.yaml (exceptions)"))
+    return out
+
+
+def load_filter_carry_rules():
+    p = Path(__file__).resolve().parent.parent / "reference" / "ba_filter_carry.yaml"
+    if not p.exists():
+        return [], set()
+    try:
+        import yaml  # noqa: E402
+        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return [], set()
+    exc = {((e.get("rule") or "").strip(), (e.get("kpi") or "").strip()) for e in (data.get("exceptions") or [])}
+    return data.get("rules") or [], exc
+
+
+def check_filter_carry(root: Path, module: str):
+    rules, exc = load_filter_carry_rules()
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if not rules or not (dm and Path(dm).exists()):
+        return []
+    rows = []
+    with open(dm, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            rows.append(((r.get("kpi_id") or "").strip(), r.get("nhom") or "", r.get("column_role") or "", r.get("logic") or ""))
+    reads = [t.lower() for r in rules for t in (r.get("reads") or [])]
+    if not any(any(t in (l or "").lower() for t in reads) for *_, l in rows):
+        return []
+    ba_by, _ = _ba_texts(root, module)
+    return filter_carry_issues(rows, ba_by, rules, exc)
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -1331,6 +1406,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_atomic_literals(root, module)
     issues += check_etl_bi_boundary(root, module)
     issues += check_literal_provenance(root, module)
+    issues += check_filter_carry(root, module)
     return issues
 
 

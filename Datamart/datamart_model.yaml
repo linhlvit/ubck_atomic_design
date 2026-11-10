@@ -26690,7 +26690,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK tới Security Trading Snapshot Dimension — hồ sơ mã chứng khoán (loại chứng khoán, mã sàn). BA lấy loại chứng khoán và mã sàn từ `jad_stockinfor` bản ghi CUỐI NGÀY và nối `symbol = ticker_symbol AND effective_date = tradingdate` (cập nhật 2026-10-29); thiết kế tra Dimension theo `symbol` (loại chứng khoán không đổi theo ngày — BA) nên quyết định có ngày hiệu lực không có bản tin MDDS cùng ngày VẪN được nạp (BA loại) — O_VP_44; để trống khi mã chưa có trong dimension."
+        description: "FK tới Security Trading Snapshot Dimension — hồ sơ mã chứng khoán (loại chứng khoán, mã sàn). BA lấy loại chứng khoán và mã sàn từ `jad_stockinfor` bản ghi CUỐI NGÀY và nối `symbol = ticker_symbol AND effective_date = tradingdate` (cập nhật 2026-10-29); thiết kế tra Dimension theo `symbol` (loại chứng khoán không đổi theo ngày — BA) nên quyết định có ngày hiệu lực không có bản tin MDDS cùng ngày VẪN được nạp (BA loại) — O_VP_44; để trống khi mã chưa có trong dimension. Nhóm 17 dùng cùng khóa này để phân loại sự kiện theo loại chứng khoán (cổ phiếu, chứng chỉ quỹ, ETF, chứng quyền, TPDN niêm yết) — Fact nạp quyết định của mọi loại chứng khoán, không chỉ cổ phiếu; mã sàn phái sinh (floor_code = '03') loại ở Detail Mapping (O_VP_71)."
         source_atomic_table: "listing_status_change"
         source_atomic_column: "listing_status_change.ticker_symbol"
       - logical_name: "Ticker Symbol"

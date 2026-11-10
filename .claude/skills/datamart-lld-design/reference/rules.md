@@ -614,6 +614,31 @@ vì điều kiện bịa "trông giống" một điều kiện hợp lệ và c�
 bảng tham chiếu; bỏ qua idiom ('', '#', ' >> ', 'Không xác định'…) và chuỗi định dạng. Chạy thử trên bản 09/11 của QLKD bắt đúng 12 KPI `DUY_TRI_DKCP_*`. Ngoài Gate: `ba_diff.py -m {M}` trước khi sửa Nhóm BA vừa đổi.
 Test: `tests/test_design_lint_literal_provenance.py`.
 
+### A38 — Điều kiện loại dòng của SQL BA phải có ở MỌI đường đọc; BA gửi SQL mới thì kiểm kê lại cả Nhóm, không chỉ diff văn bản `[L3-BA-FILTER-NOT-CARRIED]`
+
+Sự cố thật (VP Nhóm 17, Data Modeler phát hiện 2026-11-10): SQL BA phân loại sự kiện niêm yết mới/bổ sung/hủy qua CTE `stock_portfolio`, vốn lấy từ `stock_eod` có `WHERE s.floorcode <> '03'` (loại phái sinh).
+Thiết kế 08/11 đọc quy mô niêm yết từ `fct_listed_equity_snpst` (ETL đã lọc `floor_code <> '03'`) nhưng đọc sự kiện từ `fct_listing_status_change_snpst` và phân loại theo `security_trading_snpst_dim.stock_tp_code`
+— Dimension current-state chứa cả mã phái sinh — mà KHÔNG có `floor_code <> '03'`; `ghi_chu` K_VP_375 lại viết 'phái sinh đã loại ở ETL Fact' (đúng với Fact quy mô, sai với đường đọc sự kiện). Mã phái sinh có
+`stock_tp_code = '4'` có thể lọt vào 'Chứng quyền' ở K_VP_382–389. Gate 0–10 PASS. Ngày 10/11 Data Modeler gửi SQL Nhóm 17 mới: phiên chỉ so văn bản SQL mới với SQL cũ (khác đúng 1 chỗ `CAST … DECIMAL(38,10)`),
+kết luận 'logic còn lại đã khớp thiết kế', sửa 1 cột rồi báo xong — không mở lại LLD của 5 bảng còn lại mà SQL đọc; Data Modeler phải hỏi 'tại sao không update `DTM_VP_fct_listing_status_change_snpst.csv`' mới lộ lỗi.
+
+**Quy tắc**
+1. **Điều kiện loại dòng đi theo dữ liệu, không đi theo bảng.** Với mỗi điều kiện `WHERE`/`ON` loại dòng của SQL BA (mã sàn, loại chứng khoán, trạng thái, cờ xóa…), liệt kê MỌI CTE/nhánh kế thừa nó (CTE con `FROM` CTE cha
+   thì kế thừa `WHERE` của cha) và với TỪNG KPI của Nhóm xác định đường đọc Datamart tương ứng: điều kiện phải nằm ở `etl_logic` của CHÍNH bảng KPI đó đọc, hoặc ở `logic` Detail Mapping. 'Đã lọc ở ETL' của bảng A
+   không phủ cho KPI đọc bảng B/Dimension C (A10 mở rộng).
+2. **Dimension current-state / dùng chung (`security_trading_snpst_dim`, `*_dim` của module khác) không mang bộ lọc của Fact.** Phân loại hoặc lọc qua Dimension thì viết lại điều kiện loại dòng của BA trên cột Dimension
+   (`security_trading_snpst_dim.floor_code <> '03'`).
+3. **Ghi chú 'đã lọc sẵn tại ETL' phải nêu tên bảng** (`đã lọc ở etl_logic của fct_listed_equity_snpst`) và chỉ được viết ở KPI đọc đúng bảng đó.
+4. **BA/Data Modeler gửi SQL mới của 1 Nhóm đã thiết kế:** diff văn bản chỉ là bước 1 để biết BA đổi gì. Bước 2 bắt buộc: lập bảng kiểm kê *CTE của SQL → bảng nguồn → bảng Datamart (file LLD) → KPI → từng điều kiện
+   có/thiếu* cho TOÀN BỘ SQL (kể cả CTE không đổi) và mở TỪNG file LLD mà SQL đọc (A26). Chỉ được báo 'không cần sửa' cho một bảng sau khi đã đối chiếu từng điều kiện của CTE tương ứng với `etl_logic` + `logic`;
+   báo cáo liệt kê bảng nào đã mở và kết luận từng bảng. 'SQL không đổi so với bản cũ' không chứng minh thiết kế cũ đúng.
+5. Lệch có chủ ý (bỏ hoặc thay điều kiện) ⇒ `ghi_chu` + O_ issue cùng lượt (A26); miễn check máy ⇒ mục `exceptions` trong `datamart-review/reference/ba_filter_carry.yaml` kèm O_ issue.
+6. Phát hiện 1 cặp (điều kiện BA, đường đọc thay thế) mới ⇒ thêm rule vào `ba_filter_carry.yaml` trong cùng lượt và chạy Gate 8 mọi module.
+
+**Máy kiểm:** Gate 8 D27 `L3-BA-FILTER-NOT-CARRIED` (WARNING) — rule khai ở `datamart-review/reference/ba_filter_carry.yaml` (`ba_pattern` trên BA của Nhóm, `reads` = đường đọc thay thế, `require_any` = cột phải có trong
+`logic`); rule đầu tiên `MDDS-DERIVATIVE-FLOOR-VIA-DIM`. Lần chạy đầu bắt thêm K_VP_375 (đã sửa cùng ngày); 11 module còn lại 0. Check chỉ phủ các cặp đã khai — mục 4 (kiểm kê tay toàn bộ SQL) vẫn bắt buộc.
+Test: `tests/test_design_lint_filter_carry.py`.
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
@@ -626,6 +651,7 @@ module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module m�
 Từ 2026-10-26 Gate 8 thêm D15 (mã ô eForm: `L3-CELL-ID-NOT-ECODE`, `L3-CELL-ID-NO-REPORT-CODE`, `L3-CELL-ID-NOT-LOADED` — A27) và D16 (`L0-ATOMIC-LITERAL-MISMATCH` — A28). Công cụ ngoài Gate: `ba_diff.py` (BA đổi gì), `check_ba_source_coverage.py` (A29).
 Từ 2026-10-26 Gate 8 thêm D17 (`L2-ETL-BI-PARAM` — tham số dashboard trong `etl_logic`, ERROR) và D18 (`L2-DESC-BI-LOGIC-LEAK` — description chép CTE/cơ chế BA, WARNING) — A31.
 Từ 2026-11-10 Gate 8 thêm D26 (`L3-DM-LITERAL-NOT-IN-BA` — literal điều kiện trong `logic` không có trong BA Nhóm/BA module/etl_logic LLD/YAML Atomic, WARNING; ngoại lệ có chủ ý ở `reference/dm_literal_exceptions.yaml`) — A37.
+Từ 2026-11-10 Gate 8 thêm D27 (`L3-BA-FILTER-NOT-CARRIED` — điều kiện loại dòng của BA không đi theo KPI đọc qua bảng khác, WARNING; rule ở `reference/ba_filter_carry.yaml`) — A38.
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
 
 ### A32 — Bộ ba (`rpt_code`, `sheet_code`, `cell_id`): KPI đọc ô eForm phải lọc cả sheet `[L3-CELL-ID-NO-SHEET-CODE]`

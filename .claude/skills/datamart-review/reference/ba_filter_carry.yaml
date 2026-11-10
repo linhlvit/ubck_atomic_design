@@ -1,0 +1,18 @@
+# Gate 8 D27 [L3-BA-FILTER-NOT-CARRIED] (luật A38, 2026-11-10).
+# Điều kiện LOẠI DÒNG của SQL BA phải đi theo MỌI đường đọc cùng dữ liệu nguồn. Fact đã lọc ở ETL (VD fct_listed_equity_snpst lọc
+# security_trading_snapshot.floor_code <> '03') KHÔNG phủ cho KPI cùng Nhóm đọc qua bảng khác (Dimension current-state, Fact sự kiện).
+# Sự cố VP Nhóm 17 (2026-11-10): K_VP_382–389 phân loại sự kiện niêm yết theo security_trading_snpst_dim.stock_tp_code mà thiếu
+# floor_code <> '03' (BA: stock_portfolio lấy từ stock_eod WHERE s.floorcode <> '03') — mã phái sinh stock_tp_code '4' lọt vào 'Chứng quyền'.
+# Mỗi rule: id; ba_pattern (regex, áp trên BA của Nhóm, chữ thường); reads (logic chứa BẤT KỲ chuỗi nào → rule áp dụng);
+# require_any (logic phải chứa ÍT NHẤT một chuỗi); reason. Thêm rule khi phát hiện cặp (điều kiện BA, đường đọc thay thế) mới — không xóa rule để làm sạch Gate.
+rules:
+  - id: MDDS-DERIVATIVE-FLOOR-VIA-DIM
+    ba_pattern: 'floorcode\s*(<>|!=)\s*''03'''
+    reads:
+      - "security_trading_snpst_dim.stock_tp_code"
+      - "security_trading_snpst_dim.fund_tp_code"
+    require_any:
+      - "security_trading_snpst_dim.floor_code"
+    reason: "BA loại chứng khoán phái sinh bằng floorcode <> '03'; Security Trading Snapshot Dimension chứa cả mã phái sinh nên KPI phân loại theo stock_tp_code/fund_tp_code của Dimension phải lọc security_trading_snpst_dim.floor_code <> '03'"
+# KPI được miễn có chủ ý (Data Modeler quyết, có O_ issue): {rule: <id>, kpi: <kpi_id>, reason, issue}
+exceptions: []
