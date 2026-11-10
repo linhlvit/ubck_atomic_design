@@ -715,3 +715,85 @@ JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;
+
+
+-- ==========================================================
+-- 17. FACT: vp_fct_securities_offering_event_flat
+--    TRUNCATE + INSERT toàn bộ — kết quả chào bán (result_*, has_result_ind) được cập nhật sau ngày GCN/CV nên không nạp theo ngày.
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.vp_fct_securities_offering_event_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.vp_fct_securities_offering_event_flat
+SELECT
+    -- From: FCT_SECURITIES_OFFERING_EVENT
+    f.securities_offering_event_id,
+    f.certificate_dt_dim_id,
+    f.issuer_tp_code,
+    f.issuer_code,
+    f.equity_ticker_symbol,
+    f.offering_code,
+    f.certificate_nbr,
+    f.certificate_dt,
+    f.offering_round_key,
+    f.administrative_procedure_code,
+    f.security_tp_code,
+    f.offering_method_code,
+    f.security_nm,
+    f.offering_method_group_code,
+    f.raising_capital_ind,
+    f.plan_quantity,
+    f.plan_val_amt,
+    f.result_quantity,
+    f.result_val_amt,
+    f.has_result_ind,
+    f.result_rpt_dt,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month
+
+FROM datamart.fct_securities_offering_event f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
+;
+
+
+-- ==========================================================
+-- 18. FACT: vp_fct_private_corporate_bond_offering_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.vp_fct_private_corporate_bond_offering_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.vp_fct_private_corporate_bond_offering_snpst_flat
+SELECT
+    -- From: FCT_PRIVATE_CORPORATE_BOND_OFFERING_SNPST
+    f.private_corporate_bond_offering_snpst_id,
+    f.snpst_dt_dim_id,
+    f.bond_code,
+    f.market_tp,
+    f.posting_dt,
+    f.issue_dt,
+    f.offering_bond_quantity,
+    f.par_val,
+    f.offering_val_amt,
+    f.rpt_year,
+    f.rpt_month,
+    f.rpt_day,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_private_corporate_bond_offering_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE cal.cdr_dt = :etl_date
+;

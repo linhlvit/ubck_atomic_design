@@ -2776,6 +2776,552 @@ flowchart LR
 | Industry Dimension | 1 ngành nghề kinh doanh cấp 1 hiện hành (SCD4A current-state); sở hữu bởi GSDC |
 | Fact Listed Equity Snapshot | 1 mã chứng khoán niêm yết/đăng ký giao dịch (cổ phiếu, chứng chỉ quỹ/ETF, chứng quyền, TPDN niêm yết — stock_tp_code 1/2/3/4/6, không gồm phái sinh) × 1 ngày giao dịch (bản tin cuối ngày MDDS JAD_STOCKINFOR); PK Listed Equity Snapshot Id = hash (Snapshot Date Dimension Id, Ticker Symbol, Source System Code) (Dạng B, A22); Industry Dimension Id là cột phụ thuộc hàm vào mã chứng khoán, không đổi grain/PK |
 
+#### Nhóm 23 - Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp
+
+> Phân loại: **Phân tích**
+> Atomic: `Public Company Securities Offering` / `… Plan` / `… Result` ← IDS.SECURITIES_OFFERING / _PLAN / _RESULT (draft), `Public Company` ← IDS.COMPANY_PROFILES, `Fund Management Company Securities Offering` / `… Plan` ← FMS.OFFERING / OFFERING_PLAN (approved) — **READY**; `Securities Company Disclosure Securities Offering` ← SCMS.DISCLOSURE_SECURITIES_OFFERING (draft) — **CHỜ ATOMIC** map `PLAN_JSON`/`RESULT_JSON` (BA bóc tách theo `loaiChaoBan`; Atomic hiện chỉ có cột tổng) — O_VP_75
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75]** BA Nhóm 23 có 30 dòng (251–280: 4 Chiều — Kỳ, Huy động vốn, Nhóm hình thức, Loại CK; 26 chỉ tiêu Đăng ký/Thành công, kỳ này và % so kỳ trước, theo TONG + 3 nhóm hình thức). Nguồn 3 phân hệ (IDS CTĐC, SCMS CTCK, FMS CTQLQ) gộp về 1 Fact mới `Fact Securities Offering Event` (grain 1 đợt × 1 hình thức, Dạng B) — nhóm hình thức, cờ huy động vốn, khóa đợt (offering_key), GT kế hoạch/thành công có fallback giá × KL tính tại ETL đúng CTE BA; kỳ này/kỳ trước và % so kỳ trước tính tại presentation layer trên FK ngày GCN/CV. 13 dòng 'Trùng' (các dòng %, nhóm hình thức) không nêu trùng với chỉ tiêu nào → KPI riêng K_VP_390–418 (Δ Gate 10 có chủ ý). Lệch/giả định: (1) nhánh SCMS chưa nạp (Atomic chưa map PLAN_JSON/RESULT_JSON); (2) khóa đợt IDS dùng pc_code thay business_reg_no (Atomic không map); (3) delete_flg/deleted/RECORD_STATUS của BA không có ở Atomic — giả định Atomic đã loại; (4) IDS plan nhiều dòng cùng hình thức khác giá → cùng 1 dòng kết quả (như BA) — xem O_VP_75.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Kỳ
+
+| Nhóm hình thức | Số đợt ĐK | % | Số đợt có KQ | % | Ngày BCKQ gần nhất | KL ĐK | % | KL TC | % | Tỷ lệ TC (%) | GT ĐK | % | GT TC | % |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TỔNG | … | … | … | … | … | … | … | … | … | … | … | … | … | … |
+| Phát hành ra công chúng / Phát hành riêng lẻ / Chào bán để tăng vốn của Công ty TNHH | … (GT ĐK/TC + % theo nhóm: K_VP_407–418) | | | | | | | | | | | | | |
+
+**Source:** `Fact Securities Offering Event` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 251. Reuse K_VP_1 (Nhóm 1, 7, 19, 22) — Case 1: Calendar Date Dimension qua FK Certificate Date Dimension Id (ngày GCN/CV). SQL BA: :period_type M/Q/Y, :period_to 'yyyy-MM' \| 'yyyy-Q[1-4]' \| 'yyyy'; :period_to_startdate/:period_to_enddate = ngày đầu/cuối kỳ này; :period_prev_startdate/:period_prev_enddate = n… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_390 | Huy động vốn | — | Chiều | CASE fct_securities_offering_event.raising_capital_ind WHEN 1 THEN 'Có' WHEN 0 THEN 'Không' ELSE 'Không xác định' END | BA dòng 252: cờ huy động vốn theo bảng ánh xạ hình thức của BA (IDS method NOT IN ('4','6','10') và không phải '9' + 'Phát hành thưởng cho người lao động'; SCMS loaiChaoBan NOT IN ('CO_PHIEU_THUONG','PHAT_HANH_CP_DE_HOAN_DOI','CO_DONG_LON_CHAO_BAN'); FMS method NOT IN ('02','07','08','10')) — tính tại ETL thành raising… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_391 | Nhóm hình thức phát hành | — | Chiều | CASE fct_securities_offering_event.offering_method_group_code WHEN 'PUBLIC' THEN 'Phát hành ra công chúng' WHEN 'PRIVATE' THEN 'Phát hành riêng lẻ' WHEN 'LLC_CAPITAL' THEN 'Chào bán để tăng vốn của Công ty TNHH' WHEN 'DIVIDEND_EQUITY' THEN 'Phát hành để trả cổ tức, tăng vốn từ vốn CSH' WHEN 'ESOP' THEN 'ESOP' WHEN 'SWAP' THEN 'Phát hành để hoán đổi/sáp nhập' WHEN 'OTHER' THEN 'Khác' ELSE 'Chưa phân nhóm' END | BA dòng 253: nhóm hình thức phát hành gán tại ETL (offering_method_group_code) theo bảng ánh xạ VALUES của BA cho 3 nguồn (IDS offering_method_cd 1–15 + ap_code '1.009.501' → LLC_CAPITAL; SCMS loaiChaoBan; FMS method_code 01–10); nhãn tiếng Việt ở Detail Mapping (A36). Nhóm 23/25 chỉ hiển thị 3 nhóm PUBLIC/PRIVATE/LLC_… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_392 | Loại chứng khoán | — | Chiều | CASE fct_securities_offering_event.security_tp_code WHEN 'CP' THEN 'Cổ phiếu' WHEN 'TP' THEN 'Trái phiếu' ELSE fct_securities_offering_event.security_tp_code END | BA dòng 254: mã loại CK gốc của từng nguồn (IDS plan.security_type_cd, SCMS item_category, FMS securities_type) — giá trị 'CP'/'TP' trùng nhau ở 3 nguồn theo điều kiện BA; Nhóm 23–25/46 cố định = 'CP', Nhóm 26/28 = 'TP'. [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_393 | Số đợt phát hành - Đăng ký | Đợt | Cơ sở | COUNT(DISTINCT fct_securities_offering_event.offering_round_key) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 255. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_394 | Số đợt phát hành - Đăng ký - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = COUNT(DISTINCT fct_securities_offering_event.offering_round_key) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_e… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_393 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 256. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_395 | Số đợt phát hành - Có kết quả chào bán | Đợt | Cơ sở | COUNT(DISTINCT CASE WHEN fct_securities_offering_event.has_result_ind = 1 THEN fct_securities_offering_event.offering_round_key END) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate … (xem Detail Mapping) | BA dòng 257. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_396 | Số đợt phát hành - Có kết quả chào bán - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = COUNT(DISTINCT CASE WHEN fct_securities_offering_event.has_result_ind = 1 THEN fct_securities_offering_event.offering_round_key END) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP'… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_395 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 258. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_397 | Ngày BCKQ gần nhất | Ngày | Cơ sở | MAX(CASE WHEN fct_securities_offering_event.has_result_ind = 1 THEN fct_securities_offering_event.result_rpt_dt END) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 259. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_398 | KL phát hành - Đăng ký | CP | Cơ sở | SUM(fct_securities_offering_event.plan_quantity) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 260. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_399 | KL phát hành - Đăng ký - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.plan_quantity) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate; M_prev =… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_398 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 261. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_400 | KL phát hành - Thành công | CP | Cơ sở | SUM(fct_securities_offering_event.result_quantity) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 262. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_401 | KL phát hành - Thành công - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.result_quantity) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate; M_prev… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_400 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 263. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_402 | Tỷ lệ thành công (%) | % | Phái sinh | SUM(fct_securities_offering_event.result_quantity) / NULLIF(SUM(fct_securities_offering_event.plan_quantity), 0) * 100 JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | Case 2 — K_VP_400 / K_VP_398 × 100 (BA tyle_phathanh_thanhcong_pct = kl_tc / NULLIF(kl_dk, 0) * 100, kỳ này). BA dòng 264. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: hu… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_403 | GT phát hành - Đăng ký | VNĐ | Cơ sở | SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 265. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_404 | GT phát hành - Đăng ký - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate; M_prev = … (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_403 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 266. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_405 | GT phát hành - Thành công | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 267. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_406 | GT phát hành - Thành công - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate; M_prev … (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_405 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 268. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_407 | GT phát hành - Đăng ký - Phát hành ra công chúng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 269. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_408 | GT phát hành - Đăng ký - Phát hành ra công chúng - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_d… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_407 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 270. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_409 | GT phát hành - Thành công - Phát hành ra công chúng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 271. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_410 | GT phát hành - Thành công - Phát hành ra công chúng - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_409 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 272. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_411 | GT phát hành - Đăng ký - Phát hành riêng lẻ | VNĐ | Cơ sở | SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 273. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_412 | GT phát hành - Đăng ký - Phát hành riêng lẻ - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_411 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 274. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_413 | GT phát hành - Thành công - Phát hành riêng lẻ | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 275. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_414 | GT phát hành - Thành công - Phát hành riêng lẻ - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_d… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_413 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 276. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_415 | GT phát hành - Đăng ký - Chào bán để tăng vốn của Công ty TNHH | VNĐ | Cơ sở | SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'LLC_CAPITAL' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 277. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_416 | GT phát hành - Đăng ký - Chào bán để tăng vốn của Công ty TNHH - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.plan_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'LLC_CAPITAL' AND cdr… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_415 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 278. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_417 | GT phát hành - Thành công - Chào bán để tăng vốn của Công ty TNHH | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'LLC_CAPITAL' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 279. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/ids_so_result_cal/ids_offering_data, scms_src/scms_plan_x/scms_offering_data, fms_offering_data → all_offering → metrics). Lọc: huy động vốn = 1, loại CK = 'CP', ngày GCN/CV trong kỳ (:period_to) — đúng all_offering của BA. Nhánh CTCK (SCMS… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_418 | GT phát hành - Thành công - Chào bán để tăng vốn của Công ty TNHH - % thay đổi so với kỳ trước | % | Phái sinh | (M_cur − M_prev) / NULLIF(M_prev, 0) * 100 [M_cur = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'LLC_CAPITAL' AND c… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_417 tại 2 mốc (kỳ này, kỳ trước; BA (c − p)/NULLIF(p,0)*100). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). BA dòng 280. BA: SQL tham khảo Nhóm 23 (các khối ids_so_certificate/ids_so_plan/i… [MỚI 2026-11-10, O_VP_75] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 23"]
+        R1["K_VP_1,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418: Huy động vốn >> Cổ phiếu >> Chỉ tiêu tổng hợp"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date = ngày GCN/CV cấp phép chào bán |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 nhóm hình thức (+ dòng TỔNG) tại 1 kỳ báo cáo (kỳ này, kỳ trước). Storage Grain: 1 đợt × 1 hình thức (Fact Securities Offering Event) — xem Bảng grain.
+
+#### Nhóm 24 - Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành
+
+> Phân loại: **Phân tích**
+> Atomic: `Public Company Securities Offering` / `… Plan` / `… Result` ← IDS.SECURITIES_OFFERING / _PLAN / _RESULT (draft), `Public Company` ← IDS.COMPANY_PROFILES, `Fund Management Company Securities Offering` / `… Plan` ← FMS.OFFERING / OFFERING_PLAN (approved) — **READY**; `Securities Company Disclosure Securities Offering` ← SCMS.DISCLOSURE_SECURITIES_OFFERING (draft) — **CHỜ ATOMIC** map `PLAN_JSON`/`RESULT_JSON` (BA bóc tách theo `loaiChaoBan`; Atomic hiện chỉ có cột tổng) — O_VP_75
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75]** BA Nhóm 24 có 5 dòng (281–285): Kỳ (reuse K_VP_1), Huy động vốn (reuse K_VP_390), Đối tượng phát hành (K_VP_419 — mã issuer_tp_code CTDC/CTCK/CTQLQ gán tại ETL theo nguồn), GT phát hành thành công theo đối tượng (K_VP_420) và Tỷ trọng (K_VP_421). Cùng Fact và điều kiện lọc với Nhóm 23 (huy động vốn = 1, 'CP', ngày GCN/CV trong kỳ này); 3 đối tượng luôn hiển thị (0 nếu không phát sinh). 2 dòng 'Trùng' (284, 285) không nêu chỉ tiêu trùng → KPI riêng. Nhánh CTCK chờ Atomic (O_VP_75).
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Kỳ
+
+| Đối tượng phát hành | GT phát hành thành công | Tỷ trọng (%) |
+|---|---|---|
+| Công ty đại chúng / Công ty chứng khoán / Công ty quản lý quỹ | … | … |
+
+**Source:** `Fact Securities Offering Event` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate | BA dòng 281. Reuse K_VP_1 (Nhóm 1, 7, 19, 22) — Case 1: Calendar Date Dimension qua FK Certificate Date Dimension Id (ngày GCN/CV). SQL BA: :period_type M/Q/Y, :period_to 'yyyy-MM' \| 'yyyy-Q[1-4]' \| 'yyyy'; :period_to_startdate/:period_to_enddate = ngày đầu/cuối kỳ này; :period_prev_startdate/:period_prev_enddate = n… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_390 | Huy động vốn | — | Chiều | CASE fct_securities_offering_event.raising_capital_ind WHEN 1 THEN 'Có' WHEN 0 THEN 'Không' ELSE 'Không xác định' END | BA dòng 282: cờ huy động vốn theo bảng ánh xạ hình thức của BA (IDS method NOT IN ('4','6','10') và không phải '9' + 'Phát hành thưởng cho người lao động'; SCMS loaiChaoBan NOT IN ('CO_PHIEU_THUONG','PHAT_HANH_CP_DE_HOAN_DOI','CO_DONG_LON_CHAO_BAN'); FMS method NOT IN ('02','07','08','10')) — tính tại ETL thành raising… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_419 | Đối tượng phát hành | — | Chiều | CASE fct_securities_offering_event.issuer_tp_code WHEN 'CTDC' THEN 'Công ty đại chúng' WHEN 'CTCK' THEN 'Công ty chứng khoán' WHEN 'CTQLQ' THEN 'Công ty quản lý quỹ' ELSE 'Không xác định' END | BA dòng 283: nguồn IDS = Công ty đại chúng, SCMS = Công ty chứng khoán, FMS = Công ty quản lý quỹ — mã issuer_tp_code gán tại ETL theo nguồn, nhãn ở Detail Mapping (A36). Danh sách 3 đối tượng cố định (BA doituong_list: đối tượng không phát sinh vẫn hiển thị 0). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_420 | GT phát hành thành công theo đối tượng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate AND :period_to_enddate GROUP BY fct_securities_offering_event.issuer_tp_code | BA dòng 284: Σ GT phát hành thành công theo đối tượng, cùng điều kiện Nhóm 23 (huy động vốn = 1, 'CP', ngày GCN/CV trong kỳ này). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_421 | Tỷ trọng GT phát hành | % | Phái sinh | SUM(fct_securities_offering_event.result_val_amt) / NULLIF(SUM(SUM(fct_securities_offering_event.result_val_amt)) OVER (), 0) * 100 JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_to_startdate A… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_420: GT đối tượng / Σ GT 3 đối tượng × 100 (BA gt_tc_tytrong_pct). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). [MỚI 2026-11-10, O_VP_75] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 24"]
+        R1["K_VP_1,390,419,420,421: Huy động vốn >> Cổ phiếu >> Cơ cấu theo đối tượng phát hành"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date = ngày GCN/CV cấp phép chào bán |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 đối tượng phát hành tại 1 kỳ báo cáo. Storage Grain: 1 đợt × 1 hình thức (Fact Securities Offering Event).
+
+#### Nhóm 25 - Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian
+
+> Phân loại: **Phân tích**
+> Atomic: `Public Company Securities Offering` / `… Plan` / `… Result` ← IDS.SECURITIES_OFFERING / _PLAN / _RESULT (draft), `Public Company` ← IDS.COMPANY_PROFILES, `Fund Management Company Securities Offering` / `… Plan` ← FMS.OFFERING / OFFERING_PLAN (approved) — **READY**; `Securities Company Disclosure Securities Offering` ← SCMS.DISCLOSURE_SECURITIES_OFFERING (draft) — **CHỜ ATOMIC** map `PLAN_JSON`/`RESULT_JSON` (BA bóc tách theo `loaiChaoBan`; Atomic hiện chỉ có cột tổng) — O_VP_75
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75]** BA Nhóm 25 có 8 dòng (286–293): Kỳ Từ kỳ–Đến kỳ (reuse K_VP_1), Huy động vốn (reuse K_VP_390), Nhóm hình thức (reuse K_VP_391), GT thành công theo hình thức × kỳ (K_VP_422), Tổng (K_VP_423) và 3 nhóm PUBLIC/PRIVATE/LLC_CAPITAL (K_VP_424–426). Cùng Fact/điều kiện Nhóm 23; chỉ 3 nhóm hình thức BA VALUES; chỉ các kỳ có dữ liệu trong khoảng [Từ kỳ, Đến kỳ]; mã kỳ hiển thị suy từ Calendar Date Dimension theo :period_type. 7 dòng 'Trùng' không nêu chỉ tiêu trùng → KPI riêng. Nhánh CTCK chờ Atomic (O_VP_75).
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Từ kỳ · Đến kỳ
+
+| Kỳ | Phát hành ra công chúng | Phát hành riêng lẻ | Chào bán để tăng vốn của Công ty TNHH | Tổng |
+|---|---|---|---|---|
+| (từng kỳ có dữ liệu) | … | … | … | … |
+
+**Source:** `Fact Securities Offering Event` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate [mã kỳ = CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.quarter)) WHEN 'Y' THEN toString(cdr_dt_dim.year) END] | BA dòng 286. Reuse K_VP_1 — Case 1: Calendar Date Dimension qua FK Certificate Date Dimension Id; Từ kỳ – Đến kỳ (:period_from, :period_to) → :period_from_startdate..:period_to_enddate; mã kỳ hiển thị = yyyy-MM \| yyyy-Q[1-4] \| yyyy từ cdr_dt_dim (year/quarter/month) theo :period_type; chỉ các kỳ có dữ liệu (BA). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_390 | Huy động vốn | — | Chiều | CASE fct_securities_offering_event.raising_capital_ind WHEN 1 THEN 'Có' WHEN 0 THEN 'Không' ELSE 'Không xác định' END | BA dòng 287: cờ huy động vốn theo bảng ánh xạ hình thức của BA (IDS method NOT IN ('4','6','10') và không phải '9' + 'Phát hành thưởng cho người lao động'; SCMS loaiChaoBan NOT IN ('CO_PHIEU_THUONG','PHAT_HANH_CP_DE_HOAN_DOI','CO_DONG_LON_CHAO_BAN'); FMS method NOT IN ('02','07','08','10')) — tính tại ETL thành raising… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_391 | Nhóm hình thức phát hành | — | Chiều | CASE fct_securities_offering_event.offering_method_group_code WHEN 'PUBLIC' THEN 'Phát hành ra công chúng' WHEN 'PRIVATE' THEN 'Phát hành riêng lẻ' WHEN 'LLC_CAPITAL' THEN 'Chào bán để tăng vốn của Công ty TNHH' WHEN 'DIVIDEND_EQUITY' THEN 'Phát hành để trả cổ tức, tăng vốn từ vốn CSH' WHEN 'ESOP' THEN 'ESOP' WHEN 'SWAP' THEN 'Phát hành để hoán đổi/sáp nhập' WHEN 'OTHER' THEN 'Khác' ELSE 'Chưa phân nhóm' END | BA dòng 288: nhóm hình thức phát hành gán tại ETL (offering_method_group_code) theo bảng ánh xạ VALUES của BA cho 3 nguồn (IDS offering_method_cd 1–15 + ap_code '1.009.501' → LLC_CAPITAL; SCMS loaiChaoBan; FMS method_code 01–10); nhãn tiếng Việt ở Detail Mapping (A36). Nhóm 23/25 chỉ hiển thị 3 nhóm PUBLIC/PRIVATE/LLC_… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_422 | GT phát hành thành công theo hình thức | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code IN ('PUBLIC','PRIVATE','LLC_CAPITAL') AND cdr_dt_dim.cdr_dt BETWEEN :peri… (xem Detail Mapping) | BA dòng 289: Σ GT thành công theo từng kỳ × nhóm hình thức (3 nhóm BA VALUES: PUBLIC/PRIVATE/LLC_CAPITAL), huy động vốn = 1, 'CP', ngày GCN/CV trong [Từ kỳ, Đến kỳ]. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_423 | Tổng GT phát hành thành công | VNĐ | Phái sinh | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code IN ('PUBLIC','PRIVATE','LLC_CAPITAL') AND cdr_dt_dim.cdr_dt BETWEEN :peri… (xem Detail Mapping) | Case 2 — Σ K_VP_422 của 3 nhóm hình thức theo kỳ (BA dòng 290). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_424 | GT phát hành thành công - Phát hành ra Công chúng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :peri… (xem Detail Mapping) | BA dòng 291: K_VP_422 cắt theo nhóm PUBLIC. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_425 | GT phát hành thành công - Phát hành riêng lẻ | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :per… (xem Detail Mapping) | BA dòng 292: K_VP_422 cắt theo nhóm PRIVATE. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_426 | GT phát hành thành công - Chào bán để tăng vốn của Công ty TNHH | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'LLC_CAPITAL' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND … (xem Detail Mapping) | BA dòng 293: K_VP_422 cắt theo nhóm LLC_CAPITAL. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 25"]
+        R1["K_VP_1,390,391,422,423,424,425,426: Huy động vốn >> Cổ phiếu >> Biểu đồ Hình thức huy động vốn theo thời gian"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date = ngày GCN/CV cấp phép chào bán |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 kỳ × 1 nhóm hình thức trong [Từ kỳ, Đến kỳ]. Storage Grain: 1 đợt × 1 hình thức (Fact Securities Offering Event).
+
+#### Nhóm 26 - Huy động vốn >> Cổ phiếu >> Biểu đồ Giá trị huy động vốn qua phát hành Cổ phiếu, TPDN, TPCP
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng `Fact Securities Offering Event` (Nhóm 23 — IDS/SCMS/FMS; nhánh SCMS **CHỜ ATOMIC**, O_VP_75) và `Fact Government Bond Bidding Result Snapshot` (Nhóm 30 — HNX.GOV_BOND_OFFERING, **READY**); mới: `Private Corp Bond Offering` ← HNX.PRIVATE_CORP_BOND_OFFERING (Fact Snapshot, draft) → `Fact Private Corporate Bond Offering Snapshot` — **READY**
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75/76]** BA Nhóm 26 có 7 dòng (294–300): Kỳ Từ kỳ–Đến kỳ (reuse K_VP_1); GT phát hành cổ phiếu (K_VP_434) và TPDN niêm yết (K_VP_435) từ Fact chào bán (huy động vốn = 1, loại 'CP'/'TP'); GT TPDN riêng lẻ (K_VP_436) từ Fact mới HNX lũy kế tháng → phát sinh tháng bằng LAG; TPCP reuse K_VP_273 (GT trúng thầu theo ngày phát hành); TPDN = K_VP_435 + K_VP_436 (K_VP_437); Tổng = CP + TPDN + TPCP (K_VP_438). 6 dòng 'Trùng' không nêu chỉ tiêu trùng → KPI riêng. Tỷ trọng từng loại (SQL BA) không có dòng BA → chưa cấp KPI. Lệch/giả định: Fact TPDNRL nạp 1 dòng/mã/tháng báo cáo tại ngày cuối tháng (= 'snapshot mới nhất của tháng' của BA); loại 'TP' của Fact chào bán = TPDN niêm yết (Nhóm 27 chưa Done còn liệt kê TPCD/TPKCQ) — O_VP_76.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Từ kỳ · Đến kỳ
+
+| Kỳ | Cổ phiếu | TPDN niêm yết | TPDN riêng lẻ | TPDN | TPCP | Tổng |
+|---|---|---|---|---|---|---|
+| (từng kỳ có dữ liệu) | … | … | … | … | … | … |
+
+**Source:** `Fact Securities Offering Event`, `Fact Private Corporate Bond Offering Snapshot`, `Fact Government Bond Bidding Result Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate [mã kỳ = CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.quarter)) WHEN 'Y' THEN toString(cdr_dt_dim.year) END] | BA dòng 294. Reuse K_VP_1 — Case 1: Calendar Date Dimension; Từ kỳ – Đến kỳ (:period_from, :period_to → :period_from_startdate..:period_to_enddate); mã kỳ hiển thị theo :period_type từ cdr_dt_dim; chỉ các kỳ có dữ liệu (BA). Mỗi Fact nối lịch bằng FK riêng: Fact chào bán = ngày GCN/CV, Fact TPDNRL = ngày cuối tháng báo… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_434 | Giá trị phát hành cổ phiếu | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate GROUP BY CASE :period_type WHEN 'M' THEN formatDateTime(cd… (xem Detail Mapping) | BA dòng 295: Σ GT phát hành thành công theo kỳ, huy động vốn = 1, loại CK 'CP', ngày GCN/CV trong [Từ kỳ, Đến kỳ] — cùng Fact/điều kiện Nhóm 23 (all_offering). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–25). Nhánh CTCK (SCMS) chưa có số… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_435 | Giá trị phát hành TPDN niêm yết | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'TP' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate GROUP BY CASE :period_type WHEN 'M' THEN formatDateTime(cd… (xem Detail Mapping) | BA dòng 296: Σ GT phát hành thành công theo kỳ, huy động vốn = 1, loại CK 'TP', ngày GCN/CV trong [Từ kỳ, Đến kỳ] — cùng Fact/điều kiện Nhóm 23 (all_offering). BA gọi loại 'TP' của 3 nguồn là TPDN niêm yết (IDS p.security_type_cd = 'TP'; Nhóm 27 chưa Done liệt kê thêm 'TPCD','TPKCQ' — không áp cho Nhóm 26/28, O_VP_76).… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_436 | Giá trị phát hành TPDN riêng lẻ | VNĐ | Cơ sở | SUM(gt_thang) GROUP BY CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.quarter)) WHEN 'Y' THEN toString(cdr_dt_dim.year) END [gt_thang = ytd − COALESCE(LAG(ytd) OVER (PARTITION BY cdr_dt_dim.year ORDER BY cdr_dt_dim.month), 0); ytd = SUM(fct_private_corporate_bond_offering_snpst.offering_val_amt) J… (xem Detail Mapping) | BA dòng 297 (Nhóm 26) / 315 (Nhóm 28): nguồn HNX private_corp_bond_offering là số LŨY KẾ từ đầu năm đến cuối tháng báo cáo (snapshot mới nhất của tháng) → gt_phat_hanh_ytd = SUM(offering_volume × par_value) theo (năm, tháng); phát sinh riêng tháng = ytd − LAG(ytd) cùng năm (tháng đầu năm trừ 0); GT kỳ = Σ phát sinh các… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_437 | Giá trị phát hành TPDN | VNĐ | Phái sinh | COALESCE(gt_tpdn_ny, 0) + COALESCE(gt_tpdnrl, 0) theo từng kỳ [gt_tpdn_ny = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'TP' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :… (xem Detail Mapping) | BA dòng 298: TPDN = TPDN niêm yết (gt_tpdn_ny = K_VP_435) + TPDN riêng lẻ (gt_tpdnrl = K_VP_436) — Case 2, công thức inline theo Gate 8 L3-DERIVED-NON-INLINE; BA không cộng dòng TPDN vào mẫu số tỷ trọng (tránh trùng). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate … [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_273 | Giá trị phát hành TPCP | VNĐ | Cơ sở | SUM(fct_government_bond_bidding_result_snpst.winning_val) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_government_bond_bidding_result_snpst.snpst_dt_dim_id WHERE cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate GROUP BY CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.qua… (xem Detail Mapping) | Reuse K_VP_273 (Nhóm 30/31 'GT phát hành' = GT trúng thầu) — BA dòng 299: SUM(gb.winning_value) với issue_date trong [Từ kỳ, Đến kỳ]; Fact TPCP có FK ngày = ngày phát hành (snpst_dt_dim_id ← issue_dt), snapshot mới nhất của tháng báo cáo = trạng thái Atomic hiện hành (Fact Dạng A, upsert theo đợt đấu thầu). BA ghi 'Đán… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_438 | Tổng GT phát hành | VNĐ | Phái sinh | COALESCE(gt_cp, 0) + COALESCE(gt_tpdn_ny, 0) + COALESCE(gt_tpdnrl, 0) + COALESCE(gt_tpcp, 0) theo từng kỳ [gt_cp = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.cdr_… (xem Detail Mapping) | BA dòng 300: Σ GT phát hành 3 loại CK (Cổ phiếu, TPDN, TPCP) = gt_cp (K_VP_434) + gt_tpdn_ny (K_VP_435) + gt_tpdnrl (K_VP_436) + gt_tpcp (K_VP_273) — Case 2, công thức inline. Tỷ trọng từng loại (tytrong_pct của SQL BA) không có dòng BA nên chưa cấp KPI (O_VP_76). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ … [MỚI 2026-11-10, O_VP_76] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Fact_Private_Corporate_Bond_Offering_Snapshot {
+        string Private_Corporate_Bond_Offering_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Bond_Code
+        string Market_Type
+        date Posting_Date
+        date Issue_Date
+        bigint Offering_Bond_Quantity
+        decimal Par_Value
+        decimal Offering_Value_Amount
+        int Report_Year
+        int Report_Month
+        int Report_Day
+        string Source_System_Code
+    }
+    Fact_Government_Bond_Bidding_Result_Snapshot {
+        string Government_Bond_Bidding_Result_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
+        string Bidding_Session
+        string Bond_Code
+        string Bond_Term
+        decimal Issue_Term_Years
+        decimal Calling_Value
+        decimal Winning_Value
+        decimal Winning_Interest_Rate
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+        Fact_Private_Corporate_Bond_Offering_Snapshot["Fact Private Corporate Bond Offering Snapshot"]
+        Fact_Government_Bond_Bidding_Result_Snapshot["Fact Government Bond Bidding Result Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 26"]
+        R1["K_VP_1,434,435,436,437,273,438: Huy động vốn >> Giá trị huy động vốn qua phát hành CP, TPDN, TPCP"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+    Fact_Private_Corporate_Bond_Offering_Snapshot --> R1
+    Fact_Government_Bond_Bidding_Result_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date (ngày GCN/CV) cho Fact chào bán; Snapshot Date = ngày cuối tháng báo cáo (TPDNRL) / ngày phát hành (TPCP) |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+| Fact Private Corporate Bond Offering Snapshot | 1 mã TPDN riêng lẻ × thị trường × ngày đăng tin × 1 tháng báo cáo HNX (số LŨY KẾ từ đầu năm); PK = hash (Snapshot Date Dimension Id, Bond Code, Market Type, Posting Date, Source System Code) (Dạng B, A22) — dùng chung Nhóm 26/28 |
+| Fact Government Bond Bidding Result Snapshot | 1 dòng kết quả đấu thầu TPCP của Atomic (PK = gov_bond_bidding_result_id, Dạng A); FK ngày = ngày phát hành — dùng chung Nhóm 30/31/47/48 |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 kỳ × 1 loại chứng khoán (CP / TPDN niêm yết / TPDN riêng lẻ / TPDN / TPCP) trong [Từ kỳ, Đến kỳ]. Storage Grain: 3 Fact theo Bảng grain.
+
+#### Nhóm 28 - Huy động vốn >> TPDN >> Biểu đồ Giá trị phát hành TPDN theo hình thức
+
+> Phân loại: **Phân tích**
+> Atomic: tái dùng `Fact Securities Offering Event` (Nhóm 23 — IDS/SCMS/FMS; nhánh SCMS **CHỜ ATOMIC**, O_VP_75) và `Fact Private Corporate Bond Offering Snapshot` (Nhóm 26 — HNX.PRIVATE_CORP_BOND_OFFERING) — **READY**
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75/76]** BA Nhóm 28 có 7 dòng (311–317): Kỳ Từ kỳ–Đến kỳ (reuse K_VP_1); Nhóm hình thức (reuse K_VP_391, chỉ Công chúng/Riêng lẻ; TPDNRL cố định Riêng lẻ); GT thành công TPDN niêm yết theo nhóm (K_VP_439 công chúng, K_VP_440 riêng lẻ — Fact chào bán, huy động vốn = 1, loại 'TP'); TPDN riêng lẻ reuse K_VP_436 (dòng 315 'Trùng' với Nhóm 26 dòng 297); Riêng lẻ tổng = K_VP_440 + K_VP_436 (K_VP_441); Tỷ trọng = nhóm / Σ 2 nhóm (K_VP_442). 5 dòng 'Trùng' không nêu chỉ tiêu trùng (trừ dòng 315) → KPI riêng. Giả định như Nhóm 26 (O_VP_76).
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Tháng / Quý / Năm) · Từ kỳ · Đến kỳ
+
+| Kỳ | Hình thức | Loại CK | GT phát hành | Tỷ trọng (%) |
+|---|---|---|---|---|
+| (từng kỳ) | Phát hành ra công chúng | TPDN niêm yết | … | … |
+| | Phát hành riêng lẻ | TPDN niêm yết / TPDN riêng lẻ | … | … |
+
+**Source:** `Fact Securities Offering Event`, `Fact Private Corporate Bond Offering Snapshot` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :period_to_enddate [mã kỳ = CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.quarter)) WHEN 'Y' THEN toString(cdr_dt_dim.year) END] | BA dòng 311. Reuse K_VP_1 — Case 1: Calendar Date Dimension; Từ kỳ – Đến kỳ (:period_from, :period_to → :period_from_startdate..:period_to_enddate); mã kỳ hiển thị theo :period_type từ cdr_dt_dim; chỉ các kỳ có dữ liệu (BA). Mỗi Fact nối lịch bằng FK riêng: Fact chào bán = ngày GCN/CV, Fact TPDNRL = ngày cuối tháng báo… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_391 | Nhóm hình thức phát hành | — | Chiều | CASE fct_securities_offering_event.offering_method_group_code WHEN 'PUBLIC' THEN 'Phát hành ra công chúng' WHEN 'PRIVATE' THEN 'Phát hành riêng lẻ' WHEN 'LLC_CAPITAL' THEN 'Chào bán để tăng vốn của Công ty TNHH' WHEN 'DIVIDEND_EQUITY' THEN 'Phát hành để trả cổ tức, tăng vốn từ vốn CSH' WHEN 'ESOP' THEN 'ESOP' WHEN 'SWAP' THEN 'Phát hành để hoán đổi/sáp nhập' WHEN 'OTHER' THEN 'Khác' ELSE 'Chưa phân nhóm' END | Reuse K_VP_391 (Nhóm 23) — BA dòng 312: Nhóm 28 chỉ dùng 2 nhóm PUBLIC ('CC') / PRIVATE ('RL'); TPDN riêng lẻ (Fact HNX) cố định thuộc 'Phát hành riêng lẻ' (BA: 'Fix là Phát hành riêng lẻ'). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_439 | Giá trị phát hành thành công - Phát hành ra công chúng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'TP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :peri… (xem Detail Mapping) | BA dòng 313: Σ GT phát hành thành công theo kỳ, huy động vốn = 1, loại CK 'TP', ngày GCN/CV trong [Từ kỳ, Đến kỳ] — cùng Fact/điều kiện Nhóm 23 (all_offering). Loại CK 'TPDNNY' của BA = loại 'TP' của Fact chào bán. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 … [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_440 | Giá trị phát hành thành công - Phát hành riêng lẻ - TPDN niêm yết | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'TP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_dim.cdr_dt BETWEEN :period_from_startdate AND :per… (xem Detail Mapping) | BA dòng 314: Σ GT phát hành thành công theo kỳ, huy động vốn = 1, loại CK 'TP', ngày GCN/CV trong [Từ kỳ, Đến kỳ] — cùng Fact/điều kiện Nhóm 23 (all_offering). Loại CK 'TPDNNY' của BA = loại 'TP' của Fact chào bán. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 … [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_436 | Giá trị phát hành thành công - Phát hành riêng lẻ - TPDN riêng lẻ | VNĐ | Cơ sở | SUM(gt_thang) GROUP BY CASE :period_type WHEN 'M' THEN formatDateTime(cdr_dt_dim.cdr_dt, '%Y-%m') WHEN 'Q' THEN concat(toString(cdr_dt_dim.year), '-Q', toString(cdr_dt_dim.quarter)) WHEN 'Y' THEN toString(cdr_dt_dim.year) END [gt_thang = ytd − COALESCE(LAG(ytd) OVER (PARTITION BY cdr_dt_dim.year ORDER BY cdr_dt_dim.month), 0); ytd = SUM(fct_private_corporate_bond_offering_snpst.offering_val_amt) J… (xem Detail Mapping) | Reuse K_VP_436 (Nhóm 26). BA dòng 297 (Nhóm 26) / 315 (Nhóm 28): nguồn HNX private_corp_bond_offering là số LŨY KẾ từ đầu năm đến cuối tháng báo cáo (snapshot mới nhất của tháng) → gt_phat_hanh_ytd = SUM(offering_volume × par_value) theo (năm, tháng); phát sinh riêng tháng = ytd − LAG(ytd) cùng năm (tháng đầu năm trừ 0… [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_441 | Giá trị phát hành thành công - Phát hành riêng lẻ | VNĐ | Phái sinh | COALESCE(gt_rl_ny, 0) + COALESCE(gt_tpdnrl, 0) theo từng kỳ [gt_rl_ny = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securities_offering_event.security_tp_code = 'TP' AND fct_securities_offering_event.offering_method_group_code =… (xem Detail Mapping) | BA dòng 316: riêng lẻ TPDN niêm yết (gt_rl_ny = K_VP_440) + TPDN riêng lẻ (gt_tpdnrl = K_VP_436) — Case 2, công thức inline. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–25). [MỚI 2026-11-10, O_VP_76] | READY |
+| K_VP_442 | Tỷ trọng GT phát hành từng nhóm hình thức phát hành | % | Phái sinh | gt_nhom / NULLIF(COALESCE(gt_cc, 0) + COALESCE(gt_rl, 0), 0) * 100 theo từng kỳ [gt_nhom = gt_cc với nhóm 'Phát hành ra công chúng', gt_rl với nhóm 'Phát hành riêng lẻ'; gt_cc = SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.raising_capital_ind = 1 AND fct_securi… (xem Detail Mapping) | BA dòng 317: Tỷ trọng = GT phát hành từng nhóm / Σ GT 2 nhóm × 100 — gt_cc = K_VP_439, gt_rl = K_VP_441 (= K_VP_440 + K_VP_436) — Case 2, công thức inline. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–25). [MỚI 2026-11-10, O_VP_76] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Fact_Private_Corporate_Bond_Offering_Snapshot {
+        string Private_Corporate_Bond_Offering_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Bond_Code
+        string Market_Type
+        date Posting_Date
+        date Issue_Date
+        bigint Offering_Bond_Quantity
+        decimal Par_Value
+        decimal Offering_Value_Amount
+        int Report_Year
+        int Report_Month
+        int Report_Day
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+        Fact_Private_Corporate_Bond_Offering_Snapshot["Fact Private Corporate Bond Offering Snapshot"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 28"]
+        R1["K_VP_1,391,439,440,436,441,442: Huy động vốn >> Giá trị phát hành TPDN theo hình thức"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+    Fact_Private_Corporate_Bond_Offering_Snapshot --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date (ngày GCN/CV) cho Fact chào bán; Snapshot Date = ngày cuối tháng báo cáo (TPDNRL) / ngày phát hành (TPCP) |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+| Fact Private Corporate Bond Offering Snapshot | 1 mã TPDN riêng lẻ × thị trường × ngày đăng tin × 1 tháng báo cáo HNX (số LŨY KẾ từ đầu năm); PK = hash (Snapshot Date Dimension Id, Bond Code, Market Type, Posting Date, Source System Code) (Dạng B, A22) — dùng chung Nhóm 26/28 |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 kỳ × 1 hình thức (Công chúng / Riêng lẻ) × 1 loại (TPDN niêm yết / TPDN riêng lẻ). Storage Grain: 2 Fact theo Bảng grain.
+
 #### Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
 
 > Phân loại: **Phân tích**
@@ -4517,6 +5063,102 @@ flowchart LR
 | Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
 | Fact Share Auction Result Snapshot | 1 dòng biểu mẫu đấu giá cổ phần (HNX05 của HNX hoặc HSX03 của HOSE) = 1 đợt đấu giá của 1 tổ chức; PK Share Auction Result Snapshot Id = hash(Snapshot Date Dimension Id, Report Code, Row Number, Source System Code) (Dạng B, A22); kỳ theo ngày cuối tháng báo cáo |
 
+#### Nhóm 46 - Tổng quan thị trường >> Biểu đồ Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm
+
+> Phân loại: **Phân tích**
+> Atomic: `Public Company Securities Offering` / `… Plan` / `… Result` ← IDS.SECURITIES_OFFERING / _PLAN / _RESULT (draft), `Public Company` ← IDS.COMPANY_PROFILES, `Fund Management Company Securities Offering` / `… Plan` ← FMS.OFFERING / OFFERING_PLAN (approved) — **READY**; `Securities Company Disclosure Securities Offering` ← SCMS.DISCLOSURE_SECURITIES_OFFERING (draft) — **CHỜ ATOMIC** map `PLAN_JSON`/`RESULT_JSON` (BA bóc tách theo `loaiChaoBan`; Atomic hiện chỉ có cột tổng) — O_VP_75
+
+> **[GHI CHÚ 2026-11-10 — BA VP cập nhật mapping Huy động vốn, O_VP_75]** BA Nhóm 46 có 10 dòng (474–483): Kỳ (Năm) Từ năm–Đến năm (reuse K_VP_1), Nhóm hình thức (reuse K_VP_391 — đủ 7 nhóm kể cả ESOP/cổ tức/hoán đổi/Khác), Loại CK (reuse K_VP_392), GT phát hành thành công theo năm × nhóm (K_VP_427), Tỷ trọng (K_VP_428) và 5 nhóm PUBLIC/PRIVATE/ESOP/DIVIDEND_EQUITY/SWAP (K_VP_429–433). Khác Nhóm 23–25: KHÔNG lọc huy động vốn (BA all_offering Nhóm 46 chỉ lọc 'CP'); dòng TONG = tổng mọi nhóm; 'Chưa phân nhóm' chỉ hiển thị khi ≠ 0. Lệch BA: ánh xạ IDS ghi 'Phát hành ra công chúng bao gồm cả TNHH' nhưng VALUES vẫn liệt kê 'Chào bán tăng vốn Công ty TNHH' → giữ LLC_CAPITAL riêng (O_VP_75). 6 dòng 'Trùng' không nêu chỉ tiêu trùng → KPI riêng. Nhánh CTCK chờ Atomic.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Từ năm · Đến năm
+
+| Nhóm hình thức | Năm N | Năm N+1 | … |
+|---|---|---|---|
+| TỔNG / Phát hành ra công chúng / Phát hành riêng lẻ / Chào bán tăng vốn Công ty TNHH / Phát hành để trả cổ tức, tăng vốn từ vốn CSH / ESOP / Phát hành để hoán đổi/sáp nhập / Khác | GT (tỷ trọng %) | … | … |
+
+**Source:** `Fact Securities Offering Event` → `Calendar Date Dimension`
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_1 | Kỳ | — | Chiều | cdr_dt_dim.year BETWEEN :from_year AND :to_year | BA dòng 474. Reuse K_VP_1 — Case 1: Calendar Date Dimension qua FK Certificate Date Dimension Id; Kỳ (Năm) Từ năm – Đến năm (:from_year, :to_year), mỗi năm 1 cột; KHÔNG lọc huy động vốn (BA Nhóm 46 all_offering chỉ lọc 'CP'). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_391 | Nhóm hình thức phát hành | — | Chiều | CASE fct_securities_offering_event.offering_method_group_code WHEN 'PUBLIC' THEN 'Phát hành ra công chúng' WHEN 'PRIVATE' THEN 'Phát hành riêng lẻ' WHEN 'LLC_CAPITAL' THEN 'Chào bán để tăng vốn của Công ty TNHH' WHEN 'DIVIDEND_EQUITY' THEN 'Phát hành để trả cổ tức, tăng vốn từ vốn CSH' WHEN 'ESOP' THEN 'ESOP' WHEN 'SWAP' THEN 'Phát hành để hoán đổi/sáp nhập' WHEN 'OTHER' THEN 'Khác' ELSE 'Chưa phân nhóm' END | BA dòng 475: nhóm hình thức phát hành gán tại ETL (offering_method_group_code) theo bảng ánh xạ VALUES của BA cho 3 nguồn (IDS offering_method_cd 1–15 + ap_code '1.009.501' → LLC_CAPITAL; SCMS loaiChaoBan; FMS method_code 01–10); nhãn tiếng Việt ở Detail Mapping (A36). Nhóm 23/25 chỉ hiển thị 3 nhóm PUBLIC/PRIVATE/LLC_… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_392 | Loại chứng khoán | — | Chiều | CASE fct_securities_offering_event.security_tp_code WHEN 'CP' THEN 'Cổ phiếu' WHEN 'TP' THEN 'Trái phiếu' ELSE fct_securities_offering_event.security_tp_code END | BA dòng 476: mã loại CK gốc của từng nguồn (IDS plan.security_type_cd, SCMS item_category, FMS securities_type) — giá trị 'CP'/'TP' trùng nhau ở 3 nguồn theo điều kiện BA; Nhóm 23–25/46 cố định = 'CP', Nhóm 26/28 = 'TP'. [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_427 | Giá trị phát hành thành công | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year, fct_securities_offering_event.offering_method_group_code | BA dòng 477: Σ GT phát hành thành công theo năm × nhóm hình thức (cả nhóm không huy động vốn — BA Nhóm 46 KHÔNG lọc is_raising_capital, khác Nhóm 23–25); 'CP'; dòng 'TONG' = tổng không lọc nhóm; nhóm NULL hiển thị 'Chưa phân nhóm' chỉ khi ≠ 0 (BA). Lệch BA: ánh xạ IDS của Nhóm 46 ghi 'Phát hành ra công chúng bao gồm cả… [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_428 | Tỷ trọng GT phát hành từng nhóm hình thức phát hành | % | Phái sinh | SUM(fct_securities_offering_event.result_val_amt) / NULLIF(SUM(SUM(fct_securities_offering_event.result_val_amt)) OVER (PARTITION BY cdr_dt_dim.year), 0) * 100 JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year, fct_… (xem Detail Mapping) | Case 2 — tính tại presentation layer từ K_VP_427: GT nhóm / Σ GT mọi nhóm trong năm × 100 (BA dòng 478). BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_429 | Giá trị phát hành thành công - Phát hành ra công chúng | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PUBLIC' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year | BA dòng 479: K_VP_427 cắt theo nhóm PUBLIC. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_430 | Giá trị phát hành thành công - Phát hành riêng lẻ | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'PRIVATE' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year | BA dòng 480: K_VP_427 cắt theo nhóm PRIVATE. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_431 | Giá trị phát hành thành công - ESOP | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'ESOP' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year | BA dòng 481: K_VP_427 cắt theo nhóm ESOP. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_432 | Giá trị phát hành thành công - Phát hành để trả cổ tức, tăng vốn từ vốn CSH | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'DIVIDEND_EQUITY' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year | BA dòng 482: K_VP_427 cắt theo nhóm DIVIDEND_EQUITY. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+| K_VP_433 | Giá trị phát hành thành công - Phát hành để hoán đổi/sáp nhập | VNĐ | Cơ sở | SUM(fct_securities_offering_event.result_val_amt) JOIN cdr_dt_dim ON cdr_dt_dim.cdr_dt_dim_id = fct_securities_offering_event.certificate_dt_dim_id WHERE fct_securities_offering_event.security_tp_code = 'CP' AND fct_securities_offering_event.offering_method_group_code = 'SWAP' AND cdr_dt_dim.year BETWEEN :from_year AND :to_year GROUP BY cdr_dt_dim.year | BA dòng 483: K_VP_427 cắt theo nhóm SWAP. BA ghi 'Đánh giá: Trùng' nhưng không nêu trùng với chỉ tiêu nào → KPI riêng khớp từng dòng BA (Δ Gate 10 có chủ ý, như Nhóm 17–22). Nhánh CTCK (SCMS) chưa có số liệu tới khi Atomic map PLAN_JSON/RESULT_JSON (O_VP_75). [MỚI 2026-11-10, O_VP_75] | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Administrative_Procedure_Code
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    subgraph GOLD["Datamart"]
+        Calendar_Date_Dimension["Calendar Date Dimension"]
+        Fact_Securities_Offering_Event["Fact Securities Offering Event"]
+    end
+    subgraph RPT["Báo cáo — Nhóm 46"]
+        R1["K_VP_1,391,392,427,428,429,430,431,432,433: Tổng quan thị trường >> Cơ cấu giá trị phát hành cổ phiếu thực tế trong năm"]
+    end
+    Calendar_Date_Dimension --> R1
+    Fact_Securities_Offering_Event --> R1
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) — role Certificate Date = ngày GCN/CV cấp phép chào bán |
+| Fact Securities Offering Event | 1 đợt chào bán/phát hành đã cấp phép × 1 hình thức phát hành (IDS: × tên CK kế hoạch; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC / SCMS CTCK / FMS CTQLQ); PK Securities Offering Event Id = hash (Source System Code, Offering Code, Offering Method Code, Security Name) (Dạng B, A22); 1 đợt (Offering Round Key) có thể có nhiều dòng; nạp đủ lịch sử theo ngày GCN/CV |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 nhóm hình thức (+ TỔNG) × 1 năm. Storage Grain: 1 đợt × 1 hình thức (Fact Securities Offering Event).
+
 #### Nhóm 47 - Tổng quan thị trường >> Biểu đồ Kỳ hạn phát hành bình quân TPCP
 
 > Phân loại: **Phân tích**
@@ -5623,3 +6265,5 @@ Không có.
 | O_VP_72 | Nhóm 17/18/20 - Kiểu dữ liệu khối lượng niêm yết/ĐKGD (LISTEDSHARE) | **[MỚI 2026-11-10]** SQL BA Nhóm 17 cập nhật đổi `CAST(s.listedshare AS BIGINT)` thành `CAST(s.listedshare AS DECIMAL(38,10))` (MDDS JAD_STOCKINFOR.LISTEDSHARE là VARCHAR2). Atomic `security_trading_snapshot.listed_share_count` đang là bigint. SQL BA Nhóm 18 và 20 (bản Data Modeler gửi 2026-11-10) vẫn ghi `CAST(s.listedshare AS BIGINT)` — không nhất quán với Nhóm 17, cần BA thống nhất. | Data Modeler chốt 2026-11-10: đổi `fct_listed_equity_snpst.listed_share_quantity` từ bigint sang decimal(38,10) (LLD, master, model.yaml, flat DDL, ER các Nhóm 17–22, 55); `etl_logic` giữ đọc thẳng `listed_share_count`. Yêu cầu Atomic/dev xác nhận LISTEDSHARE có giá trị thập phân hay không và đổi kiểu `listed_share_count` tương ứng — đến khi đó Datamart chưa có phần thập phân. `listed_share_val` giữ decimal(23,2). | K_VP_378, K_VP_379, K_VP_380, K_VP_381, K_VP_350, K_VP_351, K_VP_352, K_VP_353, K_VP_354, K_VP_357, K_VP_358, K_VP_359 | Atomic / Dev / BA | Open |
 | O_VP_73 | Nhóm 17/19/20/21/22/55 - Mốc ngày cuối kỳ phải lấy từ dữ liệu, không từ lịch ngày giao dịch | **[MỚI 2026-11-10]** SQL BA Nhóm 17, 19, 20, 22, 55 chọn ngày chốt bằng MAX(tradingdate) <= ngày cuối kỳ trên chính dữ liệu jad_stockinfor (Nhóm 55 ghi 'Ngày dữ liệu gần nhất <= ngày báo cáo'). Detail Mapping VP định nghĩa :d_x bằng MAX(cdr_dt_dim.cdr_dt) WHERE is_trading_date = 'Y' AND cdr_dt <= ngày cuối kỳ (lịch ngày giao dịch): kỳ chưa kết thúc (tháng/quý/năm hiện tại) trả ngày chưa có dữ liệu nên KPI rỗng trong khi BA trả phiên mới nhất; ngày giao dịch chưa có bản tin cũng lệch. | Đã sửa định nghĩa :d_x ở Nhóm 17 (ngày gần nhất CÓ dữ liệu Fact bản tin cuối ngày <= cuối kỳ). CHƯA sửa Nhóm 19 (15 dòng), 20 (14), 21 (6), 22 (1), 55 (38 dòng ghi chú và logic có is_trading_date) vì cách viết khác nhau từng Nhóm — cần Data Modeler duyệt rồi sửa đồng loạt (H11). Nhóm 11 và 18 dùng quy tắc đếm phiên/kỳ riêng, không thuộc phạm vi. | K_VP_1, K_VP_376, K_VP_378, K_VP_380, K_VP_382, K_VP_384, K_VP_386, K_VP_388 (đã sửa); Nhóm 19, 20, 21, 22, 55 (chưa sửa) | Data Modeler / BA | Open |
 | O_VP_74 | Nhóm 17/50/51 - Cột listing_stock_tp_code của Fact Listing Status Change Snapshot | **[MỚI 2026-11-10]** Data Modeler yêu cầu bổ sung cột loại chứng khoán (stock_tp_code) vào Fact. Tên cột phải có tiền tố listing_ vì flat table đã gộp cột stock_tp_code của Security Trading Snapshot Dimension (cùng lý do listing_floor_code); đặt đúng tên stock_tp_code sẽ trùng cột trong DDL ClickHouse. | Cột lấy từ bản tin MDDS mới nhất của mã đến ngày chạy ETL, lọc floor_code khác 03 như CTE stock_portfolio của SQL BA Nhóm 17; để trống khi mã không có bản tin MDDS hoặc chỉ ở sàn phái sinh. [2026-11-10] Detail Mapping Nhóm 17 (K_VP_375, 382–389) đã chuyển sang listing_stock_tp_code / listing_fund_tp_code của Fact, không còn JOIN security_trading_snpst_dim; thêm cột listing_fund_tp_code (M = CCQ, E = ETF) để tách CCQ và ETF, cùng bản tin MDDS mới nhất và cùng điều kiện floor_code khác 03. Dev ETL: thêm cột vào Fact và flat vp_fct_listing_status_change_snpst_flat, nạp lại. | K_VP_375, K_VP_382–389 (đã chuyển sang cột mới); Nhóm 50, 51 (không ảnh hưởng) | Data Modeler / Dev | Open |
+| O_VP_75 | Nhóm 23/24/25/46 (và 26/28 phần TPDN niêm yết) — Fact mới Fact Securities Offering Event; nhánh SCMS chờ Atomic | **[MỚI 2026-11-10]** BA VP cập nhật mapping Huy động vốn (ba_diff: Nhóm 23–26, 28, 46 viết lại hoàn toàn, SQL mới gộp IDS + SCMS + FMS). Thiết kế: 1 Fact mới `fct_securities_offering_event` (grain 1 đợt × 1 hình thức, PK Dạng B hash src/offering_code/method/security_nm, FK ngày GCN/CV) gộp 3 nguồn; ETL gán `offering_method_group_code` (PUBLIC/PRIVATE/LLC_CAPITAL/DIVIDEND_EQUITY/ESOP/SWAP/OTHER) và `raising_capital_ind` theo bảng VALUES của BA, `offering_round_key` = offering_key BA; GT kế hoạch/thành công có fallback (giá chào bán → mệnh giá) × KL như IF của BA. KPI K_VP_390–433; kỳ này/kỳ trước/% tại presentation layer. **Lệch / giả định:** (1) **Atomic `sc_disclosure_securities_offering` chưa map `PLAN_JSON`/`RESULT_JSON`** (BRD có, NCLOB) mà BA bóc tách từng `loaiChaoBan` (soLuongCb, giaTriCbTheoMenhGia, soLuongThucTe, giaTriThucTe) → nhánh CTCK ghi 'CHỜ ATOMIC' trong etl_logic, chưa nạp; KHÔNG thay bằng cột tổng `total_offered_quantity`/`proceeds_collected_amt` (A37); (2) khóa đợt IDS dùng `public_company.pc_code` thay `business_reg_no` (Atomic Public Company không map cột này; 1:1 công ty); (3) `delete_flg` (IDS o/r/p), `deleted` (FMS), `RECORD_STATUS` (SCMS) không có ở Atomic — giả định ETL Atomic đã loại bản ghi xóa; (4) IDS: kế hoạch gộp theo (hồ sơ, loại CK, hình thức, tên CK, mệnh giá, giá) còn kết quả gộp theo (hồ sơ, hình thức) — nhiều dòng kế hoạch cùng hình thức cùng nhận 1 dòng kết quả (đúng SQL BA, có thể đếm trùng KL/GT thành công); (5) Nhóm 46: BA vừa ghi 'công chúng bao gồm cả TNHH' vừa liệt kê nhóm TNHH riêng → giữ LLC_CAPITAL riêng; (6) tên Fact 'Event' theo ngày GCN/CV (không snapshot); (7) `industry` của CTCK/CTQLQ mặc định 07000 trong SQL BA không dùng cho KPI nào → chưa đưa vào Fact. **Chưa thiết kế trong lượt này:** Nhóm 26 (thêm TPDN riêng lẻ HNX `private_corp_bond_offering` lũy kế tháng → LAG; TPCP reuse `fct_government_bond_bidding_result_snpst.winning_val` theo issue_date) và Nhóm 28 (TPDN niêm yết theo hình thức + TPDNRL) — cần Fact TPDNRL mới; Nhóm 27 chưa Done. | Atomic bổ sung map PLAN_JSON/RESULT_JSON (đề xuất entity con `sc_disclosure_securities_offering_plan`: loaiChaoBan, soLuongCb, giaTriCbTheoMenhGia, soLuongThucTe, giaTriThucTe); BA xác nhận (2)(4)(5); dev tạo bảng + flat #17, nạp lịch sử theo ngày GCN/CV | K_VP_1, K_VP_390–433 | Datamart Modeling Team + Atomic Team + BA | Open |
+| O_VP_76 | Nhóm 26/28 — Fact mới Fact Private Corporate Bond Offering Snapshot (TPDN riêng lẻ HNX) + reuse TPCP | **[MỚI 2026-11-10]** BA VP viết lại Nhóm 26 (GT huy động vốn qua CP/TPDN/TPCP, Từ kỳ–Đến kỳ) và Nhóm 28 (GT phát hành TPDN theo hình thức). Thiết kế: CP/TPDN niêm yết đọc `fct_securities_offering_event` (O_VP_75; loại 'CP'/'TP', huy động vốn = 1); TPDN riêng lẻ = Fact mới `fct_private_corporate_bond_offering_snpst` (Atomic `private_corp_bond_offering`, HNX BM 27/28; grain 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo, PK Dạng B hash có snpst_dt_dim_id vì khóa Atomic không chứa tháng; `offering_val_amt` = KL × mệnh giá LŨY KẾ từ đầu năm; phát sinh tháng = ytd − LAG(ytd) cùng năm tại Detail Mapping K_VP_436); TPCP reuse K_VP_273 (`fct_government_bond_bidding_result_snpst.winning_val`, FK ngày phát hành). KPI K_VP_434–442. **Giả định / lệch:** (1) 'snapshot mới nhất của tháng' (BA DENSE_RANK ds_snpst_dt) = trạng thái Atomic tại ngày nạp cuối tháng báo cáo (LAST_DAY(rpt_year, rpt_month) = :etl_date) — nạp lùi lịch sử không tái tạo được bản nộp giữa tháng; (2) loại 'TP' của Fact chào bán = 'TPDN niêm yết' theo SQL Nhóm 26/28 (Nhóm 27 chưa Done liệt kê thêm TPCD/TPKCQ, SECURITIES_TYPE SCMS 'TRAI_PHIEU'… — chưa áp); (3) KHÔNG lọc issue_dt cho TPDNRL (BA Nhóm 27 'Ngày phát hành' khác SQL 26/28); (4) tỷ trọng từng loại CK của SQL Nhóm 26 không có dòng BA → chưa cấp KPI; (5) Nhóm 26 TPCP lấy mọi đợt theo issue_date (không lọc rpt_month) như BA. | Atomic/dev: tạo Fact + flat #18, nạp lịch sử theo tháng báo cáo; BA xác nhận (2)(4) | K_VP_1, K_VP_273, K_VP_391, K_VP_434–442 | Datamart Modeling Team + BA | Open |
