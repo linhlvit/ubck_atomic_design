@@ -173,6 +173,9 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
     Quy tắc: cột `*_code` chỉ chứa mã gốc (`ELSE NULL`); ánh xạ code → nhãn bằng `CASE WHEN … ELSE 'Không xác định' END` ở `logic` Detail Mapping (mặc định; `ELSE` theo SQL BA từng Nhóm); nhãn ở ETL chỉ ở cột `*_nm` riêng theo quy ước module; CASE chọn nguồn / quyết định khóa PK vẫn ở ETL.
     Trước khi thiết kế cột mã có nhãn: grep cùng tên cột trong DM + LLD của module và làm giống chỗ đã có; đối chiếu SQL BA từng Nhóm; mockup HLD hiển thị nhãn, không hiển thị mã thô. Máy kiểm Gate 8 D23 (ERROR) / D24, D25 (WARNING).
 
+17. **QLKD Nhóm 5/6/7/36 (2026-11-10) — điều kiện KHÔNG tồn tại trong SQL BA, Gate 0–10 PASS, Data Modeler phát hiện** (A37): BA lọc `ALERT_INDICATOR.ID IN (450, 451)` (N6: 457–464, 467–472; N7: 1404; N36: 452–456) và ghi `ALERT_INDICATOR` là bảng nguồn; thiết kế 09/11 thấy Atomic `sc_alert_indicator` không map cột `ID` nên gạt `ALERT_INDICATOR` khỏi nguồn và giữ `indicator_code IN ('DUY_TRI_DKCP_GPKD')`… "theo thiết kế hiện hành" (4 mã ước lượng từ BA v4.1, không có trong SCMS) rồi ghi "chưa chứng minh tương đương, KPI giữ READY" ⇒ KPI luôn ra 'Đang duy trì tốt'.
+    Quy tắc: mọi literal điều kiện trong `logic`/`etl_logic` phải trích từ SQL BA của Nhóm hoặc YAML Atomic/`etl_logic` LLD, ghi nguồn ở `ghi_chu`; "theo thiết kế hiện hành" không phải nguồn — BA đổi SQL thì dẫn lại từng literal; Atomic thiếu cột BA dùng (có trong `BRD/Source`) ⇒ cột Datamart `etl_logic_type = pending` + O_ yêu cầu Atomic, KHÔNG thay bằng mã tự đặt, KHÔNG gạt entity nguồn BA khỏi lineage; cần bảng đối chiếu ID ↔ mã mà chưa có ⇒ PENDING. Sửa thực tế: Dimension `securities_company_alert_indicator_dim` (`sc_alert_ind_src_id` pending) + FK trên Fact, KPI lọc theo ID BA (O_QLKD_75). Máy kiểm Gate 8 D26 `L3-DM-LITERAL-NOT-IN-BA` (WARNING; ngoại lệ có chủ ý ở `datamart-review/reference/dm_literal_exceptions.yaml`).
+
 ## CHỐT CHẶN MÁY (2026-10-15) — hook `dm_guard` + chốt ghi file
 
 Một số quy tắc cứng ở trên giờ được **máy** cưỡng chế, không chỉ dựa vào agent nhớ:
@@ -212,8 +215,8 @@ Hệ thống nguồn chính: **Temenos T24/Transact** — core banking platform.
 ## MAPPING T24 → MEDALLION
 
 - **Bronze**: Raw 1-1 từ nguồn. MV/SV đã parsing. Gồm cả UNAUTH, RNAU.
-- **Atomic**: Chuẩn hóa 3NF, Enterprise view. Classification Value = bảng Fundamental SCD4A chứa mọi danh mục. Chỉ RECORD.STATUS = 'LIVE'.
-- **Gold**: De-normalized cho báo cáo. Summary + Fact/Dim Star Schema.
+- **Atomic**: Chuẩn hóa 3NF, Enterprise view. Classification Value = bảng Fundamental SCD4A chứa mọi danh mục. Chỉ RECORD.STATUS = 'LIVE'. Có thể thiết kế thừa các thực thể/thuộc tính cấp doanh nghiệp.
+- **Gold**: De-normalized cho báo cáo. Summary + Fact/Dim Star Schema. Datamart bắt buộc phải tham chiếu đúng và đủ các bảng, cột đã thiết kế hiện hành trên Atomic (A1, A24); cấm tự suy diễn cột chưa có trên Atomic.
 
 ## NINE DATA CONCEPTS (BCV) → 15 CORE OBJECTS
 

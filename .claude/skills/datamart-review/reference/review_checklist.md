@@ -194,6 +194,9 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 □ Điều kiện của SQL BA trong `etl_logic` Fact/Operational (A26): loại kỳ, loại đối tượng, trạng thái, ngày hiệu lực, `NULLIF`/`*100`/`COALESCE`/`CASE`, chọn bản ghi theo kỳ — có hoặc ghi lệch + O_ issue? "Active-only" chỉ miễn điều kiện slicer thời gian
   → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
 
+□ Xuất xứ literal điều kiện (A37): mọi `= 'x'` / `IN ('a','b')` / `LIKE` trong `etl_logic` và `logic` trích được từ SQL BA của Nhóm hoặc YAML Atomic/`etl_logic` LLD — Gate 8 D26 trả lời sẵn; rà tay câu "theo thiết kế hiện hành", "chưa chứng minh tương đương" đi kèm literal không có trong BA
+  → Literal không có nguồn (QLKD `indicator_code IN ('DUY_TRI_DKCP_GPKD')` khi BA lọc `ALERT_INDICATOR.ID IN (450, 451)`) → 🔴 Critical (`L3-DM-LITERAL-NOT-IN-BA`); Atomic thiếu cột BA dùng mà thay bằng mã tự đặt thay vì cột `pending` + O_ yêu cầu Atomic → 🔴 Critical
+
 □ Mã ô eForm trong `logic` (A27): đúng dạng `TSxxx`/`KTxxx`, đi cặp `rpt_code`, có trong bộ lọc ô nguồn — Gate 8 D15 trả lời sẵn; chỉ rà tay ô trùng giữa các sheet cùng biểu mẫu (chưa có mã sheet)
   → Mã KPI dùng làm mã ô / thiếu `rpt_code` / ô không được nạp → 🔴 Critical (`L3-CELL-ID-NOT-ECODE`, `L3-CELL-ID-NO-REPORT-CODE`, `L3-CELL-ID-NOT-LOADED`)
 
@@ -390,6 +393,9 @@ Thực hiện ở **Bước 0, 0b & 0c** (trước khi đi vào chi tiết bất
 
 □ Kiểm kê điều kiện SQL BA ở `logic` (A26 / L17(e)): `ON` của LEFT JOIN, CTE, `PERIOD_TYPE`, `RECORD_TYPE`, `BRANCH_FLAG`, `ID_DATE`, biểu thức tính
   → Rớt điều kiện không giải trình → 🔴 Critical (`L3-BA-FILTER-UNMAPPED`)
+
+□ Chiều ngược lại — điều kiện THỪA/BỊA (A37): mỗi literal điều kiện trong `logic` có trong SQL BA của Nhóm (hoặc Atomic/LLD)? Gate 8 D26 liệt kê sẵn; BA vừa đổi SQL (`ba_diff.py`) thì mọi literal cũ phải dẫn lại từ BA mới
+  → Literal không có nguồn / giữ "theo thiết kế hiện hành" sau khi BA đổi → 🔴 Critical (`L3-DM-LITERAL-NOT-IN-BA`)
 
 □ Cột mã `*_code` hiển thị (SLICER/GROUP_BY) và nhãn (A36): SQL BA của Nhóm có CASE nhãn ở SELECT ngoài? → `logic` phải có CASE tương ứng (ELSE theo BA từng Nhóm); LLD cột `*_code` chỉ chứa mã; cùng cột mã ở Nhóm khác cùng cách xử lý — D23/D24 của `check_design_lint.py` trả lời sẵn
   → Hiển thị mã thô khi BA ánh xạ nhãn → 🟠 Warning (`L3-CODE-LABEL-INCONSISTENT`, hoặc `L3-ETL-CODE-SHOWN-RAW` với mã ETL tự sinh như `status_code`); cột `*_code` chứa nhãn → 🔴 Critical (`L2-CODE-COL-HAS-LABEL`)

@@ -105,7 +105,13 @@ Bổ sung 2026-11-07 (TT Nhóm 15 — cùng một khái niệm 'nhãn của cộ
   D25 [L3-ETL-CODE-SHOWN-RAW]        (A36) — cột `*_code` mà `etl_logic` TỰ SINH ≥ 2 mã ALL_CAPS bằng CASE (VD `status_code` suy từ ngày: NOT_STARTED/IN_PROGRESS/COMPLETED) nhưng KPI
                               SLICER/GROUP_BY hiển thị thô `bảng.cột` (TT K_TT_19/K_TT_38 trước 2026-11-07; D24 không thấy vì không có KPI anh em nào ánh xạ). WARNING.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25 = WARNING; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-11-10 (QLKD Nhóm 5/6/7/36 — điều kiện không tồn tại trong SQL BA, Data Modeler phát hiện):
+  D26 [L3-DM-LITERAL-NOT-IN-BA]      (A37) — literal đứng ở vị trí ĐIỀU KIỆN trong `logic` Detail Mapping (`= 'x'`, `IN ('a','b')`, `LIKE '%x%'`, `has(arr,'x')`; bỏ nhãn THEN/ELSE)
+                              không có trong BA của Nhóm (mọi cột, kể cả SQL), không có trong BA module, không có trong `etl_logic` LLD module hay YAML Atomic của bảng tham chiếu
+                              (VD `indicator_code IN ('DUY_TRI_DKCP_GPKD')` trong khi BA lọc `ALERT_INDICATOR.ID IN (450, 451)` — mã tự đặt kế thừa BA v4.1, KPI luôn rỗng/sai).
+                              Bỏ qua idiom ('', '#', ' >> ', 'Không xác định'…) và chuỗi định dạng ngày. Ngoại lệ có chủ ý ghi ở reference/dm_literal_exceptions.yaml. WARNING.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25, D26 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -1113,6 +1119,196 @@ def check_etl_bi_boundary(root: Path, module: str):
     return out
 
 
+# ── D26 (2026-11-10) — literal điều kiện trong `logic` Detail Mapping phải có xuất xứ BA/Atomic (luật A37) ──
+# Sự cố QLKD Nhóm 5/6/7/36: BA lọc `ALERT_INDICATOR.ID IN (450, 451)`, Detail Mapping lọc `indicator_code IN ('DUY_TRI_DKCP_GPKD')` —
+# mã tự đặt từ BA v4.1, không có trong BA hiện hành, không có trong etl_logic LLD hay YAML Atomic → KPI luôn ra 'Đang duy trì tốt'.
+_RE_CMP_LITS = re.compile(
+    r"(?:(?P<lst>\bNOT\s+IN\s*\(|\bIN\s*\()|(?P<one>(?<![<>!])=|<>|!=|\bI?LIKE\s+|\bhas\w*\(\s*[^,()]+,\s*|\bstartsWith\(\s*[^,()]+,\s*|\bendsWith\(\s*[^,()]+,\s*))"
+    r"\s*((?:'(?:[^']|'')*'\s*,?\s*)+)", re.I)
+_RE_PARAM_LHS = re.compile(r":[A-Za-z_]\w*\s*$")   # `:nhom_nhan_su = 'HDTV'` — so với THAM SỐ dashboard, không phải dữ liệu
+_RE_ANY_LIT = re.compile(r"'((?:[^']|'')*)'")
+_RE_FORMAT_LIT = re.compile(r"%[YmdHMSQ]|yyyy|dd[-/ ]?MM|MM[-/ ]?dd|^[\d]{4}-\d{2}-\d{2}$", re.I)
+_LIT_IDIOMS = {"", " ", "#", "-", "_", "%", ",", ".", ";", "/", ">>", " >> ", "0", "1", "y", "n", "không xác định", "khác", "n/a", "null", "true", "false"}
+_RE_NHOM_NUM = re.compile(r"Nh[oó]m\s*(\d+)", re.I)
+
+
+def _norm_lit(s: str) -> str:
+    return re.sub(r"\s+", " ", s.replace("''", "'").strip()).lower()
+
+
+def _lit_in_text(nl: str, text: str) -> bool:
+    core = nl.strip("%").strip()
+    if not core:
+        return True
+    if re.fullmatch(r"[\w.\-]+", core):
+        return re.search(rf"(?<![\w]){re.escape(core)}(?![\w])", text) is not None
+    return core in text
+
+
+def comparison_literals(logic: str):
+    """Literal chuỗi đứng ở vị trí ĐIỀU KIỆN (`= 'x'`, `IN ('a','b')`, `LIKE '%x%'`, `has(arr,'x')`), bỏ nhãn THEN/ELSE, output của multiIf
+    (`= 'EQUITY', 'mo_cp'` chỉ lấy 'EQUITY'), so sánh với tham số dashboard (`:p = 'X'`) và ghi chú [...]. Hàm thuần."""
+    txt = _RE_BRACKET_NOTE.sub(" ", logic or "")
+    out = []
+    for m in _RE_CMP_LITS.finditer(txt):
+        if _RE_PARAM_LHS.search(txt[:m.start()]):
+            continue
+        lits = _RE_ANY_LIT.findall(m.group(m.lastindex))
+        out += lits if m.group("lst") else lits[:1]
+    return out
+
+
+def defined_literals(logics):
+    """Literal do chính Detail Mapping của Nhóm ĐỊNH NGHĨA ở vị trí output (THEN/ELSE, multiIf, alias) — mọi literal trừ literal điều kiện. Hàm thuần."""
+    out = set()
+    for lg in logics:
+        txt = _RE_BRACKET_NOTE.sub(" ", lg or "")
+        cmp_ = {_norm_lit(x) for x in comparison_literals(lg)}
+        out |= {_norm_lit(x) for x in _RE_ANY_LIT.findall(txt)} - cmp_
+    return out
+
+
+def literal_provenance_issues(dm_rows, ba_by_nhom, ba_all, atomic_text, exceptions=None):
+    """D26 — dm_rows: [(kpi_id, nhom_label, column_role, logic)]; ba_by_nhom: {số Nhóm: BA text lower}; ba_all: BA text lower toàn module;
+    atomic_text: etl_logic LLD module + YAML Atomic (lower); exceptions: {(kpi_id, literal lower)}. Trả [(level, code, msg)]. Hàm thuần (dùng cho test)."""
+    exceptions = exceptions or set()
+    out = []
+    seen = set()
+    by_nhom_logics = {}
+    for _, nhom_label, _, logic in dm_rows:
+        m = _RE_NHOM_NUM.search(nhom_label or "")
+        by_nhom_logics.setdefault(m.group(1) if m else "", []).append(logic or "")
+    defined_cache = {}
+    for kpi, nhom_label, role, logic in dm_rows:
+        if (role or "").upper() == "DEPRECATED" or not logic:
+            continue
+        m = _RE_NHOM_NUM.search(nhom_label or "")
+        n = m.group(1) if m else ""
+        ba_txt = ba_by_nhom.get(n, "")
+        if n not in defined_cache:
+            defined_cache[n] = defined_literals(by_nhom_logics.get(n, []))
+        bad, where = [], []
+        for lit in comparison_literals(logic):
+            nl = _norm_lit(lit)
+            if nl in _LIT_IDIOMS or _RE_FORMAT_LIT.search(nl) or (kpi, nl) in exceptions or nl in defined_cache[n]:
+                continue
+            if _lit_in_text(nl, ba_txt):
+                continue
+            if _lit_in_text(nl, atomic_text):
+                continue
+            if _lit_in_text(nl, ba_all):
+                where.append(f"'{lit}' (có ở BA Nhóm khác)")
+                continue
+            if nl not in bad:
+                bad.append(nl)
+        key = (kpi, tuple(bad))
+        if bad and key not in seen:
+            seen.add(key)
+            out.append(("WARNING", "L3-DM-LITERAL-NOT-IN-BA",
+                        f"{kpi} (Nhóm {n or '?'}): literal {[b for b in bad][:6]} trong điều kiện `logic` không có trong BA Nhóm {n or '?'} (SQL/Điều kiện/Mô tả), "
+                        "không có trong BA module, etl_logic LLD hay YAML Atomic → điều kiện bịa / giữ 'theo thiết kế hiện hành' (QLKD N5–7/36 `indicator_code IN ('DUY_TRI_DKCP_GPKD')`). "
+                        "Luật A37: trích đúng giá trị/cột từ SQL BA; Atomic thiếu cột thì khai cột `pending` + O_ yêu cầu Atomic, không thay bằng mã tự đặt. "
+                        "Quyết định Data Modeler có chủ ý → ghi `ghi_chu` + O_ issue và thêm vào reference/dm_literal_exceptions.yaml"))
+    return out
+
+
+def load_literal_exceptions():
+    p = Path(__file__).resolve().parent.parent / "reference" / "dm_literal_exceptions.yaml"
+    out = set()
+    if not p.exists():
+        return out
+    try:
+        import yaml  # noqa: E402
+        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        for item in data.get("exceptions", []) or []:
+            k = (item.get("kpi") or "").strip()
+            for lit in item.get("literals", []) or []:
+                out.add((k, _norm_lit(str(lit))))
+    except Exception:
+        return out
+    return out
+
+
+def _ba_texts(root: Path, module: str):
+    """({số Nhóm: text lower}, text lower toàn module) từ BA — mọi cột của mọi dòng (kể cả Deleted)."""
+    try:
+        from datamart_common.ba_parser import group_ba_items, parse_ba_file, profile_for, resolve_ba_path  # noqa: E402
+        path = resolve_ba_path(root, module)
+        if not path:
+            return {}, ""
+        items, _ = parse_ba_file(path, profile_for(root, module), include_deleted=True, strict=False)
+    except Exception:
+        return {}, ""
+    per = {}
+    for k, its in group_ba_items(items).items():
+        txt = "\n".join(" ".join([it.name, it.description, it.condition, it.sql, it.note, it.source_column, it.source_table] + [str(c) for c in it.raw_row]) for it in its)
+        kk = str(k).strip()
+        per[kk] = (per.get(kk, "") + "\n" + txt).lower()
+    return per, "\n".join(per.values())
+
+
+def _lld_dir(root: Path, module: str):
+    """Thư mục LLD per-module — tên thư mục không dấu (NĐTNN → NDTNN)."""
+    try:
+        from datamart_common.module_resolver import normalize_module_name  # noqa: E402
+        cands = (module, normalize_module_name(module), module.upper())
+    except Exception:
+        cands = (module, module.upper())
+    for c in cands:
+        d = root / "Datamart" / "lld" / c
+        if d.exists():
+            return d
+    return None
+
+
+def _atomic_text(root: Path, module: str) -> str:
+    """etl_logic của LLD module + master registry (mã do ETL sinh ở module khác mà module này reuse) + nội dung YAML Atomic của các bảng Atomic
+    module tham chiếu (lower). Không lấy description (có thể chép lại cùng sai lầm)."""
+    parts, tables = [], set()
+    files = []
+    d = _lld_dir(root, module)
+    if d:
+        files += sorted(d.glob("*.csv"))
+    master = root / "Datamart" / "lld" / "datamart_attributes.csv"
+    if master.exists():
+        files.append(master)
+    for f in files:
+        try:
+            with open(f, encoding="utf-8-sig", newline="") as fh:
+                for r in csv.DictReader(fh):
+                    parts.append(r.get("etl_logic") or "")
+                    if f is not master:
+                        for t in re.split(r"[/,]", r.get("atomic_table") or ""):
+                            t = t.strip()
+                            if t:
+                                tables.add(t)
+        except Exception:
+            continue
+    atomic_dir = root / "DataModel" / "Atomic"
+    if atomic_dir.exists():
+        for t in sorted(tables):
+            for y in atomic_dir.glob(f"**/dm_atm_{t}-*.yaml"):
+                try:
+                    parts.append(y.read_text(encoding="utf-8", errors="replace"))
+                except Exception:
+                    continue
+    return "\n".join(parts).lower()
+
+
+def check_literal_provenance(root: Path, module: str):
+    dm = resolve_module_path(root, module, "detail_mapping")
+    if not (dm and Path(dm).exists()):
+        return []
+    rows = []
+    with open(dm, encoding="utf-8-sig", newline="") as fh:
+        for r in csv.DictReader(fh):
+            rows.append(((r.get("kpi_id") or "").strip(), r.get("nhom") or "", r.get("column_role") or "", r.get("logic") or ""))
+    if not any(comparison_literals(l) for *_, l in rows):
+        return []
+    ba_by, ba_all = _ba_texts(root, module)
+    return literal_provenance_issues(rows, ba_by, ba_all, _atomic_text(root, module), load_literal_exceptions())
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -1134,6 +1330,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_code_labels(root, module)
     issues += check_atomic_literals(root, module)
     issues += check_etl_bi_boundary(root, module)
+    issues += check_literal_provenance(root, module)
     return issues
 
 

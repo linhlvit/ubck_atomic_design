@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A36 — LLD Datamart
+# Luật chống tái diễn A1–A37 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -40,12 +40,15 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A34 — Sửa 1 KPI thì quét câu cũ mâu thuẫn ở DM + HLD kể cả Open Items (`apply_open_item.py`); AI không ghi suy luận như dữ kiện (D22)
 - A35 — Vận hành phiên: mở đúng thư mục để nạp hook/skill/CLAUDE.md, ngưỡng 6 Nhóm, `--baseline` gate, phiên song song
 - A36 — Nhãn của cột mã: một khái niệm một tầng; cột `*_code` chỉ chứa mã gốc; mặc định nhãn ở Detail Mapping (`CASE WHEN … ELSE 'Không xác định' END`); CASE chọn nguồn/quyết định khóa PK vẫn ở ETL (D23/D24/D25)
+- A37 — Điều kiện/literal trong `logic` phải trích từ SQL BA (hoặc Atomic); không giữ 'theo thiết kế hiện hành', không thay cột BA thiếu ở Atomic bằng mã tự đặt `[L3-DM-LITERAL-NOT-IN-BA]`
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
 ### A1 — CẤM tự đặt tên cột Atomic `[L0-ATOMIC-COLUMN-NOT-FOUND]`
 
 Mọi `atomic_column` và mọi tham chiếu `bảng.cột` trong `etl_logic` phải **grep được trong YAML Atomic thật**.
+
+> **Nguyên tắc ranh giới Atomic ↔ Datamart:** Mô hình Atomic là enterprise 3NF/SCD4A có thể được thiết kế thừa (nhiều thực thể/thuộc tính chưa được tầng Datamart sử dụng). Tuy nhiên, tầng Datamart bắt buộc phải tham chiếu đúng và đủ các bảng, cột **đã được thiết kế hiện tại trên Atomic** — cấm tự suy diễn tên cột, cấm dùng cột chưa có trên Atomic, và cấm gán nhầm tên bảng Datamart vào nguồn Atomic.
 
 | Đã viết sai (thực tế) | Tên đúng trong YAML |
 |---|---|
@@ -584,6 +587,33 @@ Detail Mapping không có bộ lọc tương ứng (logic BI chỉ tồn tại t
 
 **Máy kiểm:** Gate 8 D17 (ERROR) + D18 (WARNING) trong `check_design_lint.py`.
 
+### A37 — Điều kiện/literal trong `logic` phải trích từ SQL BA (hoặc Atomic); không giữ 'theo thiết kế hiện hành', không thay cột BA thiếu ở Atomic bằng mã tự đặt `[L3-DM-LITERAL-NOT-IN-BA]`
+
+Sự cố thật (QLKD Nhóm 5/6/7/36, Data Modeler phát hiện 2026-11-10): BA 09/11 lọc tham số bằng `ALERT_INDICATOR.ID IN (450, 451)` (Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456) và ghi rõ
+`ALERT_INDICATOR` là bảng nguồn. Phiên thiết kế thấy Atomic `sc_alert_indicator` không map cột `ID` (BK = `INDICATOR_CODE`) nên (a) gạt `ALERT_INDICATOR` khỏi nguồn Fact, (b) **giữ nguyên 4 mã
+`indicator_code IN ('DUY_TRI_DKCP_GPKD')` / `'DUY_TRI_DKCP_CTCK_PHAI_SINH'` / `'DUY_TRI_DKCP_CTCKPS_BU_TRU'` / `'DUY_TRI_DKCP'` "theo thiết kế hiện hành"** — 4 mã này là ước lượng `MA_BAO_CAO` từ BA v4.1
+(O_QLKD_7), không tồn tại trong SCMS — và (c) ghi "chưa chứng minh tương đương, KPI giữ READY chờ BA/dev xác nhận". KPI vì thế luôn ra 'Đang duy trì tốt'. Gate 0–10 PASS vì không Gate nào đối chiếu
+GIÁ TRỊ literal trong `logic` với BA (D13 chỉ kiểm tên cột, D15/D16 chỉ kiểm mã ô eForm và `identification_tp_code`). A26 (kiểm kê điều kiện) và A29 (cấm thay thế gần đúng) đã có nhưng không ngăn được
+vì điều kiện bịa "trông giống" một điều kiện hợp lệ và câu "chờ xác nhận" che đi việc nó không có xuất xứ.
+
+**Quy tắc**
+1. **Mọi literal đứng ở vị trí điều kiện** trong `logic` Detail Mapping (`= 'x'`, `IN ('a','b')`, `LIKE '%x%'`, `has(arr, 'x')`, `countIf(col = 'x')`) và trong `etl_logic` **phải trích được** từ
+   (a) SQL tham khảo / Điều kiện / Mô tả của dòng BA của Nhóm đó, hoặc (b) YAML Atomic / `etl_logic` LLD (mã do Atomic/ETL sinh: `src_stm_code`, `ou_tp_code`, scheme). Ghi nguồn ở `ghi_chu`
+   ("BA dòng 34: `ai.ID IN (450, 451)`"). Không có nguồn ⇒ không được viết.
+2. **"Theo thiết kế hiện hành" không phải nguồn.** Khi BA đổi SQL/điều kiện của Nhóm (ba_diff), MỌI literal của KPI thuộc Nhóm phải được dẫn lại từ BA mới; literal không còn trong BA ⇒ bỏ hoặc
+   thay bằng điều kiện BA, đánh dấu câu cũ là *(Lịch sử …)* (A34).
+3. **Atomic thiếu cột mà BA dùng (`ALERT_INDICATOR.ID`)** ⇒ thiết kế đúng rule BA: khai cột Datamart (Dimension/Fact) với `etl_logic_type = pending` + description "CHỜ ATOMIC", mở O_ issue yêu cầu Atomic
+   thêm attribute, KPI READY về thiết kế và chạy được khi Atomic bổ sung. **KHÔNG** thay bằng mã/điều kiện tự đặt, **KHÔNG** gạt entity nguồn BA khỏi lineage, **KHÔNG** viết "chưa chứng minh tương đương"
+   rồi giữ READY (A29 mục 3). Kiểm BRD/Source trước: cột BA dùng có thật ở `BRD/Source/{HỆ}/brd_*.yaml` thì đó là việc của Atomic, không phải lý do đổi điều kiện.
+4. **Mã tham số/mã danh mục** (ID kỹ thuật, `INDICATOR_CODE`, mã quỹ…) là dữ liệu — lấy đúng giá trị BA ghi, không "dịch" sang mã khác khi chưa có bảng đối chiếu từ dev/BA. Nếu nhất định cần đối chiếu
+   (ID ↔ mã), KPI PENDING tới khi có bảng đối chiếu, không READY.
+5. Quyết định có chủ ý của Data Modeler dùng literal ngoài BA/Atomic (hiếm): ghi `ghi_chu` + O_ issue (ngày quyết định) và thêm vào `datamart-review/reference/dm_literal_exceptions.yaml`
+   (kpi, literals, reason, issue). Không thêm ngoại lệ để làm sạch Gate.
+
+**Máy kiểm:** Gate 8 D26 `L3-DM-LITERAL-NOT-IN-BA` (WARNING) — so literal điều kiện trong `logic` với văn bản BA của Nhóm (mọi cột), BA toàn module, `etl_logic` LLD (module + master) và YAML Atomic của
+bảng tham chiếu; bỏ qua idiom ('', '#', ' >> ', 'Không xác định'…) và chuỗi định dạng. Chạy thử trên bản 09/11 của QLKD bắt đúng 12 KPI `DUY_TRI_DKCP_*`. Ngoài Gate: `ba_diff.py -m {M}` trước khi sửa Nhóm BA vừa đổi.
+Test: `tests/test_design_lint_literal_provenance.py`.
+
 ### Lệnh bổ sung — Gate 8 Design Lint
 
 ```bash
@@ -595,6 +625,7 @@ python .claude/skills/datamart-review/scripts/check_design_lint.py --module {MOD
 module trong `L18_MODULES` của `check_design_lint.py`; thiết kế module mới theo L18 thì thêm module vào tập đó).
 Từ 2026-10-26 Gate 8 thêm D15 (mã ô eForm: `L3-CELL-ID-NOT-ECODE`, `L3-CELL-ID-NO-REPORT-CODE`, `L3-CELL-ID-NOT-LOADED` — A27) và D16 (`L0-ATOMIC-LITERAL-MISMATCH` — A28). Công cụ ngoài Gate: `ba_diff.py` (BA đổi gì), `check_ba_source_coverage.py` (A29).
 Từ 2026-10-26 Gate 8 thêm D17 (`L2-ETL-BI-PARAM` — tham số dashboard trong `etl_logic`, ERROR) và D18 (`L2-DESC-BI-LOGIC-LEAK` — description chép CTE/cơ chế BA, WARNING) — A31.
+Từ 2026-11-10 Gate 8 thêm D26 (`L3-DM-LITERAL-NOT-IN-BA` — literal điều kiện trong `logic` không có trong BA Nhóm/BA module/etl_logic LLD/YAML Atomic, WARNING; ngoại lệ có chủ ý ở `reference/dm_literal_exceptions.yaml`) — A37.
 **Gate 8 KHÔNG kiểm A19 (giới hạn ngày)** — chạy tay `check_date_bound.py` (TC12); `run_quality_gates.py` PASS không có nghĩa etl_logic đã khóa ngày.
 
 ### A32 — Bộ ba (`rpt_code`, `sheet_code`, `cell_id`): KPI đọc ô eForm phải lọc cả sheet `[L3-CELL-ID-NO-SHEET-CODE]`
