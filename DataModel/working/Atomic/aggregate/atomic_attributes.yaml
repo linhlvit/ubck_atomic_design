@@ -9656,70 +9656,6 @@ attributes:
   atomic_table: "pc_bond_evaluation"
   atomic_column: "bond_outstanding_to_equity_ratio_percentage"
 - bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Public Company Bond Listing History Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: null
-  comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "pc_bond_listing_history_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Public Company Bond Listing History Code"
-  description: "Khóa chính. BK của entity — map từ PK bảng nguồn."
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.ID"
-  comment: "BK chính. PK nguồn NUMBER(10) tự tăng."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "pc_bond_listing_history_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'IDS_BOND_LISTING_HISTORY'"
-  etl_derived_value: "IDS_BOND_LISTING_HISTORY"
-  data_type: "string"
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "src_stm_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Bond Listing History"
-  atomic_attribute: "Issuance Quantity"
-  description: "Số lượng phát hành."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "BOND_LISTING_HISTORY"
-  source_column: "IDS.BOND_LISTING_HISTORY.ISSUANCE_QTY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "pc_bond_listing_history"
-  atomic_column: "issuance_quantity"
-- bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Capital Increase"
   atomic_attribute: "Public Company Capital Increase Id"
   description: "Khóa đại diện (surrogate key)."
@@ -52952,8 +52888,7 @@ attributes:
   source_table: "ALERT_INDICATOR"
   source_column: null
   comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo tài\
-    \ chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE). Đổi hash\
-    \ key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh Data Modeler (2026-09-18)."
+    \ chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -52962,22 +52897,40 @@ attributes:
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Alert Indicator"
   atomic_attribute: "Securities Company Alert Indicator Code"
-  description: "Mã chỉ tiêu. BK của entity — Id hash từ trường này."
+  description: "Mã định danh chỉ tiêu cảnh báo. BK của entity — map từ ID kỹ thuật\
+    \ của bảng nguồn, Id hash từ trường này."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "SCMS"
   source_table: "ALERT_INDICATOR"
-  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
-  comment: "BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data Modeler,\
-    \ 2026-09-18 — xem Securities Company Alert Indicator Id). Trước đây map nhầm\
-    \ từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của Id — đã sửa cùng\
-    \ lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live."
+  source_column: "SCMS.ALERT_INDICATOR.ID"
+  comment: "BK của entity = ID nguồn (Data Modeler 2026-11-10). Nguồn lưu NUMBER(10)\
+    \ — ETL convert sang string. Mã nghiệp vụ INDICATOR_CODE không dùng làm BK, tách\
+    \ sang attribute Alert Indicator Code."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_alert_indicator"
   atomic_column: "sc_alert_ind_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Alert Indicator"
+  atomic_attribute: "Alert Indicator Code"
+  description: "Mã chỉ tiêu cảnh báo (mã nghiệp vụ INDICATOR_CODE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ALERT_INDICATOR"
+  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  comment: "INDICATOR_CODE tách thành trường riêng (Data Modeler 2026-11-10), không\
+    \ dùng để hash Id/BK. BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận sự\
+    \ khác biệt với team nguồn. Nguồn nullable — cần profile dữ liệu."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_alert_indicator"
+  atomic_column: "alert_ind_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Alert Indicator"
   atomic_attribute: "Source System Code"
@@ -52996,8 +52949,8 @@ attributes:
   atomic_column: "src_stm_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Alert Indicator"
-  atomic_attribute: "Securities Company Alert Indicator Name"
-  description: "Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name)."
+  atomic_attribute: "Alert Indicator Name"
+  description: "Tên chỉ tiêu cảnh báo."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -53010,7 +52963,7 @@ attributes:
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_alert_indicator"
-  atomic_column: "sc_alert_ind_nm"
+  atomic_column: "alert_ind_nm"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Alert Indicator"
   atomic_attribute: "Alert Code"
@@ -53397,9 +53350,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
   source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
-  comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk sang\
-    \ SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
-    \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)."
+  comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Hash: hash_id('SCMS_ALERT_INDICATOR',\
+    \ ALERT_INDICATOR_ID). Hash trực tiếp theo ID kỹ thuật của ALERT_INDICATOR (Id\
+    \ của sc_alert_indicator hash từ ID, Data Modeler 2026-11-10) — không cần crosswalk\
+    \ sang INDICATOR_CODE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -53414,11 +53368,10 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
-  source_column: "SCMS.ALERT_INDICATOR.INDICATOR_CODE"
+  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID"
   comment: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
-    \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
-    \ Id."
+    \ Company Alert Indicator Id. Giá trị = ALERT_INDICATOR_ID (BK của sc_alert_indicator\
+    \ là ID nguồn, Data Modeler 2026-11-10) — lấy trực tiếp, không cần join."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

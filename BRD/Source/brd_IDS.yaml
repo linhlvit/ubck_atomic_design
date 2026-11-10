@@ -209,8 +209,6 @@ brd_entries:
       relation: FK cha — Hồ sơ công ty đại chúng
     - table: COMPANY_DATA
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: USERS
-      relation: FK cha — Bảng users
     - table: COMPANY_TENDER_OFFER_RESULT
       relation: 1-N — Bảng company tender offer result
     - table: DOSSIER_APPRAISAL_RESULT
@@ -246,8 +244,6 @@ brd_entries:
       relation: FK cha — Hồ sơ công ty đại chúng
     - table: COMPANY_DATA
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: USERS
-      relation: FK cha — Bảng users
     - table: LEGAL_ENTITIES
       relation: FK cha — Bảng legal entities
     - table: DOSSIER_APPRAISAL_RESULT
@@ -272,8 +268,6 @@ brd_entries:
       relation: FK cha — Đợt mua/bán cổ phiếu quỹ
     - table: COMPANY_DATA
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: USERS
-      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -291,9 +285,9 @@ brd_entries:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-COMPANY_PENALTIES
   content:
     table: COMPANY_PENALTIES
@@ -305,9 +299,9 @@ brd_entries:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-COMPANY_CHANGE_ROLE_HIS
   content:
     table: COMPANY_CHANGE_ROLE_HIS
@@ -321,9 +315,9 @@ brd_entries:
     - table: LOGINS
       relation: FK cha — Tài khoản đăng nhập
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CHANGED_DATE >= {etl_date} AND CHANGED_DATE < {etl_date} + 1
+      filter_note: Ngày thay đổi — Append theo CHANGED_DATE
     table_meaning: Lịch sử thay đổi thông tin quản lý công ty
 - brd_id: BRD-SRC-IDS-LOGINS
   content:
@@ -564,8 +558,6 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: null
     related_tables:
-    - table: USERS
-      relation: 1-N — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -692,8 +684,6 @@ brd_entries:
       relation: FK cha — Bảng company tender offer
     - table: COMPANY_TREASURY_SHARES
       relation: FK cha — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
-    - table: USERS
-      relation: FK cha — Bảng users
     - table: SECURITIES_OFFERING_RESULT
       relation: FK cha — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
     - table: TREASURY_SHARE_TRANS_RESULT
@@ -744,26 +734,26 @@ brd_entries:
     - table: FORM_FIELDS
       relation: FK cha — Bảng form fields
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
     table_meaning: Lưu dữ liệu khi nhập vào tương ứng với các Form, Fields
 - brd_id: BRD-SRC-IDS-BOND_LISTING_HISTORY
   content:
     table: BOND_LISTING_HISTORY
     description: Lưu trữ lịch sử thông tin phát hành trái phiếu ra công chúng, trái phiếu riêng lẻ của công ty đại chúng.
     functional_group: capital_activity
-    scope_status: in_scope
-    scope_reason: null
+    scope_status: out_of_scope
+    scope_reason: Không cần thiết kế Atomic — quyết định Data Modeler (2026-11-10)
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     - table: BOND_LISTING
       relation: FK cha — Bảng bond listing
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-COMPANY_DIGITAL_CERTIFICATES
   content:
     table: COMPANY_DIGITAL_CERTIFICATES
@@ -994,9 +984,9 @@ brd_entries:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-PUB_COMPANY_REGISTRATION
   content:
     table: PUB_COMPANY_REGISTRATION
@@ -1008,9 +998,9 @@ brd_entries:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-SECURITIES_OFFERING
   content:
     table: SECURITIES_OFFERING
@@ -1031,8 +1021,6 @@ brd_entries:
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
     - table: DOSSIER_APPRAISAL_RESULT
       relation: 1-N — Kết quả thẩm định theo từng chỉ tiêu cho mỗi phương án CBPH/CMCK/CPQ
-    - table: USERS
-      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1065,8 +1053,6 @@ brd_entries:
       relation: FK cha — Hồ sơ chào bán phát hành
     - table: COMPANY_DATA
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: USERS
-      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1083,9 +1069,9 @@ brd_entries:
     - table: COMPANY_PROFILES
       relation: FK cha — Hồ sơ công ty đại chúng
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_DATE
 - brd_id: BRD-SRC-IDS-VIOLATION_PENALTY_CONFIG
   content:
     table: VIOLATION_PENALTY_CONFIG
@@ -1229,8 +1215,6 @@ brd_entries:
       relation: FK cha — Lưu thông tin phương án về quá trình chào mua công khai
     - table: COMPANY_DATA
       relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: USERS
-      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1311,8 +1295,6 @@ brd_entries:
     related_tables:
     - table: COMPANY_PROFILES
       relation: FK cha — Bảng lưu trữ thông tin hồ sơ và chi tiết công ty
-    - table: USERS
-      relation: FK cha — Bảng users
     - table: TENDER_OFFER_RESULT
       relation: 1-N — Lưu thông tin kết quả chào mua công khai (Public Tender Offer
         Result)
@@ -1332,8 +1314,6 @@ brd_entries:
     - table: TENDER_OFFER
       relation: FK cha — Lưu thông tin phương án chào mua công khai (Public Tender
         Offer)
-    - table: USERS
-      relation: FK cha — Bảng users
     ingestion:
       data_change_mode: Update
       filter_logic: null
@@ -1582,47 +1562,6 @@ brd_entries:
       relation: FK cha — Bảng categories
     - table: REPORT_CATALOG
       relation: FK cha — Bảng report catalog
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-IDS-USERS
-  brd_name: Design Atomic từ nguồn IDS bảng USERS
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: null
-    functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
-    scope_reason: null
-    table: USERS
-    related_tables:
-    - table: COMPANY_DATA
-      relation: 1-N — Lưu FORMS dữ liệu thuộc COMPANY_PROFILES
-    - table: COMPANY_TENDER_OFFER
-      relation: 1-N — Bảng company tender offer
-    - table: COMPANY_TENDER_OFFER_RESULT
-      relation: 1-N — Bảng company tender offer result
-    - table: COMPANY_TREASURY_SHARES
-      relation: 1-N — Lưu thông tin đợt mua/bán cổ phiếu quỹ (Treasury Share Transaction)
-    - table: SECURITIES_OFFERING
-      relation: 1-N — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
-    - table: SECURITIES_OFFERING_RESULT
-      relation: 1-N — Lưu thông tin về Hoạt động chào bán, phát hành chứng khoán
-    - table: TENDER_OFFER
-      relation: 1-N — Lưu thông tin phương án chào mua công khai (Public Tender Offer)
-    - table: TENDER_OFFER_RESULT
-      relation: 1-N — Lưu thông tin kết quả chào mua công khai (Public Tender Offer
-        Result)
-    - table: TREASURY_SHARE_TRANS_RESULT
-      relation: 1-N — Lưu thông tin kết quả giao dịch cổ phiếu quỹ (Treasury Share
-        Transaction Result)
-    - table: DEPARTMENTS
-      relation: FK cha — Bảng departments
     notes: null
     data_volume_hint: null
     refresh_frequency: null
