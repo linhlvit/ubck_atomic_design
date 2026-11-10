@@ -2153,7 +2153,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "DD"
-        description: "Mã tham số cảnh báo (ALERT_INDICATOR.INDICATOR_CODE) — chọn nhóm tham số của từng biểu đồ duy trì điều kiện cấp phép ở Detail Mapping."
+        description: "Mã tham số cảnh báo (ALERT_INDICATOR.INDICATOR_CODE, qua sc_alert_violation.sc_alert_ind_code) — thuộc tính mã để hiển thị/đối soát. [SỬA 2026-11-10, O_QLKD_75] KHÔNG còn dùng để chọn nhóm tham số của biểu đồ: BA lọc theo ALERT_INDICATOR.ID → dùng FK securities_company_alert_indicator_dim_id (Securities Company Alert Indicator Dimension.sc_alert_ind_src_id). Các mã DUY_TRI_DKCP_* ghi trước đây là ước lượng từ BA v4.1, không phải INDICATOR_CODE của SCMS."
         source_atomic_table: "sc_alert_violation"
         source_atomic_column: "sc_alert_violation.sc_alert_ind_code"
       - logical_name: "Alert Entity Type Code"
@@ -2162,7 +2162,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "DD"
-        description: "Loại đối tượng cảnh báo (SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE: CTCK, NGAN_HANG, CN_CTCK_NN, VPDD_CTCK_NN) — Detail Mapping lọc = 'CTCK' khi xếp loại duy trì theo CTCK."
+        description: "Loại đối tượng cảnh báo (SC_FIRM_ALERT_VIOLATION.ENTITY_TYPE — theo BRD brd_SCMS_SC_FIRM_ALERT_VIOLATION.yaml: CTCK = Công ty chứng khoán, CN_NUOC_NGOAI = Chi nhánh CTCK nước ngoài, VPDD_NUOC_NGOAI = Văn phòng đại diện CTCK nước ngoài) — Detail Mapping lọc = 'CTCK' khi xếp loại duy trì theo CTCK. [SỬA 2026-11-10: mô tả cũ ghi nhầm NGAN_HANG/CN_CTCK_NN/VPDD_CTCK_NN.]"
         source_atomic_table: "sc_alert_violation"
         source_atomic_column: "sc_alert_violation.alert_entity_tp_code"
       - logical_name: "Alert Year"
@@ -2210,6 +2210,15 @@ entities:
         description: "Ngày phát sinh cảnh báo (SC_FIRM_ALERT_VIOLATION.ALERT_DATE) — thuộc tính ngày của dòng cảnh báo; không phải trục thời gian của Nhóm 5/6/7/36 (trục = năm + kỳ dữ liệu, K_QLKD_30)."
         source_atomic_table: "sc_alert_violation"
         source_atomic_column: "sc_alert_violation.alert_dt"
+      - logical_name: "Securities Company Alert Indicator Dimension Id"
+        physical_name: "securities_company_alert_indicator_dim_id"
+        data_domain: "Surrogate Dimension Key"
+        data_type: "string"
+        nullable: true
+        key: "FK"
+        description: "FK tham số cảnh báo — nối Securities Company Alert Indicator Dimension; PK Dim = Atomic sc_alert_ind_id (A23) nên mang thẳng sc_alert_violation.sc_alert_ind_id, không lookup. [MỚI 2026-11-10, O_QLKD_75] Thay cho lọc indicator_code tự đặt: Detail Mapping chọn nhóm tham số của từng biểu đồ bằng securities_company_alert_indicator_dim.sc_alert_ind_src_id IN (<ID BA>) — Nhóm 5: 450, 451; Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456. NULL khi dòng cảnh báo không gắn tham số. Cột đặt CUỐI bảng để flat #3 có thể ALTER ADD COLUMN."
+        source_atomic_table: "sc_alert_violation"
+        source_atomic_column: "sc_alert_violation.sc_alert_ind_id"
 
   - id: "DTM-offering_form_dim"
     logical_name: "Offering Form Dimension"

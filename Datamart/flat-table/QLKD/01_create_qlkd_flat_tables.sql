@@ -98,7 +98,9 @@ COMMENT 'Flat table — Fact Securities Company Compliance Report Snapshot × Ca
 -- ============================================================
 -- 3. FACT: qlkd_fct_securities_company_license_condition_snpst_flat
 --    Fact Securities Company License Condition Snapshot
---    Joins: Calendar Date × Securities Company Dimension (trục thời gian KPI = năm + kỳ dữ liệu K_QLKD_30, không phải cdr_dt)
+--    Joins: Calendar Date × Securities Company Dimension × Securities Company Alert Indicator Dimension (trục thời gian KPI = năm + kỳ dữ liệu K_QLKD_30, không phải cdr_dt)
+--    [2026-11-10, O_QLKD_75] Thêm FK securities_company_alert_indicator_dim_id + 5 cột denormalized từ Securities Company Alert Indicator Dimension:
+--    KPI lọc nhóm tham số bằng sc_alert_ind_src_id (ALERT_INDICATOR.ID theo BA), không còn lọc indicator_code tự đặt. Dev: DROP/CREATE lại bảng hoặc ALTER ADD COLUMN các cột mới ở cuối.
 --    Grain: 1 dòng Atomic sc_alert_violation; PK = sc_alert_violation_id (ORDER BY phải chứa PK vì ReplacingMergeTree dedup theo ORDER BY)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster'
@@ -114,6 +116,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     alert_period_val                Nullable(Int64)         COMMENT 'Giá trị kỳ của cảnh báo (PERIOD_VALUE — số thứ tự kỳ)',
     severity_level_alt_code         Nullable(String)        COMMENT 'Mức nghiêm trọng của dòng cảnh báo: 1 = cảnh báo, 2 = vi phạm (SEVERITY_LEVEL_ALT)',
     alert_dt                        Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (ALERT_DATE) — thuộc tính ngày của dòng, không phải trục thời gian',
+    securities_company_alert_indicator_dim_id    Nullable(String)        COMMENT 'FK tham số cảnh báo — nối Securities Company Alert Indicator Dimension; PK Dim = Atomic sc_alert_ind_id (A23) nên mang thẳng sc_alert_violation.sc_alert_ind_id, không lookup. [MỚI 2026-11-10, O_QLKD_75] Thay cho lọc indicator_code tự đặt: Detail Mapping chọn nhóm tham số của từng biểu đồ bằng securities_company_alert_indicator_dim.sc_alert_ind_src_id IN (<ID BA>) — Nhóm 5: 450, 451; Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456. NULL khi dòng cảnh báo không gắn tham số. Cột đặt CUỐI bảng để flat #3 có thể ALTER ADD COLUMN.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày của dòng cảnh báo (Alert Date) — từ Calendar Date Dimension',
@@ -130,12 +133,19 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     is_listed_indicator             Nullable(UInt8)         COMMENT 'Cờ niêm yết trên sàn — từ Securities Company Dimension',
     stock_exchange_nm               Nullable(String)        COMMENT 'Sàn niêm yết (HOSE/HNX/UPCOM) — từ Securities Company Dimension',
     provisional_ind                 Nullable(Int64)         COMMENT 'Cờ bản nháp hồ sơ CTCK (1 = bản nháp, 0 = chính thức; NULL tính là chính thức) — từ Securities Company Dimension',
-    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension'
+    securities_company_src_stm_code Nullable(String)        COMMENT 'Mã hệ thống nguồn — từ Securities Company Dimension',
+
+    -- From: SECURITIES COMPANY ALERT INDICATOR DIMENSION
+    sc_alert_ind_code               Nullable(String)        COMMENT 'Mã chỉ tiêu cảnh báo (ALERT_INDICATOR.INDICATOR_CODE) — từ Securities Company Alert Indicator Dimension',
+    sc_alert_ind_src_id             Nullable(String)        COMMENT 'ID kỹ thuật chỉ tiêu cảnh báo ở nguồn (ALERT_INDICATOR.ID) — tham số BA: Nhóm 5 IN (450, 451), Nhóm 6 IN (457–464, 467–472), Nhóm 7 IN (1404), Nhóm 36 IN (452–456); NULL tới khi Atomic bổ sung sc_alert_ind_src_id (O_QLKD_75) — từ Securities Company Alert Indicator Dimension',
+    sc_alert_ind_nm                 Nullable(String)        COMMENT 'Tên chỉ tiêu cảnh báo (INDICATOR_NAME) — từ Securities Company Alert Indicator Dimension',
+    alert_ind_tp_code               Nullable(Int64)         COMMENT 'Loại chỉ tiêu cảnh báo (ALERT_INDICATOR_TYPE) — từ Securities Company Alert Indicator Dimension',
+    severity_level                  Nullable(Int64)         COMMENT 'Cấp độ cấu hình của chỉ tiêu (ALERT_INDICATOR.SEVERITY_LEVEL 1/2/3) — khác severity_level_alt_code của dòng cảnh báo — từ Securities Company Alert Indicator Dimension'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (sc_alert_violation_id)
-COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Calendar Date × Securities Company Dimension (1 dòng = 1 dòng cảnh báo Atomic)'
+COMMENT 'Flat table — Fact Securities Company License Condition Snapshot × Calendar Date × Securities Company Dimension × Securities Company Alert Indicator Dimension (1 dòng = 1 dòng cảnh báo Atomic)'
 ;
 
 
