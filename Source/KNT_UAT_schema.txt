@@ -182,47 +182,6 @@ BUSINESS_LICENSE              VARCHAR2(800)       YES                           
 RECORD_COUNT                  NUMBER              YES                                      Số bản ghi công ty có cùng gói tin và loại công ty
 
 
-BANG: DATA_RECONCILIATION
-Mo ta: Data reconciliation result by date — SSC (UB) or Tax (CT)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-RECONCILIATION_DATE           DATE                NO                                       Reconciliation data date
-SOURCE                        VARCHAR2(10)        NO                                       UB = SSC/UBCKNN, CT = Tax authority / DATAHUB
-RECORD_COUNT                  NUMBER              YES                                      SL_DU_LIEU (CT) or total records/MST (UB)
-TOTAL_PACKETS                 NUMBER              YES                                      
-MSG_ID                        VARCHAR2(100)       YES                                      
-MSG_REF_ID                    VARCHAR2(100)       YES                                      MSG_REFID from CT response header
-TRAN_CODE                     VARCHAR2(30)        YES                                      
-SENDER_CODE                   VARCHAR2(50)        YES                                      
-RECEIVER_CODE                 VARCHAR2(50)        YES                                      
-STATUS                        NUMBER              YES                                      
-ERROR_MESSAGE                 VARCHAR2(2000)      YES                                      
-RAW_JSON                      CLOB                YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Last modified timestamp
-
-
-BANG: DATA_RECONCILIATION_OUTBOUND
-Mo ta: Outbound reconciliation packet log from SSC (msg_id, packet_code)
---------------------------------------------------------------------------------------------------------------
-Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
---------------------------------------------------------------------------------------------------------------
-ID                            NUMBER              NO      PK                               
-RECONCILIATION_DATE           DATE                NO                                       
-MSG_PACKET_ID                 NUMBER              YES                                      FK logical to msg_packet.id
-PACKET_CODE                   VARCHAR2(100)       YES                                      msg_packet.packet_code (DS...)
-MSG_ID                        VARCHAR2(100)       YES                                      MSG_ID header of outbound payload
-TRAN_CODE                     VARCHAR2(30)        YES                                      
-TOTAL_PACKETS                 NUMBER              YES                                      
-TOTAL_RECORDS                 NUMBER              YES                                      
-STATUS                        NUMBER              YES                                      
-PUSH_FORMAT                   VARCHAR2(10)        YES                                      
-CREATED_AT                    TIMESTAMP(6)        YES                                      
-LAST_MODIFIED_AT              TIMESTAMP(6)        YES                                      Last modified timestamp
-
-
 BANG: HIGH_RISK_ENTERPRISE
 Mo ta: Danh sách doanh nghiệp rủi ro cao về thuế do Cục Thuế cung cấp: MST, tên, địa chỉ, cơ quan thuế quản lý, năm đánh giá
 --------------------------------------------------------------------------------------------------------------
