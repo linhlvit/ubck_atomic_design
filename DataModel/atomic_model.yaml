@@ -11417,96 +11417,6 @@ entities:
         comment: Nguồn NUMBER không khai báo scale — cần profile để xác nhận thang
           đo (0-1 hay 0-100).
 - ldm:
-    id: ATM-pc_bond_listing_history
-    logical_name_1st: Public Company Bond Listing History
-    physical_name_1st: pc_bond_listing_history
-    layer_1st: Atomic
-    version_1st: "1.0"
-    status_1st: draft
-    description_1st: Lịch sử phát hành và niêm yết trái phiếu doanh nghiệp của CTĐC.
-    owner_1st:
-      steward: username@ubck.com.vn
-      data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Business Activity
-    bcv_concept_most: "[Business Activity] Business Activity"
-    table_type_most: Fact Append
-    etl_pattern_most: Fact Append
-    conflict_review: null
-    sources:
-    - IDS
-    references:
-      brd:
-      - BRD-SRC-IDS-BOND_LISTING_HISTORY
-  attributes:
-  - name: Public Company Bond Listing History Id
-    physical_name: pc_bond_listing_history_id
-    business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: true
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: BOND_LISTING_HISTORY
-        source_column: null
-        business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Business Activity] Business Activity\"."
-  - name: Public Company Bond Listing History Code
-    physical_name: pc_bond_listing_history_code
-    business_meaning_1st: Khóa chính. BK của entity — map từ PK bảng nguồn.
-    comment_1st: BK chính. PK nguồn NUMBER(10) tự tăng.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: BOND_LISTING_HISTORY
-        source_column: IDS.BOND_LISTING_HISTORY.ID
-        business_meaning: Khóa chính. BK của entity — map từ PK bảng nguồn.
-        comment: BK chính. PK nguồn NUMBER(10) tự tăng.
-  - name: Source System Code
-    physical_name: src_stm_code
-    business_meaning_1st: Mã hệ thống nguồn dữ liệu.
-    comment_1st: "Scheme: SOURCE_SYSTEM. Hardcode."
-    data_domain_most: Classification Value
-    data_type_most: string
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: IDS_BOND_LISTING_HISTORY
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: BOND_LISTING_HISTORY
-        source_column: null
-        business_meaning: Mã hệ thống nguồn dữ liệu.
-        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Issuance Quantity
-    physical_name: issuance_quantity
-    business_meaning_1st: Số lượng phát hành.
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: BOND_LISTING_HISTORY
-        source_column: IDS.BOND_LISTING_HISTORY.ISSUANCE_QTY
-        business_meaning: Số lượng phát hành.
-        comment: null
-- ldm:
     id: ATM-pc_capital_increase
     logical_name_1st: Public Company Capital Increase
     physical_name_1st: pc_capital_increase
@@ -28632,7 +28542,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['draft', 'approved']"
+    conflict_review: "status: ['approved', 'draft']"
     sources:
     - AUDIT
     - FMS
@@ -66130,9 +66040,7 @@ entities:
     physical_name: sc_alert_ind_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo\
-      \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE).\
-      \ Đổi hash key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh Data\
-      \ Modeler (2026-09-18)."
+      \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -66146,16 +66054,14 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Event] Alert Indicator\". Chỉ tiêu cảnh báo\
-          \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE).\
-          \ Đổi hash key từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu tường minh\
-          \ Data Modeler (2026-09-18)."
+          \ tài chính/tuân thủ. Hash: hash_id('SCMS_ALERT_INDICATOR', ID)."
   - name: Securities Company Alert Indicator Code
     physical_name: sc_alert_ind_code
-    business_meaning_1st: Mã chỉ tiêu. BK của entity — Id hash từ trường này.
-    comment_1st: BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data
-      Modeler, 2026-09-18 — xem Securities Company Alert Indicator Id). Trước đây
-      map nhầm từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của Id — đã
-      sửa cùng lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique trước go-live.
+    business_meaning_1st: Mã định danh chỉ tiêu cảnh báo. BK của entity — map từ ID
+      kỹ thuật của bảng nguồn, Id hash từ trường này.
+    comment_1st: BK của entity = ID nguồn (Data Modeler 2026-11-10). Nguồn lưu NUMBER(10)
+      — ETL convert sang string. Mã nghiệp vụ INDICATOR_CODE không dùng làm BK, tách
+      sang attribute Alert Indicator Code.
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -66166,13 +66072,33 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: ALERT_INDICATOR
+        source_column: SCMS.ALERT_INDICATOR.ID
+        business_meaning: Mã định danh chỉ tiêu cảnh báo. BK của entity — map từ ID
+          kỹ thuật của bảng nguồn, Id hash từ trường này.
+        comment: BK của entity = ID nguồn (Data Modeler 2026-11-10). Nguồn lưu NUMBER(10)
+          — ETL convert sang string. Mã nghiệp vụ INDICATOR_CODE không dùng làm BK,
+          tách sang attribute Alert Indicator Code.
+  - name: Alert Indicator Code
+    physical_name: alert_ind_code
+    business_meaning_1st: Mã chỉ tiêu cảnh báo (mã nghiệp vụ INDICATOR_CODE).
+    comment_1st: INDICATOR_CODE tách thành trường riêng (Data Modeler 2026-11-10),
+      không dùng để hash Id/BK. BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác nhận
+      sự khác biệt với team nguồn. Nguồn nullable — cần profile dữ liệu.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: ALERT_INDICATOR
         source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
-        business_meaning: Mã chỉ tiêu. BK của entity — Id hash từ trường này.
-        comment: BK chính (đổi từ ALERT_CODE sang INDICATOR_CODE theo yêu cầu Data
-          Modeler, 2026-09-18 — xem Securities Company Alert Indicator Id). Trước
-          đây map nhầm từ ID kỹ thuật (PK nguồn), không khớp hash key thực tế của
-          Id — đã sửa cùng lượt. Cần profile dữ liệu nguồn xác nhận NOT NULL/unique
-          trước go-live.
+        business_meaning: Mã chỉ tiêu cảnh báo (mã nghiệp vụ INDICATOR_CODE).
+        comment: INDICATOR_CODE tách thành trường riêng (Data Modeler 2026-11-10),
+          không dùng để hash Id/BK. BRD có cả ALERT_CODE và INDICATOR_CODE — cần xác
+          nhận sự khác biệt với team nguồn. Nguồn nullable — cần profile dữ liệu.
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -66190,9 +66116,9 @@ entities:
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  - name: Securities Company Alert Indicator Name
-    physical_name: sc_alert_ind_nm
-    business_meaning_1st: Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).
+  - name: Alert Indicator Name
+    physical_name: alert_ind_nm
+    business_meaning_1st: Tên chỉ tiêu cảnh báo.
     comment_1st: BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt
       với team nguồn. Giữ cả 2.
     data_domain_most: Text
@@ -66206,7 +66132,7 @@ entities:
       source_tables:
       - source_table: ALERT_INDICATOR
         source_column: SCMS.ALERT_INDICATOR.INDICATOR_NAME
-        business_meaning: Tên chỉ tiêu (trường thứ cấp, có thể trùng với Alert Name).
+        business_meaning: Tên chỉ tiêu cảnh báo.
         comment: BRD có cả ALERT_NAME và INDICATOR_NAME — cần xác nhận sự khác biệt
           với team nguồn. Giữ cả 2.
   - name: Alert Code
@@ -66662,9 +66588,10 @@ entities:
   - name: Securities Company Alert Indicator Id
     physical_name: sc_alert_ind_id
     business_meaning_1st: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
-    comment_1st: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk\
-      \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID\
-      \ để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR', INDICATOR_CODE)."
+    comment_1st: "FK target: sc_alert_indicator.sc_alert_ind_id. Hash: hash_id('SCMS_ALERT_INDICATOR',\
+      \ ALERT_INDICATOR_ID). Hash trực tiếp theo ID kỹ thuật của ALERT_INDICATOR (Id\
+      \ của sc_alert_indicator hash từ ID, Data Modeler 2026-11-10) — không cần crosswalk\
+      \ sang INDICATOR_CODE."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -66677,17 +66604,16 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
         business_meaning: FK đến chỉ tiêu cảnh báo kích hoạt vi phạm.
-        comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Cần ETL crosswalk\
-          \ sang SCMS.ALERT_INDICATOR: SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID\
-          \ = ALERT_INDICATOR.ID để xác nhận INDICATOR_CODE sau đó hash_id('SCMS_ALERT_INDICATOR',\
-          \ INDICATOR_CODE)."
+        comment: "FK target: sc_alert_indicator.sc_alert_ind_id. Hash: hash_id('SCMS_ALERT_INDICATOR',\
+          \ ALERT_INDICATOR_ID). Hash trực tiếp theo ID kỹ thuật của ALERT_INDICATOR\
+          \ (Id của sc_alert_indicator hash từ ID, Data Modeler 2026-11-10) — không\
+          \ cần crosswalk sang INDICATOR_CODE."
   - name: Securities Company Alert Indicator Code
     physical_name: sc_alert_ind_code
     business_meaning_1st: Mã chỉ tiêu cảnh báo.
     comment_1st: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
-      \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
-      \ Id."
+      \ Company Alert Indicator Id. Giá trị = ALERT_INDICATOR_ID (BK của sc_alert_indicator\
+      \ là ID nguồn, Data Modeler 2026-11-10) — lấy trực tiếp, không cần join."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -66698,12 +66624,11 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: SC_FIRM_ALERT_VIOLATION
-        source_column: SCMS.ALERT_INDICATOR.INDICATOR_CODE
+        source_column: SCMS.SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID
         business_meaning: Mã chỉ tiêu cảnh báo.
         comment: "Lookup pair: sc_alert_indicator.sc_alert_ind_code. Pair with Securities\
-          \ Company Alert Indicator Id. Giá trị lấy từ SCMS.ALERT_INDICATOR.INDICATOR_CODE\
-          \ sau ETL crosswalk — chi tiết xem comment Securities Company Alert Indicator\
-          \ Id."
+          \ Company Alert Indicator Id. Giá trị = ALERT_INDICATOR_ID (BK của sc_alert_indicator\
+          \ là ID nguồn, Data Modeler 2026-11-10) — lấy trực tiếp, không cần join."
   - name: Violation Severity Code
     physical_name: violation_severity_code
     business_meaning_1st: Mức độ nghiêm trọng của vi phạm.

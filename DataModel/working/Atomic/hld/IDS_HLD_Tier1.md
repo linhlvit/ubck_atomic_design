@@ -1,7 +1,7 @@
 # IDS HLD — Tier 1
 
 **Source system:** IDS (Information Disclosure System — Hệ thống Công bố Thông tin)
-**Tier 1:** Các entity độc lập — không FK đến entity nghiệp vụ khác trong scope IDS. Gồm 2 nhánh: (A) Công ty đại chúng (`COMPANY_PROFILES`), (B) Thực thể pháp lý (`LEGAL_ENTITIES`), và các entity template/danh mục độc lập (FORMS, REPORT_CATALOG, REP_FORMS, EVALUATION_GROUPS, EVALUATION_PERIODS), entity lịch sử niêm yết trái phiếu `BOND_LISTING_HISTORY` (LLD không có FK tới entity nào khác → `group: T1`) và 4 shared entity Involved Party Postal Address/Electronic Address/Alternative Identification và Classification Value (`LOOKUP_VALUES`: chỉ có FK tự tham chiếu `LOOKUP_PARENT_ID`, ghi Tier 1 theo `group: T1` của manifest/LLD; các entity Tier 1–3 tham chiếu qua cột `*_cd`, không vẽ quan hệ) (host `COMPANY_PROFILES`, `LEGAL_ENTITIES` group T1; host khác group T2 — ghi nhận ở Tier thấp nhất = 1, chi tiết ở cột BCV Term mục 6a; xử lý Classification Value xem 6d). `CATEGORIES` → entity `Classification IDS Business Line` (danh mục ngành nghề 2 cấp, xem 6f T1-13). *(Nhánh Công ty kiểm toán `AF_PROFILES` đã tách sang `AUDIT_HLD_Tier1.md` — 2026-10-16.)*
+**Tier 1:** Các entity độc lập — không FK đến entity nghiệp vụ khác trong scope IDS. Gồm 2 nhánh: (A) Công ty đại chúng (`COMPANY_PROFILES`), (B) Thực thể pháp lý (`LEGAL_ENTITIES`), và các entity template/danh mục độc lập (FORMS, REPORT_CATALOG, REP_FORMS, EVALUATION_GROUPS, EVALUATION_PERIODS), và 4 shared entity Involved Party Postal Address/Electronic Address/Alternative Identification và Classification Value (`LOOKUP_VALUES`: chỉ có FK tự tham chiếu `LOOKUP_PARENT_ID`, ghi Tier 1 theo `group: T1` của manifest/LLD; các entity Tier 1–3 tham chiếu qua cột `*_cd`, không vẽ quan hệ) (host `COMPANY_PROFILES`, `LEGAL_ENTITIES` group T1; host khác group T2 — ghi nhận ở Tier thấp nhất = 1, chi tiết ở cột BCV Term mục 6a; xử lý Classification Value xem 6d). `CATEGORIES` → entity `Classification IDS Business Line` (danh mục ngành nghề 2 cấp, xem 6f T1-13). *(Nhánh Công ty kiểm toán `AF_PROFILES` đã tách sang `AUDIT_HLD_Tier1.md` — 2026-10-16.)*
 
 ---
 
@@ -17,7 +17,6 @@
 | Documentation | [Documentation] Form Document | Documentation | `REP_FORMS` | Update | Template báo cáo định kỳ (tháng/quý/năm/bán niên) — bộ mẫu độc lập với báo cáo tài chính. | Unstructured Financial Report | Relative | (1) Term candidate: `[Documentation] Form Document` (BCV id 9348, category Documentation, part_of `Documentation Item`) — "Mục Tài liệu được trình bày theo bố cục mẫu tiêu chuẩn, yêu cầu cung cấp thêm thông tin". (2) Cấu trúc trường: rf_report_type_cd (tần suất), tên form, mô tả — chỉ là metadata của bản mẫu báo cáo định kỳ, không có dữ liệu nghiệp vụ thực (số liệu điền vào từng kỳ). (3) Chọn `[Documentation] Form Document`, thay cho `[Condition] Form Definition` trước đây — term "Form Definition" **không tồn tại** trong `knowledge/terms.csv` (grep xác nhận 0 kết quả; tự đặt, không qua tra cứu BCV đúng quy trình rule#6), trong khi "Form Document" là term thật (id 9348) khớp chính xác. Đổi theo yêu cầu tường minh Data Modeler (2026-08-13) — xem Overview 7e #21. Đổi tên entity từ `Periodic Report Form` (2026-08-05); domain prefix đổi sang `Unstructured Financial Report` (`ufr`) (2026-08-27, theo yêu cầu tường minh Data Modeler — chỉ áp dụng 3 entity REP_FORMS/REP_ROW/REP_COLUMN) — xem Overview 7e #22. Bỏ chữ "Sub" khỏi tên entity (2026-08-27) — xem Overview 7e #23. |
 | Group | [Group] Group | Group | `EVALUATION_GROUPS` | Update | Nhóm chỉ tiêu đánh giá xếp hạng công ty đại chúng (không có FK đến bảng nghiệp vụ khác). | Public Company Evaluation Group | Relative | (1) Term candidate: `[Group] Group` — BCV mô tả nhóm phân loại. (2) Cấu trúc trường: GROUP_NAME, GROUP_CD, WEIGHT, DISPLAY_ORDER — đây là danh mục nhóm chỉ tiêu phục vụ đánh giá, có CODE + NAME + metadata. Tuy nhiên có WEIGHT (trọng số) là attribute nghiệp vụ quan trọng. (3) Chọn `[Group] Group` — EVALUATION_GROUPS là bảng phân nhóm chỉ tiêu đánh giá; Table Type = Relative theo LLD (`lld_IDS_EVALUATION_GROUPS.yaml`, 2026-10-21). |
 | Event | [Event] Period | Event | `EVALUATION_PERIODS` | Update | Kỳ đánh giá xếp hạng công ty đại chúng (năm + tháng + trạng thái đã duyệt). | Public Company Evaluation Period | Fundamental | (1) Term candidate: `[Event] Period` — BCV mô tả khoảng thời gian nghiệp vụ có lifecycle riêng (draft → approved). (2) Cấu trúc trường: YEAR, MONTH, STATUS (approved/draft) — đây là kỳ đánh giá có lifecycle riêng, không chỉ là reference data Code + Name. (3) Chọn `[Event] Period` — EVALUATION_PERIODS là kỳ nghiệp vụ độc lập phục vụ đánh giá. Fundamental vì không FK đến entity nghiệp vụ khác. |
-| Business Activity | [Business Activity] Business Activity | Business Activity | `BOND_LISTING_HISTORY` | Update | Lịch sử phát hành/niêm yết trái phiếu: mã TP, loại TP, số quyết định, ngày phát hành, lãi suất, ngày đáo hạn. | Public Company Bond Listing History | Fact Append | (1) Term candidate: `[Business Activity] Business Activity` — sự kiện phát hành/niêm yết trái phiếu là occurrence không sửa. (2) Cấu trúc trường: BOND_TICKER, BOND_TYPE_CD, DECISION_NO/DATE, ISSUANCE_QTY, PAR_VALUE, COUPON_RATE, ISSUANCE_START/END_DATE, MATURITY_DATE. (3) Chọn `[Business Activity] Business Activity`. Fact Append. |
 | Common | [Common] Industry Classification | Common | `CATEGORIES` | Update | Mô tả danh mục ngành nghề của công ty đại chúng theo cấu trúc phân cấp 2 cấp (cha - con qua PARENT_ID): mã, tên và mô tả ngành nghề. | Classification IDS Business Line | Classification | (1) Term candidate: `[Common] Industry Classification` — phân loại ngành nghề/lĩnh vực hoạt động kinh doanh của tổ chức (cùng concept với `Classification FMS Business`). (2) Cấu trúc trường: INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID (self-ref FK tạo cây 2 cấp) — danh mục có phân cấp, được `COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID` tham chiếu. (3) Chọn `[Common] Industry Classification`; Classification Table Type, Domain Prefix = `Classification` (giữ tên nguồn `IDS` theo quyết định Data Modeler 2026-10-21). |
 | Involved Party | Shared Entity | Shared Entity | `COMPANY_PROFILES`, `COMPANY_RELATIONSHIP`, `LEGAL_ENTITIES` | Update | Địa chỉ bưu chính của Involved Party từ nhiều bảng nguồn IDS (CTĐC, quan hệ CTĐC, thực thể pháp lý). | Involved Party Postal Address | Fundamental | Shared Entity — extend source_table IDS. Tier = 1 (thấp nhất theo LLD): host `COMPANY_PROFILES`, `LEGAL_ENTITIES` group T1; host `COMPANY_RELATIONSHIP` group T2. |
 | Involved Party | Shared Entity | Shared Entity | `COMPANY_PROFILES`, `LEGAL_ENTITIES`, `LEGAL_REPRESENTATIVE` | Update | Địa chỉ điện tử (điện thoại/email/fax/website) của Involved Party. | Involved Party Electronic Address | Fundamental | Shared Entity — extend source_table IDS. Tier = 1 (thấp nhất theo LLD): host `COMPANY_PROFILES`, `LEGAL_ENTITIES` group T1; host `LEGAL_REPRESENTATIVE` group T2. |
@@ -109,15 +108,6 @@ erDiagram
         string STATUS
     }
 
-    BOND_LISTING_HISTORY {
-        int ID PK
-        int COMPANY_PROFILE_ID FK
-        string BOND_TICKER
-        string BOND_TYPE_CD
-        date ISSUANCE_START_DATE
-        date MATURITY_DATE
-    }
-
     CATEGORIES {
         int ID PK
         string INDUSTRY_CD
@@ -130,7 +120,6 @@ erDiagram
     CATEGORIES ||--o{ COMPANY_PROFILES : "CATEGORY_L1_ID / CATEGORY_L2_ID"
     FORMS ||--o{ FORMS : "PARENT_FORM_ID (self-ref)"
     FIELDS ||--o{ FIELDS : "PARENT_ID (self-ref)"
-    COMPANY_PROFILES ||--o{ BOND_LISTING_HISTORY : "COMPANY_PROFILE_ID"
 ```
 
 ---
@@ -203,14 +192,6 @@ erDiagram
         string eval_prd_st_code
     }
 
-    Public_Company_Bond_Listing_History {
-        string pblc_co_bnd_lstg_his_id PK
-        string pblc_co_id FK
-        string bnd_ticker
-        string bnd_tp_code
-        date mtrty_dt
-    }
-
     Involved_Party_Postal_Address {
         string ip_pst_adr_id PK
         string ip_id FK
@@ -237,7 +218,6 @@ erDiagram
     Classification_IDS_Business_Line ||--o{ Classification_IDS_Business_Line : "parent_cl_ids_business_line_id"
     Classification_IDS_Business_Line ||--o{ Public_Company : "business_line_level_1_id / business_line_level_2_id"
     Financial_Report ||--o{ Financial_Report : "parent_form_id"
-    Public_Company ||--o{ Public_Company_Bond_Listing_History : "pblc_co_id"
 
     Financial_Report_Field {
         string fr_field_id PK
@@ -297,3 +277,4 @@ erDiagram
 | T1-13 | `CATEGORIES` (danh mục ngành nghề 2 cấp): **đảo quyết định (2026-10-21, Data Modeler)** — thiết kế thành entity `Classification IDS Business Line` (`lld_IDS_CATEGORIES.yaml`, draft; giữ tiền tố nguồn `IDS` theo yêu cầu). `COMPANY_PROFILES.CATEGORY_L1_ID/L2_ID` đổi sang cặp FK Id + Code (`Business Line Level 1/2 Id/Code`) theo `lld_IDS_COMPANY_PROFILES.yaml`. Cần xác nhận lọc `TYPE` (IDS/BTC) và `DELETE_FLG = 0` khi ETL. | Đã xử lý ở 6a/6b/6c + Overview. |
 | T1-14 | `Shared entities` (IP Postal Address, IP Electronic Address, IP Alt Identification) đã approved từ NHNCK — chỉ bổ sung source_table IDS, không tạo mới. Source cho IP Postal Address từ IDS: COMPANY_PROFILES (HEAD_OFFICE_ADDR + PROVINCE_ID), LEGAL_ENTITIES (ADDRESS). | Xác nhận — bổ sung source khi chạy aggregate_atomic.py sau khi xuất Overview. Chuyển từ Tier2.md T2-05 (2026-10-21): theo LLD, host `COMPANY_PROFILES`/`LEGAL_ENTITIES` group T1 → 3 shared entity ghi ở Tier 1 (Tier thấp nhất); host khác group T2. |
 | T1-15 | `FIELDS` (`Financial Report Field`) đưa từ out-of-scope vào Tier 1 theo yêu cầu Data Modeler (2026-11-03), Table Type Relative. Đã xác nhận (2026-11-04): `PARENT_ID` self-ref `FIELDS.ID`; `CONTROL_UNIT_CD`/`OPERATING_UNIT_CD` không map lên Atomic (ghi `pending_design` ở LLD). `LOOKUP_GROUP` trỏ nhóm `LOOKUP_VALUES`. | Đã xử lý. |
+| T1-16 | `BOND_LISTING_HISTORY` (entity `Public Company Bond Listing History`) gỡ khỏi Tier 1 theo yêu cầu Data Modeler (2026-11-10): không cần thiết kế Atomic; bảng nguồn chuyển sang mục 7f Overview (nhóm Fact Data). | Đã xử lý: 6a/6b/6c, Overview 7a/7b/7e #33/7f/Entities. |
