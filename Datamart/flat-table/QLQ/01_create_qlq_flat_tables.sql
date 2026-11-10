@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_investment_fund_count_snpst_flat ON 
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ theo loại hình quỹ, hiệu lực tại kỳ',
     charter_capital_amt                          Nullable(Decimal(23,2)) COMMENT 'Tổng vốn điều lệ/vốn góp (VNĐ) của các quỹ theo loại hình quỹ, hiệu lực tại kỳ — cùng tập quỹ với fund_count (quỹ có ngày cấp giấy phép không muộn hơn cuối tháng)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
+    active_fund_count                            Nullable(Int64)         COMMENT 'Số lượng quỹ đang hoạt động (trạng thái Hoạt động), hiệu lực tại kỳ (ngày cấp giấy phép thành lập và hoạt động không muộn hơn cuối tháng của kỳ), theo loại hình quỹ. Trạng thái lấy từ Classification FMS Status (FMS.STATUS.ITEM_NAME) của quỹ (FUNDS.STATUS_ID); DELETED đã được Atomic lọc. [MỚI 2026-11-10, O_QLQ_85]',
+    inactive_fund_count                          Nullable(Int64)         COMMENT 'Số lượng quỹ không hoạt động (trạng thái khác Hoạt động; quỹ chưa có trạng thái không được đếm như SQL BA), hiệu lực tại kỳ (ngày cấp giấy phép thành lập và hoạt động không muộn hơn cuối tháng của kỳ), theo loại hình quỹ. Trạng thái lấy từ Classification FMS Status (FMS.STATUS.ITEM_NAME) của quỹ (FUNDS.STATUS_ID); DELETED đã được Atomic lọc. [MỚI 2026-11-10, O_QLQ_85]',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                    Nullable(Date)          COMMENT 'Ngày snapshot tháng — từ Calendar Date Dimension',
@@ -352,7 +354,14 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_lis
     custody_account_nbr      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
     contract_market_val_amt  Nullable(Decimal(38,8)) COMMENT 'Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND)',
     src_stm_code             String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
-    fmc_id                   Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)'
+    fmc_id                   Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)',
+    custody_bank_nm                              Nullable(String)        COMMENT 'Ngân hàng lưu ký của hợp đồng UTDM — ô cột "Mã chỉ tiêu" (`column_index` = 2) trên dòng có cột "Loại" (`column_index` = 1) LIKE %ngân hàng lưu ký% (BA STT 31 dòng 203). [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    contract_val_amt                             Nullable(Decimal(38,8)) COMMENT 'Giá trị hợp đồng UTDM (mã chỉ tiêu 180298 — BA STT 31 dòng 204 "Tổng giá trị thị trường của hợp đồng"); khác `contract_market_val_amt` (mã 180317 "Tổng các danh mục đầu tư", Nhóm 5). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 180298, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    disbursed_val_amt                            Nullable(Decimal(38,8)) COMMENT 'Giá trị giải ngân của hợp đồng UTDM (mã chỉ tiêu 180299 — BA STT 31 dòng 205). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 180299, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    listed_securities_val_amt                    Nullable(Decimal(38,8)) COMMENT 'Tổng giá trị thị trường chứng khoán niêm yết trong hợp đồng (mã chỉ tiêu 201205 — BA STT 31 dòng 206). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 201205, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    unlisted_securities_val_amt                  Nullable(Decimal(38,8)) COMMENT 'Tổng giá trị thị trường chứng khoán chưa niêm yết trong hợp đồng (mã chỉ tiêu 180311 — BA STT 31 dòng 207). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 180311, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    other_assets_val_amt                         Nullable(Decimal(38,8)) COMMENT 'Tổng giá trị thị trường các tài sản khác trong hợp đồng (mã chỉ tiêu 180313 — BA STT 31 dòng 208). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 180313, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.',
+    cash_val_amt                                 Nullable(Decimal(38,8)) COMMENT 'Tổng giá trị thị trường tiền trong hợp đồng (mã chỉ tiêu 180316 — BA STT 31 dòng 209). Ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = 180316, đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -613,4 +622,37 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_representati
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (foreign_fund_management_organization_unit_code)
 COMMENT 'Flat table — opr_foreign_fund_management_representative_office_profile — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 23. OPERATIONAL: qlq_opr_fund_management_company_contract_asset_list_flat
+--    opr_fund_management_company_contract_asset_list — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_asset_list_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FUND_MANAGEMENT_COMPANY_CONTRACT_ASSET_LIST
+    fmr_submission_code                          String                  COMMENT 'PK — Driving: fmr_value (composite cùng Table Index và Asset Indicator Code); lấy theo bản nộp × bảng hợp đồng',
+    table_idx                                    Int64                   COMMENT 'PK — Driving: fmr_value (composite cùng Fund Management Report Submission Code); chỉ số bảng hợp đồng trong sh',
+    asset_indicator_code                         String                  COMMENT 'PK — Driving: fmr_value (ô cột "Mã chỉ tiêu" — `column_index` = 2 — của sheet `@QLDMDT`). Mã chỉ tiêu của dòng',
+    investment_fund_code                         Nullable(String)        COMMENT 'Mã quỹ của dòng báo cáo (nếu có; bản nộp thuộc đối tượng CTQLQ, loại đối tượng = 2 theo BA)',
+    fmc_code                                     Nullable(String)        COMMENT 'Mã CTQLQ nộp báo cáo (bản nộp loại đối tượng CTQLQ = 2 theo BA; nếu dòng báo cáo không mang mã CTQLQ thì suy t',
+    record_tp                                    Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo (sheet @QLDMDT: 2 = CTQLQ, BA xác nhận 2026-10-30; BA: 7 = Quỹ cho các sheet khác)',
+    period_tp_code                               Nullable(String)        COMMENT 'Loại kỳ báo cáo: 1=Ngày, 2=Tuần, 3=Tháng, 4=Quý, 5=Bán niên, 6=Năm, 7=Nửa tháng',
+    period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo của báo cáo nộp (RPT_MEMBER): dạng chữ (T03/2024, Q1/2024) hoặc số (3, 1) — định dạng thực ',
+    rpt_year                                     Nullable(Int64)         COMMENT 'Năm của kỳ báo cáo',
+    version_nbr                                  Nullable(Int64)         COMMENT 'Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo cách BA xếp hạng',
+    asset_market_val_amt                         Nullable(Decimal(38,8)) COMMENT 'Giá trị thị trường của dòng danh mục tài sản = ô cột "Tổng giá trị thị trường tại thời điểm báo cáo (VND)" (`c',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN (2,3,5,10) của CTQLQ (record_tp = 2), khôn',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày insert bản ghi lần đầu — audit field SCD4A',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày update bản ghi gần nhất — audit field SCD4A',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Timestamp xử lý ETL — audit field',
+    fmc_id                                       Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy '
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY tuple()
+ORDER BY (fmr_submission_code, table_idx, asset_indicator_code)
+COMMENT 'Flat table — opr_fund_management_company_contract_asset_list — sinh tự động từ master registry + Entities.csv'
 ;

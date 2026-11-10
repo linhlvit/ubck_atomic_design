@@ -64,7 +64,8 @@ Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Compan
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (bảng `table_idx`, O_QLQ_75) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo; lọc `fmc_id` khi drill-down từ Nhóm 3 (O_QLQ_68) | K_QLQ_36,37,38 |
+| Fund Management Company Contract List | Operational | new | Bảng con drill-down danh sách hợp đồng UTDM của CTQLQ — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`), PII lưu nguyên văn là ngoại lệ đã duyệt (O_QLQ_33) | 1 hợp đồng UTDM (bảng `table_idx`, O_QLQ_75) × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo; lọc `fmc_id` khi drill-down từ Nhóm 3 (O_QLQ_68) | K_QLQ_36,37,38 (Nhóm 5); K_QLQ_2713–2722 (Nhóm 31, không lọc `fmc_id`, O_QLQ_86) |
+| Fund Management Company Contract Asset List | Operational | new | Bảng con chi tiết danh mục tài sản của hợp đồng UTDMĐT (popup từ Nhóm 31) — đọc engine báo cáo định kỳ `RPT_*` (sheet `@QLDMDT`, `record_tp` = 2) | 1 hợp đồng UTDM (`table_idx`) × 1 mã chỉ tiêu tài sản × 1 bản nộp báo cáo của 1 CTQLQ × 1 kỳ báo cáo | K_QLQ_2723–2726 (Nhóm 32, 33) |
 
 ---
 
@@ -319,7 +320,7 @@ erDiagram
 
 ---
 
-## Nhóm 31–35 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
+## Nhóm 34–38 — Data Explorer: danh sách sheet biểu mẫu báo cáo định kỳ (Operational)
 
 > **[MỚI 2026-10-06]** Atomic (commit e9378756) đã có `fund_management_report` (FMS.RPT_TEMP), `fmr_sheet` (FMS.SHEET), `fmr_period`, `fmr_submission`, `fmr_value`. Thiết kế phần **header** của Data Explorer: Loại/Mã/Tên báo cáo + Mã/Tên sheet (5/9 dòng BA mỗi sheet, 26 sheet có BA Done). Kỳ báo cáo, Mã chỉ tiêu, Tên chỉ tiêu, Giá trị vẫn PENDING — xem O_QLQ_27.
 
@@ -339,7 +340,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Report Sheet List | Operational | new | Danh sách sheet biểu mẫu báo cáo định kỳ FMS — Loại/Mã/Tên báo cáo + Mã/Tên sheet | 1 sheet của 1 biểu mẫu (current state) | 130 KPI header Nhóm 31–35 (xem Detail Mapping) |
+| Fund Management Report Sheet List | Operational | new | Danh sách sheet biểu mẫu báo cáo định kỳ FMS — Loại/Mã/Tên báo cáo + Mã/Tên sheet | 1 sheet của 1 biểu mẫu (current state) | 130 KPI header Nhóm 34–38 (xem Detail Mapping) |
 
 ---
 

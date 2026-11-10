@@ -43,6 +43,8 @@ SELECT
     f.fund_count,
     f.charter_capital_amt,
     f.src_stm_code,
+    f.active_fund_count,
+    f.inactive_fund_count,
     snpst_cal.cdr_dt              AS snpst_cdr_dt,
     fund_type_dim.fund_type_code  AS fund_type_code,
     fund_type_dim.fund_type_nm    AS fund_type_nm,
@@ -277,7 +279,14 @@ SELECT
     o.custody_account_nbr,
     o.contract_market_val_amt,
     o.src_stm_code,
-    o.fmc_id
+    o.fmc_id,
+    o.custody_bank_nm,
+    o.contract_val_amt,
+    o.disbursed_val_amt,
+    o.listed_securities_val_amt,
+    o.unlisted_securities_val_amt,
+    o.other_assets_val_amt,
+    o.cash_val_amt
 FROM datamart.opr_fund_management_company_contract_list o
 ;
 
@@ -879,4 +888,33 @@ SELECT
     f.ds_etl_pcs_tms
 
 FROM datamart.opr_foreign_fund_management_representative_office_profile f
+;
+
+
+-- ==========================================================
+-- 23. OPERATIONAL: qlq_opr_fund_management_company_contract_asset_list_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_contract_asset_list_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_opr_fund_management_company_contract_asset_list_flat
+SELECT
+    -- From: OPR_FUND_MANAGEMENT_COMPANY_CONTRACT_ASSET_LIST
+    f.fmr_submission_code,
+    f.table_idx,
+    f.asset_indicator_code,
+    f.investment_fund_code,
+    f.fmc_code,
+    f.record_tp,
+    f.period_tp_code,
+    f.period_val,
+    f.rpt_year,
+    f.version_nbr,
+    f.asset_market_val_amt,
+    f.src_stm_code,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_etl_pcs_tms,
+    f.fmc_id
+
+FROM datamart.opr_fund_management_company_contract_asset_list f
 ;
