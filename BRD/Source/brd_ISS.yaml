@@ -54,9 +54,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-ISS-INPUT_REPORT
   brd_name: Design Atomic từ nguồn ISS bảng INPUT_REPORT
   type: Theo Source
