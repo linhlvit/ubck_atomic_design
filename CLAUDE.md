@@ -136,7 +136,7 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 
 ## QUY TẮC CỨNG — TRƯỚC KHI SỬA HÀNG LOẠT / ĐỔI QUY TẮC DÙNG CHUNG (bài học 2026-09-25)
 
-Áp dụng cả khi không gọi Skill. Chi tiết: H10–H14 (`datamart-hld-design`), A12–A15, A20, A21, A22 và A23 (`datamart-lld-design`), H15 (`datamart-hld-design`), A24–A36 (`datamart-lld-design`), H11 mở rộng + H16–H17 (`datamart-hld-design`).
+Áp dụng cả khi không gọi Skill. Chi tiết: H10–H14 (`datamart-hld-design`), A12–A15, A20, A21, A22 và A23 (`datamart-lld-design`), H15 (`datamart-hld-design`), A24–A39 (`datamart-lld-design`), H11 mở rộng + H16–H17 (`datamart-hld-design`).
 
 1. **Không kết luận cột Atomic thiếu/rỗng từ YAML LLD.** Đối chiếu `BRD/Source/` của mọi nguồn + hỏi xác nhận dữ liệu vật lý trước khi đổi `etl_logic` hàng loạt (VD `securities_trade.execution_val` HNX có thật dù YAML không khai báo).
 2. **Câu trả lời 1 chữ cho câu hỏi kép** ("có", "ok"): nhắc lại cách hiểu 1 câu trước khi sửa ≥ 5 cột hoặc nhiều module.
@@ -175,6 +175,10 @@ Không Gate nào bắt được các lỗi trên; user phải tự phát hiện.
 
 17. **QLKD Nhóm 5/6/7/36 (2026-11-10) — điều kiện KHÔNG tồn tại trong SQL BA, Gate 0–10 PASS, Data Modeler phát hiện** (A37): BA lọc `ALERT_INDICATOR.ID IN (450, 451)` (N6: 457–464, 467–472; N7: 1404; N36: 452–456) và ghi `ALERT_INDICATOR` là bảng nguồn; thiết kế 09/11 thấy Atomic `sc_alert_indicator` không map cột `ID` nên gạt `ALERT_INDICATOR` khỏi nguồn và giữ `indicator_code IN ('DUY_TRI_DKCP_GPKD')`… "theo thiết kế hiện hành" (4 mã ước lượng từ BA v4.1, không có trong SCMS) rồi ghi "chưa chứng minh tương đương, KPI giữ READY" ⇒ KPI luôn ra 'Đang duy trì tốt'.
     Quy tắc: mọi literal điều kiện trong `logic`/`etl_logic` phải trích từ SQL BA của Nhóm hoặc YAML Atomic/`etl_logic` LLD, ghi nguồn ở `ghi_chu`; "theo thiết kế hiện hành" không phải nguồn — BA đổi SQL thì dẫn lại từng literal; Atomic thiếu cột BA dùng (có trong `BRD/Source`) ⇒ cột Datamart `etl_logic_type = pending` + O_ yêu cầu Atomic, KHÔNG thay bằng mã tự đặt, KHÔNG gạt entity nguồn BA khỏi lineage; cần bảng đối chiếu ID ↔ mã mà chưa có ⇒ PENDING. Sửa thực tế: Dimension `securities_company_alert_indicator_dim` (`sc_alert_ind_src_id` pending) + FK trên Fact, KPI lọc theo ID BA (O_QLKD_75). Máy kiểm Gate 8 D26 `L3-DM-LITERAL-NOT-IN-BA` (WARNING; ngoại lệ có chủ ý ở `datamart-review/reference/dm_literal_exceptions.yaml`).
+
+18. **VP Nhóm 17 (2026-11-10) — SQL BA đổi 1 chỗ, phiên chỉ diff văn bản rồi báo 'đã khớp'; Gate 0–10 PASS, Data Modeler hỏi mới lộ 5 lỗi** (A38, A39): (a) điều kiện loại dòng `floorcode <> '03'` mất ở KPI sự kiện đọc qua `security_trading_snpst_dim` (Fact quy mô đã lọc ở ETL nhưng không phủ đường đọc khác) — Gate 8 D27;
+    (b) mốc `:d_x` lấy từ lịch ngày giao dịch trong khi BA lấy MAX(tradingdate) trên dữ liệu ⇒ kỳ hiện tại rỗng (lặp ở Nhóm 17/19/20/21/22/55, O_VP_73); (c) PK Fact Registration Status = id Atomic không chứa tháng ⇒ upsert ghi đè lũy kế tháng trước; (d) `listing_floor_code` còn lọc `stock_tp_code = '2'` sau khi Fact mở rộng sang mọi loại CK; (e) ghi chú '`ROUND` như BA' sai cho 4/7 cột %.
+    Quy tắc: BA/Data Modeler gửi SQL mới của Nhóm đã thiết kế ⇒ KHÔNG chỉ diff văn bản — lập bảng kiểm kê *CTE → bảng nguồn → file LLD Datamart → KPI → từng điều kiện* cho TOÀN BỘ SQL (kể cả CTE không đổi), mở TỪNG file LLD SQL đọc (comment `Hash:` PK Atomic, `etl_logic` MỌI cột) trước khi báo 'không cần sửa'; báo cáo liệt kê bảng đã mở và kết luận từng bảng.
 
 ## CHỐT CHẶN MÁY (2026-10-15) — hook `dm_guard` + chốt ghi file
 

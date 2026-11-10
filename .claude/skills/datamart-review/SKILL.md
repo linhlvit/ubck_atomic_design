@@ -303,10 +303,10 @@ KHÔNG chia theo bảng.
    2. **Điều kiện:** mọi `WHERE`/`ON`/CTE của SQL BA (loại kỳ, loại đối tượng, trạng thái, ngày hiệu lực) đã có trong `etl_logic`/`logic`, hoặc ghi lệch + O_ issue? "Active-only" có bị dùng để bỏ cả điều kiện không phải slicer thời gian? — A26. Điều kiện loại dòng (mã sàn, loại CK, trạng thái) có ở ĐÚNG bảng mà TỪNG KPI đọc — kể cả KPI đọc qua Dimension/Fact khác bảng đã lọc ở ETL (CTE con kế thừa `WHERE` của CTE cha)? — A38, Gate 8 D27.
    3. **Biểu thức:** `NULLIF`, `*100`, `COALESCE`, `CASE` (kể cả HƯỚNG của `CASE`), chọn bản ghi theo năm/kỳ (`ROW_NUMBER ... = 1`) khớp SQL BA? SQL BA nghi ngược đã mở O_ issue chưa? — A26.
    4. **Cột output:** mỗi alias SELECT cuối + dòng yêu cầu nghiệp vụ user dán có KPI? (cột "Trạng thái", "Tổng"…) — H17.
-   5. **Trục thời gian:** KPI RPT lấy kỳ từ bảng nào, loại kỳ nào, cận trên là slicer nào (`:filter_month` vs `:filter_to`)? Bảng không có slicer tháng có ghi nhận quyết định + O_ issue chưa? — A25/A26.
+   5. **Trục thời gian:** KPI RPT lấy kỳ từ bảng nào, loại kỳ nào, cận trên là slicer nào (`:filter_month` vs `:filter_to`)? Bảng không có slicer tháng có ghi nhận quyết định + O_ issue chưa? — A25/A26. Mốc 'ngày gần nhất ≤ cuối kỳ' lấy từ cột ngày của Fact (MAX ngày dữ liệu), không từ lịch `is_trading_date`? — A39.
    6. **Tham chiếu cột:** mọi `bảng.cột` trong `logic`/công thức HLD tồn tại? — Gate 8 D13 (chạy trước, không rà tay); cột đứng một mình tra tay. — A24. Mã ô eForm + literal `identification_tp_code`: Gate 8 D15/D16 (A27/A28). Thay thế gần đúng cột BA↔Atomic: `check_ba_source_coverage.py` (A29).
    7. **Văn bản cũ:** còn câu "PENDING/TBD/chưa có/HẠ xuống/tên cột cũ" mâu thuẫn trạng thái hiện tại trong Nhóm? Dòng mapping nguồn đúng 4 ô? — H16, Gate 8 D14.
-   8. **Đồng bộ nhiều tầng:** sau mỗi sửa, LLD per-table ↔ master ↔ yaml ↔ flat DDL/DML ↔ Detail Mapping ↔ HLD (+ `kpi_index.csv`) cùng nội dung? — A20, A4, H4.
+   8. **Đồng bộ nhiều tầng / khóa / phạm vi:** PK Dạng A có khóa Atomic chứa kỳ báo cáo (đọc `Hash:` trong YAML)? Fact vừa mở rộng phạm vi còn điều kiện phạm vi cũ trong `etl_logic` cột nào không? — A39. Đồng bộ nhiều tầng: sau mỗi sửa, LLD per-table ↔ master ↔ yaml ↔ flat DDL/DML ↔ Detail Mapping ↔ HLD (+ `kpi_index.csv`) cùng nội dung? — A20, A4, H4.
 
 Ngân sách: Nhóm nặng nhất toàn repo ~66K token → mỗi sub-agent vừa 1 Nhóm; KHÔNG hứa "< 8K token".
 

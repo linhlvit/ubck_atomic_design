@@ -386,6 +386,8 @@ SELECT
     f.delist_transfer_reason,
     f.src_stm_code,
     f.listing_floor_code,
+    f.listing_stock_tp_code,
+    f.listing_fund_tp_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,

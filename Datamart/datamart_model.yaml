@@ -26690,7 +26690,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK tới Security Trading Snapshot Dimension — hồ sơ mã chứng khoán (loại chứng khoán, mã sàn). BA lấy loại chứng khoán và mã sàn từ `jad_stockinfor` bản ghi CUỐI NGÀY và nối `symbol = ticker_symbol AND effective_date = tradingdate` (cập nhật 2026-10-29); thiết kế tra Dimension theo `symbol` (loại chứng khoán không đổi theo ngày — BA) nên quyết định có ngày hiệu lực không có bản tin MDDS cùng ngày VẪN được nạp (BA loại) — O_VP_44; để trống khi mã chưa có trong dimension. Nhóm 17 dùng cùng khóa này để phân loại sự kiện theo loại chứng khoán (cổ phiếu, chứng chỉ quỹ, ETF, chứng quyền, TPDN niêm yết) — Fact nạp quyết định của mọi loại chứng khoán, không chỉ cổ phiếu; mã sàn phái sinh (floor_code = '03') loại ở Detail Mapping (O_VP_71)."
+        description: "FK tới Security Trading Snapshot Dimension — hồ sơ mã chứng khoán (loại chứng khoán, mã sàn). BA lấy loại chứng khoán và mã sàn từ `jad_stockinfor` bản ghi CUỐI NGÀY và nối `symbol = ticker_symbol AND effective_date = tradingdate` (cập nhật 2026-10-29); thiết kế tra Dimension theo `symbol` (loại chứng khoán không đổi theo ngày — BA) nên quyết định có ngày hiệu lực không có bản tin MDDS cùng ngày VẪN được nạp (BA loại) — O_VP_44; để trống khi mã chưa có trong dimension. Nhóm 17 KHÔNG dùng khóa này: loại chứng khoán của sự kiện lấy từ `listing_stock_tp_code` / `listing_fund_tp_code` trên Fact (O_VP_74); Fact nạp quyết định của mọi loại chứng khoán, không chỉ cổ phiếu."
         source_atomic_table: "listing_status_change"
         source_atomic_column: "listing_status_change.ticker_symbol"
       - logical_name: "Ticker Symbol"
@@ -26825,9 +26825,27 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã sàn của cổ phiếu tại thời điểm xảy ra quyết định (02 = HNX, 04 = UPCoM, 10 = HOSE): niêm yết mới (New Listed Share Quantity > 0) lấy tại ngày giao dịch đầu tiên, niêm yết bổ sung / hủy lấy tại phiên giao dịch gần nhất <= ngày hiệu lực (không giới hạn dưới, đúng SQL BA); để trống khi không có bản tin MDDS. [DATE-BOUND-REVIEWED 2026-11-02: BA chủ ý lấy phiên gần nhất <= ngày hiệu lực không có cận dưới; O_VP_53] Tên có tiền tố listing_ để không trùng cột `floor_code` của Security Trading Snapshot Dimension trên flat; lưu trên Fact vì Security Trading Snapshot Dimension là current-state (mã đã chuyển sàn sẽ mang sàn hiện tại)."
+        description: "Mã sàn của chứng khoán (cổ phiếu, CCQ/ETF, chứng quyền, TPDN niêm yết) tại thời điểm xảy ra quyết định (02 = HNX, 04 = UPCoM, 10 = HOSE): niêm yết mới (New Listed Share Quantity > 0) lấy tại ngày giao dịch đầu tiên, niêm yết bổ sung / hủy lấy tại phiên giao dịch gần nhất <= ngày hiệu lực (không giới hạn dưới, đúng SQL BA); để trống khi không có bản tin MDDS. [DATE-BOUND-REVIEWED 2026-11-02: BA chủ ý lấy phiên gần nhất <= ngày hiệu lực không có cận dưới; O_VP_53] Tên có tiền tố listing_ để không trùng cột `floor_code` của Security Trading Snapshot Dimension trên flat; lưu trên Fact vì Security Trading Snapshot Dimension là current-state (mã đã chuyển sàn sẽ mang sàn hiện tại)."
         source_atomic_table: "listing_status_change / security_trading_snapshot"
         source_atomic_column: "listing_status_change.first_trading_dt / listing_status_change.effective_dt / security_trading_snapshot.floor_code"
+      - logical_name: "Listing Stock Type Code"
+        physical_name: "listing_stock_tp_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại chứng khoán của mã (1 = TPDN niêm yết, 2 = cổ phiếu, 3/6 = chứng chỉ quỹ gồm ETF, 4 = chứng quyền), lấy từ bản tin MDDS mới nhất của mã đến ngày chạy ETL — khớp cách BA Nhóm 17 phân loại (loại chứng khoán theo bản ghi mới nhất của mã, loại chứng khoán phái sinh `floorcode <> '03'`); để trống khi mã chưa có bản tin MDDS hoặc chỉ có ở sàn phái sinh (BA INNER JOIN loại mã đó). Lưu trên Fact để phân loại sự kiện không phụ thuộc Security Trading Snapshot Dimension current-state. Tên có tiền tố listing_ để không trùng cột `stock_tp_code` của Security Trading Snapshot Dimension trên flat table (cùng lý do `listing_floor_code`). Cột phụ thuộc hàm vào mã chứng khoán nên KHÔNG đổi grain/PK. [MỚI 2026-11-10, O_VP_74] [DATE-BOUND-REVIEWED 2026-11-10: BA stock_portfolio lấy bản tin mới nhất không có cận dưới; etl_logic giới hạn trading_dt <= :etl_date; O_VP_74]"
+        source_atomic_table: "listing_status_change / security_trading_snapshot"
+        source_atomic_column: "listing_status_change.ticker_symbol / security_trading_snapshot.stock_tp_code"
+      - logical_name: "Listing Fund Type Code"
+        physical_name: "listing_fund_tp_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại quỹ của chứng chỉ quỹ (M = chứng chỉ quỹ, E = quỹ ETF; FUNDTYPE của MDDS), lấy cùng bản tin MDDS mới nhất với `listing_stock_tp_code` — phân biệt CCQ và ETF khi `listing_stock_tp_code` IN ('3','6') (BA Nhóm 17: CCQ = fundtype 'M', ETF = 'E'); để trống với loại chứng khoán khác hoặc khi mã chưa có bản tin MDDS / chỉ có ở sàn phái sinh. Tên có tiền tố listing_ để không trùng cột `fund_tp_code` của Security Trading Snapshot Dimension trên flat table. Cột phụ thuộc hàm vào mã chứng khoán nên KHÔNG đổi grain/PK. [MỚI 2026-11-10, O_VP_74] [DATE-BOUND-REVIEWED 2026-11-10: lấy bản tin mới nhất không có cận dưới như listing_stock_tp_code; etl_logic giới hạn trading_dt <= :etl_date; O_VP_74]"
+        source_atomic_table: "listing_status_change / security_trading_snapshot"
+        source_atomic_column: "listing_status_change.ticker_symbol / security_trading_snapshot.fund_tp_code"
 
   - id: "DTM-fct_investor_account_movement_snpst"
     logical_name: "Fact Investor Account Movement Snapshot"
@@ -29242,9 +29260,9 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — id dòng Atomic `bond_trading_registration_status_id` (Dạng A, A22). Grain = 1 mã trái phiếu doanh nghiệp riêng lẻ × 1 trạng thái đăng ký giao dịch (Đăng ký giao dịch / Hủy đăng ký giao dịch) × 1 tháng báo cáo HNX; số liệu LŨY KẾ từ đầu năm đến cuối tháng báo cáo; khóa MERGE của ETL. [MỚI 2026-11-08, O_VP_71]"
-        source_atomic_table: "bond_trading_registration_status"
-        source_atomic_column: "bond_trading_registration_status.bond_trading_registration_status_id"
+        description: "PK — hash(snpst_dt_dim_id, bond_code, trading_registration_status_nm, src_stm_code) (Dạng B, A22). Grain = 1 mã trái phiếu doanh nghiệp riêng lẻ × 1 trạng thái đăng ký giao dịch (Đăng ký giao dịch / Hủy đăng ký giao dịch) × 1 tháng báo cáo HNX; số liệu LŨY KẾ từ đầu năm đến cuối tháng báo cáo; khóa MERGE của ETL. Khóa Atomic `bond_trading_registration_status_id` = hash(BOND_CODE, TRADING_REGISTRATION_STATUS) KHÔNG chứa kỳ báo cáo — dùng làm PK thì upsert ghi đè tháng trước bằng tháng sau và mất chuỗi lũy kế hàng tháng mà phép LAG phát sinh tháng cần; PK băm thêm khóa ngày cuối tháng báo cáo (snpst_dt_dim_id) để mỗi tháng là 1 dòng riêng (cùng cách PK của Fact Private Corporate Bond Registration Snapshot). [MỚI 2026-11-08, O_VP_71; đổi PK 2026-11-10, O_VP_73]"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
         physical_name: "snpst_dt_dim_id"
         data_domain: "Surrogate Dimension Key"

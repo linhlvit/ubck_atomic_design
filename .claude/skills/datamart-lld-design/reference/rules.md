@@ -1,4 +1,4 @@
-# Luật chống tái diễn A1–A37 — LLD Datamart
+# Luật chống tái diễn A1–A39 — LLD Datamart
 
 Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm ví dụ sai thực tế, cách kiểm và lệnh liên quan. Đọc đúng mục cần dùng, ví dụ `grep -n "^### A19" .claude/skills/datamart-lld-design/reference/rules.md`, không cần đọc cả file.
 
@@ -41,6 +41,8 @@ Bản đầy đủ của bảng tóm tắt trong `SKILL.md`: mỗi luật kèm v
 - A35 — Vận hành phiên: mở đúng thư mục để nạp hook/skill/CLAUDE.md, ngưỡng 6 Nhóm, `--baseline` gate, phiên song song
 - A36 — Nhãn của cột mã: một khái niệm một tầng; cột `*_code` chỉ chứa mã gốc; mặc định nhãn ở Detail Mapping (`CASE WHEN … ELSE 'Không xác định' END`); CASE chọn nguồn/quyết định khóa PK vẫn ở ETL (D23/D24/D25)
 - A37 — Điều kiện/literal trong `logic` phải trích từ SQL BA (hoặc Atomic); không giữ 'theo thiết kế hiện hành', không thay cột BA thiếu ở Atomic bằng mã tự đặt `[L3-DM-LITERAL-NOT-IN-BA]`
+- A38 — Điều kiện loại dòng của SQL BA phải có ở MỌI đường đọc; BA gửi SQL mới thì kiểm kê lại cả Nhóm `[L3-BA-FILTER-NOT-CARRIED]`
+- A39 — Mốc 'ngày gần nhất ≤ cuối kỳ' là MAX(ngày dữ liệu); PK Dạng A chỉ khi khóa Atomic chứa kỳ báo cáo; mở rộng phạm vi Fact thì quét điều kiện phạm vi cũ
 - Lệnh bổ sung — Gate 8 Design Lint
 - Ghi chú lịch sử
 
@@ -638,6 +640,23 @@ kết luận 'logic còn lại đã khớp thiết kế', sửa 1 cột rồi b�
 **Máy kiểm:** Gate 8 D27 `L3-BA-FILTER-NOT-CARRIED` (WARNING) — rule khai ở `datamart-review/reference/ba_filter_carry.yaml` (`ba_pattern` trên BA của Nhóm, `reads` = đường đọc thay thế, `require_any` = cột phải có trong
 `logic`); rule đầu tiên `MDDS-DERIVATIVE-FLOOR-VIA-DIM`. Lần chạy đầu bắt thêm K_VP_375 (đã sửa cùng ngày); 11 module còn lại 0. Check chỉ phủ các cặp đã khai — mục 4 (kiểm kê tay toàn bộ SQL) vẫn bắt buộc.
 Test: `tests/test_design_lint_filter_carry.py`.
+
+### A39 — Mốc "ngày gần nhất ≤ cuối kỳ" là MAX(ngày DỮ LIỆU); PK Dạng A chỉ khi khóa Atomic chứa kỳ báo cáo; mở rộng phạm vi Fact thì quét điều kiện phạm vi cũ trong `etl_logic`
+
+Sự cố thật (VP Nhóm 17, rà lại theo A38 ngày 2026-11-10 — không Gate nào bắt, ba lỗi cùng một phiên):
+1. **Mốc ngày theo lịch.** SQL BA chọn ngày chốt bằng `MAX(tradingdate) <= period_enddate` trên chính dữ liệu `jad_stockinfor` (Nhóm 55: 'Ngày dữ liệu gần nhất <= ngày báo cáo'). Detail Mapping định nghĩa `:d_x = MAX(cdr_dt_dim.cdr_dt) WHERE is_trading_date = 'Y' AND cdr_dt <= ngày cuối kỳ` (lịch ngày giao dịch)
+   và ghi chú chép 'SQL BA: MAX(tradingdate)' như thể hai cách giống nhau. Kỳ chưa kết thúc (tháng/quý/năm hiện tại) cho ngày chưa có dữ liệu → KPI rỗng, trong khi BA trả phiên mới nhất. Quy ước này lặp ở Nhóm 17, 19, 20, 21, 22, 55 (O_VP_73).
+2. **PK Dạng A với khóa Atomic không có kỳ.** Fact Registration Status lấy PK = id dòng Atomic `bond_trading_registration_status_id` = hash(BOND_CODE, TRADING_REGISTRATION_STATUS), trong khi grain là 'mã × trạng thái × THÁNG báo cáo' và KPI cần chuỗi lũy kế từng tháng
+   (LAG). ETL nạp mỗi tháng nhưng upsert theo PK ⇒ tháng sau ghi đè tháng trước. A22 ghi 'Dạng A = grain là 1 dòng Atomic' — grain này KHÔNG phải 1 dòng Atomic.
+3. **Điều kiện phạm vi cũ còn sót sau khi mở rộng Fact.** Fact Listing Status Change mở rộng sang CCQ/ETF/chứng quyền/TPDN niêm yết (O_VP_68) nhưng cột `listing_floor_code` vẫn tra bản tin MDDS với `stock_tp_code = '2'` (viết cho Nhóm 50/51) ⇒ rỗng với mọi loại khác; Data Modeler phải hỏi mới lộ.
+
+**Quy tắc**
+1. Mốc 'ngày/tháng gần nhất ≤ cuối kỳ' (`MAX(tradingdate)`, `MAX(snapshot_dt)`, `ROW_NUMBER … ORDER BY dt DESC`) viết trên CỘT NGÀY CỦA FACT (`MAX(cdr_dt_dim.cdr_dt) JOIN <fact> ON snpst_dt_dim_id WHERE cdr_dt <= …`), không trên lịch `cdr_dt_dim` + `is_trading_date`. Lịch chỉ dùng để ĐẾM phiên hoặc khi BA nói rõ 'ngày giao dịch cuối cùng theo lịch'.
+   Ghi chú không được viết 'SQL BA: …' khi cách làm khác BA.
+2. **PK Dạng A cần kiểm khóa Atomic:** mở YAML Atomic, đọc comment `Hash:` của PK. Khóa Atomic chứa mọi cột grain (đặc biệt cột kỳ/ngày mà `snpst_dt_dim_id` suy ra) ⇒ Dạng A; thiếu (khóa chỉ băm BK, kỳ báo cáo chỉ là thuộc tính) ⇒ Dạng B — hash(`snpst_dt_dim_id`, BK, `src_stm_code`), `Generated`, ghi rõ trong description vì sao không dùng id Atomic. Cùng loại với O_VP_62 (`gov_bond_listing`).
+3. **Mở rộng phạm vi Fact** (thêm loại chứng khoán/sàn/trạng thái): grep `etl_logic` của MỌI cột của Fact (không chỉ cột đang sửa) tìm điều kiện phạm vi cũ (`stock_tp_code = '2'`, `floor_code IN …`) rồi bỏ hoặc ghi lý do; Detail Mapping của Nhóm cũ phải tự lọc phạm vi của mình (Nhóm 50/51 đã lọc `security_trading_snpst_dim.stock_tp_code = '2'`).
+
+**Máy kiểm:** chưa có (D27 chỉ phủ cặp điều kiện khai ở `ba_filter_carry.yaml`). Kiểm tay theo `datamart-review` Checklist điểm 5 và 8; quét mốc ngày: `grep -c "is_trading_date = 'Y' AND cdr_dt_dim.cdr_dt <=" Datamart/lld/DTM_{M}_Detail_Mapping.csv`.
 
 ### Lệnh bổ sung — Gate 8 Design Lint
 

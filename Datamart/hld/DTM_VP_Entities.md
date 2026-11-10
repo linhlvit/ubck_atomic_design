@@ -288,7 +288,7 @@ erDiagram
 | Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse | Quy mô ĐKGD TPDN riêng lẻ — thêm KL, mệnh giá, giá trị đăng ký giao dịch [2026-11-08, O_VP_68] | 1 mã TPDN riêng lẻ × 1 tháng báo cáo | K_VP_376–381 |
 | Fact Listing Status Change Snapshot | Fact Snapshot | reuse | Sự kiện niêm yết mới/bổ sung/hủy của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết (HNX + HOSE) | 1 quyết định thay đổi niêm yết × 1 mã × 1 Sở | K_VP_382–389 |
 | Fact Government Bond Listing Change Snapshot | Fact Snapshot | new | [MỚI 2026-11-08, O_VP_71] Sự kiện niêm yết mới / bổ sung / đáo hạn của TPCP (Atomic additional_gov_bond_listing) | 1 sự kiện (PK = id dòng Atomic, Dạng A) | K_VP_382–389 |
-| Fact Private Corporate Bond Registration Status Snapshot | Fact Snapshot | new | [MỚI 2026-11-08, O_VP_71] Đăng ký / hủy đăng ký giao dịch TPDN riêng lẻ LŨY KẾ từ đầu năm (Atomic bond_trading_registration_status) | 1 mã × 1 trạng thái × 1 tháng báo cáo (PK = id dòng Atomic, Dạng A) | K_VP_382–389 |
+| Fact Private Corporate Bond Registration Status Snapshot | Fact Snapshot | new | [MỚI 2026-11-08, O_VP_71] Đăng ký / hủy đăng ký giao dịch TPDN riêng lẻ LŨY KẾ từ đầu năm (Atomic bond_trading_registration_status) | 1 mã × 1 trạng thái × 1 tháng báo cáo (PK = hash có ngày cuối tháng báo cáo, Dạng B — khóa Atomic không chứa tháng) | K_VP_382–389 |
 
 ## Nhóm 18 - Biểu đồ Khối lượng chứng khoán niêm yết
 
@@ -650,7 +650,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_208–211 |
-| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160, K_VP_208–211 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 17 (sự kiện niêm yết mới/bổ sung/hủy của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết), Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Listing Stock Type Code / Listing Fund Type Code = loại chứng khoán / loại quỹ của mã (bản tin MDDS mới nhất, loại phái sinh) để phân loại sự kiện Nhóm 17 (O_VP_74); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160, K_VP_208–211 |
 
 ## Nhóm 51 - Tổng quan thị trường >> Biểu đồ Thống kê cổ phiếu hủy niêm yết
 
@@ -664,7 +664,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_161–164 |
-| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
+| Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 17 (sự kiện niêm yết mới/bổ sung/hủy của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết), Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Listing Stock Type Code / Listing Fund Type Code = loại chứng khoán / loại quỹ của mã (bản tin MDDS mới nhất, loại phái sinh) để phân loại sự kiện Nhóm 17 (O_VP_74); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
 
 ## Nhóm 54 - Data Explorer Tài khoản giao dịch
 
