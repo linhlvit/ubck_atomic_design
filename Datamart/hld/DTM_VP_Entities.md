@@ -366,6 +366,34 @@ erDiagram
 | Industry Dimension | Dimension | reuse | Ngành nghề kinh doanh cấp 1 (GSDC sở hữu) — chiều ngành của cổ phiếu qua FK `industry_dim_id` trên Fact vốn hóa [2026-11-08, O_VP_66] | 1 ngành cấp 1 hiện hành | K_VP_339 |
 | Fact Listed Equity Snapshot | Fact Snapshot | reuse | Vốn hóa cổ phiếu cuối ngày trên HOSE, HNX, UPCoM (UPCoM theo VWAP T+1) — dùng chung với Nhóm 19, 55; thêm cột FK ngành `industry_dim_id` (nullable, chỉ cổ phiếu; CTCK/CTQLQ đại chúng = 07000), không đổi grain/PK [2026-11-08, O_VP_66] | 1 mã × 1 ngày giao dịch (PK hash cột grain) | K_VP_340–341 |
 
+## Nhóm 23/24/25/46 - Huy động vốn >> Cổ phiếu (Chỉ tiêu tổng hợp, Cơ cấu theo đối tượng, Hình thức theo thời gian) + Báo cáo thường niên >> Cơ cấu GT phát hành cổ phiếu
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — role Certificate Date (ngày GCN/CV cấp phép chào bán), trục kỳ Tháng/Quý/Năm của Nhóm 23–26/28/46 | 1 ngày dương lịch | K_VP_1 |
+| Fact Securities Offering Event | Fact Event | new | Đợt chào bán/phát hành đã cấp phép của CTĐC (IDS), CTCK (SCMS), CTQLQ (FMS): kế hoạch và kết quả theo hình thức phát hành; nhóm hình thức + cờ huy động vốn gán tại ETL theo bảng ánh xạ BA; nhánh SCMS chờ Atomic map PLAN_JSON/RESULT_JSON [MỚI 2026-11-10, O_VP_75] | 1 đợt × 1 hình thức (IDS: × tên CK) của 1 nguồn (PK hash Dạng B) | K_VP_390–433 |
+
+## Nhóm 26/28 - Huy động vốn >> Biểu đồ GT huy động vốn qua phát hành CP, TPDN, TPCP và GT phát hành TPDN theo hình thức
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — role Certificate Date / Snapshot Date | 1 ngày dương lịch | K_VP_1 |
+| Fact Securities Offering Event | Fact Event | reuse (Nhóm 23) | GT phát hành thành công cổ phiếu / TPDN niêm yết theo hình thức (huy động vốn) | 1 đợt × 1 hình thức | K_VP_434, 435, 439, 440 |
+| Fact Private Corporate Bond Offering Snapshot | Fact Snapshot | new | GT chào bán TPDN riêng lẻ lũy kế từ đầu năm theo tháng báo cáo HNX (BM 27/28) — phát sinh tháng bằng LAG ở Detail Mapping [MỚI 2026-11-10, O_VP_76] | 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo (PK hash Dạng B) | K_VP_436 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | reuse (Nhóm 30) | GT trúng thầu TPCP theo ngày phát hành | 1 kết quả đấu thầu (Dạng A) | K_VP_273 |
+
 ## Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
 
 ```mermaid

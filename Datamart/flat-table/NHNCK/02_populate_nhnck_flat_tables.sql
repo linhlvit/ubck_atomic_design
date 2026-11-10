@@ -198,7 +198,9 @@ SELECT
     o.revocation_decision_nbr,
     o.certificate_status_code,
     o.certificate_status_nm,
-    o.src_stm_code
+    o.src_stm_code,
+    o.cancellation_dt,
+    o.cancellation_decision_nbr
 FROM datamart.opr_practitioner_certificate_hist o
 ;
 

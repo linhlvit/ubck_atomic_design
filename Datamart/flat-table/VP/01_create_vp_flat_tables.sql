@@ -705,3 +705,87 @@ PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), private_corporate_bond_registration_status_snpst_id)
 COMMENT 'Flat table — fct_private_corporate_bond_registration_status_snpst — sinh tự động từ master registry + Entities.csv'
 ;
+
+
+-- ==========================================================
+-- 17. FACT: vp_fct_securities_offering_event_flat
+--    fct_securities_offering_event — Fact Securities Offering Event [MỚI 2026-11-10, O_VP_75]: đợt chào bán/phát hành đã cấp phép (IDS CTĐC + SCMS CTCK + FMS CTQLQ) × hình thức phát hành
+--    Joins: Calendar Date Dimension (role Certificate Date = ngày GCN/CV). Nhánh SCMS chờ Atomic map PLAN_JSON/RESULT_JSON.
+--    Nạp: TRUNCATE + INSERT toàn bộ (kết quả chào bán cập nhật sau ngày cấp phép nên không nạp theo ngày :etl_date; bảng nhỏ).
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_SECURITIES_OFFERING_EVENT
+    securities_offering_event_id                 String                  COMMENT 'PK — hash(src_stm_code, offering_code, offering_method_code, COALESCE(security_nm, '''')) (Dạng B, A22): khóa dòng = khóa MERGE. Grain = 1 đợt chào bán/phát hành đã được cấp phé...',
+    certificate_dt_dim_id                        Nullable(String)        COMMENT 'FK tới Calendar Date Dimension (role Certificate Date) — NGÀY GCN/CV cấp phép chào bán: IDS COALESCE(certificate_dt, official_letter_dt); SCMS COALESCE(document_dt, ngày tạo bản...',
+    issuer_tp_code                               String                  COMMENT 'Đối tượng phát hành — mã do ETL gán theo nguồn: CTDC (IDS, công ty đại chúng), CTCK (SCMS, công ty chứng khoán), CTQLQ (FMS, công ty quản lý quỹ); nhãn hiển thị ở Detail Mapping...',
+    issuer_code                                  Nullable(String)        COMMENT 'Mã tổ chức phát hành: IDS public_company.pc_code (BA dùng business_reg_no — Atomic Public Company không map cột này, pc_code 1:1 với công ty nên tương đương cho khóa đợt; ghi O_...',
+    equity_ticker_symbol                         Nullable(String)        COMMENT 'Mã cổ phiếu của tổ chức phát hành (IDS public_company.equity_ticker_symbol; SCMS/FMS NULL — nguồn không có trong chuỗi BA). Thuộc tính tra cứu, không dùng cho KPI. [MỚI 2026-11-...',
+    offering_code                                String                  COMMENT 'Mã hồ sơ chào bán ở nguồn (BK): IDS APPLICATION_CD (pc_securities_offering_code); SCMS id bản công bố (sc_disclosure_securities_offering_code); FMS id đợt (fmc_securities_offeri...',
+    certificate_nbr                              Nullable(String)        COMMENT 'Số GCN/công văn cấp phép chào bán: IDS COALESCE(certificate_nbr, official_letter_nbr); SCMS document_nbr; FMS approval_document_nbr. Thành phần Offering Round Key (thiếu số → ''...',
+    certificate_dt                               Date                    COMMENT 'Ngày GCN/CV cấp phép chào bán (cùng giá trị với FK Certificate Date Dimension Id, giữ dạng ngày để tạo khóa đợt và kiểm tra). [MỚI 2026-11-10, O_VP_75]',
+    offering_round_key                           String                  COMMENT 'Khóa ĐỢT phát hành theo BA (offering_key) = concat_ws(''|'', issuer_tp_code, issuer_code, COALESCE(certificate_nbr, ''0''), certificate_dt) — dùng COUNT(DISTINCT) để đếm số đợt ...',
+    administrative_procedure_code                Nullable(String)        COMMENT 'Mã thủ tục hành chính IDS (ap_code); ''1.009.501'' = chào bán để tăng vốn của Công ty TNHH → nhóm hình thức LLC_CAPITAL (BA Nhóm 23/25). SCMS/FMS NULL. [MỚI 2026-11-10, O_VP_75]',
+    security_tp_code                             Nullable(String)        COMMENT 'Loại chứng khoán chào bán — mã gốc từng nguồn (giá trị ''CP'' cổ phiếu, ''TP'' trái phiếu trùng ở cả 3 nguồn theo BA): IDS plan.security_tp_code; SCMS item_category_code; FMS se...',
+    offering_method_code                         Nullable(String)        COMMENT 'Mã hình thức phát hành gốc theo nguồn: IDS plan.offering_method_code (''1''…''15'', scheme IDS.SO_OFFERING_METHOD); SCMS loaiChaoBan trong PLAN_JSON (CHỜ ATOMIC); FMS plan.offer...',
+    security_nm                                  Nullable(String)        COMMENT 'Tên chứng khoán trong phương án IDS (plan.security_nm) — BA chỉ dùng để tách mã 9 ''Phát hành cổ phiếu cho người lao động'': ''Phát hành thưởng cho người lao động'' KHÔNG phải h...',
+    offering_method_group_code                   Nullable(String)        COMMENT 'Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA (VALUES t(...) trong SQL Nhóm 23): PUBLIC (Phát hành ra công chúng), PRIVATE (Phát hành riêng lẻ), LLC_CAPITAL (...',
+    raising_capital_ind                          Nullable(Int64)         COMMENT 'Cờ ''Huy động vốn'' theo BA (1 = có, 0 = không): IDS 0 khi offering_method_code IN (''4'',''6'',''10'') hoặc (= ''9'' và security_nm = ''Phát hành thưởng cho người lao động''); ...',
+    plan_quantity                                Nullable(Int64)         COMMENT 'KL đăng ký phát hành (kế hoạch): IDS SUM(plan.total_registered_quantity) theo (hồ sơ, loại CK, hình thức, tên CK, mệnh giá, giá); SCMS soLuongCb (CHỜ ATOMIC); FMS plan.planned_q...',
+    plan_val_amt                                 Nullable(Decimal(23,2)) COMMENT 'GT đăng ký phát hành (VNĐ): IDS = total_expected_amt, nếu 0/NULL thì (giá chào bán, 0/NULL → mệnh giá) × KL đăng ký (đúng IF của BA, không lấy am_orig); SCMS giaTriCbTheoMenhGia...',
+    result_quantity                              Nullable(Int64)         COMMENT 'KL phát hành thành công (kết quả): IDS SUM(result.total_successful_quantity) theo (hồ sơ, hình thức); SCMS soLuongThucTe trong RESULT_JSON (CHỜ ATOMIC); FMS plan.actual_quantity...',
+    result_val_amt                               Nullable(Decimal(23,2)) COMMENT 'GT phát hành thành công (VNĐ): IDS = SUM(total_collected_amt), nếu 0/NULL thì (giá chào bán kế hoạch, 0/NULL → mệnh giá) × KL thành công (IF của BA); SCMS giaTriThucTe (CHỜ ATOM...',
+    has_result_ind                               Int64                   COMMENT 'Đợt đã có kết quả chào bán (1/0) theo BA: IDS result.total_successful_quantity IS NOT NULL; SCMS RESULT_JSON IS NOT NULL (CHỜ ATOMIC); FMS rpt_result_dt IS NOT NULL. KPI ''Số đợ...',
+    result_rpt_dt                                Nullable(Date)          COMMENT 'Ngày báo cáo kết quả chào bán: IDS COALESCE(result.result_rpt_dt, result.offering_end_dt); SCMS result_rpt_dt; FMS rpt_result_dt. KPI ''Ngày BCKQ gần nhất'' = MAX trên đợt có kế...',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của dòng: IDS_SECURITIES_OFFERING (CTĐC) / SCMS_DISCLOSURE_SECURITIES_OFFERING (CTCK) / FMS_OFFERING (CTQLQ); tham gia PK. [MỚI 2026-11-10, O_VP_75]',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact (ngày GCN/CV) — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), securities_offering_event_id)
+COMMENT 'Flat table — fct_securities_offering_event — Fact Securities Offering Event × Calendar Date (ngày GCN/CV); nạp lại toàn bộ'
+;
+
+
+-- ==========================================================
+-- 18. FACT: vp_fct_private_corporate_bond_offering_snpst_flat
+--    fct_private_corporate_bond_offering_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_offering_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_PRIVATE_CORPORATE_BOND_OFFERING_SNPST
+    private_corporate_bond_offering_snpst_id     String                  COMMENT 'PK — hash(snpst_dt_dim_id, bond_code, market_tp, posting_dt, src_stm_code) (Dạng B, A22). Grain = 1 mã TPDN ri',
+    snpst_dt_dim_id                              Nullable(String)        COMMENT 'FK tới Calendar Date Dimension — ngày cuối tháng của tháng báo cáo HNX (suy từ rpt_year/rpt_month; BA MAKE_DAT',
+    bond_code                                    String                  COMMENT 'Mã trái phiếu doanh nghiệp riêng lẻ chào bán (HNX BM 27 trong nước / BM 28 quốc tế). [MỚI 2026-11-10, O_VP_76]',
+    market_tp                                    Nullable(String)        COMMENT 'Loại thị trường chào bán nguyên văn HNX (Trong nước / Quốc tế) — thành phần khóa Atomic. [MỚI 2026-11-10, O_VP',
+    posting_dt                                   Nullable(Date)          COMMENT 'Ngày đăng tin chào bán — thành phần khóa Atomic. [MỚI 2026-11-10, O_VP_76]',
+    issue_dt                                     Nullable(Date)          COMMENT 'Ngày phát hành trái phiếu (BA Nhóm 27 dòng 305: Ngày phát hành trong kỳ báo cáo — thuộc tính tham chiếu; KPI N',
+    offering_bond_quantity                       Nullable(Int64)         COMMENT 'Khối lượng chào bán (OFFERING_VOLUME) lũy kế đến cuối tháng báo cáo. [MỚI 2026-11-10, O_VP_76]',
+    par_val                                      Nullable(Decimal(23,2)) COMMENT 'Mệnh giá trái phiếu (PAR_VALUE). [MỚI 2026-11-10, O_VP_76]',
+    offering_val_amt                             Nullable(Decimal(23,2)) COMMENT 'GT chào bán = KL chào bán × mệnh giá (BA: SUM(offering_volume * par_value)) — LŨY KẾ từ đầu năm đến cuối tháng',
+    rpt_year                                     Int64                   COMMENT 'Năm báo cáo HNX. [MỚI 2026-11-10, O_VP_76]',
+    rpt_month                                    Int64                   COMMENT 'Tháng báo cáo HNX (1–12; BA chuẩn hóa CAST AS INT). [MỚI 2026-11-10, O_VP_76]',
+    rpt_day                                      Nullable(Int64)         COMMENT 'Ngày báo cáo HNX — để đối chiếu bản nộp; không vào khóa. [MỚI 2026-11-10, O_VP_76]',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_PRIVATE_CORP_BOND_OFFERING; tham gia PK. [MỚI 2026-11-10, O_VP_76]',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), private_corporate_bond_offering_snpst_id)
+COMMENT 'Flat table — fct_private_corporate_bond_offering_snpst — sinh tự động từ master registry + Entities.csv'
+;
