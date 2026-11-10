@@ -1,0 +1,2132 @@
+﻿
+============================================================
+[UNMAPPED] AUDIT
+
+  AUDIT.AF_APPROVAL  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_AUDITOR_PRACTICE_HISTORY  (1 cột chưa map):
+    - UPDATED_DATE
+
+  AUDIT.AF_AUDITOR_PROFILES  (3 cột chưa map):
+    - REC_CHANGED_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_AUDITOR_STATUS_HISTORY  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_INSPECTION  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_LEGAL_REPRESENTATIVE  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_PROFILES  (3 cột chưa map):
+    - ID
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_SANCTIONS  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_STATUS_HISTORY  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_SUSPENSION  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_TECHNICAL_AUDIT  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  AUDIT.AF_WARNING  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+============================================================
+[PENDING] AUDIT
+
+  AUDIT.LOOKUP_VALUES  (8 cột pending):
+    ~ ID  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ DISPLAY_ORDER  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ ACTIVE_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ UPDATED_DATE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ SYNC_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ DELETE_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ SYSTEM_CD  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ LOOKUP_PARENT_ID  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+
+============================================================
+[PENDING] ECAT
+
+  ECAT.ADMINISTRATIVE_PROCEDURE  (14 cột pending):
+    ~ ID  [Theo Bước 3e — CODE là BK duy nhất, Id surrogate hash từ CODE, không hash từ ID kỹ thuật.]
+    ~ IMPLEMENTATION_SEQUENCE  [Người thiết kế loại khỏi LLD khi review (2026-10-29): cột CLOB văn bản dài, không dùng cho khai thác.]
+    ~ LEGAL_BASIS  [Người thiết kế loại khỏi LLD khi review (2026-10-29): cột CLOB văn bản dài, không dùng cho khai thác.]
+    ~ ACTIVE  [Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07). ETL dùng làm điều kiện lọc dòng hiện hành nếu Data Modeler xác nhận.]
+    ~ ACTIVE_REASON  [Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07).]
+    ~ DELETED_REASON  [Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07).]
+    ~ VERSION  [Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07). ETL dùng để chọn version lớn nhất theo CODE.]
+    ~ EFFECTIVE_START_DATE  [Hiệu lực của version kỹ thuật, khác EFFECTIVE_STATUS_DATE (hiệu lực nghiệp vụ của TTHC — đã map vào effective_dt). Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07).]
+    ~ EFFECTIVE_END_DATE  [Hiệu lực của version kỹ thuật, khác EXPIRATION_STATUS_DATE (đã map vào expiration_dt). Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07).]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [BK của entity là CODE; STABLE_ID chỉ là định danh kỹ thuật xuyên version, không lưu thành attribute.]
+    ~ FEE_UNIT_CURRENCY_VERSION_ID  [Định danh version kỹ thuật của CURRENCY; tiền tệ đã lấy qua FEE_UNIT_CURRENCY_ID → CURRENCY.CODE (Fee Currency Code).]
+    ~ EFFECTIVE  [Chưa đủ bộ 9 cột technical bundle (thiếu STATUS) nên không loại trừ tự động theo Bước 2c; loại trừ nhất quán với ECAT.DEPARTMENT, chờ Data Modeler xác nhận (HLD Tier1 mục 6f T1-07). ETL lọc EFFECTIVE = 1.]
+    ~ COMPETENT_AUTHORITY  [Người thiết kế loại khỏi LLD khi review (2026-10-29): cột CLOB văn bản dài, không dùng cho khai thác.]
+
+  ECAT.COUNTRY  (4 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất, Id surrogate hash từ CODE, không hash từ ID kỹ thuật.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ, không dùng cho ETL resolve FK hiện hành.]
+    ~ STABLE_ID  [HLD T1-05 (ECAT_HLD_Tier1.md) đặt câu hỏi BK nên dùng STABLE_ID hay CODE — quyết định tại LLD: dùng CODE (mã nghiệp vụ đọc được) làm BK, STABLE_ID chỉ là định danh kỹ thuật xuyên version, không phải mã nghiệp vụ theo nghĩa CLAUDE.md.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật của quá trình đồng bộ BTC, không phải business key hay attribute nghiệp vụ.]
+
+  ECAT.DEPARTMENT  (14 cột pending):
+    ~ ID  [Theo Bước 3e — CODE là BK duy nhất, Id surrogate hash từ CODE, không hash từ ID kỹ thuật.]
+    ~ PARENT_ID  [Data Modeler quyết định 2026-10-22 không map quan hệ phòng ban cha — entity không có self-reference.]
+    ~ ACTIVE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22 (chỉ map CODE, NAME, DESCRIPTION, PHONE, EMAIL).]
+    ~ ACTIVE_REASON  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ DELETED_REASON  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ VERSION  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ EFFECTIVE_START_DATE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ EFFECTIVE_END_DATE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [BK của entity là CODE; STABLE_ID chỉ là định danh kỹ thuật xuyên version, không lưu thành attribute.]
+    ~ PARENT_VERSION_ID  [Data Modeler quyết định 2026-10-22 không map quan hệ phòng ban cha — entity không có self-reference.]
+    ~ SORT_ORDER  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ EFFECTIVE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+    ~ TYPE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-22.]
+
+  ECAT.DISTRICT_OLD  (5 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ PROVINCE_OLD_VERSION_ID  [Con trỏ cache kỹ thuật — Parent Geographic Area Old Id/Code đã resolve qua PROVINCE_OLD_ID.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật, không phải attribute nghiệp vụ.]
+
+  ECAT.PROVINCE_NEW  (7 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ COUNTRY_ID  [Denormalized — suy ra được qua REGION_ID → ECAT.REGION.COUNTRY_ID, không cần lưu riêng trên Atomic để tránh trùng lặp FK.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ REGION_VERSION_ID  [Con trỏ cache kỹ thuật đến 1 version cụ thể của bản ghi cha — Atomic không lưu vết version-specific ID.]
+    ~ COUNTRY_VERSION_ID  [Con trỏ cache kỹ thuật; COUNTRY_ID cũng không map riêng vì denormalized qua REGION.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật, không phải attribute nghiệp vụ.]
+
+  ECAT.PROVINCE_OLD  (8 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ COUNTRY_ID  [Denormalized — suy ra được qua REGION_ID → ECAT.REGION.COUNTRY_ID, không cần lưu riêng trên Atomic để tránh trùng lặp FK.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ REGION_VERSION_ID  [Con trỏ cache kỹ thuật — Region Geographic Area Id/Code đã resolve qua REGION_ID.]
+    ~ PROVINCE_NEW_VERSION_ID  [Con trỏ cache kỹ thuật — Successor Geographic Area Id/Code đã resolve qua PROVINCE_NEW_ID.]
+    ~ COUNTRY_VERSION_ID  [Con trỏ cache kỹ thuật; COUNTRY_ID cũng không map riêng vì denormalized qua REGION_ID.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật, không phải attribute nghiệp vụ.]
+
+  ECAT.REGION  (5 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ COUNTRY_VERSION_ID  [Con trỏ cache kỹ thuật đến 1 version cụ thể của bản ghi cha — Atomic không lưu vết version-specific ID, chỉ resolve parent qua COUNTRY_ID → CODE.]
+    ~ EFFECTIVE  [Data Modeler xác nhận 2026-10-29: không cần thiết kế.]
+
+  ECAT.WARD_NEW  (5 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ PROVINCE_NEW_VERSION_ID  [Con trỏ cache kỹ thuật đến 1 version cụ thể của bản ghi cha — Atomic không lưu vết version-specific ID.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật, không phải attribute nghiệp vụ.]
+
+  ECAT.WARD_OLD  (6 cột pending):
+    ~ ID  [Theo Bước 3e của atomic-lld-design/SKILL.md — Code nghiệp vụ (CODE) dùng làm BK duy nhất.]
+    ~ OLD_ID  [Thuần kỹ thuật, không có ý nghĩa nghiệp vụ.]
+    ~ STABLE_ID  [Xem lý do tại entry ECAT.COUNTRY.STABLE_ID — BK dùng CODE, không dùng STABLE_ID.]
+    ~ DISTRICT_OLD_VERSION_ID  [Con trỏ cache kỹ thuật — Parent Geographic Area Old Id/Code đã resolve qua DISTRICT_OLD_ID.]
+    ~ WARD_NEW_VERSION_ID  [Con trỏ cache kỹ thuật — Successor Geographic Area Id/Code đã resolve qua WARD_NEW_ID.]
+    ~ ID_SYNC  [Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật (reconcile) — thông tin lineage kỹ thuật, không phải attribute nghiệp vụ.]
+
+============================================================
+[UNMAPPED] FIMS
+  [WARN] Bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có file cột trong BRD/Source/FIMS/
+  [WARN] Bảng 'FIR_STRUCTURE' không có file cột trong BRD/Source/FIMS/
+  [WARN] Bảng 'FIR_VALUE' không có file cột trong BRD/Source/FIMS/
+  [WARN] Bảng 'FOREIGN_INVESTOR_REPORT' không có file cột trong BRD/Source/FIMS/
+
+  FIMS.INVESTOR  (1 cột chưa map):
+    - DMDC_COUNTRY_ID
+
+============================================================
+[PENDING] FIMS
+
+  FIMS.BANKMONI  (1 cột pending):
+    ~ ISSYNCED  [Technical/sync flag — không có giá trị nghiệp vụ.]
+
+  FIMS.CATEGORIESSTOCK  (1 cột pending):
+    ~ ISSYNCED  [Cờ đồng bộ kỹ thuật của FIMS, nguồn không có mô tả nghiệp vụ — không thiết kế business attribute.]
+
+  FIMS.COMPANYTYPE  (3 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — Id surrogate Atomic hash từ CODE (BK) theo chỉ đạo Data Modeler.]
+    ~ SNAME  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+    ~ STATUS  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+
+  FIMS.INVESTOR  (1 cột pending):
+    ~ ID  [PK kỹ thuật nguồn (ID tự tăng) — không map vào Atomic theo quy tắc Bước 3e. Entity dùng TransactionCode làm BK (Foreign Investor Code); Foreign Investor Id hash từ chính TransactionCode, không hash từ Id kỹ thuật.]
+
+  FIMS.INVESTORTYPE  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — Id surrogate Atomic hash từ SNAME (BK) theo chỉ đạo Data Modeler.]
+    ~ STATUS  [Theo chỉ đạo Data Modeler chỉ map Id, SName, Name, Description, ECATALOG_ID.]
+
+  FIMS.SECURITIESCOMPANY  (1 cột pending):
+    ~ ISSYNCED  [Technical/sync flag — không có giá trị nghiệp vụ.]
+
+  FIMS.STATUS  (5 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — Id surrogate Atomic hash từ Code (BK) theo chỉ đạo Data Modeler.]
+    ~ ISACTIVE  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+    ~ ISSUBMITREPORT  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+    ~ ICON  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+    ~ COLOR  [Theo chỉ đạo Data Modeler chỉ map Code, Name, TypeObject, Description, ECATALOG_ID.]
+
+  FIMS.TRADINGAUTHORIZATION  (2 cột pending):
+    ~ STATUS  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ INVESTORIDS  [Cột denormalized riêng trên chính TRADINGAUTHORIZATION (không phải InvestorId đơn — đã map — cũng không phải TRADINGAUTHORIZATIONINVES — bảng này không còn gộp và không thiết kế Atomic, Data Modeler 2026-10-28). Chưa rõ đây là dữ liệu vestigial trùng lặp với TRADINGAUTHORIZATIONINVES hay danh sách bổ sung có ý nghĩa nghiệp vụ riêng (VD: multi-investor hợp đồng ủy quyền chung).]
+
+============================================================
+[UNMAPPED] FMS
+
+  FMS.AGENCIES  (2 cột chưa map):
+    - MODIFY_BY
+    - DATA_MIGRATION
+
+  FMS.AGENCY_TYPE  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.BANK_MONI  (5 cột chưa map):
+    - MODIFY_BY
+    - FILE_NAME
+    - FILE_DATA
+    - DATA_MIGRATION
+    - ID_DB_OLD
+
+  FMS.BUSINESS  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.COMPANY_TYPE  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.DISTRIBUTOR_AGENT  (3 cột chưa map):
+    - MODIFY_BY
+    - DISTRIBUTION_DIGITAL_INFO
+    - STATUS_ID
+
+  FMS.EVENT_TYPE  (3 cột chưa map):
+    - METADATA
+    - MODIFY_BY
+    - BUSINESS_RULE_CONFIG
+
+  FMS.FUD_AG_AGT  (1 cột chưa map):
+    - SYSTEM_OBJECT_TYPE
+
+  FMS.INSIDER  (2 cột chưa map):
+    - MODIFY_BY
+    - DATA_MIGRATION
+
+  FMS.INVES  (2 cột chưa map):
+    - MODIFY_BY
+    - DATA_MIGRATION
+
+  FMS.INVES_ACC  (2 cột chưa map):
+    - MODIFY_BY
+    - DATA_MIGRATION
+  [WARN] Bảng 'ITEM_LIST' không có file cột trong BRD/Source/FMS/
+  [WARN] Bảng 'ITEM_VALUE' không có file cột trong BRD/Source/FMS/
+
+  FMS.JOBS  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.JOB_TYPE  (3 cột chưa map):
+    - MODIFY_BY
+    - DISPLAY_ON_MEMBER_PROFILE
+    - PUBLISHED
+
+  FMS.OFFERING  (3 cột chưa map):
+    - MODIFY_BY
+    - APPROVAL_DOCUMENT_FILE_NAME
+    - RESULT_ATTACHMENT_FILE
+
+  FMS.OFFERING_PLAN  (1 cột chưa map):
+    - SORT_ORDER
+
+  FMS.RANK  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.RATING_PD  (2 cột chưa map):
+    - MODIFY_BY
+    - UPDATE_DATA_RATING
+  [WARN] Bảng 'REPORT_HISTORY' không có file cột trong BRD/Source/FMS/
+
+  FMS.REPRESENT  (3 cột chưa map):
+    - MODIFY_BY
+    - DATA_MIGRATION
+    - ORIGIN_ID
+
+  FMS.RPT_MEMBER  (11 cột chưa map):
+    - FILE_DATA
+    - CONTENT_SUMMARY
+    - NOTE
+    - FILE_IMPORT
+    - TRANSFER_AGENT_ID
+    - PENSION_AGENT_ID
+    - PENSION_PROVIDER_ID
+    - OTHER_AGENT_ID
+    - PENSION_FUND_ID
+    - APPROVAL_ACTION
+    - EFORM_DATA_JSON
+
+  FMS.RPT_PERIOD  (7 cột chưa map):
+    - WORKING_DAY
+    - SF_PD_ID
+    - ANNOUNCE_IS_WORKING_DAY
+    - ANNOUNCE_LATEST_SEND_DATE
+    - ANNOUNCE_SEND_IN_DAY
+    - ANNOUNCE_LATEST_SEND_WEEK
+    - FILE_NAME
+
+  FMS.RPT_VALUES  (1 cột chưa map):
+    - CODE
+
+  FMS.SECURITIES  (6 cột chưa map):
+    - MODIFY_BY
+    - FILE_NAME
+    - FILE_DATA
+    - ACTIV_OTHER
+    - DATA_MIGRATION
+    - ID_DB_OLD
+
+  FMS.SHEET  (6 cột chưa map):
+    - CELLS_META
+    - DATA_LABEL
+    - MERGE_CELLS
+    - ROW_HEIGHTS
+    - COL_WIDTHS
+    - IS_ADMIN_REPORT
+
+  FMS.STATUS  (1 cột chưa map):
+    - MODIFY_BY
+
+  FMS.STOCKHOLDER_TYPE  (1 cột chưa map):
+    - MODIFY_BY
+  [WARN] Bảng 'THRESHOLD_CONFIG' không có file cột trong BRD/Source/FMS/
+
+  FMS.TL_PROFILES  (7 cột chưa map):
+    - MODIFY_BY
+    - BRANCH_ID
+    - NAT_ID
+    - FILE_NAME
+    - FILE_DATA
+    - DATA_MIGRATION
+    - EVENT_PAYLOAD
+  [WARN] Bảng 'WEIGHT_CONFIG' không có file cột trong BRD/Source/FMS/
+
+============================================================
+[PENDING] FMS
+
+  FMS.AGEN_FUNDS  (1 cột pending):
+    ~ DATA_MIGRATION  [Cờ migration kỹ thuật, không phải business attribute. Bảng nguồn không có audit fields khác.]
+
+  FMS.BANK_EMPLOY  (2 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_MIGRATION  [Technical field — không có giá trị nghiệp vụ.]
+
+  FMS.BUSINESS  (1 cột pending):
+    ~ DATA_MIGRATION  [Cờ migration kỹ thuật, không phải business attribute.]
+
+  FMS.COMPANY_TYPE  (1 cột pending):
+    ~ DATA_MIGRATION  [Cờ migration kỹ thuật, không phải business attribute.]
+
+  FMS.EVENT_TYPE  (1 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — Classification FMS Event Type Code đã dùng EVENT_CODE (mã nghiệp vụ) làm BK, không dùng ID.]
+
+  FMS.FOR_BRCH  (7 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ FILE_DATA  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ DATA_MIGRATION  [Technical/migration field — không có giá trị nghiệp vụ.]
+    ~ ID_DB_OLD  [Technical/migration field — không có giá trị nghiệp vụ.]
+    ~ PARENT_ISSUE_PLACE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ PARENT_ISSUE_DATE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ACTIVITY_PERIOD  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  FMS.FUD_AG_AGT  (2 cột pending):
+    ~ ID  [PK kỹ thuật — entity link thuần dùng composite PK 3 FK Id (quyết định Data Modeler).]
+    ~ AGEN_ID_PARENT  [Theo quyết định Data Modeler 2026-10-12 chỉ map FUD_ID, AG_TY_ID, AGEN_ID.]
+
+  FMS.FUNDS  (9 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ TYPE_OF_FUND_NO  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ TYPE_OF_FUND_MNP  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ TYPE_OF_FUND_DENT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ FILE_NAME  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ FILE_DATA  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ DATA_MIGRATION  [Technical/migration field — không có giá trị nghiệp vụ.]
+    ~ ID_DB_OLD  [Technical/migration field — không có giá trị nghiệp vụ.]
+    ~ STOCK_EXCHANGE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  FMS.FUND_TYPE  (2 cột pending):
+    ~ ID  [PK kỹ thuật — BK của entity là CODE (quyết định Data Modeler 2026-10-27).]
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+
+  FMS.INSDER_RELA  (2 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_MIGRATION  [Technical field — không có giá trị nghiệp vụ.]
+
+  FMS.INSPECTION_ROUND  (3 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_SOURCE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ THANH_TRA_EXTERNAL_ID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  FMS.JOBS  (2 cột pending):
+    ~ SYSTEM_OBJECT  [Theo quyết định Data Modeler 2026-10-02 chỉ map ID, ITEM_NAME, JOB_TYPE_ID.]
+    ~ DATA_MIGRATION  [Cờ migration kỹ thuật, không phải business attribute.]
+
+  FMS.MB_CHANGE  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+
+  FMS.MB_FUND  (2 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_MIGRATION  [Technical field — không có giá trị nghiệp vụ.]
+
+  FMS.PENSION_AGENT  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+
+  FMS.PENSION_FUND  (3 cột pending):
+    ~ FILE_NAME  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ FILE_DATA  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+
+  FMS.PENSION_PROVIDER  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+
+  FMS.RELATION  (3 cột pending):
+    ~ MODIFY_BY  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-28 (chỉ map ID, ITEM_NAME, DESCRIPTION vào cl_value); cl_value không có chỗ chứa.]
+    ~ PERSONAL_TYPE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-28 (chỉ map ID, ITEM_NAME, DESCRIPTION vào cl_value); cl_value không có chỗ chứa.]
+    ~ DATA_MIGRATION  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-28 (chỉ map ID, ITEM_NAME, DESCRIPTION vào cl_value); cl_value không có chỗ chứa.]
+
+  FMS.RPT_MEMBER  (4 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic (operational/system data, xem HLD FMS 7f) — không có Atomic FK target hợp lệ.]
+    ~ ID_DB_OLD  [Cột phục vụ migration dữ liệu từ hệ thống cũ, không có giá trị phân tích nghiệp vụ — cùng pattern ID_DB_OLD ở các bảng FMS khác.]
+    ~ AUDIT_FIRM_ID  [AUDIT_FIRM ngoài scope Atomic FMS (review 2026-07-03: thông tin kiểm toán lấy từ phân hệ IDS) — không có Atomic FK target.]
+    ~ AUDITOR_ID  [AUDITOR ngoài scope Atomic FMS (review 2026-07-03: thông tin kiểm toán lấy từ phân hệ IDS) — không có Atomic FK target.]
+
+  FMS.RPT_PERIOD  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic (operational/system data, xem HLD FMS 7f) — không có Atomic FK target hợp lệ.]
+
+  FMS.RPT_TEMP  (7 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic (operational/system data, xem HLD FMS 7f) — không có Atomic FK target hợp lệ.]
+    ~ REQUIRE_IMPORT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ FILE_DATA  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SELF_MEMBER_SETTING  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ FINANCIAL_REPORT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ EFORM_ENABLED  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ EFORM_SCHEMA_JSON  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  FMS.RPT_VALUES  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic (operational/system data, xem HLD FMS 7f) — không có Atomic FK target hợp lệ.]
+
+  FMS.SECURITIES  (2 cột pending):
+    ~ SEC_ID  [Cột tự tham chiếu ngay trên chính bảng SECURITIES, mô tả trùng lặp hoàn toàn với PAR_ID (đã map thành Parent Fund Management Company Id/Code) — nghi ngờ dữ liệu rác/lỗi source-survey hoặc cột vestigial trong schema legacy.]
+    ~ PUBLIC_ID  [Mô tả nguồn không rõ bảng đích — không xác định được Atomic FK target.]
+
+  FMS.SHEET  (1 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic (operational/system data, xem HLD FMS 7f) — không có Atomic FK target hợp lệ.]
+
+  FMS.STAKE  (2 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_MIGRATION  [Technical field — không có giá trị nghiệp vụ.]
+
+  FMS.STATUS  (4 cột pending):
+    ~ ID  [PK kỹ thuật nguồn. Bảng có mã nghiệp vụ CODE (DDL UAT 1) nên BK = CODE, Id surrogate hash từ CODE (Bước 3e).]
+    ~ ACTIVE  [Cờ kích hoạt/vô hiệu bản ghi danh mục — theo quyết định Data Modeler 2026-10-02 chỉ map ITEM_NAME, TYPE_SEC, SUBMIT_REPORT, DESCRIPTION, CODE.]
+    ~ ICON  [Thuộc tính hiển thị giao diện — theo quyết định Data Modeler 2026-10-02 không map.]
+    ~ COLOR  [Thuộc tính hiển thị giao diện — theo quyết định Data Modeler 2026-10-02 không map.]
+
+  FMS.STF_FG_BRCH  (4 cột pending):
+    ~ FILE_DATA  [Đính kèm dạng blob/NCLOB — chưa có Atomic entity Documentation cho loại tài liệu này trong scope FMS.]
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ DATA_MIGRATION  [Technical field — không có giá trị nghiệp vụ.]
+    ~ LICENSE_END_DATE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  FMS.TL_PROFILES  (1 cột pending):
+    ~ ISP  [Mô tả gần như trùng lặp hoàn toàn với QTTY ('Số lượng CCQ/cổ phiếu nắm giữ') — nghi ngờ duplicate/legacy field.]
+
+  FMS.TRANSFER_AGENT  (2 cột pending):
+    ~ MODIFY_BY  [FK suy luận đến USERS.ID nhưng USERS ngoài phạm vi thiết kế Atomic — không có Atomic FK target hợp lệ.]
+    ~ STATUS_ID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+============================================================
+[PENDING] HNX
+
+  HNX.BROKERAGE_MARKET_SHARE  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.GOV_BOND_ADDITIONAL_LISTING  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.GOV_BOND_LISTED_LIST  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.GOV_BOND_OFFERING  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.LISTED_SECURITIES_LIST  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.LISTING_STATUS_CHANGE  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.MARKET_CAPITALIZATION  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — chỉ dùng làm Business Key (Data Modeler chốt 2026-10-30), không tham gia hash Id; không khai báo thành attribute trong LLD.]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+  HNX.ORDER_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+  HNX.OUTRIGHT_ORDER_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.PRIVATE_CORP_BOND_OFFERING  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.PRIVATE_CORP_BOND_REGISTRATION  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.PRIVATE_CORP_BOND_SERVICE_ORGS  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — chỉ dùng làm Business Key (Data Modeler chốt 2026-10-30), không tham gia hash Id; không khai báo thành attribute trong LLD.]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+  HNX.PRIVATE_CORP_BOND_TRADING  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.REGISTRATION_STATUS_CHANGE  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.REPO2_ORDER_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.REPO_ORDER_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.SHARE_AUCTION  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HNX.TRADE_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+============================================================
+[PENDING] HOSE
+
+  HOSE.BROKERAGE_MARKET_SHARE  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HOSE.LISTED_SECURITIES_LIST  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HOSE.LISTING_STATUS_CHANGE  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HOSE.ORDER_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+  HOSE.SHARE_AUCTION  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  HOSE.TRADE_BOOK  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (quy ước Data Modeler 2026-10-19).]
+
+============================================================
+[UNMAPPED] IAM
+
+  IAM.USERS  (14 cột chưa map):
+    - AVATAR_PATH
+    - STATUS
+    - DELETE_REASON
+    - COUNT_LOGIN_FALSE
+    - EXPIRE_LOCK_USER
+    - LAST_LOGIN
+    - VERSION
+    - USER_SUB_TYPE
+    - PREFIX_USERNAME
+    - REQUIRE_PROFILE_UPDATE
+    - ORGANIZATION_NAME_EDITABLE
+    - TAX_ID_NUMBER_EDITABLE
+    - CITIZEN_ID_EDITABLE
+    - REQUIRE_UPDATE_PASSWORD
+
+============================================================
+[UNMAPPED] IDS
+
+  IDS.ACCOUNT_NUMBERS  (3 cột chưa map):
+    - ACTIVE_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.BOND_LISTING_HISTORY  (10 cột chưa map):
+    - UPDATED_DATE
+    - BOND_LISTING_ID
+    - REMAINING_TENOR
+    - REPURCHASE_CONVERSION_SWAP_QTY
+    - REGISTERED_TRADING_QTY
+    - OUTSTANDING_QTY
+    - FIRST_TRADING_DATE
+    - LAST_TRADING_DATE
+    - TRADING_STATUS
+    - DELETE_FLG
+
+  IDS.CAPITAL_MOBILIZATION  (7 cột chưa map):
+    - DELETE_FLG
+    - UPDATED_DATE
+    - CHANGE_DATE
+    - CHANGE_TYPE
+    - CAPITAL_BEFORE_CHANGE
+    - CHANGE_AMOUNT
+    - CAPITAL_AFTER_CHANGE
+
+  IDS.COMPANY_ADD_CAPITAL  (2 cột chưa map):
+    - DELETE_FLG
+    - UPDATED_DATE
+
+  IDS.COMPANY_DATA  (6 cột chưa map):
+    - SYSTEM_CD
+    - SPECIALIST_OPINION_CD
+    - SPECIALIST_OPINION_DETAIL
+    - SECURITIES_OFFERING_RESULT_ID
+    - TREASURY_SHARE_TRANS_RESULT_ID
+    - COMPANY_TENDER_OFFER_RESULT_ID
+
+  IDS.COMPANY_ENTITY_ROLE  (3 cột chưa map):
+    - ACTIVE_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_INSPECTION  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_PENALTIES  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_PROFILES  (3 cột chưa map):
+    - DELETE_FLG
+    - UPDATED_DATE
+    - CATEGORY_MOF_ID
+
+  IDS.COMPANY_RELATIONSHIP  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_SHAREHOLDING  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_SHARE_STATISTICS  (1 cột chưa map):
+    - UPDATED_DATE
+
+  IDS.COMPANY_TENDER_OFFER  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.COMPANY_TENDER_OFFER_RESULT  (5 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - ACTUAL_PURCHASED_OWNERSHIP_RATIO
+    - RESULT_REPORT_DATE
+    - EXTENSION_DATE
+
+  IDS.COMPANY_TREASURY_SHARES  (3 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - LEGAL_ENTITY_ID
+
+  IDS.COMPANY_TREASURY_STOCKS  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.DATA_VALUES  (1 cột chưa map):
+    - REQUIRED_FLG
+
+  IDS.EVALUATIONS  (1 cột chưa map):
+    - UPDATED_DATE
+
+  IDS.EVALUATION_CBONDS  (1 cột chưa map):
+    - UPDATED_DATE
+
+  IDS.EVALUATION_CRITERIA  (5 cột chưa map):
+    - ID
+    - DISPLAY_ORDER_GROUP
+    - DISPLAY_ORDER_SUBGROUP
+    - UPDATED_DATE
+    - DISPLAY_ORDER
+
+  IDS.EVALUATION_DETAILS  (1 cột chưa map):
+    - UPDATED_DATE
+
+  IDS.EVALUATION_GROUPS  (3 cột chưa map):
+    - ID
+    - DISPLAY_ORDER
+    - UPDATED_DATE
+
+  IDS.EVALUATION_PERIODS  (1 cột chưa map):
+    - UPDATED_DATE
+
+  IDS.FIELDS  (1 cột chưa map):
+    - ACTIVE_FLG
+
+  IDS.FOREIGN_OWNER_LIMIT  (3 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - SYNC_FLG
+
+  IDS.FORM_FIELDS  (5 cột chưa map):
+    - REQUIRED_FLG
+    - CORRECTION_FLG
+    - PUBLISHED_FLG
+    - ACTIVE_FLG
+    - DOC_REF
+
+  IDS.HOLDER_RELATIONSHIP  (3 cột chưa map):
+    - ACTIVE_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.LEGAL_ENTITIES  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.LEGAL_REPRESENTATIVE  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.POSITIONS  (3 cột chưa map):
+    - ACTIVE_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.PUB_COMPANY_CANCELLATION  (4 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - NOTE
+    - NON_COMPLIANCE_DATE
+
+  IDS.PUB_COMPANY_REGISTRATION  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.REPORT_EXTENSIONS  (2 cột chưa map):
+    - UPDATED_DATE
+    - REPORT_TYPE_CD
+
+  IDS.REP_COLUMN  (3 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - SYSTEM_CD
+
+  IDS.REP_FORMS  (4 cột chưa map):
+    - PUBLISHED_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+    - SYSTEM_CD
+
+  IDS.REP_ROW  (3 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+    - SYSTEM_CD
+
+  IDS.SECURITIES_OFFERING  (3 cột chưa map):
+    - ID
+    - DELETE_FLG
+    - UPDATED_DATE
+
+  IDS.SECURITIES_OFFERING_PLAN  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.SECURITIES_OFFERING_RESULT  (2 cột chưa map):
+    - DELETE_FLG
+    - UPDATED_DATE
+
+  IDS.STATE_CAPITAL  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.STOCK_CONTROLS  (3 cột chưa map):
+    - EXP_STATUS_FLG
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.STOCK_LISTING_HISTORY  (2 cột chưa map):
+    - UPDATED_DATE
+    - DELETE_FLG
+
+  IDS.TREASURY_SHARE_TRANS_RESULT  (8 cột chưa map):
+    - APPROVER_USER_ID
+    - APPROVER_USER_NAME
+    - PROCESSOR_USER_ID
+    - PROCESSOR_USER_NAME
+    - UPDATED_DATE
+    - DELETE_FLG
+    - RESULT_REPORT_DATE
+    - EXTENSION_DATE
+
+  IDS.VIOLATION_REPORT  (1 cột chưa map):
+    - COMPANY_DATA_ID
+
+  IDS.VIOLATION_TEMPLATES  (6 cột chưa map):
+    - ID
+    - ACTIVE_FLG
+    - DELETE_FLG
+    - UPDATED_DATE
+    - CONDITION_FIELD_CD
+    - PRIORITY_ORDER
+
+============================================================
+[PENDING] IDS
+
+  IDS.CATEGORIES  (7 cột pending):
+    ~ ID  [PK kỹ thuật bảng nguồn — không map vào Atomic (Bước 3e). BK là INDUSTRY_CD; Id surrogate hash từ INDUSTRY_CD. ID chỉ dùng làm khóa join ETL: PARENT_ID → ID để lấy INDUSTRY_CD của dòng cha.]
+    ~ ACTIVE_FLG  [Theo quyết định Data Modeler 2026-10-21 (entity Classification IDS Business Line): chỉ map INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID. Cột chưa được yêu cầu map.]
+    ~ UPDATED_DATE  [Quyết định thiết kế: loại bỏ audit block khỏi Atomic entity phân hệ IDS, mirror quyết định đã áp dụng cho SCMS. Created By/Updated By vốn pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chưa resolve crosswalk.]
+    ~ STATUS_FLG  [Theo quyết định Data Modeler 2026-10-21: chỉ map 4 cột INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID. Cột chưa được yêu cầu map.]
+    ~ ID_SYNC  [Theo quyết định Data Modeler 2026-10-21: chỉ map 4 cột INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID. Cột kỹ thuật phục vụ đồng bộ, không có mô tả nghiệp vụ.]
+    ~ TYPE  [Theo quyết định Data Modeler 2026-10-21: chỉ map 4 cột INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID. Lưu ý: nếu không lọc/không map TYPE thì ngành IDS và BTC lẫn trong cùng entity; cần xác nhận INDUSTRY_CD không trùng giữa 2 loại.]
+    ~ DELETE_FLG  [Theo quyết định Data Modeler 2026-10-21: chỉ map 4 cột INDUSTRY_CD, INDUSTRY_NAME, DESCRIPTION, PARENT_ID. Cần xác nhận ETL có lọc DELETE_FLG = 0 hay không.]
+
+  IDS.COMPANY_DATA  (1 cột pending):
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+  IDS.DATA  (1 cột pending):
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+  IDS.DATA_VALUES  (3 cột pending):
+    ~ FORM_ID  [Data Modeler xác nhận bỏ (2026-11-04) — dư thừa, suy ra qua FORM_FIELD_ID → FORM_FIELDS.FORM_ID.]
+    ~ FIELD_ID  [Data Modeler xác nhận bỏ (2026-11-04) — dư thừa, suy ra qua FORM_FIELD_ID → FORM_FIELDS.FIELD_ID.]
+    ~ UPDATED_DATE  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh.]
+
+  IDS.EVALUATION_CRITERIA  (1 cột pending):
+    ~ GROUP_ID  [GROUP_CD (mã nghiệp vụ của EVALUATION_GROUPS) đã có sẵn trên cùng dòng nguồn — hash trực tiếp Public Company Evaluation Group Id từ GROUP_CD thay vì join qua GROUP_ID → EVALUATION_GROUPS.ID để lấy GROUP_CD rồi mới hash. Theo yêu cầu Data Modeler (2026-07-15).]
+
+  IDS.FIELDS  (4 cột pending):
+    ~ CONTROL_UNIT_CD  [Data Modeler xác nhận không cần map (2026-11-04).]
+    ~ OPERATING_UNIT_CD  [Data Modeler xác nhận không cần map (2026-11-04).]
+    ~ UPDATED_DATE  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh.]
+    ~ DELETE_FLG  [Cờ xóa mềm kỹ thuật, loại theo tiền lệ FORMS.DELETE_FLG (Data Modeler đã xác nhận vận hành nguồn). Mô tả nguồn gộp active+delete — cần xác nhận lại nếu muốn map.]
+
+  IDS.FORMS  (6 cột pending):
+    ~ ID  [PK kỹ thuật loại khỏi model theo quy tắc chuẩn — Financial Report Template Id hash từ FORM_CD (mã nghiệp vụ), không từ ID kỹ thuật.]
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+    ~ ACTIVATED_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ PUBLISHED_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ DELETE_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ SYSTEM_CD  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+
+  IDS.FORM_FIELDS  (8 cột pending):
+    ~ FIELD_NAME_VI  [Data Modeler xác nhận bỏ (2026-11-04) — lấy qua FIELD_ID → Financial Report Field.]
+    ~ FIELD_NAME_EN  [Data Modeler xác nhận bỏ (2026-11-04) — lấy qua FIELD_ID → Financial Report Field.]
+    ~ LAST_UPDATED_BY  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh.]
+    ~ LAST_UPDATED_DATE  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he IDS, mirror quyet dinh da ap dung cho SCMS. Created By/Updated By von pending do FK cross-source sang Identity and Access Management User (IAM.USERS) chua resolve crosswalk (IDS.LOGINS.ID NUMBER tu tang vs IAM.USERS.ID VARCHAR2(36) GUID); Created/Updated Timestamp loai bo dong bo theo cung quyet dinh.]
+    ~ SYSTEM_CD  [Data Modeler xác nhận không cần map (2026-11-04).]
+    ~ READ_ONLY_FLG  [Data Modeler xác nhận không cần map (2026-11-04).]
+    ~ WRITE_FLG  [Data Modeler xác nhận không cần map (2026-11-04).]
+    ~ FIELD_FORMAT_OTHER  [Data Modeler xác nhận không cần map (2026-11-04).]
+
+  IDS.IDENTITY  (3 cột pending):
+    ~ ID  [Shared entity IP Alt Identification không có PK surrogate riêng — chỉ FK về entity chính (Legal Entity qua LEGAL_ENTITY_ID).]
+    ~ UPDATED_DATE  [Shared entity schema chuẩn (IP Alt Identification) không có audit fields — xem reference/shared_entity_schemas.md.]
+    ~ DELETE_FLG  [Shared entity schema chuẩn (IP Alt Identification) không có audit fields — xem reference/shared_entity_schemas.md.]
+
+  IDS.LOOKUP_VALUES  (8 cột pending):
+    ~ ID  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ DISPLAY_ORDER  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ ACTIVE_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ UPDATED_DATE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ SYNC_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ DELETE_FLG  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ SYSTEM_CD  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+    ~ LOOKUP_PARENT_ID  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-25 (chỉ map LOOKUP_CD, LOOKUP_GROUP, LOOKUP_VALUE_VN, LOOKUP_VALUE_EN, DESCRIPTION theo sql.txt); cl_value không có chỗ chứa.]
+
+  IDS.RCOL  (2 cột pending):
+    ~ DELETE_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+  IDS.REPORT_CATALOG  (2 cột pending):
+    ~ ACTIVE_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS (xem entry REPORT_CATALOG audit block phía trên) — bổ sung entry riêng theo cột để nhất quán với DATA/RCOL/RROW/COMPANY_DATA.]
+
+  IDS.REP_DATA  (1 cột pending):
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+  IDS.RROW  (2 cột pending):
+    ~ DELETE_FLG  [Xác nhận Data Modeler: chỉ có ý nghĩa vận hành ở nguồn, không còn ý nghĩa nghiệp vụ khi lên Atomic.]
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+  IDS.VIOLATION_REPORT  (2 cột pending):
+    ~ FORM_ID  [PK/FK kỹ thuật loại khỏi model theo quy tắc chuẩn — đã có Financial Report Template Code/Id map từ FORM_CD (mã nghiệp vụ), không cần giữ thêm FK kỹ thuật FORM_ID.]
+    ~ UPDATED_DATE  [Mirror quyết định loại bỏ audit block đã áp dụng cho toàn phân hệ IDS.]
+
+============================================================
+[UNMAPPED] ISS
+  [WARN] Bảng 'INTERNAL_STATISTICAL_REPORT' không có file cột trong BRD/Source/ISS/
+
+============================================================
+[UNMAPPED] KNT
+
+  KNT.TAX_ENFORCEMENT_DEBT  (1 cột chưa map):
+    - ID
+
+  KNT.TAX_REGISTRATION_INFO  (1 cột chưa map):
+    - ID
+
+  KNT.TAX_REPORT  (5 cột chưa map):
+    - ID
+    - IS_LATEST
+    - HAS_DIFF
+    - PEER_REPORT_ID
+    - DC_READY
+
+  KNT.TAX_VIOLATION_HANDLING  (1 cột chưa map):
+    - ID
+
+============================================================
+[UNMAPPED] MDDS
+
+  MDDS.JAD_MARKETINFOR  (1 cột chưa map):
+    - ID
+
+============================================================
+[UNMAPPED] MRMS
+
+  MRMS.RISK_INDICATOR  (5 cột chưa map):
+    - CATEGORY_ID
+    - STATUS
+    - DISPLAY_ORDER
+    - IS_DISPLAY
+    - SHOW_SYNC_INDICATOR
+
+============================================================
+[PENDING] MRMS
+
+  MRMS.RISK_INDICATOR  (1 cột pending):
+    ~ ID  [PK kỹ thuật — không map thành attribute BK riêng (BK dùng INDICATOR_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận INDICATOR_CODE cho các bảng con (xem lld_MRMS_RISK_INDICATOR_VALUE.yaml, attribute Classification Risk Indicator Id).]
+
+  MRMS.RISK_INDICATOR_CATEGORY  (3 cột pending):
+    ~ ID  [PK kỹ thuật — không map thành attribute BK riêng (BK dùng CATEGORY_CODE), nhưng được dùng làm nguồn crosswalk để xác nhận CATEGORY_CODE cho Risk Indicator Category Code trên Classification Risk Indicator (xem lld_MRMS_RISK_INDICATOR.yaml).]
+    ~ SET_CODE  [Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Set Code — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự).]
+    ~ STATUS  [Schema chuẩn Classification Value (cl_value) chỉ có Code/Name/Description, không có chỗ cho business attribute riêng như Status — theo pattern NHNCK (lld_NHNCK_APPLICATION_SOURCES.yaml và tương tự).]
+
+============================================================
+[UNMAPPED] NHNCK
+
+  NHNCK.APPLICATIONS  (1 cột chưa map):
+    - STATUS_ID
+
+  NHNCK.APPLICATION_SPECIALIZATIONS  (1 cột chưa map):
+    - SPECIALIZATION_ID
+
+  NHNCK.CERTIFICATES  (2 cột chưa map):
+    - IS_DISPLAYED
+    - SORT_ORDER
+
+  NHNCK.CERTIFICATE_DEPARTMENTS  (2 cột chưa map):
+    - ID
+    - DEPARTMENT_ID
+
+  NHNCK.CERTIFICATE_RECORDS  (1 cột chưa map):
+    - ID
+
+  NHNCK.CERTIFICATE_SPECIALIZATIONS  (3 cột chưa map):
+    - ID
+    - SPECIALIZATION_ID
+    - SORT_ORDER
+
+  NHNCK.DECISIONS  (1 cột chưa map):
+    - IS_ACTIVE
+
+  NHNCK.EXAM_SESSIONS  (1 cột chưa map):
+    - BANK_ID
+
+  NHNCK.ORGANIZATIONS  (2 cột chưa map):
+    - ID
+    - SORT_ORDER
+
+  NHNCK.PROFESSIONALS  (6 cột chưa map):
+    - IDENTITY_NUMBER
+    - IDENTITY_ISSUE_DATE
+    - IDENTITY_ISSUE_PLACE
+    - PASSPORT_NUMBER
+    - PASSPORT_ISSUE_PLACE
+    - PASSPORT_ISSUE_DATE
+
+  NHNCK.PROFESSIONAL_WORK_HISTORIES  (1 cột chưa map):
+    - POSITION_ID
+
+  NHNCK.SPECIALIZATION_COURSES  (1 cột chưa map):
+    - SPECIALIZATION_ID
+
+  NHNCK.SPECIALIZATION_COURSE_DETAILS  (1 cột chưa map):
+    - SPECIALIZATION_ID
+
+  NHNCK.VERIFY_APPLICATION_STATUSES  (2 cột chưa map):
+    - STATUS_ID
+    - PREV_STATUS_ID
+
+============================================================
+[PENDING] NHNCK
+
+  NHNCK.APPLICATIONS  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Securities Practitioner License Application Id hash từ Application Code (BK, nguồn APPLICATION_CODE). Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+    ~ MCDT_PERSONAL_SNAPSHOT  [Không có ý nghĩa nghiệp vụ khai thác trên mart — quyết định Data Modeler (2026-09-10), theo DDL mới NHNCK_UAT_schema.txt.]
+
+  NHNCK.APPLICATION_GROUP_MEMBERS  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic. Entity đổi tên thành "Securities Practitioner License Application X Application Group" (pattern link/relationship "_x_", quyết định Data Modeler 2026-08-14) — theo Bước 3e (skill atomic-lld-design), entity dạng này không có Id/Code riêng; PK là composite 2 FK Id (License Application Group Id + License Application Id), nên ID kỹ thuật của bảng nguồn không còn cần thiết dưới bất kỳ hình thức nào.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source.]
+
+  NHNCK.APPLICATION_SOURCES  (3 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng CODE (map vào cl_code).]
+    ~ LABEL  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ (cl_code/schema_code/schema_nm/src_stm_code/cl_nm/cl_nm_english/cl_description) — không có chỗ chứa cho nhãn hiển thị UI riêng biệt với tên (NAME).]
+    ~ STATUS  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD, không map từ cột nguồn).]
+
+  NHNCK.APPLICATION_STATUSES  (5 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng STATUS_CODE (map vào cl_code).]
+    ~ LABEL  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho nhãn hiển thị UI riêng biệt với tên (STATUS_NAME).]
+    ~ SORT_ORDER  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho thứ tự sắp xếp riêng.]
+    ~ IS_ACTIVE  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ IS_ORIGINAL_DATA  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho cờ dữ liệu gốc.]
+
+  NHNCK.BANKS  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng BANK_CODE (map vào cl_code).]
+    ~ BANK_KEY  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho khóa tra cứu nội bộ ngoài cl_code. BK dùng BANK_CODE.]
+
+  NHNCK.CERTIFICATES  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Securities Practitioner License Certificate Type Id hash từ Certificate Code (BK, nguồn CERTIFICATE_CODE, đổi pattern 2026-07-13). Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+
+  NHNCK.CERTIFICATE_RECORD_GROUP_MEMBERS  (7 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic. Entity đổi tên thành "Securities Practitioner License Certificate Document X Certificate Group" (pattern link/relationship "_x_", quyết định Data Modeler 2026-08-14) — theo Bước 3e (skill atomic-lld-design), entity dạng này không có Id/Code riêng; PK là composite 2 FK Id (License Certificate Document Id + License Certificate Group Id), nên ID kỹ thuật của bảng nguồn không còn cần thiết dưới bất kỳ hình thức nào.]
+    ~ ADDED_DATE  [Bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (2026-08-14) — entity đổi sang pattern link/relationship "_x_", chỉ giữ 2 cặp FK Id/Code + Source System Code như các entity link khác (Investment Fund X Fund Distribution Agent Relationship, Fund Management Company Employee X Classification FMS Job Relationship).]
+    ~ ADDED_BY  [Bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (2026-08-14) — cùng lý do với ADDED_DATE (entity link/relationship thuần, không giữ attribute nghiệp vụ riêng ngoài 2 cặp FK). Trước đó đang ở trạng thái pending chờ crosswalk NHNCK.USERS → IAM.USERS — nay moot vì attribute bị loại hoàn toàn.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source.]
+    ~ IS_REISSUE  [Bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (2026-08-14) — cùng lý do với ADDED_DATE.]
+    ~ REVOCATION_REASON  [Bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (2026-08-14) — cùng lý do với ADDED_DATE. Điểm cần xác nhận trước đó ở NHNCK_HLD_Tier4.md 6f #5 (trùng lặp với lý do thu hồi trên CERTIFICATE_RECORDS/DECISIONS) không còn áp dụng vì field đã loại khỏi thiết kế.]
+    ~ ORDER_INDEX  [Bỏ khỏi thiết kế theo yêu cầu tường minh Data Modeler (2026-08-14) — cùng lý do với ADDED_DATE.]
+
+  NHNCK.DECISIONS  (1 cột pending):
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+
+  NHNCK.DECISION_DOCUMENTS  (1 cột pending):
+    ~ DECISION_NUMBER  [Xác nhận trùng lặp thuần với sp_license_decision_document.decision_nbr (entity cha, ← DECISIONS.DECISION_NUMBER) — resolve NHNCK_HLD_Tier2.md 6f #6 (2026-08-14; cập nhật 2026-11-07 khi BK của DECISIONS đổi lại sang ID, số quyết định nằm ở decision_nbr).]
+
+  NHNCK.DEPARTMENTS  (5 cột pending):
+    ~ ID  [BK dùng DepartmentCode thay Id — Id là PK kỹ thuật, không có giá trị nghiệp vụ riêng. Out-of-scope. Bổ sung: PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+    ~ UNIT_ID  [Thiết kế lại (2026-09-11): DEPARTMENTS map vào Classification Value (cl_value) — schema chuẩn chỉ có 7 cột nghiệp vụ, không có chỗ chứa quan hệ phân cấp cha-con. Quan hệ UNIT_ID (parent) không còn giữ được sau khi tách khỏi entity Regulatory Authority Organization Unit.]
+    ~ SORT_ORDER  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho thứ tự sắp xếp riêng.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+    ~ ECATALOG_ID  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho mã tham chiếu danh mục ngoài. Mô tả nguồn còn TBD trong BRD.]
+
+  NHNCK.DOCUMENTS  (6 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng DOCUMENT_CODE (map vào cl_code).]
+    ~ IS_ACTIVE  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ IS_ORIGINAL_DATA  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho cờ dữ liệu gốc.]
+    ~ SORT_ORDER  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho thứ tự sắp xếp riêng.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20. Bổ sung lại 2026-07-24 (đã bị xóa nhầm khỏi pending_design.yaml trong lần sửa trước với lý do sai "trùng ý nghĩa với IS_ACTIVE" — lý do đúng là chính sách loại trừ RECORD_STATUS/STATUS ở trên). Bổ sung: Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ MCDT_CODE  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho mã đồng bộ hệ thống ngoài.]
+
+  NHNCK.EDUCATION_LEVELS  (3 cột pending):
+    ~ IS_DISPLAYED  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho cờ hiển thị UI riêng.]
+    ~ IS_ORIGINAL_DATA  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho cờ dữ liệu gốc.]
+    ~ STATUS  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+
+  NHNCK.EXAM_SESSIONS  (1 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Securities Practitioner Qualification Examination Assessment Id hash từ Code (BK). Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+
+  NHNCK.EXAM_SESSION_FEES  (1 cột pending):
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+
+  NHNCK.POSITIONS  (4 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng POSITION_CODE (map vào cl_code).]
+    ~ IS_ACTIVE  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ STATUS  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ ECATALOG_ID  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho mã tham chiếu danh mục ngoài. Mô tả nguồn còn TBD trong BRD.]
+
+  NHNCK.POST_CERT_TRAINING_COURSES  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Securities Practitioner Post Certification Training Course Id hash từ COURSE_CODE (BK).]
+    ~ STATUS  [Áp dụng chính sách Data Modeler (2026-07-07): không thiết kế Atomic attribute cho field kỹ thuật chung RECORD_STATUS/STATUS trên bất kỳ bảng NHNCK nào, kể cả bảng mới phát hiện sau này. Bổ sung ghi nhận 2026-07-24.]
+
+  NHNCK.PROFESSIONALS  (2 cột pending):
+    ~ USERNAME  [Dữ liệu xác thực (authentication credential) — không thiết kế Atomic, cùng chính sách với PROFESSIONAL_HISTORIES.USERNAME. Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+    ~ PASSWORD  [Dữ liệu xác thực (authentication credential) — không thiết kế Atomic, cùng chính sách với PROFESSIONAL_HISTORIES.PASSWORD. Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+
+  NHNCK.PROFESSIONAL_HISTORIES  (38 cột pending):
+    ~ ORGANIZATION_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ NATIONALITY_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ EDUCATION_LEVEL_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ REGISTRATION_TYPE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ USERNAME  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ PASSWORD  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ FULL_NAME  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ FIRST_NAME  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ AVATAR  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ BIRTH_DATE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ BIRTH_YEAR  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ GENDER  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ PERMANENT_COUNTRY_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ PERMANENT_PROVINCE_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ PERMANENT_DISTRICT_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ PERMANENT_ADDRESS  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ CURRENT_COUNTRY_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ CURRENT_PROVINCE_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ CURRENT_DISTRICT_ID  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ PLACE_OF_BIRTH  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ ADDRESS  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Postal Address.]
+    ~ IDENTITY_NUMBER  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Alt Identification.]
+    ~ IDENTITY_ISSUE_DATE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Alt Identification.]
+    ~ IDENTITY_ISSUE_PLACE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Alt Identification.]
+    ~ PHONE_NUMBER  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Electronic Address.]
+    ~ MOBILE_NUMBER  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Electronic Address.]
+    ~ EMAIL  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Electronic Address.]
+    ~ WORKPLACE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ STATUS  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới.]
+    ~ IDENTITY_TYPE  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS) / IP Alt Identification.]
+    ~ POSITION  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ DEPARTMENT  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ PREVIOUS_IDENTITY_NUMBER  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ NATIONAL  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ RELIGION  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ HOMETOWN  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ STATUS_WORK  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+    ~ STATUS_ACCOUNT  [Table redesigned theo quyết định Data Modeler (2026-07-07 review): PROFESSIONAL_HISTORIES chỉ lưu grain sự kiện thay đổi (change event: ai, khi nào, lý do gì), không lưu lại snapshot chi tiết field cũ/mới. Dữ liệu master hiện tại của Practitioner xem entity Securities Practitioner (NHNCK.PROFESSIONALS).]
+
+  NHNCK.SPECIALIZATIONS  (5 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào Atomic/Classification Value. BK dùng SPECIALIZATION_CODE (map vào cl_code).]
+    ~ IS_ACTIVE  [Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ IS_ORIGINAL_DATA  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho cờ dữ liệu gốc.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20. Bổ sung lại 2026-07-24 (đã bị xóa nhầm khỏi pending_design.yaml trong lần sửa trước với lý do sai "trùng ý nghĩa với IS_ACTIVE" — lý do đúng là chính sách loại trừ RECORD_STATUS/STATUS ở trên). Bổ sung: Classification Value (cl_value) không có cột cờ hoạt động nghiệp vụ riêng — chỉ có ds_rcrd_st (technical, ETL job tự quản lý theo SCD).]
+    ~ MCDT_CODE  [Classification Value (cl_value) chỉ có 7 cột nghiệp vụ — không có chỗ chứa cho mã đồng bộ hệ thống ngoài.]
+
+  NHNCK.SPECIALIZATION_COURSES  (2 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — không map vào Atomic theo quy tắc Bước 3e. Securities Practitioner Professional Training Class Id hash từ Course Code (BK, nguồn COURSE_CODE). Bổ sung ghi nhận 2026-07-24, post_check_source_coverage phát hiện.]
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+
+  NHNCK.UNITS  (1 cột pending):
+    ~ STATUS  [Quyết định Data Modeler (2026-07-07): không thiết kế Atomic attribute cho RECORD_TYPE/RECORD_STATUS trên bất kỳ bảng NHNCK nào — field kỹ thuật chung, loại trừ chính sách toàn source. Cột nguồn đã đổi tên RECORD_STATUS→STATUS / RECORD_TYPE→TYPE qua DDL UAT remap 2026-07-15/20 — source_column cập nhật lại 2026-07-24 (post_check_source_coverage phát hiện tên cũ không còn khớp BRD, dẫn tới báo sai thành "chưa map").]
+
+============================================================
+[UNMAPPED] SCMS
+
+  SCMS.ALERT_INDICATOR  (12 cột chưa map):
+    - ID
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - SUM_FORMULA
+    - FORMULA_TEXT
+    - FORMULA
+    - SORT_ORDER
+    - CB_ALERT_GROUP_ID
+    - RESULT_DATA_TYPE
+    - DERIVATIVE_BUSINESS_ID
+    - DERIVATIVE_BUSINESS_SCOPE
+    - RESULT_UNIT_SCALE
+
+  SCMS.BANK  (8 cột chưa map):
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - SETTLEMENT_FUNCTION_DESCRIPTION
+    - BUSINESS_REG_CERT_NUMBER
+    - BUSINESS_REG_CERT_DATE
+    - CUSTODIAN_FUNCTION_DESCRIPTION
+    - NOTE
+    - EFORM_DATA_JSON
+
+  SCMS.BANK_PERIODIC_REPORT  (13 cột chưa map):
+    - IMPORT_FILE_PATH
+    - DIGITAL_SIGNATURE_FILE
+    - SENT_AT
+    - SENDER_ID
+    - APPROVED_AT
+    - APPROVED_BY
+    - REJECTION_REASON
+    - CANCELLED_AT
+    - CANCELLED_BY
+    - CANCELLATION_REASON
+    - LAST_MODIFIED_AT
+    - ATTACHMENT_PATH
+    - PREVIOUS_SUBMIT_STATUS
+
+  SCMS.CAT_EVENT_TYPE  (1 cột chưa map):
+    - EXTENDED_DATA
+
+  SCMS.CAT_POSITION  (1 cột chưa map):
+    - ID
+
+  SCMS.CAT_SC_FIRM_STATUS  (1 cột chưa map):
+    - ACTIVE
+
+  SCMS.DISCLOSURE_SECURITIES_OFFERING  (13 cột chưa map):
+    - NOTE
+    - LAST_MODIFIED_BY_LEGACY
+    - LAST_MODIFIED_AT_LEGACY
+    - LEGACY_FILENAME
+    - LEGACY_FILEDATA
+    - LEGACY_ROWTEXT
+    - RESULT_JSON
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+    - PLAN_JSON
+    - CAPITAL_USE_PLAN
+    - ADMIN_PROC_ID
+    - CAPITAL_USE_RESULT_JSON
+
+  SCMS.FORM_INDICATOR_INPUT  (4 cột chưa map):
+    - ID
+    - REFERENCE_CATALOG_ID
+    - LAST_MODIFIED_AT
+    - REFERENCE_CATALOG_TYPE
+
+  SCMS.FORM_REPORT  (4 cột chưa map):
+    - ACTIVE
+    - LEGACY_REPORT_TYPE
+    - SORT_ORDER
+    - PRIMARY_SOURCE_API_ID
+
+  SCMS.FORM_REPORT_DEEP_CONFIG  (5 cột chưa map):
+    - EFORM_SCHEMA_JSON
+    - EXCEL_CONFIG_JSON
+    - SHEETS_JSON
+    - LAST_MODIFIED_AT
+    - EFORM_RUNTIME_MANIFEST_JSON
+
+  SCMS.FORM_SHEET  (3 cột chưa map):
+    - SORT_ORDER
+    - ACTIVE
+    - LAST_MODIFIED_AT
+
+  SCMS.FORM_SHEET_CELL  (10 cột chưa map):
+    - SORT_ORDER
+    - LAST_MODIFIED_AT
+    - ACTIVE
+    - VERSION
+    - FILTER_ID
+    - SUM_FORMULA
+    - FORMULA_TEXT
+    - FORMULA
+    - LAST_MODIFIED_AT_ALT
+    - LAST_MODIFIED_BY
+
+  SCMS.FORM_SHEET_COLUMN  (6 cột chưa map):
+    - SORT_ORDER
+    - LAST_MODIFIED_AT_LEGACY
+    - ACTIVE
+    - VERSION
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+
+  SCMS.FORM_SHEET_ROW  (6 cột chưa map):
+    - SORT_ORDER
+    - ACTIVE
+    - VERSION
+    - LAST_MODIFIED_AT_LEGACY
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+
+  SCMS.LNK_EVENT_TYPE_FORM  (1 cột chưa map):
+    - SORT_ORDER
+
+  SCMS.LNK_SC_FIRM_FOREIGN_BRANCH_SERVICE  (1 cột chưa map):
+    - ID
+
+  SCMS.REPORT_INPUT_CELL_VALUE  (1 cột chưa map):
+    - PERIOD_YEAR
+
+  SCMS.REPORT_INPUT_SUBMISSION  (1 cột chưa map):
+    - LAST_MODIFIED_AT
+
+  SCMS.SC_FIRM_ADHOC_REPORT  (7 cột chưa map):
+    - ATTACHMENT_PATH
+    - NOTE
+    - CANCELLATION_REASON
+    - LAST_MODIFIED_AT
+    - SUMMARY
+    - EFORM_DATA
+    - IMPORT_DATA_JSON
+
+  SCMS.SC_FIRM_BRANCH  (19 cột chưa map):
+    - DISTRICT_NAME
+    - WARD_NAME
+    - DECISION_NUMBER
+    - DECISION_DATE
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_AT_LEGACY
+    - LAST_MODIFIED_BY_LEGACY
+    - BRANCH_NAME
+    - BRANCH_ALLOCATED_CAPITAL
+    - MATTER_ID
+    - FORM_DATA_JSON
+    - DIRECTOR_NATIONALITY_ID
+    - DIRECTOR_DATE_OF_BIRTH
+    - DIRECTOR_ID_NUMBER
+    - DIRECTOR_ID_ISSUE_DATE
+    - DIRECTOR_ID_ISSUE_PLACE
+    - DIRECTOR_LICENSE_NUMBER
+    - DIRECTOR_LICENSE_DATE
+
+  SCMS.SC_FIRM_FOREIGN_BRANCH  (9 cột chưa map):
+    - AMENDMENT_DECLARATION
+    - SYNCED_FROM_ADMIN_PROC
+    - AMENDMENT_DOCUMENT_FILE
+    - LAST_MODIFIED_AT
+    - AMENDMENT_EFFECTIVE_DATE
+    - LAST_MODIFIED_BY
+    - AMENDMENT_DOCUMENT_NUMBER
+    - ATTACHMENT_PATH
+    - FORM_DATA_JSON
+
+  SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT  (4 cột chưa map):
+    - ATTACHMENT_PATH
+    - CANCELLATION_REASON
+    - CANCELLED_AT
+    - CANCELLED_BY
+
+  SCMS.SC_FIRM_FOREIGN_BRANCH_PERSONNEL  (2 cột chưa map):
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+
+  SCMS.SC_FIRM_FOREIGN_REP_OFFICE  (11 cột chưa map):
+    - AMENDMENT_DECLARATION
+    - AMENDMENT_DOCUMENT_FILE
+    - AMENDMENT_EFFECTIVE_DATE
+    - AMENDMENT_DOCUMENT_NUMBER
+    - SCOPE_JSON
+    - ATTACHMENT_PATH
+    - REPORTING_ENABLED
+    - ADMIN_PROC_DATA
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - FORM_DATA_JSON
+
+  SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT  (4 cột chưa map):
+    - ATTACHMENT_PATH
+    - CANCELLATION_REASON
+    - CANCELLED_BY
+    - CANCELLED_AT
+
+  SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERSONNEL  (3 cột chưa map):
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - DATE_OF_BIRTH
+
+  SCMS.SC_FIRM_INFO  (18 cột chưa map):
+    - DISTRICT_NAME
+    - WARD_NAME
+    - COUNTRY_ID
+    - COMPANY_TYPE_ID
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - ENTERPRISE_CODE
+    - CERTIFICATE_NUMBER
+    - CUSTODIAN_CERT_NUMBER
+    - CUSTODIAN_CERT_DATE
+    - FOUNDATION_LICENSE_DATE
+    - FOUNDATION_LICENSE_ISSUER
+    - FOUNDATION_LICENSE_NUMBER
+    - FORM_DATA_JSON
+    - LAST_MODIFIED_BY_ALT
+    - BUSINESS_REG_CERT_NUMBER
+    - BUSINESS_REG_CERT_DATE
+    - BUSINESS_REG_CERT_ISSUER
+
+  SCMS.SC_FIRM_INSIDER_RELATION  (2 cột chưa map):
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+
+  SCMS.SC_FIRM_MAJOR_SHAREHOLDER_RELATION  (2 cột chưa map):
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+
+  SCMS.SC_FIRM_PERIODIC_REPORT  (16 cột chưa map):
+    - DIGITAL_SIGNATURE_FILE
+    - IMPORT_FILE_PATH
+    - NOTE
+    - CANCELLATION_REASON
+    - REJECTION_REASON
+    - LAST_MODIFIED_AT
+    - APPROVED_AT
+    - CANCELLED_AT
+    - APPROVED_BY
+    - SENDER_ID
+    - CANCELLED_BY
+    - SUMMARY
+    - ATTACHMENT_PATH
+    - EFORM_DATA
+    - DISCLOSURE_EFORM_DATA
+    - IMPORT_FILE_NAME
+
+  SCMS.SC_FIRM_RELATED_PERSON  (6 cột chưa map):
+    - LAST_MODIFIED_AT
+    - TRANSACTION_TIME
+    - RESOLUTION_NUMBER
+    - TRANSACTION_CONTENT
+    - RELATION_START_DATE
+    - RELATION_END_DATE
+
+  SCMS.SC_FIRM_REP_OFFICE  (9 cột chưa map):
+    - DISTRICT_NAME
+    - WARD_NAME
+    - DECISION_NUMBER_ALT
+    - DECISION_DATE_ALT
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - SC_FIRM_REP_OFFICE_ID
+    - REPRESENTATIVE_ID
+    - FORM_DATA_JSON
+
+  SCMS.SC_FIRM_SENIOR_PERSONNEL  (15 cột chưa map):
+    - NATIONALITY_ID_LEGACY
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - PRACTICE_CERTIFICATE
+    - PRACTITIONER_LEGACY_ID
+    - DISCLOSURE_PERSON_ID_ALT
+    - BUSINESS_DIVISION_ID
+    - NATIONAL_ID
+    - POSITION_IDS
+    - RESPONSIBLE_SERVICE_ID
+    - START_DATE
+    - END_DATE
+    - DISCLOSURE_EFFECTIVE_DATE
+    - DISCLOSURE_AUTHORIZATION_DOC_NUMBER
+    - SYNC_SOURCE
+
+  SCMS.SC_FIRM_SHAREHOLDER  (3 cột chưa map):
+    - LAST_MODIFIED_BY
+    - LAST_MODIFIED_AT
+    - PRACTITIONER_LEGACY_ID
+
+  SCMS.SC_FIRM_TRANSACTION_OFFICE  (11 cột chưa map):
+    - DISTRICT_NAME
+    - WARD_NAME
+    - LAST_MODIFIED_BY_ALT
+    - LAST_MODIFIED_AT_ALT
+    - SC_FIRM_TRANSACTION_ID
+    - DECISION_DATE_ALT
+    - DECISION_NUMBER_ALT
+    - TRANSACTION_OFFICE_NAME
+    - FORM_DATA_JSON
+    - LAST_MODIFIED_AT
+    - LAST_MODIFIED_BY
+
+============================================================
+[PENDING] SCMS
+
+  SCMS.CAT_COMPANY_TYPE  (4 cột pending):
+    ~ ID  [PK kỹ thuật nguồn — theo rule 3e, không map vào cl_value. BK dùng COMPANY_TYPE_CODE (map vào cl_code).]
+    ~ NOTE  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-24 (chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME).]
+    ~ JOINT_STOCK_COMPANY  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-24 (chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME); cl_value không có chỗ chứa.]
+    ~ ECATALOG_ID  [Ngoài phạm vi thiết kế theo yêu cầu Data Modeler 2026-10-24 (chỉ map COMPANY_TYPE_CODE, COMPANY_TYPE_NAME); cl_value không có chỗ chứa.]
+
+  SCMS.CAT_SC_FIRM_STATUS  (1 cột pending):
+    ~ ID  [PK kỹ thuật — không map thành attribute BK riêng (BK dùng SC_FIRM_STATUS_CODE), nhưng được dùng làm nguồn hash cho surrogate Classification Securities Company Firm Status Id (xem lld_SCMS_CAT_SC_FIRM_STATUS.yaml).]
+
+  SCMS.FORM_INDICATOR_INPUT  (1 cột pending):
+    ~ FIELD_METADATA_ID  [FK → FORM_INDICATOR_FIELD_META — bảng giữ ngoài scope Atomic (Operational/System, xem SCMS_HLD_Overview.md 7f). Không model FK/cặp Id+Code.]
+
+  SCMS.FORM_REPORT  (4 cột pending):
+    ~ SYS_FUNCTION_ID  [FK đến SYS_FUNCTION — bảng danh mục chức năng hệ thống (menu/API route), thuộc nhóm Operational/System ngoài phạm vi Atomic (xem SCMS_HLD_Overview.md 7f). Data Modeler xác nhận (2026-07-10) giữ nguyên pending — sẽ xử lý khi phát triển SYS_FUNCTION.]
+    ~ LAST_MODIFIED_BY  [Audit block (CREATED_BY/CREATED_AT/LAST_MODIFIED_BY/LAST_MODIFIED_AT) loai bo theo convention SCMS (cung quyet dinh da ap dung cho SC_FIRM_SERVICE/REPORT_VIOLATION).]
+    ~ LAST_MODIFIED_AT  [Audit block (CREATED_BY/CREATED_AT/LAST_MODIFIED_BY/LAST_MODIFIED_AT) loai bo theo convention SCMS (cung quyet dinh da ap dung cho SC_FIRM_SERVICE/REPORT_VIOLATION).]
+    ~ PARENT_ID  [Data Modeler xác nhận (2026-09-17) — bảng nguồn không còn dùng cột này để xác định phiên bản mới nhất đang sử dụng của biểu mẫu. Trước đó đã model thành cặp "Parent Securities Company Report Id/Code" nhưng bị trùng attribute_name/physical_name với cặp FK khác từ FORM_REPORT_ID (cũng đổi tên thành "Parent Securities Company Report Id/Code" cùng ngày) — loại bỏ cặp PARENT_ID để giải quyết trùng tên và vì không còn giá trị nghiệp vụ.]
+
+  SCMS.FORM_SHEET_CELL  (1 cột pending):
+    ~ FORM_REPORT_ID  [FK dư thừa (denormalize) — đã có đường đi qua FORM_SHEET_ID (Securities Company Report Sheet Id) để tới Securities Company Report, không cần model FK riêng. Xem SCMS_HLD_Tier4.md 6f T4-03.]
+
+  SCMS.FORM_SHEET_COLUMN  (1 cột pending):
+    ~ FORM_REPORT_ID  [FK dư thừa (denormalize) — đã có đường đi qua FORM_SHEET_ID (Securities Company Report Sheet Id) để tới Securities Company Report, không cần model FK riêng.]
+
+  SCMS.FORM_SHEET_ROW  (1 cột pending):
+    ~ FORM_REPORT_ID  [FK dư thừa (denormalize) — đã có đường đi qua FORM_SHEET_ID (Securities Company Report Sheet Id) để tới Securities Company Report, không cần model FK riêng.]
+
+  SCMS.LNK_EVENT_TYPE_FORM  (1 cột pending):
+    ~ ID  [Theo yêu cầu tường minh của Data Modeler (2026-09-16) — business key của entity Securities Company Report X Classification Securities Company Event Type Relationship vẫn là cặp composite (EVENT_TYPE_ID, FORM_REPORT_ID) như LNK_SC_FIRM_SERVICE, không map ID kỹ thuật nguồn.]
+
+  SCMS.LNK_SC_FIRM_SERVICE  (1 cột pending):
+    ~ ID  [Theo yêu cầu tường minh của Data Modeler (2026-09-15) — business key của entity Securities Company X Classification Securities Company Firm Service Relationship vẫn là cặp composite (SC_FIRM_INFO_ID, SERVICE_ID) như các bảng link khác trong dự án (VD lld_NHNCK_APPLICATION_DECISIONS.yaml), không map ID kỹ thuật nguồn.]
+
+  SCMS.LNK_TRANSACTION_OFFICE_SERVICE  (1 cột pending):
+    ~ ID  [Theo yêu cầu tường minh của Data Modeler (2026-09-23) — business key của entity Securities Company Organization Unit X Classification Securities Company Firm Service Relationship vẫn là cặp composite (SC_FIRM_TRANSACTION_OFFICE_ID, SERVICE_ID) như các bảng link khác trong dự án (VD lld_SCMS_LNK_SC_FIRM_SERVICE.yaml), không map ID kỹ thuật nguồn.]
+
+  SCMS.SC_FIRM_ADMIN_SANCTION  (4 cột pending):
+    ~ CONTENT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LAST_MODIFIED_BY  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+    ~ LAST_MODIFIED_AT  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+    ~ ATTACHMENT_PATH  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  SCMS.SC_FIRM_ALERT_VIOLATION  (2 cột pending):
+    ~ ALERT_CONDITION_ID  [Data Modeler quyết định không thiết kế bảng đích (2026-11-07).]
+    ~ ALERT_RUN_ID  [Data Modeler quyết định không thiết kế bảng đích (2026-11-07).]
+
+  SCMS.SC_FIRM_BRANCH  (1 cột pending):
+    ~ PHONE_NUMBER  [Giá trị trùng lặp với PHONE — PHONE đã được chọn làm cột canonical cho IP Electronic Address type PHONE.]
+
+  SCMS.SC_FIRM_INFO  (3 cột pending):
+    ~ DECISION_NUMBER  [Đã capture qua Involved Party Alternative Identification (row OPERATION_LICENSE) — xem lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml. Loại bỏ khỏi entity chính theo quyết định người thiết kế 2026-07-10.]
+    ~ LICENSE_EXPIRY_DATE  [Đã capture qua Involved Party Alternative Identification (row OPERATION_LICENSE) — xem lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml. Loại bỏ khỏi entity chính theo quyết định người thiết kế 2026-07-10.]
+    ~ BUSINESS_LICENSE  [Đã capture qua Involved Party Alternative Identification (row OPERATION_LICENSE) — xem lld_SCMS_SC_FIRM_INFO_IP_Alt_Identification.yaml. Loại bỏ khỏi entity chính theo quyết định người thiết kế 2026-07-10.]
+
+  SCMS.SC_FIRM_LICENSED_PRACTITIONER  (41 cột pending):
+    ~ SC_FIRM_PERSONNEL_ID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SYNCED  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SYNC_AT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SC_FIRM_SERVICE_ID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ FULL_NAME_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ DATE_OF_BIRTH  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ NATIONAL_ID_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ID_CARD_ISSUED_DATE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ISSUE_PLACE_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ NATIONALITY_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ PERMANENT_ADDRESS_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ PERMANENT_RESIDENCE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ BIRTH_PLACE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ PHONE_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ COMPANY_NAME  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ENGLISH_NAME  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SHORT_NAME  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LICENSE_NUMBER  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ DEPARTMENT_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ POSITION_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ START_DATE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ END_DATE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ RECORD_STATUS_ALT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ERRTEXT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ DATEMODIFY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ BATCHID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ CONTENT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ NHN_ID  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ GENDER_LEGACY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ POSITION_IDS  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ENTITY_TYPE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ ATTACHMENT_PATH  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ GENDER  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ FULL_NAME  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LAST_MODIFIED_AT  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+    ~ DATE_OF_BIRTH_ALT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LAST_MODIFIED_BY  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+    ~ ISSUE_PLACE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ DEPARTMENT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ SECURITIES_LICENSE_NUMBER_ALT  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ MISMATCH_REASON  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+
+  SCMS.SC_FIRM_OWNERSHIP_RELATION  (2 cột pending):
+    ~ LAST_MODIFIED_AT  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+    ~ LAST_MODIFIED_BY  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he SCMS. CREATED_BY/LAST_MODIFIED_BY von pending do FK target SYS_USER ngoai pham vi SCMS; CREATED_AT/LAST_MODIFIED_AT loai bo dong bo theo cung quyet dinh.]
+
+  SCMS.SC_FIRM_PROFILE_CHANGE  (13 cột pending):
+    ~ SUBJECT_DISPLAY_NAME  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ EXECUTION_TIME  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ EVENT_TYPE_ID  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ EVENT_TYPE_NAME  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ BEFORE_INFO  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ AFTER_INFO  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ LICENSE_DECISION_DOC_NUMBER  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ EFFECTIVE_DATE  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ HAS_APPROVAL_DOC  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ PERFORMED_BY  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ PERFORMER_NAME  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ AFTER_DATA_JSON  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+    ~ ADMIN_PROCEDURE_PROFILE_ID  [Quyết định Data Modeler (2026-11-05): thiết kế SC_FIRM_PROFILE_CHANGE giữ nguyên theo LLD hiện tại; cột này của DDL UAT mới chưa đưa vào Atomic.]
+
+============================================================
+[UNMAPPED] THANHTRA
+
+  THANHTRA.EXAMINATION_RESULT_NOTICE  (3 cột chưa map):
+    - CONTENT
+    - RECOMMENDATION
+    - EXECUTION_DESCRIPTION
+
+  THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL  (2 cột chưa map):
+    - DESCRIPTION
+    - SORT_ORDER
+
+  THANHTRA.EXAMINATION_TEAM  (3 cột chưa map):
+    - CONTENT
+    - NOTE
+    - CREATED_BY_BAN_ROLE
+
+  THANHTRA.INSPECTION_ANNUAL_PLAN  (1 cột chưa map):
+    - NOTE
+
+  THANHTRA.INSPECTION_CONCLUSION  (4 cột chưa map):
+    - CONTENT
+    - RECOMMENDATION
+    - EXECUTION_DESCRIPTION
+    - OTHER_HANDLING_CONTENT
+
+  THANHTRA.INSPECTION_TEAM  (2 cột chưa map):
+    - CONTENT
+    - NOTE
+
+  THANHTRA.LEGAL_DOCUMENT  (1 cột chưa map):
+    - STATUS
+
+  THANHTRA.PENALTY_DECISION  (11 cột chưa map):
+    - SIGNER_ID
+    - SIGNER_NAME
+    - ASSIGNED_OFFICER_ID
+    - ASSIGNED_OFFICER_NAME
+    - SUBMITTED_BY_ID
+    - APPROVER_ID
+    - REVIEWER_ID
+    - REVIEWER_NAME
+    - REVIEWED_AT
+    - REVIEWED_BY_ID
+    - APPROVER_NAME
+
+  THANHTRA.PENALTY_DECISION_CIRCUMSTANCE  (1 cột chưa map):
+    - CONTENT
+
+  THANHTRA.PENALTY_DECISION_SUBJECT  (2 cột chưa map):
+    - ENFORCEMENT_PROGRESS
+    - NOTE
+
+  THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR  (4 cột chưa map):
+    - DESCRIPTION
+    - REMEDIAL_MEASURE
+    - LEGAL_BASIS
+    - SUPPLEMENTARY_PENALTY
+
+  THANHTRA.PENALTY_TYPE  (2 cột chưa map):
+    - STATUS
+    - ECATALOG_ID
+
+  THANHTRA.PETITION  (9 cột chưa map):
+    - ASSIGNED_OFFICER_ID
+    - ASSIGNED_OFFICER_NAME
+    - ARCHIVED
+    - GUIDANCE_DOCUMENT_NUMBER
+    - GUIDANCE_DOCUMENT_DATE
+    - INCOMING_DOCUMENT_NUMBER
+    - SUBMISSION_DATE
+    - COMPLAINT_CLASSIFICATION
+    - DENUNCIATION_CLASSIFICATION
+
+  THANHTRA.POST_INSPECTION_PROCESSING  (3 cột chưa map):
+    - IMPLEMENTATION_NOTES
+    - REQUIREMENT_SUMMARY
+    - RESULT_SUMMARY
+
+  THANHTRA.VIOLATION_BEHAVIOR  (1 cột chưa map):
+    - ECATALOG_ID
+
+  THANHTRA.VIOLATION_CASE  (9 cột chưa map):
+    - SOURCE_UNIT_ID
+    - SOURCE_UNIT_NAME
+    - ASSIGNED_OFFICER_ID
+    - ASSIGNED_OFFICER_NAME
+    - SUPERVISING_LEADER_ID
+    - SUPERVISING_LEADER_NAME
+    - PROCESSING_PROGRESS
+    - NOTE
+    - REPORT_CLASSIFICATION
+
+  THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT  (1 cột chưa map):
+    - NOTE
+
+  THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT  (2 cột chưa map):
+    - ISSUING_UNIT_NAME
+    - ISSUING_UNIT_ID
+
+  THANHTRA.VIOLATION_RECORD  (20 cột chưa map):
+    - SOURCE_INFO
+    - SIGNED_BY
+    - SIGNED_AT
+    - FORWARDED_AT
+    - FORWARDED_BY
+    - VIOLATOR_SIGNED_FILE_URL
+    - VIOLATOR_CONFIRMED_RECEIPT_AT
+    - VIOLATOR_CONFIRMED_BY
+    - RECORDER_UNIT_ID
+    - FIRST_SIGNED_BY
+    - FIRST_SIGNED_AT
+    - SIGNED_DOCUMENT_URL
+    - DOWNLOADED_AT
+    - UPLOADED_SIGNED_AT
+    - ASSIGNED_SIGNER_NAME
+    - ASSIGNED_SIGNER_ID
+    - ASSIGNED_LEADER_SIGNER_ID
+    - ASSIGNED_LEADER_SIGNER_NAME
+    - CREATED_BY_BAN_ROLE
+    - SIGNING_FLOW
+
+  THANHTRA.VIOLATION_RECORD_BEHAVIOR  (3 cột chưa map):
+    - ID
+    - DESCRIPTION
+    - LEGAL_BASIS
+
+============================================================
+[PENDING] THANHTRA
+
+  THANHTRA.ANTI_CORRUPTION_DOCUMENT  (5 cột pending):
+    ~ SUMMARY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ NOTE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LAST_MODIFIED_AT  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+    ~ LAST_MODIFIED_BY  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+    ~ VERSION  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+
+  THANHTRA.ANTI_MONEY_LAUNDERING_DOCUMENT  (6 cột pending):
+    ~ SUMMARY  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ NOTE  [Không thiết kế ở LLD (người thiết kế không đưa cột này vào Atomic ở lượt LLD commit 660df05b, 2026-10-28).]
+    ~ LAST_MODIFIED_AT  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+    ~ LAST_MODIFIED_BY  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+    ~ VERSION  [Cột kỹ thuật/audit — loại trừ theo quyết định chung phân hệ THANHTRA (audit block, VERSION, DELETED không lên Atomic; xem entry LEGAL_DOCUMENT).]
+    ~ DOSSIER_ID  [Quyết định Data Modeler (2026-10-28): không map DOSSIER_ID — bảng ANTI_MONEY_LAUNDERING_DOSSIER giữ ngoài scope Atomic (HLD THANHTRA Overview 7e #5).]
+
+  THANHTRA.EXAMINATION_ANNUAL_PLAN  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_RESULT_NOTICE  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_RESULT_NOTICE_REMEDIAL  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_TEAM  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_TEAM_MEMBER  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.EXAMINATION_TEAM_TARGET  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_ANNUAL_PLAN  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_ANNUAL_PLAN_TARGET  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_CONCLUSION  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_TEAM  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_TEAM_MEMBER  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.INSPECTION_TEAM_TARGET  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.LEGAL_DOCUMENT  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION_CIRCUMSTANCE  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION_SUBJECT  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY  (4 cột pending):
+    ~ ID  [Bang nguon chi co 2 FK (PENALTY_DECISION_SUBJECT_BEHAVIOR_ID, PENALTY_TYPE_ID), khong co business attribute nao khac — thoa dieu kien 'pure link' (Rule 3e atomic-lld-design). PK Atomic la composite tren 2 FK Id, khong tao cap Id/Code rieng cho entity nen ID ky thuat cua bang nguon khong duoc map — cung co che da ap dung cho PENALTY_DECISION_VIOLATION_RECORD.ID.]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho toan bo phan he THANHTRA.]
+
+  THANHTRA.PENALTY_DECISION_VIOLATION_RECORD  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md. Entity nay theo co che bang link (_x_): khong co Id/Code rieng, PK la composite tren 2 FK Id (Penalty Decision Id + Violation Record Id) nen khong can BK tu ID ky thuat nay.]
+    ~ LAST_MODIFIED_AT  [Quyet dinh thiet ke: loai bo audit block khoi Atomic entity phan he THANHTRA, mirror quyet dinh da ap dung cho PENALTY_DECISION/PENALTY_DECISION_CIRCUMSTANCE/SCMS/IDS. Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay).]
+    ~ LAST_MODIFIED_BY  [Updated By la FK cross-source den NHNCK.USERS (Regulatory Authority Officer) chua duoc xac nhan on dinh — loai bo theo quyet dinh audit block THANHTRA (mirror PENALTY_DECISION). Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay).]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_TYPE  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.PENALTY_TYPE_VIOLATION_BEHAVIOR  (4 cột pending):
+    ~ ID  [Bảng nguồn chỉ có 2 FK (PENALTY_TYPE_ID, VIOLATION_BEHAVIOR_ID), không có business attribute nào khác — thỏa điều kiện 'pure link' (Rule 3e atomic-lld-design). PK Atomic là composite trên 2 FK Id, không tạo cặp Id/Code riêng cho entity nên ID kỹ thuật của bảng nguồn không được map — cùng cơ chế đã áp dụng cho PENALTY_DECISION_SUBJECT_BEHAVIOR_SUPPLEMENTARY.ID.]
+    ~ LAST_MODIFIED_AT  [Cùng quyết định loại bỏ audit block THANHTRA đã ghi ở entry CREATED_AT cho cùng bảng.]
+    ~ LAST_MODIFIED_BY  [Cùng quyết định loại bỏ audit block THANHTRA đã ghi ở entry CREATED_AT cho cùng bảng.]
+    ~ VERSION  [Cột kỹ thuật, không có ý nghĩa nghiệp vụ — loại trừ tương tự audit block đã áp dụng cho toàn bộ phân hệ THANHTRA.]
+
+  THANHTRA.PETITION  (6 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ INTERNAL_TRANSFER_UNIT_ID  [DDL UAT cap nhat (2026-09) danh dau DEPRECATED — xem bang petition_internal_transfer_unit. Nguon giu lai chi de tuong thich nguoc, tu dong bo voi don vi dau tien trong danh sach.]
+    ~ INTERNAL_TRANSFER_UNIT_NAME  [DDL UAT cap nhat (2026-09) danh dau DEPRECATED — xem bang petition_internal_transfer_unit.]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.POST_INSPECTION_PROCESSING  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_BEHAVIOR  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_CASE  (4 cột pending):
+    ~ ID  [PK ky thuat (UUID) cua bang nguon — khong map vao Atomic theo Buoc 3e cua atomic-lld-design/SKILL.md (Code nghiep vu dung lam BK duy nhat, Id surrogate hash tu Code).]
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_CASE_OUTPUT_DOCUMENT  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_CASE_RECEIVED_DOCUMENT  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_RECORD  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+  THANHTRA.VIOLATION_RECORD_BEHAVIOR  (3 cột pending):
+    ~ LAST_MODIFIED_AT  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ LAST_MODIFIED_BY  [Bo sung entry rieng cho tung cot (post_check_source_coverage.py so khop nguyen chuoi source_column, khong tach dau phay) de cong nhan LAST_MODIFIED_AT/LAST_MODIFIED_BY da duoc loai tru cung quyet dinh audit block THANHTRA da ghi o entry CREATED_AT/LAST_MODIFIED_AT/CREATED_BY/LAST_MODIFIED_BY phia tren cho cung bang.]
+    ~ VERSION  [Optimistic locking version counter — cot ky thuat, khong co y nghia nghiep vu, loai tru tuong tu quyet dinh audit block da ap dung cho phan he THANHTRA.]
+
+============================================================
+[UNMAPPED] TTHC
+  [WARN] Bảng 'AP_DOCUMENT' không có file cột trong BRD/Source/TTHC/
+  [WARN] Bảng 'AP_DOCUMENT_APPLICANT' không có file cột trong BRD/Source/TTHC/
+  [WARN] Bảng 'CLASSIFICATION_VALUE' không có file cột trong BRD/Source/TTHC/
+
+============================================================
+[PENDING] VSDC
+
+  VSDC.CLOSED_INVESTORS  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.END_OF_DAY_OPEN_INTEREST  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.FOREIGN_INVESTOR_INFO  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.MAJOR_SHAREHOLDER  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.NATIONALITY  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.OPEN_INVESTORS  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.OUTSTANDING_SHARES  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+  VSDC.UPDATED_INVESTORS  (2 cột pending):
+    ~ DS_SNPST_DT  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+    ~ DS_ETL_PCS_TMS  [Technical field staging (prefix ds_) — Dev xử lý khi nạp Atomic; không khai báo trong LLD và không map từ cột nguồn (theo mapping_vsdc_ods_atm.md; Data Modeler loại khỏi LLD 2026-10-19).]
+
+============================================================
+⚠  CHECK A: Tổng 606 cột nguồn chưa map.
+~  CHECK A: Tổng 576 cột đang pending (xem pending_design.yaml).
+
+============================================================
+[GHOST] FIMS  — source_column trỏ đến cột không tồn tại trong nguồn:
+  FIMS.FOREIGN_INVESTOR_REPORT.SHEET_ID  →  Foreign Investor Report.Foreign Investor Report Code  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.RPT_ID  →  Foreign Investor Report.Report Id  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.REPORT_CODE  →  Foreign Investor Report.Report Code  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.REPORT_NAME  →  Foreign Investor Report.Report Name  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.LEGAL_BASIS  →  Foreign Investor Report.Legal Basis  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.TEMPLATE_STATUS  →  Foreign Investor Report.Report Status  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.SHEET_CODE  →  Foreign Investor Report.Sheet Code  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.SHEET_NAME  →  Foreign Investor Report.Sheet Name  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FOREIGN_INVESTOR_REPORT.SHEET_INDEX  →  Foreign Investor Report.Sheet Index  [bảng 'FOREIGN_INVESTOR_REPORT' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.INDICATOR_UID  →  Foreign Investor Report Structure.Structure Code  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SHEET_ID  →  Foreign Investor Report Structure.Foreign Investor Report Id  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.RPT_ID  →  Foreign Investor Report Structure.Report Id  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SHEET_ROW  →  Foreign Investor Report Structure.Row Index  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SHEET_COL  →  Foreign Investor Report Structure.Column Index  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.FORMAT_DATA_TYPE  →  Foreign Investor Report Structure.Data Type  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.ROW_PATH  →  Foreign Investor Report Structure.Row Path  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.COLUMN_PATH  →  Foreign Investor Report Structure.Column Path  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SECTION_ID  →  Foreign Investor Report Structure.Section Id  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SECTION_TYPE  →  Foreign Investor Report Structure.Section Type Code  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.IS_DYNAMIC_SLOT  →  Foreign Investor Report Structure.Dynamic Indicator  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.IS_GROUP_LAST_BAND  →  Foreign Investor Report Structure.Last Band Indicator  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.IS_TOTAL_ROW  →  Foreign Investor Report Structure.Total Row Indicator  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.IS_ORDINAL_COL  →  Foreign Investor Report Structure.Ordinal Column Indicator  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.ITEM_ID  →  Foreign Investor Report Structure.Data Explorer Id  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.SORT_ORDER  →  Foreign Investor Report Structure.Sort Order  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.IS_EXCLUDED_BY_CONFIG  →  Foreign Investor Report Structure.Excluded By Config Indicator  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_STRUCTURE.OVERRIDE_SOURCE  →  Foreign Investor Report Structure.Override Source  [bảng 'FIR_STRUCTURE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.INDICATOR_UID  →  Foreign Investor Report Value.Structure Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.REPORT_LOG_ID  →  Foreign Investor Report Value.Report Log Id  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.RPT_ID  →  Foreign Investor Report Value.Report Id  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.SHEET_ID  →  Foreign Investor Report Value.Foreign Investor Report Id  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.OBJECT_TYPE  →  Foreign Investor Report Value.Reporting Entity Type Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.OBJECT_ID  →  Foreign Investor Report Value.Reporting Entity Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.PERIOD_TYPE  →  Foreign Investor Report Value.Period Type Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.PERIOD_VALUE  →  Foreign Investor Report Value.Period Value  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.YEAR_VALUE  →  Foreign Investor Report Value.Report Year  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.DAY_REPORT  →  Foreign Investor Report Value.Report Day  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.HAN_NOP  →  Foreign Investor Report Value.Submission Deadline Timestamp  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.LATE_STATUS  →  Foreign Investor Report Value.Submission Status Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.LATE_STATUS_CODE  →  Foreign Investor Report Value.Submission Status Type Code  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.LATE_DURATION  →  Foreign Investor Report Value.Late Duration  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_TOTAL_ROW  →  Foreign Investor Report Value.Total Row Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_ORDINAL_COL  →  Foreign Investor Report Value.Ordinal Column Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_SECTION_ECHO  →  Foreign Investor Report Value.Section Echo Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_BAND_OVERFLOW  →  Foreign Investor Report Value.Band Overflow Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_STATIC_COPY  →  Foreign Investor Report Value.Static Copy Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_TEMPLATE_MARKER  →  Foreign Investor Report Value.Report Marker Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.IS_DYNAMIC  →  Foreign Investor Report Value.Dynamic Indicator  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.ROW_ORDER  →  Foreign Investor Report Value.Dynamic Row Order  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.VALUE_RAW  →  Foreign Investor Report Value.Value Raw  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.FIR_VALUE.NGAY_NOP  →  Foreign Investor Report Value.Submission Date  [bảng 'FIR_VALUE' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_ID  →  Classification Foreign Investor Reporting Entity.Reporting Entity Code  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE  →  Classification Foreign Investor Reporting Entity.Reporting Entity Type Code  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_TYPE_NAME  →  Classification Foreign Investor Reporting Entity.Reporting Entity Type Name  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_CODE  →  Classification Foreign Investor Reporting Entity.Entity Reference Number  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_NAME  →  Classification Foreign Investor Reporting Entity.Reporting Entity Name  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+  FIMS.CL_FOREIGN_INVESTOR_REPORTING_ENTITY.OBJECT_SHORT_NAME  →  Classification Foreign Investor Reporting Entity.Reporting Entity Short Name  [bảng 'CL_FOREIGN_INVESTOR_REPORTING_ENTITY' không có trong BRD/Source/FIMS/]
+
+============================================================
+[GHOST] FMS  — source_column trỏ đến cột không tồn tại trong nguồn:
+  FMS.WEIGHT_CONFIG.INPUT_INDICATOR_CODE  →  Risk Weight Config.Risk Factor Code  [bảng 'WEIGHT_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.WEIGHT_CONFIG.INPUT_INDICATOR_NAME  →  Risk Weight Config.Risk Factor Name  [bảng 'WEIGHT_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.WEIGHT_CONFIG.OUTPUT_INDICATOR_CODE  →  Risk Weight Config.Risk Factor Group  [bảng 'WEIGHT_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.WEIGHT_CONFIG.WEIGHT  →  Risk Weight Config.Weight  [bảng 'WEIGHT_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.THRESHOLD_CONFIG.INDICATOR_CODE  →  Status Threshold Config.Index Code  [bảng 'THRESHOLD_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.THRESHOLD_CONFIG.INDICATOR_NAME  →  Status Threshold Config.Index Name  [bảng 'THRESHOLD_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.THRESHOLD_CONFIG.VALUE_FROM  →  Status Threshold Config.From Value  [bảng 'THRESHOLD_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.THRESHOLD_CONFIG.VALUE_TO  →  Status Threshold Config.To Value  [bảng 'THRESHOLD_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.THRESHOLD_CONFIG.STATUS  →  Status Threshold Config.Status  [bảng 'THRESHOLD_CONFIG' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.ITEM_ID  →  Dynamic Report Structure.Dynamic Report Structure Code  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.REPORT_CODE  →  Dynamic Report Structure.Report Code  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.REPORT_NAME  →  Dynamic Report Structure.Report Name  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.SHEET_NAME  →  Dynamic Report Structure.Sheet Name  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.COLUMN_PATH  →  Dynamic Report Structure.Column Path  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.ROW_PATH  →  Dynamic Report Structure.Row Path  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.UID_CELL  →  Dynamic Report Structure.Cell Id  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.ROW  →  Dynamic Report Structure.Row Index  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.COL  →  Dynamic Report Structure.Column Index  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.LEGAL_BASIS  →  Dynamic Report Structure.Legal Basis  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.IS_LABEL_COL  →  Dynamic Report Structure.Label Column Indicator  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.ITEM_LIST.LABEL_ITEM_ID  →  Dynamic Report Structure.Dynamic Label Row  [bảng 'ITEM_LIST' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.REPORT_LOG_ID  →  Dynamic Report Submission History.Dynamic Report Submission History Code  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.REPORT_CODE  →  Dynamic Report Submission History.Report Code  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.REPORT_TYPE  →  Dynamic Report Submission History.Report Type  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.AUDIT  →  Dynamic Report Submission History.Audit Report Indicator  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.OBJECT_ID  →  Dynamic Report Submission History.Object Id  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.OBJECT_NAME  →  Dynamic Report Submission History.Object Name  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.OBJECT_TYPE  →  Dynamic Report Submission History.Object Type  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.OBJECT_SUBTYPE  →  Dynamic Report Submission History.Object Sub Type  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.PERIOD_TYPE  →  Dynamic Report Submission History.Period Type  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.PERIOD_VALUE  →  Dynamic Report Submission History.Period Value  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.SUBMISSION_DATE  →  Dynamic Report Submission History.Submission Date  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.REPORT_HISTORY.RPT_VERSION  →  Dynamic Report Submission History.Report Version  [bảng 'REPORT_HISTORY' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.ITEM_ID  →  Dynamic Report Value.Dynamic Report Structure Id  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.REPORT_LOG_ID  →  Dynamic Report Value.Dynamic Report Submission History Id  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.ROW_ORDER  →  Dynamic Report Value.Row Dynamic Index  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.ROW_PATH  →  Dynamic Report Value.Row Path  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.ENTITY_CODE  →  Dynamic Report Value.Entity Code  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.IS_LABEL_COL  →  Dynamic Report Value.Label Column Indicator  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.VALUE  →  Dynamic Report Value.Value  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.ACC_VALUE  →  Dynamic Report Value.Custodian Bank Code  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.IS_DYNAMIC  →  Dynamic Report Value.Dynamic Indicator  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.DATA_TYPE  →  Dynamic Report Value.Data Type  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.ITEM_VALUE.SUBMISSION_DATE  →  Dynamic Report Value.Submission Date  [bảng 'ITEM_VALUE' không có trong BRD/Source/FMS/]
+  FMS.SHEET.ROW_INDEX  →  Fund Management Report Sheet.Row Index
+  FMS.SHEET.COLUMN_INDEX  →  Fund Management Report Sheet.Column Index
+  FMS.SHEET.CELL_ID  →  Fund Management Report Sheet.Cell Id
+  FMS.SHEET.LABEL_NM  →  Fund Management Report Sheet.Label Name
+  FMS.SHEET.ROW_SPAN  →  Fund Management Report Sheet.Row Span
+  FMS.SHEET.COLUMN_SPAN  →  Fund Management Report Sheet.Column Span
+
+============================================================
+[GHOST] ISS  — source_column trỏ đến cột không tồn tại trong nguồn:
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_CODE  →  Internal Statistical Report.Report Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_NAME  →  Internal Statistical Report.Report Name  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_SOURCE  →  Internal Statistical Report.Report Submission System Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.TEMPLATE_VERSION  →  Internal Statistical Report.Version Number  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_LAYOUT_TYPE  →  Internal Statistical Report.Report Type Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.SHEET_NAME  →  Internal Statistical Report.Sheet Name  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_START_POSITION  →  Internal Statistical Report.Column Start Address  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ROW_START_POSITION  →  Internal Statistical Report.Row Start Address  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_PATH  →  Internal Statistical Report.Column Path  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ROW_PATH  →  Internal Statistical Report.Row Path  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ROW_INDEX  →  Internal Statistical Report.Row Index  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.COL_POSITION  →  Internal Statistical Report.Column Address  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ROW_POSITION  →  Internal Statistical Report.Row Address  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.COLUMN_CODE  →  Internal Statistical Report.Column Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ROW_CODE  →  Internal Statistical Report.Row Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.FIELD_CODE  →  Internal Statistical Report.Cell Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.DATA_TYPE  →  Internal Statistical Report.Data Type Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.FIELD_VALUE  →  Internal Statistical Report.Cell Value  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.DATE_TYPE  →  Internal Statistical Report.Period Type Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.ORIGIN_DATE_VALUE  →  Internal Statistical Report.Period Value  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_DAY  →  Internal Statistical Report.Report Day  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_MONTH  →  Internal Statistical Report.Report Month  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_QUARTER  →  Internal Statistical Report.Report Quarter  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_HALF_YEAR  →  Internal Statistical Report.Report Half Year  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.REPORT_YEAR  →  Internal Statistical Report.Report Year  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+  ISS.INTERNAL_STATISTICAL_REPORT.SUBMIT_STATUS  →  Internal Statistical Report.Submission Status Code  [bảng 'INTERNAL_STATISTICAL_REPORT' không có trong BRD/Source/ISS/]
+
+============================================================
+[GHOST] SCMS  — source_column trỏ đến cột không tồn tại trong nguồn:
+  SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_ID  →  Securities Company Report Deep Config.Sheet Id
+  SCMS.FORM_REPORT_DEEP_CONFIG.SHEET_CODE  →  Securities Company Report Deep Config.Sheet Code
+  SCMS.FORM_REPORT_DEEP_CONFIG.CELL_ID  →  Securities Company Report Deep Config.Cell Id
+  SCMS.REPORT_INPUT_SUBMISSION.DATA_DT  →  Securities Company Report Input Submission.Data Date
+  SCMS.REPORT_INPUT_CELL_VALUE.DATA_DT  →  Securities Company Report Input Value.Data Date
+  SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_NUMBER  →  Securities Company Profile Change.Establishment Operation License Number
+  SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_DATE  →  Securities Company Profile Change.Establishment Operation License Date
+  SCMS.SC_FIRM_PROFILE_CHANGE.TENCTCK  →  Securities Company Profile Change.Securities Company Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.TENDAYDU  →  Securities Company Profile Change.Organization Unit Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.DIACHI  →  Securities Company Profile Change.Organization Unit Address
+  SCMS.SC_FIRM_PROFILE_CHANGE.PHONE  →  Securities Company Profile Change.Phone
+  SCMS.SC_FIRM_PROFILE_CHANGE.WEBSITE  →  Securities Company Profile Change.Website
+  SCMS.SC_FIRM_PROFILE_CHANGE.GIAMDOC  →  Securities Company Profile Change.Director Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANH  →  Securities Company Profile Change.Classification Securities Company Firm Service Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.TENTRANGTHAI  →  Securities Company Profile Change.Operational Status
+  SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN  →  Securities Company Profile Change.Classification Securities Company Firm Service Authorized Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.TENTINHTHANH  →  Securities Company Profile Change.Province Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.CTCKCHINHANHTEN  →  Securities Company Profile Change.Branch Name
+  SCMS.SC_FIRM_PROFILE_CHANGE.SANNIEMYET  →  Securities Company Profile Change.Exchange Code
+  SCMS.SC_FIRM_PROFILE_CHANGE.MACHUNGKHOAN  →  Securities Company Profile Change.Ticker Symbol
+  SCMS.SC_FIRM_PROFILE_CHANGE.VONDIEULE  →  Securities Company Profile Change.Legal Capital Amount
+  SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHPHAISINH  →  Securities Company Profile Change.Classification Securities Company Firm Service Incur Name
+
+============================================================
+[GHOST] TTHC  — source_column trỏ đến cột không tồn tại trong nguồn:
+  TTHC.AP_DOCUMENT.AP_DOCUMENT_ID  →  Administrative Procedure Document.Administrative Procedure Document Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.AP_DOCUMENT_APPLICANT_ID  →  Administrative Procedure Document.Administrative Procedure Document Applicant Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.DOCUMENT_TITLE  →  Administrative Procedure Document.Document Title  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.SECURITIES_CODE  →  Administrative Procedure Document.Securities Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.PROCESSING_STATUS_CODE  →  Administrative Procedure Document.Processing Status Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.PROCESSING_AUTHORITY_CODE  →  Administrative Procedure Document.Processing Authority Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.DOCUMENT_TYPE_CODE  →  Administrative Procedure Document.Document Type Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.DOMAIN_CODE  →  Administrative Procedure Document.Domain Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.PRIORITY_LEVEL_CODE  →  Administrative Procedure Document.Priority Level Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.RECEPTION_CHANNEL_CODE  →  Administrative Procedure Document.Reception Channel Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.RETURN_METHOD_CODE  →  Administrative Procedure Document.Return Method Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.PROCESSING_OFFICER_CODE  →  Administrative Procedure Document.Processing Officer Code  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.SUBMISSION_TIMESTAMP  →  Administrative Procedure Document.Submission Timestamp  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.RECEPTION_TIMESTAMP  →  Administrative Procedure Document.Reception Timestamp  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.PROCESSING_DEADLINE_TIMESTAMP  →  Administrative Procedure Document.Processing Deadline Timestamp  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.RESULT_RETURN_TIMESTAMP  →  Administrative Procedure Document.Result Return Timestamp  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.FEE_PAID  →  Administrative Procedure Document.Fee Paid  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.FEE_AMOUNT  →  Administrative Procedure Document.Fee Amount  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.DOC_COMPONENT  →  Administrative Procedure Document.Document Component  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT.EFORM_DATA  →  Administrative Procedure Document.Eform Data  [bảng 'AP_DOCUMENT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT_APPLICANT.AP_DOCUMENT_APPLICANT_ID  →  Administrative Procedure Document Applicant.Administrative Procedure Document Applicant Code  [bảng 'AP_DOCUMENT_APPLICANT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT_APPLICANT.DISPLAY_NAME  →  Administrative Procedure Document Applicant.Display Name  [bảng 'AP_DOCUMENT_APPLICANT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT_APPLICANT.PHONE_NUMBER  →  Administrative Procedure Document Applicant.Phone Number  [bảng 'AP_DOCUMENT_APPLICANT' không có trong BRD/Source/TTHC/]
+  TTHC.AP_DOCUMENT_APPLICANT.EMAIL  →  Administrative Procedure Document Applicant.Email  [bảng 'AP_DOCUMENT_APPLICANT' không có trong BRD/Source/TTHC/]
+  TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_CODE  →  Classification Value.Classification Code  [bảng 'CLASSIFICATION_VALUE' không có trong BRD/Source/TTHC/]
+  TTHC.CLASSIFICATION_VALUE.SCHEMA_CODE  →  Classification Value.Schema Code  [bảng 'CLASSIFICATION_VALUE' không có trong BRD/Source/TTHC/]
+  TTHC.CLASSIFICATION_VALUE.SCHEMA_NM  →  Classification Value.Schema Name  [bảng 'CLASSIFICATION_VALUE' không có trong BRD/Source/TTHC/]
+  TTHC.CLASSIFICATION_VALUE.CLASSIFICATION_NAME  →  Classification Value.Classification Name  [bảng 'CLASSIFICATION_VALUE' không có trong BRD/Source/TTHC/]
+
+============================================================
+⚠  CHECK B: Tổng 183 source_column trỏ đến cột không tồn tại.
+
+Ghi chú: Cột kỹ thuật/audit (NGAY_TAO, NGAY_CAP_NHAT...) được bỏ qua tự động.
+Nếu cột cố ý không map (out-of-scope), thêm vào SKIP_COLUMNS hoặc ghi chú trong attr file.
