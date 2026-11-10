@@ -7,7 +7,7 @@ metadata:
   entity_physical_name: "foreign_investor_securities_holding"
   bcv_core_object: "Arrangement"
   bcv_concept: "[Arrangement] Investment Arrangement"
-  table_type: "Fact Append"
+  table_type: "Relative"
   group: "T2"
   design_status: "approved"
   version: "1.0"
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-28] Theo yêu cầu Data Modeler: CATEGORIESSTOCK thành entity riêng (Fact Append, [Arrangement] Investment Arrangement), đảo quyết định gộp vào Foreign Investor Securities Account (entity đã gỡ khỏi HLD 2026-10-21). HLD: FIMS_HLD_Tier2.md (T2-07). Grain = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Domain Prefix rỗng (`Foreign Investor` không thuộc danh sách curated); entity_physical_name = full words. Nguồn không có mã nghiệp vụ riêng nên BK = ID nguồn (cùng pattern FIMS.SECURITIESCOMPANY/BANKMONI); vì insert-only nhiều lần ghi nhận cho cùng ID, Id lặp lại giữa các lần chạy, phân biệt bằng ds_etl_pcs_tms. ID, DELETED, DateCreated, CreatedBy, DateModified, ModifyBy, IsSynced document trong pending_design.yaml. Chưa chốt (T2-07): (a) ETL append mọi lần hay chỉ khi QUANTITY/RATE đổi; (b) SECID NVARCHAR2(100) lệch kiểu SECURITIESCOMPANY.ID NUMBER(18,2); (c) QUANTITY/RATE tổng tại CTCK hay theo mã; (d) cặp (INVESID, SECID) duy nhất khi DELETED=0 không."
+  notes: "[SỬA 2026-11-09] Theo yêu cầu Data Modeler: Table Type Fact Append → Relative (SCD2; nguồn Update) — Id/BK không còn lặp giữa các lần chạy mà do SCD2 quản lý bằng ds_rcrd_eff_dt/ds_rcrd_end_dt thay cho append mọi lần; technical fields đổi từ ds_etl_pcs_tms sang ds_etl_pcs_tms + ds_rcrd_eff_dt + ds_rcrd_end_dt (sinh ở bước generate). [MỚI 2026-10-28] Theo yêu cầu Data Modeler: CATEGORIESSTOCK thành entity riêng (Fact Append, [Arrangement] Investment Arrangement), đảo quyết định gộp vào Foreign Investor Securities Account (entity đã gỡ khỏi HLD 2026-10-21). HLD: FIMS_HLD_Tier2.md (T2-07). Grain = 1 NĐT NN × 1 CTCK × 1 lần ghi nhận. Domain Prefix rỗng (`Foreign Investor` không thuộc danh sách curated); entity_physical_name = full words. Nguồn không có mã nghiệp vụ riêng nên BK = ID nguồn (cùng pattern FIMS.SECURITIESCOMPANY/BANKMONI); vì insert-only nhiều lần ghi nhận cho cùng ID, Id lặp lại giữa các lần chạy, phân biệt bằng ds_etl_pcs_tms. ID, DELETED, DateCreated, CreatedBy, DateModified, ModifyBy, IsSynced document trong pending_design.yaml. Chưa chốt (T2-07): (a) ETL append mọi lần hay chỉ khi QUANTITY/RATE đổi; (b) SECID NVARCHAR2(100) lệch kiểu SECURITIESCOMPANY.ID NUMBER(18,2); (c) QUANTITY/RATE tổng tại CTCK hay theo mã; (d) cặp (INVESID, SECID) duy nhất khi DELETED=0 không."
 attributes:
 - attribute_name: "Foreign Investor Securities Holding Id"
   physical_name: "foreign_investor_securities_holding_id"

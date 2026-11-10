@@ -26970,6 +26970,25 @@ attributes:
   atomic_table: "dr_structure"
   atomic_column: "data_tp"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Dynamic Report Structure"
+  atomic_attribute: "Active Indicator"
+  description: "Trạng thái bản ghi: 1 = đang hoạt động; 0 = không hoạt động."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "ITEM_LIST"
+  source_column: "SCMS.ITEM_LIST.RECORD_STATUS"
+  comment: "Map RECORD_STATUS (INT) -> active_ind theo quyết định Data Modeler 2026-11-09,\
+    \ cùng pattern Active Indicator của ECAT. Nguồn lưu dạng số — giữ nguyên giá trị\
+    \ số. Data type nguồn ODS không khai báo — cần profile tập giá trị thực của RECORD_STATUS\
+    \ trước ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "dr_structure"
+  atomic_column: "active_ind"
+- bcv_core_object: "Documentation"
   atomic_entity: "Dynamic Report Submission History"
   atomic_attribute: "Dynamic Report Submission History Id"
   description: "Khóa đại diện (surrogate key)."

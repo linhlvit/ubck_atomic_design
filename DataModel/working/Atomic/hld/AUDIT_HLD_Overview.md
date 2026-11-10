@@ -168,7 +168,6 @@ Không có junction table.
 | Chưa có LLD | REP_FORMS | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | REP_ROW | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | RROW | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
-| Chưa có LLD | SMS_LOG | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | VIOLATION_REPORT | Chưa có mô tả trong BRD. | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | VIOLATION_TEMPLATES | Bảng lưu trữ thông tin cấu hình mẫu vi phạm | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 

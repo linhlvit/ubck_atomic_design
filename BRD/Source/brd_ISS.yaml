@@ -427,9 +427,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Append theo created_at
 - brd_id: BRD-SRC-ISS-REPORT_SEND_LOG
   brd_name: Design Atomic từ nguồn ISS bảng REPORT_SEND_LOG
   type: Theo Source
@@ -473,6 +473,6 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Append theo created_at
