@@ -2171,7 +2171,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "DD"
-        description: "Mã tham số cảnh báo (ALERT_INDICATOR.INDICATOR_CODE, qua sc_alert_violation.sc_alert_ind_code) — thuộc tính mã để hiển thị/đối soát. [SỬA 2026-11-10, O_QLKD_75] KHÔNG còn dùng để chọn nhóm tham số của biểu đồ: BA lọc theo ALERT_INDICATOR.ID → dùng FK securities_company_alert_indicator_dim_id (Securities Company Alert Indicator Dimension.sc_alert_ind_src_id). Các mã DUY_TRI_DKCP_* ghi trước đây là ước lượng từ BA v4.1, không phải INDICATOR_CODE của SCMS."
+        description: "Mã định danh tham số cảnh báo (SC_FIRM_ALERT_VIOLATION.ALERT_INDICATOR_ID = ALERT_INDICATOR.ID, qua sc_alert_violation.sc_alert_ind_code — lookup pair của sc_alert_ind_id theo cập nhật Atomic 2026-11-10). [SỬA 2026-11-10, O_QLKD_75] Detail Mapping chọn nhóm tham số của biểu đồ qua FK securities_company_alert_indicator_dim_id (Securities Company Alert Indicator Dimension.sc_alert_ind_code); mã nghiệp vụ INDICATOR_CODE nằm ở securities_company_alert_indicator_dim.alert_ind_code. Các mã DUY_TRI_DKCP_* ghi trước đây là ước lượng từ BA v4.1, không phải INDICATOR_CODE của SCMS."
         source_atomic_table: "sc_alert_violation"
         source_atomic_column: "sc_alert_violation.sc_alert_ind_code"
       - logical_name: "Alert Entity Type Code"
@@ -2234,7 +2234,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "FK"
-        description: "FK tham số cảnh báo — nối Securities Company Alert Indicator Dimension; PK Dim = Atomic sc_alert_ind_id (A23) nên mang thẳng sc_alert_violation.sc_alert_ind_id, không lookup. [MỚI 2026-11-10, O_QLKD_75] Thay cho lọc indicator_code tự đặt: Detail Mapping chọn nhóm tham số của từng biểu đồ bằng securities_company_alert_indicator_dim.sc_alert_ind_src_id IN (<ID BA>) — Nhóm 5: 450, 451; Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456. NULL khi dòng cảnh báo không gắn tham số. Cột đặt CUỐI bảng để flat #3 có thể ALTER ADD COLUMN."
+        description: "FK tham số cảnh báo — nối Securities Company Alert Indicator Dimension; PK Dim = Atomic sc_alert_ind_id (A23, hash_id('SCMS_ALERT_INDICATOR', ALERT_INDICATOR_ID)) nên mang thẳng sc_alert_violation.sc_alert_ind_id, không lookup. [MỚI 2026-11-10, O_QLKD_75] Thay cho lọc indicator_code tự đặt: Detail Mapping chọn nhóm tham số của từng biểu đồ bằng securities_company_alert_indicator_dim.sc_alert_ind_code IN (<ID BA>) — Nhóm 5: 450, 451; Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456. NULL khi dòng cảnh báo không gắn tham số. Cột đặt CUỐI bảng để flat #3 có thể ALTER ADD COLUMN."
         source_atomic_table: "sc_alert_violation"
         source_atomic_column: "sc_alert_violation.sc_alert_ind_id"
 

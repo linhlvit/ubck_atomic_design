@@ -109,7 +109,7 @@ WHERE cal.cdr_dt = :etl_date
 --    Xếp loại duy trì (tốt / gần giới hạn / không duy trì) tính ở Detail Mapping, không ở ETL.
 --    TRUNCATE + INSERT toàn bộ (cùng khuôn flat 4 và 16): cảnh báo có thể bổ sung hoặc sửa lùi kỳ nên APPEND theo ngày không đúng.
 --    [2026-11-10, O_QLKD_75] LEFT JOIN Securities Company Alert Indicator Dimension theo FK securities_company_alert_indicator_dim_id (= Atomic sc_alert_ind_id);
---    KPI Nhóm 5/6/7/36 lọc tham số bằng sc_alert_ind_src_id (ALERT_INDICATOR.ID theo BA). Dimension này chưa có khối flat riêng (Dimension không sinh flat).
+--    KPI Nhóm 5/6/7/36 lọc tham số bằng sc_alert_ind_code (ALERT_INDICATOR.ID theo BA — BK của sc_alert_indicator). Dimension này chưa có khối flat riêng (Dimension không sinh flat).
 -- ============================================================
 TRUNCATE TABLE IF EXISTS datamart.qlkd_fct_securities_company_license_condition_snpst_flat ON CLUSTER 'my_cluster';
 INSERT INTO datamart.qlkd_fct_securities_company_license_condition_snpst_flat
@@ -146,8 +146,8 @@ SELECT
 
     -- From: SECURITIES COMPANY ALERT INDICATOR DIMENSION
     ai_dim.sc_alert_ind_code           AS sc_alert_ind_code,
-    ai_dim.sc_alert_ind_src_id         AS sc_alert_ind_src_id,
-    ai_dim.sc_alert_ind_nm             AS sc_alert_ind_nm,
+    ai_dim.alert_ind_code              AS alert_ind_code,
+    ai_dim.alert_ind_nm                AS alert_ind_nm,
     ai_dim.alert_ind_tp_code           AS alert_ind_tp_code,
     ai_dim.severity_level              AS severity_level
 
