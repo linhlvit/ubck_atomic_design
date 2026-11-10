@@ -105,9 +105,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FIMS-USERRPTO
   brd_name: Design Atomic từ nguồn FIMS bảng USERRPTO
   type: Theo Source
@@ -128,9 +128,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FIMS-GROUPS
   brd_name: Design Atomic từ nguồn FIMS bảng GROUPS
   type: Theo Source
@@ -377,9 +377,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FIMS-SHEDLOCK
   brd_name: Design Atomic từ nguồn FIMS bảng SHEDLOCK
   type: Theo Source
@@ -547,8 +547,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
-      filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-FIMS-RPT_FIELD_CATALOG
   brd_name: Design Atomic từ nguồn FIMS bảng RPT_FIELD_CATALOG
   type: Theo Source
@@ -1245,8 +1245,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1
-      filter_note: Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: DATECREATED >= {etl_date} AND DATECREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATECREATED
 - brd_id: BRD-SRC-FIMS-INVESTOR
   brd_name: Design Atomic từ nguồn FIMS bảng INVESTOR
   type: Theo Source
@@ -2278,8 +2278,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreatedviolt >= {{etl_date}} AND datecreatedviolt < {{etl_date}} + 1
-      filter_note: Lọc theo cột DateCreatedViolt — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: DATECREATEDVIOLT >= {etl_date} AND DATECREATEDVIOLT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATECREATEDVIOLT
 - brd_id: BRD-SRC-FIMS-AUTHOANNOUNCE
   brd_name: Design Atomic từ nguồn FIMS bảng AUTHOANNOUNCE
   type: Theo Source
@@ -2509,8 +2509,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1
-      filter_note: Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: DATECREATED >= {etl_date} AND DATECREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATECREATED
 - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVES
   brd_name: Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATIONINVES
   type: Theo Source
@@ -2532,8 +2532,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1
-      filter_note: Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: DATECREATED >= {etl_date} AND DATECREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATECREATED
 - brd_id: BRD-SRC-FIMS-TRADINGAUTHORIZATIONINVESHIS
   brd_name: Design Atomic từ nguồn FIMS bảng TRADINGAUTHORIZATIONINVESHIS
   type: Theo Source
@@ -2555,8 +2555,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated >= {{etl_date}} AND datecreated < {{etl_date}} + 1
-      filter_note: Lọc theo cột DateCreated — bảng chỉ append, không cập nhật dòng cũ
+      filter_logic: DATECREATED >= {etl_date} AND DATECREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATECREATED
 - brd_id: BRD-SRC-FIMS-PROVINCE_NEW
   brd_name: Design Atomic từ nguồn FIMS bảng PROVINCE_NEW
   type: Theo Source

@@ -579,9 +579,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-USERS_MENUS
   brd_name: Design Atomic từ nguồn FMS bảng USERS_MENUS
   type: Theo Source
@@ -625,9 +625,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-USER_RPT_O
   brd_name: Design Atomic từ nguồn FMS bảng USER_RPT_O
   type: Theo Source
@@ -648,9 +648,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-USER_SESSIONS
   brd_name: Design Atomic từ nguồn FMS bảng USER_SESSIONS
   type: Theo Source
@@ -1101,9 +1101,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_BMN
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_BMN
   type: Theo Source
@@ -1124,9 +1124,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_FND
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_FND
   type: Theo Source
@@ -1147,9 +1147,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_FR
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_FR
   type: Theo Source
@@ -1170,9 +1170,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_SEC
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_SEC
   type: Theo Source
@@ -1193,9 +1193,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-FG_BR_BUP
   brd_name: Design Atomic từ nguồn FMS bảng FG_BR_BUP
   type: Theo Source
@@ -1244,8 +1244,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-FG_BUSINESS
   brd_name: Design Atomic từ nguồn FMS bảng FG_BUSINESS
   type: Theo Source
@@ -1370,8 +1370,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-INSDER_RPRST
   brd_name: Design Atomic từ nguồn FMS bảng INSDER_RPRST
   type: Theo Source
@@ -1461,8 +1461,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-INSID_CHANGE
   brd_name: Design Atomic từ nguồn FMS bảng INSID_CHANGE
   type: Theo Source
@@ -1686,8 +1686,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-STAKE
   brd_name: Design Atomic từ nguồn FMS bảng STAKE
   type: Theo Source
@@ -1770,9 +1770,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-STF_REP_OFFICE_HISTORY
   brd_name: Design Atomic từ nguồn FMS bảng STF_REP_OFFICE_HISTORY
   type: Theo Source
@@ -1798,8 +1798,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-TL_PROFILES
   brd_name: Design Atomic từ nguồn FMS bảng TL_PROFILES
   type: Theo Source
@@ -1922,8 +1922,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-TRS_FER_INDER
   brd_name: Design Atomic từ nguồn FMS bảng TRS_FER_INDER
   type: Theo Source
@@ -1972,8 +1972,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-AGENCIES
   brd_name: Design Atomic từ nguồn FMS bảng AGENCIES
   type: Theo Source
@@ -2152,9 +2152,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-BANK_HISTORY
   brd_name: Design Atomic từ nguồn FMS bảng BANK_HISTORY
   type: Theo Source
@@ -2177,9 +2177,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-BANK_MONI
   brd_name: Design Atomic từ nguồn FMS bảng BANK_MONI
   type: Theo Source
@@ -2247,9 +2247,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-FUD_AG_AGT
   brd_name: Design Atomic từ nguồn FMS bảng FUD_AG_AGT
   type: Theo Source
@@ -2403,8 +2403,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-FUND_REPORT
   brd_name: Design Atomic từ nguồn FMS bảng FUND_REPORT
   type: Theo Source
@@ -2577,9 +2577,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-MB_FUND
   brd_name: Design Atomic từ nguồn FMS bảng MB_FUND
   type: Theo Source
@@ -2772,8 +2772,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-REPORT_FILE
   brd_name: Design Atomic từ nguồn FMS bảng REPORT_FILE
   type: Theo Source
@@ -2791,8 +2791,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-RPT_HTORY
   brd_name: Design Atomic từ nguồn FMS bảng RPT_HTORY
   type: Theo Source
@@ -2814,8 +2814,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-RPT_MB_HS
   brd_name: Design Atomic từ nguồn FMS bảng RPT_MB_HS
   type: Theo Source
@@ -3079,9 +3079,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-SECURITIES_REPORT
   brd_name: Design Atomic từ nguồn FMS bảng SECURITIES_REPORT
   type: Theo Source
@@ -3272,8 +3272,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-CDT_WARN
   brd_name: Design Atomic từ nguồn FMS bảng CDT_WARN
   type: Theo Source
@@ -3370,8 +3370,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-FTOR_SCALE
   brd_name: Design Atomic từ nguồn FMS bảng FTOR_SCALE
   type: Theo Source
@@ -3567,9 +3567,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-RNK_GR_FTOR
   brd_name: Design Atomic từ nguồn FMS bảng RNK_GR_FTOR
   type: Theo Source
@@ -3759,8 +3759,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created = {etl_date}
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-AUDITOR
   brd_name: Design Atomic từ nguồn FMS bảng AUDITOR
   type: Theo Source
@@ -3887,9 +3887,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-INSPECTION_PENALTY_DECISION
   brd_name: Design Atomic từ nguồn FMS bảng INSPECTION_PENALTY_DECISION
   type: Theo Source
@@ -4047,9 +4047,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-DISTRIBUTOR_LOCATION
   brd_name: Design Atomic từ nguồn FMS bảng DISTRIBUTOR_LOCATION
   type: Theo Source
@@ -4124,9 +4124,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_OTHER_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_OTHER_AGENT
   type: Theo Source
@@ -4147,9 +4147,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_PENSION_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_PENSION_AGENT
   type: Theo Source
@@ -4170,9 +4170,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_PENSION_FUND
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_PENSION_FUND
   type: Theo Source
@@ -4193,9 +4193,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_PENSION_PROVIDER
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_PENSION_PROVIDER
   type: Theo Source
@@ -4216,9 +4216,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-DT_SC_TRANSFER_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng DT_SC_TRANSFER_AGENT
   type: Theo Source
@@ -4239,9 +4239,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-FMS-OTHER_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng OTHER_AGENT
   type: Theo Source
@@ -4295,9 +4295,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-PENSION_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng PENSION_AGENT
   type: Theo Source
@@ -4351,9 +4351,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-PENSION_FUND
   brd_name: Design Atomic từ nguồn FMS bảng PENSION_FUND
   type: Theo Source
@@ -4446,9 +4446,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-TRANSFER_AGENT
   brd_name: Design Atomic từ nguồn FMS bảng TRANSFER_AGENT
   type: Theo Source
@@ -4500,9 +4500,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-AGENT_ID_UNIFY_AUDIT
   brd_name: Design Atomic từ nguồn FMS bảng AGENT_ID_UNIFY_AUDIT
   type: Theo Source
@@ -4520,8 +4520,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created >= {etl_date} AND date_created < {etl_date} + 1
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-DISTRIBUTOR_PERSONNEL_CERT
   brd_name: Design Atomic từ nguồn FMS bảng DISTRIBUTOR_PERSONNEL_CERT
   type: Theo Source
@@ -4563,9 +4563,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1) OR (DATE_MODIFIED >= {etl_date} AND DATE_MODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATE_CREATED, DATE_MODIFIED
 - brd_id: BRD-SRC-FMS-JOB_STF_FG_BRCH
   brd_name: Design Atomic từ nguồn FMS bảng JOB_STF_FG_BRCH
   type: Theo Source
@@ -4690,8 +4690,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: date_created >= {etl_date} AND date_created < {etl_date} + 1
-      filter_note: Append theo ngày tạo bản ghi
+      filter_logic: DATE_CREATED >= {etl_date} AND DATE_CREATED < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATE_CREATED
 - brd_id: BRD-SRC-FMS-PENSION_FUND_PROVIDER
   brd_name: Design Atomic từ nguồn FMS bảng PENSION_FUND_PROVIDER
   type: Theo Source
@@ -4813,9 +4813,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: STARTED_AT >= {etl_date} AND STARTED_AT < {etl_date} + 1
+      filter_note: Ngày đối soát — Append theo STARTED_AT
 - brd_id: BRD-SRC-FMS-USER_EVENT_TYPE
   brd_name: Design Atomic từ nguồn FMS bảng USER_EVENT_TYPE
   type: Theo Source

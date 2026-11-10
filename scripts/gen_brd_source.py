@@ -212,7 +212,7 @@ def _append(col: sr.Column):
     meaning = (col.comment or f"cột ngày {col.name}").strip()
     return {"data_change_mode": "Append",
             "filter_logic": f"{c} >= {{etl_date}} AND {c} < {{etl_date}} + 1",
-            "filter_note": f"{meaning} — append theo {col.name.upper()}"}
+            "filter_note": f"{meaning} — Append theo {col.name.upper()}"}
 
 
 def fk_note_of(ref_table: str, ref_col: str) -> str:

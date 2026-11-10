@@ -170,7 +170,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: created_at >= {etl_date}
-      filter_note: File đính kèm báo cáo — append theo lượt upload cha
+      filter_note: File đính kèm báo cáo — Append theo lượt upload cha
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_CONFIG
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_CONFIG
   type: Theo Source
@@ -253,7 +253,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: created_at >= {etl_date}
-      filter_note: Bản ghi xử lý cảnh báo — append theo cảnh báo cha
+      filter_note: Bản ghi xử lý cảnh báo — Append theo cảnh báo cha
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION_FILE
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_RESOLUTION_FILE
   type: Theo Source
@@ -274,7 +274,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: created_at >= {etl_date}
-      filter_note: File giải trình — append theo bản ghi xử lý cha
+      filter_note: File giải trình — Append theo bản ghi xử lý cha
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_HISTORY
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_HISTORY
   type: Theo Source
@@ -318,9 +318,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Append theo created_at
 - brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_USER
   brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_USER
   type: Theo Source
@@ -347,9 +347,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Append theo created_at
 - brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_INDICATOR
   brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_INDICATOR
   type: Theo Source
@@ -370,9 +370,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
+      filter_note: Append theo created_at
 - brd_id: BRD-SRC-MRMS-RISK_INDICATOR_DATA_PERMISSION
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_DATA_PERMISSION
   type: Theo Source

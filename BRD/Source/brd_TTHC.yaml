@@ -43,9 +43,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: daily
     ingestion:
-      data_change_mode: Update
-      filter_logic: ModifiedUtc >= {etl_date}
-      filter_note: 'Cập nhật theo thời điểm sửa đổi cuối (MODIFIEDUTC) — bắt cả bản ghi mới tạo và bản ghi bị cập nhật (đổi LATEST/PUBLISHED khi có phiên bản mới). 2026-08-21: đổi từ Append sang Update — khớp Table Type Fundamental (xem TTHC_HLD_Tier2.md D-06).'
+      data_change_mode: Append
+      filter_logic: (CREATEDUTC >= {etl_date} AND CREATEDUTC < {etl_date} + 1) OR (MODIFIEDUTC >= {etl_date} AND MODIFIEDUTC < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATEDUTC, MODIFIEDUTC
 - brd_id: BRD-SRC-TTHC-TEXTFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng TEXTFIELDINDEX
   type: Theo Source
@@ -66,7 +66,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field text Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field text Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-HTMLFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng HTMLFIELDINDEX
   type: Theo Source
@@ -87,7 +87,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field HTML Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field HTML Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-MULTITEXTFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng MULTITEXTFIELDINDEX
   type: Theo Source
@@ -108,7 +108,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field đa văn bản Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field đa văn bản Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-LINKFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng LINKFIELDINDEX
   type: Theo Source
@@ -129,7 +129,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field link Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field link Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-NUMERICFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng NUMERICFIELDINDEX
   type: Theo Source
@@ -150,7 +150,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field số Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field số Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-DATEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DATEFIELDINDEX
   type: Theo Source
@@ -171,7 +171,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field ngày Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field ngày Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-DATETIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DATETIMEFIELDINDEX
   type: Theo Source
@@ -192,7 +192,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field ngày giờ Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field ngày giờ Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-TIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng TIMEFIELDINDEX
   type: Theo Source
@@ -213,7 +213,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field giờ Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field giờ Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-BOOLEANFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng BOOLEANFIELDINDEX
   type: Theo Source
@@ -234,7 +234,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field boolean Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field boolean Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-CONTENTPICKERFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng CONTENTPICKERFIELDINDEX
   type: Theo Source
@@ -255,7 +255,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field content picker Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field content picker Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-USERPICKERFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERPICKERFIELDINDEX
   type: Theo Source
@@ -276,7 +276,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field user picker Eform — append theo ContentItemIndex cha cùng ngày
+      filter_note: Field user picker Eform — Append theo ContentItemIndex cha cùng ngày
 - brd_id: BRD-SRC-TTHC-WORKFLOWINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng WORKFLOWINDEX
   type: Theo Source
@@ -299,7 +299,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: CreatedUtc >= {etl_date}
-      filter_note: Workflow instance xét duyệt — append theo ngày khởi tạo workflow
+      filter_note: Workflow instance xét duyệt — Append theo ngày khởi tạo workflow
 - brd_id: BRD-SRC-TTHC-DOCUMENT
   brd_name: Design Atomic từ nguồn TTHC bảng DOCUMENT
   type: Theo Source

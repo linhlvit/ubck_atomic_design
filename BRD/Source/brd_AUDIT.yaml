@@ -367,9 +367,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: mngt_start_date >= {etl_date} AND mngt_start_date < {etl_date}
-        + 1
-      filter_note: cột ngày MNGT_START_DATE — append theo MNGT_START_DATE
+      filter_logic: CHANGED_DATE >= {etl_date} AND CHANGED_DATE < {etl_date} + 1
+      filter_note: Ngày thay đổi — Append theo CHANGED_DATE
 - brd_id: BRD-SRC-AUDIT-COMPANY_DATA
   brd_name: Design Atomic từ nguồn AUDIT bảng COMPANY_DATA
   type: Theo Source
@@ -457,9 +456,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-AUDIT-DATABASECHANGELOG
   brd_name: Design Atomic từ nguồn AUDIT bảng DATABASECHANGELOG
   type: Theo Source
@@ -637,8 +636,6 @@ brd_entries:
       relation: 1-N — Bảng notifications
     - table: NOTIFICATIONS_RESULT
       relation: 1-N — Bảng notifications result
-    - table: SMS_LOG
-      relation: 1-N — Bảng sms log
     - table: VIOLATION_REPORT
       relation: 1-N — Bảng violation report
     - table: VIOLATION_TEMPLATES
@@ -696,8 +693,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: changed_date >= {etl_date} AND changed_date < {etl_date} + 1
-      filter_note: Ngày thay đổi — append theo CHANGED_DATE
+      filter_logic: CHANGED_DATE >= {etl_date} AND CHANGED_DATE < {etl_date} + 1
+      filter_note: Ngày thay đổi — Append theo CHANGED_DATE
 - brd_id: BRD-SRC-AUDIT-HISTORY_CHANGE_LOG
   brd_name: Design Atomic từ nguồn AUDIT bảng HISTORY_CHANGE_LOG
   type: Theo Source
@@ -715,8 +712,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: changed_at >= {etl_date} AND changed_at < {etl_date} + 1
-      filter_note: Thời điểm phát sinh thay đổi dữ liệu — append theo CHANGED_AT
+      filter_logic: CHANGED_AT >= {etl_date} AND CHANGED_AT < {etl_date} + 1
+      filter_note: Ngày thay đổi — Append theo CHANGED_AT
 - brd_id: BRD-SRC-AUDIT-HOLIDAY_CALENDAR
   brd_name: Design Atomic từ nguồn AUDIT bảng HOLIDAY_CALENDAR
   type: Theo Source
@@ -908,15 +905,13 @@ brd_entries:
       relation: 1-N — Bảng notifications dtl
     - table: NOTIFICATIONS_RESULT
       relation: 1-N — Bảng notifications result
-    - table: SMS_LOG
-      relation: 1-N — Bảng sms log
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
 - brd_id: BRD-SRC-AUDIT-NOTIFICATIONS_DTL
   brd_name: Design Atomic từ nguồn AUDIT bảng NOTIFICATIONS_DTL
   type: Theo Source
@@ -937,9 +932,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
 - brd_id: BRD-SRC-AUDIT-NOTIFICATIONS_RESULT
   brd_name: Design Atomic từ nguồn AUDIT bảng NOTIFICATIONS_RESULT
   type: Theo Source
@@ -964,9 +959,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
 - brd_id: BRD-SRC-AUDIT-RCOL
   brd_name: Design Atomic từ nguồn AUDIT bảng RCOL
   type: Theo Source
@@ -1056,9 +1051,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
 - brd_id: BRD-SRC-AUDIT-REP_FORMS
   brd_name: Design Atomic từ nguồn AUDIT bảng REP_FORMS
   type: Theo Source
@@ -1121,29 +1116,6 @@ brd_entries:
     related_tables:
     - table: REPORT_CATALOG
       relation: FK cha — Bảng report catalog
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-AUDIT-SMS_LOG
-  brd_name: Design Atomic từ nguồn AUDIT bảng SMS_LOG
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: null
-    functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
-    scope_reason: null
-    table: SMS_LOG
-    related_tables:
-    - table: NOTIFICATIONS
-      relation: FK cha — Bảng notifications
-    - table: FORMS
-      relation: FK cha — Bảng forms
     notes: null
     data_volume_hint: null
     refresh_frequency: null
