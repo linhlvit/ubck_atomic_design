@@ -148,7 +148,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: null
-      filter_note: Append theo báo cáo cha (TAX_REPORT)
+      filter_note: null
 - brd_id: BRD-SRC-KNT-REPORT_COMPARISON
   brd_name: Design Atomic từ nguồn KNT bảng REPORT_COMPARISON
   type: Theo Source
@@ -320,15 +320,13 @@ brd_entries:
       relation: '1-N — Kết quả đối chiếu dữ liệu báo cáo tài chính giữa UBCKNN và Cục Thuế: so sánh từng chỉ tiêu theo gói tin'
     - table: REPORT_COMPARISON_HEADER
       relation: 1-N — Header đối chiếu BCTC 1 dòng / MST + kỳ khai + mã tờ khai — phục vụ list
-    - table: REPORT_COMPARISON_QUEUE
-      relation: 1-N — Hàng đợi xử lý đối chiếu báo cáo tài chính (worker, retry, trạng thái)
     notes: Dữ liệu tổng hợp từ IDS/SCMS/FMS — cần xác nhận có trùng lặp với entity đã thiết kế ở các source đó không.
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thời điểm tạo bản ghi — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-KNT-SSC_REPORT_DETAIL
   brd_name: Design Atomic từ nguồn KNT bảng SSC_REPORT_DETAIL
   type: Theo Source
@@ -345,13 +343,11 @@ brd_entries:
       relation: FK cha — báo cáo tài chính UBCKNN
     - table: REPORT_COMPARISON
       relation: '1-N — Kết quả đối chiếu dữ liệu báo cáo tài chính giữa UBCKNN và Cục Thuế: so sánh từng chỉ tiêu theo gói tin'
-    - table: REPORT_COMPARISON_QUEUE
-      relation: 1-N — Hàng đợi xử lý đối chiếu báo cáo tài chính (worker, retry, trạng thái)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-KNT-TAX_ENFORCEMENT_DEBT
@@ -469,8 +465,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thời điểm tạo bản ghi — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-KNT-SSC_PENALTY
   brd_name: Design Atomic từ nguồn KNT bảng SSC_PENALTY
   type: Theo Source
@@ -514,9 +510,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thời điểm tạo bản ghi — Append theo CREATED_AT
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-KNT-CAT_VIOLATION_ACT
   brd_name: Design Atomic từ nguồn KNT bảng CAT_VIOLATION_ACT
   type: Theo Source
@@ -560,9 +556,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thời điểm tạo bản ghi — Append theo CREATED_AT
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-KNT-HIGH_RISK_ENTERPRISE
   brd_name: Design Atomic từ nguồn KNT bảng HIGH_RISK_ENTERPRISE
   type: Theo Source
@@ -648,9 +644,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: decision_date >= {etl_date} AND decision_date < {etl_date} + 1
-      filter_note: Ngày ban hành quyết định — Append theo DECISION_DATE
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-KNT-INFO_REQUEST_DETAIL
   brd_name: Design Atomic từ nguồn KNT bảng INFO_REQUEST_DETAIL
   type: Theo Source
@@ -729,9 +725,7 @@ brd_entries:
     scope_status: out_of_scope
     scope_reason: null
     table: CAT_ORG_UNIT
-    related_tables:
-    - table: SCHEDULE_CONFIG
-      relation: '1-N — Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON'
+    related_tables: null
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -758,25 +752,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-KNT-CONFIG_PARAM
-  brd_name: Design Atomic từ nguồn KNT bảng CONFIG_PARAM
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: 'Tham số cấu hình nghiệp vụ hệ thống KNT: mã tham số, giá trị ENUM, loại báo cáo, mã hệ thống tương ứng'
-    functional_group: KNT-SYS Quản trị hệ thống & truyền nhận
-    scope_status: out_of_scope
-    scope_reason: null
-    table: CONFIG_PARAM
-    related_tables: []
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Thời điểm tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-KNT-LNK_GROUP_FUNCTION
   brd_name: Design Atomic từ nguồn KNT bảng LNK_GROUP_FUNCTION
   type: Theo Source
@@ -791,8 +766,6 @@ brd_entries:
     related_tables:
     - table: LNK_USER_GROUP
       relation: FK cha — Liên kết người dùng với nhóm người dùng trong hệ thống KNT
-    - table: SCHEDULE_CONFIG
-      relation: '1-N — Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON'
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -833,16 +806,10 @@ brd_entries:
     scope_reason: null
     table: MSG_PACKET
     related_tables:
-    - table: MSG_PACKET_CONFIG
-      relation: FK cha — cấu hình gói tin
     - table: AUDIT_FIRM
       relation: '1-N — Hồ sơ tổ chức kiểm toán được UBCKNN chấp thuận kiểm toán cho đơn vị có lợi ích công chúng: số QĐ, ngày QĐ, MST, số lượng KTV'
-    - table: COMPANY_COMPARISON_QUEUE
-      relation: 1-N — Hàng đợi xử lý đối chiếu thông tin công ty (worker, retry, trạng thái)
     - table: COMPANY_INFO
       relation: '1-N — Thông tin công ty tham gia thị trường chứng khoán gửi sang Cục Thuế: tên, MST, loại công ty, vốn, người đại diện, thông tin niêm yết'
-    - table: DATA_RECONCILIATION_OUTBOUND
-      relation: 1-N — Outbound reconciliation packet log from SSC (msg_id, packet_code)
     - table: HIGH_RISK_ENTERPRISE
       relation: '1-N — Danh sách doanh nghiệp rủi ro cao về thuế do Cục Thuế cung cấp: MST, tên, địa chỉ, cơ quan thuế quản lý, năm đánh giá'
     - table: INFO_REQUEST_DETAIL
@@ -870,50 +837,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-KNT-MSG_PACKET_CONFIG
-  brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_CONFIG
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: 'Cấu hình gói tin trao đổi: định nghĩa chức năng, đơn vị, hệ thống, phương thức truyền nhận dữ liệu'
-    functional_group: KNT-SYS Quản trị hệ thống & truyền nhận
-    scope_status: out_of_scope
-    scope_reason: null
-    table: MSG_PACKET_CONFIG
-    related_tables:
-    - table: MSG_PACKET
-      relation: 1-N — gói tin sử dụng cấu hình này
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-KNT-SCHEDULE_CONFIG
-  brd_name: Design Atomic từ nguồn KNT bảng SCHEDULE_CONFIG
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: 'Lịch thiết lập truyền/nhận dữ liệu tự động với Cục Thuế và Bộ Tài chính: tần suất, giờ chạy, biểu thức CRON'
-    functional_group: KNT-SYS Quản trị hệ thống & truyền nhận
-    scope_status: out_of_scope
-    scope_reason: null
-    table: SCHEDULE_CONFIG
-    related_tables:
-    - table: CAT_ORG_UNIT
-      relation: Liên kết ngầm — đơn vị áp dụng lịch truyền nhận
-    - table: LNK_GROUP_FUNCTION
-      relation: 'FK cha — Phân quyền chức năng cho nhóm người dùng: nhóm nào được truy cập chức năng nào'
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-KNT-COMPANY_COMPARISON
   brd_name: Design Atomic từ nguồn KNT bảng COMPANY_COMPARISON
   type: Theo Source
@@ -935,130 +858,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-KNT-COMPANY_COMPARISON_QUEUE
-  brd_name: Design Atomic từ nguồn KNT bảng COMPANY_COMPARISON_QUEUE
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Hàng đợi xử lý đối chiếu thông tin công ty (worker, retry, trạng thái)
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: COMPANY_COMPARISON_QUEUE
-    related_tables:
-    - table: MSG_PACKET
-      relation: 'FK cha — Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch'
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
-      filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
-- brd_id: BRD-SRC-KNT-DATA_RECONCILIATION
-  brd_name: Design Atomic từ nguồn KNT bảng DATA_RECONCILIATION
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Data reconciliation result by date — SSC (UB) or Tax (CT)
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: DATA_RECONCILIATION
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-KNT-DATA_RECONCILIATION_OUTBOUND
-  brd_name: Design Atomic từ nguồn KNT bảng DATA_RECONCILIATION_OUTBOUND
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Outbound reconciliation packet log from SSC (msg_id, packet_code)
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: DATA_RECONCILIATION_OUTBOUND
-    related_tables:
-    - table: MSG_PACKET
-      relation: 'FK cha — Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch'
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-KNT-MSG_PACKET_CODE_SLOT
-  brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_CODE_SLOT
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Bộ đếm slot sinh mã gói tin theo khóa (tránh trùng MA_GOI_TIN khi tạo hàng loạt)
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: MSG_PACKET_CODE_SLOT
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-KNT-MSG_PACKET_CONTENT
-  brd_name: Design Atomic từ nguồn KNT bảng MSG_PACKET_CONTENT
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: 'Payload CLOB tách khỏi msg_packet: XML đầu vào, XML gửi/ký, JSON logic và phản hồi Trục CT/BTC'
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: MSG_PACKET_CONTENT
-    related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-KNT-REPORT_COMPARISON_QUEUE
-  brd_name: Design Atomic từ nguồn KNT bảng REPORT_COMPARISON_QUEUE
-  type: Theo Source
-  ba_email: huy.pham@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Hàng đợi xử lý đối chiếu báo cáo tài chính (worker, retry, trạng thái)
-    functional_group: KNT - Chưa phân loại (pending)
-    scope_status: out_of_scope
-    scope_reason: null
-    table: REPORT_COMPARISON_QUEUE
-    related_tables:
-    - table: SSC_REPORT_DETAIL
-      relation: 'FK cha — Chi tiết chỉ tiêu trong báo cáo tài chính UBCKNN: giá trị đầu năm, cuối năm, năm nay, năm trước, thông tin kiểm toán'
-    - table: SSC_REPORT
-      relation: FK cha — Báo cáo tài chính của đơn vị do UBCKNN tổng hợp từ phân hệ IDS/SCMS/FMS để gửi Cục Thuế và Bộ Tài chính
-    - table: REPORT_COMPARISON_HEADER
-      relation: FK cha — Header đối chiếu BCTC 1 dòng / MST + kỳ khai + mã tờ khai — phục vụ list
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {{etl_date}} AND created_at < {{etl_date}} + 1
-      filter_note: Lọc theo cột CREATED_AT — bảng chỉ append, không cập nhật dòng cũ
 - brd_id: BRD-SRC-KNT-TTCS_REQUEST_TAX_CODE_CACHE
   brd_name: Design Atomic từ nguồn KNT bảng TTCS_REQUEST_TAX_CODE_CACHE
   type: Theo Source
@@ -1098,8 +897,6 @@ brd_entries:
       relation: FK cha — Báo cáo tài chính của đơn vị do UBCKNN tổng hợp từ phân hệ IDS/SCMS/FMS để gửi Cục Thuế và Bộ Tài chính
     - table: MSG_PACKET
       relation: 'FK cha — Gói tin trao đổi dữ liệu giữa UBCKNN và Cục Thuế/Bộ Tài chính: nội dung XML, trạng thái gửi/nhận, mã giao dịch'
-    - table: REPORT_COMPARISON_QUEUE
-      relation: 1-N — Hàng đợi xử lý đối chiếu báo cáo tài chính (worker, retry, trạng thái)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1123,7 +920,7 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-KNT-TAX_REGISTRATION_LIST
@@ -1142,7 +939,7 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-KNT-TAX_REG_CHANGE
@@ -1180,6 +977,6 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null

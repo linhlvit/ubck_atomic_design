@@ -103,10 +103,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: period_date = {etl_date}
-      filter_note: Số liệu chỉ tiêu theo kỳ — cập nhật tại chỗ (update-in-place) khi có giá trị mới hoặc
-        chỉnh sửa thủ công cho cùng kỳ
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_INDICATOR_VALUE_HISTORY
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_VALUE_HISTORY
   type: Theo Source
@@ -126,8 +125,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: changed_at >= {etl_date}
-      filter_note: Lịch sử thay đổi số liệu — append mỗi lần cập nhật
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_REPORT_TYPE
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_REPORT_TYPE
   type: Theo Source
@@ -169,8 +168,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date}
-      filter_note: File đính kèm báo cáo — Append theo lượt upload cha
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_CONFIG
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_CONFIG
   type: Theo Source
@@ -193,9 +192,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_ALERT
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT
   type: Theo Source
@@ -227,8 +226,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: triggered_at >= {etl_date}
-      filter_note: Cảnh báo thực tế — append khi chỉ tiêu vượt ngưỡng
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_RESOLUTION
   type: Theo Source
@@ -252,8 +251,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date}
-      filter_note: Bản ghi xử lý cảnh báo — Append theo cảnh báo cha
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_RESOLUTION_FILE
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_RESOLUTION_FILE
   type: Theo Source
@@ -273,8 +272,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date}
-      filter_note: File giải trình — Append theo bản ghi xử lý cha
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_ALERT_HISTORY
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_ALERT_HISTORY
   type: Theo Source
@@ -296,8 +295,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date}
-      filter_note: Lịch sử xử lý cảnh báo — append mỗi sự kiện trên dòng thời gian
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-PERMISSION_GROUP
   brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP
   type: Theo Source
@@ -319,8 +318,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_USER
   brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_USER
   type: Theo Source
@@ -340,16 +339,14 @@ brd_entries:
         khảo sát trước)
     - table: RISK_INDICATOR_WATCHLIST
       relation: 1-N — Bảng risk indicator watchlist
-    - table: USER_TABLE_CONFIG
-      relation: 1-N — Cấu hình hiển thị bảng/tab theo từng user (bảng mới so với khảo
         sát trước)
     notes: null
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-MRMS-PERMISSION_GROUP_INDICATOR
   brd_name: Design Atomic từ nguồn MRMS bảng PERMISSION_GROUP_INDICATOR
   type: Theo Source
@@ -371,8 +368,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-MRMS-RISK_INDICATOR_DATA_PERMISSION
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_DATA_PERMISSION
   type: Theo Source
@@ -394,7 +391,7 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-MRMS-RISK_MARKET_REPORT
@@ -465,28 +462,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-MRMS-USER_TABLE_CONFIG
-  brd_name: Design Atomic từ nguồn MRMS bảng USER_TABLE_CONFIG
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Cấu hình hiển thị bảng/tab theo từng user (bảng mới so với khảo sát trước)
-    functional_group: MRMS009 Cấu hình giao diện người dùng
-    scope_status: out_of_scope
-    scope_reason: null
-    table: USER_TABLE_CONFIG
-    related_tables:
-    - table: PERMISSION_GROUP_USER
-      relation: FK cha — Phân quyền người dùng theo nhóm quyền
-    notes: Bảng mới xuất hiện trong khảo sát DB UAT (không có trong khảo sát QLRR trước đây) — chưa xác
-      nhận scope, functional_group đề xuất cần review.
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
 - brd_id: BRD-SRC-MRMS-RISK_INDICATOR_VALUE_INTRADAY
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_VALUE_INTRADAY
   type: Theo Source
@@ -505,9 +480,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-MRMS-RISK_INDICATOR_WATCHLIST
   brd_name: Design Atomic từ nguồn MRMS bảng RISK_INDICATOR_WATCHLIST
   type: Theo Source
