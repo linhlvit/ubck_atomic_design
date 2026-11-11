@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.21 (2026-11-11, đồng bộ HLD v4.60 — BA GSTT Nhóm 24/39; O_GSTT_81/82):** (1) Nhóm 39 cũ ('Chỉ số') bị thay bằng Nhóm 39 mới 'GSĐC' — bỏ Nhóm 39 khỏi danh sách phục vụ của `Fact Stock Portfolio Snapshot`, `Fact Index Constituent Snapshot`, `Fact Market Index Snapshot`; (2) thêm 2 dòng reuse từ GSDC (`Fact Public Company Financial Summary Snapshot`, `Public Company Financial YoY Report`) phục vụ Nhóm 39; (3) `prior_market_cap`/`prior_free_float_market_cap` (`Fact Stock Portfolio Snapshot`) và `idx_prior_market_cap`/`idx_prior_free_float_market_cap` (`Fact Index Constituent Snapshot`) đổi công thức theo SQL mới của BA Nhóm 24 (vốn hóa t-1 = giá đóng cửa t-1 × số cổ phiếu t-1) — không đổi cấu trúc bảng.
 **Thay đổi v2.20 (2026-10-22, đồng bộ HLD v4.57 — BA Nhóm 38 mới = Nhóm 37 cũ, bổ sung phái sinh):** `Operational Trading Liquidity Explorer` mở phạm vi sổ lệnh thêm `DVX` (phái sinh) và `HCX` (TPDN riêng lẻ) cho 42 cột chỉ tiêu giao dịch; không đổi cột/grain (O_GSTT_77).
 **Thay đổi v2.19 (2026-10-22, đồng bộ HLD v4.56 — BA GSTT Nhóm 23/25/26):** (1) `Fact Foreign Trading Minute Snapshot` đổi nguồn Atomic từ `Security Trading Snapshot` (GTNN lũy kế) về `Securities Trade` (sổ lệnh) — GTNN mua/bán PHÁT SINH theo phút (số tài khoản mua/bán ký tự thứ 4 IN ('F','E')); grain/cột không đổi (O_GSTT_75). (2) `Fact Investor Category Trading Snapshot` thêm phân loại `KHONG_XAC_DINH` (5 dòng/mã CK/ngày); phân loại NĐT (2 Fact phân loại, `proprietary_*`, Explorer) LOẠI TRỪ NHAU theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định (khớp SQL BA). (3) Nguồn Cá nhân/Tổ chức trong nước của 2 Fact phân loại NĐT và `Operational Trading Liquidity Explorer` đổi từ `Discretionary Investment Account` (FMS INVES_ACC, sai nguồn) sang `Open Investor Account` (VSDC OPEN_INVESTORS, Atomic 21/10/2026).
 **Thay đổi v2.18 (2026-10-16, đồng bộ HLD v4.53):** Bổ sung `Operational Trading Liquidity Explorer` — bảng Operational (phẳng) riêng cho Data Explorer Nhóm 37 (grain mã CK × chỉ số × ngày, không Dimension, NĐT pivot thành cột; O_GSTT_72). Các Fact/Dimension khác không đổi.
@@ -28,7 +29,7 @@
 
 ---
 
-## Fact Stock Portfolio Snapshot (phục vụ Nhóm 1–3, 5–24, 27–28, 33, 35–36, 39–41, 46–47)
+## Fact Stock Portfolio Snapshot (phục vụ Nhóm 1–3, 5–24, 27–28, 33, 35–36, 40–41, 46–47)
 
 Bảng trung tâm của module — 1 row / mã CK / ngày giao dịch. Phục vụ toàn bộ Tab "Danh mục CK", "Top", "Xu hướng dòng tiền" (Nhóm 1–4, 6–44, 46, 47). **[SỬA 2026-09-14]** Không còn FK rổ chỉ số — xem `Fact Index Constituent Snapshot` bên dưới cho nhu cầu phân tích theo rổ chỉ số.
 
@@ -49,7 +50,7 @@ erDiagram
 
 ---
 
-## Fact Index Constituent Snapshot (phục vụ Nhóm 1, 3, 5–22, 24, 26, 28–29, 32–33, 36, 38–39 — mọi KPI theo rổ chỉ số)
+## Fact Index Constituent Snapshot (phục vụ Nhóm 1, 3, 5–22, 24, 26, 28–29, 32–33, 36, 38 — mọi KPI theo rổ chỉ số)
 
 **[MỚI 2026-09-14]** Bridge — tách khỏi `Fact Stock Portfolio Snapshot` để giải quyết fan-out (1 mã CK thuộc N rổ chỉ số từng gây double-count trên measure của Fact chính). Phục vụ K_GSTT_4 (chọn 1 Chỉ số), K_GSTT_62/63 (Bộ chỉ số thị trường/theo ngành) — join qua `Symbol` + `Trading Date` sang `Fact Stock Portfolio Snapshot` khi cần lấy measure theo mã CK. **[SỬA 2026-09-14, theo yêu cầu Design]** Bổ sung 8 measure tính sẵn theo Index+Date (Index Total Matched Volume/Value, Index Foreign Net Volume/Value, Index Total Negotiated Volume/Value, Index Market Cap, Index Free Float Market Cap) phục vụ K_GSTT_47-52/54/61 + mẫu số K_GSTT_74/76 — giá trị lặp lại trên mọi dòng Symbol cùng Index+Date, dùng MAX()/DISTINCT khi truy vấn.
 
@@ -69,7 +70,7 @@ erDiagram
 
 ---
 
-## Fact Market Index Snapshot (phục vụ Nhóm 5–6, 24, 26, 38–39)
+## Fact Market Index Snapshot (phục vụ Nhóm 5–6, 24, 26, 38)
 
 Diễn biến chỉ số thị trường cuối ngày — sở hữu QLKD, GSTT reuse + mở rộng.
 
@@ -374,5 +375,26 @@ erDiagram
 |---|---|---|---|---|---|
 | Fact HOSE Securities Order | Fact Event | new | Order book HOSE — pass-through 45 cột BA yêu cầu | 1 row / lệnh (Securities Order Code) / Trade Date | K_GSTT_296–340 |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Fact Public Company Financial Summary Snapshot (reuse GSĐC — phục vụ Nhóm 39)
+
+**[MỚI 2026-11-11, GSTT Nhóm 39]** Reuse nguyên trạng 2 bảng của GSĐC Nhóm 7 (chỉ tiêu tài chính toàn thị trường) — không tạo Fact/cột mới ở GSTT. ER đầy đủ nằm ở `DTM_GSDC_Entities.md`; `Public Company Financial YoY Report` là Fact-report denormalize, không có FK Dimension.
+
+```mermaid
+erDiagram
+    Public_Company_Dimension ||--o{ Fact_Public_Company_Financial_Summary_Snapshot : "Public_Company_Dimension_Id"
+    Calendar_Date_Dimension ||--o{ Fact_Public_Company_Financial_Summary_Snapshot : "Calendar_Date_Dimension_Id"
+    Industry_Dimension ||--o{ Fact_Public_Company_Financial_Summary_Snapshot : "Industry_Dimension_Id"
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chỉ tiêu tài chính CTĐC theo kỳ (reuse GSĐC) | 1 CTĐC / năm báo cáo / quý báo cáo | K_GSTT_427–439 |
+| Public Company Financial YoY Report | Fact Report | reuse | Chỉ tiêu + YoY theo sàn × ngành × kỳ, dòng rollup 'ALL' (reuse GSĐC) | 1 dòng / sàn × ngành × kỳ | K_GSTT_440–452 |
+| Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+| Industry Dimension | Dimension | reuse | Ngành cấp 1 — sở hữu GSDC | 1 row / ngành cấp 1 | — |
 
 ---

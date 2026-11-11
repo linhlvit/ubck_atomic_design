@@ -710,7 +710,7 @@ COMMENT 'Flat table — fct_private_corporate_bond_registration_status_snpst —
 -- ==========================================================
 -- 17. FACT: vp_fct_securities_offering_event_flat
 --    fct_securities_offering_event — Fact Securities Offering Event [MỚI 2026-11-10, O_VP_75]: đợt chào bán/phát hành đã cấp phép (IDS CTĐC + SCMS CTCK + FMS CTQLQ) × hình thức phát hành
---    Joins: Calendar Date Dimension (role Certificate Date = ngày GCN/CV). Nhánh SCMS chờ Atomic map PLAN_JSON/RESULT_JSON.
+--    Joins: Calendar Date Dimension (role Certificate Date = ngày GCN/CV). Nhánh SCMS: hình thức đọc offering_method [SỬA 2026-11-11]; KL/GT kế hoạch, thành công và cờ có kết quả chờ Atomic map PLAN_JSON/RESULT_JSON (O_VP_75).
 --    Nạp: TRUNCATE + INSERT toàn bộ (kết quả chào bán cập nhật sau ngày cấp phép nên không nạp theo ngày :etl_date; bảng nhỏ).
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLUSTER 'my_cluster'
@@ -727,7 +727,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLU
     offering_round_key                           String                  COMMENT 'Khóa ĐỢT phát hành theo BA (offering_key) = concat_ws(''|'', issuer_tp_code, issuer_code, COALESCE(certificate_nbr, ''0''), certificate_dt) — dùng COUNT(DISTINCT) để đếm số đợt ...',
     administrative_procedure_code                Nullable(String)        COMMENT 'Mã thủ tục hành chính IDS (ap_code); ''1.009.501'' = chào bán để tăng vốn của Công ty TNHH → nhóm hình thức LLC_CAPITAL (BA Nhóm 23/25). SCMS/FMS NULL. [MỚI 2026-11-10, O_VP_75]',
     security_tp_code                             Nullable(String)        COMMENT 'Loại chứng khoán chào bán — mã gốc từng nguồn (giá trị ''CP'' cổ phiếu, ''TP'' trái phiếu trùng ở cả 3 nguồn theo BA): IDS plan.security_tp_code; SCMS item_category_code; FMS se...',
-    offering_method_code                         Nullable(String)        COMMENT 'Mã hình thức phát hành gốc theo nguồn: IDS plan.offering_method_code (''1''…''15'', scheme IDS.SO_OFFERING_METHOD); SCMS loaiChaoBan trong PLAN_JSON (CHỜ ATOMIC); FMS plan.offer...',
+    offering_method_code                         Nullable(String)        COMMENT 'Mã hình thức phát hành gốc theo nguồn: IDS plan.offering_method_code (''1''…''15'', scheme IDS.SO_OFFERING_METHOD); SCMS offering_method (mã cùng bảng mã loaiChaoBan của BA: CHA...',
     security_nm                                  Nullable(String)        COMMENT 'Tên chứng khoán trong phương án IDS (plan.security_nm) — BA chỉ dùng để tách mã 9 ''Phát hành cổ phiếu cho người lao động'': ''Phát hành thưởng cho người lao động'' KHÔNG phải h...',
     offering_method_group_code                   Nullable(String)        COMMENT 'Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA (VALUES t(...) trong SQL Nhóm 23): PUBLIC (Phát hành ra công chúng), PRIVATE (Phát hành riêng lẻ), LLC_CAPITAL (...',
     raising_capital_ind                          Nullable(Int64)         COMMENT 'Cờ ''Huy động vốn'' theo BA (1 = có, 0 = không): IDS 0 khi offering_method_code IN (''4'',''6'',''10'') hoặc (= ''9'' và security_nm = ''Phát hành thưởng cho người lao động''); ...',
