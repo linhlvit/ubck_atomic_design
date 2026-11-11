@@ -277,7 +277,6 @@ Không có junction table.
 | Operational / System | flyway_schema_history | Lịch sử cập nhật schema CSDL | DB migration metadata. |
 | Operational / System | MESSAGE | Tin nhắn nội bộ hệ thống | Internal messaging — operational. |
 | Operational / System | MESSAGE_RECIPIENT | Người nhận tin nhắn nội bộ | Cascade từ MESSAGE operational. |
-| Operational / System | NOTIFICATION | Thông báo hệ thống chung | Operational notification — không có entity nghiệp vụ độc lập. |
 | Operational / System | SSC_NOTIFICATION | Thông báo phát đi từ UBCKNN | Operational notification — không có entity nghiệp vụ độc lập. |
 | Operational / System | SSC_NOTIFICATION_RECIPIENT | Người nhận thông báo UBCKNN | Cascade từ SSC_NOTIFICATION operational. |
 | Operational / System | PERMISSION_DATA | Phân quyền truy cập dữ liệu | ACL/security metadata. |

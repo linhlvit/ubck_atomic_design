@@ -103,8 +103,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-AUDITOR
   brd_name: Design Atomic từ nguồn SCMS bảng AUDITOR
   type: Theo Source
@@ -197,8 +197,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-BANK_PERIODIC_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng BANK_PERIODIC_REPORT
   type: Theo Source
@@ -245,8 +245,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-CATEGORY
   brd_name: Design Atomic từ nguồn SCMS bảng CATEGORY
   type: Theo Source
@@ -856,8 +856,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: datecreated >= {etl_date} AND datecreated < {etl_date} + 1
-      filter_note: Append theo datecreated
+      filter_logic: PUBLISHDATE >= {etl_date} AND PUBLISHDATE < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PUBLISHDATE
 - brd_id: BRD-SRC-SCMS-DISCLOSURE_NEWS_FILE
   brd_name: Design Atomic từ nguồn SCMS bảng DISCLOSURE_NEWS_FILE
   type: Theo Source
@@ -952,8 +952,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-SCMS-DOCUMENT_FOLDER
   brd_name: Design Atomic từ nguồn SCMS bảng DOCUMENT_FOLDER
   type: Theo Source
@@ -1034,8 +1034,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-FORM_INDICATOR_INPUT
   brd_name: Design Atomic từ nguồn SCMS bảng FORM_INDICATOR_INPUT
   type: Theo Source
@@ -1054,7 +1054,7 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
+      data_change_mode: Update
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-SCMS-FORM_INDICATOR_REFERENCE_VALUE
@@ -1201,8 +1201,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-FORM_REPORT_INPUT_SOURCE
   brd_name: Design Atomic từ nguồn SCMS bảng FORM_REPORT_INPUT_SOURCE
   type: Theo Source
@@ -1477,8 +1477,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-LNK_EVENT_TYPE_FORM
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_EVENT_TYPE_FORM
   type: Theo Source
@@ -1610,9 +1610,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-LNK_SC_FIRM_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_SC_FIRM_REPORT
   type: Theo Source
@@ -1656,9 +1656,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-LNK_SC_FIRM_STATUS_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_SC_FIRM_STATUS_REPORT
   type: Theo Source
@@ -1679,9 +1679,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-LNK_SERVICE_SC_FIRM_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_SERVICE_SC_FIRM_REPORT
   type: Theo Source
@@ -1706,9 +1706,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-LNK_TRANSACTION_OFFICE_SERVICE
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_TRANSACTION_OFFICE_SERVICE
   type: Theo Source
@@ -1729,9 +1729,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-LNK_USER_BANK
   brd_name: Design Atomic từ nguồn SCMS bảng LNK_USER_BANK
   type: Theo Source
@@ -1921,8 +1921,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-MEMBER_REPORT_PROCESSING
   brd_name: Design Atomic từ nguồn SCMS bảng MEMBER_REPORT_PROCESSING
   type: Theo Source
@@ -1987,8 +1987,6 @@ brd_entries:
       relation: FK cha — Người dùng hệ thống
     - table: MESSAGE
       relation: FK cha — Tin nhắn nội bộ
-    - table: NOTIFICATION
-      relation: 1-N — Thông báo hệ thống
     notes: null
     data_volume_hint: null
     refresh_frequency: null
@@ -1996,29 +1994,6 @@ brd_entries:
       data_change_mode: Update
       filter_logic: null
       filter_note: null
-- brd_id: BRD-SRC-SCMS-NOTIFICATION
-  brd_name: Design Atomic từ nguồn SCMS bảng NOTIFICATION
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Thông báo hệ thống
-    functional_group: Quản trị phân hệ
-    scope_status: out_of_scope
-    scope_reason: Operational/system data
-    table: NOTIFICATION
-    related_tables:
-    - table: SYS_USER
-      relation: FK cha — Người dùng hệ thống
-    - table: MESSAGE_RECIPIENT
-      relation: FK cha — Người nhận tin nhắn
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-OUTPUT_REPORT_CHART_CONFIG
   brd_name: Design Atomic từ nguồn SCMS bảng OUTPUT_REPORT_CHART_CONFIG
   type: Theo Source
@@ -2098,8 +2073,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-PERMISSION_DATA
   brd_name: Design Atomic từ nguồn SCMS bảng PERMISSION_DATA
   type: Theo Source
@@ -2119,8 +2094,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-SCMS-PERMISSION_INPUT_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng PERMISSION_INPUT_REPORT
   type: Theo Source
@@ -2142,8 +2117,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-SCMS-OUTPUT_REPORT_FILTER
   brd_name: Design Atomic từ nguồn SCMS bảng OUTPUT_REPORT_FILTER
   type: Theo Source
@@ -2189,7 +2164,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: null
-      filter_note: Bảng không có cột thời gian tạo/cập nhật — Data Modeler chốt Append (phân quyền, out_of_scope); cần xác định cách lọc incremental nếu sau này nạp
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-SCMS-PERMISSION_OUTPUT_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng PERMISSION_OUTPUT_REPORT
   type: Theo Source
@@ -2211,8 +2186,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-SCMS-PERMISSION_OUTPUT_REPORT_FORM
   brd_name: Design Atomic từ nguồn SCMS bảng PERMISSION_OUTPUT_REPORT_FORM
   type: Theo Source
@@ -2235,7 +2210,7 @@ brd_entries:
     ingestion:
       data_change_mode: Append
       filter_logic: null
-      filter_note: Bảng không có cột thời gian tạo/cập nhật — Data Modeler chốt Append (phân quyền, out_of_scope); cần xác định cách lọc incremental nếu sau này nạp
+      filter_note: Bảng phân quyền - Truncate then Insert
 - brd_id: BRD-SRC-SCMS-REPORT_CELL_VALUE
   brd_name: Design Atomic từ nguồn SCMS bảng REPORT_CELL_VALUE
   type: Theo Source
@@ -2328,9 +2303,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: REPORT_INPUT_CELL_VALUE.REPORT_INPUT_SUBMISSION_ID IN REPORT_INPUT_SUBMISSION.ID WHERE (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (LAST_MODIFIED_AT >= {etl_date} AND LAST_MODIFIED_AT < {etl_date} + 1)
+      filter_note: Append theo REPORT_INPUT_CELL_VALUE.REPORT_INPUT_SUBMISSION_ID nằm trong REPORT_INPUT_SUBMISSION.ID phát sinh trong ngày của bảng REPORT_INPUT_SUBMISSION
 - brd_id: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION
   brd_name: Design Atomic từ nguồn SCMS bảng REPORT_INPUT_SUBMISSION
   type: Theo Source
@@ -2355,9 +2330,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (LAST_MODIFIED_AT >= {etl_date} AND LAST_MODIFIED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, LAST_MODIFIED_AT
 - brd_id: BRD-SRC-SCMS-REPORT_INPUT_SUBMISSION_FILE
   brd_name: Design Atomic từ nguồn SCMS bảng REPORT_INPUT_SUBMISSION_FILE
   type: Theo Source
@@ -2694,8 +2669,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_ADMIN_PENALTY_DECISION
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_ADMIN_PENALTY_DECISION
   type: Theo Source
@@ -2764,9 +2739,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-SC_FIRM_BRANCH
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_BRANCH
   type: Theo Source
@@ -2846,8 +2821,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_DOMESTIC_REP_OFFICE
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_DOMESTIC_REP_OFFICE
   type: Theo Source
@@ -2972,9 +2947,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      data_change_mode: Update
+      filter_logic: null
+      filter_note: null
 - brd_id: BRD-SRC-SCMS-SC_FIRM_FOREIGN_BRANCH_PERSONNEL_HISTORY
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_FOREIGN_BRANCH_PERSONNEL_HISTORY
   type: Theo Source
@@ -2994,8 +2969,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_FOREIGN_REP_OFFICE
   type: Theo Source
@@ -3046,8 +3021,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
   type: Theo Source
@@ -3292,8 +3267,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: recorded_at >= {etl_date} AND recorded_at < {etl_date} + 1
-      filter_note: cột ngày RECORDED_AT — Append theo RECORDED_AT
+      filter_logic: RECORDED_AT >= {etl_date} AND RECORDED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo RECORDED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_INSPECTION_SCHEDULE
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_INSPECTION_SCHEDULE
   type: Theo Source
@@ -3448,8 +3423,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: performed_at >= {etl_date} AND performed_at < {etl_date} + 1
-      filter_note: cột ngày PERFORMED_AT — Append theo PERFORMED_AT
+      filter_logic: PERFORMED_AT >= {etl_date} AND PERFORMED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo PERFORMED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_PROFILE_CHANGE
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_PROFILE_CHANGE
   type: Theo Source
@@ -3494,8 +3469,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: cột ngày CREATED_AT — Append theo CREATED_AT
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_RELATED_PERSON
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_RELATED_PERSON
   type: Theo Source
@@ -3670,8 +3645,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-SC_FIRM_SHAREHOLDER_RELATION
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_SHAREHOLDER_RELATION
   type: Theo Source
@@ -3831,9 +3806,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-ALERT_VIOLATION_SNAPSHOT
   brd_name: Design Atomic từ nguồn SCMS bảng ALERT_VIOLATION_SNAPSHOT
   type: Theo Source
@@ -3854,9 +3829,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATED_AT
 - brd_id: BRD-SRC-SCMS-CAT_AUDIT_OPINION_TYPE
   brd_name: Design Atomic từ nguồn SCMS bảng CAT_AUDIT_OPINION_TYPE
   type: Theo Source
@@ -4067,5 +4042,5 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: created_at >= {etl_date} AND created_at < {etl_date} + 1
-      filter_note: Append theo created_at
+      filter_logic: null
+      filter_note: Bảng phân quyền - Truncate then Insert
