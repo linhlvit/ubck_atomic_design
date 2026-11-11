@@ -339,9 +339,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-AUTOROUTEPARTINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng AUTOROUTEPARTINDEX
   type: Theo Source
@@ -624,26 +624,7 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-TTHC-AUDIT_DOCUMENT
-  brd_name: Design Atomic từ nguồn TTHC bảng AUDIT_DOCUMENT
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: Document JSON chi tiết sự kiện audit
-    functional_group: UID-04 Audit và thông báo
-    scope_status: out_of_scope
-    scope_reason: ETL không đọc Document.Content — cascade drop từ Audit_AuditTrailEventIndex
-    table: AUDIT_DOCUMENT
-    related_tables: []
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
       filter_note: null
 - brd_id: BRD-SRC-TTHC-NOTIFICATION_NOTIFICATIONINDEX
