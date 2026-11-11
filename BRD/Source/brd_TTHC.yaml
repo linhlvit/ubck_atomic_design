@@ -65,8 +65,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field text Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-HTMLFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng HTMLFIELDINDEX
   type: Theo Source
@@ -86,8 +86,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field HTML Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-MULTITEXTFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng MULTITEXTFIELDINDEX
   type: Theo Source
@@ -107,8 +107,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field đa văn bản Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-LINKFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng LINKFIELDINDEX
   type: Theo Source
@@ -128,8 +128,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field link Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-NUMERICFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng NUMERICFIELDINDEX
   type: Theo Source
@@ -149,8 +149,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field số Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-DATEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DATEFIELDINDEX
   type: Theo Source
@@ -170,8 +170,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field ngày Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: DATETIME >= {etl_date} AND DATETIME < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATETIME
 - brd_id: BRD-SRC-TTHC-DATETIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DATETIMEFIELDINDEX
   type: Theo Source
@@ -191,8 +191,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field ngày giờ Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: DATETIME >= {etl_date} AND DATETIME < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo DATETIME
 - brd_id: BRD-SRC-TTHC-TIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng TIMEFIELDINDEX
   type: Theo Source
@@ -212,8 +212,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field giờ Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: TIME >= {etl_date} AND TIME < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo TIME
 - brd_id: BRD-SRC-TTHC-BOOLEANFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng BOOLEANFIELDINDEX
   type: Theo Source
@@ -233,8 +233,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field boolean Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-CONTENTPICKERFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng CONTENTPICKERFIELDINDEX
   type: Theo Source
@@ -275,8 +275,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field user picker Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-WORKFLOWINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng WORKFLOWINDEX
   type: Theo Source
@@ -298,8 +298,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: CreatedUtc >= {etl_date}
-      filter_note: Workflow instance xét duyệt — Append theo ngày khởi tạo workflow
+      filter_logic: CREATEDUTC >= {etl_date} AND CREATEDUTC < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATEDUTC
 - brd_id: BRD-SRC-TTHC-DOCUMENT
   brd_name: Design Atomic từ nguồn TTHC bảng DOCUMENT
   type: Theo Source
@@ -314,15 +314,13 @@ brd_entries:
     related_tables:
     - table: CONTENTITEMINDEX
       relation: 1-N — Document được ContentItemIndex trỏ tới qua DocumentId
-    - table: TMP_CII_ID_REMAP
-      relation: 1-N — Bảng tmp cii id remap
     notes: '2026-09-30: Nguồn JSON (Content) được parse tại ODS TTHC (ODS_TTHC_DESCRIPTION.md) — ghép với ContentItemIndex để dựng AP_DOCUMENT (→ Administrative Procedure Document, parse HoSoTTHC) và AP_DOCUMENT_APPLICANT (→ Administrative Procedure Document Applicant, parse DoiTuongNopHoSo). Atomic không đọc Content JSON thô trực tiếp. Xem TTHC_HLD_Overview.md D-07.'
     data_volume_hint: null
     refresh_frequency: daily
     ingestion:
-      data_change_mode: Update
-      filter_logic: UpdatedAt >= {etl_date}
-      filter_note: 'Cập nhật theo UPDATEDAT — VERSION là optimistic lock, bản ghi bị sửa tại chỗ trước khi publish. 2026-08-21: đổi từ Append sang Update — khớp Table Type Fundamental, đã giải quyết T1-01 (xem TTHC_HLD_Tier1.md D-06).'
+      data_change_mode: Append
+      filter_logic: (CREATEDAT >= {etl_date} AND CREATEDAT < {etl_date} + 1) OR (UPDATEDAT >= {etl_date} AND UPDATEDAT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATEDAT, UPDATEDAT
 - brd_id: BRD-SRC-TTHC-ALIASPARTINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng ALIASPARTINDEX
   type: Theo Source
@@ -358,9 +356,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-CONTAINEDPARTINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng CONTAINEDPARTINDEX
   type: Theo Source
@@ -377,9 +375,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-INDEXINGTASK
   brd_name: Design Atomic từ nguồn TTHC bảng INDEXINGTASK
   type: Theo Source
@@ -415,9 +413,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-DEPLOYMENTPLANINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DEPLOYMENTPLANINDEX
   type: Theo Source
@@ -453,9 +451,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-WORKFLOWTYPEINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng WORKFLOWTYPEINDEX
   type: Theo Source
@@ -472,9 +470,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-WORKFLOWBLOCKINGACTIVITIESINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng WORKFLOWBLOCKINGACTIVITIESINDEX
   type: Theo Source
@@ -491,9 +489,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-WORKFLOWTYPESTARTACTIVITIESINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng WORKFLOWTYPESTARTACTIVITIESINDEX
   type: Theo Source
@@ -510,9 +508,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERINDEX
   type: Theo Source
@@ -529,9 +527,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERBYLOGININFOINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERBYLOGININFOINDEX
   type: Theo Source
@@ -548,9 +546,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERBYCLAIMINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERBYCLAIMINDEX
   type: Theo Source
@@ -567,9 +565,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERBYROLENAMEINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERBYROLENAMEINDEX
   type: Theo Source
@@ -586,9 +584,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
+      data_change_mode: Append
       filter_logic: null
-      filter_note: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERBYROLENAMEINDEX_DOCUMENT
   brd_name: Design Atomic từ nguồn TTHC bảng USERBYROLENAMEINDEX_DOCUMENT
   type: Theo Source
@@ -625,8 +623,8 @@ brd_entries:
     refresh_frequency: null
     ingestion:
       data_change_mode: Append
-      filter_logic: null
-      filter_note: null
+      filter_logic: CREATEDUTC >= {etl_date} AND CREATEDUTC < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATEDUTC
 - brd_id: BRD-SRC-TTHC-NOTIFICATION_NOTIFICATIONINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng NOTIFICATION_NOTIFICATIONINDEX
   type: Theo Source
@@ -643,9 +641,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: CREATEDATUTC >= {etl_date} AND CREATEDATUTC < {etl_date} + 1
+      filter_note: Ngày tạo bản ghi — Append theo CREATEDATUTC
 - brd_id: BRD-SRC-TTHC-CONTENT_TRIGGERS
   brd_name: Design Atomic từ nguồn TTHC bảng CONTENT_TRIGGERS
   type: Theo Source
@@ -658,27 +656,6 @@ brd_entries:
     scope_reason: null
     table: CONTENT_TRIGGERS
     related_tables: null
-    notes: null
-    data_volume_hint: null
-    refresh_frequency: null
-    ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
-- brd_id: BRD-SRC-TTHC-TMP_CII_ID_REMAP
-  brd_name: Design Atomic từ nguồn TTHC bảng TMP_CII_ID_REMAP
-  type: Theo Source
-  ba_email: username@fssc.com.vn
-  steward_email: username@ubck.com.vn
-  content:
-    table_meaning: null
-    functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
-    scope_reason: null
-    table: TMP_CII_ID_REMAP
-    related_tables:
-    - table: DOCUMENT
-      relation: FK cha — Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết
     notes: null
     data_volume_hint: null
     refresh_frequency: null
