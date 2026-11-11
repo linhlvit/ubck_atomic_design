@@ -734,7 +734,6 @@ SELECT
     f.certificate_nbr,
     f.certificate_dt,
     f.offering_round_key,
-    f.administrative_procedure_code,
     f.security_tp_code,
     f.offering_method_code,
     f.security_nm,

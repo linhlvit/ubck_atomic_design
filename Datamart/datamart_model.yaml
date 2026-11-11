@@ -29594,7 +29594,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(src_stm_code, offering_code, offering_method_code, COALESCE(security_nm, '')) (Dạng B, A22): khóa dòng = khóa MERGE. Grain = 1 đợt chào bán/phát hành đã được cấp phép (GCN/CV) × 1 hình thức phát hành (IDS: × tên chứng khoán kế hoạch; SCMS: 1 hình thức theo offering_method của bản công bố; FMS: × dòng phương án) của 1 nguồn (IDS CTĐC, SCMS CTCK, FMS CTQLQ) — đúng khối all_offering của SQL BA Nhóm 23–26/28/46. Nạp đủ lịch sử theo ngày GCN/CV (<= :etl_date), MERGE theo PK. [MỚI 2026-11-10, O_VP_75]"
+        description: "PK — hash(src_stm_code, offering_code, security_tp_code, offering_method_code, COALESCE(security_nm, ''), IDS: COALESCE(par_val), COALESCE(offering_price), result_rpt_dt và offering_end_dt của dòng kết quả; FMS: fmc_securities_offering_plan_id) (Dạng B, A22): khóa dòng = khóa MERGE. Grain = đúng 1 dòng `all_offering` của SQL BA Nhóm 23–26/28/46: IDS = 1 hồ sơ chào bán × (loại CK, hình thức, tên CK, mệnh giá, giá chào bán) kế hoạch × 1 dòng kết quả (ngày BC kết quả, ngày kết thúc — BA nối kết quả theo hồ sơ + hình thức nên 1 kế hoạch có thể nhân theo số dòng kết quả); SCMS = 1 bản công bố × 1 phần tử plan_json (loaiChaoBan); FMS = 1 đợt × 1 dòng phương án — 3 nguồn IDS CTĐC, SCMS CTCK, FMS CTQLQ. Nạp đủ lịch sử theo ngày GCN/CV (<= :etl_date), MERGE theo PK. [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11, O_VP_77(f)] khóa cũ (src, offering_code, method, security_nm) không duy nhất khi 2 dòng kế hoạch khác giá/mệnh giá hoặc có nhiều dòng kết quả/phương án cùng hình thức."
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Certificate Date Dimension Id"
@@ -29666,25 +29666,16 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Khóa ĐỢT phát hành theo BA (offering_key) = concat_ws('|', issuer_tp_code, issuer_code, COALESCE(certificate_nbr, '0'), certificate_dt) — dùng COUNT(DISTINCT) để đếm số đợt đăng ký / có kết quả (K_VP_393/395); 1 đợt có thể có nhiều dòng Fact (nhiều hình thức). [MỚI 2026-11-10, O_VP_75]"
-        source_atomic_table: "pc_securities_offering / pc_securities_offering_plan / pc_securities_offering_result / public_company / sc_disclosure_securities_offering / fmc_securities_offering / fmc_securities_offering_plan"
-        source_atomic_column: null
-      - logical_name: "Administrative Procedure Code"
-        physical_name: "administrative_procedure_code"
-        data_domain: "Classification Value"
-        data_type: "string"
-        nullable: true
-        key: ""
-        description: "Mã thủ tục hành chính IDS (ap_code); '1.009.501' = chào bán để tăng vốn của Công ty TNHH → nhóm hình thức LLC_CAPITAL (BA Nhóm 23/25). SCMS/FMS NULL. [MỚI 2026-11-10, O_VP_75]"
-        source_atomic_table: "pc_securities_offering"
-        source_atomic_column: "pc_securities_offering.pc_securities_offering.ap_code"
+        description: "Khóa ĐỢT phát hành theo BA (offering_key) = concat_ws('|', issuer_tp_code, issuer_code, COALESCE(certificate_nbr, '0'), certificate_dt) — dùng COUNT(DISTINCT) để đếm số đợt đăng ký / có kết quả (K_VP_393/395); 1 đợt có thể có nhiều dòng Fact (nhiều hình thức). [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11, O_VP_77(f)] IDS dùng business_reg_no (ip_alternative_identification.identification_nbr ← IDS.COMPANY_PROFILES.BUSINESS_REG_NO, identification_tp_code = 'ESTABLISHMENT_OPERATION_LICENSE') thay pc_code đúng BA; công ty không có số ĐKKD → thành phần bị bỏ như concat_ws của BA."
+        source_atomic_table: "pc_securities_offering / pc_securities_offering_plan / pc_securities_offering_result / public_company / sc_disclosure_securities_offering / fmc_securities_offering / fmc_securities_offering_plan / ip_alternative_identification"
+        source_atomic_column: "ip_alternative_identification.identification_nbr"
       - logical_name: "Security Type Code"
         physical_name: "security_tp_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại chứng khoán chào bán — mã gốc từng nguồn (giá trị 'CP' cổ phiếu, 'TP' trái phiếu trùng ở cả 3 nguồn theo BA): IDS plan.security_tp_code; SCMS item_category_code; FMS securities_tp_code. KPI Nhóm 23–25/46 lọc = 'CP', Nhóm 26/28 'TP'. [MỚI 2026-11-10, O_VP_75]"
+        description: "Loại chứng khoán chào bán — mã gốc từng nguồn: IDS plan.security_tp_code ('CP','CPUD' cổ phiếu; 'TP','TPCD','TPKCQ' trái phiếu doanh nghiệp), SCMS item_category_code ('CP'/'TP'), FMS securities_tp_code ('CP'/'TP'). KPI Nhóm 23–25/46 lọc IN ('CP','CPUD'), Nhóm 26/28 IN ('TP','TPCD','TPKCQ'). [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11, O_VP_77: thêm CPUD, TPCD, TPKCQ theo BA]"
         source_atomic_table: "pc_securities_offering / pc_securities_offering_plan / pc_securities_offering_result / public_company / sc_disclosure_securities_offering / fmc_securities_offering / fmc_securities_offering_plan"
         source_atomic_column: "pc_securities_offering_plan.security_tp_code / sc_disclosure_securities_offering.item_category_code / fmc_securities_offering.securities_tp_code"
       - logical_name: "Offering Method Code"
@@ -29711,16 +29702,16 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA (VALUES t(...) trong SQL Nhóm 23): PUBLIC (Phát hành ra công chúng), PRIVATE (Phát hành riêng lẻ), LLC_CAPITAL (Chào bán để tăng vốn của Công ty TNHH — IDS ap_code '1.009.501'), DIVIDEND_EQUITY (trả cổ tức/tăng vốn từ vốn CSH), ESOP, SWAP (hoán đổi/sáp nhập), OTHER (Khác), NULL = chưa phân nhóm. Nhãn tiếng Việt ở Detail Mapping (K_VP_391, A36). [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11: SCMS đọc offering_method]"
+        description: "Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA (VALUES m(...) trong SQL Nhóm 23–26/28/46, BA 2026-11-11): PUBLIC (Phát hành ra công chúng), PRIVATE (Phát hành riêng lẻ), DIVIDEND_EQUITY (trả cổ tức/tăng vốn từ vốn CSH), ESOP, SWAP (hoán đổi/sáp nhập), INTERNATIONAL (Phát hành ra quốc tế), OTHER (Khác), NULL = chưa phân nhóm (mã không có trong bảng ánh xạ). Nhãn tiếng Việt ở Detail Mapping (K_VP_391, A36). [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11: SCMS đọc offering_method] [SỬA 2026-11-11, O_VP_77: BA bỏ administrative_proc_cd — không còn nhóm LLC_CAPITAL; thêm INTERNATIONAL (IDS 11/14, SCMS PHAT_HANH_TP_QUOC_TE; trước 'Khác'); FMS '04' → ESOP]"
         source_atomic_table: "pc_securities_offering / pc_securities_offering_plan / pc_securities_offering_result / public_company / sc_disclosure_securities_offering / fmc_securities_offering / fmc_securities_offering_plan"
-        source_atomic_column: "pc_securities_offering.ap_code / pc_securities_offering_plan.offering_method_code / sc_disclosure_securities_offering.offering_method / fmc_securities_offering_plan.offering_method_code"
+        source_atomic_column: "pc_securities_offering_plan.offering_method_code / pc_securities_offering_plan.security_nm / sc_disclosure_securities_offering.offering_method / fmc_securities_offering_plan.offering_method_code"
       - logical_name: "Raising Capital Indicator"
         physical_name: "raising_capital_ind"
         data_domain: "Indicator"
         data_type: "int"
         nullable: true
         key: ""
-        description: "Cờ 'Huy động vốn' theo BA (1 = có, 0 = không): IDS 0 khi offering_method_code IN ('4','6','10') hoặc (= '9' và security_nm = 'Phát hành thưởng cho người lao động'); SCMS 0 khi offering_method IN ('CO_PHIEU_THUONG','PHAT_HANH_CP_DE_HOAN_DOI','CO_DONG_LON_CHAO_BAN'); FMS 0 khi offering_method_code IN ('02','07','08','10'). Nhóm 23–26/28 lọc = 1; Nhóm 46 KHÔNG lọc. [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11: SCMS đọc offering_method]"
+        description: "Cờ 'Huy động vốn' theo BA (is_raising_capital của bảng ánh xạ: 'Y' = 1, 'N' = 0; mã ngoài bảng ánh xạ = NULL): IDS 0 khi offering_method_code IN ('4','6','10') hoặc ('9' và security_nm = 'Phát hành thưởng cho người lao động'); SCMS 0 khi offering_method IN ('CO_PHIEU_THUONG','PHAT_HANH_CP_DE_HOAN_DOI','CO_DONG_LON_CHAO_BAN'); FMS 0 khi offering_method_code IN ('02','07','08'). Nhóm 23–26/28 lọc = 1; Nhóm 46 KHÔNG lọc. [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-11: SCMS đọc offering_method] [SỬA 2026-11-11, O_VP_77: FMS '10' = 1 (trước 0); mã ngoài bảng ánh xạ = NULL (trước 1)]"
         source_atomic_table: "pc_securities_offering / pc_securities_offering_plan / pc_securities_offering_result / public_company / sc_disclosure_securities_offering / fmc_securities_offering / fmc_securities_offering_plan"
         source_atomic_column: "pc_securities_offering_plan.offering_method_code / pc_securities_offering_plan.security_nm / sc_disclosure_securities_offering.offering_method / fmc_securities_offering_plan.offering_method_code"
       - logical_name: "Plan Quantity"
