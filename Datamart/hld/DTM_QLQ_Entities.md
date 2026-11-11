@@ -44,11 +44,17 @@ erDiagram
 
 ## Nhóm 3 — Danh sách các Công ty quản lý quỹ (Operational)
 
-Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Company, Investment Fund, Member Rating), không qua Dimension riêng.
+Bảng tác nghiệp — lấy trực tiếp từ Atomic (Fund Management Company, Investment Fund), không qua Dimension riêng. **[2026-11-11, O_QLQ_88]** Xếp loại/CAMEL (K_QLQ_24/25) tách sang Fact theo kỳ đánh giá `Fact Fund Management Company Rating Snapshot` (Member Rating ⨝ Member Rating Period) để lấy kỳ gần nhất ≤ tháng bộ lọc.
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Fund_Management_Company_Rating_Snapshot : " "
+```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fund Management Company Profile | Operational | new | Hồ sơ CTQLQ | 1 CTQLQ × 1 tháng slicer | K_QLQ_19,20,23,24,25,26 |
+| Fund Management Company Profile | Operational | new | Hồ sơ CTQLQ (hiện trạng Active-only; đã gỡ rating_class_code/total_score_amt 2026-11-11) | 1 CTQLQ | K_QLQ_20,21,23,2698 (K_QLQ_22,26–31 đọc Fact RPT; K_QLQ_32 Contract List) |
+| Fact Fund Management Company Rating Snapshot | Fact Snapshot | new | Xếp loại (RANK_TYPE) + tổng điểm CAMEL theo kỳ đánh giá bán niên/năm — kỳ gần nhất ≤ tháng bộ lọc [MỚI 2026-11-11, O_QLQ_88] | 1 CTQLQ × 1 kỳ đánh giá (PK hash Dạng B: fmc_id, rpt_year, rating_period_code, src_stm_code) | K_QLQ_24,25 |
 
 ---
 

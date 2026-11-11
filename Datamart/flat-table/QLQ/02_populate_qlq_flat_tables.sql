@@ -106,8 +106,6 @@ SELECT
     o.operation_status_nm,
     o.legal_representative_nm,
     o.fund_count,
-    o.rating_class_code,
-    o.total_score_amt,
     o.src_stm_code,
     o.fmc_id
 FROM datamart.opr_fund_management_company_profile o
@@ -319,6 +317,7 @@ SELECT
     f.cell_numeric_val,
     f.src_stm_code,
     f.fmc_id,
+    f.row_indicator_val_code,
     rpt_period_end_cal.cdr_dt     AS rpt_period_end_cdr_dt,
     cell_dim.fmr_sheet_code,
     cell_dim.cell_id,
@@ -917,4 +916,40 @@ SELECT
     f.fmc_id
 
 FROM datamart.opr_fund_management_company_contract_asset_list f
+;
+
+
+-- ==========================================================
+-- 24. FACT: qlq_fct_fund_management_company_rating_snpst_flat
+--    [MỚI 2026-11-11, O_QLQ_88] TRUNCATE + INSERT mọi kỳ đánh giá — Fact không khóa theo :etl_date (kết quả xếp loại chốt sau kỳ, upsert theo PK; bảng nhỏ)
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlq_fct_fund_management_company_rating_snpst_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlq_fct_fund_management_company_rating_snpst_flat
+SELECT
+    -- From: FCT_FUND_MANAGEMENT_COMPANY_RATING_SNPST
+    f.fund_management_company_rating_snpst_id,
+    f.snpst_dt_dim_id,
+    f.fmc_id,
+    f.member_rating_code,
+    f.rpt_year,
+    f.rating_period_code,
+    f.rating_period_end_dt,
+    f.rating_class_code,
+    f.total_score_amt,
+    f.rating_finalized_flag,
+    f.src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_fund_management_company_rating_snpst f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
 ;

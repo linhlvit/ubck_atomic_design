@@ -129,8 +129,6 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     operation_status_nm                          Nullable(String)        COMMENT 'Trạng thái hoạt động của công ty QLQ (tên trạng thái)',
     legal_representative_nm                      Nullable(String)        COMMENT 'Họ tên người đại diện theo pháp luật của công ty QLQ',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ đầu tư do công ty này quản lý, hiệu lực tại kỳ',
-    rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của công ty QLQ tại kỳ đánh giá gần nhất (1=A, 2=B, 3=C, 4=D)',
-    total_score_amt                  Nullable(Int64)         COMMENT 'Tổng điểm CAMEL tại kỳ xếp hạng gần nhất tính đến kỳ chạy ETL',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id và là tham số drill-down (:fmc_id) của popup Nhóm 4/5. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ và bảng hợp đồng (O_QLQ_64, O_QLQ_68)'
 )
@@ -402,6 +400,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_rpt_cell_val_flat ON
     cell_numeric_val                                 Nullable(Decimal(38,8))    COMMENT 'Giá trị số của ô (bỏ ký tự %; NULL nếu ô chứa chữ hoặc không đổi được sang số); đơn vị theo từng ô báo cáo',
     src_stm_code                                     String                     COMMENT 'Mã hệ thống nguồn dữ liệu',
     fmc_id                                       Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID) — khóa nối với fund_management_company.fmc_id và opr_fund_management_company_profile.fmc_id. KHÔNG nối bằng fmc_code vì fmr_value.fmc_code mang SEC_ID (GUID) trong khi fund_management_company.fmc_code mang SECURITIES.CODE (O_QLQ_64)',
+    row_indicator_val_code                       Nullable(String)        COMMENT 'Mã chỉ tiêu ghi trong Ô GIÁ TRỊ của cột mã (column_index = 2, BA col_idx 3) cùng dòng biểu mẫu (row_index), cùng hàng động (dynamic_val_ind, dynamic_row_nbr) và cùng bản nộp với ô này. SQL BA Nhóm 3 (2026-11-11) lấy Mã chỉ tiêu = nhãn biểu mẫu nếu có, ngược lại giá trị ô cột 3 của bản nộp — dùng cho bảng mà mã nằm trong dữ liệu nhập thay vì biểu mẫu; KPI khớp mã bằng coalesce(fund_management_rpt_cell_dim.row_indicator_code, cột này). NULL khi dòng không có ô cột 2 hoặc ô trống. GIẢ ĐỊNH chưa kiểm UAT: BA không nêu sheet nào cần fallback; sheet HDQuanLyDanhMucDauTu_06015 được BA thêm cùng lúc nên là ứng viên — cần đếm trên UAT. [MỚI 2026-11-11, O_QLQ_87]',
 
     -- From: CALENDAR DATE DIMENSION
     rpt_period_end_cdr_dt                            Nullable(Date)             COMMENT 'Ngày cuối kỳ báo cáo — từ Calendar Date Dimension',
@@ -655,4 +654,42 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
 ORDER BY (fmr_submission_code, table_idx, asset_indicator_code)
 COMMENT 'Flat table — opr_fund_management_company_contract_asset_list — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 24. FACT: qlq_fct_fund_management_company_rating_snpst_flat
+--    fct_fund_management_company_rating_snpst — Fact Fund Management Company Rating Snapshot [MỚI 2026-11-11, O_QLQ_88]: xếp loại (RANK_TYPE) + tổng điểm CAMEL theo kỳ đánh giá bán niên/năm
+--    Grain: 1 CTQLQ × 1 kỳ đánh giá (PK hash fmc_id, rpt_year, rating_period_code, src_stm_code); K_QLQ_24/25 lấy kỳ gần nhất ≤ tháng bộ lọc, nối Profile qua fmc_id
+--    Joins: Calendar Date Dimension (snpst_dt_dim_id = ngày cuối kỳ 30/06 | 31/12); nạp TRUNCATE + INSERT mọi kỳ
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.qlq_fct_fund_management_company_rating_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_FUND_MANAGEMENT_COMPANY_RATING_SNPST
+    fund_management_company_rating_snpst_id      String                  COMMENT 'PK — hash(fmc_id, rpt_year, rating_period_code, src_stm_code) (Dạng B, A22). Grain = 1 CTQLQ × 1 kỳ đánh giá x',
+    snpst_dt_dim_id                              Nullable(String)        COMMENT 'FK tới Calendar Date Dimension — ngày cuối kỳ đánh giá: 30/06 khi RATING_PD.PERIOD = 1, 31/12 với giá trị khác',
+    fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (RANK.SEC_ID = SECURITIES.ID) — khóa nối opr_fund_management_company_profile.fmc_id (O_QLQ',
+    member_rating_code                           Nullable(String)        COMMENT 'Mã dòng kết quả xếp loại được chọn của kỳ (RANK.ID) — để đối chiếu nguồn; không vào PK. [MỚI 2026-11-11, O_QLQ',
+    rpt_year                                     Int64                   COMMENT 'Năm của kỳ đánh giá (RATING_PD.REPORT_YEAR) — thành phần PK. [MỚI 2026-11-11, O_QLQ_88]',
+    rating_period_code                           String                  COMMENT 'Kỳ đánh giá trong năm nguyên văn (RATING_PD.PERIOD): 1 = giữa năm (ngày cuối kỳ 30/06 theo SQL BA), giá trị kh',
+    rating_period_end_dt                         Nullable(Date)          COMMENT 'Ngày cuối kỳ đánh giá suy từ kỳ (cùng công thức snpst_dt_dim_id) — để lọc/sắp kỳ ≤ tháng bộ lọc ở Detail Mappi',
+    rating_class_code                            Nullable(String)        COMMENT 'Xếp loại của CTQLQ tại kỳ — RANK.RANK_TYPE nguyên văn (BA hiển thị `a.RANK_TYPE` Xếp loại). Ý nghĩa mã chưa đố',
+    total_score_amt                              Nullable(Int64)         COMMENT 'Tổng điểm CAMEL (RANK.TOTAL_SCORE) của kỳ — BA CAMEL. [MỚI 2026-11-11, O_QLQ_88]',
+    rating_finalized_flag                        Nullable(Int64)         COMMENT 'Cờ kỳ đánh giá đã chốt (RATING_PD.RATING_FINALIZED: 1 = đã kết thúc) — tiêu chí chọn dòng đầu tiên của kỳ. [MỚ',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn: FMS_RANK; thành phần PK. [MỚI 2026-11-11, O_QLQ_88]',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), fund_management_company_rating_snpst_id)
+COMMENT 'Flat table — fct_fund_management_company_rating_snpst — sinh tự động từ master registry + Entities.csv'
 ;
