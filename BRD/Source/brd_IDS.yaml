@@ -872,9 +872,9 @@ brd_entries:
     - table: EVALUATION_CRITERIA
       relation: FK cha — Chỉ tiêu đánh giá
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_DATE >= {etl_date} AND CREATED_DATE < {etl_date} + 1) OR (UPDATED_DATE >= {etl_date} AND UPDATED_DATE < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_DATE, UPDATED_DATE
 - brd_id: BRD-SRC-IDS-EVALUATION_GROUPS
   content:
     table: EVALUATION_GROUPS
