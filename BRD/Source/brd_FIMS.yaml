@@ -2073,9 +2073,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (DATECREATED >= {etl_date} AND DATECREATED < {etl_date} + 1) OR (DATEMODIFIED >= {etl_date} AND DATEMODIFIED < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo DATECREATED, DATEMODIFIED
 - brd_id: BRD-SRC-FIMS-RPTPROCESS
   brd_name: Design Atomic từ nguồn FIMS bảng RPTPROCESS
   type: Theo Source
