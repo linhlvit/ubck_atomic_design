@@ -22510,7 +22510,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — Driving: fmr_value (composite cùng Table Index; lấy DISTINCT theo bản nộp × bảng hợp đồng)"
+        description: "PK — Driving: fmr_value (composite cùng Table Index; lấy DISTINCT theo bản nộp × bảng hợp đồng) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Chỉ các (bản nộp, `table_idx`) có ô trên dòng mẫu 'Tên khách hàng' (neo hợp đồng) — xem `src_stm_code`."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.fmr_submission_code"
       - logical_name: "Table Index"
@@ -22519,7 +22519,7 @@ entities:
         data_type: "int"
         nullable: false
         key: "PK"
-        description: "PK — Driving: fmr_value (composite cùng Fund Management Report Submission Code); chỉ số bảng hợp đồng trong sheet `@QLDMDT` — mỗi bảng là 1 hợp đồng UTDM: = `dynamic_row_nbr` khi giá trị tĩnh (`dynamic_val_ind` = 0), = TRUNC(`dynamic_row_nbr` / 1000) khi giá trị động (`dynamic_val_ind` = 1) theo SQL BA 2026-11-05. [SỬA 2026-11-05, O_QLQ_75] thay `dynamic_row_nbr`: ô tổng giá trị là ô động nên mang ROW_DYNAMIC khác ô tên/TK lưu ký, nối theo `dynamic_row_nbr` thô sẽ tách 1 hợp đồng thành nhiều dòng lệch"
+        description: "PK — Driving: fmr_value (composite cùng Fund Management Report Submission Code); chỉ số bảng hợp đồng trong sheet `@QLDMDT` — mỗi bảng là 1 hợp đồng UTDM: = `dynamic_row_nbr` khi giá trị tĩnh (`dynamic_val_ind` = 0), = TRUNC(`dynamic_row_nbr` / 1000) khi giá trị động (`dynamic_val_ind` = 1) theo SQL BA 2026-11-05. [SỬA 2026-11-05, O_QLQ_75] thay `dynamic_row_nbr`: ô tổng giá trị là ô động nên mang ROW_DYNAMIC khác ô tên/TK lưu ký, nối theo `dynamic_row_nbr` thô sẽ tách 1 hợp đồng thành nhiều dòng lệch [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] `dynamic_val_ind` khác 0/1 → `table_idx` NULL → ô bị loại (code dev: `table_idx IS NOT NULL`). Tương đương `FLOOR(dynamic_row_nbr / 1000)` của code dev khi `dynamic_row_nbr` ≥ 0."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.dynamic_row_nbr / dynamic_val_ind"
       - logical_name: "Investment Fund Code"
@@ -22537,7 +22537,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã CTQLQ nộp báo cáo (bản nộp loại đối tượng CTQLQ = 2 theo BA; nếu dòng báo cáo không mang mã CTQLQ thì suy từ quỹ nộp). Theo định nghĩa Atomic, fmr_value.fmc_code lấy từ RPT_VALUES.SEC_ID (không phải SECURITIES.CODE như fmc_code của Profile ở Nhóm 3) nên KHÔNG dùng làm khóa lọc danh sách hợp đồng theo CTQLQ — dùng fmc_id (O_QLQ_68)"
+        description: "Mã CTQLQ nộp báo cáo (bản nộp loại đối tượng CTQLQ = 2 theo BA; nếu dòng báo cáo không mang mã CTQLQ thì suy từ quỹ nộp). Theo định nghĩa Atomic, fmr_value.fmc_code lấy từ RPT_VALUES.SEC_ID (không phải SECURITIES.CODE như fmc_code của Profile ở Nhóm 3) nên KHÔNG dùng làm khóa lọc danh sách hợp đồng theo CTQLQ — dùng fmc_id (O_QLQ_68) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Quỹ nộp đọc từ `investment_fund_hstr` tại `ds_snpst_dt = :etl_date`, `ds_rcrd_st = 'ACTIVE'`."
         source_atomic_table: "fmr_value / investment_fund"
         source_atomic_column: "fmr_value.fmc_code / investment_fund.fmc_code"
       - logical_name: "Record Type"
@@ -22582,7 +22582,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo cách BA xếp hạng"
+        description: "Số phiên bản biểu mẫu báo cáo của ô nộp. ETL KHÔNG chọn phiên bản mới nhất: Detail Mapping/BI chọn `version_nbr = MAX(...) OVER (PARTITION BY fmc_id, investment_fund_code, period_tp_code, period_val, rpt_year)` (BA: DENSE_RANK … ORDER BY VERSION DESC; luật A31) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Bảng mẫu đọc từ `fmr_sheet_hstr` / `fund_management_report_hstr` tại `ds_snpst_dt = :etl_date`, `ds_rcrd_st = 'ACTIVE'`."
         source_atomic_table: "fund_management_report"
         source_atomic_column: "fund_management_report.version_nbr"
       - logical_name: "Customer Name"
@@ -22591,7 +22591,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ Data Modeler duyệt 2026-10-14, O_QLQ_33) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ Data Modeler duyệt 2026-10-14, O_QLQ_33) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Nhãn dòng 'Loại' (`column_index` = 1) lấy từ NHÃN TĨNH CỦA MẪU `fmr_sheet.label_nm` (ưu tiên, theo `fmr_sheet_code` + `row_index`; khớp SQL BA, nhãn mẫu trước giá trị nộp); mẫu không có nhãn thì dùng giá trị nộp `fmr_value.cell_val` của ô cột 1 cùng dòng. Bản 2026-11-10 chỉ đọc giá trị nộp nên 7 cột mới (O_QLQ_86) NULL toàn bộ — nhãn 'Ngân hàng lưu ký' và mã chỉ tiêu 180298/180299/201205/180311/180313/180316 là nhãn tĩnh của mẫu, không có trong `cell_val`. Làm sạch (code dev, NGOÀI SQL BA): bỏ khoảng trắng và dấu ':' / '：' (toàn góc) đầu chuỗi, chuỗi rỗng → NULL. `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72)."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Custody Account Number"
@@ -22600,7 +22600,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số tài khoản lưu ký của hợp đồng UTDM (PII — số tài khoản thô, lưu nguyên văn theo ngoại lệ Data Modeler duyệt 2026-10-14, O_QLQ_33) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Số tài khoản lưu ký của hợp đồng UTDM (PII — số tài khoản thô, lưu nguyên văn theo ngoại lệ Data Modeler duyệt 2026-10-14, O_QLQ_33) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Nhãn dòng 'Loại' (`column_index` = 1) lấy từ NHÃN TĨNH CỦA MẪU `fmr_sheet.label_nm` (ưu tiên, theo `fmr_sheet_code` + `row_index`; khớp SQL BA, nhãn mẫu trước giá trị nộp); mẫu không có nhãn thì dùng giá trị nộp `fmr_value.cell_val` của ô cột 1 cùng dòng. Bản 2026-11-10 chỉ đọc giá trị nộp nên 7 cột mới (O_QLQ_86) NULL toàn bộ — nhãn 'Ngân hàng lưu ký' và mã chỉ tiêu 180298/180299/201205/180311/180313/180316 là nhãn tĩnh của mẫu, không có trong `cell_val`. Làm sạch (code dev, NGOÀI SQL BA): bỏ khoảng trắng và dấu ':' / '：' (toàn góc) đầu chuỗi, chuỗi rỗng → NULL. `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72)."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Contract Market Value Amount"
@@ -22609,7 +22609,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND) [SỬA 2026-11-05, O_QLQ_75] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Dòng có mã chỉ tiêu (`column_index` = 2) = '180317' — mã lấy từ nhãn tĩnh `TRIM(fmr_sheet.label_nm)` hoặc giá trị nộp. Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Source System Code"
@@ -22618,7 +22618,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72)"
+        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Phạm vi dòng nạp: (1) chỉ ô có `table_idx` xác định (`dynamic_val_ind` ∈ {0,1}); (2) ô thuộc sheet '@QLDMDT' của biểu mẫu LOWER(fmr_nm) LIKE '%danh mục đầu tư%'; (3) NEO HỢP ĐỒNG: ô phải nằm trên dòng MẪU có nhãn 'Tên khách hàng' (`fmr_sheet.label_nm`, cột 1) — dòng động lồng (danh mục chứng khoán, `dynamic_row_nbr` 1000, 2000…) không phải hợp đồng, nếu không neo sẽ sinh dòng NULL `customer_nm`/`custody_account_nbr` (điều kiện này do dev thêm, SQL BA không nêu tường minh — O_QLQ_90). `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72)."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.src_stm_code"
       - logical_name: "Record Status"
@@ -22663,7 +22663,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)"
+        description: "Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Quỹ nộp đọc từ `investment_fund_hstr` tại `ds_snpst_dt = :etl_date`, `ds_rcrd_st = 'ACTIVE'`."
         source_atomic_table: "fmr_value / investment_fund"
         source_atomic_column: "fmr_value.fmc_id / investment_fund.fmc_id"
       - logical_name: "Custody Bank Name"
@@ -22672,7 +22672,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Ngân hàng lưu ký của hợp đồng UTDM — ô cột \"Mã chỉ tiêu\" (`column_index` = 2) trên dòng có cột \"Loại\" (`column_index` = 1) LIKE '%ngân hàng lưu ký%' (BA STT 31 dòng 203). [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Ngân hàng lưu ký của hợp đồng UTDM — ô cột \"Mã chỉ tiêu\" (`column_index` = 2) trên dòng có cột \"Loại\" (`column_index` = 1) LIKE '%ngân hàng lưu ký%' (BA STT 31 dòng 203). [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Nhãn dòng 'Loại' (`column_index` = 1) lấy từ NHÃN TĨNH CỦA MẪU `fmr_sheet.label_nm` (ưu tiên, theo `fmr_sheet_code` + `row_index`; khớp SQL BA, nhãn mẫu trước giá trị nộp); mẫu không có nhãn thì dùng giá trị nộp `fmr_value.cell_val` của ô cột 1 cùng dòng. Bản 2026-11-10 chỉ đọc giá trị nộp nên 7 cột mới (O_QLQ_86) NULL toàn bộ — nhãn 'Ngân hàng lưu ký' và mã chỉ tiêu 180298/180299/201205/180311/180313/180316 là nhãn tĩnh của mẫu, không có trong `cell_val`. Làm sạch (code dev, NGOÀI SQL BA): bỏ khoảng trắng và dấu ':' / '：' (toàn góc) đầu chuỗi, chuỗi rỗng → NULL. `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72)."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Contract Value Amount"
@@ -22681,7 +22681,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Giá trị hợp đồng UTDM (mã chỉ tiêu 180298 — BA STT 31 dòng 204 \"Tổng giá trị thị trường của hợp đồng\"); khác `contract_market_val_amt` (mã 180317 \"Tổng các danh mục đầu tư\", Nhóm 5). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180298', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Giá trị hợp đồng UTDM (mã chỉ tiêu 180298 — BA STT 31 dòng 204 \"Tổng giá trị thị trường của hợp đồng\"); khác `contract_market_val_amt` (mã 180317 \"Tổng các danh mục đầu tư\", Nhóm 5). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180298', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '180298' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Disbursed Value Amount"
@@ -22690,7 +22690,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Giá trị giải ngân của hợp đồng UTDM (mã chỉ tiêu 180299 — BA STT 31 dòng 205). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180299', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Giá trị giải ngân của hợp đồng UTDM (mã chỉ tiêu 180299 — BA STT 31 dòng 205). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180299', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '180299' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Listed Securities Value Amount"
@@ -22699,7 +22699,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Tổng giá trị thị trường chứng khoán niêm yết trong hợp đồng (mã chỉ tiêu 201205 — BA STT 31 dòng 206). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '201205', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Tổng giá trị thị trường chứng khoán niêm yết trong hợp đồng (mã chỉ tiêu 201205 — BA STT 31 dòng 206). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '201205', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '201205' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Unlisted Securities Value Amount"
@@ -22708,7 +22708,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Tổng giá trị thị trường chứng khoán chưa niêm yết trong hợp đồng (mã chỉ tiêu 180311 — BA STT 31 dòng 207). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180311', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Tổng giá trị thị trường chứng khoán chưa niêm yết trong hợp đồng (mã chỉ tiêu 180311 — BA STT 31 dòng 207). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180311', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '180311' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Other Assets Value Amount"
@@ -22717,7 +22717,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Tổng giá trị thị trường các tài sản khác trong hợp đồng (mã chỉ tiêu 180313 — BA STT 31 dòng 208). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180313', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Tổng giá trị thị trường các tài sản khác trong hợp đồng (mã chỉ tiêu 180313 — BA STT 31 dòng 208). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180313', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '180313' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
       - logical_name: "Cash Value Amount"
@@ -22726,7 +22726,7 @@ entities:
         data_type: "decimal(38,8)"
         nullable: true
         key: ""
-        description: "Tổng giá trị thị trường tiền trong hợp đồng (mã chỉ tiêu 180316 — BA STT 31 dòng 209). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180316', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô."
+        description: "Tổng giá trị thị trường tiền trong hợp đồng (mã chỉ tiêu 180316 — BA STT 31 dòng 209). Ô cột \"Tổng giá trị thị trường tại thời điểm báo cáo (VND)\" (`column_index` = 5) trên dòng có mã chỉ tiêu (`column_index` = 2) = '180316', đơn vị gốc VND. [MỚI 2026-11-10, O_QLQ_86] Các ô của cùng hợp đồng ghép theo `table_idx`, không theo `dynamic_row_nbr` thô. [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Mã chỉ tiêu '180316' của dòng (`column_index` = 2) = COALESCE(nhãn tĩnh mẫu `TRIM(fmr_sheet.label_nm)`, giá trị nộp) — nhãn mẫu ưu tiên (BA `rp`); mã này là nhãn tĩnh nên KHÔNG có trong `cell_val` (O_QLQ_86). Giá trị = ô cột 5 trên dòng đó, bỏ '%' rồi ép DECIMAL(38,8), không ép được → NULL."
         source_atomic_table: "fmr_value / fmr_sheet"
         source_atomic_column: "fmr_value.cell_val / fmr_sheet.column_index / fmr_value.dynamic_row_nbr / fmr_value.dynamic_val_ind"
 
