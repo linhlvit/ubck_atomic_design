@@ -105,9 +105,9 @@ modules:
       sửa lại profile — dừng và hỏi Data Modeler trước (giống lần 2026-09-26 gây lệch).
 
   GSTT:
-    expect_columns: 19
+    expect_columns: 20
     ma_column: null
-    sql_columns: ["Câu lệnh tham khảo"]
+    sql_columns: ["Câu lệnh tham khảo", "Câu lệnh màn"]
     expect_header_contains: ["STT", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
     note: >-
       Có 'Câu lệnh tham khảo' nhưng KHÔNG có 'Câu lệnh update (SIT)' -> drop_rules không áp dụng.
@@ -132,6 +132,12 @@ modules:
       theo (STT, Thông tin) — không dòng nào đổi nội dung, không dòng nào bị xóa). So với HEAD, MỚI duy nhất 4 dòng
       Nhóm 23 (lô lẻ/lô chẵn × KLGD/GTGD theo phân loại NĐT, dòng CSV 559–562). 'Câu lệnh màn' trước đây có giá trị ở
       39/1072 dòng (23 dòng không có 'Câu lệnh tham khảo') — nội dung này không còn trong BA, chỉ còn ở git HEAD.
+      [CẬP NHẬT 2026-11-12 18:57, xác minh qua header sống: 1109 bản ghi (3 dòng đầu = nhóm cột/header/legend, 1106 dòng dữ
+      liệu) đều 20 cột, delimiter ',', KHÔNG BOM; cấu trúc dòng đầu không đổi so với HEAD] BA THÊM
+      LẠI cột 'Câu lệnh màn' ở CUỐI (index 19) → 20 cột; 19 cột đầu giữ nguyên tên/thứ tự. 65/1106 dòng có giá trị: 35 là SQL
+      dài cấp MÀN HÌNH (mỗi STT 1 câu), 30 là cờ trạng thái ngắn ('Done', 'đã sửa đổi', 'đã sừa lại rule') — riêng Nhóm 39
+      26 dòng 'Done'. Khai vào `sql_columns` để lát cắt mặc định không phình (xem bằng `ba_slice.py --with-sql`); không phải
+      cột theo dõi dự án nên KHÔNG `drop`. HEAD (bản 19 cột) so sánh bằng `ba_diff.py --against <HEAD quy đổi thêm cột rỗng>`.
 
   "GSĐC":
     aliases: [GSDC]

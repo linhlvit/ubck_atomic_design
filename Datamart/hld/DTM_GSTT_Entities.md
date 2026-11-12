@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.22 (2026-11-12, đồng bộ HLD — BA GSTT Nhóm 39 thêm 4 chiều; O_GSTT_84):** Nhóm 39 thêm 4 KPI chiều K_GSTT_453–456 đọc `Public Company Dimension` (Mã DN, Tên DN, Sàn) và `Industry Dimension` (Ngành) qua FK của `Fact Public Company Financial Summary Snapshot`; 13 KPI YoY đọc `Public Company Financial YoY Report` theo chiều Sàn/Ngành (chiều không chọn = dòng rollup 'ALL'). Không thêm bảng/cột.
 **Thay đổi v2.21 (2026-11-11, đồng bộ HLD v4.60 — BA GSTT Nhóm 24/39; O_GSTT_81/82):** (1) Nhóm 39 cũ ('Chỉ số') bị thay bằng Nhóm 39 mới 'GSĐC' — bỏ Nhóm 39 khỏi danh sách phục vụ của `Fact Stock Portfolio Snapshot`, `Fact Index Constituent Snapshot`, `Fact Market Index Snapshot`; (2) thêm 2 dòng reuse từ GSDC (`Fact Public Company Financial Summary Snapshot`, `Public Company Financial YoY Report`) phục vụ Nhóm 39; (3) `prior_market_cap`/`prior_free_float_market_cap` (`Fact Stock Portfolio Snapshot`) và `idx_prior_market_cap`/`idx_prior_free_float_market_cap` (`Fact Index Constituent Snapshot`) đổi công thức theo SQL mới của BA Nhóm 24 (vốn hóa t-1 = giá đóng cửa t-1 × số cổ phiếu t-1) — không đổi cấu trúc bảng.
 **Thay đổi v2.20 (2026-10-22, đồng bộ HLD v4.57 — BA Nhóm 38 mới = Nhóm 37 cũ, bổ sung phái sinh):** `Operational Trading Liquidity Explorer` mở phạm vi sổ lệnh thêm `DVX` (phái sinh) và `HCX` (TPDN riêng lẻ) cho 42 cột chỉ tiêu giao dịch; không đổi cột/grain (O_GSTT_77).
 **Thay đổi v2.19 (2026-10-22, đồng bộ HLD v4.56 — BA GSTT Nhóm 23/25/26):** (1) `Fact Foreign Trading Minute Snapshot` đổi nguồn Atomic từ `Security Trading Snapshot` (GTNN lũy kế) về `Securities Trade` (sổ lệnh) — GTNN mua/bán PHÁT SINH theo phút (số tài khoản mua/bán ký tự thứ 4 IN ('F','E')); grain/cột không đổi (O_GSTT_75). (2) `Fact Investor Category Trading Snapshot` thêm phân loại `KHONG_XAC_DINH` (5 dòng/mã CK/ngày); phân loại NĐT (2 Fact phân loại, `proprietary_*`, Explorer) LOẠI TRỪ NHAU theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định (khớp SQL BA). (3) Nguồn Cá nhân/Tổ chức trong nước của 2 Fact phân loại NĐT và `Operational Trading Liquidity Explorer` đổi từ `Discretionary Investment Account` (FMS INVES_ACC, sai nguồn) sang `Open Investor Account` (VSDC OPEN_INVESTORS, Atomic 21/10/2026).
@@ -380,7 +381,7 @@ erDiagram
 
 ## Fact Public Company Financial Summary Snapshot (reuse GSĐC — phục vụ Nhóm 39)
 
-**[MỚI 2026-11-11, GSTT Nhóm 39]** Reuse nguyên trạng 2 bảng của GSĐC Nhóm 7 (chỉ tiêu tài chính toàn thị trường) — không tạo Fact/cột mới ở GSTT. ER đầy đủ nằm ở `DTM_GSDC_Entities.md`; `Public Company Financial YoY Report` là Fact-report denormalize, không có FK Dimension.
+**[MỚI 2026-11-11, GSTT Nhóm 39]** Reuse nguyên trạng 2 bảng của GSĐC Nhóm 7 (chỉ tiêu tài chính toàn thị trường) — không tạo Fact/cột mới ở GSTT. ER đầy đủ nằm ở `DTM_GSDC_Entities.md`; `Public Company Financial YoY Report` là Fact-report denormalize, không có FK Dimension. **[CẬP NHẬT 2026-11-12]** Nhóm 39 dùng thêm 2 Dimension `Public Company Dimension` / `Industry Dimension` làm chiều Mã/Tên DN, Sàn, Ngành (K_GSTT_453–456).
 
 ```mermaid
 erDiagram
@@ -392,9 +393,9 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Public Company Financial Summary Snapshot | Fact Snapshot | reuse | Chỉ tiêu tài chính CTĐC theo kỳ (reuse GSĐC) | 1 CTĐC / năm báo cáo / quý báo cáo | K_GSTT_427–439 |
-| Public Company Financial YoY Report | Fact Report | reuse | Chỉ tiêu + YoY theo sàn × ngành × kỳ, dòng rollup 'ALL' (reuse GSĐC) | 1 dòng / sàn × ngành × kỳ | K_GSTT_440–452 |
-| Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | — |
+| Public Company Financial YoY Report | Fact Report | reuse | Chỉ tiêu + YoY theo sàn × ngành × kỳ, dòng rollup 'ALL' (reuse GSĐC) | 1 dòng / sàn × ngành × kỳ | K_GSTT_440–452 (chiều Sàn/Ngành: K_GSTT_455/456) |
+| Public Company Dimension | Dimension | reuse | Mã CK/tên DN/ngành — conformed GSDC/QLCB/NDTNN | 1 row / mã CK (SCD4A) | K_GSTT_453–455 (chiều Mã DN, Tên DN, Sàn của Nhóm 39) |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
-| Industry Dimension | Dimension | reuse | Ngành cấp 1 — sở hữu GSDC | 1 row / ngành cấp 1 | — |
+| Industry Dimension | Dimension | reuse | Ngành cấp 1 — sở hữu GSDC | 1 row / ngành cấp 1 | K_GSTT_456 (chiều Ngành của Nhóm 39) |
 
 ---
