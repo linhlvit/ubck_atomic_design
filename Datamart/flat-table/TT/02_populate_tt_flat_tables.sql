@@ -270,7 +270,7 @@ INSERT INTO datamart.tt_opr_penalty_decision_list_flat
 SELECT
     o.pd_subject_code,
     o.violation_case_code,
-    o.subject_nm,
+    fn_pii_encrypt(o.subject_nm, :aes_key_hex) AS subject_nm,
     o.subject_tp_code,
     o.form_tp_code,
     o.life_cycle_status_code,

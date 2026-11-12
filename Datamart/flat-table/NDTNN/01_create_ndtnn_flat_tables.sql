@@ -110,11 +110,11 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_foreign_investor_trading_detail_rpt_fl
 (
     -- From: FACT Foreign Investor Trading Detail Report
     report_dt                       Date                    COMMENT 'Ngày giao dịch (Ngày báo cáo)',
-    account_nbr                     String                  COMMENT 'Tài khoản giao dịch NĐTNN',
+    account_nbr                     String                  COMMENT 'Tài khoản giao dịch NĐTNN [PII mã hóa AES-256-CBC Base64 - PA1]',
     symbol                          String                  COMMENT 'Mã CK — denormalize text trực tiếp (TPCP: mã trái phiếu bond_code)',
     trade_direction_code            String                  COMMENT 'Chiều mua/bán (BUY/SELL)',
-    account_holder_nm               Nullable(String)        COMMENT 'Tên chủ tài khoản (đệm sẵn; NULL với TPCP)',
-    investor_nm                                  Nullable(String)        COMMENT '[MỚI 2026-10-21 — BA STT 15 Mã 101 tên NĐTNN] Tên nhà đầu tư nước ngoài (FIMS INVESTOR.Name) — chiều của báo cáo chi tiết. Nối theo mã số giao dịch (MSGD) = 6 ký tự cuối (UPPER/TRIM) của số tài khoản cùng phía với chiều giao dịch (SQL BA STT 15: SUBSTR(UPPER(TRIM(i.TransactionCode)), -6) = SUBSTR(UPPER(TRIM(tk)), -6)); LEFT JOIN nên NULL nếu không khớp. Khác account_holder_nm (tên chủ tài khoản trên sổ lệnh). Không thuộc grain. Xem O_NDTNN_52',
+    account_holder_nm               Nullable(String)        COMMENT 'Tên chủ tài khoản (đệm sẵn; NULL với TPCP) [PII mã hóa AES-256-CBC Base64 - PA1]',
+    investor_nm                                  Nullable(String)        COMMENT '[MỚI 2026-10-21 — BA STT 15 Mã 101 tên NĐTNN] Tên nhà đầu tư nước ngoài (FIMS INVESTOR.Name) — chiều của báo cáo chi tiết. Nối theo mã số giao dịch (MSGD) = 6 ký tự cuối (UPPER/TRIM) của số tài khoản cùng phía với chiều giao dịch (SQL BA STT 15: SUBSTR(UPPER(TRIM(i.TransactionCode)), -6) = SUBSTR(UPPER(TRIM(tk)), -6)); LEFT JOIN nên NULL nếu không khớp. Khác account_holder_nm (tên chủ tài khoản trên sổ lệnh). Không thuộc grain. Xem O_NDTNN_52 [PII mã hóa AES-256-CBC Base64 - PA1]',
     execution_vol                   Int64                   COMMENT 'KL mua/bán CK',
     execution_val                   Decimal(23,2)           COMMENT 'GT mua/bán CK',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu (HOSE_TRADE_BOOK/HNX_TRADE_BOOK, HNX_OUTRIGHT/REPO/REPO2_ORDER_BOOK) — thuộc grain'
@@ -134,17 +134,17 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_360_profile_flat 
 (
     -- From: OPERATIONAL Operational Foreign Investor 360 Profile
     investor_code                   String                  COMMENT 'PK — Mã số giao dịch NĐTNN (VSDC cấp)',
-    investor_nm                     String                  COMMENT 'Tên đầy đủ NĐT',
+    investor_nm                     String                  COMMENT 'Tên đầy đủ NĐT [PII mã hóa AES-256-CBC Base64 - PA1]',
     nationality_code                Nullable(String)        COMMENT 'Mã quốc tịch',
     nationality_nm                  Nullable(String)        COMMENT 'Tên quốc tịch (K_NDTNN_59, BA NATIONAL.Name)',
     investor_tp_code                Nullable(String)        COMMENT 'Loại hình NĐT',
     investor_tp_nm                  Nullable(String)        COMMENT 'Tên loại hình NĐT (K_NDTNN_62, BA INVESTORTYPE.Name)',
-    director_nm                     Nullable(String)        COMMENT 'Đại diện giao dịch',
+    director_nm                     Nullable(String)        COMMENT 'Đại diện giao dịch [PII mã hóa AES-256-CBC Base64 - PA1]',
     custodian_bank_nm               Nullable(String)        COMMENT 'Tên ngân hàng lưu ký (denormalize)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)',
     investor_status_nm              Nullable(String)        COMMENT 'Tên trạng thái NĐTNN (K_NDTNN_255, BA STATUS.Name)',
-    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED (IdNo cá nhân hoặc BusinessNumber tổ chức) — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13, so sánh =), không hiển thị'
+    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED (IdNo cá nhân hoặc BusinessNumber tổ chức) — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13, so sánh =), không hiển thị [PII mã hóa AES-256-CBC Base64 - PA2]'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_code)
@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_investor_compliance_hist_flat ON C
 (
     -- From: OPERATIONAL Operational Investor Compliance History
     investor_compliance_hist_code   String                  COMMENT 'PK — mã hành vi vi phạm (thiếu thì mã đối tượng bị xử phạt) — 1 đối tượng × 1 hành vi',
-    subject_nm                      String                  COMMENT 'Thông tin nhà đầu tư (tên/MSGD NĐTNN)',
-    subject_id_nbr                  Nullable(String)        COMMENT 'Số giấy tờ đối tượng ĐÃ MASKED — khóa nối với identification_nbr hồ sơ 360 (Nhóm 11), không hiển thị',
+    subject_nm                      String                  COMMENT 'Thông tin nhà đầu tư (tên/MSGD NĐTNN) [PII mã hóa AES-256-CBC Base64 - PA1]',
+    subject_id_nbr                  Nullable(String)        COMMENT 'Số giấy tờ đối tượng ĐÃ MASKED — khóa nối với identification_nbr hồ sơ 360 (Nhóm 11), không hiển thị [PII mã hóa AES-256-CBC Base64 - PA2]',
     issued_dt                       Date                    COMMENT 'Ngày quyết định',
     penalty_tp_nm                   Nullable(String)        COMMENT 'Phân loại hình thức xử lý',
     description                     Nullable(String)        COMMENT 'Nội dung/Trích yếu',
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snps
     dynamic_row_order                          Int32                      COMMENT 'Thứ tự dòng trong band động (BA: row_order)',
     period_val                                 Nullable(String)           COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA Data Explorer: Tháng (RPTMEMBER.PeriodValue)',
     nationality_nm                             Nullable(String)           COMMENT 'Quốc tịch NĐTNN (cột Quốc tịch — PLIV-TT51, báo cáo IBOU9 sheet I)',
-    investor_nm                                Nullable(String)           COMMENT 'Tên nhà đầu tư (cột Tên nhà đầu tư)',
+    investor_nm                                Nullable(String)           COMMENT 'Tên nhà đầu tư (cột Tên nhà đầu tư) [PII mã hóa AES-256-CBC Base64 - PA1]',
     capital_flow_net_val                       Nullable(Decimal(23,2))    COMMENT 'Giá trị dòng vốn vào ròng trong kỳ báo cáo (+/-), đơn vị USD (cột Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD))',
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
@@ -342,7 +342,7 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
     investor_group_nm                          Nullable(String)           COMMENT 'Nhóm nhà đầu tư theo nhãn dòng: A-Tổ chức / B-Cá nhân',
     nationality_nm                             Nullable(String)           COMMENT 'Quốc tịch (cột Quốc tịch)',
     investor_type_nm                           Nullable(String)           COMMENT 'Loại hình đối với tổ chức (cột Loại hình đối với tổ chức)',
-    investor_nm                                Nullable(String)           COMMENT 'Tên khách hàng (cột Tên khách hàng)',
+    investor_nm                                Nullable(String)           COMMENT 'Tên khách hàng (cột Tên khách hàng) [PII mã hóa AES-256-CBC Base64 - PA1]',
     bill_val                                   Nullable(Decimal(23,2))    COMMENT 'Giá trị tín phiếu (cột Tín phiếu > Giá trị)',
     bond_val                                   Nullable(Decimal(23,2))    COMMENT 'Giá trị trái phiếu = tổng 3 kỳ hạn còn lại (<12 tháng, 12–24 tháng, >24 tháng)',
     listed_equity_fund_val                     Nullable(Decimal(23,2))    COMMENT 'Giá trị cổ phiếu niêm yết, chứng chỉ quỹ niêm yết',

@@ -104,7 +104,7 @@ SELECT
     o.fmc_full_nm,
     o.fmc_short_nm,
     o.operation_status_nm,
-    o.legal_representative_nm,
+    fn_pii_encrypt(o.legal_representative_nm, :aes_key_hex) AS legal_representative_nm,
     o.fund_count,
     o.src_stm_code,
     o.fmc_id
@@ -158,7 +158,7 @@ SELECT
     o.investment_fund_representative_board_member_code,
     o.investment_fund_id,
     o.investment_fund_code,
-    o.board_member_full_nm,
+    fn_pii_encrypt(o.board_member_full_nm, :aes_key_hex) AS board_member_full_nm,
     o.src_stm_code
 FROM datamart.opr_investment_fund_representative_board_member_list o
 ;
@@ -172,7 +172,7 @@ INSERT INTO datamart.qlq_opr_investment_fund_manager_list_flat
 SELECT
     o.investment_fund_code,
     o.fmc_employee_code,
-    o.fmc_employee_full_nm,
+    fn_pii_encrypt(o.fmc_employee_full_nm, :aes_key_hex) AS fmc_employee_full_nm,
     o.src_stm_code
 FROM datamart.opr_investment_fund_manager_list o
 ;
@@ -189,7 +189,7 @@ SELECT
     o.license_nbr,
     o.license_dt,
     o.distribution_cert_dt,
-    o.address,
+    fn_pii_encrypt(o.address, :aes_key_hex) AS address,
     o.active_status_flag,
     o.termination_dt,
     o.distributing_fund_count,
@@ -222,7 +222,7 @@ SELECT
     o.foreign_fund_management_organization_unit_code,
     o.foreign_fund_management_organization_unit_full_nm,
     o.foreign_fund_management_organization_unit_short_nm,
-    o.director_full_nm,
+    fn_pii_encrypt(o.director_full_nm, :aes_key_hex) AS director_full_nm,
     o.src_stm_code
 FROM datamart.opr_foreign_fund_management_organization_unit_profile o
 ;
@@ -273,8 +273,8 @@ SELECT
     o.period_val,
     o.rpt_year,
     o.version_nbr,
-    o.customer_nm,
-    o.custody_account_nbr,
+    fn_pii_encrypt(o.customer_nm, :aes_key_hex) AS customer_nm,
+    fn_pii_encrypt(o.custody_account_nbr, :aes_key_hex) AS custody_account_nbr,
     o.contract_market_val_amt,
     o.src_stm_code,
     o.fmc_id,
@@ -371,8 +371,8 @@ SELECT
     o.period_val,
     o.rpt_year,
     o.version_nbr,
-    o.customer_nm,
-    o.custody_account_nbr,
+    fn_pii_encrypt(o.customer_nm, :aes_key_hex) AS customer_nm,
+    fn_pii_encrypt(o.custody_account_nbr, :aes_key_hex) AS custody_account_nbr,
     o.contract_market_val_amt,
     o.src_stm_code
 FROM datamart.opr_foreign_fund_management_organization_unit_contract_list o
@@ -387,12 +387,12 @@ INSERT INTO datamart.qlq_fund_management_company_staff_trade_rpt_flat
 SELECT
     o.fmc_employee_code,
     o.trade_dt,
-    o.securities_account_nbr,
+    fn_pii_encrypt(o.securities_account_nbr, :aes_key_hex) AS securities_account_nbr,
     o.trade_direction_code,
     o.security_symbol_code,
     o.trade_method_nm,
     o.fmc_code,
-    o.identification_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.securities_company_code,
     o.trade_direction_nm,
     o.order_vol,
@@ -410,10 +410,10 @@ TRUNCATE TABLE IF EXISTS datamart.qlq_opr_fund_management_company_employee_inves
 INSERT INTO datamart.qlq_opr_fund_management_company_employee_investor_account_list_flat
 SELECT
     o.fmc_employee_code,
-    o.investor_account_nbr,
-    o.identification_nbr,
+    fn_pii_encrypt(o.investor_account_nbr, :aes_key_hex) AS investor_account_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.fmc_code,
-    o.fmc_employee_full_nm,
+    fn_pii_encrypt(o.fmc_employee_full_nm, :aes_key_hex) AS fmc_employee_full_nm,
     o.account_open_dt,
     o.account_update_dt,
     o.src_stm_code
@@ -878,7 +878,7 @@ SELECT
     f.operation_status_nm,
     f.license_nbr,
     f.license_dt,
-    f.address,
+    fn_pii_encrypt(f.address, :aes_key_hex) AS address,
     f.tax_id_nbr,
     f.src_stm_code,
     f.ds_rcrd_st,

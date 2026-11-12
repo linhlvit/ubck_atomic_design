@@ -479,6 +479,8 @@ def main() -> None:
                 left += [(t, c) for c, *_ in lld_cols.get(t, []) if c not in have]
         print(f"\n✅ Đã ghi DDL + DML. Sao lưu: {b1.relative_to(root).as_posix()}, {b2.relative_to(root).as_posix()}")
         print("→ Chạy tiếp: check_flat_table.py --module " + args.module + " --strict")
+        print("→ Cột mới có thể là PII (system/rules/pii_columns.yaml): pii_flat.py -m " + args.module
+              + " [--apply] — Gate 8 D28 báo ERROR nếu cột PII còn plaintext")
         sys.exit(1 if (left or skipped) else 0)
 
     if args.check:
@@ -500,6 +502,8 @@ def main() -> None:
     ddl_p.write_text(ddl_txt + "\n", encoding="utf-8", newline="\n")
     dml_p.write_text(dml_txt + "\n", encoding="utf-8", newline="\n")
     print("✅ Đã ghi DDL + DML.")
+    print("→ Khối mới KHÔNG tự mã hóa cột PII: chạy pii_flat.py -m " + args.module
+          + " --apply (registry system/rules/pii_columns.yaml; Gate 8 D28 báo ERROR nếu còn plaintext)")
 
 
 if __name__ == "__main__":

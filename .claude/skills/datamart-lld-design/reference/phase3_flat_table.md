@@ -315,3 +315,14 @@ Trước khi bàn giao kết quả Phase 3 cho QA/Reviewer hoặc người dùng
 - **Chống cột ma trong SQL:** Không có bất kỳ cột nào xuất hiện trong khối `CREATE TABLE` (phần Fact/Operational) mà thiếu trong file module Attributes CSV và master registry `datamart_attributes.csv`. Toàn bộ các cột mồ côi hoặc cột thừa do copy-paste từ bảng khác PHẢI BỊ XÓA BỎ.
 - **Chống bỏ sót cột khai thác:** Không có bất kỳ cột Fact nào có KPI khai thác trong Detail Mapping mà bị bỏ sót khỏi Flat Table.
 - **Đồng bộ Attributes trước:** Tuyệt đối không được thêm cột mới vào Flat Table SQL khi cột đó chưa được định nghĩa trong Attributes CSV và master chưa được sinh lại (`build_registry.py`).
+
+### Mã hóa cột PII ở bước nạp flat (bổ sung 2026-11-12)
+Yêu cầu: `docs/output/Đề Xuất Danh Mục Dữ Liệu Nhạy Cảm.docx.md` — dữ liệu nhạy cảm mã hóa AES-256-CBC khi lưu trong ClickHouse (PA1 giải mã theo quyền, PA2 giải mã sau khi nhập mã mở xem; ở tầng lưu trữ hai phương án như nhau).
+- **Luật:** cột flat có TÊN trong `system/rules/pii_columns.yaml` phải bọc `fn_pii_encrypt(<biểu thức>, :aes_key_hex) AS <cột>` trong khối `INSERT ... SELECT` của `02_populate_*.sql`. Gate 8 D28 `L4-FLAT-PII-NOT-ENCRYPTED` = ERROR; còn cú pháp cũ 3 tham số (`, :aes_iv_hex`) = ERROR (`L4-FLAT-PII-LEGACY-IV`); kiểu cột PII khác String = WARNING (`L4-FLAT-PII-COLUMN-TYPE`).
+- **Phạm vi chỉ ở flat:** Datamart (LLD, Detail Mapping, MinIO) KHÔNG đổi — cột giữ nguyên ở tầng Datamart.
+- **Thuật toán = macro dbt `encrypt_cbc_deterministic` (bản 2026-11-12):** IV KHÔNG cố định mà suy ra từ khóa + giá trị gốc: `IV = SHA-256(Base64(key) ‖ giá trị)[0..15]`; output = `Base64(IV ‖ AES-256-CBC-PKCS(giá trị))` — cùng bố cục `aes_encrypt` CBC của Spark nên `aes_decrypt(unbase64(x), key, 'CBC', 'PKCS')` giải mã được. Cùng khóa + cùng giá trị cho cùng ciphertext ở cả dbt lẫn ClickHouse.
+- **Deterministic:** để `= :cccd`, join giữa các bảng flat (và chéo tầng với dữ liệu dbt mã hóa cùng khóa), GROUP BY/DISTINCT và ORDER BY của ReplacingMergeTree còn đúng; hai giá trị chung tiền tố có IV khác nhau nên không lộ tiền tố chung như IV cố định (còn lộ quan hệ bằng nhau). Tham số BI người dùng gõ để so khớp cột PII phải mã hóa cùng khóa bằng chính hàm này.
+- **Mã hóa lại** cột đã ghi 'đã mã hóa từ nguồn' (2 lớp) — quyết định Data Modeler 2026-11-12.
+- **Khóa không nằm trong repo:** tham số runtime `:aes_key_hex` (64 ký tự hex = byte của `get_pii_key('enc')` phía dbt) từ Vault/KMS; không còn tham số IV. Hàm tạo bởi `Datamart/flat-table/Common/00_create_pii_encryption_function.sql`, chạy trước mọi `02_populate_*`.
+- **Cột/khối mới:** `build_flat_tables.py` không tự mã hóa. Thêm cột PII vào registry rồi chạy `python .claude/skills/datamart-review/scripts/pii_flat.py -m {MODULE} [--apply]` (idempotent, giữ nguyên comment/định dạng, gắn nhãn `[PII mã hóa AES-256-CBC Base64 - PA]` vào COMMENT DDL).
+

@@ -114,11 +114,11 @@ INSERT INTO datamart.ndtnn_foreign_investor_trading_detail_rpt_flat
 SELECT
     -- From: FACT Foreign Investor Trading Detail Report
     f.report_dt,
-    f.account_nbr,
+    fn_pii_encrypt(f.account_nbr, :aes_key_hex) AS account_nbr,
     f.symbol,
     f.trade_direction_code,
-    f.account_holder_nm,
-    f.investor_nm,
+    fn_pii_encrypt(f.account_holder_nm, :aes_key_hex) AS account_holder_nm,
+    fn_pii_encrypt(f.investor_nm, :aes_key_hex) AS investor_nm,
     f.execution_vol,
     f.execution_val,
     f.src_stm_code
@@ -137,17 +137,17 @@ INSERT INTO datamart.ndtnn_opr_foreign_investor_360_profile_flat
 SELECT
     -- From: OPERATIONAL Operational Foreign Investor 360 Profile
     o.investor_code,
-    o.investor_nm,
+    fn_pii_encrypt(o.investor_nm, :aes_key_hex) AS investor_nm,
     o.nationality_code,
     o.nationality_nm,
     o.investor_tp_code,
     o.investor_tp_nm,
-    o.director_nm,
+    fn_pii_encrypt(o.director_nm, :aes_key_hex) AS director_nm,
     o.custodian_bank_nm,
     o.src_stm_code,
     o.investor_status_code,
     o.investor_status_nm,
-    o.identification_nbr
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr
 
 FROM datamart.opr_foreign_investor_360_profile o
 ;
@@ -162,8 +162,8 @@ INSERT INTO datamart.ndtnn_opr_investor_compliance_hist_flat
 SELECT
     -- From: OPERATIONAL Operational Investor Compliance History
     o.investor_compliance_hist_code,
-    o.subject_nm,
-    o.subject_id_nbr,
+    fn_pii_encrypt(o.subject_nm, :aes_key_hex) AS subject_nm,
+    fn_pii_encrypt(o.subject_id_nbr, :aes_key_hex) AS subject_id_nbr,
     o.issued_dt,
     o.penalty_tp_nm,
     o.description,
@@ -315,7 +315,7 @@ SELECT
     f.dynamic_row_order,
     f.period_val,
     f.nationality_nm,
-    f.investor_nm,
+    fn_pii_encrypt(f.investor_nm, :aes_key_hex) AS investor_nm,
     f.capital_flow_net_val,
     f.src_stm_code,
 
@@ -349,7 +349,7 @@ SELECT
     f.investor_group_nm,
     f.nationality_nm,
     f.investor_type_nm,
-    f.investor_nm,
+    fn_pii_encrypt(f.investor_nm, :aes_key_hex) AS investor_nm,
     f.bill_val,
     f.bond_val,
     f.listed_equity_fund_val,

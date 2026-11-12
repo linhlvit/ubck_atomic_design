@@ -286,12 +286,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_personnel_profil
     -- From: OPERATIONAL Securities Company Personnel Profile
     sc_senior_personnel_code        String                  COMMENT 'PK — mã nhân sự cao cấp (Bảng Tác nghiệp)',
     sc_code                         String                  COMMENT 'Mã CTCK nơi nhân sự công tác',
-    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ nhân sự',
+    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ nhân sự [PII mã hóa AES-256-CBC Base64 - PA1]',
     department                      Nullable(String)        COMMENT 'Phòng/Ban — dùng CASE/LIKE phân nhóm tại tầng báo cáo',
     cl_sc_position_code                          Nullable(String)        COMMENT 'Mã chức vụ CHÍNH của nhân sự theo danh mục (`CAT_POSITION.POSITION_CODE` của `POSITION_ID` đơn trị): HĐQT = 6/7/8, HĐTV = 10/11, BKS/UB Kiểm toán = 23–28 (BA STT 31, SQL 1–3). XẤP XỈ so với BA: BA tách `POSITION_IDS` (CLOB, nhiều chức vụ → 1 dòng/chức vụ), Atomic chưa map. Số liệu K31-1 (28/10/2026, nhân sự đương nhiệm): 85k bản ghi, 41k không có `POSITION_IDS`, 3,6k nhiều chức vụ, 40k có `POSITION_ID` nằm trong `POSITION_IDS` (≈91% số bản ghi có `POSITION_IDS`) → thiếu các vai trò không phải chức vụ chính. Dùng cho FILTER nhóm nhân sự (`:nhom_nhan_su`) của K_QLKD_156–160.',
     position_nm                     Nullable(String)        COMMENT 'Chức vụ',
-    email                           Nullable(String)        COMMENT 'Email nhân sự — JOIN ip_electronic_address filter EMAIL',
-    phone                           Nullable(String)        COMMENT 'Số điện thoại nhân sự — JOIN ip_electronic_address filter PHONE',
+    email                           Nullable(String)        COMMENT 'Email nhân sự — JOIN ip_electronic_address filter EMAIL [PII mã hóa AES-256-CBC Base64 - PA1]',
+    phone                           Nullable(String)        COMMENT 'Số điện thoại nhân sự — JOIN ip_electronic_address filter PHONE [PII mã hóa AES-256-CBC Base64 - PA1]',
     work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc tại CTCK',
     dismissal_dt                    Nullable(Date)          COMMENT 'Ngày miễn nhiệm (NULL = đương nhiệm)',
     personnel_status_code           Nullable(String)        COMMENT 'Trạng thái nhân sự',
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     ou_nm                           Nullable(String)        COMMENT 'Tên đơn vị',
     adr_val                         Nullable(String)        COMMENT 'Địa chỉ đơn vị — JOIN ip_postal_address',
     decision_dt                     Nullable(Date)          COMMENT 'Ngày thành lập',
-    director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name',
+    director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name [PII mã hóa AES-256-CBC Base64 - PA1]',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
     business_line_nm_list           Nullable(String)        COMMENT 'Danh sách tên nghiệp vụ kinh doanh chứng khoán được cấp phép cho đơn vị, nối bằng dấu phẩy (VPĐD = NULL)',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
@@ -365,9 +365,9 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 
     -- From: OPERATIONAL Individual Profile
     sc_senior_personnel_code        String                  COMMENT 'PK — mã cá nhân (Bảng Tác nghiệp)',
     sc_code                         Nullable(String)        COMMENT 'Mã CTCK — chỉ áp dụng nguồn SCMS',
-    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ',
+    full_nm                         Nullable(String)        COMMENT 'Họ và tên đầy đủ [PII mã hóa AES-256-CBC Base64 - PA1]',
     position_nm                     Nullable(String)        COMMENT 'Vai trò/chức vụ',
-    identification_nbr              Nullable(String)        COMMENT 'Số CCCD — merge key với nguồn còn lại (ETL, không phải FK Atomic)',
+    identification_nbr              Nullable(String)        COMMENT 'Số CCCD — merge key với nguồn còn lại (ETL, không phải FK Atomic) [PII mã hóa AES-256-CBC Base64 - PA1]',
     license_certificate_nbr         Nullable(String)        COMMENT 'Số GCN hành nghề — chỉ áp dụng nguồn NHNCK',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 2 giá trị khác nhau theo bộ (SC_FIRM_SENIOR_PERSONNEL/NHNCK.PROFESSIONALS)',
     appointment_dt                               Nullable(Date)          COMMENT 'Ngày bổ nhiệm — không áp dụng cho nguồn NHNCK (người hành nghề không có ngày bổ nhiệm tại CTCK); chỉ có ở nguồn SCMS_SC_FIRM_SENIOR_PERSONNEL.'
@@ -387,14 +387,14 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_fl
 (
     -- From: OPERATIONAL Individual Related Party Network
     related_party_network_id        String                  COMMENT 'PK — hash(src_stm_code + mã quan hệ người liên quan); Grain = 1 người liên quan của 1 cá nhân (nhân sự cấp cao hoặc cổ đông lớn), mỗi nguồn 1 loại quan hệ; khóa MERGE. Thay sc_insider_related_person_code (PK cũ chỉ đúng cho 1',
-    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân CHÍNH (nhân sự cấp cao) — khóa chọn cá nhân trên dashboard (BA: AND sp.NATIONAL_ID = :cccd); đã mã hóa từ nguồn.',
-    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân chính (BA: ho_ten_ca_nhan).',
+    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân CHÍNH (nhân sự cấp cao) — khóa chọn cá nhân trên dashboard (BA: AND sp.NATIONAL_ID = :cccd); đã mã hóa từ nguồn. [PII mã hóa AES-256-CBC Base64 - PA1]',
+    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân chính (BA: ho_ten_ca_nhan). [PII mã hóa AES-256-CBC Base64 - PA1]',
     sc_senior_personnel_code        Nullable(String)        COMMENT 'Mã nhân sự cao cấp chính (sp) — khóa nối tới cá nhân được chọn.',
-    related_person_full_nm          Nullable(String)        COMMENT 'Tên người có liên quan.',
+    related_person_full_nm          Nullable(String)        COMMENT 'Tên người có liên quan. [PII mã hóa AES-256-CBC Base64 - PA1]',
     rltnp                           Nullable(String)        COMMENT 'Mối quan hệ của người có liên quan (vợ/chồng/con cái...).',
     representative_position         Nullable(String)        COMMENT 'Vai trò/chức vụ của người có liên quan.',
     related_person_position_nm      Nullable(String)        COMMENT 'Chức vụ của người liên quan (BA: chuc_vu — nhánh người nội bộ: tên CAT_POSITION của POSITION_ID của người liên quan trong SC_FIRM_RELATED_PERSON, nối theo CTCK + số giấy tờ đã chuẩn hóa; nhánh cổ đông lớn: nhãn loại cổ đông).',
-    identification_nbr              Nullable(String)        COMMENT 'CCCD người liên quan (BA: cccd_nguoi_lien_quan = r.NATIONAL_ID). [SỬA 2026-10-26] Lọc loại giấy tờ IDENTIFICATION — Atomic ETL hardcode giá trị này cho nguồn SC_FIRM_INSIDER_RELATION (bản cũ lọc NATIONAL_ID nên không bao giờ',
+    identification_nbr              Nullable(String)        COMMENT 'CCCD người liên quan (BA: cccd_nguoi_lien_quan = r.NATIONAL_ID). [SỬA 2026-10-26] Lọc loại giấy tờ IDENTIFICATION — Atomic ETL hardcode giá trị này cho nguồn SC_FIRM_INSIDER_RELATION (bản cũ lọc NATIONAL_ID nên không bao giờ [PII mã hóa AES-256-CBC Base64 - PA1]',
     shares_count                    Nullable(Int64)         COMMENT 'Số cổ phần người liên quan nắm giữ.',
     ownership_ratio                 Nullable(Decimal(5,2))  COMMENT 'Tỷ lệ sở hữu cổ phần người liên quan.',
     relation_start_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu quan hệ (nguồn SC_FIRM_INSIDER_RELATION.RELATION_START_DATE) — mốc đầu cho trục Chiều thời gian theo Ngày của Nhóm 41/42 (K_QLKD_203; BA dòng 223, 226 Query 2).',
@@ -417,8 +417,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat
 (
     -- From: OPERATIONAL Individual Listed Company Role
     listed_company_role_id          String                  COMMENT 'PK — hash(src_stm_code + fmc_insider_code + số giấy tờ định danh); Grain = 1 vai trò của 1 cá nhân (theo số giấy tờ) tại 1 tổ chức, nguồn INSIDER của FMS (BA khối 1 nhánh 3); khóa MERGE.',
-    individual_identification_nbr   String                  COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard (BA: AND NATIONAL_ID = :cccd); đã mã hóa từ nguồn. Chỉ nạp bản ghi có số giấy tờ (BA: NATIONAL_ID/ID_NUMBER/ID_NO/IDENTITY_NO IS NOT NULL).',
-    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân (BA: ho_ten).',
+    individual_identification_nbr   String                  COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard (BA: AND NATIONAL_ID = :cccd); đã mã hóa từ nguồn. Chỉ nạp bản ghi có số giấy tờ (BA: NATIONAL_ID/ID_NUMBER/ID_NO/IDENTITY_NO IS NOT NULL). [PII mã hóa AES-256-CBC Base64 - PA1]',
+    individual_full_nm              Nullable(String)        COMMENT 'Họ tên cá nhân (BA: ho_ten). [PII mã hóa AES-256-CBC Base64 - PA1]',
     org_code                        Nullable(String)        COMMENT 'Mã tổ chức nơi cá nhân giữ vai trò (CTCK / CTQLQ / công ty đại chúng) — chỉ duy nhất trong cùng loại tổ chức (org_tp_nm); dùng đếm số tổ chức tham gia.',
     org_nm                          Nullable(String)        COMMENT 'Tên tổ chức hiển thị (BA: ten_to_chuc) — CTCK/CTQLQ: tên viết tắt; công ty đại chúng: mã chứng khoán (EQUITY_TICKER).',
     org_tp_nm                       String                  COMMENT 'Loại tổ chức (BA: loai_to_chuc; mô tả BA: CTCK, CTĐC, CT QLQ).',
@@ -446,9 +446,9 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON 
     sc_shareholder_code             String                  COMMENT 'Mã cổ đông (chủ TK) — PK duy nhất (Bảng Tác nghiệp). Driving Table: Securities Company Shareholder (sc_shareholder) — nguồn track draft DataModel/working/Atomic/lld/SCMS/lld_SCMS_SC_FIRM_SHAREHOLDER.yaml, chưa approved.',
     sc_code                         String                  COMMENT 'Mã CTCK nơi mở tài khoản (SC_FIRM_INFO.CODE). BA hiển thị ma_ctck = SHORT_NAME → xem sc_short_nm.',
     sc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt CTCK nơi mở tài khoản (BA: ma_ctck = SC_FIRM_INFO.SHORT_NAME).',
-    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh của chủ tài khoản (BA: sh.ID_NUMBER) — khóa chọn tài khoản của cá nhân và của người liên quan (khớp identification_nbr của Operational Individual Related Party Network); đã mã hóa từ nguồn.',
-    trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán.',
-    shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản.',
+    individual_identification_nbr   Nullable(String)        COMMENT 'Số giấy tờ định danh của chủ tài khoản (BA: sh.ID_NUMBER) — khóa chọn tài khoản của cá nhân và của người liên quan (khớp identification_nbr của Operational Individual Related Party Network); đã mã hóa từ nguồn. [PII mã hóa AES-256-CBC Base64 - PA1]',
+    trading_account                 Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán. [PII mã hóa AES-256-CBC Base64 - PA1]',
+    shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản. [PII mã hóa AES-256-CBC Base64 - PA1]',
     shareholder_tp_code             Nullable(String)        COMMENT 'Loại cổ đông (BA: loai_co_dong = SHAREHOLDER_TYPE).',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
     created_dt                      Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_rcrd_isrt_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTE
 (
     -- From: OPERATIONAL Individual Work History
     sc_senior_personnel_code        String                  COMMENT 'PK — mã lần bổ nhiệm (Bảng Tác nghiệp)',
-    individual_identification_nbr                Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard Lịch sử công tác (BA STT 43: `AND p.NATIONAL_ID = <CCCD>`); đã mã hóa từ nguồn. KHÔNG loại bản ghi thiếu số giấy tờ (BA chỉ lọc CCCD ở mệnh đề chọn cá nhân, subquery BA không lọc). Ưu tiên dòng type `NATIONAL_ID` (`SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID` — BA dùng `p.NATIONAL_ID`; Data Modeler xác nhận Atomic đã map 2026-10-26, O_QLKD_60(i)); nếu không có thì lấy dòng `IDENTIFICATION` (`ID_NUMBER` = CMND cũ). Khuôn theo Operational Individual Listed Company Role.',
+    individual_identification_nbr                Nullable(String)        COMMENT 'Số giấy tờ định danh (CCCD/CMND/hộ chiếu) của cá nhân — khóa chọn cá nhân trên dashboard Lịch sử công tác (BA STT 43: `AND p.NATIONAL_ID = <CCCD>`); đã mã hóa từ nguồn. KHÔNG loại bản ghi thiếu số giấy tờ (BA chỉ lọc CCCD ở mệnh đề chọn cá nhân, subquery BA không lọc). Ưu tiên dòng type `NATIONAL_ID` (`SC_FIRM_SENIOR_PERSONNEL.NATIONAL_ID` — BA dùng `p.NATIONAL_ID`; Data Modeler xác nhận Atomic đã map 2026-10-26, O_QLKD_60(i)); nếu không có thì lấy dòng `IDENTIFICATION` (`ID_NUMBER` = CMND cũ). Khuôn theo Operational Individual Listed Company Role. [PII mã hóa AES-256-CBC Base64 - PA1]',
     sc_code                         String                  COMMENT 'Mã CTCK công tác',
     position_nm                     Nullable(String)        COMMENT 'Chức vụ tại công ty',
     work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc',
@@ -494,7 +494,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON C
     -- From: OPERATIONAL Individual Violation History
     pd_subject_behavior_code                     String                  COMMENT '[SỬA 2026-10-19 — BA STT 44 cập nhật 19/10] PK — 1 dòng = 1 hành vi của 1 cá nhân trong 1 quyết định xử phạt (BA: mỗi dòng c = PENALTY_DECISION_SUBJECT_BEHAVIOR; nội dung vi phạm và hình thức phạt đi cặp theo hành vi). Thay PK cũ pd_code (lặp qua đối tượng/hành vi, flat ORDER BY có thể gộp mất dòng).',
     pd_code                         String                  COMMENT 'PK — mã quyết định xử phạt cá nhân (Bảng Tác nghiệp)',
-    identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Operational Individual Profile',
+    identification_nbr              Nullable(String)        COMMENT 'Số định danh cá nhân bị xử phạt — merge key với Operational Individual Profile [PII mã hóa AES-256-CBC Base64 - PA1]',
     decision_nbr                    Nullable(String)        COMMENT 'Số quyết định xử phạt',
     issued_dt                       Nullable(Date)          COMMENT 'Ngày ban hành quyết định xử phạt',
     violation_description                        Nullable(String)        COMMENT 'Nội dung vi phạm — [SỬA 2026-11-06, BA STT 44 cập nhật] VIOLATION_BEHAVIOR.NAME (violation_behavior.violation_behavior_nm, JOIN pd_subject_behavior.violation_behavior_id) thay PENALTY_DECISION_SUBJECT_BEHAVIOR.DESCRIPTION; O_QLKD_72 đã đóng',

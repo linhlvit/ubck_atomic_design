@@ -44,7 +44,7 @@ SELECT
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_dim.practitioner_code          AS practitioner_code,
-    prac_dim.full_nm                    AS practitioner_full_nm,
+    fn_pii_encrypt(prac_dim.full_nm, :aes_key_hex) AS practitioner_full_nm,
     prac_dim.education_level_code       AS practitioner_education_level_code,
     prac_dim.education_level_nm         AS practitioner_education_level_nm,
     prac_dim.nationality_code           AS practitioner_nationality_code,
@@ -95,7 +95,7 @@ SELECT
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     prac_dim.practitioner_code          AS practitioner_code,
-    prac_dim.full_nm            AS practitioner_full_nm,
+    fn_pii_encrypt(prac_dim.full_nm, :aes_key_hex) AS practitioner_full_nm,
     prac_dim.education_level_code        AS practitioner_education_level_code,
     prac_dim.education_level_nm          AS practitioner_education_level_nm,
     prac_dim.nationality_code           AS practitioner_nationality_code,
@@ -120,12 +120,12 @@ TRUNCATE TABLE IF EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON CLU
 INSERT INTO datamart.nhnck_opr_practitioner_360_profile_flat
 SELECT
     o.practitioner_code,
-    o.full_nm,
+    fn_pii_encrypt(o.full_nm, :aes_key_hex) AS full_nm,
     o.birth_dt,
     o.age,
     o.nationality_code,
     o.nationality_nm,
-    o.identification_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.identification_tp_code,
     o.education_level_code,
     o.education_level_nm,
@@ -148,15 +148,15 @@ INSERT INTO datamart.nhnck_opr_practitioner_related_party_profile_flat
 SELECT
     o.practitioner_code,
     o.related_party_code,
-    o.related_individual_full_nm,
+    fn_pii_encrypt(o.related_individual_full_nm, :aes_key_hex) AS related_individual_full_nm,
     o.rltnp_tp_code,
     o.rltnp_tp_nm,
     o.related_individual_occupation,
     o.related_individual_workplace,
-    o.related_individual_identity_nbr,
+    fn_pii_encrypt(o.related_individual_identity_nbr, :aes_key_hex) AS related_individual_identity_nbr,
     o.country_code,
     o.country_nm,
-    o.related_individual_adr,
+    fn_pii_encrypt(o.related_individual_adr, :aes_key_hex) AS related_individual_adr,
     o.src_stm_code
 FROM datamart.opr_practitioner_related_party_profile o
 ;
@@ -306,8 +306,8 @@ SELECT
     -- From: OPR_PRACTITIONER_ACCOUNT_HOLDING
     f.practitioner_account_holding_id,
     f.practitioner_code,
-    f.account_nbr,
-    f.account_holder_nm,
+    fn_pii_encrypt(f.account_nbr, :aes_key_hex) AS account_nbr,
+    fn_pii_encrypt(f.account_holder_nm, :aes_key_hex) AS account_holder_nm,
     f.main_held_securities_code,
     f.vsdc_held_securities_vol,
     f.src_stm_code
@@ -328,11 +328,11 @@ SELECT
     f.license_certificate_document_code,
     f.examination_assessment_result_code,
     f.conduct_violation_code,
-    f.full_nm,
+    fn_pii_encrypt(f.full_nm, :aes_key_hex) AS full_nm,
     f.birth_dt,
     f.age,
     f.nationality_nm,
-    f.identification_nbr,
+    fn_pii_encrypt(f.identification_nbr, :aes_key_hex) AS identification_nbr,
     f.identification_tp_code,
     f.education_level_nm,
     f.practice_status_code,

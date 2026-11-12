@@ -116,7 +116,14 @@ Bổ sung 2026-11-10 (VP Nhóm 17 — điều kiện loại dòng của BA mất
                               (VD phân loại theo `security_trading_snpst_dim.stock_tp_code` — Dimension chứa cả phái sinh) mà không mang điều kiện tương ứng
                               (`security_trading_snpst_dim.floor_code`). Cặp (điều kiện BA, đường đọc, cột bắt buộc) khai ở reference/ba_filter_carry.yaml. WARNING.
 
-Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23 = ERROR; D18, D20, D21, D22, D24, D25, D26, D27 = WARNING; D2, D4 (ngoại lệ YoY),
+Bổ sung 2026-11-12 (yêu cầu mã hóa dữ liệu nhạy cảm ở bước nạp flat — docs/output/Đề Xuất Danh Mục Dữ Liệu Nhạy Cảm.docx.md, AES-256-CBC):
+  D28 [L4-FLAT-PII-NOT-ENCRYPTED]    Cột flat có TÊN trong `system/rules/pii_columns.yaml` (tên/số giấy tờ/số tài khoản/địa chỉ/liên hệ) mà khối `INSERT ... SELECT`
+                              của 02_populate_*.sql không bọc `fn_pii_encrypt(<biểu thức>, :aes_key_hex) AS <cột>` → PII nằm plaintext ở ClickHouse. ERROR.
+                              Cột mới thêm bằng `build_flat_tables.py --sync-columns` cũng phải bọc tay (hoặc chạy `pii_flat.py -m {M} --apply`).
+                              [L4-FLAT-PII-LEGACY-IV] cột còn gọi cú pháp cũ 3 tham số `fn_pii_encrypt(x, :aes_key_hex, :aes_iv_hex)` (IV cố định) — UDF hiện hành (IV suy ra từ khóa + giá trị, theo macro dbt `encrypt_cbc_deterministic`) chỉ nhận 2 tham số. ERROR. Sửa: `pii_flat.py -m {M} --apply`.
+                              [L4-FLAT-PII-COLUMN-TYPE] cột PII trong 01_create_*.sql khai kiểu khác String/Nullable(String) — ciphertext Base64 là chuỗi. WARNING.
+
+Mức độ: D1, D3, D4 (không phải ngoại lệ YoY), D5 (module trong L18_MODULES), D12, D13 (ngoài baseline), D14, D15, D16, D17, D19, D23, D28 = ERROR; D18, D20, D21, D22, D24, D25, D26, D27 = WARNING; D2, D4 (ngoại lệ YoY),
 D5 (ép bằng --l18 trên module ngoài L18_MODULES) = WARNING (dimension có thể
 được dùng qua JOIN của module khác — xác nhận tay).
 Exit 1 nếu có ERROR, hoặc có WARNING khi --strict.
@@ -1384,6 +1391,35 @@ def check_filter_carry(root: Path, module: str):
     return filter_carry_issues(rows, ba_by, rules, exc)
 
 
+# ── D28 (2026-11-12) — cột PII phải mã hóa ở bước nạp flat (registry system/rules/pii_columns.yaml) ──
+def check_flat_pii(root: Path, module: str):
+    """D28 — mọi cột flat có tên trong registry PII phải bọc fn_pii_encrypt trong INSERT ... SELECT; cột PII khai kiểu khác String → WARNING."""
+    out = []
+    d = root / "Datamart" / "flat-table" / module
+    if not d.exists() or not (root / "system" / "rules" / "pii_columns.yaml").exists():
+        return out
+    import pii_flat  # noqa: E402  (cùng thư mục scripts)
+    reg = pii_flat.load_registry(root)
+    for f in sorted(d.rglob("*.sql")):
+        txt = f.read_text(encoding="utf-8-sig")
+        if "populate" in f.name:
+            for tbl, col in pii_flat.unencrypted(txt, reg):
+                out.append(("ERROR", "L4-FLAT-PII-NOT-ENCRYPTED",
+                            f"{f.name}: {tbl.split('.')[-1]}.{col} là cột PII ({reg['columns'][col]}) nhưng chưa bọc {pii_flat.FUNC}(…, "
+                            f"{', '.join(reg['params'])}) trong INSERT ... SELECT — PII nằm plaintext ở ClickHouse. "
+                            f"Sửa: python .claude/skills/datamart-review/scripts/pii_flat.py -m {module} --apply (hoặc khai ngoại lệ ở pii_columns.yaml `exclude`)"))
+            for tbl, col in pii_flat.legacy_iv_calls(txt):
+                out.append(("ERROR", "L4-FLAT-PII-LEGACY-IV",
+                            f"{f.name}: {tbl.split('.')[-1]}.{col} còn gọi {pii_flat.FUNC} theo cú pháp cũ có `{pii_flat.LEGACY_IV_PARAM}` — "
+                            f"UDF hiện hành chỉ nhận ({', '.join(reg['params'])}); IV suy ra từ khóa + giá trị. "
+                            f"Sửa: python .claude/skills/datamart-review/scripts/pii_flat.py -m {module} --apply"))
+        elif "create" in f.name:
+            for t, c, ty in pii_flat.non_string_pii(txt, reg):
+                out.append(("WARNING", "L4-FLAT-PII-COLUMN-TYPE",
+                            f"{f.name}: {t.split('.')[-1]}.{c} là cột PII nhưng kiểu {ty} — ciphertext Base64 là chuỗi, đổi sang String/Nullable(String)"))
+    return out
+
+
 def run(root: Path, module: str, force_l18: bool = False):
     issues = []
     hld = resolve_module_path(root, module, "hld")
@@ -1407,6 +1443,7 @@ def run(root: Path, module: str, force_l18: bool = False):
     issues += check_etl_bi_boundary(root, module)
     issues += check_literal_provenance(root, module)
     issues += check_filter_carry(root, module)
+    issues += check_flat_pii(root, module)
     return issues
 
 

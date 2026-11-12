@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_profile_flat
     fmc_full_nm                      Nullable(String)        COMMENT 'Tên hiển thị chính của công ty QLQ',
     fmc_short_nm                     Nullable(String)        COMMENT 'Tên viết tắt của công ty QLQ',
     operation_status_nm                          Nullable(String)        COMMENT 'Trạng thái hoạt động của công ty QLQ (tên trạng thái)',
-    legal_representative_nm                      Nullable(String)        COMMENT 'Họ tên người đại diện theo pháp luật của công ty QLQ',
+    legal_representative_nm                      Nullable(String)        COMMENT 'Họ tên người đại diện theo pháp luật của công ty QLQ [PII mã hóa AES-256-CBC Base64 - PA1]',
     fund_count                      Nullable(Int64)         COMMENT 'Số lượng quỹ đầu tư do công ty này quản lý, hiệu lực tại kỳ',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     fmc_id                                       String                  COMMENT 'Khóa đại diện CTQLQ (SECURITIES.ID) — khóa nối với fct_fund_management_rpt_cell_val.fmc_id và là tham số drill-down (:fmc_id) của popup Nhóm 4/5. fmc_code của bảng này là SECURITIES.CODE nên không nối được với fmc_code của Fact báo cáo định kỳ và bảng hợp đồng (O_QLQ_64, O_QLQ_68)'
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_representative_board
     investment_fund_representative_board_member_code String  COMMENT 'PK — mã thành viên ban đại diện (Bảng Tác nghiệp)',
     investment_fund_id               Nullable(String)        COMMENT 'FK -> Investment Fund Dimension (quỹ mà thành viên đại diện)',
     investment_fund_code             Nullable(String)        COMMENT 'Mã quỹ mà thành viên đại diện (lookup pair với Investment Fund Id)',
-    board_member_full_nm             Nullable(String)        COMMENT 'Tên hiển thị chính của thành viên',
+    board_member_full_nm             Nullable(String)        COMMENT 'Tên hiển thị chính của thành viên [PII mã hóa AES-256-CBC Base64 - PA1]',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_investment_fund_manager_list_flat ON
     -- From: OPERATIONAL Investment Fund Manager List
     investment_fund_code             String                  COMMENT 'PK (composite) — mã quỹ',
     fmc_employee_code                String                  COMMENT 'PK (composite) — mã người điều hành quỹ',
-    fmc_employee_full_nm             Nullable(String)        COMMENT 'Tên hiển thị chính của người điều hành',
+    fmc_employee_full_nm             Nullable(String)        COMMENT 'Tên hiển thị chính của người điều hành [PII mã hóa AES-256-CBC Base64 - PA1]',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_distribution_agent_profile_flat
     license_nbr                      Nullable(String)        COMMENT 'Số giấy phép thành lập',
     license_dt                       Nullable(Date)           COMMENT 'Ngày cấp giấy phép thành lập',
     distribution_cert_dt             Nullable(Date)           COMMENT 'Ngày cấp giấy chứng nhận đăng ký hoạt động phân phối CCQ (ip_alternative_identification) — dùng để lọc danh sách ĐLPP theo kỳ, O_QLQ_72',
-    address                          Nullable(String)        COMMENT 'Địa chỉ trụ sở chính',
+    address                          Nullable(String)        COMMENT 'Địa chỉ trụ sở chính [PII mã hóa AES-256-CBC Base64 - PA1]',
     active_status_flag               Nullable(Int64)         COMMENT 'Trạng thái hoạt động (1=Đang hoạt động, 0=Ngừng hoạt động)',
     termination_dt                   Nullable(Date)           COMMENT 'Ngày chấm dứt hoạt động',
     distributing_fund_count          Nullable(Int64)         COMMENT 'Số quỹ đang phân phối của ĐLPP — đếm quỹ chưa xóa trong FUD_AG_AGT có AGEN_ID = DISTRIBUTOR_AGENT.ID như SQL BA (BA 2026-10-26: DISTRIBUTOR_AGENT → FUD_AG_AGT → FUNDS, thay nối theo tên qua AGENCIES/AGEN_FUNDS); nối theo mã nguồn vì khóa đại lý của FUD_AG_AGT trên Atomic băm theo AGENCIES (O_QLQ_21)',
@@ -280,7 +280,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization
     foreign_fund_management_organization_unit_code String        COMMENT 'PK — mã Chi nhánh CTQLQ nước ngoài tại VN (Bảng Tác nghiệp)',
     foreign_fund_management_organization_unit_full_nm Nullable(String) COMMENT 'Tên hiển thị chính của CN',
     foreign_fund_management_organization_unit_short_nm Nullable(String) COMMENT 'Tên viết tắt của CN',
-    director_full_nm                 Nullable(String)        COMMENT 'Tên Giám đốc chi nhánh',
+    director_full_nm                 Nullable(String)        COMMENT 'Tên Giám đốc chi nhánh [PII mã hóa AES-256-CBC Base64 - PA1]',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -348,8 +348,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_contract_lis
     period_val               Nullable(String)        COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (số tháng theo SQL BA)',
     rpt_year                 Nullable(Int64)         COMMENT 'Năm của kỳ báo cáo',
     version_nbr              Nullable(Int64)         COMMENT 'Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo BA',
-    customer_nm              Nullable(String)        COMMENT 'Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
-    custody_account_nbr      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33)',
+    customer_nm              Nullable(String)        COMMENT 'Tên khách hàng của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33) [PII mã hóa AES-256-CBC Base64 - PA1]',
+    custody_account_nbr      Nullable(String)        COMMENT 'Số tài khoản lưu ký của hợp đồng UTDM (PII — lưu nguyên văn theo ngoại lệ đã duyệt, O_QLQ_33) [PII mã hóa AES-256-CBC Base64 - PA1]',
     contract_market_val_amt  Nullable(Decimal(38,8)) COMMENT 'Giá trị thị trường của hợp đồng UTDM tại thời điểm báo cáo (đơn vị gốc của ô, VND)',
     src_stm_code             String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     fmc_id                   Nullable(String)        COMMENT 'Khóa đại diện CTQLQ nộp báo cáo (RPT_VALUES.SEC_ID = SECURITIES.ID; nếu dòng báo cáo không mang CTQLQ thì suy từ quỹ nộp) — khóa lọc danh sách hợp đồng theo CTQLQ ở Nhóm 5, cùng giá trị fmc_id của Fund Management Company Profile ở Nhóm 3 (O_QLQ_64, O_QLQ_68)',
@@ -460,8 +460,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_organization
     period_val                               Nullable(String)           COMMENT 'Giá trị kỳ báo cáo dạng chuỗi (VD: T03/2024, Q1/2024, 2024)',
     rpt_year                                 Nullable(Int64)            COMMENT 'Năm của kỳ báo cáo',
     version_nbr                              Nullable(Int64)            COMMENT 'Số phiên bản biểu mẫu báo cáo — chọn phiên bản mới nhất của kỳ theo cách BA xếp hạng',
-    customer_nm                              Nullable(String)           COMMENT 'Tên khách hàng của hợp đồng UTQLDM (K_QLQ_179) — nội dung báo cáo chi nhánh nộp; giá trị đã mã hóa từ nguồn',
-    custody_account_nbr                      Nullable(String)           COMMENT 'Số tài khoản lưu ký của hợp đồng UTQLDM (K_QLQ_180) — giá trị đã mã hóa từ nguồn',
+    customer_nm                              Nullable(String)           COMMENT 'Tên khách hàng của hợp đồng UTQLDM (K_QLQ_179) — nội dung báo cáo chi nhánh nộp; giá trị đã mã hóa từ nguồn [PII mã hóa AES-256-CBC Base64 - PA1]',
+    custody_account_nbr                      Nullable(String)           COMMENT 'Số tài khoản lưu ký của hợp đồng UTQLDM (K_QLQ_180) — giá trị đã mã hóa từ nguồn [PII mã hóa AES-256-CBC Base64 - PA1]',
     contract_market_val_amt                  Nullable(Decimal(38,8))    COMMENT 'Giá trị thị trường của từng hợp đồng UTQLDM (K_QLQ_181) = ô cột Tổng giá trị thị trường tại thời điểm báo…',
     src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
@@ -483,12 +483,12 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_
     -- From: FACT (report) Fund Management Company Staff Trade Report
     fmc_employee_code                        String                     COMMENT 'Grain (1/6) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID) có CCCD trùng CCCD chủ tài khoản (`open_investor_account.identification_nbr`) của số tài khoản mua/bán trên sổ lệnh — nối CCCD → tài khoản theo BA dòng 177 (thay đường tài khoản khai ở hồ sơ, O_QLQ_35)',
     trade_dt                                 Date                       COMMENT 'Grain (2/6) — Ngày giao dịch (K_QLQ_109; Độ chi tiết ''Ngày'' của báo cáo); cột partition; nạp append theo ngày chạy ETL (O_QLQ_34; O_QLQ_38)',
-    securities_account_nbr                   String                     COMMENT 'Grain (3/6) — Số tài khoản giao dịch chứng khoán (K_QLQ_107) lấy từ sổ lệnh theo bên mua/bán; thuộc nhân viên qua CCCD → open_investor_account (O_QLQ_35)',
+    securities_account_nbr                   String                     COMMENT 'Grain (3/6) — Số tài khoản giao dịch chứng khoán (K_QLQ_107) lấy từ sổ lệnh theo bên mua/bán; thuộc nhân viên qua CCCD → open_investor_account (O_QLQ_35) [PII mã hóa AES-256-CBC Base64 - PA1]',
     trade_direction_code                     String                     COMMENT 'Grain (4/6) — bên của nhân viên trong giao dịch: BUY = bên mua; SELL = bên bán',
     security_symbol_code                     String                     COMMENT 'Grain (5/6) — Mã chứng khoán (K_QLQ_112); sàn HOSE là symbol; sàn HNX là ISSUE_CODE theo SQL BA',
     trade_method_nm                          String                     COMMENT 'Grain (6/6) — Phương thức giao dịch (K_QLQ_110) — ánh xạ Board Type Code sang tên theo SQL BA; HOSE chỉ G1–G4 còn lại là "Khác"; HNX thêm G7 G8 T1 T2 T3 T4 T6 R1 (O_QLQ_36)',
     fmc_code                                 Nullable(String)           COMMENT 'Mã CTQLQ nơi nhân viên làm việc (FMS.TL_PROFILES.SEC_ID) — khóa lọc báo cáo theo CTQLQ',
-    identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều ''Mã CCCD'' của báo cáo; cũng là khóa nối sang tài khoản chứng khoán (`open_investor_account.identification_nbr`)',
+    identification_nbr                       Nullable(String)           COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106; FMS.TL_PROFILES.ID_NO; đã mã hóa từ nguồn) — Chiều ''Mã CCCD'' của báo cáo; cũng là khóa nối sang tài khoản chứng khoán (`open_investor_account.identification_nbr`) [PII mã hóa AES-256-CBC Base64 - PA1]',
     securities_company_code                  Nullable(String)           COMMENT 'Mã CTCK nơi mở tài khoản (K_QLQ_108) — số hiệu môi giới/thành viên trên sổ lệnh theo bên mua/bán. Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
     trade_direction_nm                       Nullable(String)           COMMENT 'Lệnh mua/bán (K_QLQ_111): "Mua" hoặc "Bán" theo bên của nhân viên',
     order_vol                                Nullable(Int64)            COMMENT 'Số lượng chứng khoán của LỆNH (K_QLQ_113) theo bên mua/bán — không phải khối lượng khớp. Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
@@ -513,10 +513,10 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_fund_management_company_employee_inv
 (
     -- From: OPERATIONAL Fund Management Company Employee Investor Account List
     fmc_employee_code                String                  COMMENT 'PK (composite) — mã nhân viên CTQLQ (FMS.TL_PROFILES.ID)',
-    investor_account_nbr             String                  COMMENT 'PK (composite) — số tài khoản giao dịch chứng khoán VSDC',
-    identification_nbr               String                  COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106)',
+    investor_account_nbr             String                  COMMENT 'PK (composite) — số tài khoản giao dịch chứng khoán VSDC [PII mã hóa AES-256-CBC Base64 - PA1]',
+    identification_nbr               String                  COMMENT 'Số CCCD/Hộ chiếu của nhân viên (K_QLQ_106) [PII mã hóa AES-256-CBC Base64 - PA1]',
     fmc_code                         Nullable(String)        COMMENT 'Mã CTQLQ nơi nhân viên làm việc',
-    fmc_employee_full_nm             Nullable(String)        COMMENT 'Họ tên nhân viên CTQLQ',
+    fmc_employee_full_nm             Nullable(String)        COMMENT 'Họ tên nhân viên CTQLQ [PII mã hóa AES-256-CBC Base64 - PA1]',
     account_open_dt                  Nullable(Date)          COMMENT 'Ngày mở tài khoản đầu tiên trên VSDC — để BI lọc khoảng ngày',
     account_update_dt                Nullable(Date)          COMMENT 'Ngày cập nhật thông tin tài khoản gần nhất trên VSDC — để BI lọc khoảng ngày',
     src_stm_code                     String                  COMMENT 'Mã hệ thống nguồn dữ liệu'
@@ -610,7 +610,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_opr_foreign_fund_management_representati
     operation_status_nm                          Nullable(String)        COMMENT 'Trạng thái hoạt động của VPĐD (tên trạng thái FMS.STATUS)',
     license_nbr                                  Nullable(String)        COMMENT 'Số giấy phép thành lập của VPĐD',
     license_dt                                   Nullable(Date)          COMMENT 'Ngày cấp giấy phép thành lập của VPĐD',
-    address                                      Nullable(String)        COMMENT 'Địa chỉ của VPĐD',
+    address                                      Nullable(String)        COMMENT 'Địa chỉ của VPĐD [PII mã hóa AES-256-CBC Base64 - PA1]',
     tax_id_nbr                                   Nullable(String)        COMMENT 'Mã số thuế của VPĐD',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; bộ lọc dòng của bảng: chỉ VPĐD (ou_tp_code = 0, BRANCH_FLAG = 0) có ngày cấp giấy p',
     ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi (ACTIVE/INACTIVE) — audit field SCD4A',

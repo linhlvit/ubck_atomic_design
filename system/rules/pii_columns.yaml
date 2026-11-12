@@ -1,0 +1,87 @@
+# pii_columns.yaml — Danh mục cột PII phải MÃ HÓA ở bước nạp flat (Datamart MinIO -> flat ClickHouse)
+#
+# Nguồn yêu cầu: docs/output/Đề Xuất Danh Mục Dữ Liệu Nhạy Cảm.docx.md (AES-256-CBC; PA1 giải mã theo quyền,
+# PA2 giải mã sau khi nhập mã mở xem). Quyết định Data Modeler 2026-11-12:
+#   - phạm vi  : MỌI cột PII ở MỌI module flat (không chỉ 6 nhóm của tài liệu);
+#   - cột đã ghi 'đã mã hóa từ nguồn': MÃ HÓA LẠI đè lên (2 lớp), không pass-through;
+#   - kiểu     : deterministic cho mọi cột (cùng giá trị gốc + cùng khóa -> cùng ciphertext) để filter `= :cccd`, join giữa
+#                các bảng flat, GROUP BY, DISTINCT và ORDER BY của ReplacingMergeTree còn đúng.
+#   - thuật toán: theo macro dbt `encrypt_cbc_deterministic` (2026-11-12, bản mới): IV KHÔNG cố định mà suy ra từ khóa + giá trị
+#                gốc: IV = SHA-256(Base64(key) || giá trị)[0..15]; output = Base64(IV || AES-256-CBC-PKCS(giá trị)).
+#
+# Cách áp dụng: mọi cột flat có TÊN nằm trong `columns` (trừ `exclude`) phải được bọc
+#   fn_pii_encrypt(<biểu thức>, :aes_key_hex) AS <tên cột>
+# ở khối INSERT ... SELECT của 02_populate_*.sql. Gate 8 D28 (check_design_lint.py) kiểm luật này
+# (và chặn cú pháp cũ 3 tham số `, :aes_key_hex, :aes_iv_hex`).
+# Khóa KHÔNG nằm trong repo: tham số runtime lấy từ Vault/KMS (cùng cách với :etl_date).
+
+version: 2
+algorithm: AES-256-CBC
+encoding: base64            # Base64(16 byte IV | ciphertext) — cùng bố cục `aes_encrypt` CBC của Spark; IV suy ra từ khóa + giá trị
+function: fn_pii_encrypt    # SQL UDF, tạo bởi Datamart/flat-table/Common/00_create_pii_encryption_function.sql
+params: [":aes_key_hex"]    # key = 64 ký tự hex (32 byte) = byte của get_pii_key('enc') phía dbt; KHÔNG còn tham số IV
+
+# tên cột flat (alias đầu ra) -> nhóm dữ liệu. Áp cho MỌI bảng flat có cột đó.
+columns:
+  # --- Tên cá nhân (danh tính NĐT, chủ TK, cổ đông lớn, người nội bộ, người liên quan, nhân sự) ---
+  account_holder_nm: NAME
+  buy_account_holder_nm: NAME
+  sell_account_holder_nm: NAME
+  buy_trader_nm: NAME            # LLD gắn [PII]: tên người thực hiện đặt mua
+  sell_trader_nm: NAME           # LLD gắn [PII]: tên người thực hiện đặt bán
+  trader_nm: NAME
+  major_shareholder_nm: NAME
+  legal_entity_nm: NAME          # GSTT: tên người nội bộ
+  investor_nm: NAME
+  director_nm: NAME
+  director_full_nm: NAME
+  subject_nm: NAME               # NDTNN (NĐT, MSGD) và TT (đối tượng bị xử phạt)
+  full_nm: NAME                  # NHNCK/QLKD: họ tên hành nghề / nhân sự
+  practitioner_full_nm: NAME
+  individual_full_nm: NAME
+  related_person_full_nm: NAME
+  related_individual_full_nm: NAME
+  shareholder_nm: NAME
+  customer_nm: NAME
+  board_member_full_nm: NAME
+  fmc_employee_full_nm: NAME
+  legal_representative_nm: NAME
+  # --- Số giấy tờ định danh / số đăng ký sở hữu ---
+  identification_nbr: ID_DOC
+  individual_identification_nbr: ID_DOC
+  major_shareholder_identification_nbr: ID_DOC
+  subject_id_nbr: ID_DOC
+  related_individual_identity_nbr: ID_DOC
+  # --- Số tài khoản (chứng khoán / lưu ký / giao dịch) và mã PIN tài khoản ---
+  account_nbr: ACCOUNT
+  buy_account_nbr: ACCOUNT
+  sell_account_nbr: ACCOUNT
+  trading_account: ACCOUNT
+  investor_account_nbr: ACCOUNT
+  securities_account_nbr: ACCOUNT
+  custody_account_nbr: ACCOUNT
+  account_pin_code: ACCOUNT      # GSTT HOSE: mã PIN tài khoản giao dịch — thông tin xác thực, ngoài 4 nhóm đã mô tả
+  buy_account_pin_code: ACCOUNT
+  sell_account_pin_code: ACCOUNT
+  # --- Địa chỉ ---
+  address: ADDRESS
+  related_individual_adr: ADDRESS
+  # --- Liên hệ ---
+  email: CONTACT
+  phone: CONTACT
+
+# Cột PII đã biết nhưng KHÔNG mã hóa ở flat (ghi lại để không bị coi là sót):
+#   birth_dt, practitioner_birth_dt (NHNCK) — kiểu Date: mã hóa đổi kiểu cột sang String, ảnh hưởng lọc theo ngày; chờ quyết định
+#   tax_id_nbr, license_nbr, certificate_nbr, license_certificate_nbr — mã số thuế/giấy phép của TỔ CHỨC hoặc chứng chỉ hành nghề công khai
+#   target_nm (TT), ap_document_applicant_nm (QLCB), org_nm, ou_nm — tên tổ chức/đơn vị, không phải cá nhân
+
+# PA2 (giải mã sau khi nhập mã mở xem): tài liệu chỉ nêu FIMS.INVESTOR (DepAccountNumber, AccountInvesCapital, IdNo).
+# Ở flat chỉ IdNo lên được (identification_nbr, subject_id_nbr của NDTNN). Cột còn lại mặc định PA1 — chờ xác nhận theo từng ứng dụng.
+pa2:
+  tables:
+    - ndtnn_opr_foreign_investor_360_profile_flat
+    - ndtnn_opr_investor_compliance_hist_flat
+  columns: [identification_nbr, subject_id_nbr]
+
+# Ngoại lệ có chủ ý: danh sách "<tên bảng flat>.<cột>" KHÔNG phải PII dù trùng tên cột trong `columns`.
+exclude: []

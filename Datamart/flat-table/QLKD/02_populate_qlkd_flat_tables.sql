@@ -321,12 +321,12 @@ SELECT
     -- From: OPERATIONAL Securities Company Personnel Profile
     o.sc_senior_personnel_code,
     o.sc_code,
-    o.full_nm,
+    fn_pii_encrypt(o.full_nm, :aes_key_hex) AS full_nm,
     o.department,
     o.cl_sc_position_code,
     o.position_nm,
-    o.email,
-    o.phone,
+    fn_pii_encrypt(o.email, :aes_key_hex) AS email,
+    fn_pii_encrypt(o.phone, :aes_key_hex) AS phone,
     o.work_start_dt,
     o.dismissal_dt,
     o.personnel_status_code,
@@ -349,7 +349,7 @@ SELECT
     o.ou_nm,
     o.adr_val,
     o.decision_dt,
-    o.director_nm,
+    fn_pii_encrypt(o.director_nm, :aes_key_hex) AS director_nm,
     o.cl_firm_status_code,
     o.business_line_nm_list,
     o.src_stm_code
@@ -391,9 +391,9 @@ SELECT
     -- From: OPERATIONAL Individual Profile
     o.sc_senior_personnel_code,
     o.sc_code,
-    o.full_nm,
+    fn_pii_encrypt(o.full_nm, :aes_key_hex) AS full_nm,
     o.position_nm,
-    o.identification_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.license_certificate_nbr,
     o.src_stm_code,
     o.appointment_dt
@@ -410,14 +410,14 @@ INSERT INTO datamart.qlkd_opr_individual_related_party_network_flat
 SELECT
     -- From: OPERATIONAL Individual Related Party Network
     o.related_party_network_id,
-    o.individual_identification_nbr,
-    o.individual_full_nm,
+    fn_pii_encrypt(o.individual_identification_nbr, :aes_key_hex) AS individual_identification_nbr,
+    fn_pii_encrypt(o.individual_full_nm, :aes_key_hex) AS individual_full_nm,
     o.sc_senior_personnel_code,
-    o.related_person_full_nm,
+    fn_pii_encrypt(o.related_person_full_nm, :aes_key_hex) AS related_person_full_nm,
     o.rltnp,
     o.representative_position,
     o.related_person_position_nm,
-    o.identification_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.shares_count,
     o.ownership_ratio,
     o.relation_start_dt,
@@ -437,8 +437,8 @@ INSERT INTO datamart.qlkd_opr_individual_listed_company_role_flat
 SELECT
     -- From: OPERATIONAL Individual Listed Company Role
     o.listed_company_role_id,
-    o.individual_identification_nbr,
-    o.individual_full_nm,
+    fn_pii_encrypt(o.individual_identification_nbr, :aes_key_hex) AS individual_identification_nbr,
+    fn_pii_encrypt(o.individual_full_nm, :aes_key_hex) AS individual_full_nm,
     o.org_code,
     o.org_nm,
     o.org_tp_nm,
@@ -463,9 +463,9 @@ SELECT
     o.sc_shareholder_code,
     o.sc_code,
     o.sc_short_nm,
-    o.individual_identification_nbr,
-    o.trading_account,
-    o.shareholder_nm,
+    fn_pii_encrypt(o.individual_identification_nbr, :aes_key_hex) AS individual_identification_nbr,
+    fn_pii_encrypt(o.trading_account, :aes_key_hex) AS trading_account,
+    fn_pii_encrypt(o.shareholder_nm, :aes_key_hex) AS shareholder_nm,
     o.shareholder_tp_code,
     o.src_stm_code,
     o.created_dt
@@ -482,7 +482,7 @@ INSERT INTO datamart.qlkd_opr_individual_work_hist_flat
 SELECT
     -- From: OPERATIONAL Individual Work History
     o.sc_senior_personnel_code,
-    o.individual_identification_nbr,
+    fn_pii_encrypt(o.individual_identification_nbr, :aes_key_hex) AS individual_identification_nbr,
     o.sc_code,
     o.position_nm,
     o.work_start_dt,
@@ -505,7 +505,7 @@ SELECT
     -- From: OPERATIONAL Individual Violation History
     o.pd_subject_behavior_code,
     o.pd_code,
-    o.identification_nbr,
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.decision_nbr,
     o.issued_dt,
     o.violation_description,

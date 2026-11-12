@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_license_certificate_s
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
-    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
+    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension [PII mã hóa AES-256-CBC Base64 - PA1]',
     practitioner_education_level_code    Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_education_level_nm      Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_nationality_code   Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_fct_practitioner_daily_snpst_flat ON C
 
     -- From: SECURITIES PRACTITIONER DIMENSION
     practitioner_code               Nullable(String)    COMMENT 'Mã NHN — từ Securities Practitioner Dimension',
-    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension',
+    practitioner_full_nm            Nullable(String)    COMMENT 'Họ tên NHN — từ Securities Practitioner Dimension [PII mã hóa AES-256-CBC Base64 - PA1]',
     practitioner_education_level_code        Nullable(String)    COMMENT 'Trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_education_level_nm          Nullable(String)    COMMENT '(Bổ sung 2026-08) Tên trình độ học vấn — từ Securities Practitioner Dimension',
     practitioner_nationality_code           Nullable(String)    COMMENT 'Mã quốc tịch — từ Securities Practitioner Dimension',
@@ -103,12 +103,12 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_360_profile_flat ON C
 (
     -- From: OPERATIONAL Practitioner 360 Profile
     practitioner_code           String              COMMENT 'PK — Mã NHN',
-    full_nm             Nullable(String)    COMMENT 'Họ tên đầy đủ NHN',
+    full_nm             Nullable(String)    COMMENT 'Họ tên đầy đủ NHN [PII mã hóa AES-256-CBC Base64 - PA1]',
     birth_dt             Nullable(Date)      COMMENT 'Ngày sinh NHN',
     age                 Nullable(Int64)     COMMENT 'Tuổi NHN tại thời điểm populate',
     nationality_code            Nullable(String)    COMMENT 'Mã quốc tịch',
     nationality_nm              Nullable(String)    COMMENT 'Tên quốc tịch',
-    identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu',
+    identification_nbr          Nullable(String)    COMMENT 'Số CCCD/Hộ chiếu [PII mã hóa AES-256-CBC Base64 - PA1]',
     identification_tp_code                       Nullable(String)        COMMENT 'Loại giấy tờ định danh (scheme: IP_ALT_ID_TYPE: NATIONAL_ID=CMND, CITIZEN_ID=CCCD, PASSPORT=Hộ chiếu) — ETL-derived: LEFT JOIN ip_alternative_identification theo sp_id; NULL nếu chưa có giấy tờ (Sửa 2026-11-03) chuyển từ Operational Practitioner Data Explorer (đã bãi bỏ) — phục vụ K_NHNCK_101 Nhóm 13',
     education_level_code        Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Trình độ học vấn — scheme: EDUCATIONAL_LEVEL',
     education_level_nm          Nullable(String)    COMMENT '(Bổ sung 2026-08-07) Tên trình độ học vấn',
@@ -135,15 +135,15 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_related_party_profile
     -- From: OPERATIONAL Practitioner Related Party Profile
     practitioner_code           String              COMMENT 'PK (1/2) — Mã NHN',
     related_party_code          String              COMMENT 'PK (2/2) — Mã người liên quan',
-    related_individual_full_nm     Nullable(String)    COMMENT 'Họ tên người liên quan',
+    related_individual_full_nm     Nullable(String)    COMMENT 'Họ tên người liên quan [PII mã hóa AES-256-CBC Base64 - PA1]',
     rltnp_tp_code       String              COMMENT 'Mã loại quan hệ — scheme: RELATIONSHIP_TYPE',
     rltnp_tp_nm         Nullable(String)    COMMENT 'Tên loại quan hệ',
     related_individual_occupation         Nullable(String)    COMMENT 'Nghề nghiệp người liên quan',
     related_individual_workplace   Nullable(String)    COMMENT 'Nơi làm việc người liên quan',
-    related_individual_identity_nbr      Nullable(String)    COMMENT '(Sửa 2026-08) Số CMND/CCCD người liên quan — direct từ PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID',
+    related_individual_identity_nbr      Nullable(String)    COMMENT '(Sửa 2026-08) Số CMND/CCCD người liên quan — direct từ PROFESSIONAL_RELATIONSHIPS.IDENTITY_ID [PII mã hóa AES-256-CBC Base64 - PA1]',
     country_code            Nullable(String)    COMMENT 'Mã quốc gia người liên quan',
     country_nm              Nullable(String)    COMMENT 'Tên quốc gia',
-    related_individual_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan',
+    related_individual_adr         Nullable(String)    COMMENT 'Địa chỉ người liên quan [PII mã hóa AES-256-CBC Base64 - PA1]',
     src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
 )
 ENGINE = ReplicatedReplacingMergeTree()
@@ -326,8 +326,8 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_account_holding_flat 
     -- From: OPR_PRACTITIONER_ACCOUNT_HOLDING
     practitioner_account_holding_id              String                  COMMENT 'PK — Driving: open_investor_account (VSDC.OPEN_INVESTORS, tài khoản cá nhân investor_tp_code IN (3, 4)). Grain',
     practitioner_code                            String                  COMMENT 'BK người hành nghề — join anchor tới các bảng Operational khác của NHN; nối tài khoản VSDC với NHN qua số giấy',
-    account_nbr                                  Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán cá nhân của NHN — VSDC (open_investor_account.investor_account_nbr) — K_NHN',
-    account_holder_nm                            Nullable(String)        COMMENT 'Tên chủ tài khoản giao dịch chứng khoán của NHN (open_investor_account.investor_nm) — K_NHNCK_88',
+    account_nbr                                  Nullable(String)        COMMENT 'Số tài khoản giao dịch chứng khoán cá nhân của NHN — VSDC (open_investor_account.investor_account_nbr) — K_NHN [PII mã hóa AES-256-CBC Base64 - PA1]',
+    account_holder_nm                            Nullable(String)        COMMENT 'Tên chủ tài khoản giao dịch chứng khoán của NHN (open_investor_account.investor_nm) — K_NHNCK_88 [PII mã hóa AES-256-CBC Base64 - PA1]',
     main_held_securities_code                    Nullable(String)        COMMENT 'Mã chứng khoán NHN nắm giữ với tư cách cổ đông lớn VSDC (major_shareholder_ownership.ticker_symbol) — K_NHNCK_',
     vsdc_held_securities_vol                     Nullable(Int64)         COMMENT 'Số lượng chứng khoán NHN sở hữu cuối kỳ theo VSDC (major_shareholder_ownership.closing_share_quantity) — K_NHN',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của driving — VSDC_OPEN_INVESTORS'
@@ -351,11 +351,11 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_data_explorer_flat ON
     license_certificate_document_code            Nullable(String)        COMMENT 'Mã CCHN của dòng (BK bản ghi CCHN, thành phần grain) — NULL khi NHN chưa có CCHN nào',
     examination_assessment_result_code           Nullable(String)        COMMENT 'Mã kết quả thi sát hạch của dòng (thành phần grain) — NULL khi NHN chưa dự thi lần nào',
     conduct_violation_code                       Nullable(String)        COMMENT 'Mã vi phạm của dòng (thành phần grain) — NULL khi NHN không có vi phạm',
-    full_nm                                      Nullable(String)        COMMENT 'Họ tên NHN',
+    full_nm                                      Nullable(String)        COMMENT 'Họ tên NHN [PII mã hóa AES-256-CBC Base64 - PA1]',
     birth_dt                                     Nullable(Date)          COMMENT 'Ngày sinh NHN',
     age                                          Nullable(Int64)         COMMENT 'Tuổi NHN — lấy từ 360 Profile, không tính lại',
     nationality_nm                               Nullable(String)        COMMENT 'Tên quốc tịch NHN',
-    identification_nbr                           Nullable(String)        COMMENT 'Số định danh/Hộ chiếu của NHN',
+    identification_nbr                           Nullable(String)        COMMENT 'Số định danh/Hộ chiếu của NHN [PII mã hóa AES-256-CBC Base64 - PA1]',
     identification_tp_code                       Nullable(String)        COMMENT 'Loại giấy tờ định danh (scheme IP_ALT_ID_TYPE: NATIONAL_ID=CMND, CITIZEN_ID=CCCD, PASSPORT=Hộ chiếu)',
     education_level_nm                           Nullable(String)        COMMENT 'Tên trình độ học vấn của NHN',
     practice_status_code                         Nullable(String)        COMMENT 'Trạng thái hành nghề dẫn xuất (0=Chưa hành nghề, 1=Đang hoạt động, 2=Thu hồi có cấp lại, 3=Thu hồi không cấp l',

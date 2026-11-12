@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS datamart.tt_opr_penalty_decision_list_flat ON CLUSTER
     -- From: OPERATIONAL PENALTY DECISION LIST
     pd_subject_code            String                      COMMENT 'PK — mã lượt QĐ×đối tượng, unique per dòng',
     violation_case_code         Nullable(String)            COMMENT 'Mã vụ việc — mã hồ sơ thanh tra/kiểm tra gốc phát sinh quyết định xử phạt',
-    subject_nm                 Nullable(String)            COMMENT 'Tên đối tượng bị xử phạt',
+    subject_nm                 Nullable(String)            COMMENT 'Tên đối tượng bị xử phạt [PII mã hóa AES-256-CBC Base64 - PA1]',
     subject_tp_code            Nullable(String)            COMMENT 'Phân loại đối tượng (INDIVIDUAL/ORGANIZATION)',
     form_tp_code                Nullable(String)            COMMENT 'Loại hình — mã PERIODIC/UNSCHEDULED chọn từ đoàn thanh tra/kiểm tra qua Violation Case, NULL nếu không từ đoàn TT/KT; nhãn ánh xạ ở Detail Mapping',
     life_cycle_status_code     String                      COMMENT 'Trạng thái — mã gốc Violation Case (NEW/PROCESSING/DECISION_ISSUED/ENFORCED/CLOSED); nhãn ánh xạ ở Detail Mapping',
