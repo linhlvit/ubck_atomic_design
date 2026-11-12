@@ -9,7 +9,7 @@ entity:
   etl_pattern: "Fact Append"
   consolidation_status: "approved"
   consolidated_by: null
-  consolidated_at: "2026-11-08"
+  consolidated_at: null
 sources:
 - source_system: "HNX"
   source_table: "TRADE_BOOK"
@@ -17,8 +17,7 @@ sources:
 - source_system: "HOSE"
   source_table: "TRADE_BOOK"
   lld_file: "HOSE/lld_HOSE_TRADE_BOOK.yaml"
-consolidation_notes:
-- "Match Amount: HNX.TRADE_BOOK không có cột nào map vào (Data Modeler xác nhận 2026-11-08) — giữ nullable=true; chỉ HOSE.TRADE_BOOK.EXECUTION_VALUE có dữ liệu."
+consolidation_notes: []
 attributes:
 - attribute_name: "Securities Trade Id"
   physical_name: "securities_trade_id"
@@ -33,11 +32,11 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.TRADE_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_NUMBER"
 - attribute_name: "Securities Trade Code"
   physical_name: "securities_trade_code"
-  description: "Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống Sàn trong\
-    \ ngày, theo từng mã chứng khoán (Trade ID / BK). BK."
+  description: "ID của giao dịch — dùng làm unique key, audit, tracking trade (BK).\
+    \ BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -47,7 +46,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.TRADE_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_NUMBER"
 - attribute_name: "Source System Code"
   physical_name: "src_stm_code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -101,7 +100,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.ISSUE_CODE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SYMBOL"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.ISSUE_CODE"
 - attribute_name: "Board Type Code"
   physical_name: "board_tp_code"
   description: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
@@ -113,7 +112,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BOARD_ID"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BOARD_TYPE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BOARD_ID"
 - attribute_name: "Session Code"
   physical_name: "session_code"
   description: "Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về."
@@ -125,7 +124,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SESSION_ID"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SESSION"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SESSION_ID"
 - attribute_name: "Trade Time"
   physical_name: "trade_time"
   description: "Thời điểm giao dịch xảy ra. Định dạng hh24misss"
@@ -137,10 +136,10 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.TRADE_TIME"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TIME"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_TIME"
 - attribute_name: "Match Price"
   physical_name: "match_price"
-  description: "Giá khớp lệnh thực tế của giao dịch"
+  description: "Giá khớp của giao dịch"
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
@@ -150,7 +149,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.TRADE_PRICE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_EXEC_PRICE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_PRICE"
 - attribute_name: "Match Quantity"
   physical_name: "match_quantity"
   description: "Khối lượng giao dịch"
@@ -163,7 +162,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.TRADE_QUANTITY"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_VOLUME"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.TRADE_QUANTITY"
 - attribute_name: "Message Sequence Number"
   physical_name: "message_sequence_nbr"
   description: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo\
@@ -177,7 +176,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.MESSAGE_SEQUENCE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.MESSAGE_SEQUENCE"
 - attribute_name: "Match Price Spread First"
   physical_name: "match_price_spread_first"
   description: "Giá khớp của leg thứ nhất (First leg) trong spread"
@@ -190,7 +189,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_FIRST"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_FIRST"
 - attribute_name: "Match Price Spread Second"
   physical_name: "match_price_spread_second"
   description: "Giá khớp của leg thứ hai (Second leg)"
@@ -203,11 +202,11 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_SECOND"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_SECOND"
 - attribute_name: "Buy Order Reception Code"
   physical_name: "buy_order_reception_code"
-  description: "Số thứ tự của lệnh mua được ghi nhận trên hệ thống của Sàn trong ngày\
-    \ giao dịch, theo từng mã chứng khoán"
+  description: "Số định danh của lệnh mua tại thời điểm hệ thống (KRX hoặc gateway)\
+    \ tiếp nhận lệnh"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
@@ -217,7 +216,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_ORDER_RECEPTION_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_ACCEPT_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_RECEPTION_NUMBER"
 - attribute_name: "Buy Member Code"
   physical_name: "buy_member_code"
   description: "Mã/số công ty chứng khoán thực hiện giao dịch mua"
@@ -229,10 +228,10 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_MEMBER_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_BRK_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_MEMBER_NUMBER"
 - attribute_name: "Buy Account Number"
   physical_name: "buy_account_nbr"
-  description: "Mã/Số tài khoản giao dịch mua của nhà đầu tư"
+  description: "Mã tài khoản thực hiện giao dịch mua"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -241,11 +240,11 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_ACCOUNT_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ACCT_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ACCOUNT_NUMBER"
 - attribute_name: "Buy Account Type Code"
   physical_name: "buy_account_tp_code"
-  description: "Phân loại lệnh khách hàng/công ty của lệnh mua. Giá trị: 10 Client\
-    \ trade; 30 House trade"
+  description: "Lệnh mua của khách hàng (client) hay của chính công ty chứng khoán\
+    \ (house)."
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
@@ -254,7 +253,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION_CODE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION"
 - attribute_name: "Buy Investor Type Code"
   physical_name: "buy_investor_tp_code"
   description: "Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân."
@@ -266,7 +265,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_INVESTOR_CLASSIFICATION_CODE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_INVEST_TYPE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_INVESTOR_CLASSIFICATION_CODE"
 - attribute_name: "Buy Foreign Investor Type Code"
   physical_name: "buy_foreign_investor_tp_code"
   description: "Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao\
@@ -279,7 +278,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_FOREIGNER_INVESTOR_TYPE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE"
 - attribute_name: "Buy Order Price"
   physical_name: "buy_order_price"
   description: "Giá đặt mua."
@@ -305,7 +304,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_ORDER_QUANTITY"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_VOL"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_QUANTITY"
 - attribute_name: "Buy Order Action Type Code"
   physical_name: "buy_order_action_tp_code"
   description: "Loại hành động đối với lệnh mua hiện tại. 3 Cancel"
@@ -317,7 +316,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE"
 - attribute_name: "Buy Order Type Code"
   physical_name: "buy_order_tp_code"
   description: "Loại lệnh mua."
@@ -329,7 +328,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_ORDER_TYPE_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_TYPE_CODE"
 - attribute_name: "Buy Order Condition Type Code"
   physical_name: "buy_order_condition_tp_code"
   description: "Điều kiện thực hiện lệnh mua."
@@ -341,7 +340,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_ORDER_CONDITION_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_CONDITION_CODE"
 - attribute_name: "Buy Quote Request Type Code"
   physical_name: "buy_quote_request_tp_code"
   description: "Mã xác định loại yêu cầu báo giá của bên mua."
@@ -353,11 +352,11 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.BUY_QUOTE_REQUEST_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_QUOTE_REQUEST_CODE"
 - attribute_name: "Sell Order Reception Code"
   physical_name: "sell_order_reception_code"
-  description: "Số thứ tự của lệnh bán được ghi nhận trên hệ thống của Sàn trong ngày\
-    \ giao dịch, theo từng mã chứng khoán"
+  description: "Số định danh của lệnh bán tại thời điểm hệ thống (KRX hoặc gateway)\
+    \ tiếp nhận lệnh"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
@@ -367,7 +366,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_ORDER_RECEPTION_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_ACCEPT_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_RECEPTION_NUMBER"
 - attribute_name: "Sell Member Code"
   physical_name: "sell_member_code"
   description: "Mã định danh của công ty chứng khoán (broker) thực hiện lệnh bán"
@@ -379,7 +378,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_MEMBER_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_BRK_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_MEMBER_NUMBER"
 - attribute_name: "Sell Account Number"
   physical_name: "sell_account_nbr"
   description: "Số tài khoản giao dịch của khách hàng thực hiện lệnh bán"
@@ -391,7 +390,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_ACCOUNT_NUMBER"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ACCT_NO"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ACCOUNT_NUMBER"
 - attribute_name: "Sell Account Type Code"
   physical_name: "sell_account_tp_code"
   description: "Mã phân loại lệnh bán thuộc về khách hàng (client) hay tự doanh (house)\
@@ -404,7 +403,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION_CODE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION"
 - attribute_name: "Sell Investor Type Code"
   physical_name: "sell_investor_tp_code"
   description: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân,\
@@ -417,7 +416,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_INVESTOR_CLASSIFICATION_CODE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_INVEST_TYPE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_INVESTOR_CLASSIFICATION_CODE"
 - attribute_name: "Sell Foreign Investor Type Code"
   physical_name: "sell_foreign_investor_tp_code"
   description: "Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao\
@@ -430,7 +429,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_FOREIGNER_INVESTOR_TYPE"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE"
 - attribute_name: "Sell Order Price"
   physical_name: "sell_order_price"
   description: "Giá đặt bán."
@@ -456,7 +455,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_ORDER_QUANTITY"
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_VOL"
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_QUANTITY"
 - attribute_name: "Sell Order Action Type Code"
   physical_name: "sell_order_action_tp_code"
   description: "Mã xác định hành động sửa hoặc hủy của lệnh bên BÁN (Sell order) liên\
@@ -469,7 +468,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE"
 - attribute_name: "Sell Order Type Code"
   physical_name: "sell_order_tp_code"
   description: "Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý\
@@ -482,7 +481,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_ORDER_TYPE_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_TYPE_CODE"
 - attribute_name: "Sell Order Condition Type Code"
   physical_name: "sell_order_condition_tp_code"
   description: "Là mã xác định điều kiện hiệu lực và cách xử lý của lệnh bán theo\
@@ -495,7 +494,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_ORDER_CONDITION_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_CONDITION_CODE"
 - attribute_name: "Sell Quote Request Type Code"
   physical_name: "sell_quote_request_tp_code"
   description: "Mã xác định loại yêu cầu báo giá của bên bán."
@@ -507,7 +506,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.SELL_QUOTE_REQUEST_CODE"
-    HOSE.TRADE_BOOK: null
+    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_QUOTE_REQUEST_CODE"
 - attribute_name: "Report Year"
   physical_name: "rpt_year"
   description: "Năm báo cáo"
@@ -544,258 +543,3 @@ attributes:
   source_mappings:
     HNX.TRADE_BOOK: "HNX.TRADE_BOOK.REPORT_DAY"
     HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.REPORT_DAY"
-- attribute_name: "Currency Code"
-  physical_name: "currency_code"
-  description: "Đơn vị tiền tệ"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: "Mã phân loại — schema_code do Data Modeler đặt sau; giữ mã raw của sàn,\
-    \ phân biệt theo src_stm_code."
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.CURRENCY"
-- attribute_name: "Match Price Last Traded Price Diff Difference"
-  physical_name: "match_price_last_traded_price_diff_difference"
-  description: "Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_EXEC_PRICE_LTP"
-- attribute_name: "Match Amount"
-  physical_name: "match_amt"
-  description: "Tổng giá trị giao dịch của lệnh khớp"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_VALUE"
-- attribute_name: "Last Traded Price"
-  physical_name: "last_traded_price"
-  description: "Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded\
-    \ Price)"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_LTP"
-- attribute_name: "New High Low Price Type Code"
-  physical_name: "new_high_low_price_tp_code"
-  description: "Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày,\
-    \ theo từng mã chứng khoán."
-  data_domain: "Classification Value"
-  nullable: true
-  is_primary_key: false
-  comment: "SCHEMA_CODE=HOSE.NEW_HIGH_LOW_PRICE_TYPE"
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.EXECUTION_NEW_HIGH_LOW_PRICE"
-- attribute_name: "Buy Order Date"
-  physical_name: "buy_order_dt"
-  description: "Ngày đặt lệnh mua"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_DATE"
-- attribute_name: "Buy Order Time"
-  physical_name: "buy_order_time"
-  description: "Thời gian đặt lệnh mua"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_ORDER_TIME"
-- attribute_name: "Buy Member Name"
-  physical_name: "buy_member_nm"
-  description: "Tên công ty chứng khoán thực hiện giao dịch mua"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_BRK"
-- attribute_name: "Buy Pin Code"
-  physical_name: "buy_pin_code"
-  description: "Mã PIN của tài khoản mua"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_PIN"
-- attribute_name: "Buy Account Name"
-  physical_name: "buy_account_nm"
-  description: "Tên tài khoản giao dịch mua của nhà đầu tư"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_NAME"
-- attribute_name: "Buy Trader Code"
-  physical_name: "buy_trader_code"
-  description: "Mã/số định danh người thực hiện đặt mua"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_TRADER_NO"
-- attribute_name: "Buy Trader Name"
-  physical_name: "buy_trader_nm"
-  description: "Tên người thực hiện đặt mua"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_TRADER_NAME"
-- attribute_name: "Buy Sequence Number"
-  physical_name: "buy_sequence_nbr"
-  description: "Số tham chiếu theo thứ tự đặt mua trong ngày"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.BUY_REFERENCE_SEQUENCE_NO"
-- attribute_name: "Sell Order Date"
-  physical_name: "sell_order_dt"
-  description: "Ngày đặt lệnh bán"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_DATE"
-- attribute_name: "Sell Order Time"
-  physical_name: "sell_order_time"
-  description: "Thời gian đặt lệnh bán"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_ORDER_TIME"
-- attribute_name: "Sell Member Name"
-  physical_name: "sell_member_nm"
-  description: "Tên công ty chứng khoán thực hiện giao dịch bán"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_BRK"
-- attribute_name: "Sell Pin Code"
-  physical_name: "sell_pin_code"
-  description: "Mã PIN của tài khoản bán"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_PIN"
-- attribute_name: "Sell Account Name"
-  physical_name: "sell_account_nm"
-  description: "Tên tài khoản giao dịch bán của nhà đầu tư"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_NAME"
-- attribute_name: "Sell Trader Code"
-  physical_name: "sell_trader_code"
-  description: "Mã/số định danh người thực hiện đặt bán"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_TRADER_NO"
-- attribute_name: "Sell Trader Name"
-  physical_name: "sell_trader_nm"
-  description: "Tên người thực hiện đặt bán"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_TRADER_NAME"
-- attribute_name: "Sell Sequence Number"
-  physical_name: "sell_sequence_nbr"
-  description: "Số tham chiếu theo thứ tự đặt bán trong ngày"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.TRADE_BOOK: null
-    HOSE.TRADE_BOOK: "HOSE.TRADE_BOOK.SELL_REFERENCE_SEQUENCE_NO"

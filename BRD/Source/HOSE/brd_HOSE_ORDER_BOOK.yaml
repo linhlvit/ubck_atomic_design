@@ -5,258 +5,207 @@ table: ORDER_BOOK
 brd_ref: BRD-SRC-HOSE-ORDER_BOOK
 columns:
 - name: TRADE_DATE
-  data_type: DATE
-  description: Ngày giao dịch theo thị trường chứng khoán
+  data_type: STRING
+  description: Ngày giao dịch. Định dạng yyyymmdd
   key: null
   fk_note: null
 - name: MARKET_ID
   data_type: STRING
-  description: 'Mã thị trường chứng khoán.'
+  description: 'Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng.'
   key: null
   fk_note: null
-- name: SYMBOL
+- name: BOARD_ID
   data_type: STRING
-  description: Mã chứng khoán
+  description: 'Loại bảng giao dịch: xác định kiểu mua bán trong thị trường.'
   key: null
   fk_note: null
-- name: CURRENCY
+- name: ISSUE_CODE
   data_type: STRING
-  description: Đơn vị tiền tệ
+  description: 'Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa'
   key: null
   fk_note: null
-- name: BOARD_TYPE
+- name: ORDER_ACCEPT_TIME
   data_type: STRING
-  description: 'Loại bảng giao dịch mà lệnh được phân loại vào.'
+  description: 'Thời điểm lệnh được hệ thống giao dịch (matching engine) chấp nhận hợp lệ và đưa vào sổ lệnh; là lúc KRX core system ghi nhận lệnh (không phải lúc người dùng đặt lệnh hay CTCK nhận lệnh), dùng để xếp thứ tự ưu tiên và khớp lệnh. Định dạng hh24misss'
   key: null
   fk_note: null
-- name: ORDER_DATE
-  data_type: DATE
-  description: Ngày đặt lệnh của người thực hiện giao dịch
-  key: null
-  fk_note: null
-- name: ORDER_TIME
+- name: MEMBER_ID
   data_type: STRING
-  description: Thời gian đặt lệnh của người thực hiện giao dịch
+  description: Mã định danh thành viên giao dịch trên thị trường – thường là công ty chứng khoán hoặc tổ chức được phép gửi lệnh vào hệ thống KRX
   key: null
   fk_note: null
-- name: SESSION
-  data_type: STRING
-  description: 'Phiên giao dịch của thị trường chứng khoán.'
-  key: null
-  fk_note: null
-- name: MODIFY_CANCEL
-  data_type: STRING
-  description: 'Sửa/Hủy lệnh.'
-  key: null
-  fk_note: null
-- name: ORDER_ACCEPT_ID
-  data_type: STRING
-  description: Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày
-    giao dịch, theo từng mã chứng khoán (BK phụ)
-  key: null
-  fk_note: null
-- name: ORIG_ORDER_ACCEPT_ID
-  data_type: STRING
-  description: Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ
-    thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán
-  key: null
-  fk_note: null
-- name: SIDE
+- name: SELL_BUY_CLASSIFICATION_CODE
   data_type: STRING
   description: 'Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán.'
   key: null
   fk_note: null
-- name: BRK_ID
+- name: ACCOUNT_NUMBER
   data_type: STRING
-  description: Mã/số công ty chứng khoán
+  description: 'Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán (Member), dùng để xác định chủ sở hữu lệnh, phục vụ quản lý rủi ro, thanh toán và giám sát thị trường; Member ID + Account Number xác định duy nhất một nhà đầu tư'
   key: null
   fk_note: null
-- name: BRK
+- name: ORDER_TYPE_CODE
   data_type: STRING
-  description: Tên công ty chứng khoán
+  description: 'Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống matching engine xử lý lệnh đó.'
   key: null
   fk_note: null
-- name: PIN
+- name: ORDER_CONDITION_CODE
   data_type: STRING
-  description: Mã PIN của tài khoản giao dịch
-  key: null
-  fk_note: null
-- name: ACCT_NO
-  data_type: STRING
-  description: Mã/Số tài khoản giao dịch của nhà đầu tư
-  key: null
-  fk_note: null
-- name: NAME
-  data_type: STRING
-  description: Tên nhà đầu tư/chủ tài khoản nhà đầu tư
-  key: null
-  fk_note: null
-- name: MARKET_MAKER_ORDER
-  data_type: STRING
-  description: 'Lệnh đặt của nhà tạo lập thị trường.'
+  description: 'Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi nào, như thế nào, và có được giữ lại hay không.'
   key: null
   fk_note: null
 - name: CLIENT_HOUSE_CLASSIFICATION_CODE
   data_type: STRING
-  description: 'Phân loại lệnh khách hàng/công ty.'
+  description: Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán (house).
   key: null
   fk_note: null
-- name: INVEST_TYPE
+- name: INVESTOR_CLASSIFICATION_CODE
   data_type: STRING
-  description: 'Phân loại nhà đầu tư.'
+  description: 'Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.'
   key: null
   fk_note: null
-- name: FOREIGNER_INVESTOR_TYPE
+- name: ORDER_DATE
   data_type: STRING
-  description: 'Phân loại đầu tư nước ngoài.'
+  description: 'Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của hệ thống. Lưu ý: Với xác nhận sửa/hủy lệnh GT, giá trị là ngày đặt lệnh ban đầu'
   key: null
   fk_note: null
-- name: ORDER_TYPE
+- name: ORDER_REJECT_REASON_CODE
   data_type: STRING
-  description: 'Loại lệnh theo giá.'
+  description: Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống
+  key: null
+  fk_note: null
+- name: ORDER_QUANTITY
+  data_type: STRING
+  description: Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh
   key: null
   fk_note: null
 - name: ORDER_PRICE
-  data_type: DECIMAL(38,4)
-  description: Giá đặt lệnh
-  key: null
-  fk_note: null
-- name: ORDER_VOL
-  data_type: BIGINT
-  description: Khối lượng đặt lệnh
-  key: null
-  fk_note: null
-- name: ORDER_CONDITION
   data_type: STRING
-  description: 'Điều kiện thực hiện lệnh - lệnh được khớp như thế nào.'
+  description: Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán.
   key: null
   fk_note: null
-- name: LTP
-  data_type: DOUBLE
-  description: Giá khớp gần nhất trên thị trường (Last Traded Price)
-  key: null
-  fk_note: null
-- name: EXECUTION_PRICE
-  data_type: DOUBLE
-  description: Giá khớp lệnh thực tế
-  key: null
-  fk_note: null
-- name: IMMED_MATCHED_VOL
-  data_type: BIGINT
-  description: Khối lượng khớp ngay khi hệ thống ghi nhận lệnh
-  key: null
-  fk_note: null
-- name: MATCHED_VOL
-  data_type: BIGINT
-  description: Tổng khối lượng đã khớp của lệnh
-  key: null
-  fk_note: null
-- name: ORDER_RQTY
-  data_type: BIGINT
-  description: Khối lượng còn lại chưa khớp của lệnh (Order remaining quantity)
-  key: null
-  fk_note: null
-- name: ORDER_PRICE_LTP
-  data_type: DOUBLE
-  description: Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất
-  key: null
-  fk_note: null
-- name: MATCHED_RATIO
-  data_type: DOUBLE
-  description: Tỷ lệ khớp lệnh
-  key: null
-  fk_note: null
-- name: BUY_UP_SELL_DOWN_AMT
-  data_type: DOUBLE
-  description: Mức tăng/giảm giá so với tham chiếu theo giá trị
-  key: null
-  fk_note: null
-- name: BUY_UP_SELL_DOWN_TICK
-  data_type: DOUBLE
-  description: Mức tăng/giảm theo bước giá
-  key: null
-  fk_note: null
-- name: NEW_HIGH_LOW_PRICE
+- name: PUBLIC_QUANTITY
   data_type: STRING
-  description: 'Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày,
-    theo từng mã chứng khoán. Giá trị: New High: Giá mới cao nhất tính đến thời điểm
-    khớp lệnh; New Low: Giá mới thấp nhất tính đến thời điểm khớp lệnh'
+  description: Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order book) đối với lệnh Iceberg; Public Quantity ≤ Order Quantity
   key: null
   fk_note: null
-- name: ORDER_STATUS
+- name: CONDITION_PRICE
   data_type: STRING
-  description: 'Trạng thái của lệnh.'
+  description: Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order hoặc conditional order)
   key: null
   fk_note: null
-- name: ICD_BUG_QTY
-  data_type: BIGINT
-  description: Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch
-  key: null
-  fk_note: null
-- name: EXPECTED_EXECUTION_PRICE
-  data_type: DOUBLE
-  description: Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
-  key: null
-  fk_note: null
-- name: EXPECTED_EXECUTION_VOLUME
-  data_type: BIGINT
-  description: Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong
-    ngày
-  key: null
-  fk_note: null
-- name: SHORT_SELL_INDICATOR
+- name: ORDER_RECEPTION_NUMBER
   data_type: STRING
-  description: 'Phân loại lệnh bán khống. Giá trị: 00 - Không phải lệnh bán khống;
-    10 - Là lệnh bán khống'
+  description: 'Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh; duy nhất trong ngày giao dịch, thường tăng dần, do hệ thống sinh ra'
   key: null
   fk_note: null
-- name: TRADER_NO
+- name: ORIGINAL_ORDER_RECEPTION_NUMBER
   data_type: STRING
-  description: Mã/số định danh người thực hiện giao dịch
+  description: Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang tham chiếu tới
   key: null
   fk_note: null
-- name: TRADER_NAME
+- name: ORIGINAL_ORDER_TYPE_CODE
   data_type: STRING
-  description: Tên người thực hiện giao dịch
+  description: Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc hủy (cancel)
   key: null
   fk_note: null
-- name: REFERENCE_SEQUENCE_NO
+- name: SESSION_ID
   data_type: STRING
-  description: Số tham chiếu theo thứ tự giao dịch
+  description: Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
+  key: null
+  fk_note: null
+- name: ORDER_REMAINING_QUANTITY
+  data_type: STRING
+  description: Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy
+  key: null
+  fk_note: null
+- name: MESSAGE_SEQUENCE
+  data_type: STRING
+  description: 'Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự'
+  key: null
+  fk_note: null
+- name: REPLACE_CANCEL
+  data_type: STRING
+  description: 'Mã xác định loại hành động đối với lệnh hiện tại: sửa lệnh (Replace/Amend) hoặc hủy lệnh (Cancel). Giá trị: 1 New; 2 Replace; 3 Cancel'
+  key: null
+  fk_note: null
+- name: QUOTE_REQUEST_TYPE
+  data_type: STRING
+  description: 'Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một bên gửi tới thị trường hoặc đối tác. Giá trị: 1 Request (Initiator); 2 Cancel(Initiator); 3 Confirm(Counterparty); 4 Reject(Counterparty)'
+  key: null
+  fk_note: null
+- name: AUTOMATED_CANCEL
+  data_type: STRING
+  description: 'Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay không, và nếu có thì do cơ chế nào.'
   key: null
   fk_note: null
 - name: ORDER_ID
   data_type: STRING
-  description: Mã định danh của lệnh đặt
+  description: 'Mã định danh của một lệnh giao dịch, dùng để nhận diện lệnh đó trong toàn bộ hệ thống (BK chính)'
   key: null
   fk_note: null
-- name: ORIG_ORDER_ID
+- name: ORIGINAL_ORDER_ID
   data_type: STRING
-  description: Mã định danh của lệnh đặt trước khi chỉnh sửa
+  description: Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel) đang tham chiếu tới
+  key: null
+  fk_note: null
+- name: FOREIGN_INVESTOR_TYPE_CODE
+  data_type: STRING
+  description: Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch.
   key: null
   fk_note: null
 - name: REPORT_YEAR
   data_type: INT
-  description: null
+  description: Năm của ngày nghiệp vụ
   key: null
   fk_note: null
 - name: REPORT_MONTH
   data_type: INT
-  description: null
+  description: Tháng của ngày nghiệp vụ
   key: null
   fk_note: null
 - name: REPORT_DAY
   data_type: INT
-  description: null
+  description: Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+  key: null
+  fk_note: null
+- name: _BATCH_ID
+  data_type: STRING
+  description: 'Định danh batch nạp (dataset:ngày:dấu vân tay)'
   key: null
   fk_note: null
 - name: DS_SNPST_DT
   data_type: DATE
-  description: null
+  description: 'Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch'
   key: null
   fk_note: null
 - name: DS_ETL_PCS_TMS
   data_type: TIMESTAMP
-  description: null
+  description: Thời điểm ETL (Spark job) ghi dòng
+  key: null
+  fk_note: null
+- name: _SOURCE_SYSTEM
+  data_type: STRING
+  description: source_id trong registry
+  key: null
+  fk_note: null
+- name: _SOURCE_TABLE
+  data_type: STRING
+  description: bucket/prefix của dataset
+  key: null
+  fk_note: null
+- name: _SOURCE_FILE
+  data_type: STRING
+  description: Object key của file nguồn (bucket/key)
+  key: null
+  fk_note: null
+- name: _FILE_CHECKSUM
+  data_type: STRING
+  description: 'ETag của file nguồn (định danh phiên bản, không phải MD5)'
+  key: null
+  fk_note: null
+- name: _FILE_MODIFIED_AT
+  data_type: TIMESTAMP
+  description: LastModified của file nguồn
   key: null
   fk_note: null

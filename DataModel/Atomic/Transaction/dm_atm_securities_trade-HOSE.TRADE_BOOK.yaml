@@ -31,22 +31,22 @@ attributes:
     is_primary_key: true
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.TRADE_NO
-    comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Khớp lệnh thành công trên HOSE — mỗi trade là 1 bản ghi Fact Append. Hash: hash_id('HOSE_TRADE_BOOK', TRADE_NO) — hash từ Business Key (cột TRADE_NO)."
+    source_column: HOSE.TRADE_BOOK.TRADE_NUMBER
+    comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Khớp lệnh thành công trên HOSE — mỗi trade là 1 bản ghi Fact Append. Hash: hash_id('HOSE_TRADE_BOOK', TRADE_NUMBER) — hash từ Business Key (cột TRADE_NUMBER)."
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Trade Code
     physical_name: securities_trade_code
-    business_meaning: "Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống Sàn trong ngày, theo từng mã chứng khoán (Trade ID / BK). BK."
+    business_meaning: "ID của giao dịch — dùng làm unique key, audit, tracking trade (BK). BK."
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.TRADE_NO
-    comment: BK chính. Mã định danh nghiệp vụ duy nhất của Securities Trade; nguồn HOSE.TRADE_BOOK.TRADE_NO.
+    source_column: HOSE.TRADE_BOOK.TRADE_NUMBER
+    comment: BK chính. Mã định danh nghiệp vụ duy nhất của Securities Trade; nguồn HOSE.TRADE_BOOK.TRADE_NUMBER.
     classification_context: null
     etl_derived_value: null
 
@@ -66,7 +66,7 @@ attributes:
 
   - name: Trade Date
     physical_name: trade_dt
-    business_meaning: Ngày giao dịch theo thị trường chứng khoán
+    business_meaning: Ngày giao dịch của trade. Định dạng yyyymmdd
     data_domain: Date
     data_type: date
     nullable: false
@@ -74,13 +74,13 @@ attributes:
     source_system: HOSE
     source_table: TRADE_BOOK
     source_column: HOSE.TRADE_BOOK.TRADE_DATE
-    comment: "Gộp với HNX.TRADE_BOOK.TRADE_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+    comment: Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng.
     classification_context: null
     etl_derived_value: null
 
   - name: Market Code
     physical_name: market_code
-    business_meaning: Mã thị trường chứng khoán.
+    business_meaning: "Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market có rule riêng."
     data_domain: Classification Value
     data_type: string
     nullable: false
@@ -94,169 +94,141 @@ attributes:
 
   - name: Ticker Symbol
     physical_name: ticker_symbol
-    business_meaning: Mã chứng khoán
+    business_meaning: "Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa."
     data_domain: Text
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SYMBOL
-    comment: "Gộp với HNX.TRADE_BOOK.ISSUE_CODE (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HNX ISSUE_CODE thường là mã ISIN (riêng Repo do Sở tự định nghĩa), HOSE SYMBOL là mã giao dịch — chưa xác nhận cùng định dạng giá trị; phân biệt theo src_stm_code."
+    source_column: HOSE.TRADE_BOOK.ISSUE_CODE
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Board Type Code
     physical_name: board_tp_code
-    business_meaning: Loại bảng giao dịch mà lệnh được phân loại vào.
+    business_meaning: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
     data_domain: Classification Value
     data_type: string
     nullable: false
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BOARD_TYPE
+    source_column: HOSE.TRADE_BOOK.BOARD_ID
     comment: "SCHEMA_CODE=HOSE.BOARD_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Session Code
     physical_name: session_code
-    business_meaning: Phiên giao dịch của thị trường chứng khoán.
+    business_meaning: Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về.
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SESSION
+    source_column: HOSE.TRADE_BOOK.SESSION_ID
     comment: "SCHEMA_CODE=HOSE.SESSION"
     classification_context: null
     etl_derived_value: null
 
   - name: Trade Time
     physical_name: trade_time
-    business_meaning: Thời gian diễn ra giao dịch khớp lệnh
+    business_meaning: Thời điểm giao dịch xảy ra. Định dạng hh24misss
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.TIME
-    comment: "Gộp với HNX.TRADE_BOOK.TRADE_TIME (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.TRADE_TIME
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Match Price
     physical_name: match_price
-    business_meaning: Giá khớp lệnh thực tế của giao dịch
+    business_meaning: Giá khớp của giao dịch
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_EXEC_PRICE
-    comment: "Gộp với HNX.TRADE_BOOK.TRADE_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.TRADE_PRICE
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Match Quantity
     physical_name: match_quantity
-    business_meaning: Khối lượng khớp lệnh
+    business_meaning: Khối lượng giao dịch
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_VOLUME
-    comment: "Gộp với HNX.TRADE_BOOK.TRADE_QUANTITY (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.TRADE_QUANTITY
+    comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: Currency Code
-    physical_name: currency_code
-    business_meaning: Đơn vị tiền tệ
+  - name: Message Sequence Number
+    physical_name: message_sequence_nbr
+    business_meaning: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự"
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.CURRENCY
-    comment: "Mã phân loại — schema_code do Data Modeler đặt sau; giữ mã raw của sàn, phân biệt theo src_stm_code."
+    source_column: HOSE.TRADE_BOOK.MESSAGE_SEQUENCE
+    comment: "Nguồn lưu dạng số (DECIMAL(20,0)) — ETL cần convert sang string. Giữ nguyên leading zeros nếu có."
     classification_context: null
     etl_derived_value: null
 
-  - name: Match Price Last Traded Price Diff Difference
-    physical_name: match_price_last_traded_price_diff_difference
-    business_meaning: Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán
+  - name: Match Price Spread First
+    physical_name: match_price_spread_first
+    business_meaning: Giá khớp của leg thứ nhất (First leg) trong spread
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_EXEC_PRICE_LTP
-    comment: null
+    source_column: HOSE.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_FIRST
+    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
-  - name: Match Amount
-    physical_name: match_amt
-    business_meaning: Tổng giá trị giao dịch của lệnh khớp
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
-    nullable: false
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_VALUE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Last Traded Price
-    physical_name: last_traded_price
-    business_meaning: Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price)
+  - name: Match Price Spread Second
+    physical_name: match_price_spread_second
+    business_meaning: Giá khớp của leg thứ hai (Second leg)
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_LTP
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: New High Low Price Type Code
-    physical_name: new_high_low_price_tp_code
-    business_meaning: "Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày, theo từng mã chứng khoán."
-    data_domain: Classification Value
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.EXECUTION_NEW_HIGH_LOW_PRICE
-    comment: "SCHEMA_CODE=HOSE.NEW_HIGH_LOW_PRICE_TYPE"
+    source_column: HOSE.TRADE_BOOK.EXECUTION_PRICE_OF_SPREAD_SECOND
+    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Order Reception Code
     physical_name: buy_order_reception_code
-    business_meaning: "Số thứ tự của lệnh mua được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán"
+    business_meaning: Số định danh của lệnh mua tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_ORDER_ACCEPT_NO
-    comment: "Gộp với HNX.TRADE_BOOK.BUY_ORDER_RECEPTION_NUMBER (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+    source_column: HOSE.TRADE_BOOK.BUY_ORDER_RECEPTION_NUMBER
+    comment: "Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
     classification_context: null
     etl_derived_value: null
 
@@ -269,70 +241,70 @@ attributes:
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_BRK_NO
-    comment: "Gộp với HNX.TRADE_BOOK.BUY_MEMBER_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.BUY_MEMBER_NUMBER
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Account Number
     physical_name: buy_account_nbr
-    business_meaning: Mã/Số tài khoản giao dịch mua của nhà đầu tư
+    business_meaning: Mã tài khoản thực hiện giao dịch mua
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_ACCT_NO
-    comment: "Gộp với HNX.TRADE_BOOK.BUY_ACCOUNT_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.BUY_ACCOUNT_NUMBER
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Account Type Code
     physical_name: buy_account_tp_code
-    business_meaning: "Phân loại lệnh khách hàng/công ty của lệnh mua. Giá trị: 10 Client trade; 30 House trade"
+    business_meaning: Lệnh mua của khách hàng (client) hay của chính công ty chứng khoán (house).
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION_CODE
+    source_column: HOSE.TRADE_BOOK.BUY_CLIENT_HOUSE_CLASSIFICATION
     comment: "SCHEMA_CODE=HOSE.ACCOUNT_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Investor Type Code
     physical_name: buy_investor_tp_code
-    business_meaning: Phân loại nhà đầu tư của lệnh mua.
+    business_meaning: Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân.
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_INVEST_TYPE
+    source_column: HOSE.TRADE_BOOK.BUY_INVESTOR_CLASSIFICATION_CODE
     comment: "SCHEMA_CODE=HOSE.INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Foreign Investor Type Code
     physical_name: buy_foreign_investor_tp_code
-    business_meaning: Phân loại đầu tư nước ngoài của lệnh mua.
+    business_meaning: Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua.
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_FOREIGNER_INVESTOR_TYPE
+    source_column: HOSE.TRADE_BOOK.BUY_FOREIGN_INVESTOR_TYPE_CODE
     comment: "SCHEMA_CODE=HOSE.FOREIGN_INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Buy Order Price
     physical_name: buy_order_price
-    business_meaning: Giá đặt mua
+    business_meaning: Giá đặt mua.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
@@ -340,7 +312,7 @@ attributes:
     source_system: HOSE
     source_table: TRADE_BOOK
     source_column: HOSE.TRADE_BOOK.BUY_ORDER_PRICE
-    comment: "Gộp với HNX.TRADE_BOOK.BUY_ORDER_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -353,210 +325,154 @@ attributes:
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_ORDER_VOL
-    comment: "Gộp với HNX.TRADE_BOOK.BUY_ORDER_QUANTITY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+    source_column: HOSE.TRADE_BOOK.BUY_ORDER_QUANTITY
+    comment: "Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
     classification_context: null
     etl_derived_value: null
 
-  - name: Buy Order Date
-    physical_name: buy_order_dt
-    business_meaning: Ngày đặt lệnh mua
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_ORDER_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Buy Order Time
-    physical_name: buy_order_time
-    business_meaning: Thời gian đặt lệnh mua
-    data_domain: Text
+  - name: Buy Order Action Type Code
+    physical_name: buy_order_action_tp_code
+    business_meaning: Loại hành động đối với lệnh mua hiện tại. 3 Cancel
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_ORDER_TIME
-    comment: null
+    source_column: HOSE.TRADE_BOOK.BUY_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_ACTION_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Buy Member Name
-    physical_name: buy_member_nm
-    business_meaning: Tên công ty chứng khoán thực hiện giao dịch mua
-    data_domain: Text
+  - name: Buy Order Type Code
+    physical_name: buy_order_tp_code
+    business_meaning: Loại lệnh mua.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_BRK
-    comment: null
+    source_column: HOSE.TRADE_BOOK.BUY_ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Buy Pin Code
-    physical_name: buy_pin_code
-    business_meaning: Mã PIN của tài khoản mua
-    data_domain: Text
+  - name: Buy Order Condition Type Code
+    physical_name: buy_order_condition_tp_code
+    business_meaning: Điều kiện thực hiện lệnh mua.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_PIN
-    comment: null
+    source_column: HOSE.TRADE_BOOK.BUY_ORDER_CONDITION_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_CONDITION_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Buy Account Name
-    physical_name: buy_account_nm
-    business_meaning: Tên tài khoản giao dịch mua của nhà đầu tư
-    data_domain: Text
+  - name: Buy Quote Request Type Code
+    physical_name: buy_quote_request_tp_code
+    business_meaning: Mã xác định loại yêu cầu báo giá của bên mua.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Buy Trader Code
-    physical_name: buy_trader_code
-    business_meaning: Mã/số định danh người thực hiện đặt mua
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_TRADER_NO
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Buy Trader Name
-    physical_name: buy_trader_nm
-    business_meaning: Tên người thực hiện đặt mua
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_TRADER_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Buy Sequence Number
-    physical_name: buy_sequence_nbr
-    business_meaning: Số tham chiếu theo thứ tự đặt mua trong ngày
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.BUY_REFERENCE_SEQUENCE_NO
-    comment: null
+    source_column: HOSE.TRADE_BOOK.BUY_QUOTE_REQUEST_CODE
+    comment: "SCHEMA_CODE=HOSE.QUOTE_REQUEST_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Order Reception Code
     physical_name: sell_order_reception_code
-    business_meaning: "Số thứ tự của lệnh bán được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán"
+    business_meaning: Số định danh của lệnh bán tại thời điểm hệ thống (KRX hoặc gateway) tiếp nhận lệnh
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_ORDER_ACCEPT_NO
-    comment: "Gộp với HNX.TRADE_BOOK.SELL_ORDER_RECEPTION_NUMBER (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+    source_column: HOSE.TRADE_BOOK.SELL_ORDER_RECEPTION_NUMBER
+    comment: "Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Member Code
     physical_name: sell_member_code
-    business_meaning: Mã/số công ty chứng khoán thực hiện giao dịch bán
+    business_meaning: Mã định danh của công ty chứng khoán (broker) thực hiện lệnh bán
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_BRK_NO
-    comment: "Gộp với HNX.TRADE_BOOK.SELL_MEMBER_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.SELL_MEMBER_NUMBER
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Account Number
     physical_name: sell_account_nbr
-    business_meaning: Mã/Số tài khoản giao dịch bán của nhà đầu tư
+    business_meaning: Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_ACCT_NO
-    comment: "Gộp với HNX.TRADE_BOOK.SELL_ACCOUNT_NUMBER (mức A: cùng ý nghĩa, cùng bộ mã)."
+    source_column: HOSE.TRADE_BOOK.SELL_ACCOUNT_NUMBER
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Account Type Code
     physical_name: sell_account_tp_code
-    business_meaning: "Phân loại lệnh khách hàng/công ty của lệnh bán. Giá trị: 10 Client trade; 30 House trade"
+    business_meaning: Mã phân loại lệnh bán thuộc về khách hàng (client) hay tự doanh (house) của công ty chứng khoán.
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION_CODE
+    source_column: HOSE.TRADE_BOOK.SELL_CLIENT_HOUSE_CLASSIFICATION
     comment: "SCHEMA_CODE=HOSE.ACCOUNT_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Investor Type Code
     physical_name: sell_investor_tp_code
-    business_meaning: Phân loại nhà đầu tư.
+    business_meaning: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường."
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_INVEST_TYPE
+    source_column: HOSE.TRADE_BOOK.SELL_INVESTOR_CLASSIFICATION_CODE
     comment: "SCHEMA_CODE=HOSE.INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Foreign Investor Type Code
     physical_name: sell_foreign_investor_tp_code
-    business_meaning: Phân loại đầu tư nước ngoài của lệnh bán.
+    business_meaning: Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán.
     data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_FOREIGNER_INVESTOR_TYPE
+    source_column: HOSE.TRADE_BOOK.SELL_FOREIGN_INVESTOR_TYPE_CODE
     comment: "SCHEMA_CODE=HOSE.FOREIGN_INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
   - name: Sell Order Price
     physical_name: sell_order_price
-    business_meaning: Giá đặt bán
+    business_meaning: Giá đặt bán.
     data_domain: Currency Amount
     data_type: decimal(23,2)
     nullable: true
@@ -564,7 +480,7 @@ attributes:
     source_system: HOSE
     source_table: TRADE_BOOK
     source_column: HOSE.TRADE_BOOK.SELL_ORDER_PRICE
-    comment: "Gộp với HNX.TRADE_BOOK.SELL_ORDER_PRICE (mức A: cùng ý nghĩa, cùng bộ mã)."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -577,120 +493,64 @@ attributes:
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_ORDER_VOL
-    comment: "Gộp với HNX.TRADE_BOOK.SELL_ORDER_QUANTITY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng)."
+    source_column: HOSE.TRADE_BOOK.SELL_ORDER_QUANTITY
+    comment: "Nguồn lưu dạng DECIMAL(20,0) — ETL cast sang bigint."
     classification_context: null
     etl_derived_value: null
 
-  - name: Sell Order Date
-    physical_name: sell_order_dt
-    business_meaning: Ngày đặt lệnh bán
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_ORDER_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sell Order Time
-    physical_name: sell_order_time
-    business_meaning: Thời gian đặt lệnh bán
-    data_domain: Text
+  - name: Sell Order Action Type Code
+    physical_name: sell_order_action_tp_code
+    business_meaning: Mã xác định hành động sửa hoặc hủy của lệnh bên BÁN (Sell order) liên quan đến giao dịch hoặc message hiện tại.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_ORDER_TIME
-    comment: null
+    source_column: HOSE.TRADE_BOOK.SELL_REPLACE_CANCEL_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_ACTION_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Sell Member Name
-    physical_name: sell_member_nm
-    business_meaning: Tên công ty chứng khoán thực hiện giao dịch bán
-    data_domain: Text
+  - name: Sell Order Type Code
+    physical_name: sell_order_tp_code
+    business_meaning: "Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý theo cơ chế nào khi vào thị trường."
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_BRK
-    comment: null
+    source_column: HOSE.TRADE_BOOK.SELL_ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Sell Pin Code
-    physical_name: sell_pin_code
-    business_meaning: Mã PIN của tài khoản bán
-    data_domain: Text
+  - name: Sell Order Condition Type Code
+    physical_name: sell_order_condition_tp_code
+    business_meaning: Là mã xác định điều kiện hiệu lực và cách xử lý của lệnh bán theo thời gian và trạng thái khớp.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_PIN
-    comment: null
+    source_column: HOSE.TRADE_BOOK.SELL_ORDER_CONDITION_CODE
+    comment: "SCHEMA_CODE=HOSE.ORDER_CONDITION_TYPE"
     classification_context: null
     etl_derived_value: null
 
-  - name: Sell Account Name
-    physical_name: sell_account_nm
-    business_meaning: Tên tài khoản giao dịch bán của nhà đầu tư
-    data_domain: Text
+  - name: Sell Quote Request Type Code
+    physical_name: sell_quote_request_tp_code
+    business_meaning: Mã xác định loại yêu cầu báo giá của bên bán.
+    data_domain: Classification Value
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HOSE
     source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sell Trader Code
-    physical_name: sell_trader_code
-    business_meaning: Mã/số định danh người thực hiện đặt bán
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_TRADER_NO
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sell Trader Name
-    physical_name: sell_trader_nm
-    business_meaning: Tên người thực hiện đặt bán
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_TRADER_NAME
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Sell Sequence Number
-    physical_name: sell_sequence_nbr
-    business_meaning: Số tham chiếu theo thứ tự đặt bán trong ngày
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: HOSE
-    source_table: TRADE_BOOK
-    source_column: HOSE.TRADE_BOOK.SELL_REFERENCE_SEQUENCE_NO
-    comment: null
+    source_column: HOSE.TRADE_BOOK.SELL_QUOTE_REQUEST_CODE
+    comment: "SCHEMA_CODE=HOSE.QUOTE_REQUEST_TYPE"
     classification_context: null
     etl_derived_value: null
 

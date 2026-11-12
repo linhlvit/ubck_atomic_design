@@ -136,29 +136,15 @@ attributes:
 
   - name: Leading Unit Id
     physical_name: leading_unit_id
-    business_meaning: FK đến đơn vị chủ trì kiểm tra.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: THANHTRA
-    source_table: EXAMINATION_ANNUAL_PLAN_TARGET
-    source_column: THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID
-    comment: "FK target: ra_organization_unit.ra_ou_id (ou_tp_code = 'UNIT'). Cần ETL crosswalk sang NHNCK.UNITS: EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID = UNITS.ID để xác nhận UNIT_CODE sau đó hash_id('NHNCK_UNITS', UNIT_CODE) | Crosswalk khác phân hệ (THANHTRA → NHNCK) — chưa xác nhận LEADING_UNIT_ID nguồn khớp NHNCK.UNITS.ID, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Leading Unit Code
-    physical_name: leading_unit_code
-    business_meaning: Mã đơn vị chủ trì kiểm tra (denormalized lookup).
+    business_meaning: ID đơn vị chủ trì kiểm tra.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: THANHTRA
     source_table: EXAMINATION_ANNUAL_PLAN_TARGET
-    source_column: NHNCK.UNITS.UNIT_CODE
-    comment: "Lookup pair: ra_organization_unit.ra_ou_code. Pair with Leading Unit Id. Giá trị lấy từ NHNCK.UNITS.UNIT_CODE sau ETL crosswalk — chi tiết xem comment Leading Unit Id."
+    source_column: THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID
+    comment: "Map 1:1 giá trị nguồn (VARCHAR2(144)) — không hash_id, không crosswalk, không có cặp Code (Data Modeler 2026-11-12)."
     classification_context: null
     etl_derived_value: null
 

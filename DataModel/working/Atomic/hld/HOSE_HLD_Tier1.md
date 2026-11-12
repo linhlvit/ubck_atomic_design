@@ -75,7 +75,7 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| ORDER_BOOK / TRADE_BOOK | Các cột có bộ mã (market, board, session, side, order action, account/investor/foreign type, order type/condition, currency…) dùng domain Classification Value, giữ mã raw từng sàn | Chưa đặt (Data Modeler đặt sau) | — | Thiết kế lại 2026-11-03, xem `HNX_HOSE_Order_Trade_Overlap.md` |
+| ORDER_BOOK / TRADE_BOOK | Các cột có bộ mã (market, board, session, side, order action, account/investor/foreign type, order type/condition, currency…) dùng domain Classification Value, giữ mã raw từng sàn | Chưa đặt (Data Modeler đặt sau) | — | Thiết kế lại 2026-11-03 |
 
 ---
 
@@ -94,4 +94,4 @@ erDiagram
 |---|---|---|
 | T1-01 | 4 bảng HOSE extend entity có sẵn thay vì tạo entity riêng cho HOSE | Cấu trúc cột trùng khớp HNX/VSDC; `src_stm_code` phân biệt nguồn. Cần xác nhận không có khác biệt ngữ nghĩa/giá trị ở dữ liệu thực |
 | T1-02 | `HOSE.LISTED_SECURITIES_LIST` có đủ cột như HNX (`issuer_name`, `listed_shares`, `outstanding_shares`, `reference_price`) nhưng khác `VSDC.OUTSTANDING_SHARES` | Xem `VSDC_HLD_Overview` 7e #3 |
-| T1-03 | `HOSE.ORDER_BOOK` extend `Securities Order` (định nghĩa ở `HNX_HLD_Tier1`); `HOSE.TRADE_BOOK` xếp Tier 2 | Xem `HOSE_HLD_Tier2`; nhiều cột chỉ có ở HOSE (nullable ở phía HNX) |
+| T1-03 | `HOSE.ORDER_BOOK` extend `Securities Order` (định nghĩa ở `HNX_HLD_Tier1`); `HOSE.TRADE_BOOK` xếp Tier 2 | Xem `HOSE_HLD_Tier2`; DDL HOSE mới (2026-11-12) khớp DDL HNX, không còn cột riêng của HOSE; LLD HOSE = LLD HNX (đổi nguồn sang `HOSE.ORDER_BOOK`) |
