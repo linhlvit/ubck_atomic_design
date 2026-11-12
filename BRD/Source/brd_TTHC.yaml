@@ -170,8 +170,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: DATETIME >= {etl_date} AND DATETIME < {etl_date} + 1
-      filter_note: Ngày tạo bản ghi — Append theo DATETIME
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-DATETIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng DATETIMEFIELDINDEX
   type: Theo Source
@@ -191,8 +191,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: DATETIME >= {etl_date} AND DATETIME < {etl_date} + 1
-      filter_note: Ngày tạo bản ghi — Append theo DATETIME
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-TIMEFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng TIMEFIELDINDEX
   type: Theo Source
@@ -212,8 +212,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: TIME >= {etl_date} AND TIME < {etl_date} + 1
-      filter_note: Ngày tạo bản ghi — Append theo TIME
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-BOOLEANFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng BOOLEANFIELDINDEX
   type: Theo Source
@@ -254,8 +254,8 @@ brd_entries:
     refresh_frequency: daily
     ingestion:
       data_change_mode: Append
-      filter_logic: ContentItemId IN (SELECT ContentItemId FROM ContentItemIndex WHERE CreatedUtc >= '{etl_date}')
-      filter_note: Field content picker Eform — Append theo ContentItemIndex cha cùng ngày
+      filter_logic: null
+      filter_note: Truncate then Insert
 - brd_id: BRD-SRC-TTHC-USERPICKERFIELDINDEX
   brd_name: Design Atomic từ nguồn TTHC bảng USERPICKERFIELDINDEX
   type: Theo Source
