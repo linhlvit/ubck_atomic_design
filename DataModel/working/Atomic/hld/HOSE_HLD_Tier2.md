@@ -43,7 +43,7 @@ erDiagram
 
 | Source Field / Bảng | Mô tả | Scheme Code | source_type | Ghi chú |
 |---|---|---|---|---|
-| ORDER_BOOK / TRADE_BOOK | Các cột có bộ mã (market, board, session, side, order action, account/investor/foreign type, order type/condition, currency…) dùng domain Classification Value, giữ mã raw từng sàn | Chưa đặt (Data Modeler đặt sau) | — | Thiết kế lại 2026-11-03, xem `HNX_HOSE_Order_Trade_Overlap.md` |
+| ORDER_BOOK / TRADE_BOOK | Các cột có bộ mã (market, board, session, side, order action, account/investor/foreign type, order type/condition, currency…) dùng domain Classification Value, giữ mã raw từng sàn | Chưa đặt (Data Modeler đặt sau) | — | Thiết kế lại 2026-11-03 |
 
 ---
 
@@ -60,4 +60,4 @@ erDiagram
 
 | # | Câu hỏi | Kết quả |
 |---|---|---|
-| T2-01 | `HOSE.TRADE_BOOK` extend `Securities Trade`; nhiều cột chỉ có ở HOSE (`EXECUTION_LTP`, `EXECUTION_NEW_HIGH_LOW_PRICE`, `*_TRADER_NO`…) | Xem `HNX_HLD_Overview` 7e #6, #7 |
+| T2-01 | `HOSE.TRADE_BOOK` extend `Securities Trade`; DDL HOSE mới (2026-11-12) khớp DDL HNX (47 cột), các cột riêng của HOSE cũ (`EXECUTION_LTP`, `EXECUTION_NEW_HIGH_LOW_PRICE`, `*_TRADER_NO`…) đã bỏ; LLD HOSE = LLD HNX (đổi nguồn sang `HOSE.TRADE_BOOK`) | Xem `HNX_HLD_Overview` 7e #6, #7 |

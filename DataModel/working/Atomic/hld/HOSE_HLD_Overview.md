@@ -102,7 +102,7 @@ Không có junction table.
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
 | 1 | T1 | 4 bảng HOSE extend entity có sẵn; cần xác nhận không có khác biệt ngữ nghĩa/giá trị so với HNX/VSDC | Có thể phải tách entity riêng nếu khác |
-| 2 | T1/T2 | `HOSE.ORDER_BOOK` / `HOSE.TRADE_BOOK` có Change Mode `Update` (mặc định) nhưng entity là `Fact Append`; nhiều cột chỉ có ở HOSE (`LTP`, `MATCHED_RATIO`, `BUY_UP_SELL_DOWN_*`, `SHORT_SELL_INDICATOR`…) | Xem `HNX_HLD_Overview` 7e #4, #6, #7 |
+| 2 | T1/T2 | `HOSE.ORDER_BOOK` / `HOSE.TRADE_BOOK` có Change Mode `Update` (mặc định) nhưng entity là `Fact Append`; DDL HOSE mới (2026-11-12) khớp hoàn toàn DDL HNX (cùng tên cột, kiểu, thứ tự; ORDER_BOOK 41 cột, TRADE_BOOK 47 cột) — các cột chỉ có ở HOSE cũ (`LTP`, `MATCHED_RATIO`, `BUY_UP_SELL_DOWN_*`, `SHORT_SELL_INDICATOR`, `PIN`, `TRADER_NO`…) đã bỏ; LLD HOSE sao chép từ LLD HNX; cột `_*` không map | Xem `HNX_HLD_Overview` 7e #4, #6, #7 |
 
 #### 7f. Bảng ngoài scope
 

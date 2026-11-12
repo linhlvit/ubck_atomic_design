@@ -159,11 +159,17 @@ automated_cancel              STRING              YES                           
 order_id                      STRING              YES                                      Mã định danh của lệnh giao dịch (BK chính)
 original_order_id             STRING              YES                                      Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới
 foreign_investor_type_code    STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài
-report_year                   INT                 YES                                      
-report_month                  INT                 YES                                      
-report_day                    INT                 YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
+report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: outright_order_book
 Mo ta: Sổ lệnh Outright
@@ -530,11 +536,17 @@ execution_price_of_spread_first STRING              YES                         
 execution_price_of_spread_second STRING              YES                                      Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế)
 sell_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán
 buy_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua
-report_year                   INT                 YES                                      
-report_month                  INT                 YES                                      
-report_day                    INT                 YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
+report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: market_capitalization
 Mo ta: BM 42 (HNX) - Vốn hoá thị trường HNX

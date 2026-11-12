@@ -67,56 +67,47 @@ Mo ta: Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh 
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-trade_date                    DATE                YES                                      Ngày giao dịch theo thị trường chứng khoán
+trade_date                    STRING              YES                                      Ngày giao dịch (yyyymmdd)
 market_id                     STRING              YES                                      Mã thị trường chứng khoán
-symbol                        STRING              YES                                      Mã chứng khoán
-currency                      STRING              YES                                      Đơn vị tiền tệ
-board_type                    STRING              YES                                      Loại bảng giao dịch mà lệnh được phân loại vào
-order_date                    DATE                YES                                      Ngày đặt lệnh của người thực hiện giao dịch
-order_time                    STRING              YES                                      Thời gian đặt lệnh của người thực hiện giao dịch
-session                       STRING              YES                                      Phiên giao dịch của thị trường chứng khoán
-modify_cancel                 STRING              YES                                      Loại hành động lệnh: N=Mới / M=Sửa / C=Hủy
-order_accept_id               STRING              YES                                      Số thứ tự giao dịch được ghi nhận trên hệ thống của Sàn trong ngày giao dịch, theo từng mã chứng khoán (BK phụ)
-orig_order_accept_id          STRING              YES                                      Số thứ tự giao dịch ban đầu (trước chỉnh sửa) được ghi nhận trên hệ thống của Sàn
-side                          STRING              YES                                      Loại lệnh: B=Buy / S=Sell
-brk_id                        STRING              YES                                      Mã/số công ty chứng khoán
-brk                           STRING              YES                                      Tên công ty chứng khoán
-pin                           STRING              YES                                      Mã PIN của tài khoản giao dịch
-acct_no                       STRING              YES                                      Mã/Số tài khoản giao dịch của nhà đầu tư
-name                          STRING              YES                                      Tên nhà đầu tư/chủ tài khoản nhà đầu tư
-market_maker_order            STRING              YES                                      Lệnh đặt của nhà tạo lập thị trường
-client_house_classification_code STRING              YES                                      Phân loại lệnh khách hàng/công ty tự doanh
-invest_type                   STRING              YES                                      Phân loại nhà đầu tư (raw từ HOSE)
-foreigner_investor_type       STRING              YES                                      Phân loại đầu tư nước ngoài
-order_type                    STRING              YES                                      Loại lệnh theo giá
-order_price                   DECIMAL(38,4)       YES                                      Giá đặt lệnh
-order_vol                     BIGINT              YES                                      Khối lượng đặt lệnh
-order_condition               STRING              YES                                      Điều kiện thực hiện lệnh
-ltp                           DOUBLE              YES                                      Giá khớp gần nhất trên thị trường (Last Traded Price)
-execution_price               DOUBLE              YES                                      Giá khớp lệnh thực tế
-immed_matched_vol             BIGINT              YES                                      Khối lượng khớp ngay khi hệ thống ghi nhận lệnh
-matched_vol                   BIGINT              YES                                      Tổng khối lượng đã khớp của lệnh
-order_rqty                    BIGINT              YES                                      Khối lượng còn lại chưa khớp của lệnh
-order_price_ltp               DOUBLE              YES                                      Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất
-matched_ratio                 DOUBLE              YES                                      Tỷ lệ khớp lệnh
-buy_up_sell_down_amt          DOUBLE              YES                                      Mức tăng/giảm giá so với tham chiếu theo giá trị
-buy_up_sell_down_tick         DOUBLE              YES                                      Mức tăng/giảm theo bước giá
-new_high_low_price            STRING              YES                                      Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày
-order_status                  STRING              YES                                      Trạng thái của lệnh
-icd_bug_qty                   BIGINT              YES                                      Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch
-expected_execution_price      DOUBLE              YES                                      Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
-expected_execution_volume     BIGINT              YES                                      Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày
-short_sell_indicator          STRING              YES                                      Phân loại lệnh bán khống
-trader_no                     STRING              YES                                      Mã/số định danh người thực hiện giao dịch
-trader_name                   STRING              YES                                      Tên người thực hiện giao dịch
-reference_sequence_no         STRING              YES                                      Số tham chiếu theo thứ tự giao dịch
-order_id                      STRING              YES                                      Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính)
-orig_order_id                 STRING              YES                                      Mã định danh của lệnh đặt trước khi chỉnh sửa
-report_year                   INT                 YES                                      
-report_month                  INT                 YES                                      
-report_day                    INT                 YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+board_id                      STRING              YES                                      Loại bảng giao dịch
+issue_code                    STRING              YES                                      Mã định danh của loại chứng khoán (unique, thường là ISIN)
+order_accept_time             STRING              YES                                      Thời điểm KRX core system chấp nhận lệnh vào sổ lệnh (hh24misss)
+member_id                     STRING              YES                                      Mã định danh thành viên giao dịch (công ty chứng khoán) do Sở giao dịch cấp
+sell_buy_classification_code  STRING              YES                                      Hướng lệnh: Mua/Bán
+account_number                STRING              YES                                      Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng khoán
+order_type_code               STRING              YES                                      Loại lệnh theo giá
+order_condition_code          STRING              YES                                      Điều kiện thực hiện lệnh
+client_house_classification_code STRING              YES                                      Lệnh của khách hàng hay công ty tự doanh
+investor_classification_code  STRING              YES                                      Phân loại nhà đầu tư theo loại hình tổ chức/cá nhân (raw từ HNX)
+order_date                    STRING              YES                                      Ngày mà lệnh được ghi nhận theo ngày giao dịch của hệ thống
+order_reject_reason_code      STRING              YES                                      Mã lý do lệnh bị từ chối bởi hệ thống KRX
+order_quantity                STRING              YES                                      Số lượng chứng khoán muốn mua hoặc bán trong lệnh
+order_price                   STRING              YES                                      Mức giá sẵn sàng mua hoặc bán (0 nếu Market/Fixed price/Cancel)
+public_quantity               STRING              YES                                      Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty ≤ order_qty)
+condition_price               STRING              YES                                      Mức giá điều kiện để kích hoạt lệnh Stop order
+order_reception_number        STRING              YES                                      Số định danh của lệnh tại thời điểm hệ thống KRX tiếp nhận (duy nhất trong ngày, tăng dần theo issue)
+original_order_reception_number STRING              YES                                      Order Reception Number của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới
+original_order_type_code      STRING              YES                                      Loại lệnh của lệnh gốc trước khi bị sửa/hủy
+session_id                    STRING              YES                                      Mã phiên giao dịch
+order_remaining_quantity      STRING              YES                                      Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy
+message_sequence              STRING              YES                                      Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)
+replace_cancel                STRING              YES                                      Loại hành động đối với lệnh: Mới / Sửa / Hủy
+quote_request_type            STRING              YES                                      Loại yêu cầu báo giá RFQ (HNX-only)
+automated_cancel              STRING              YES                                      Mã xác định việc hủy lệnh tự động do cơ chế nào
+order_id                      STRING              YES                                      Mã định danh của lệnh giao dịch (BK chính)
+original_order_id             STRING              YES                                      Order ID của lệnh gốc mà một lệnh sửa/hủy đang tham chiếu tới
+foreign_investor_type_code    STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài
+report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
+report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: share_auction
 Mo ta: BM 5 (HOSE)
@@ -154,54 +145,50 @@ Mo ta: Sổ khớp HOSE — ghi nhận từng giao dịch khớp thành công tr
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-trade_date                    DATE                YES                                      Ngày giao dịch theo thị trường chứng khoán
+trade_date                    STRING              YES                                      Ngày giao dịch của trade
 market_id                     STRING              YES                                      Mã thị trường chứng khoán
-symbol                        STRING              YES                                      Mã chứng khoán
-currency                      STRING              YES                                      Đơn vị tiền tệ
-board_type                    STRING              YES                                      Loại bảng giao dịch
-trade_no                      BIGINT              YES                                      Số thứ tự giao dịch khớp lệnh được ghi nhận trên hệ thống Sàn trong ngày, theo từng mã chứng khoán (Trade ID / BK)
-time                          STRING              YES                                      Thời gian diễn ra giao dịch khớp lệnh
-session                       BIGINT              YES                                      Phiên giao dịch
-execution_exec_price          DECIMAL(38,4)       YES                                      Giá khớp lệnh thực tế của giao dịch
-execution_exec_price_ltp      DECIMAL(38,4)       YES                                      Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán
-execution_volume              BIGINT              YES                                      Khối lượng khớp lệnh
-execution_value               DECIMAL(38,4)       YES                                      Tổng giá trị giao dịch của lệnh khớp
-execution_ltp                 DECIMAL(38,4)       YES                                      Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price)
-execution_new_high_low_price  STRING              YES                                      Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày
-buy_order_date                DATE                YES                                      Ngày đặt lệnh mua
-buy_order_time                STRING              YES                                      Thời gian đặt lệnh mua
-buy_order_accept_no           BIGINT              YES                                      Số thứ tự của lệnh mua được ghi nhận trên hệ thống Sàn trong ngày giao dịch
-buy_brk_no                    STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
-buy_brk                       STRING              YES                                      Tên công ty chứng khoán thực hiện giao dịch mua
-buy_pin                       STRING              YES                                      Mã PIN của tài khoản mua
-buy_acct_no                   STRING              YES                                      Mã/Số tài khoản giao dịch mua của nhà đầu tư
-buy_name                      STRING              YES                                      Tên tài khoản giao dịch mua của nhà đầu tư
-buy_client_house_classification_code BIGINT              YES                                      Phân loại lệnh khách hàng/công ty tự doanh của lệnh mua
-buy_invest_type               BIGINT              YES                                      Phân loại nhà đầu tư của lệnh mua (raw từ HOSE)
-buy_foreigner_investor_type   STRING              YES                                      Phân loại đầu tư nước ngoài của lệnh mua
-buy_order_price               DECIMAL(38,4)       YES                                      Giá đặt mua
-buy_order_vol                 BIGINT              YES                                      Khối lượng đặt mua
-buy_trader_no                 STRING              YES                                      Mã/số định danh người thực hiện đặt mua
-buy_trader_name               STRING              YES                                      Tên người thực hiện đặt mua
-buy_reference_sequence_no     STRING              YES                                      Số tham chiếu theo thứ tự đặt mua trong ngày
-sell_order_date               DATE                YES                                      Ngày đặt lệnh bán
-sell_order_time               STRING              YES                                      Thời gian đặt lệnh bán
-sell_order_accept_no          BIGINT              YES                                      Số thứ tự của lệnh bán được ghi nhận trên hệ thống Sàn trong ngày giao dịch
-sell_brk_no                   STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch bán
-sell_brk                      STRING              YES                                      Tên công ty chứng khoán thực hiện giao dịch bán
-sell_pin                      STRING              YES                                      Mã PIN của tài khoản bán
-sell_acct_no                  STRING              YES                                      Mã/Số tài khoản giao dịch bán của nhà đầu tư
-sell_name                     STRING              YES                                      Tên tài khoản giao dịch bán của nhà đầu tư
-sell_client_house_classification_code BIGINT              YES                                      Phân loại lệnh khách hàng/công ty tự doanh của lệnh bán
-sell_invest_type              BIGINT              YES                                      Phân loại nhà đầu tư của lệnh bán (raw từ HOSE)
-sell_foreigner_investor_type  STRING              YES                                      Phân loại đầu tư nước ngoài của lệnh bán
+board_id                      STRING              YES                                      Loại bảng giao dịch
+issue_code                    STRING              YES                                      Mã định danh của loại chứng khoán đang được giao dịch (unique)
+trade_number                  BIGINT              YES                                      ID của giao dịch — dùng làm unique key, audit, tracking trade (BK)
+trade_time                    STRING              YES                                      Thời điểm giao dịch xảy ra
+trade_price                   DECIMAL(38,4)       YES                                      Giá khớp của giao dịch
+trade_quantity                BIGINT              YES                                      Khối lượng giao dịch
+session_id                    STRING              YES                                      Mã phiên giao dịch
+sell_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên bán
+sell_member_number            STRING              YES                                      Mã định danh công ty chứng khoán thực hiện lệnh bán
+sell_account_number           STRING              YES                                      Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
+sell_order_type_code          STRING              YES                                      Loại lệnh của phía bán
+sell_order_condition_code     STRING              YES                                      Điều kiện hiệu lực và cách xử lý của lệnh bán
+sell_client_house_classification STRING              YES                                      Lệnh bán của khách hàng hay tự doanh
+sell_investor_classification_code STRING              YES                                      Phân loại nhà đầu tư bán theo loại hình tổ chức/cá nhân (raw từ HNX)
+sell_order_quantity           DECIMAL(20,0)       YES                                      Khối lượng đặt bán
 sell_order_price              DECIMAL(38,4)       YES                                      Giá đặt bán
-sell_order_vol                BIGINT              YES                                      Khối lượng đặt bán
-sell_trader_no                STRING              YES                                      Mã/số định danh người thực hiện đặt bán
-sell_trader_name              STRING              YES                                      Tên người thực hiện đặt bán
-sell_reference_sequence_no    STRING              YES                                      Số tham chiếu theo thứ tự đặt bán trong ngày
-report_year                   INT                 YES                                      
-report_month                  INT                 YES                                      
-report_day                    INT                 YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES
+buy_member_number             STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
+buy_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên mua
+buy_account_number            STRING              YES                                      Mã tài khoản thực hiện giao dịch mua
+buy_order_type_code           STRING              YES                                      Loại lệnh mua
+buy_order_condition_code      STRING              YES                                      Điều kiện thực hiện lệnh mua
+buy_client_house_classification STRING              YES                                      Lệnh mua của khách hàng hay tự doanh
+buy_investor_classification_code STRING              YES                                      Phân loại nhà đầu tư mua theo loại hình tổ chức/cá nhân (raw từ HNX)
+buy_order_quantity            DECIMAL(20,0)       YES                                      Khối lượng đặt mua
+buy_order_price               DECIMAL(38,4)       YES                                      Giá đặt mua
+message_sequence              DECIMAL(20,0)       YES                                      Số thứ tự message trong luồng dữ liệu (tăng dần từ 1)
+sell_order_reception_number   DECIMAL(20,0)       YES                                      Số định danh của lệnh bán tại thời điểm hệ thống KRX tiếp nhận
+buy_order_reception_number    DECIMAL(20,0)       YES                                      Số định danh của lệnh mua tại thời điểm hệ thống KRX tiếp nhận
+sell_quote_request_code       STRING              YES                                      Mã loại yêu cầu báo giá của bên bán (HNX RFQ)
+buy_quote_request_code        STRING              YES                                      Mã loại yêu cầu báo giá của bên mua (HNX RFQ)
+execution_price_of_spread_first STRING              YES                                      Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế)
+execution_price_of_spread_second STRING              YES                                      Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế)
+sell_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch bán
+buy_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua
+report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
+report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
