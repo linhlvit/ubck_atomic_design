@@ -54688,292 +54688,152 @@ attributes:
   atomic_column: "sc_ou_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Establishment Operation License Number"
-  description: "Giấy phép thành lập và hoạt động do UBCKNN cấp."
+  atomic_attribute: "Subject Display Name"
+  description: "Tên hiển thị của đối tượng bị thay đổi hồ sơ."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_NUMBER"
-  comment: null
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.SUBJECT_DISPLAY_NAME"
+  comment: "Snapshot tên đối tượng tại thời điểm thay đổi (denormalized, không có\
+    \ link tới entity đích vì ENTITY_ID polymorphic). BCV: không có term riêng."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_profile_change"
-  atomic_column: "establishment_operation_license_nbr"
+  atomic_column: "subject_display_nm"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Establishment Operation License Date"
-  description: "Ngày cấp giấy phép thành lập và hoạt động do UBCKNN cấp."
+  atomic_attribute: "Classification Securities Company Event Type Id"
+  description: "FK đến loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "cl_sc_event_tp_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "Classification Securities Company Event Type Code"
+  description: "Mã loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
+    \ with Classification Securities Company Event Type Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "cl_sc_event_tp_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "Event Type Name"
+  description: "Tên loại sự vụ/sự kiện nghiệp vụ."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_NAME"
+  comment: "Snapshot tên loại sự kiện tại thời điểm thay đổi (denormalized từ CAT_EVENT_TYPE).\
+    \ NVARCHAR2(2000)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "event_tp_nm"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "Before Change Information"
+  description: "Thông tin hồ sơ trước khi thay đổi (dạng văn bản)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.BEFORE_INFO"
+  comment: "Nguồn NCLOB — lưu Text, cần xác nhận giới hạn độ dài/truncate risk ở Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "before_change_information"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "After Change Information"
+  description: "Thông tin hồ sơ sau khi thay đổi (dạng văn bản)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.AFTER_INFO"
+  comment: "Nguồn NCLOB — lưu Text, cần xác nhận giới hạn độ dài/truncate risk ở Atomic."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "after_change_information"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "License Decision Document Number"
+  description: "Số giấy phép/quyết định/công văn liên quan đến thay đổi."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "SC_FIRM_PROFILE_CHANGE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.LICENSE_DECISION_DOC_NUMBER"
+  comment: "NVARCHAR2(1000). BCV: không có term riêng."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_profile_change"
+  atomic_column: "license_decision_document_nbr"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Profile Change"
+  atomic_attribute: "Effective Date"
+  description: "Ngày văn bản/thay đổi có hiệu lực."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.ESTABLISHMENT_OPERATION_LICENSE_DATE"
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EFFECTIVE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "date"
   atomic_table: "sc_profile_change"
-  atomic_column: "establishment_operation_license_dt"
+  atomic_column: "effective_dt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Securities Company Name"
-  description: "Tên công ty chứng khoán."
-  data_domain: "Text"
+  atomic_attribute: "Execution Timestamp"
+  description: "Thời điểm thực hiện thay đổi hồ sơ."
+  data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.TENCTCK"
-  comment: null
+  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EXECUTION_TIME"
+  comment: "Timestamp sự kiện của Fact Append (bảng nguồn không có CREATED_AT/LAST_MODIFIED_AT)."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "timestamp"
   atomic_table: "sc_profile_change"
-  atomic_column: "sc_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Organization Unit Name"
-  description: "Tên chi nhánh/phòng giao dịch/trụ sở chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.TENDAYDU"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "ou_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Organization Unit Address"
-  description: "Địa chỉ chi nhánh/phòng giao dịch/trụ sở chính."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.DIACHI"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "ou_adr"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Phone"
-  description: "Số điện thoại."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.PHONE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "phone"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Website"
-  description: "Website."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.WEBSITE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "website"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Director Name"
-  description: "Tên giám đốc."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.GIAMDOC"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "director_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification Securities Company Firm Service Name"
-  description: "Ngành nghề kinh doanh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "cl_sc_firm_service_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Operational Status"
-  description: "Trạng thái hoạt động."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.TENTRANGTHAI"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "operational_status"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification Securities Company Firm Service Authorized Name"
-  description: "Ngành nghề kinh doanh được uỷ quyền."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "cl_sc_firm_service_authorized_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Province Name"
-  description: "Ngành nghề kinh doanh được uỷ quyền."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.TENTINHTHANH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "province_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Branch Name"
-  description: "Tên chi nhánh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.CTCKCHINHANHTEN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "branch_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification Securities Company Firm Service Support Name"
-  description: "Ngành nghề kinh doanh được hỗ trợ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHUYQUYEN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "cl_sc_firm_service_support_nm"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Exchange Code"
-  description: "Sàn niêm yết."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.SANNIEMYET"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "exchange_code"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Ticker Symbol"
-  description: "Mã chứng khoán."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.MACHUNGKHOAN"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "ticker_symbol"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Legal Capital Amount"
-  description: "Vốn điều lệ."
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.VONDIEULE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-  atomic_table: "sc_profile_change"
-  atomic_column: "legal_capital_amt"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Profile Change"
-  atomic_attribute: "Classification Securities Company Firm Service Incur Name"
-  description: "Ngành nghề kinh doanh phát sinh."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.NGANHNGHEKINHDOANHPHAISINH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_profile_change"
-  atomic_column: "cl_sc_firm_service_incur_nm"
+  atomic_column: "execution_tms"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Shareholder Ownership Change"
   atomic_attribute: "Securities Company Shareholder Ownership Change Id"
