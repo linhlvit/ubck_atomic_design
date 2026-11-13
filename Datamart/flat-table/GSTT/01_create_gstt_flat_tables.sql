@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_stock_portfolio_snpst_flat ON CLUST
     outstanding_share_quantity          Nullable(Int64)         COMMENT 'Số cổ phiếu đang lưu hành — nguồn VSDC listed_share_info (outstanding_shares), bản ghi gần nhất <= ngày GD (lookback, sửa 2026-09-16)',
     revenue                             Nullable(Decimal(23,2)) COMMENT 'Doanh thu — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
     net_profit_after_tax                Nullable(Decimal(23,2)) COMMENT 'Lợi nhuận sau thuế — point-in-time theo Ky_bao_cao (rule GSĐC, cập nhật 2026-09-08)',
-    net_profit_after_tax_ttm            Nullable(Decimal(23,2)) COMMENT 'LNST TTM 4 quý gần nhất có ngay_ket_thuc <= ngày GD, NULL nếu không đủ 4 kỳ — dùng cho P/E, EPS (rule GSĐC, cập nhật 2026-09-08)',
+    net_profit_after_tax_ttm            Nullable(Decimal(23,2)) COMMENT 'LNST TTM: kỳ gần nhất có ngay_ket_thuc <= ngày GD là NĂM thì lấy kỳ năm, là QUÝ thì cộng tối đa 4 quý gần nhất (không yêu cầu đủ 4 quý) — dùng cho P/E, EPS (cập nhật 2026-11-13, O_GSTT_85)',
     owner_equity                        Nullable(Decimal(23,2)) COMMENT 'Vốn chủ sở hữu — quý gần nhất đã công bố có ngay_ket_thuc <= ngày GD (rule GSĐC, cập nhật 2026-09-08)',
     weighted_average_outstanding_share_quantity Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] Số CP lưu hành bình quân gia quyền theo số ngày hiệu lực VSDC (WAOS), khung ngày của kỳ BCTC LNST gần nhất — dùng cho K_GSTT_109/110',
     weighted_average_outstanding_share_quantity_ttm Nullable(Decimal(23,4)) COMMENT '[MỚI 2026-09-29, sửa Nhóm 36] WAOS khung MIN/MAX ngày của 4 kỳ LNST TTM — dùng cho K_GSTT_111/58',

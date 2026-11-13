@@ -11342,9 +11342,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức — mâu thuẫn với BA_analyst_GSTT.csv STT5] Đổi tên từ Index Total Value — sheet Tổng hợp công thức ghi rõ \"GTGD của chỉ số\" phải loại trừ thỏa thuận (Board Type NOT IN T1-T6/R1), khác với STT5 (không filter Board Type). Data Modeler xác nhận theo sheet Tổng hợp công thức. Tổng giá trị giao dịch KHỚP LỆNH THUẦN (loại thỏa thuận) của TOÀN BỘ mã CK thành viên rổ chỉ số tại 1 ngày — SUM GROUP BY Index Code + Trading Date, tính sẵn để tránh JOIN+SUM lặp lại ở Detail Mapping (phục vụ K_GSTT_48). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. **LƯU Ý ĐỐI CHIẾU (không phải bug):** cột này KHÁC `Total Value`/`total_val` trên `Fact Stock Portfolio Snapshot` (gộp cả khớp lệnh + thỏa thuận, xem ghi chú tại đó) — SUM(`total_val`) theo các mã trong 1 rổ chỉ số sẽ KHÔNG khớp `idx_total_matched_val` của rổ đó, chênh đúng phần thỏa thuận. Đây là 2 chỉ tiêu nghiệp vụ khác nhau (Tổng GT vs GTGD của chỉ số), có chủ đích."
+        description: "[SỬA 2026-09-14, review sheet Tổng hợp công thức — mâu thuẫn với BA_analyst_GSTT.csv STT5] Đổi tên từ Index Total Value — sheet Tổng hợp công thức ghi rõ \"GTGD của chỉ số\" phải loại trừ thỏa thuận (Board Type NOT IN T1-T6/R1), khác với STT5 (không filter Board Type). Data Modeler xác nhận theo sheet Tổng hợp công thức. Tổng giá trị giao dịch KHỚP LỆNH THUẦN (loại thỏa thuận) của TOÀN BỘ mã CK thành viên rổ chỉ số tại 1 ngày — SUM GROUP BY Index Code + Trading Date, tính sẵn để tránh JOIN+SUM lặp lại ở Detail Mapping (phục vụ K_GSTT_48). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. **LƯU Ý ĐỐI CHIẾU (không phải bug):** cột này KHÁC `Total Value`/`total_val` trên `Fact Stock Portfolio Snapshot` (gộp cả khớp lệnh + thỏa thuận, xem ghi chú tại đó) — SUM(`total_val`) theo các mã trong 1 rổ chỉ số sẽ KHÔNG khớp `idx_total_matched_val` của rổ đó, chênh đúng phần thỏa thuận. Đây là 2 chỉ tiêu nghiệp vụ khác nhau (Tổng GT vs GTGD của chỉ số), có chủ đích. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Foreign Net Volume"
         physical_name: "idx_foreign_net_vol"
         data_domain: "Large Counter"
@@ -11360,7 +11360,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-14, theo yêu cầu Design] Giá trị mua-bán ròng NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (khớp lệnh) — SUM GROUP BY Index Code + Trading Date, tính sẵn (phục vụ K_GSTT_50). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài theo SỐ TÀI KHOẢN mua/bán: ký tự thứ 4 IN ('F','E') (thay `Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66."
+        description: "[MỚI 2026-09-14, theo yêu cầu Design] Giá trị mua-bán ròng NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (khớp lệnh) — SUM GROUP BY Index Code + Trading Date, tính sẵn (phục vụ K_GSTT_50). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài theo SỐ TÀI KHOẢN mua/bán: ký tự thứ 4 IN ('F','E') (thay `Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr / sell_account_nbr"
       - logical_name: "Index Total Negotiated Volume"
@@ -11378,9 +11378,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-14, theo yêu cầu Design] Tổng giá trị giao dịch thỏa thuận của TOÀN BỘ mã CK thành viên rổ chỉ số — SUM GROUP BY Index Code + Trading Date, tính sẵn (phục vụ K_GSTT_52). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT."
+        description: "[MỚI 2026-09-14, theo yêu cầu Design] Tổng giá trị giao dịch thỏa thuận của TOÀN BỘ mã CK thành viên rổ chỉ số — SUM GROUP BY Index Code + Trading Date, tính sẵn (phục vụ K_GSTT_52). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Market Index Value"
         physical_name: "idx_market_index_val"
         data_domain: "Currency Amount"
@@ -11414,7 +11414,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-10-15, BA bổ sung P/E, P/B của CTCK — O_GSTT_70] [MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ (khác K_GSTT_58 — P/E TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / LNST CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(LNST TTM từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ LNST TTM' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng LNST TTM của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/E của rổ từ AVG các P/E từng mã). Mẫu số nay cộng thêm LNST TTM của CTCK từ SCMS (`COALESCE(lnst.lnst_ttm, sc_lnst.lnst_ttm)`: ưu tiên IDS, thiếu thì SCMS) — trước đây CTCK (VD SSI/VND/HCM/VCI) có vốn hóa trong tử số nhưng không có LNST ở mẫu số nên P/E rổ bị nâng. Cách tính LNST CTCK xem `securities_company_net_profit_after_tax_ttm` (Fact Stock Portfolio Snapshot). `idx_eps` (K_GSTT_151) CHƯA đổi theo — BA chỉ yêu cầu P/E, P/B. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`."
+        description: "[SỬA 2026-10-15, BA bổ sung P/E, P/B của CTCK — O_GSTT_70] [MỚI 2026-09-19, review Nhóm 6] P/E CỦA CHỈ SỐ (khác K_GSTT_58 — P/E TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / LNST CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(LNST TTM từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ LNST TTM' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng LNST TTM của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/E của rổ từ AVG các P/E từng mã). Mẫu số nay cộng thêm LNST TTM của CTCK từ SCMS (`COALESCE(lnst.lnst_ttm, sc_lnst.lnst_ttm)`: ưu tiên IDS, thiếu thì SCMS) — trước đây CTCK (VD SSI/VND/HCM/VCI) có vốn hóa trong tử số nhưng không có LNST ở mẫu số nên P/E rổ bị nâng. Cách tính LNST CTCK xem `securities_company_net_profit_after_tax_ttm` (Fact Stock Portfolio Snapshot). `idx_eps` (K_GSTT_151) CHƯA đổi theo — BA chỉ yêu cầu P/E, P/B. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`. [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B] LNST/VCSH IDS của từng mã trong mẫu số đổi theo quy tắc mới ở Fact Stock Portfolio Snapshot.Net Profit After Tax TTM (mốc kỳ theo ngày kết thúc kỳ, mẫu biểu chọn theo từng chỉ tiêu, LNST TTM không còn yêu cầu đủ 4 quý); tử số (tổng vốn hóa cả rổ) và phần SCMS của CTCK giữ nguyên."
         source_atomic_table: "fr_value / sc_report_input_value"
         source_atomic_column: "fr_value / sc_report_input_value.cell_val / cell_val"
       - logical_name: "Index PB"
@@ -11423,7 +11423,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-10-15, BA bổ sung P/E, P/B của CTCK — O_GSTT_70] [MỚI 2026-09-19, review Nhóm 6] P/B CỦA CHỈ SỐ (khác K_GSTT_59 — P/B TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / VCSH CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(VCSH từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ VCSH' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng VCSH của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/B của rổ từ AVG các P/B từng mã). Mẫu số nay cộng thêm VCSH của CTCK từ SCMS (`COALESCE(vcsh.vcsh, sc_vcsh.vcsh)`: ưu tiên IDS, thiếu thì SCMS). Cách tính VCSH CTCK xem `securities_company_owner_equity` (Fact Stock Portfolio Snapshot). [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`."
+        description: "[SỬA 2026-10-15, BA bổ sung P/E, P/B của CTCK — O_GSTT_70] [MỚI 2026-09-19, review Nhóm 6] P/B CỦA CHỈ SỐ (khác K_GSTT_59 — P/B TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35, đã xác nhận qua cột Độ chi tiết = 'Mã CK' ở các Nhóm đó). Nhóm 6 riêng có Độ chi tiết = 'Danh mục chỉ số - theo giờ' + Mô tả BA 'Vốn hóa CỦA CHỈ SỐ / VCSH CỦA CHỈ SỐ' + SQL tham khảo SUM/SUM GROUP BY marketCode — = SUM(Vốn hóa TOÀN BỘ mã trong rổ) / SUM(VCSH từng mã) — [SỬA 2026-09-19, theo yêu cầu trực tiếp — bỏ CASE WHEN NOT NULL] bỏ điều kiện lọc 'CÓ VCSH' ở tử số theo yêu cầu trực tiếp; tử số nay là tổng vốn hóa cả rổ không điều kiện, mẫu số vẫn chỉ cộng VCSH của mã nào có dữ liệu (NULL tự động bị SUM bỏ qua), GROUP BY Index Code + Trading Date — tính sẵn trên Fact Index Constituent Snapshot (cùng cơ chế idx_market_cap). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại cột này theo Symbol, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT (không thể suy ra P/B của rổ từ AVG các P/B từng mã). Mẫu số nay cộng thêm VCSH của CTCK từ SCMS (`COALESCE(vcsh.vcsh, sc_vcsh.vcsh)`: ưu tiên IDS, thiếu thì SCMS). Cách tính VCSH CTCK xem `securities_company_owner_equity` (Fact Stock Portfolio Snapshot). [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`. [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B] LNST/VCSH IDS của từng mã trong mẫu số đổi theo quy tắc mới ở Fact Stock Portfolio Snapshot.Owner Equity (mốc kỳ theo ngày kết thúc kỳ, mẫu biểu chọn theo từng chỉ tiêu, VCSH có dự phòng Tổng tài sản − Nợ phải trả); tử số (tổng vốn hóa cả rổ) và phần SCMS của CTCK giữ nguyên."
         source_atomic_table: "fr_value / sc_report_input_value"
         source_atomic_column: "fr_value / sc_report_input_value.cell_val / cell_val"
       - logical_name: "Index EPS"
@@ -11432,7 +11432,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-09-19, review Nhóm 6] EPS CỦA CHỈ SỐ (khác K_GSTT_60 — EPS TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35). Mô tả BA: 'Tổng lợi nhuận sau thuế / Tổng Khối lượng cổ phiếu lưu hành' = SUM(LNST TTM) / SUM(Số CP lưu hành) của TOÀN BỘ mã CK thành viên rổ chỉ số, GROUP BY Index Code + Trading Date. **Lưu ý (xem O_GSTT_24):** SQL tham khảo BA cho dòng EPS (STT 6, dòng 98) là bản sao SQL của P/E/P/B (không có cột eps_chi_so riêng) — không rõ mẫu số (Tổng Số CP lưu hành) có cần loại trừ các mã KHÔNG có LNST TTM giống P/E/P/B hay không. Tạm implement theo đúng nghĩa đen Mô tả (SUM không lọc) — cần BA xác nhận lại. GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại theo Symbol. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem)."
+        description: "[MỚI 2026-09-19, review Nhóm 6] EPS CỦA CHỈ SỐ (khác K_GSTT_60 — EPS TỪNG MÃ, dùng cho Nhóm 7/9/11/13/15/17/19/21/34/35). Mô tả BA: 'Tổng lợi nhuận sau thuế / Tổng Khối lượng cổ phiếu lưu hành' = SUM(LNST TTM) / SUM(Số CP lưu hành) của TOÀN BỘ mã CK thành viên rổ chỉ số, GROUP BY Index Code + Trading Date. **Lưu ý (xem O_GSTT_24):** SQL tham khảo BA cho dòng EPS (STT 6, dòng 98) là bản sao SQL của P/E/P/B (không có cột eps_chi_so riêng) — không rõ mẫu số (Tổng Số CP lưu hành) có cần loại trừ các mã KHÔNG có LNST TTM giống P/E/P/B hay không. Tạm implement theo đúng nghĩa đen Mô tả (SUM không lọc) — cần BA xác nhận lại. GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — TUYỆT ĐỐI KHÔNG SUM/AVG lại theo Symbol. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B] LNST/VCSH IDS của từng mã trong mẫu số đổi theo quy tắc mới ở Fact Stock Portfolio Snapshot.Net Profit After Tax TTM (mốc kỳ theo ngày kết thúc kỳ, mẫu biểu chọn theo từng chỉ tiêu, LNST TTM không còn yêu cầu đủ 4 quý; đồng bộ để EPS chỉ số cùng định nghĩa LNST với P/E chỉ số); tử số (tổng vốn hóa cả rổ) và phần SCMS của CTCK giữ nguyên."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Index Prior Market Cap"
@@ -11477,7 +11477,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-10-15 v4.49, BA STT 5 dòng 92 (K_GSTT_372)] Giá trị MUA của NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (tổng khớp lệnh + thỏa thuận) — SUM GROUP BY Index Code + Trading Date, tính sẵn. Nước ngoài = ký tự thứ 4 của số tài khoản mua IN ('F','E'). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT."
+        description: "[MỚI 2026-10-15 v4.49, BA STT 5 dòng 92 (K_GSTT_372)] Giá trị MUA của NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (tổng khớp lệnh + thỏa thuận) — SUM GROUP BY Index Code + Trading Date, tính sẵn. Nước ngoài = ký tự thứ 4 của số tài khoản mua IN ('F','E'). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Foreign Sell Value"
@@ -11486,7 +11486,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[MỚI 2026-10-15 v4.49, BA STT 5 dòng 93 (K_GSTT_373)] Giá trị BÁN của NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (tổng khớp lệnh + thỏa thuận) — SUM GROUP BY Index Code + Trading Date, tính sẵn. Nước ngoài = ký tự thứ 4 của số tài khoản bán IN ('F','E'). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT."
+        description: "[MỚI 2026-10-15 v4.49, BA STT 5 dòng 93 (K_GSTT_373)] Giá trị BÁN của NĐT nước ngoài của TOÀN BỘ mã CK thành viên rổ chỉ số (tổng khớp lệnh + thỏa thuận) — SUM GROUP BY Index Code + Trading Date, tính sẵn. Nước ngoài = ký tự thứ 4 của số tài khoản bán IN ('F','E'). GIÁ TRỊ LẶP LẠI trên mọi dòng Symbol cùng Index+Date — khi truy vấn theo Symbol TUYỆT ĐỐI KHÔNG SUM lại cột này, dùng MAX()/ANY_VALUE() GROUP BY Index Code, Trading Date hoặc SELECT DISTINCT. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
 
@@ -11561,9 +11561,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-14, làm rõ theo review — không đổi etl_logic/số liệu] Tổng giá trị giao dịch cổ phiếu/CCQ 3 sàn (UPCOM/HNX/HOSE) — GỘP CẢ khớp lệnh VÀ thỏa thuận (loại trừ phái sinh và trái phiếu). Tên gọi cũ dễ gây hiểu nhầm là ''khớp lệnh thuần''. Khác với `Total Matched Value` (cột riêng cùng bảng, loại trừ thỏa thuận, phục vụ nhóm Top) and `Index Total Matched Value` (trên `Fact Index Constituent Snapshot`, loại trừ thỏa thuận theo rổ chỉ số, phục vụ K_GSTT_48). **LƯU Ý QUAN TRỌNG:** SUM(`total_val`) của các mã CK trong 1 rổ chỉ số KHÔNG khớp `idx_total_matched_val` của rổ đó — chênh đúng phần GTGD thỏa thuận. Đây là CHỦ Ý THIẾT KẾ, KHÔNG PHẢI BUG — không tự ý ''sửa cho khớp nhau''. **[XÁC NHẬN 2026-09-14, Data Modeler]** Giữ nguyên giá trị gộp — đây là chỉ tiêu nghiệp vụ riêng (Tổng GT toàn thị trường, dùng cho hầu hết Nhóm), không phải toggle theo tham số ''Thỏa thuận'' như mô tả ở 1 số dòng khác của sheet Tổng hợp công thức (Chức năng Danh mục>>Cổ phiếu). Không cần thiết kế lại theo toggle. **[CẬP NHẬT 2026-09-16]** BA STT 1 (Nhóm 1) sau đó tự đổi định nghĩa ''Tổng GTGD'' thành ''Tổng GTGD khớp lệnh'' (loại thỏa thuận) — K_GSTT_13/14 (Nhóm 1 và các Nhóm reuse 3/9/10/23/24/29/30) nay chuyển sang dùng `total_matched_vol`/`total_matched_val`, KHÔNG còn dùng cột `total_val` này nữa. Cột `total_val` nay chỉ còn phục vụ K_GSTT_147 (Nhóm 37 — ''Tổng GT'', giá trị gộp cả khớp lệnh + thỏa thuận theo đúng BA STT 35, xác nhận KHÔNG đổi)."
+        description: "[SỬA 2026-09-14, làm rõ theo review — không đổi etl_logic/số liệu] Tổng giá trị giao dịch cổ phiếu/CCQ 3 sàn (UPCOM/HNX/HOSE) — GỘP CẢ khớp lệnh VÀ thỏa thuận (loại trừ phái sinh và trái phiếu). Tên gọi cũ dễ gây hiểu nhầm là ''khớp lệnh thuần''. Khác với `Total Matched Value` (cột riêng cùng bảng, loại trừ thỏa thuận, phục vụ nhóm Top) and `Index Total Matched Value` (trên `Fact Index Constituent Snapshot`, loại trừ thỏa thuận theo rổ chỉ số, phục vụ K_GSTT_48). **LƯU Ý QUAN TRỌNG:** SUM(`total_val`) của các mã CK trong 1 rổ chỉ số KHÔNG khớp `idx_total_matched_val` của rổ đó — chênh đúng phần GTGD thỏa thuận. Đây là CHỦ Ý THIẾT KẾ, KHÔNG PHẢI BUG — không tự ý ''sửa cho khớp nhau''. **[XÁC NHẬN 2026-09-14, Data Modeler]** Giữ nguyên giá trị gộp — đây là chỉ tiêu nghiệp vụ riêng (Tổng GT toàn thị trường, dùng cho hầu hết Nhóm), không phải toggle theo tham số ''Thỏa thuận'' như mô tả ở 1 số dòng khác của sheet Tổng hợp công thức (Chức năng Danh mục>>Cổ phiếu). Không cần thiết kế lại theo toggle. **[CẬP NHẬT 2026-09-16]** BA STT 1 (Nhóm 1) sau đó tự đổi định nghĩa ''Tổng GTGD'' thành ''Tổng GTGD khớp lệnh'' (loại thỏa thuận) — K_GSTT_13/14 (Nhóm 1 và các Nhóm reuse 3/9/10/23/24/29/30) nay chuyển sang dùng `total_matched_vol`/`total_matched_val`, KHÔNG còn dùng cột `total_val` này nữa. Cột `total_val` nay chỉ còn phục vụ K_GSTT_147 (Nhóm 37 — ''Tổng GT'', giá trị gộp cả khớp lệnh + thỏa thuận theo đúng BA STT 35, xác nhận KHÔNG đổi). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Matched Volume"
         physical_name: "total_matched_vol"
         data_domain: "Large Counter"
@@ -11579,9 +11579,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn (UPCOM/HNX/HOSE), loại trừ phái sinh và trái phiếu — tách riêng phục vụ nhóm Top (xem review 2026-09-14). **[CẬP NHẬT 2026-09-16]** Nay cũng là nguồn của K_GSTT_14 (Nhóm 1 — 'Tổng GTGD khớp lệnh' — và các Nhóm reuse 3/9/10/23/24/29/30), sau khi BA STT 1 đổi định nghĩa sang khớp lệnh thuần. K_GSTT_147 (Nhóm 37) vẫn dùng `total_val` (gộp), không đổi"
+        description: "Tổng giá trị giao dịch khớp lệnh thuần (loại trừ thỏa thuận) cổ phiếu/CCQ 3 sàn (UPCOM/HNX/HOSE), loại trừ phái sinh và trái phiếu — tách riêng phục vụ nhóm Top (xem review 2026-09-14). **[CẬP NHẬT 2026-09-16]** Nay cũng là nguồn của K_GSTT_14 (Nhóm 1 — 'Tổng GTGD khớp lệnh' — và các Nhóm reuse 3/9/10/23/24/29/30), sau khi BA STT 1 đổi định nghĩa sang khớp lệnh thuần. K_GSTT_147 (Nhóm 37) vẫn dùng `total_val` (gộp), không đổi [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Derivative Volume"
         physical_name: "total_derivative_vol"
         data_domain: "Large Counter"
@@ -11606,18 +11606,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-17, đồng bộ BA mới] Tổng giá trị giao dịch phái sinh khớp lệnh (Market ID = DVX, Board Type NOT IN ('T1','T2','T3','T4','T6','R1') — thị trường phái sinh có bảng thỏa thuận riêng, Data Modeler xác nhận 2026-10-15, O_GSTT_44)"
+        description: "[SỬA 2026-09-17, đồng bộ BA mới] Tổng giá trị giao dịch phái sinh khớp lệnh (Market ID = DVX, Board Type NOT IN ('T1','T2','T3','T4','T6','R1') — thị trường phái sinh có bảng thỏa thuận riêng, Data Modeler xác nhận 2026-10-15, O_GSTT_44) [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Derivative Negotiated Value"
         physical_name: "total_derivative_negotiated_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận phái sinh (Market ID = DVX, bảng thỏa thuận T1–T4/T6/R1)."
+        description: "Tổng giá trị giao dịch thỏa thuận phái sinh (Market ID = DVX, bảng thỏa thuận T1–T4/T6/R1). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Negotiated Volume"
         physical_name: "total_negotiated_vol"
         data_domain: "Large Counter"
@@ -11633,9 +11633,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA FILTER 2026-09-11, xác nhận qua issue Thủy] Tổng giá trị giao dịch thỏa thuận — bổ sung market_id_code IN ('UPX','STX','STK','STO') (thiếu từ trước) và bổ sung 'R1' (Negotiation Repo) vào board_tp_code cho khớp đặc tả BA — đóng O_GSTT_20"
+        description: "[SỬA FILTER 2026-09-11, xác nhận qua issue Thủy] Tổng giá trị giao dịch thỏa thuận — bổ sung market_id_code IN ('UPX','STX','STK','STO') (thiếu từ trước) và bổ sung 'R1' (Negotiation Repo) vào board_tp_code cho khớp đặc tả BA — đóng O_GSTT_20 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Foreign Net Volume"
         physical_name: "foreign_net_vol"
         data_domain: "Large Counter"
@@ -11687,7 +11687,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ violation_report. (2) Thêm bước chốt 1 báo cáo/kỳ TRƯỚC khi xếp hạng rn<=4 — trước đây xếp hạng trực tiếp trên pc_report_submission nên có thể gộp nhầm 4 bản ghi cùng 1 kỳ (nhiều mẫu biểu) thành 4 \"kỳ\" giả, làm sai LNST TTM. (3) Thêm lọc `rpt_quarter IN (1,2,3,4)` tường minh — dữ liệu nguồn có report_quarter 1-6 (5,6 = bán niên/cả năm), trộn lẫn sẽ làm sai thứ tự kỳ và cộng trùng số liệu. LNST trượt 12 tháng (TTM, đúng 4 quý gần nhất đã công bố có ngay_ket_thuc <= trading_dt). Chỉ tính khi tìm đủ CHÍNH XÁC 4 kỳ liên tiếp; thiếu 1 kỳ → NULL. Khác Net Profit After Tax (từng kỳ). [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem)."
+        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ violation_report. (2) Thêm bước chốt 1 báo cáo/kỳ TRƯỚC khi xếp hạng rn<=4 — trước đây xếp hạng trực tiếp trên pc_report_submission nên có thể gộp nhầm 4 bản ghi cùng 1 kỳ (nhiều mẫu biểu) thành 4 \"kỳ\" giả, làm sai LNST TTM. (3) Thêm lọc `rpt_quarter IN (1,2,3,4)` tường minh — dữ liệu nguồn có report_quarter 1-6 (5,6 = bán niên/cả năm), trộn lẫn sẽ làm sai thứ tự kỳ và cộng trùng số liệu. LNST trượt 12 tháng (TTM, đúng 4 quý gần nhất đã công bố có ngay_ket_thuc <= trading_dt). Chỉ tính khi tìm đủ CHÍNH XÁC 4 kỳ liên tiếp; thiếu 1 kỳ → NULL. Khác Net Profit After Tax (từng kỳ). [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B (Nhóm 6/7/9/11/13/15/17/19/21/36/38); THAY THẾ các quy tắc chọn kỳ/mẫu biểu IDS ghi ở trên] Mốc kỳ theo ngày kết thúc kỳ (quý 1–4 = ngày cuối quý, quý 5 = 31/12) <= ngày giao dịch, thay submission_dt; giữ điều kiện approval_status_code = 'APPROVED' (BA từng comment news_status_cd rồi bật lại ngày 2026-11-13; BA thêm forms.delete_flg = 0 nhưng Atomic financial_report không có cờ xóa nên không lọc — O_GSTT_85); chỉ lấy mẫu biểu loại định kỳ (financial_report.news_tp_code = 'DINH_KY'); mẫu biểu chọn THEO TỪNG CHỈ TIÊU (HN > TH > RI > ME rồi nộp mới nhất) thay vì chốt 1 báo cáo/kỳ; bỏ ô cell_val NULL, gộp ô trùng theo cell_enabled_ind rồi id nguồn DATA.ID giảm dần (Atomic không có created/updated date); mỗi mã lấy 1 dòng public_company (id nguồn nhỏ nhất). LNST TTM từ IDS: kỳ gần nhất là NĂM → lấy kỳ năm; là QUÝ → cộng TỐI ĐA 4 quý gần nhất, KHÔNG còn yêu cầu đủ 4 quý. LNST TTM của CTCK từ SCMS giữ nguyên và vẫn yêu cầu đủ 4 quý (quyết định 2026-10-15; lệch BA, ghi O_GSTT_85). Rủi ro: BA đọc snapshot IDS theo ngày (ds_snpst_dt = ngày giao dịch) nhưng Atomic chỉ có trạng thái hiện hành nên backfill lịch sử có thể lệch BA."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Owner Equity"
@@ -11696,7 +11696,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ violation_report. (2) Thêm bước chốt 1 báo cáo/kỳ trước khi xếp hạng (ưu tiên HN>TH>ME>RI). (3) Bỏ điều kiện `(CASE WHEN rpt_quarter=1..4 THEN ngày cuối quý END) <= trading_dt` — CASE không có ELSE nên với rpt_quarter 5/6 biểu thức trả NULL, WHERE vô tình loại các kỳ này, NGƯỢC với chủ đích đã ghi ở đây từ trước (\"VCSH là chỉ tiêu tại một thời điểm, KHÔNG ép theo lịch cố định như Revenue/LNST\"). Nay chỉ còn `submission_dt <= trading_dt` làm điều kiện thời gian — VCSH chấp nhận cả kỳ bán niên/cả năm làm số liệu \"gần nhất\", đúng ý đồ ban đầu. Lấy quý/kỳ gần nhất đã công bố tính đến ngày giao dịch (BCDKT, row_desc 400 DN/BH · 500 TD). Dùng chung cho Nhóm 3/6 (và reuse Nhóm 9/11/13/15/17/19/21/37)."
+        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ violation_report. (2) Thêm bước chốt 1 báo cáo/kỳ trước khi xếp hạng (ưu tiên HN>TH>ME>RI). (3) Bỏ điều kiện `(CASE WHEN rpt_quarter=1..4 THEN ngày cuối quý END) <= trading_dt` — CASE không có ELSE nên với rpt_quarter 5/6 biểu thức trả NULL, WHERE vô tình loại các kỳ này, NGƯỢC với chủ đích đã ghi ở đây từ trước (\"VCSH là chỉ tiêu tại một thời điểm, KHÔNG ép theo lịch cố định như Revenue/LNST\"). Nay chỉ còn `submission_dt <= trading_dt` làm điều kiện thời gian — VCSH chấp nhận cả kỳ bán niên/cả năm làm số liệu \"gần nhất\", đúng ý đồ ban đầu. Lấy quý/kỳ gần nhất đã công bố tính đến ngày giao dịch (BCDKT, row_desc 400 DN/BH · 500 TD). Dùng chung cho Nhóm 3/6 (và reuse Nhóm 9/11/13/15/17/19/21/37). [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B; THAY THẾ các quy tắc chọn kỳ/mẫu biểu IDS ghi ở trên] Chỉ lấy kỳ quý 1–5 có ngày kết thúc kỳ <= ngày giao dịch (bỏ submission_dt, giữ approval_status_code = 'APPROVED', không còn nhận kỳ 6); chỉ mẫu biểu định kỳ (news_tp_code = 'DINH_KY'); mẫu biểu chọn THEO TỪNG CHỈ TIÊU (HN > TH > RI > ME); bỏ ô NULL, gộp ô trùng theo cell_enabled_ind rồi DATA.ID; 1 dòng public_company/mã. Kỳ gần nhất có VCSH hoặc có đủ cả Tổng tài sản và Nợ phải trả; giá trị = NVL(VCSH, Tổng tài sản − Nợ phải trả) (DN/BH dòng 270/300/400, TD dòng 300/400/500 của BCDKT) — dự phòng Tổng tài sản − Nợ phải trả là MỚI. VCSH của CTCK từ SCMS giữ nguyên."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Financial Report Period End Date Dimension Id"
@@ -11732,7 +11732,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư nước ngoài (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('F','E') (thay `Buy Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận (không lọc Board Type) — xem O_GSTT_66."
+        description: "Giá trị mua của nhà đầu tư nước ngoài (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('F','E') (thay `Buy Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận (không lọc Board Type) — xem O_GSTT_66. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Foreign Sell Value"
@@ -11741,7 +11741,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư nước ngoài (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('F','E') (thay `Sell Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận (không lọc Board Type) — xem O_GSTT_66."
+        description: "Giá trị bán của nhà đầu tư nước ngoài (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Nước ngoài xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('F','E') (thay `Sell Foreign Investor Type Code IN ('10','20')`); gộp cả khớp lệnh và thỏa thuận (không lọc Board Type) — xem O_GSTT_66. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Value"
@@ -11750,7 +11750,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
+        description: "Giá trị mua tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN mua: ký tự thứ 4 IN ('P','E') (thay `Buy Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Value"
@@ -11759,7 +11759,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P')."
+        description: "Giá trị bán tự doanh (khớp lệnh cổ phiếu/CCQ 3 sàn) [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT] Tự doanh xác định theo SỐ TÀI KHOẢN bán: ký tự thứ 4 IN ('P','E') (thay `Sell Client House Classification Code = '30'`); gộp cả khớp lệnh và thỏa thuận — xem O_GSTT_66. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Volume"
@@ -11804,18 +11804,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-17, đồng bộ BA mới] Giá trị giao dịch khớp lệnh trái phiếu (loại trừ thỏa thuận; GỒM lô lẻ G4 — tách riêng ở bond_round_lot_*/bond_odd_lot_*, O_GSTT_78)"
+        description: "[SỬA 2026-09-17, đồng bộ BA mới] Giá trị giao dịch khớp lệnh trái phiếu (loại trừ thỏa thuận; GỒM lô lẻ G4 — tách riêng ở bond_round_lot_*/bond_odd_lot_*, O_GSTT_78) [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Bond Negotiated Value"
         physical_name: "bond_negotiated_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị giao dịch thỏa thuận trái phiếu (Market ID IN BDO/HCX, bảng thỏa thuận T1–T4/T6/R1)."
+        description: "Giá trị giao dịch thỏa thuận trái phiếu (Market ID IN BDO/HCX, bảng thỏa thuận T1–T4/T6/R1). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Close Price"
         physical_name: "close_price"
         data_domain: "Currency Amount"
@@ -11975,9 +11975,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD khớp lệnh lô chẵn); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD khớp lệnh lô chẵn); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Negotiated Volume"
         physical_name: "round_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -11993,9 +11993,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô chẵn); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô chẵn); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Matched Volume"
         physical_name: "odd_lot_matched_vol"
         data_domain: "Large Counter"
@@ -12011,9 +12011,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD khớp lệnh lô lẻ); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD khớp lệnh lô lẻ); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Negotiated Volume"
         physical_name: "odd_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -12029,9 +12029,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô lẻ); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô lẻ); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Round Lot Matched Volume"
         physical_name: "derivative_round_lot_matched_vol"
         data_domain: "Large Counter"
@@ -12047,9 +12047,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn phái sinh (Market ID DVX) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD khớp lệnh lô chẵn phái sinh); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn phái sinh (Market ID DVX) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD khớp lệnh lô chẵn phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Round Lot Negotiated Volume"
         physical_name: "derivative_round_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -12065,9 +12065,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Odd Lot Matched Volume"
         physical_name: "derivative_odd_lot_matched_vol"
         data_domain: "Large Counter"
@@ -12083,9 +12083,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ phái sinh (Market ID DVX) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD khớp lệnh lô lẻ phái sinh); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ phái sinh (Market ID DVX) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD khớp lệnh lô lẻ phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Odd Lot Negotiated Volume"
         physical_name: "derivative_odd_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -12101,9 +12101,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Open Interest Quantity"
         physical_name: "open_interest_quantity"
         data_domain: "Large Counter"
@@ -12128,9 +12128,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn trái phiếu (Market ID BDO/HCX) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD khớp lệnh lô chẵn trái phiếu); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô chẵn trái phiếu (Market ID BDO/HCX) — bảng khớp lệnh lô chẵn G1/G2/G3/G6/G7/G8; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD khớp lệnh lô chẵn trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Bond Round Lot Negotiated Volume"
         physical_name: "bond_round_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -12146,9 +12146,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Bond Odd Lot Matched Volume"
         physical_name: "bond_odd_lot_matched_vol"
         data_domain: "Large Counter"
@@ -12164,9 +12164,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ trái phiếu (Market ID BDO/HCX) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD khớp lệnh lô lẻ trái phiếu); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch khớp lệnh lô lẻ trái phiếu (Market ID BDO/HCX) — bảng khớp lệnh lô lẻ G4; cùng grain mã CK × ngày với total_matched_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD khớp lệnh lô lẻ trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Bond Odd Lot Negotiated Volume"
         physical_name: "bond_odd_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -12182,9 +12182,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78"
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Ceiling Price"
         physical_name: "ceiling_price"
         data_domain: "Currency Amount"
@@ -12688,9 +12688,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị mua theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Buy Volume"
         physical_name: "buy_vol"
         data_domain: "Large Counter"
@@ -12706,9 +12706,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị bán theo Phân loại NDT (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Sell Volume"
         physical_name: "sell_vol"
         data_domain: "Large Counter"
@@ -12724,36 +12724,36 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Matched Sell Value"
         physical_name: "matched_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Negotiated Buy Value"
         physical_name: "negotiated_buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị mua thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Negotiated Sell Value"
         physical_name: "negotiated_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75."
+        description: "Giá trị bán thỏa thuận theo Phân loại NDT. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). [SỬA 2026-10-22] Thêm phân loại KHONG_XAC_DINH (không thuộc cả 4 phân loại; số TK không có trong open_investor_account tính vào đây); Cá nhân/Tổ chức trong nước lấy từ `open_investor_account` (VSDC OPEN_INVESTORS). Xem O_GSTT_66, O_GSTT_67, O_GSTT_75. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Buy Volume"
         physical_name: "round_lot_buy_vol"
         data_domain: "Large Counter"
@@ -12778,18 +12778,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
+        description: "Giá trị mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Sell Value"
         physical_name: "round_lot_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
+        description: "Giá trị bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Buy Volume"
         physical_name: "odd_lot_buy_vol"
         data_domain: "Large Counter"
@@ -12814,18 +12814,18 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b)."
+        description: "Giá trị mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Sell Value"
         physical_name: "odd_lot_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b)."
+        description: "Giá trị bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
 
   - id: "DTM-fct_investor_category_index_trading_snpst"
     logical_name: "Fact Investor Category Index Trading Snapshot"
@@ -12877,9 +12877,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Buy Volume"
         physical_name: "buy_vol"
         data_domain: "Large Counter"
@@ -12895,9 +12895,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán theo Phân loại NĐT của toàn bộ mã CK thuộc rổ chỉ số (khớp lệnh + thỏa thuận). [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Sell Volume"
         physical_name: "sell_vol"
         data_domain: "Large Counter"
@@ -12913,36 +12913,36 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Matched Sell Value"
         physical_name: "matched_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán khớp lệnh thuần (loại trừ thỏa thuận) theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Negotiated Buy Value"
         physical_name: "negotiated_buy_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị mua thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Negotiated Sell Value"
         physical_name: "negotiated_sell_val"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67."
+        description: "Giá trị bán thỏa thuận theo Phân loại NĐT của rổ chỉ số. [SỬA 2026-10-15 v4.49, BA cập nhật phân loại NĐT — thay quy tắc 2026-09-25 'Tổ chức = (TC mua − TC bán) − (tự doanh mua − bán)'] Mỗi phía mua/bán phân loại ĐỘC LẬP theo số tài khoản: Tự doanh = ký tự thứ 4 của số TK IN ('P','E'); Nước ngoài = ký tự thứ 4 IN ('F','E'); Cá nhân trong nước = bản ghi MỚI NHẤT của `open_investor_account` (nguồn VSDC `open_investors`, dedupe theo số TK, mới nhất theo `open_dt` — Data Modeler xác nhận 2026-10-15) có `investor_tp_code` = 3; Tổ chức trong nước = '5' (trực tiếp, không còn phép trừ). Các phân loại LOẠI TRỪ NHAU theo thứ tự ưu tiên của SQL BA [SỬA 2026-10-22, O_GSTT_75]: Nước ngoài (ký tự thứ 4 IN ('F','E')) → Tự doanh (IN ('P','E'), thực tế chỉ còn 'P') → Cá nhân trong nước (investor_tp_code = 3) → Tổ chức trong nước (= 5) → Không xác định; mỗi phía mua/bán của một giao dịch thuộc đúng 1 phân loại, TK loại 'E' chỉ tính Nước ngoài. Khớp lệnh = `Board Type Code NOT IN ('T1','T2','T3','T4','T6','R1')` (đã có). Xem O_GSTT_66, O_GSTT_67. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Market Index Value"
         physical_name: "market_index_val"
         data_domain: "Currency Amount"
@@ -13130,9 +13130,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Tổng giá trị giao dịch trong ngày của mã chứng khoán (gộp khớp lệnh và thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Matched Volume"
         physical_name: "total_matched_vol"
         data_domain: "Large Counter"
@@ -13148,9 +13148,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77)."
+        description: "Giá trị khớp lệnh thuần trong ngày của mã chứng khoán (loại giao dịch thỏa thuận). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Total Negotiated Volume"
         physical_name: "total_negotiated_vol"
         data_domain: "Large Counter"
@@ -13166,9 +13166,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị giao dịch thỏa thuận trong ngày của mã chứng khoán. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị giao dịch thỏa thuận trong ngày của mã chứng khoán. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Foreign Buy Volume"
         physical_name: "foreign_buy_vol"
         data_domain: "Large Counter"
@@ -13193,7 +13193,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản mua IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Foreign Sell Value"
@@ -13202,7 +13202,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư nước ngoài trong ngày — ký tự thứ 4 của số tài khoản bán IN ('F','E'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Proprietary Buy Volume"
@@ -13229,7 +13229,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua tự doanh trong ngày — ký tự thứ 4 của số tài khoản mua IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Proprietary Sell Value"
@@ -13238,7 +13238,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán tự doanh trong ngày — ký tự thứ 4 của số tài khoản bán IN ('P','E'). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Domestic Individual Buy Value"
@@ -13247,9 +13247,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Domestic Individual Buy Volume"
         physical_name: "domestic_individual_buy_vol"
         data_domain: "Large Counter"
@@ -13265,9 +13265,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Domestic Individual Sell Volume"
         physical_name: "domestic_individual_sell_vol"
         data_domain: "Large Counter"
@@ -13283,9 +13283,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Domestic Institution Buy Volume"
         physical_name: "domestic_institution_buy_vol"
         data_domain: "Large Counter"
@@ -13301,9 +13301,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong ngày — gồm khớp lệnh và thỏa thuận; phân loại theo số tài khoản (O_GSTT_66/67). [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Domestic Institution Sell Volume"
         physical_name: "domestic_institution_sell_vol"
         data_domain: "Large Counter"
@@ -13328,7 +13328,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Lợi nhuận sau thuế 4 quý gần nhất (TTM) của doanh nghiệp phát hành theo báo cáo tài chính đã duyệt — dùng tính EPS, P/E. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem)."
+        description: "Lợi nhuận sau thuế 4 quý gần nhất (TTM) của doanh nghiệp phát hành theo báo cáo tài chính đã duyệt — dùng tính EPS, P/E. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B (Nhóm 6/7/9/11/13/15/17/19/21/36/38); THAY THẾ các quy tắc chọn kỳ/mẫu biểu IDS ghi ở trên] Mốc kỳ theo ngày kết thúc kỳ (quý 1–4 = ngày cuối quý, quý 5 = 31/12) <= ngày giao dịch, thay submission_dt; giữ điều kiện approval_status_code = 'APPROVED' (BA từng comment news_status_cd rồi bật lại ngày 2026-11-13; BA thêm forms.delete_flg = 0 nhưng Atomic financial_report không có cờ xóa nên không lọc — O_GSTT_85); chỉ lấy mẫu biểu loại định kỳ (financial_report.news_tp_code = 'DINH_KY'); mẫu biểu chọn THEO TỪNG CHỈ TIÊU (HN > TH > RI > ME rồi nộp mới nhất) thay vì chốt 1 báo cáo/kỳ; bỏ ô cell_val NULL, gộp ô trùng theo cell_enabled_ind rồi id nguồn DATA.ID giảm dần (Atomic không có created/updated date); mỗi mã lấy 1 dòng public_company (id nguồn nhỏ nhất). LNST TTM từ IDS: kỳ gần nhất là NĂM → lấy kỳ năm; là QUÝ → cộng TỐI ĐA 4 quý gần nhất, KHÔNG còn yêu cầu đủ 4 quý. LNST TTM của CTCK từ SCMS giữ nguyên và vẫn yêu cầu đủ 4 quý (quyết định 2026-10-15; lệch BA, ghi O_GSTT_85). Rủi ro: BA đọc snapshot IDS theo ngày (ds_snpst_dt = ngày giao dịch) nhưng Atomic chỉ có trạng thái hiện hành nên backfill lịch sử có thể lệch BA."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Securities Company Net Profit After Tax TTM"
@@ -13346,7 +13346,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn chủ sở hữu của doanh nghiệp phát hành tại kỳ báo cáo gần nhất theo báo cáo tài chính đã duyệt — dùng tính P/B."
+        description: "Vốn chủ sở hữu của doanh nghiệp phát hành tại kỳ báo cáo gần nhất theo báo cáo tài chính đã duyệt — dùng tính P/B. [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B; THAY THẾ các quy tắc chọn kỳ/mẫu biểu IDS ghi ở trên] Chỉ lấy kỳ quý 1–5 có ngày kết thúc kỳ <= ngày giao dịch (bỏ submission_dt, giữ approval_status_code = 'APPROVED', không còn nhận kỳ 6); chỉ mẫu biểu định kỳ (news_tp_code = 'DINH_KY'); mẫu biểu chọn THEO TỪNG CHỈ TIÊU (HN > TH > RI > ME); bỏ ô NULL, gộp ô trùng theo cell_enabled_ind rồi DATA.ID; 1 dòng public_company/mã. Kỳ gần nhất có VCSH hoặc có đủ cả Tổng tài sản và Nợ phải trả; giá trị = NVL(VCSH, Tổng tài sản − Nợ phải trả) (DN/BH dòng 270/300/400, TD dòng 300/400/500 của BCDKT) — dự phòng Tổng tài sản − Nợ phải trả là MỚI. VCSH của CTCK từ SCMS giữ nguyên."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Securities Company Owner Equity"
@@ -13472,9 +13472,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77)."
+        description: "Tổng giá trị khớp lệnh thuần (loại thỏa thuận) của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. BA dòng GTGD khớp lệnh (STT 38) chỉ ghi Market ID (UPX,STX,STK) không có DVX/HCX — coi là sót vì các dòng KLGD/Tổng KL/GT cùng nhóm đã có DVX/HCX; thiết kế áp cùng phạm vi, chờ BA xác nhận (O_GSTT_77). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Total Negotiated Volume"
         physical_name: "idx_total_negotiated_vol"
         data_domain: "Large Counter"
@@ -13490,9 +13490,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Tổng giá trị giao dịch thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Market Cap"
         physical_name: "idx_market_cap"
         data_domain: "Currency Amount"
@@ -13517,7 +13517,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "P/E của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng LNST TTM, làm tròn 2 chữ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`."
+        description: "P/E của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng LNST TTM, làm tròn 2 chữ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (b) — BA đổi cách chọn kỳ LNST TTM] Kỳ gần nhất đã công bố tính đến ngày giao dịch là NĂM (rpt_quarter = 5) → LNST kỳ năm; là QUÝ → cộng 4 quý gần nhất, phải có đủ 4 quý (trước đây chỉ rpt_quarter 1–4 và đủ đúng 4 kỳ). Điều kiện thời gian vẫn là submission_dt <= ngày giao dịch (BA dùng ngày kết thúc kỳ <= ngày xem). [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`. [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B] LNST/VCSH IDS của từng mã trong mẫu số đổi theo quy tắc mới ở Fact Stock Portfolio Snapshot.Net Profit After Tax TTM (mốc kỳ theo ngày kết thúc kỳ, mẫu biểu chọn theo từng chỉ tiêu, LNST TTM không còn yêu cầu đủ 4 quý); tử số (tổng vốn hóa cả rổ) và phần SCMS của CTCK giữ nguyên."
         source_atomic_table: "fr_value / sc_report_input_value"
         source_atomic_column: "fr_value / sc_report_input_value.cell_val / cell_val"
       - logical_name: "Index PB"
@@ -13526,7 +13526,7 @@ entities:
         data_type: "decimal(10,2)"
         nullable: true
         key: ""
-        description: "P/B của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng vốn chủ sở hữu, làm tròn 2 chữ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`."
+        description: "P/B của rổ chỉ số = tổng vốn hóa các mã thành viên / tổng vốn chủ sở hữu, làm tròn 2 chữ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Giá tính vốn hóa theo quy tắc mới (UPCOM = VWAP phiên T+1; HNX/HOSE = giá đóng cửa) thay close_price — cùng định nghĩa với Fact Stock Portfolio Snapshot.Market Cap. [SỬA 2026-11-09 — đồng bộ SQL BA 'Vốn hóa thị trường' (BA STT 5/6/7/9/11/13/19/21/23/24/38), O_GSTT_80] Số cổ phiếu VSDC OUTSTANDING_SHARES khớp ĐÚNG ngày giao dịch T (`transaction_dt = T`, không lùi về bản ghi gần nhất; thiếu bản ghi đúng ngày → vốn hóa NULL; các cột `Outstanding Share Quantity`/`Free Float Share Quantity` dùng cho mục đích khác vẫn lookback). Phiên kế tiếp T+1 (giá UPCOM) = ngày nhỏ nhất lớn hơn T và ≤ T + 1 tháng trong hợp nhất ngày giao dịch sổ lệnh HNX (`securities_trade`, `HNX_TRADE_BOOK`) và `market_index_snapshot` (JAD_MARKETINFOR), thay cách chỉ dùng `market_index_snapshot`. [SỬA 2026-11-13, O_GSTT_85 — BA sửa logic P/E, P/B] LNST/VCSH IDS của từng mã trong mẫu số đổi theo quy tắc mới ở Fact Stock Portfolio Snapshot.Owner Equity (mốc kỳ theo ngày kết thúc kỳ, mẫu biểu chọn theo từng chỉ tiêu, VCSH có dự phòng Tổng tài sản − Nợ phải trả); tử số (tổng vốn hóa cả rổ) và phần SCMS của CTCK giữ nguyên."
         source_atomic_table: "fr_value / sc_report_input_value"
         source_atomic_column: "fr_value / sc_report_input_value.cell_val / cell_val"
       - logical_name: "Index Prior Market Cap"
@@ -13553,7 +13553,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Foreign Buy Volume"
@@ -13571,7 +13571,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư nước ngoài trong toàn rổ chỉ số — ký tự thứ 4 của số tài khoản IN ('F','E'), gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Foreign Sell Volume"
@@ -13589,7 +13589,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_account_nbr"
       - logical_name: "Index Proprietary Buy Volume"
@@ -13607,7 +13607,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của tự doanh (ký tự thứ 4 của số TK IN ('P','E')) trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.sell_account_nbr"
       - logical_name: "Index Proprietary Sell Volume"
@@ -13625,9 +13625,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Domestic Individual Buy Volume"
         physical_name: "idx_domestic_individual_buy_vol"
         data_domain: "Large Counter"
@@ -13643,9 +13643,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư cá nhân trong nước (tài khoản loại '3') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Domestic Individual Sell Volume"
         physical_name: "idx_domestic_individual_sell_vol"
         data_domain: "Large Counter"
@@ -13661,9 +13661,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị mua của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Domestic Institution Buy Volume"
         physical_name: "idx_domestic_institution_buy_vol"
         data_domain: "Large Counter"
@@ -13679,9 +13679,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77."
+        description: "Giá trị bán của nhà đầu tư tổ chức trong nước (tài khoản loại '5') trong toàn rổ chỉ số, theo ngày — gồm khớp lệnh và thỏa thuận. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-10-22, khớp SQL BA — O_GSTT_75] Loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức: Tự doanh không gồm TK loại 'E' (tính Nước ngoài); Cá nhân/Tổ chức không gồm TK có ký tự thứ 4 IN ('F','E','P'). [SỬA 2026-10-22, BA STT 38 (Nhóm 37 cũ) bổ sung phái sinh] Phạm vi Market ID gồm cả phái sinh DVX và trái phiếu doanh nghiệp riêng lẻ HCX; sàn 06 (CorpBond) nối sổ lệnh theo isin_code như HNX — O_GSTT_77. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Domestic Institution Sell Volume"
         physical_name: "idx_domestic_institution_sell_vol"
         data_domain: "Large Counter"
@@ -13796,9 +13796,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ khớp lệnh cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board G4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Matched Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng giá trị giao dịch lô lẻ khớp lệnh cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board G4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Matched Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Matched Volume"
         physical_name: "odd_lot_matched_vol"
         data_domain: "Large Counter"
@@ -13814,9 +13814,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Negotiated Volume"
         physical_name: "odd_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -13859,9 +13859,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn khớp lệnh cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board G1,G2,G3,G6,G7,G8) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Matched Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng giá trị giao dịch lô chẵn khớp lệnh cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board G1,G2,G3,G6,G7,G8) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Matched Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Matched Volume"
         physical_name: "round_lot_matched_vol"
         data_domain: "Large Counter"
@@ -13877,9 +13877,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Negotiated Volume"
         physical_name: "round_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -13913,9 +13913,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ khớp lệnh của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board G4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng giá trị giao dịch lô lẻ khớp lệnh của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board G4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Odd Lot Matched Volume"
         physical_name: "idx_odd_lot_matched_vol"
         data_domain: "Large Counter"
@@ -13931,9 +13931,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Odd Lot Negotiated Volume"
         physical_name: "idx_odd_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -13949,9 +13949,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn khớp lệnh của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board G1,G2,G3,G6,G7,G8). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng giá trị giao dịch lô chẵn khớp lệnh của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board G1,G2,G3,G6,G7,G8). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Round Lot Matched Volume"
         physical_name: "idx_round_lot_matched_vol"
         data_domain: "Large Counter"
@@ -13967,9 +13967,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Round Lot Negotiated Volume"
         physical_name: "idx_round_lot_negotiated_vol"
         data_domain: "Large Counter"
@@ -19494,9 +19494,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Đơn vị tiền tệ."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.currency_code"
+        description: "Đơn vị tiền tệ. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `currency_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Board Type Code"
         physical_name: "board_tp_code"
         data_domain: "Classification Value"
@@ -19548,9 +19548,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_price_last_traded_price_diff_difference"
+        description: "Chênh lệch giữa giá khớp lệnh và giá khớp gần nhất của mã chứng khoán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `match_price_last_traded_price_diff_difference` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Execution Volume"
         physical_name: "execution_vol"
         data_domain: "Large Counter"
@@ -19566,45 +19566,45 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch của lệnh khớp."
+        description: "Tổng giá trị giao dịch của lệnh khớp. [SỬA 2026-11-13, O_GSTT_86] Atomic `securities_trade` đã bỏ `match_amt` (HOSE không còn cột EXECUTION_VALUE): giá trị khớp = `match_price × match_quantity` (cùng công thức HNX trước đây — `execution_val` = giá × khối lượng)."
         source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.match_amt"
+        source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Execution Last Traded Price"
         physical_name: "execution_last_traded_price"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price)."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.last_traded_price"
+        description: "Giá khớp gần nhất của mã chứng khoán trên thị trường (Last Traded Price). [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `last_traded_price` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Execution New High Low Price Indicator"
         physical_name: "execution_new_high_low_price_indicator"
         data_domain: "Indicator"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.new_high_low_price_tp_code"
+        description: "Đánh dấu nếu lệnh tạo giá khớp cao nhất hoặc thấp nhất mới trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `new_high_low_price_tp_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Order Date"
         physical_name: "buy_order_dt"
         data_domain: "Date"
         data_type: "date"
         nullable: true
         key: ""
-        description: "Ngày đặt lệnh mua."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_order_dt"
+        description: "Ngày đặt lệnh mua. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_order_dt` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Order Time"
         physical_name: "buy_order_time"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Thời gian đặt lệnh mua."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_order_time"
+        description: "Thời gian đặt lệnh mua. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_order_time` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Securities Order Code"
         physical_name: "buy_securities_order_code"
         data_domain: "Text"
@@ -19629,18 +19629,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên công ty chứng khoán thực hiện giao dịch mua."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_member_nm"
+        description: "Tên công ty chứng khoán thực hiện giao dịch mua. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_member_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Account Pin Code"
         physical_name: "buy_account_pin_code"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Mã PIN của tài khoản mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_pin_code"
+        description: "[PII] Mã PIN của tài khoản mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_pin_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Account Number"
         physical_name: "buy_account_nbr"
         data_domain: "Text"
@@ -19656,9 +19656,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Tên tài khoản giao dịch mua của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_account_nm"
+        description: "[PII] Tên tài khoản giao dịch mua của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_account_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Client House Classification Code"
         physical_name: "buy_client_house_cl_code"
         data_domain: "Classification Value"
@@ -19710,45 +19710,45 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã/số định danh người thực hiện đặt mua."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_trader_code"
+        description: "Mã/số định danh người thực hiện đặt mua. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_trader_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Trader Name"
         physical_name: "buy_trader_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Tên người thực hiện đặt mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_trader_nm"
+        description: "[PII] Tên người thực hiện đặt mua. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_trader_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Buy Reference Sequence Number"
         physical_name: "buy_reference_sequence_nbr"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số tham chiếu theo thứ tự đặt mua trong ngày."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.buy_sequence_nbr"
+        description: "Số tham chiếu theo thứ tự đặt mua trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_sequence_nbr` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Order Date"
         physical_name: "sell_order_dt"
         data_domain: "Date"
         data_type: "date"
         nullable: true
         key: ""
-        description: "Ngày đặt lệnh bán."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_order_dt"
+        description: "Ngày đặt lệnh bán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_order_dt` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Order Time"
         physical_name: "sell_order_time"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Thời gian đặt lệnh bán."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_order_time"
+        description: "Thời gian đặt lệnh bán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_order_time` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Securities Order Code"
         physical_name: "sell_securities_order_code"
         data_domain: "Text"
@@ -19773,18 +19773,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên công ty chứng khoán thực hiện giao dịch bán."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_member_nm"
+        description: "Tên công ty chứng khoán thực hiện giao dịch bán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_member_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Account Pin Code"
         physical_name: "sell_account_pin_code"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Mã PIN của tài khoản bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_pin_code"
+        description: "[PII] Mã PIN của tài khoản bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_pin_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Account Number"
         physical_name: "sell_account_nbr"
         data_domain: "Text"
@@ -19800,9 +19800,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Tên tài khoản giao dịch bán của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_account_nm"
+        description: "[PII] Tên tài khoản giao dịch bán của nhà đầu tư. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_account_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Client House Classification Code"
         physical_name: "sell_client_house_cl_code"
         data_domain: "Classification Value"
@@ -19854,27 +19854,27 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã/số định danh người thực hiện đặt bán."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_trader_code"
+        description: "Mã/số định danh người thực hiện đặt bán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_trader_code` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Trader Name"
         physical_name: "sell_trader_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "[PII] Tên người thực hiện đặt bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI"
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_trader_nm"
+        description: "[PII] Tên người thực hiện đặt bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_trader_nm` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Sell Reference Sequence Number"
         physical_name: "sell_reference_sequence_nbr"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Số tham chiếu theo thứ tự đặt bán trong ngày."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.sell_sequence_nbr"
+        description: "Số tham chiếu theo thứ tự đặt bán trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_TRADE_BOOK) không còn cột tương ứng — cột Atomic cũ `sell_sequence_nbr` đã bị gỡ khỏi `securities_trade` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
 
   - id: "DTM-fct_hnx_securities_trade"
     logical_name: "Fact HNX Securities Trade"
@@ -20544,9 +20544,9 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Đơn vị tiền tệ."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.currency_code"
+        description: "Đơn vị tiền tệ. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `currency_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Board Type Code"
         physical_name: "board_tp_code"
         data_domain: "Classification Value"
@@ -20634,18 +20634,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên công ty chứng khoán."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.member_nm"
+        description: "Tên công ty chứng khoán. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `member_nm` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Account Pin Code"
         physical_name: "account_pin_code"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã PIN của tài khoản giao dịch."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.pin_code"
+        description: "Mã PIN của tài khoản giao dịch. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `pin_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Account Number"
         physical_name: "account_nbr"
         data_domain: "Text"
@@ -20661,18 +20661,18 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.account_nm"
+        description: "Tên nhà đầu tư/chủ tài khoản nhà đầu tư. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `account_nm` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Market Maker Order Indicator"
         physical_name: "market_maker_order_ind"
         data_domain: "Indicator"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Lệnh đặt của nhà tạo lập thị trường."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.market_maker_order_ind"
+        description: "Lệnh đặt của nhà tạo lập thị trường. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `market_maker_order_ind` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Client House Classification Code"
         physical_name: "client_house_cl_code"
         data_domain: "Classification Value"
@@ -20742,36 +20742,36 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá khớp gần nhất trên thị trường (LTP)."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.last_traded_price"
+        description: "Giá khớp gần nhất trên thị trường (LTP). [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `last_traded_price` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Execution Price"
         physical_name: "execution_price"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá khớp lệnh thực tế."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.execution_price"
+        description: "Giá khớp lệnh thực tế. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `execution_price` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Immediate Matched Volume"
         physical_name: "immediate_matched_vol"
         data_domain: "Large Counter"
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.immediate_matched_quantity"
+        description: "Khối lượng khớp ngay khi hệ thống ghi nhận lệnh. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `immediate_matched_quantity` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Matched Volume"
         physical_name: "matched_vol"
         data_domain: "Large Counter"
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng đã khớp của lệnh."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.matched_quantity"
+        description: "Tổng khối lượng đã khớp của lệnh. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `matched_quantity` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Remaining Quantity"
         physical_name: "remaining_quantity"
         data_domain: "Large Counter"
@@ -20787,108 +20787,108 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.order_price_last_traded_price_diff_difference"
+        description: "Chênh lệch giữa giá đặt lệnh và giá khớp gần nhất. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `order_price_last_traded_price_diff_difference` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Matched Ratio"
         physical_name: "matched_ratio"
         data_domain: "Percentage"
         data_type: "decimal(5,2)"
         nullable: true
         key: ""
-        description: "Tỷ lệ khớp lệnh."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.matched_ratio"
+        description: "Tỷ lệ khớp lệnh. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `matched_ratio` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Price Change Amount"
         physical_name: "price_change_amt"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Mức tăng/giảm giá so với tham chiếu theo giá trị."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.buy_up_sell_down_amt"
+        description: "Mức tăng/giảm giá so với tham chiếu theo giá trị. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_up_sell_down_amt` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Price Change Tick"
         physical_name: "price_change_tick"
         data_domain: "Small Counter"
         data_type: "int"
         nullable: true
         key: ""
-        description: "Mức tăng/giảm theo bước giá."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.buy_up_sell_down_tick"
+        description: "Mức tăng/giảm theo bước giá. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `buy_up_sell_down_tick` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "New High Low Price Indicator"
         physical_name: "new_high_low_price_ind"
         data_domain: "Indicator"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.new_high_low_price_tp_code"
+        description: "Đánh dấu nếu lệnh tạo giá cao nhất hoặc thấp nhất mới trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `new_high_low_price_tp_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Order Status Code"
         physical_name: "order_status_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Trạng thái của lệnh."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.order_status_code"
+        description: "Trạng thái của lệnh. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `order_status_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Icd Bug Quantity"
         physical_name: "icd_bug_quantity"
         data_domain: "Large Counter"
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.icd_bug_quantity"
+        description: "Khối lượng lỗi hoặc điều chỉnh trong hệ thống giao dịch. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `icd_bug_quantity` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Expected Execution Price"
         physical_name: "expected_execution_price"
         data_domain: "Currency Amount"
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.expected_execution_price"
+        description: "Giá khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `expected_execution_price` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Expected Execution Volume"
         physical_name: "expected_execution_vol"
         data_domain: "Large Counter"
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.expected_execution_quantity"
+        description: "Khối lượng khớp lệnh dự kiến, dựa trên các giao dịch thị trường trong ngày. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `expected_execution_quantity` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Short Sell Type Code"
         physical_name: "short_sell_tp_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại lệnh bán khống."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.short_sell_tp_code"
+        description: "Phân loại lệnh bán khống. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `short_sell_tp_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Trader Number"
         physical_name: "trader_nbr"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã/số định danh người thực hiện giao dịch."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.trader_code"
+        description: "Mã/số định danh người thực hiện giao dịch. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `trader_code` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Trader Name"
         physical_name: "trader_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên người thực hiện giao dịch."
-        source_atomic_table: "securities_order"
-        source_atomic_column: "securities_order.trader_nm"
+        description: "Tên người thực hiện giao dịch. [PENDING 2026-11-13, O_GSTT_86] Nguồn HOSE UAT mới (HOSE_ORDER_BOOK) không còn cột tương ứng — cột Atomic cũ `trader_nm` đã bị gỡ khỏi `securities_order` ở commit Atomic 2026-11-12 (schema HOSE đổi cấu trúc theo HNX). Chờ BA/Data Modeler xác nhận bỏ chỉ tiêu hoặc cột thay thế; KHÔNG thay bằng cột có tên gần giống nhưng khác ngữ nghĩa."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Reference Sequence Number"
         physical_name: "reference_sequence_nbr"
         data_domain: "Text"
