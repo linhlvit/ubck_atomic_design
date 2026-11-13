@@ -32,13 +32,27 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: null
-    comment: "PK surrogate. BCV: [Documentation] Government Registration Document."
+    comment: "PK surrogate. BCV: [Documentation] Government Registration Document. Id hash: hash_id('NHNCK_APPLICATIONS', ID)"
     classification_context: null
     etl_derived_value: null
 
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
-    business_meaning: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
+    business_meaning: Khóa chính. BK của entity — mã định danh hồ sơ đăng ký (PK nguồn APPLICATIONS.ID).
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: NHNCK
+    source_table: APPLICATIONS
+    source_column: NHNCK.APPLICATIONS.ID
+    comment: BK chính. Map từ PK nguồn ID.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Application Code
+    physical_name: application_code
+    business_meaning: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh).
     data_domain: Text
     data_type: string
     nullable: false
@@ -46,7 +60,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
-    comment: BK chính. Mã định danh duy nhất của hồ sơ.
+    comment: null
     classification_context: null
     etl_derived_value: null
 

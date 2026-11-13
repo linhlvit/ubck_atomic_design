@@ -17484,9 +17484,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
   source_column: "NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -17501,11 +17500,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "VERIFY_APPLICATION_STATUSES"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -22050,9 +22047,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "MCDT_RESULT_OUTBOX"
   source_column: "NHNCK.MCDT_RESULT_OUTBOX.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: MCDT_RESULT_OUTBOX.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -22067,11 +22063,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "MCDT_RESULT_OUTBOX"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.MCDT_RESULT_OUTBOX.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -22711,11 +22705,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
   source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID để xác\
-    \ nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -22730,11 +22721,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "EXAM_DETAILS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.EXAM_DETAILS.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -44772,7 +44761,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: null
-  comment: "PK surrogate. BCV: [Documentation] Government Registration Document."
+  comment: "PK surrogate. BCV: [Documentation] Government Registration Document. Id\
+    \ hash: hash_id('NHNCK_APPLICATIONS', ID)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -44781,19 +44771,35 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
   atomic_attribute: "Securities Practitioner License Application Code"
-  description: "Mã hồ sơ đăng ký do hệ thống sinh — BK của entity."
+  description: "Khóa chính. BK của entity — mã định danh hồ sơ đăng ký (PK nguồn APPLICATIONS.ID)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "NHNCK"
+  source_table: "APPLICATIONS"
+  source_column: "NHNCK.APPLICATIONS.ID"
+  comment: "BK chính. Map từ PK nguồn ID."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sp_license_application"
+  atomic_column: "sp_license_application_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Securities Practitioner License Application"
+  atomic_attribute: "Application Code"
+  description: "Mã hồ sơ (mã định danh duy nhất do hệ thống sinh)."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
-  comment: "BK chính. Mã định danh duy nhất của hồ sơ."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sp_license_application"
-  atomic_column: "sp_license_application_code"
+  atomic_column: "application_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner License Application"
   atomic_attribute: "Source System Code"
@@ -45575,11 +45581,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
   source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45595,11 +45598,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_SPECIALIZATIONS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45840,11 +45841,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45859,11 +45857,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45916,11 +45912,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
   source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ thuật) gây sai lệch\
-    \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ RE_APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45935,11 +45928,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_RE_EXAMS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Re-Exam Securities Practitioner License Application Id. Giá trị lấy từ\
-    \ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment\
-    \ Re-Exam Securities Practitioner License Application Id."
+    \ with Re-Exam Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -79968,11 +79959,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
   source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID để\
-    \ xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch với\
-    \ Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -79987,11 +79975,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_FEES"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.APPLICATION_FEES.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -81884,10 +81870,8 @@ attributes:
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUP_MEMBERS"
   source_column: "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID"
-  comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk\
-    \ sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID = APPLICATIONS.ID\
-    \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-    \ | Composite PK cùng Securities Practitioner License Application Group Id."
+  comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS',\
+    \ APPLICATION_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -81903,11 +81887,9 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATION_GROUP_MEMBERS"
-  source_column: "NHNCK.APPLICATIONS.APPLICATION_CODE"
+  source_column: "NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID"
   comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair\
-    \ with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-    \ Id."
+    \ with Securities Practitioner License Application Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

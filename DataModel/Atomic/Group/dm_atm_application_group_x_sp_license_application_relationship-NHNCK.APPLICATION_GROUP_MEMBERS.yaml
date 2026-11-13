@@ -74,7 +74,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATION_GROUP_MEMBERS
     source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID
-    comment: "FK target: sp_license_application.sp_license_application_id. Cần ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE) | Composite PK cùng Securities Practitioner License Application Group Id."
+    comment: "FK target: sp_license_application.sp_license_application_id. Hash: hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATION_GROUP_MEMBERS
-    source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
-    comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application Id."
+    source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID
+    comment: "Lookup pair: sp_license_application.sp_license_application_code. Pair with Securities Practitioner License Application Id."
     classification_context: null
     etl_derived_value: null
 

@@ -19984,10 +19984,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE)."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -20000,17 +19998,13 @@ entities:
       - source_table: VERIFY_APPLICATION_STATUSES
         source_column: NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID
         business_meaning: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: VERIFY_APPLICATION_STATUSES.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE)."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ CCHN liên quan (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -20021,12 +20015,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: VERIFY_APPLICATION_STATUSES
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.VERIFY_APPLICATION_STATUSES.APPLICATION_ID
         business_meaning: Mã hồ sơ CCHN liên quan (denormalized lookup).
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Application Status Code
     physical_name: application_status_code
     business_meaning_1st: Mã trạng thái hồ sơ hiện tại.
@@ -28310,7 +28302,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -30706,10 +30698,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ đăng ký CCHN liên quan.
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: MCDT_RESULT_OUTBOX.APPLICATION_ID =\
-      \ APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE)."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -30722,17 +30712,13 @@ entities:
       - source_table: MCDT_RESULT_OUTBOX
         source_column: NHNCK.MCDT_RESULT_OUTBOX.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký CCHN liên quan.
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: MCDT_RESULT_OUTBOX.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE)."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -30743,12 +30729,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: MCDT_RESULT_OUTBOX
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.MCDT_RESULT_OUTBOX.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký (denormalized lookup).
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Sender Identity
     physical_name: sender_identity
     business_meaning_1st: Định danh bên gửi (denormalized text tự do — chưa đủ căn
@@ -31486,11 +31470,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ đăng ký
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID\
-      \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-      \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch\
-      \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -31503,19 +31484,13 @@ entities:
       - source_table: EXAM_DETAILS
         source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
         business_meaning: FK đến hồ sơ đăng ký
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: EXAM_DETAILS.APPLICATION_ID = APPLICATIONS.ID\
-          \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-          \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch\
-          \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk\
-          \ 2026-07-27."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -31526,12 +31501,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: EXAM_DETAILS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.EXAM_DETAILS.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Sequence Number
     physical_name: sequence_nbr
     business_meaning_1st: Số thứ tự dự thi trong đợt thi
@@ -57727,7 +57700,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: Id tự sinh (surrogate key).
-    comment_1st: "PK surrogate. BCV: [Documentation] Government Registration Document."
+    comment_1st: "PK surrogate. BCV: [Documentation] Government Registration Document.\
+      \ Id hash: hash_id('NHNCK_APPLICATIONS', ID)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -57740,11 +57714,31 @@ entities:
       - source_table: APPLICATIONS
         source_column: null
         business_meaning: Id tự sinh (surrogate key).
-        comment: "PK surrogate. BCV: [Documentation] Government Registration Document."
+        comment: "PK surrogate. BCV: [Documentation] Government Registration Document.\
+          \ Id hash: hash_id('NHNCK_APPLICATIONS', ID)"
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
-    business_meaning_1st: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
-    comment_1st: BK chính. Mã định danh duy nhất của hồ sơ.
+    business_meaning_1st: Khóa chính. BK của entity — mã định danh hồ sơ đăng ký (PK
+      nguồn APPLICATIONS.ID).
+    comment_1st: BK chính. Map từ PK nguồn ID.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: NHNCK
+      source_tables:
+      - source_table: APPLICATIONS
+        source_column: NHNCK.APPLICATIONS.ID
+        business_meaning: Khóa chính. BK của entity — mã định danh hồ sơ đăng ký (PK
+          nguồn APPLICATIONS.ID).
+        comment: BK chính. Map từ PK nguồn ID.
+  - name: Application Code
+    physical_name: application_code
+    business_meaning_1st: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh).
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -57756,8 +57750,8 @@ entities:
       source_tables:
       - source_table: APPLICATIONS
         source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
-        business_meaning: Mã hồ sơ đăng ký do hệ thống sinh — BK của entity.
-        comment: BK chính. Mã định danh duy nhất của hồ sơ.
+        business_meaning: Mã hồ sơ (mã định danh duy nhất do hệ thống sinh).
+        comment: null
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn.
@@ -58643,12 +58637,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: FK đến License Application (hồ sơ đăng ký)
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật)\
-      \ gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang\
-      \ crosswalk 2026-07-27."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -58661,19 +58651,13 @@ entities:
       - source_table: APPLICATION_SPECIALIZATIONS
         source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
         business_meaning: FK đến License Application (hồ sơ đăng ký)
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_SPECIALIZATIONS.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ\
-          \ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) —\
-          \ đã sửa sang crosswalk 2026-07-27."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký. Lookup pair
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -58684,12 +58668,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_SPECIALIZATIONS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.APPLICATION_SPECIALIZATIONS.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký. Lookup pair
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Specialization Code
     physical_name: specialization_code
     business_meaning_1st: Mã chuyên ngành CCHN đăng ký
@@ -58953,12 +58935,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: FK đến hồ sơ gốc đã thi trượt
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật)\
-      \ gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang\
-      \ crosswalk 2026-07-27."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -58971,19 +58949,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
         business_meaning: FK đến hồ sơ gốc đã thi trượt
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ\
-          \ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) —\
-          \ đã sửa sang crosswalk 2026-07-27."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ gốc
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -58994,12 +58966,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.APPLICATION_RE_EXAMS.APPLICATION_ID
         business_meaning: Mã hồ sơ gốc
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Securities Practitioner Qualification Examination Assessment Result Id
     physical_name: sp_qualification_examination_assessment_result_id
     business_meaning_1st: FK đến kết quả thi trượt
@@ -59043,12 +59013,8 @@ entities:
   - name: Re-Exam Securities Practitioner License Application Id
     physical_name: re_exam_sp_license_application_id
     business_meaning_1st: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE) | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID kỹ\
-      \ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa\
-      \ sang crosswalk 2026-07-27."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', RE_APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -59061,19 +59027,13 @@ entities:
       - source_table: APPLICATION_RE_EXAMS
         source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
         business_meaning: FK đến hồ sơ thi lại mới (nullable — chưa nộp)
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_RE_EXAMS.RE_APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Trước đây hash trực tiếp theo RE_APPLICATION_ID (ID\
-          \ kỹ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE)\
-          \ — đã sửa sang crosswalk 2026-07-27."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', RE_APPLICATION_ID)."
   - name: Re-Exam Securities Practitioner License Application Code
     physical_name: re_exam_sp_license_application_code
     business_meaning_1st: Mã hồ sơ thi lại mới
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Re-Exam Securities Practitioner License Application Id. Giá trị\
-      \ lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-      \ comment Re-Exam Securities Practitioner License Application Id."
+      \ Pair with Re-Exam Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -59084,12 +59044,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_RE_EXAMS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.APPLICATION_RE_EXAMS.RE_APPLICATION_ID
         business_meaning: Mã hồ sơ thi lại mới
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Re-Exam Securities Practitioner License Application Id. Giá\
-          \ trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi\
-          \ tiết xem comment Re-Exam Securities Practitioner License Application Id."
+          \ Pair with Re-Exam Securities Practitioner License Application Id."
   - name: Status Code
     physical_name: status_code
     business_meaning_1st: Trạng thái bản ghi
@@ -68635,11 +68593,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID\
-      \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-      \ APPLICATION_CODE) | Composite PK cùng Securities Practitioner License Application\
-      \ Group Id."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -68652,18 +68607,13 @@ entities:
       - source_table: APPLICATION_GROUP_MEMBERS
         source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID
         business_meaning: "FK -> APPLICATIONS: Hồ sơ CCHN liên quan."
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_GROUP_MEMBERS.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Composite PK cùng Securities Practitioner License\
-          \ Application Group Id."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ CCHN liên quan (denormalized lookup).
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -68674,12 +68624,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_GROUP_MEMBERS
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.APPLICATION_GROUP_MEMBERS.APPLICATION_ID
         business_meaning: Mã hồ sơ CCHN liên quan (denormalized lookup).
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Member Notes
     physical_name: member_notes
     business_meaning_1st: Ghi chú bổ sung.
@@ -106218,11 +106166,8 @@ entities:
   - name: Securities Practitioner License Application Id
     physical_name: sp_license_application_id
     business_meaning_1st: FK đến License Application
-    comment_1st: "FK target: sp_license_application.sp_license_application_id. Cần\
-      \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID = APPLICATIONS.ID\
-      \ để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS', APPLICATION_CODE)\
-      \ | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ thuật) gây sai lệch\
-      \ với Id của bảng main (hash từ APPLICATION_CODE) — đã sửa sang crosswalk 2026-07-27."
+    comment_1st: "FK target: sp_license_application.sp_license_application_id. Hash:\
+      \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -106235,19 +106180,13 @@ entities:
       - source_table: APPLICATION_FEES
         source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
         business_meaning: FK đến License Application
-        comment: "FK target: sp_license_application.sp_license_application_id. Cần\
-          \ ETL crosswalk sang NHNCK.APPLICATIONS: APPLICATION_FEES.APPLICATION_ID\
-          \ = APPLICATIONS.ID để xác nhận APPLICATION_CODE sau đó hash_id('NHNCK_APPLICATIONS',\
-          \ APPLICATION_CODE) | Trước đây hash trực tiếp theo APPLICATION_ID (ID kỹ\
-          \ thuật) gây sai lệch với Id của bảng main (hash từ APPLICATION_CODE) —\
-          \ đã sửa sang crosswalk 2026-07-27."
+        comment: "FK target: sp_license_application.sp_license_application_id. Hash:\
+          \ hash_id('NHNCK_APPLICATIONS', APPLICATION_ID)."
   - name: Securities Practitioner License Application Code
     physical_name: sp_license_application_code
     business_meaning_1st: Mã hồ sơ đăng ký (lookup pair)
     comment_1st: "Lookup pair: sp_license_application.sp_license_application_code.\
-      \ Pair with Securities Practitioner License Application Id. Giá trị lấy từ NHNCK.APPLICATIONS.APPLICATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment Securities Practitioner License Application\
-      \ Id."
+      \ Pair with Securities Practitioner License Application Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -106258,12 +106197,10 @@ entities:
     - source_system: NHNCK
       source_tables:
       - source_table: APPLICATION_FEES
-        source_column: NHNCK.APPLICATIONS.APPLICATION_CODE
+        source_column: NHNCK.APPLICATION_FEES.APPLICATION_ID
         business_meaning: Mã hồ sơ đăng ký (lookup pair)
         comment: "Lookup pair: sp_license_application.sp_license_application_code.\
-          \ Pair with Securities Practitioner License Application Id. Giá trị lấy\
-          \ từ NHNCK.APPLICATIONS.APPLICATION_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Securities Practitioner License Application Id."
+          \ Pair with Securities Practitioner License Application Id."
   - name: Securities Practitioner Id
     physical_name: sp_id
     business_meaning_1st: FK đến Securities Practitioner (redundant — derive được
