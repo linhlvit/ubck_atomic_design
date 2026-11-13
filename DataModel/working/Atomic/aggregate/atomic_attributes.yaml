@@ -10221,41 +10221,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Evaluation"
-  atomic_attribute: "Approved By User Id"
-  description: "Người duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATIONS"
-  source_column: "IDS.EVALUATIONS.APPROVED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_evaluation"
-  atomic_column: "approved_by_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Evaluation"
-  atomic_attribute: "Approved By User Code"
-  description: "Mã người duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "EVALUATIONS"
-  source_column: "IDS.EVALUATIONS.APPROVED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approved By User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_evaluation"
-  atomic_column: "approved_by_user_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Evaluation"
   atomic_attribute: "Approved Date"
   description: "Ngày duyệt."
   data_domain: "Date"
@@ -11454,41 +11419,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Approver User Id"
-  description: "Id Login của lãnh đạo phê duyệt phương án."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Approver User Code"
-  description: "Mã người phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "approver_user_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
   atomic_attribute: "Approver User Name"
   description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
     \ với Approver User Code)."
@@ -11498,48 +11428,12 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "pc_securities_offering"
   atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Processor User Id"
-  description: "Id Login của chuyên viên xử lý hồ sơ."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "processor_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Processor User Code"
-  description: "Mã chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "processor_user_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
   atomic_attribute: "Processor User Name"
@@ -11550,7 +11444,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING"
   source_column: "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -13403,41 +13297,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Approver User Id"
-  description: "Id Login của lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Approver User Code"
-  description: "Mã người phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "approver_user_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
   atomic_attribute: "Approver User Name Snapshot"
   description: "Tên lãnh đạo duyệt phương án (chuyên viên chọn lãnh đạo phê duyệt\
     \ dữ liệu phương án — snapshot text)."
@@ -13447,48 +13306,12 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_RESULT"
   source_column: "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "pc_securities_offering_result"
   atomic_column: "approver_user_nm_snpst"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Processor User Id"
-  description: "Id Login của chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "processor_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Processor User Code"
-  description: "Mã chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "processor_user_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
   atomic_attribute: "Processor User Name"
@@ -13499,7 +13322,7 @@ attributes:
   source_system: "IDS"
   source_table: "SECURITIES_OFFERING_RESULT"
   source_column: "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41285,74 +41108,6 @@ attributes:
   atomic_column: "cancelled_tms"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Sender IAM User Id"
-  description: "FK đến người gửi báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sender_iam_user_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Sender IAM User Code"
-  description: "Mã người gửi báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Sender IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "sender_iam_user_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Cancelled By IAM User Id"
-  description: "FK đến người hủy báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cancelled_by_iam_user_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Company Adhoc Report"
-  atomic_attribute: "Cancelled By IAM User Code"
-  description: "Mã người hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Cancelled By IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_adhoc_report"
-  atomic_column: "cancelled_by_iam_user_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Company Adhoc Report"
   atomic_attribute: "Import File Path"
   description: "Đường dẫn file Excel import dữ liệu."
   data_domain: "Text"
@@ -48216,38 +47971,6 @@ attributes:
   atomic_column: "organization_status_code_at_rpt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Sync Created Timestamp"
-  description: "Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.SYNC_CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "sync_created_tms"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
-  atomic_attribute: "Sync Updated Timestamp"
-  description: "Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "NHNCK"
-  source_table: "ORGANIZATION_REPORTS"
-  source_column: "NHNCK.ORGANIZATION_REPORTS.SYNC_UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "sp_organization_employment_report"
-  atomic_column: "sync_updated_tms"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Securities Practitioner Organization Employment Report"
   atomic_attribute: "Status Code"
   description: "Trạng thái bản ghi"
   data_domain: "Classification Value"
@@ -53178,10 +52901,7 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
   source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID"
-  comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company;\
-    \ khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI\
-    \ trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE.\
-    \ NUMBER(10) — convert sang string."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -85088,17 +84808,16 @@ attributes:
   atomic_entity: "Classification Securities Company Event Type"
   atomic_attribute: "Cutoff Date"
   description: "Ngày chốt sổ/hạn xử lý liên quan sự vụ."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "CAT_EVENT_TYPE"
   source_column: "SCMS.CAT_EVENT_TYPE.CUTOFF_DATE"
-  comment: "Nguồn lưu dạng NVARCHAR2(50) — ETL cần cast/parse sang date. Cần validate\
-    \ format và giá trị non-date trước khi ETL."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
   atomic_table: "cl_securities_company_event_type"
   atomic_column: "cutoff_dt"
 - bcv_core_object: "Common"
@@ -98668,8 +98387,7 @@ attributes:
   source_system: "IAM"
   source_table: "USERS"
   source_column: "IAM.USERS.PHONE"
-  comment: "ETL ghép DIAL_NUMBER (mã vùng VARCHAR2(4)) + PHONE thành số đầy đủ nếu\
-    \ cần."
+  comment: null
   classification_context: "Source System Code = 'IAM_USERS' | Electronic Address Type\
     \ Code = 'MOBILE'"
   etl_derived_value: null

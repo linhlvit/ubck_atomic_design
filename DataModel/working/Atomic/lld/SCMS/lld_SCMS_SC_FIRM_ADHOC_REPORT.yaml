@@ -17,40 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Mỗi dòng = 1 báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN. DETAIL_TYPE\
-    \ phân loại: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác. SC_FIRM_FOREIGN_BRANCH_ID\
-    \ và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DATA_JSON\
-    \ (đổi tên từ IMPORT_DU_LIEU_JSON) excluded (raw JSON payload). Audit: CREATED_AT\
-    \ + LAST_MODIFIED_AT (không có CREATED_BY/LAST_MODIFIED_BY); CANCELLED_BY + SENDER_ID\
-    \ → pending. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company\
-    \ Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. FORM_REPORT_ID\
-    \ (2026-09-17) nay model FK cứng sang Securities Company Report — hash trực tiếp\
-    \ (Code=ID theo convention FORM_REPORT). FORM_VERSION_ID (2026-09-17, Data Modeler\
-    \ xác nhận) là ID của FORM_REPORT tại thời điểm nộp (snapshot phiên bản đã dùng\
-    \ khi nộp, có thể khác FORM_REPORT_ID nếu biểu mẫu có phiên bản mới hơn phát sinh\
-    \ sau đó) — đổi tên thành \"Submitted Securities Company Report Id/Code\", cùng\
-    \ target sc_report, hash trực tiếp tương tự. REPORT_INPUT_SUBMISSION_ID (2026-09-17)\
-    \ nay model FK cứng sang Securities Company Report Input Submission — hash trực\
-    \ tiếp (BK của REPORT_INPUT_SUBMISSION dùng ID kỹ thuật trực tiếp, không có mã\
-    \ nghiệp vụ tự nhiên). Đối chiếu lại với DDL UAT thực tế (Source/DDL UAT 1/SCMS_UAT_schema.txt,\
-    \ 2026-09-18) phát hiện SO_NGAY_GUI_MUON/HAN_GUI KHÔNG bị loại bỏ như ghi nhận\
-    \ (sai) trước đó — thực chất chỉ ĐỔI TÊN thành LATE_SUBMISSION_DAYS/SUBMISSION_DEADLINE;\
-    \ đã khôi phục Overdue Days/Submission Deadline Timestamp với source_columns cập\
-    \ nhật theo tên mới. Cùng đợt đối chiếu phát hiện 1 chỉnh sửa trung gian (không\
-    \ rõ nguồn gốc) đã xóa nhầm 4 attribute vẫn còn cột nguồn hợp lệ (Summary/Attachment\
-    \ Path/Note/Cancellation Reason — SUMMARY/ATTACHMENT_PATH/NOTE/CANCELLATION_REASON\
-    \ vẫn tồn tại trong DDL UAT) và làm hỏng 3 attribute Classification Value (Adhoc\
-    \ Report Type Code/Signature Type Code/Report Submission Status Code bị đổi domain\
-    \ sang Text hoặc sai cú pháp comment \"SCHEMA_CODE=...\" không khớp chuẩn dự án,\
-    \ mất liên kết tới scheme đã đăng ký sẵn trong classification_schemes.yaml) —\
-    \ đã khôi phục cả 4 attribute và sửa lại 3 Classification Value về đúng chuẩn\
-    \ (2026-09-18). Bổ sung 2 cột mới phát sinh trong DDL UAT chưa có trong LLD: BANK_SCOPE\
-    \ (Depositary Bank Scope Code, scheme SCMS_SC_FIRM_ADHOC_REPORT_BANK_SCOPE) và\
-    \ PREVIOUS_SUBMIT_STATUS (Previous Report Submission Status Code, pending — tạm\
-    \ dùng chung scheme RECORD_STATUS, cần Data Modeler xác nhận tập giá trị thực\
-    \ tế). Source/SCMS_Columns.csv vẫn chưa cập nhật theo DDL UAT mới nhất (tên cột\
-    \ cũ SO_NGAY_GUI_MUON/HAN_GUI/IMPORT_DU_LIEU_JSON, thiếu BANK_SCOPE/PREVIOUS_SUBMIT_STATUS)\
-    \ — cần chạy reconcile qua source-survey."
+  notes: "Mỗi dòng = 1 báo cáo đột xuất/bất thường CTCK nộp lên UBCKNN. DETAIL_TYPE phân loại: BAT_THUONG=Bất thường; THEO_YEU_CAU=Theo yêu cầu; KHAC=Khác. SC_FIRM_FOREIGN_BRANCH_ID và BANK_ID: nullable FK cho báo cáo của chi nhánh/ngân hàng. EFORM_DATA + IMPORT_DATA_JSON (đổi tên từ IMPORT_DU_LIEU_JSON) excluded (raw JSON payload). Audit: CREATED_AT + LAST_MODIFIED_AT (không có CREATED_BY/LAST_MODIFIED_BY). Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK Securities Company Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì CODE của bảng đích. FORM_REPORT_ID (2026-09-17) nay model FK cứng sang Securities Company Report — hash trực tiếp (Code=ID theo convention FORM_REPORT). FORM_VERSION_ID (2026-09-17, Data Modeler xác nhận) là ID của FORM_REPORT tại thời điểm nộp (snapshot phiên bản đã dùng khi nộp, có thể khác FORM_REPORT_ID nếu biểu mẫu có phiên bản mới hơn phát sinh sau đó) — đổi tên thành \"Submitted Securities Company Report Id/Code\", cùng target sc_report, hash trực tiếp tương tự. REPORT_INPUT_SUBMISSION_ID (2026-09-17) nay model FK cứng sang Securities Company Report Input Submission — hash trực tiếp (BK của REPORT_INPUT_SUBMISSION dùng ID kỹ thuật trực tiếp, không có mã nghiệp vụ tự nhiên). Đối chiếu lại với DDL UAT thực tế (Source/DDL UAT 1/SCMS_UAT_schema.txt, 2026-09-18) phát hiện SO_NGAY_GUI_MUON/HAN_GUI KHÔNG bị loại bỏ như ghi nhận (sai) trước đó — thực chất chỉ ĐỔI TÊN thành LATE_SUBMISSION_DAYS/SUBMISSION_DEADLINE; đã khôi phục Overdue Days/Submission Deadline Timestamp với source_columns cập nhật theo tên mới. Cùng đợt đối chiếu phát hiện 1 chỉnh sửa trung gian (không rõ nguồn gốc) đã xóa nhầm 4 attribute vẫn còn cột nguồn hợp lệ (Summary/Attachment Path/Note/Cancellation Reason — SUMMARY/ATTACHMENT_PATH/NOTE/CANCELLATION_REASON vẫn tồn tại trong DDL UAT) và làm hỏng 3 attribute Classification Value (Adhoc Report Type Code/Signature Type Code/Report Submission Status Code bị đổi domain sang Text hoặc sai cú pháp comment \"SCHEMA_CODE=...\" không khớp chuẩn dự án, mất liên kết tới scheme đã đăng ký sẵn trong classification_schemes.yaml) — đã khôi phục cả 4 attribute và sửa lại 3 Classification Value về đúng chuẩn (2026-09-18). Bổ sung 2 cột mới phát sinh trong DDL UAT chưa có trong LLD: BANK_SCOPE (Depositary Bank Scope Code, scheme SCMS_SC_FIRM_ADHOC_REPORT_BANK_SCOPE) và PREVIOUS_SUBMIT_STATUS (Previous Report Submission Status Code, pending — tạm dùng chung scheme RECORD_STATUS, cần Data Modeler xác nhận tập giá trị thực tế). Source/SCMS_Columns.csv vẫn chưa cập nhật theo DDL UAT mới nhất (tên cột cũ SO_NGAY_GUI_MUON/HAN_GUI/IMPORT_DU_LIEU_JSON, thiếu BANK_SCOPE/PREVIOUS_SUBMIT_STATUS) — cần chạy reconcile qua source-survey. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột SENDER_ID, CANCELLED_BY khỏi Atomic (ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Securities Company Adhoc Report Id"
   physical_name: "sc_adhoc_rpt_id"
@@ -522,62 +489,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-- attribute_name: "Sender IAM User Id"
-  physical_name: "sender_iam_user_id"
-  description: "FK đến người gửi báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', SENDER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Sender IAM User Code"
-  physical_name: "sender_iam_user_code"
-  description: "Mã người gửi báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.SENDER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Sender IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancelled By IAM User Id"
-  physical_name: "cancelled_by_iam_user_id"
-  description: "FK đến người hủy báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', CANCELLED_BY)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Cancelled By IAM User Code"
-  physical_name: "cancelled_by_iam_user_code"
-  description: "Mã người hủy báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "SCMS.SC_FIRM_ADHOC_REPORT.CANCELLED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Cancelled By IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Import File Path"
   physical_name: "import_file_path"
   description: "Đường dẫn file Excel import dữ liệu."

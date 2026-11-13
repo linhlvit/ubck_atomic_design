@@ -183,17 +183,16 @@ attributes:
 - attribute_name: "Cutoff Date"
   physical_name: "cutoff_dt"
   description: "Ngày chốt sổ/hạn xử lý liên quan sự vụ."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.CAT_EVENT_TYPE.CUTOFF_DATE"
-  comment: "Nguồn lưu dạng NVARCHAR2(50) — ETL cần cast/parse sang date. Cần validate\
-    \ format và giá trị non-date trước khi ETL."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
 - attribute_name: "Submission Method"
   physical_name: "submission_method"
   description: "Phương thức nộp/xử lý sự vụ (mô tả gốc BRD trống)."

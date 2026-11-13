@@ -400,34 +400,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approver User Id
-    physical_name: approver_user_id
-    business_meaning: Id Login của lãnh đạo phê duyệt phương án.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Approver User Code
-    physical_name: approver_user_code
-    business_meaning: Mã người phê duyệt (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Approver User Name
     physical_name: approver_user_nm
     business_meaning: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập với Approver User Code)."
@@ -438,35 +410,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_NAME
-    comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Id
-    physical_name: processor_user_id
-    business_meaning: Id Login của chuyên viên xử lý hồ sơ.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Code
-    physical_name: processor_user_code
-    business_meaning: Mã chuyên viên xử lý (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: SECURITIES_OFFERING
-    source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor User Id."
+    comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
     classification_context: null
     etl_derived_value: null
 
@@ -480,7 +424,7 @@ attributes:
     source_system: IDS
     source_table: SECURITIES_OFFERING
     source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME
-    comment: Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID.
+    comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
     classification_context: null
     etl_derived_value: null
 

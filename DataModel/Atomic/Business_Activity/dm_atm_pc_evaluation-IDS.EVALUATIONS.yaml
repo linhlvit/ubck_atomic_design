@@ -176,34 +176,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approved By User Id
-    physical_name: approved_by_user_id
-    business_meaning: Người duyệt.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: EVALUATIONS
-    source_column: IDS.EVALUATIONS.APPROVED_BY
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Approved By User Code
-    physical_name: approved_by_user_code
-    business_meaning: Mã người duyệt (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: EVALUATIONS
-    source_column: IDS.EVALUATIONS.APPROVED_BY
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approved By User Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Approved Date
     physical_name: approved_dt
     business_meaning: Ngày duyệt.

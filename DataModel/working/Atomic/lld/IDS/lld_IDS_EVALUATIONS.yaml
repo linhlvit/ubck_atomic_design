@@ -17,10 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "COMPANY_ID/PERIOD_ID không có fk_note tường minh trong BRD nhưng theo HLD\
-    \ Tier3 6b/6c rõ ràng là FK đến COMPANY_PROFILES/EVALUATION_PERIODS — giữ nullable:\
-    \ false. APPROVED_BY dùng cùng pattern FK pending sang Identity and Access Management\
-    \ User như Created/Updated By."
+  notes: "COMPANY_ID/PERIOD_ID không có fk_note tường minh trong BRD nhưng theo HLD Tier3 6b/6c rõ ràng là FK đến COMPANY_PROFILES/EVALUATION_PERIODS — giữ nullable: false. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVED_BY khỏi Atomic (ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Evaluation Id"
   physical_name: "pc_evaluation_id"
@@ -165,35 +162,6 @@ attributes:
   source_columns:
   - "IDS.EVALUATIONS.STATUS"
   comment: "SCHEMA_CODE=IDS.NEWS_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='NEWS_APPROVAL_STATUS')."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approved By User Id"
-  physical_name: "approved_by_user_id"
-  description: "Người duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATIONS.APPROVED_BY"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVED_BY) | Chưa xác nhận join key IDS.EVALUATIONS.APPROVED_BY\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approved By User Code"
-  physical_name: "approved_by_user_code"
-  description: "Mã người duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.EVALUATIONS.APPROVED_BY"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approved By User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

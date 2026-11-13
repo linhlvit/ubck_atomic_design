@@ -17,11 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Con của Public Company Securities Offering (T3) — 1-N. OFFERING_METHOD_CD\
-    \ lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot).\
-    \ Bổ sung Extension Date, Bond Ticker, Result Single Object sau review coverage\
-    \ 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve\
-    \ lại."
+  notes: "Con của Public Company Securities Offering (T3) — 1-N. OFFERING_METHOD_CD lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot). Bổ sung Extension Date, Bond Ticker, Result Single Object sau review coverage 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Securities Offering Result Id"
   physical_name: "pc_securities_offering_result_id"
@@ -677,35 +673,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approver User Id"
-  physical_name: "approver_user_id"
-  description: "Id Login của lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Code"
-  physical_name: "approver_user_code"
-  description: "Mã người phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Approver User Name Snapshot"
   physical_name: "approver_user_nm_snpst"
   description: "Tên lãnh đạo duyệt phương án (chuyên viên chọn lãnh đạo phê duyệt\
@@ -716,37 +683,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Id"
-  physical_name: "processor_user_id"
-  description: "Id Login của chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Code"
-  physical_name: "processor_user_code"
-  description: "Mã chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -759,7 +696,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
