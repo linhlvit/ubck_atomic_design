@@ -4608,7 +4608,7 @@ attributes:
   source_system: "AUDIT"
   source_table: "AF_TECHNICAL_AUDIT"
   source_column: "AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
-  comment: "SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT')."
+  comment: "SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE')."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -55862,18 +55862,19 @@ attributes:
   atomic_entity: "Audit Firm"
   atomic_attribute: "External Reference ID"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
-  data_domain: "Text"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "AUDIT"
   source_table: "AF_PROFILES"
   source_column: "AUDIT.AF_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
-    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
-    \ string."
+    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang\
+    \ int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá\
+    \ trị lớn nhất trước go-live."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
   atomic_table: "audit_firm"
   atomic_column: "external_reference_id"
 - bcv_core_object: "Involved Party"
@@ -56107,18 +56108,19 @@ attributes:
   atomic_entity: "Audit Firm Auditor"
   atomic_attribute: "External Reference ID"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
-  data_domain: "Text"
+  data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "AUDIT"
   source_table: "AF_AUDITOR_PROFILES"
   source_column: "AUDIT.AF_AUDITOR_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
-    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang\
-    \ string."
+    \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang\
+    \ int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá\
+    \ trị lớn nhất trước go-live."
   classification_context: null
   etl_derived_value: null
-  data_type: "string"
+  data_type: "int"
   atomic_table: "af_auditor"
   atomic_column: "external_reference_id"
 - bcv_core_object: "Involved Party"

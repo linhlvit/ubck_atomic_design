@@ -5462,8 +5462,7 @@ entities:
   - name: Action Type Code
     physical_name: action_tp_code
     business_meaning_1st: Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát).
-    comment_1st: SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES
-      (LOOKUP_GROUP='AF_INSPECTION_RESULT').
+    comment_1st: SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE').
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -5476,8 +5475,7 @@ entities:
       - source_table: AF_TECHNICAL_AUDIT
         source_column: AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD
         business_meaning: Hình thức xử lý (Sau kiểm tra, Qua công tác giám sát).
-        comment: SCHEMA_CODE=AUDIT.AF_INSPECTION_RESULT. Values load từ LOOKUP_VALUES
-          (LOOKUP_GROUP='AF_INSPECTION_RESULT').
+        comment: SCHEMA_CODE=AUDIT.AF_ACTION_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE').
   - name: Document Number
     physical_name: document_nbr
     business_meaning_1st: Số văn bản.
@@ -71311,10 +71309,11 @@ entities:
     physical_name: external_reference_id
     business_meaning_1st: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
     comment_1st: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
-      FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang
-      string.
-    data_domain_most: Text
-    data_type_most: string
+      FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang
+      int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá
+      trị lớn nhất trước go-live.
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -71326,8 +71325,9 @@ entities:
         source_column: AUDIT.AF_AUDITOR_PROFILES.EXTERNAL_ID
         business_meaning: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
         comment: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
-          FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert
-          sang string.
+          FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map
+          sang int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile
+          giá trị lớn nhất trước go-live.
   - name: Approval Status Code
     physical_name: approval_status_code
     business_meaning_1st: Trạng thái duyệt hồ sơ.
@@ -72153,10 +72153,11 @@ entities:
     physical_name: external_reference_id
     business_meaning_1st: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
     comment_1st: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
-      FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert sang
-      string.
-    data_domain_most: Text
-    data_type_most: string
+      FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang
+      int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá
+      trị lớn nhất trước go-live.
+    data_domain_most: Small Counter
+    data_type_most: int
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -72168,8 +72169,9 @@ entities:
         source_column: AUDIT.AF_PROFILES.EXTERNAL_ID
         business_meaning: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
         comment: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
-          FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — ETL cần convert
-          sang string.
+          FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map
+          sang int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile
+          giá trị lớn nhất trước go-live.
   - name: Approval Status Code
     physical_name: approval_status_code
     business_meaning_1st: Trạng thái phê duyệt hồ sơ.

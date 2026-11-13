@@ -171,7 +171,7 @@ erDiagram
         string auditor_status_code
         date affiliation_end_dt
         int email_sent_ind
-        string external_reference_id
+        int external_reference_id
         string approval_status_code
         string approver_comment
         int working_ind
