@@ -5374,7 +5374,7 @@ attributes:
   source_system: "THANHTRA"
   source_table: "EXAMINATION_ANNUAL_PLAN_TARGET"
   source_column: "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_ID"
-  comment: "Map 1:1 giá trị nguồn (VARCHAR2(144)) — không hash_id, không crosswalk, không có cặp Code (Data Modeler 2026-11-12)."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -5390,7 +5390,8 @@ attributes:
   source_system: "THANHTRA"
   source_table: "EXAMINATION_ANNUAL_PLAN_TARGET"
   source_column: "THANHTRA.EXAMINATION_ANNUAL_PLAN_TARGET.LEADING_UNIT_NAME"
-  comment: "Denormalized snapshot tên đơn vị tại thời điểm lập kế hoạch. Pair with Leading Unit Id."
+  comment: "Denormalized snapshot tên đơn vị tại thời điểm lập kế hoạch. Pair with\
+    \ Leading Unit Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -55862,7 +55863,7 @@ attributes:
   atomic_entity: "Audit Firm"
   atomic_attribute: "External Reference ID"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "AUDIT"
@@ -55870,11 +55871,10 @@ attributes:
   source_column: "AUDIT.AF_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
     \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang\
-    \ int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá\
-    \ trị lớn nhất trước go-live."
+    \ bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "audit_firm"
   atomic_column: "external_reference_id"
 - bcv_core_object: "Involved Party"
@@ -56108,7 +56108,7 @@ attributes:
   atomic_entity: "Audit Firm Auditor"
   atomic_attribute: "External Reference ID"
   description: "Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC)."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "AUDIT"
@@ -56116,11 +56116,10 @@ attributes:
   source_column: "AUDIT.AF_AUDITOR_PROFILES.EXTERNAL_ID"
   comment: "Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải FK\
     \ trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang\
-    \ int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá\
-    \ trị lớn nhất trước go-live."
+    \ bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "af_auditor"
   atomic_column: "external_reference_id"
 - bcv_core_object: "Involved Party"
@@ -76685,103 +76684,6 @@ attributes:
   atomic_column: "parent_geographic_area_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -76796,175 +76698,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory\
-    \ Authority Staff nếu cán bộ đổi tên sau đó."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "COUNTRY"
-  source_column: "ECAT.COUNTRY.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
   atomic_attribute: "Geographic Area Id"
@@ -77083,256 +76816,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area"
   atomic_column: "parent_geographic_area_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. REGION không có cột EFFECTIVE — không có\
-    \ Effective Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.DELETED"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.DELETED_REASON"
-  comment: "Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật\
-    \ — trước đây REGION tưởng không có DELETED_REASON."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "REGION"
-  source_column: "ECAT.REGION.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
   atomic_attribute: "Geographic Area Id"
@@ -77471,103 +76954,6 @@ attributes:
   atomic_column: "parent_geographic_area_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -77582,174 +76968,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_NEW"
-  source_column: "ECAT.PROVINCE_NEW.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
   atomic_attribute: "Geographic Area Id"
@@ -77778,7 +76996,8 @@ attributes:
   source_table: "WARD_NEW"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "Source System Code = 'ECAT_WARD_NEW'"
+  classification_context: "Source System Code = 'ECAT_WARD_NEW' | Identification Type\
+    \ Code = '(RULE)'"
   etl_derived_value: "ECAT_WARD_NEW"
   data_type: "string"
   atomic_table: "geographic_area"
@@ -77793,9 +77012,11 @@ attributes:
   source_system: "ECAT"
   source_table: "WARD_NEW"
   source_column: null
-  comment: null
-  classification_context: "GEOGRAPHIC_AREA_TYPE=WARD"
-  etl_derived_value: "WARD"
+  comment: "RULE: CASE WHEN CATEGORY = '1' THEN 'WARD' WHEN CATEGORY = '2' THEN 'COMMUNE'\
+    \ END."
+  classification_context: "Source System Code = 'ECAT_WARD_NEW' | Identification Type\
+    \ Code = '(RULE)'"
+  etl_derived_value: null
   data_type: "string"
   atomic_table: "geographic_area"
   atomic_column: "geographic_area_tp_code"
@@ -77903,103 +77124,6 @@ attributes:
   atomic_column: "parent_geographic_area_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -78014,174 +77138,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_NEW"
-  source_column: "ECAT.WARD_NEW.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
   atomic_attribute: "Geographic Area Old Id"
@@ -78392,103 +77348,6 @@ attributes:
   atomic_column: "successor_geographic_area_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -78503,174 +77362,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area_old"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "PROVINCE_OLD"
-  source_column: "ECAT.PROVINCE_OLD.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
   atomic_attribute: "Geographic Area Old Id"
@@ -78792,104 +77483,6 @@ attributes:
   atomic_column: "parent_geographic_area_old_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv\
-    \ bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1, không\
-    \ gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.DELETED"
-  comment: "Giá trị 1 → true; 0 → false."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -78904,175 +77497,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area_old"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.DELETED_REASON"
-  comment: "Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập nhật\
-    \ — trước đây DISTRICT_OLD tưởng không có DELETED_REASON."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "DISTRICT_OLD"
-  source_column: "ECAT.DISTRICT_OLD.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
   atomic_attribute: "Geographic Area Old Id"
@@ -79263,103 +77687,6 @@ attributes:
   atomic_column: "successor_geographic_area_code"
 - bcv_core_object: "Location"
   atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Indicator"
-  description: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.EFFECTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Indicator"
-  description: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.ACTIVE"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted\
-    \ Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Indicator"
-  description: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.DELETED"
-  comment: "Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active Indicator."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_ind"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective Start Date"
-  description: "Ngày bắt đầu hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.EFFECTIVE_START_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_start_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Effective End Date"
-  description: "Ngày kết thúc hiệu lực"
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.EFFECTIVE_END_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "effective_end_dt"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Version Number"
-  description: "Số phiên bản bản ghi tại nguồn"
-  data_domain: "Small Counter"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.VERSION"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "geographic_area_old"
-  atomic_column: "version_nbr"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
   atomic_attribute: "Display Label"
   description: "Nhãn hiển thị"
   data_domain: "Text"
@@ -79374,174 +77701,6 @@ attributes:
   data_type: "string"
   atomic_table: "geographic_area_old"
   atomic_column: "display_label"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Active Reason"
-  description: "Lý do thay đổi trạng thái sử dụng"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.ACTIVE_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "active_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Deleted Reason"
-  description: "Lý do xóa"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.DELETED_REASON"
-  comment: "Đẩy 1:1 theo yêu cầu."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "deleted_reason"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created Timestamp"
-  description: "Thời điểm bản ghi được tạo tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated Timestamp"
-  description: "Thời điểm bản ghi được cập nhật gần nhất tại nguồn"
-  data_domain: "Timestamp"
-  nullable: false
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_tms"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ tạo bản ghi"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.CREATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Code"
-  description: "Mã cán bộ tạo bản ghi — lookup pair với Created By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.CREATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Created By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Created By Staff Name"
-  description: "Tên người tạo bản ghi (denormalized snapshot tại thời điểm tạo)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.CREATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "created_by_staff_nm"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Id"
-  description: "FK đến Regulatory Authority Staff — cán bộ cập nhật bản ghi gần nhất"
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.UPDATED_BY_ID"
-  comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority Staff\
-    \ Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-    \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_id"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Code"
-  description: "Mã cán bộ cập nhật bản ghi — lookup pair với Updated By Staff Id"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.UPDATED_BY_ID"
-  comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff Code.\
-    \ Pending — xem ghi chú ở Updated By Staff Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_code"
-- bcv_core_object: "Location"
-  atomic_entity: "Geographic Area Old"
-  atomic_attribute: "Updated By Staff Name"
-  description: "Tên người cập nhật bản ghi gần nhất (denormalized snapshot)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "ECAT"
-  source_table: "WARD_OLD"
-  source_column: "ECAT.WARD_OLD.UPDATED_BY_NAME"
-  comment: "Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên hiển\
-    \ thị, không phải mã nhân viên)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "geographic_area_old"
-  atomic_column: "updated_by_staff_nm"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Bond Order Book Id"
@@ -84419,16 +82578,17 @@ attributes:
   atomic_entity: "Classification ECAT Administrative Procedure"
   atomic_attribute: "Procedure Level Code"
   description: "Mức độ dịch vụ công của thủ tục hành chính (1/2/3/4)."
-  data_domain: "Small Counter"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "ECAT"
   source_table: "ADMINISTRATIVE_PROCEDURE"
   source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_LEVEL"
-  comment: null
+  comment: "Nguồn VARCHAR2(80), giá trị 1/2/3/4 — giữ dạng chuỗi, không cast sang\
+    \ số."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
   atomic_table: "cl_ecat_administrative_procedure"
   atomic_column: "procedure_level_code"
 - bcv_core_object: "Common"
@@ -84487,17 +82647,16 @@ attributes:
   atomic_attribute: "Processing Time Amount"
   description: "Thời gian giải quyết thủ tục hành chính (số lượng theo đơn vị tính\
     \ ở Processing Time Unit)."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "ECAT"
   source_table: "ADMINISTRATIVE_PROCEDURE"
   source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_AMOUNT"
-  comment: "Nguồn NUMBER(15,0) — ETL cast sang int; cần validate giá trị không vượt\
-    \ dải int32."
+  comment: "Nguồn NUMBER(15,0) — ETL cast sang bigint (không giới hạn int32)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "cl_ecat_administrative_procedure"
   atomic_column: "processing_time_amt"
 - bcv_core_object: "Common"
@@ -84585,36 +82744,34 @@ attributes:
   atomic_entity: "Classification ECAT Administrative Procedure"
   atomic_attribute: "Effective Date"
   description: "Ngày thủ tục hành chính có hiệu lực."
-  data_domain: "Date"
+  data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
   source_system: "ECAT"
   source_table: "ADMINISTRATIVE_PROCEDURE"
   source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.EFFECTIVE_STATUS_DATE"
-  comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hiệu lực\
-    \ nghiệp vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi,\
-    \ không map)."
+  comment: "Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hiệu lực nghiệp vụ\
+    \ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi, không map)."
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "timestamp"
   atomic_table: "cl_ecat_administrative_procedure"
   atomic_column: "effective_dt"
 - bcv_core_object: "Common"
   atomic_entity: "Classification ECAT Administrative Procedure"
   atomic_attribute: "Expiration Date"
   description: "Ngày thủ tục hành chính hết hiệu lực."
-  data_domain: "Date"
+  data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
   source_system: "ECAT"
   source_table: "ADMINISTRATIVE_PROCEDURE"
   source_column: "ECAT.ADMINISTRATIVE_PROCEDURE.EXPIRATION_STATUS_DATE"
-  comment: "Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hết hiệu\
-    \ lực nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi,\
-    \ không map)."
+  comment: "Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hết hiệu lực nghiệp\
+    \ vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi, không map)."
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "timestamp"
   atomic_table: "cl_ecat_administrative_procedure"
   atomic_column: "expiration_dt"
 - bcv_core_object: "Common"
@@ -109842,8 +107999,7 @@ attributes:
   source_table: "AF_PROFILES"
   source_column: null
   comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AF_PROFILES chỉ có 1 loại\
-    \ địa chỉ (trụ sở chính), khớp pattern SCMS.AUDIT_FIRM (cùng atomic_entity Audit\
-    \ Firm)."
+    \ địa chỉ (trụ sở chính)."
   classification_context: "Source System Code = 'AUDIT_AF_PROFILES' | Address Type\
     \ Code = 'HEAD_OFFICE'"
   etl_derived_value: "HEAD_OFFICE"

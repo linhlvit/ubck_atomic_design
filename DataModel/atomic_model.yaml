@@ -24383,9 +24383,8 @@ entities:
     version_1st: "1.0"
     status_1st: draft
     description_1st: Danh mục thủ tục hành chính (TTHC) của hệ thống danh mục dùng
-      chung ECAT, gồm mã, tên, lĩnh vực, nhóm, mức độ, trình tự và cách thức thực
-      hiện, thời gian giải quyết, lệ phí, cơ quan có thẩm quyền và căn cứ pháp lý;
-      BK = CODE nguồn.
+      chung ECAT, gồm mã, tên, lĩnh vực, nhóm, mức độ, cách thức thực hiện, thời gian
+      giải quyết, lệ phí và cơ quan phối hợp; BK = CODE nguồn.
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
@@ -24530,9 +24529,10 @@ entities:
   - name: Procedure Level Code
     physical_name: procedure_level_code
     business_meaning_1st: Mức độ dịch vụ công của thủ tục hành chính (1/2/3/4).
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: Nguồn VARCHAR2(80), giá trị 1/2/3/4 — giữ dạng chuỗi, không cast
+      sang số.
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -24543,7 +24543,8 @@ entities:
       - source_table: ADMINISTRATIVE_PROCEDURE
         source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCEDURE_LEVEL
         business_meaning: Mức độ dịch vụ công của thủ tục hành chính (1/2/3/4).
-        comment: null
+        comment: Nguồn VARCHAR2(80), giá trị 1/2/3/4 — giữ dạng chuỗi, không cast
+          sang số.
   - name: Implementation Method
     physical_name: implementation_method
     business_meaning_1st: Cách thức thực hiện thủ tục hành chính.
@@ -24605,10 +24606,9 @@ entities:
     physical_name: processing_time_amt
     business_meaning_1st: Thời gian giải quyết thủ tục hành chính (số lượng theo đơn
       vị tính ở Processing Time Unit).
-    comment_1st: Nguồn NUMBER(15,0) — ETL cast sang int; cần validate giá trị không
-      vượt dải int32.
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: Nguồn NUMBER(15,0) — ETL cast sang bigint (không giới hạn int32).
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -24620,8 +24620,7 @@ entities:
         source_column: ECAT.ADMINISTRATIVE_PROCEDURE.PROCESSING_TIME_AMOUNT
         business_meaning: Thời gian giải quyết thủ tục hành chính (số lượng theo đơn
           vị tính ở Processing Time Unit).
-        comment: Nguồn NUMBER(15,0) — ETL cast sang int; cần validate giá trị không
-          vượt dải int32.
+        comment: Nguồn NUMBER(15,0) — ETL cast sang bigint (không giới hạn int32).
   - name: Processing Time Unit
     physical_name: processing_time_unit
     business_meaning_1st: Đơn vị tính thời gian giải quyết.
@@ -24714,11 +24713,11 @@ entities:
   - name: Effective Date
     physical_name: effective_dt
     business_meaning_1st: Ngày thủ tục hành chính có hiệu lực.
-    comment_1st: Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hiệu
-      lực nghiệp vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản
-      ghi, không map).
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hiệu lực nghiệp
+      vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi, không
+      map).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -24729,17 +24728,17 @@ entities:
       - source_table: ADMINISTRATIVE_PROCEDURE
         source_column: ECAT.ADMINISTRATIVE_PROCEDURE.EFFECTIVE_STATUS_DATE
         business_meaning: Ngày thủ tục hành chính có hiệu lực.
-        comment: Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hiệu
-          lực nghiệp vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version
-          bản ghi, không map).
+        comment: Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hiệu lực nghiệp
+          vụ của TTHC, khác EFFECTIVE_START_DATE (hiệu lực của version bản ghi, không
+          map).
   - name: Expiration Date
     physical_name: expiration_dt
     business_meaning_1st: Ngày thủ tục hành chính hết hiệu lực.
-    comment_1st: Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hết
-      hiệu lực nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản
-      ghi, không map).
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hết hiệu lực
+      nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi, không
+      map).
+    data_domain_most: Timestamp
+    data_type_most: timestamp
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -24750,9 +24749,9 @@ entities:
       - source_table: ADMINISTRATIVE_PROCEDURE
         source_column: ECAT.ADMINISTRATIVE_PROCEDURE.EXPIRATION_STATUS_DATE
         business_meaning: Ngày thủ tục hành chính hết hiệu lực.
-        comment: Nguồn TIMESTAMP(6) — ETL cast sang date (bỏ phần giờ). Là ngày hết
-          hiệu lực nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version
-          bản ghi, không map).
+        comment: Nguồn TIMESTAMP(6) — giữ nguyên ngày + giờ. Là ngày hết hiệu lực
+          nghiệp vụ của TTHC, khác EFFECTIVE_END_DATE (hiệu lực của version bản ghi,
+          không map).
 - ldm:
     id: ATM-cl_ecat_department
     logical_name_1st: Classification ECAT Department
@@ -28513,7 +28512,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -71310,10 +71309,9 @@ entities:
     business_meaning_1st: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
     comment_1st: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
       FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang
-      int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá
-      trị lớn nhất trước go-live.
-    data_domain_most: Small Counter
-    data_type_most: int
+      bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647).
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -71326,8 +71324,7 @@ entities:
         business_meaning: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
         comment: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
           FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map
-          sang int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile
-          giá trị lớn nhất trước go-live.
+          sang bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647).
   - name: Approval Status Code
     physical_name: approval_status_code
     business_meaning_1st: Trạng thái duyệt hồ sơ.
@@ -72154,10 +72151,9 @@ entities:
     business_meaning_1st: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
     comment_1st: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
       FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map sang
-      int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile giá
-      trị lớn nhất trước go-live.
-    data_domain_most: Small Counter
-    data_type_most: int
+      bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647).
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -72170,8 +72166,7 @@ entities:
         business_meaning: Khóa ngoài (dùng cho việc chuyển dữ liệu với BTC).
         comment: Denormalized — tham chiếu hệ thống ngoài (Bộ Tài chính), không phải
           FK trong scope Atomic. Nguồn lưu dạng số (NUMBER(10,0)) — giữ kiểu số, map
-          sang int. NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647) — cần profile
-          giá trị lớn nhất trước go-live.
+          sang bigint vì NUMBER(10,0) có thể vượt giới hạn int32 (2.147.483.647).
   - name: Approval Status Code
     physical_name: approval_status_code
     business_meaning_1st: Trạng thái phê duyệt hồ sơ.
@@ -84743,8 +84738,7 @@ entities:
     physical_name: adr_tp_code
     business_meaning_1st: Loại địa chỉ.
     comment_1st: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AF_PROFILES chỉ có\
-      \ 1 loại địa chỉ (trụ sở chính), khớp pattern SCMS.AUDIT_FIRM (cùng atomic_entity\
-      \ Audit Firm)."
+      \ 1 loại địa chỉ (trụ sở chính)."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: false
@@ -84770,8 +84764,7 @@ entities:
         source_column: null
         business_meaning: Loại địa chỉ.
         comment: "Scheme: IP_ADDR_TYPE. Hardcode HEAD_OFFICE — AF_PROFILES chỉ có\
-          \ 1 loại địa chỉ (trụ sở chính), khớp pattern SCMS.AUDIT_FIRM (cùng atomic_entity\
-          \ Audit Firm)."
+          \ 1 loại địa chỉ (trụ sở chính)."
     - source_system: FIMS
       source_tables:
       - source_table: BANKMONI
@@ -100124,7 +100117,6 @@ entities:
     - COUNTRY
     - PROVINCE
     - REGION
-    - WARD
     conflict_review: null
     source_mappings:
     - source_system: ECAT
@@ -100144,7 +100136,8 @@ entities:
       - source_table: WARD_NEW
         source_column: null
         business_meaning: Phân loại vùng địa lý — Phường/Xã/Thị trấn hiện hành
-        comment: null
+        comment: "RULE: CASE WHEN CATEGORY = '1' THEN 'WARD' WHEN CATEGORY = '2' THEN\
+          \ 'COMMUNE' END."
   - name: Geographic Area Code
     physical_name: geographic_area_code
     business_meaning_1st: Mã quốc gia nghiệp vụ (do ECAT quản lý). BK duy nhất — Id
@@ -100313,189 +100306,6 @@ entities:
         business_meaning: Mã tỉnh/thành phố cha
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Parent\
           \ Geographic Area Id."
-  - name: Effective Indicator
-    physical_name: effective_ind
-    business_meaning_1st: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-      Indicator.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-          Indicator.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-          Indicator.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-          Indicator.
-  - name: Active Indicator
-    physical_name: active_ind
-    business_meaning_1st: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-      Indicator.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-          Indicator.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-          Indicator.
-      - source_table: REGION
-        source_column: ECAT.REGION.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. REGION không có cột EFFECTIVE — không
-          có Effective Indicator.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-          Indicator.
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning_1st: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-    comment_1st: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-      Indicator.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-          Indicator.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-          Indicator.
-      - source_table: REGION
-        source_column: ECAT.REGION.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-          Indicator.
-  - name: Effective Start Date
-    physical_name: effective_start_dt
-    business_meaning_1st: Ngày bắt đầu hiệu lực
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-      - source_table: REGION
-        source_column: ECAT.REGION.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-  - name: Effective End Date
-    physical_name: effective_end_dt
-    business_meaning_1st: Ngày kết thúc hiệu lực
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-      - source_table: REGION
-        source_column: ECAT.REGION.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-  - name: Version Number
-    physical_name: version_nbr
-    business_meaning_1st: Số phiên bản bản ghi tại nguồn
-    comment_1st: Đẩy 1:1 theo yêu cầu.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: REGION
-        source_column: ECAT.REGION.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
   - name: Display Label
     physical_name: display_label
     business_meaning_1st: Nhãn hiển thị
@@ -100521,359 +100331,6 @@ entities:
         source_column: ECAT.WARD_NEW.DISPLAY_LABEL
         business_meaning: Nhãn hiển thị
         comment: Đẩy 1:1 theo yêu cầu.
-  - name: Active Reason
-    physical_name: active_reason
-    business_meaning_1st: Lý do thay đổi trạng thái sử dụng
-    comment_1st: Đẩy 1:1 theo yêu cầu.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: REGION
-        source_column: ECAT.REGION.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-  - name: Deleted Reason
-    physical_name: deleted_reason
-    business_meaning_1st: Lý do xóa
-    comment_1st: Đẩy 1:1 theo yêu cầu.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: REGION
-        source_column: ECAT.REGION.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
-          nhật — trước đây REGION tưởng không có DELETED_REASON.
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Đẩy 1:1 theo yêu cầu.
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm bản ghi được tạo tại nguồn
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-      - source_table: REGION
-        source_column: ECAT.REGION.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-      - source_table: REGION
-        source_column: ECAT.REGION.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-  - name: Created By Staff Id
-    physical_name: created_by_staff_id
-    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: REGION
-        source_column: ECAT.REGION.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  - name: Created By Staff Code
-    physical_name: created_by_staff_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-      Id
-    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-      \ Code. Pending — xem ghi chú ở Created By Staff Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-      - source_table: REGION
-        source_column: ECAT.REGION.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-  - name: Created By Staff Name
-    physical_name: created_by_staff_nm
-    business_meaning_1st: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-      tạo)
-    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-      hiển thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory
-      Authority Staff nếu cán bộ đổi tên sau đó.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên). Có thể lệch với tên hiện tại trên Regulatory
-          Authority Staff nếu cán bộ đổi tên sau đó.
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: REGION
-        source_column: ECAT.REGION.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-  - name: Updated By Staff Id
-    physical_name: updated_by_staff_id
-    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-      ghi gần nhất
-    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: REGION
-        source_column: ECAT.REGION.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  - name: Updated By Staff Code
-    physical_name: updated_by_staff_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-      Staff Id
-    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-      \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-      - source_table: REGION
-        source_column: ECAT.REGION.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-  - name: Updated By Staff Name
-    physical_name: updated_by_staff_nm
-    business_meaning_1st: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-      hiển thị, không phải mã nhân viên).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: COUNTRY
-        source_column: ECAT.COUNTRY.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: PROVINCE_NEW
-        source_column: ECAT.PROVINCE_NEW.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: REGION
-        source_column: ECAT.REGION.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: WARD_NEW
-        source_column: ECAT.WARD_NEW.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
   - name: Geographic Area Category Code
     physical_name: geographic_area_category_code
     business_meaning_1st: Loại đơn vị hành chính cấp phường/xã (Phường/Xã/Thị trấn)
@@ -101133,166 +100590,6 @@ entities:
         business_meaning: Mã quận/huyện cũ cha
         comment: "Lookup pair: geographic_area_old.geographic_area_old_code. Pair\
           \ with Parent Geographic Area Old Id."
-  - name: Effective Indicator
-    physical_name: effective_ind
-    business_meaning_1st: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-    comment_1st: Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv
-      bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1, không
-      gộp với Active/Deleted Indicator.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv
-          bản cập nhật — trước đây DISTRICT_OLD tưởng không có EFFECTIVE. Đẩy 1:1,
-          không gộp với Active/Deleted Indicator.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-          Indicator.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.EFFECTIVE
-        business_meaning: "Tình trạng hiệu lực: true=Hiệu lực; false=Hết hiệu lực"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Active/Deleted
-          Indicator.
-  - name: Active Indicator
-    physical_name: active_ind
-    business_meaning_1st: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-    comment_1st: Giá trị 1 → true; 0 → false.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-          Indicator.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.ACTIVE
-        business_meaning: "Trạng thái sử dụng: true=Đang sử dụng; false=Không sử dụng"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Deleted
-          Indicator.
-  - name: Deleted Indicator
-    physical_name: deleted_ind
-    business_meaning_1st: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-    comment_1st: Giá trị 1 → true; 0 → false.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-          Indicator.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.DELETED
-        business_meaning: "Cờ xóa mềm: true=Đã xóa; false=Chưa xóa"
-        comment: Giá trị 1 → true; 0 → false. Đẩy 1:1, không gộp với Effective/Active
-          Indicator.
-  - name: Effective Start Date
-    physical_name: effective_start_dt
-    business_meaning_1st: Ngày bắt đầu hiệu lực
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.EFFECTIVE_START_DATE
-        business_meaning: Ngày bắt đầu hiệu lực
-        comment: null
-  - name: Effective End Date
-    physical_name: effective_end_dt
-    business_meaning_1st: Ngày kết thúc hiệu lực
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.EFFECTIVE_END_DATE
-        business_meaning: Ngày kết thúc hiệu lực
-        comment: null
-  - name: Version Number
-    physical_name: version_nbr
-    business_meaning_1st: Số phiên bản bản ghi tại nguồn
-    comment_1st: Đẩy 1:1 theo yêu cầu.
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.VERSION
-        business_meaning: Số phiên bản bản ghi tại nguồn
-        comment: Đẩy 1:1 theo yêu cầu.
   - name: Display Label
     physical_name: display_label
     business_meaning_1st: Nhãn hiển thị
@@ -101318,306 +100615,6 @@ entities:
         source_column: ECAT.WARD_OLD.DISPLAY_LABEL
         business_meaning: Nhãn hiển thị
         comment: Đẩy 1:1 theo yêu cầu.
-  - name: Active Reason
-    physical_name: active_reason
-    business_meaning_1st: Lý do thay đổi trạng thái sử dụng
-    comment_1st: Đẩy 1:1 theo yêu cầu.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.ACTIVE_REASON
-        business_meaning: Lý do thay đổi trạng thái sử dụng
-        comment: Đẩy 1:1 theo yêu cầu.
-  - name: Deleted Reason
-    physical_name: deleted_reason
-    business_meaning_1st: Lý do xóa
-    comment_1st: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
-      nhật — trước đây DISTRICT_OLD tưởng không có DELETED_REASON.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Cột phát hiện thêm khi đối chiếu Source/ECAT_Columns.csv bản cập
-          nhật — trước đây DISTRICT_OLD tưởng không có DELETED_REASON.
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Đẩy 1:1 theo yêu cầu.
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.DELETED_REASON
-        business_meaning: Lý do xóa
-        comment: Đẩy 1:1 theo yêu cầu.
-  - name: Created Timestamp
-    physical_name: created_tms
-    business_meaning_1st: Thời điểm bản ghi được tạo tại nguồn
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.CREATED_AT
-        business_meaning: Thời điểm bản ghi được tạo tại nguồn
-        comment: null
-  - name: Updated Timestamp
-    physical_name: updated_tms
-    business_meaning_1st: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-    comment_1st: null
-    data_domain_most: Timestamp
-    data_type_most: timestamp
-    nullable_most: false
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.UPDATED_AT
-        business_meaning: Thời điểm bản ghi được cập nhật gần nhất tại nguồn
-        comment: null
-  - name: Created By Staff Id
-    physical_name: created_by_staff_id
-    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.CREATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ tạo bản ghi
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  - name: Created By Staff Code
-    physical_name: created_by_staff_code
-    business_meaning_1st: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-      Id
-    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-      \ Code. Pending — xem ghi chú ở Created By Staff Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.CREATED_BY_ID
-        business_meaning: Mã cán bộ tạo bản ghi — lookup pair với Created By Staff
-          Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Created By Staff Id."
-  - name: Created By Staff Name
-    physical_name: created_by_staff_nm
-    business_meaning_1st: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-      tạo)
-    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-      hiển thị, không phải mã nhân viên).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.CREATED_BY_NAME
-        business_meaning: Tên người tạo bản ghi (denormalized snapshot tại thời điểm
-          tạo)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-  - name: Updated By Staff Id
-    physical_name: updated_by_staff_id
-    business_meaning_1st: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-      ghi gần nhất
-    comment_1st: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-      \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-      \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-    data_domain_most: Surrogate Key
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.UPDATED_BY_ID
-        business_meaning: FK đến Regulatory Authority Staff — cán bộ cập nhật bản
-          ghi gần nhất
-        comment: "Pending — FK target: Regulatory Authority Staff.Regulatory Authority\
-          \ Staff Id (Tier 3, chưa thiết kế — nguồn ECAT.UBCK_STAFF). Hash: hash_id('ECAT_UBCK_STAFF',\
-          \ CODE) sau khi lld_ECAT_UBCK_STAFF.yaml approved."
-  - name: Updated By Staff Code
-    physical_name: updated_by_staff_code
-    business_meaning_1st: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-      Staff Id
-    comment_1st: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-      \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.UPDATED_BY_ID
-        business_meaning: Mã cán bộ cập nhật bản ghi — lookup pair với Updated By
-          Staff Id
-        comment: "Lookup pair: Regulatory Authority Staff.Regulatory Authority Staff\
-          \ Code. Pending — xem ghi chú ở Updated By Staff Id."
-  - name: Updated By Staff Name
-    physical_name: updated_by_staff_nm
-    business_meaning_1st: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-    comment_1st: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-      hiển thị, không phải mã nhân viên).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: ECAT
-      source_tables:
-      - source_table: DISTRICT_OLD
-        source_column: ECAT.DISTRICT_OLD.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: PROVINCE_OLD
-        source_column: ECAT.PROVINCE_OLD.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
-      - source_table: WARD_OLD
-        source_column: ECAT.WARD_OLD.UPDATED_BY_NAME
-        business_meaning: Tên người cập nhật bản ghi gần nhất (denormalized snapshot)
-        comment: Denormalized snapshot — không phải Code lookup pair (nguồn lưu tên
-          hiển thị, không phải mã nhân viên).
   - name: Geographic Area Old English Name
     physical_name: geographic_area_old_english_nm
     business_meaning_1st: Tên tỉnh/thành phố cũ (tiếng Anh)

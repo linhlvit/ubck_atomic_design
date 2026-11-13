@@ -62,7 +62,7 @@ erDiagram
         date membership_start_dt
         date membership_end_dt
         string af_status_code
-        int external_reference_id
+        bigint external_reference_id
         string approval_status_code
         string approver_comment
     }

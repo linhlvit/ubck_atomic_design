@@ -1,7 +1,7 @@
 # ECAT HLD — Tier 3
 
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
-**Tier 3:** Không có entity Atomic trong scope — chưa có LLD. Các entity từng thiết kế ở tier này (Financial Market Instrument, Regulatory Authority Staff) đã gỡ khỏi HLD theo quyết định Data Modeler 2026-10-21 (LLD là chuẩn); bảng nguồn SECURITY, UBCK_STAFF nằm ở 7f Overview (nhóm `Chưa có LLD`).
+**Tier 3:** Không có entity Atomic trong scope — chưa có LLD. Các entity từng thiết kế ở tier này (Financial Market Instrument) đã gỡ khỏi HLD theo quyết định Data Modeler 2026-10-21 (LLD là chuẩn); bảng nguồn SECURITY nằm ở 7f Overview (nhóm `Chưa có LLD`).
 
 ---
 

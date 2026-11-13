@@ -3,8 +3,6 @@
 **Source system:** ECAT (Dịch vụ đồng bộ danh mục dùng chung từ HTTT)
 **Tier 2:** Không có entity Atomic trong scope — chưa có LLD. Theo quyết định Data Modeler 2026-10-21 (LLD là chuẩn), các entity từng thiết kế ở tier này (Classification Enterprise Type, Classification Security Type, Par Value, Administrative Procedure, Administrative Procedure Component, Legal Document, Working Schedule, Violation Type, Regulatory Authority Organization Unit) đã gỡ khỏi HLD; bảng nguồn tương ứng nằm ở 7f Overview (nhóm `Chưa có LLD`).
 
-> **Lưu ý FK audit:** Toàn bộ cột `CREATED_BY_ID`/`CREATED_BY_NAME`/`UPDATED_BY_ID`/`UPDATED_BY_NAME` (FK → UBCK_STAFF.ID) trên mọi bảng ECAT là **audit trail** theo pattern audit fields trong CLAUDE.md — KHÔNG tính là business dependency khi phân Tier.
-
 ---
 
 ## 6a. Bảng tổng quan BCV Concept
