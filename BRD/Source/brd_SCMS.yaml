@@ -3445,9 +3445,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: EXECUTION_TIME >= {etl_date} AND EXECUTION_TIME < {etl_date} + 1
+      filter_note: Ngày thay đổi — Append theo EXECUTION_TIME
 - brd_id: BRD-SRC-SCMS-SC_FIRM_PROFILE_HISTORY
   brd_name: Design Atomic từ nguồn SCMS bảng SC_FIRM_PROFILE_HISTORY
   type: Theo Source
