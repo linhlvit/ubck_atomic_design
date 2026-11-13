@@ -23,7 +23,7 @@ Quét `DataModel/working/Atomic/lld/**/lld_*.yaml` ngày 2026-10-23. Tổng: **2
 | 17 | AUDIT.AF_STATUS_HISTORY | af_status_history | status_tp_code | Status Type Code | `AUDIT.AF_STATUS` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_STATUS'). | approved |
 | 18 | AUDIT.AF_SUSPENSION | af_suspension | suspension_src_tp_code | Suspension Source Type Code | `AUDIT.AF_AUTHORITY` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUTHORITY'). | approved |
 | 19 | AUDIT.AF_SUSPENSION | af_suspension | suspension_tp_code | Suspension Type Code | `AUDIT.AF_ACTION_TYPE` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE'). | approved |
-| 20 | AUDIT.AF_TECHNICAL_AUDIT | af_technical_audit | action_tp_code | Action Type Code | `AUDIT.AF_INSPECTION_RESULT` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT'). | approved |
+| 20 | AUDIT.AF_TECHNICAL_AUDIT | af_technical_audit | action_tp_code | Action Type Code | `AUDIT.AF_ACTION_TYPE` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_ACTION_TYPE'). | approved |
 | 21 | AUDIT.AF_TECHNICAL_AUDIT | af_technical_audit | leadership_inspection_result_code | Leadership Inspection Result Code | `AUDIT.AF_INSPECTION_RESULT` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_RESULT'). | approved |
 | 22 | AUDIT.AF_TECHNICAL_AUDIT | af_technical_audit | leadership_audit_action_code | Leadership Audit Action Code | `AUDIT.AF_AUDIT_ACTION` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_AUDIT_ACTION'). | approved |
 | 23 | AUDIT.AF_TECHNICAL_AUDIT | af_technical_audit | inspection_unit_code | Inspection Unit Code | `AUDIT.AF_INSPECTION_UNIT` | Values load từ LOOKUP_VALUES (LOOKUP_GROUP='AF_INSPECTION_UNIT'). | approved |

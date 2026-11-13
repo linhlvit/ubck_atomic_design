@@ -17,15 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ\
-    \ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định.\
-    \ Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment\
-    \ Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv).\
-    \ BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering\
-    \ Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute\
-    \ Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA,\
-    \ SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk\
-    \ hash theo APPLICATION_CD. design_status: draft, cần review/approve lại."
+  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định. Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv). BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA, SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk hash theo APPLICATION_CD. design_status: draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -46,7 +38,7 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPLICATION_CD"
   comment: "BK chính (mã nghiệp vụ). Thay thế Code kỹ thuật (ID) — đổi sang APPLICATION_CD\
@@ -388,35 +380,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approver User Id"
-  physical_name: "approver_user_id"
-  description: "Id Login của lãnh đạo phê duyệt phương án."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.APPROVER_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Code"
-  physical_name: "approver_user_code"
-  description: "Mã người phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Approver User Name"
   physical_name: "approver_user_nm"
   description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
@@ -427,37 +390,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Id"
-  physical_name: "processor_user_id"
-  description: "Id Login của chuyên viên xử lý hồ sơ."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID) | Chưa xác nhận join key IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID\
-    \ ↔ IAM.USERS, cần Data Modeler xác nhận trước go-live."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Code"
-  physical_name: "processor_user_code"
-  description: "Mã chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -470,7 +403,7 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

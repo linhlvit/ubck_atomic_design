@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft (2026-08-15) để sửa lỗi hash-mismatch tương tự trên FK \"Securities Practitioner License Certificate Document Id\" — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER, đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml)."
+  notes: "Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch FK \"Securities Practitioner License Certificate Type Id\" — trước đây hash trực tiếp theo CERTIFICATE_ID (ID kỹ thuật) thay vì Code của bảng đích (CERTIFICATE_CODE). Hạ lại về draft (2026-08-15) để sửa lỗi hash-mismatch tương tự trên FK \"Securities Practitioner License Certificate Document Id\" — trước đây hash trực tiếp theo CERTIFICATE_RECORD_ID (ID kỹ thuật) thay vì Code của bảng đích (nay đổi từ ID sang CERTIFICATE_NUMBER, đồng bộ với đổi BK trên lld_NHNCK_CERTIFICATE_RECORDS.yaml). [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột SYNC_CREATED_AT, SYNC_UPDATED_AT khỏi Atomic (ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Securities Practitioner Organization Employment Report Id"
   physical_name: "sp_organization_employment_rpt_id"
@@ -446,32 +446,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Sync Created Timestamp"
-  physical_name: "sync_created_tms"
-  description: "Thời điểm tạo bản ghi tại hệ thống đồng bộ nguồn."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.SYNC_CREATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-- attribute_name: "Sync Updated Timestamp"
-  physical_name: "sync_updated_tms"
-  description: "Thời điểm cập nhật bản ghi tại hệ thống đồng bộ nguồn."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  status: "pending"
-  source_columns:
-  - "NHNCK.ORGANIZATION_REPORTS.SYNC_UPDATED_AT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
 - attribute_name: "Status Code"
   physical_name: "status_code"
   description: "Trạng thái bản ghi"

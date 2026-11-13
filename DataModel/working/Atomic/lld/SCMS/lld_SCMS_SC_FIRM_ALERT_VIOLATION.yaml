@@ -192,13 +192,10 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.ENTITY_ID"
-  comment: "Pending — polymorphic FK: khi ENTITY_TYPE=CTCK trỏ Securities Company;\
-    \ khi =CN_NUOC_NGOAI trỏ Securities Company Foreign Branch; khi =VPDD_NUOC_NGOAI\
-    \ trỏ Securities Company Foreign Rep Office. ETL cần resolve theo ENTITY_TYPE.\
-    \ NUMBER(10) — convert sang string."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -450,7 +447,7 @@ attributes:
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.PERIOD_VALUE"
   comment: "NUMBER(10) (integer). Cột mới trong DDL UAT 2026-08 — cần xác nhận có\
@@ -478,7 +475,7 @@ attributes:
   data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
-  status: "pending"
+  status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"
   comment: "SCHEMA_CODE=SCMS.SC_FIRM_ALERT_VIOLATION.SEVERITY_LEVEL_ALT"

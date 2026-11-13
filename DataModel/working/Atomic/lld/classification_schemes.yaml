@@ -359,9 +359,7 @@ schemes:
     name: null
     source_type: "etl_derived"
     source_table: null
-    used_in_entities:
-      - "Geographic Area"
-      - "Geographic Area Old"
+    used_in_entities: []
     values: []
 
   - scheme_code: "INDIVIDUAL_GENDER"
@@ -3088,7 +3086,10 @@ schemes:
         name: "Tỉnh/thành phố (hiện hành — post-sáp nhập 2025) — từ ECAT.PROVINCE_NEW"
         source_table: "ECAT.PROVINCE_NEW"
       - code: "WARD"
-        name: "Phường/Xã/Thị trấn (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW"
+        name: "Phường (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW, CATEGORY = '1'"
+        source_table: "ECAT.WARD_NEW"
+      - code: "COMMUNE"
+        name: "Xã (hiện hành — post-sáp nhập 2025) — từ ECAT.WARD_NEW, CATEGORY = '2'"
         source_table: "ECAT.WARD_NEW"
 
   - scheme_code: "GEOGRAPHIC_AREA_OLD_TYPE"
@@ -3578,14 +3579,6 @@ schemes:
     name: "Hành động xử lý sau kiểm tra hồ sơ kiểm toán — AUDIT"
     source_type: "source_table"
     source_table: "AUDIT.AF_TECHNICAL_AUDIT.AUDIT_ACTION_CD"
-    used_in_entities:
-      - "Audit Firm Technical Audit"
-    values: []
-
-  - scheme_code: "AUDIT_AF_TECHNICAL_AUDIT_ACTION_TYPE"
-    name: "Loại hành động xử lý sau kiểm tra hồ sơ kiểm toán — AUDIT"
-    source_type: "source_table"
-    source_table: "AUDIT.AF_TECHNICAL_AUDIT.ACTION_TYPE_CD"
     used_in_entities:
       - "Audit Firm Technical Audit"
     values: []

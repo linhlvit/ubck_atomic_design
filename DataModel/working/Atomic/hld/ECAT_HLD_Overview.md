@@ -40,7 +40,7 @@ graph TD
 
 | # | Quyết định | Lý do |
 |---|---|---|
-| D-01 | Audit FK `CREATED_BY_ID`/`UPDATED_BY_ID` (→ UBCK_STAFF.ID) trên mọi bảng ECAT không tính là business dependency khi phân Tier. | Đây là audit trail chuẩn (INPUTTER/AUTHORISER pattern, CLAUDE.md), không phải quan hệ nghiệp vụ. |
+| D-01 | Các cột `CREATED_BY_ID`/`CREATED_BY_NAME`/`UPDATED_BY_ID`/`UPDATED_BY_NAME` không thiết kế lên Atomic. | Bảng nguồn `UBCK_STAFF` không còn được sử dụng (`out_of_scope`, Data Modeler 2026-11-13), nên các bảng ECAT không còn dependency tới bảng này khi phân Tier. |
 | D-02 | Đa số bảng "Danh mục X" (Code + Name + cờ trạng thái, không instance data thực) → Classification Value, không tạo Atomic entity riêng. | Theo rule mặc định CLAUDE.md #11 (reference data set vs entity concept) và tiền lệ dự án (xem `classification_schemes.yaml`). |
 | D-03 | CURRENCY xử lý như Classification Value (1 field Code, không cặp Id+Code), không tạo Atomic entity `Currency`. | CLAUDE.md rule #4 "Tương tự cho Currency". |
 | D-04 | Chỉ giữ trong HLD các bảng ECAT đã có LLD (7 bảng Geographic Area); các bảng khác gỡ khỏi HLD, đưa vào 7f nhóm `Chưa có LLD`. | Quyết định Data Modeler 2026-10-21: LLD đã đủ cho dự án, HLD có mà LLD chưa làm là sai → lấy LLD làm chuẩn. |
