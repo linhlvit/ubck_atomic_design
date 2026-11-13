@@ -376,7 +376,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — role Certificate Date (ngày GCN/CV cấp phép chào bán), trục kỳ Tháng/Quý/Năm của Nhóm 23–26/28/46 | 1 ngày dương lịch | K_VP_1 |
-| Fact Securities Offering Event | Fact Event | new | Đợt chào bán/phát hành đã cấp phép của CTĐC (IDS), CTCK (SCMS), CTQLQ (FMS): kế hoạch và kết quả theo hình thức phát hành; nhóm hình thức + cờ huy động vốn gán tại ETL theo bảng ánh xạ BA; nhánh SCMS chờ Atomic map PLAN_JSON/RESULT_JSON [MỚI 2026-11-10, O_VP_75] | 1 đợt × 1 hình thức (IDS: × tên CK) của 1 nguồn (PK hash Dạng B) | K_VP_390–433 |
+| Fact Securities Offering Event | Fact Event | new | Đợt chào bán/phát hành đã cấp phép của CTĐC (IDS), CTCK (SCMS), CTQLQ (FMS): kế hoạch và kết quả theo hình thức phát hành; nhóm hình thức + cờ huy động vốn gán tại ETL theo bảng ánh xạ BA; nhánh SCMS đọc Atomic `sc_disclosure_securities_offering_item` (gộp theo hình thức) [MỚI 2026-11-10, O_VP_75] [SỬA 2026-11-13, O_VP_78] | 1 đợt × 1 hình thức (IDS: × tên CK) của 1 nguồn (PK hash Dạng B) | K_VP_390–433 |
 
 ## Nhóm 26/28 - Huy động vốn >> Biểu đồ GT huy động vốn qua phát hành CP, TPDN, TPCP và GT phát hành TPDN theo hình thức
 
