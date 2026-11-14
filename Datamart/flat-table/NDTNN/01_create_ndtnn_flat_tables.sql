@@ -358,11 +358,46 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_report_
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
 
     -- From: CALENDAR DATE DIMENSION
-    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension'
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+
+    -- [MỚI 2026-11-14, O_NDTNN_60] đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    rpt_dt_dim_id                                Nullable(String)        COMMENT 'FK to Calendar Date Dimension (Role-Playing: Report Date) — ngày báo cáo (BA STT 6/7 từ 2026-11-13: day_report = :ngaybc; FIMS RPTMEMBER.DayReport → fir_value.rpt_day), khác ngày nộp (snpst_dt_dim_id) và khác kỳ báo cáo (period_val). Nullable khi lần nộp không có DayReport. Nhóm 6/7 lọc theo cột này; Nhóm 4/12/17 vẫn lọc theo snpst_dt_dim_id. [MỚI 2026-11-14, O_NDTNN_60]',
+    asset_class_total_val                        Nullable(Decimal(23,2)) COMMENT 'Tổng giá trị 6 nhóm tài sản của dòng báo cáo = tín phiếu + trái phiếu (3 kỳ hạn) + CP/CCQ niêm yết + UPCoM + vốn góp + tiền (NULL tính 0). SQL BA mới của STT 6/7 (2026-11-13) cộng 8 column_path thành phần (c_gtri_danh_muc) thay vì đọc cột tổng Tổng giá trị danh mục > Giá trị (total_portfolio_val, giữ nguyên cho Nhóm 4/12/17 và K_NDTNN_41/42). [MỚI 2026-11-14, O_NDTNN_60]',
+    rpt_cdr_dt                                 Nullable(Date)             COMMENT 'Ngày báo cáo (ngày chốt số liệu) — từ Calendar Date Dimension (role Report Date)'
 
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), assumeNotNull(rpt_log_id), assumeNotNull(section_id), dynamic_row_order)
 COMMENT 'Flat table — Fact Foreign Investor Portfolio Report Snapshot × Calendar Date Dimension'
+;
+
+
+-- ==========================================================
+-- 11. FACT: ndtnn_fct_foreign_bank_branch_portfolio_report_snpst_flat
+--    Số dư cuối kỳ danh mục của chi nhánh ngân hàng nước ngoài (sheet III báo cáo PLIII-TT51 59WJB) — Nhóm 6 (K_NDTNN_265), Nhóm 7 (thành phần sheet III)
+--    Grain: 1 ô 'Số dư cuối kỳ > Giá trị' của 1 dòng tài sản × 1 lần nộp; PK fir_val_id (Dạng A, id dòng Atomic fir_value)
+--    [MỚI 2026-11-14, O_NDTNN_60] BI Nhóm 6/7 lọc theo rpt_cdr_dt (ngày báo cáo, BA day_report), KHÔNG phải snpst_cdr_dt (ngày nộp)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_bank_branch_portfolio_report_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Bank Branch Portfolio Report Snapshot
+    fir_val_id                                   String                  COMMENT 'PK — id dòng Atomic driving fir_value.fir_val_id (Dạng A, A22). Grain = 1 ô Số dư cuối kỳ > Giá trị của 1 dòng',
+    snpst_dt_dim_id                              String                  COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
+    rpt_dt_dim_id                                Nullable(String)        COMMENT 'FK to Calendar Date Dimension (Role-Playing: Report Date) — ngày báo cáo (BA STT 6/7: day_report = :ngaybc; FI',
+    rpt_log_id                                   Nullable(String)        COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
+    period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA: Tháng',
+    rpt_code                                     Nullable(String)        COMMENT 'Mã báo cáo — luôn 59WJB (PLIII-TT51, báo cáo của CTCK) theo BA STT 6/7: chi nhánh ngân hàng nước ngoài chỉ lấy',
+    asset_group_nm                               Nullable(String)        COMMENT 'Đường dẫn dòng tài sản của sheet III (row_path), VD A. Tín phiếu, B. Trái phiếu > B1.…, C. Cổ phiếu niêm yết, ',
+    closing_balance_val                          Nullable(Decimal(23,2)) COMMENT 'Số dư cuối kỳ (cột Số dư cuối kỳ > Giá trị) của dòng tài sản — K_NDTNN_265 = SUM toàn bộ dòng (SQL BA STT 6 kh',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+    rpt_cdr_dt                                 Nullable(Date)             COMMENT 'Ngày báo cáo (ngày chốt số liệu) — từ Calendar Date Dimension (role Report Date)'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), fir_val_id)
+COMMENT 'Flat table — Fact Foreign Bank Branch Portfolio Report Snapshot × Calendar Date Dimension'
 ;

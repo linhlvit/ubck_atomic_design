@@ -364,10 +364,44 @@ SELECT
     f.transaction_cd,
     f.src_stm_code,
 
-    submission_cal.cdr_dt AS snpst_cdr_dt
+    submission_cal.cdr_dt AS snpst_cdr_dt,
+
+    f.rpt_dt_dim_id,              -- [MỚI 2026-11-14, O_NDTNN_60] 3 cột cuối khớp ALTER TABLE ADD COLUMN
+    f.asset_class_total_val,
+    nullIf(rpt_cal.cdr_dt, toDate('1970-01-01')) AS rpt_cdr_dt   -- LEFT JOIN không khớp (DayReport NULL) trả 1970-01-01 khi join_use_nulls=0 → ép về NULL
 
 FROM datamart.fct_foreign_investor_portfolio_report_snpst f
 JOIN datamart.cdr_dt_dim submission_cal
     ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim rpt_cal
+    ON rpt_cal.cdr_dt_dim_id = f.rpt_dt_dim_id
+WHERE submission_cal.cdr_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 11. FACT: ndtnn_fct_foreign_bank_branch_portfolio_report_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.ndtnn_fct_foreign_bank_branch_portfolio_report_snpst_flat ON CLUSTER 'my_cluster'
+WHERE snpst_cdr_dt = :etl_date;
+INSERT INTO datamart.ndtnn_fct_foreign_bank_branch_portfolio_report_snpst_flat
+SELECT
+    f.fir_val_id,
+    f.snpst_dt_dim_id,
+    f.rpt_dt_dim_id,
+    f.rpt_log_id,
+    f.period_val,
+    f.rpt_code,
+    f.asset_group_nm,
+    f.closing_balance_val,
+    f.src_stm_code,
+
+    submission_cal.cdr_dt AS snpst_cdr_dt,
+    nullIf(rpt_cal.cdr_dt, toDate('1970-01-01')) AS rpt_cdr_dt   -- LEFT JOIN không khớp (DayReport NULL) trả 1970-01-01 khi join_use_nulls=0 → ép về NULL
+FROM datamart.fct_foreign_bank_branch_portfolio_report_snpst f
+JOIN datamart.cdr_dt_dim submission_cal
+    ON submission_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim rpt_cal
+    ON rpt_cal.cdr_dt_dim_id = f.rpt_dt_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;

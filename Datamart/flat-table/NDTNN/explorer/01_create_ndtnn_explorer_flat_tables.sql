@@ -8,7 +8,7 @@
 -- Chỉ ĐỔI TÊN bảng/cột; giữ nguyên số cột, thứ tự cột, kiểu, DEFAULT, ORDER BY và ngữ nghĩa engine của DDL gốc.
 --
 -- TRẠNG THÁI: CHỈ CÓ DDL. Chưa có LLD, Entities, khối INSERT (02_populate), chưa vào Gate 4 — file nằm ở thư mục con explorer/
--- (cùng cách GSTT/buffer/) nên Gate 4 (chỉ quét 01_create*.sql ở thư mục module) không đọc. Chờ job ODS FIMS của dev (Open Item sẽ mở là O_NDTNN_60)
+-- (cùng cách GSTT/buffer/) nên Gate 4 (chỉ quét 01_create*.sql ở thư mục module) không đọc. Chờ job ODS FIMS của dev (Open Item sẽ mở là O_NDTNN_61)
 -- để viết LLD + INSERT…SELECT; khi đó chuyển 2 khối này vào 01_create_ndtnn_flat_tables.sql (khối #11, #12).
 --
 -- Quyết định Data Modeler 2026-11-13: (1) giữ rpt_log_id UInt64 làm version column của ReplacingMergeTree (lần nộp có id lớn nhất thắng,
