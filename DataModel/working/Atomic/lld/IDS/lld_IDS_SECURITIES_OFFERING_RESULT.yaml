@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Con của Public Company Securities Offering (T3) — 1-N. OFFERING_METHOD_CD lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot). Bổ sung Extension Date, Bond Ticker, Result Single Object sau review coverage 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml)."
+  notes: "Con của Public Company Securities Offering (T3) — 1-N. OFFERING_METHOD_CD lấy từ bảng SECURITIES_OFFERING_PLAN theo BRD note (denormalized snapshot). Bổ sung Extension Date, Bond Ticker, Result Single Object sau review coverage 2026-08-06 (gap so với IDS_Columns.csv) — downgrade approved→draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml). [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột PROCESSOR_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Securities Offering Result Id"
   physical_name: "pc_securities_offering_result_id"
@@ -683,19 +683,6 @@ attributes:
   status: "draft"
   source_columns:
   - "IDS.SECURITIES_OFFERING_RESULT.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Name"
-  physical_name: "processor_user_nm"
-  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME"
   comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null

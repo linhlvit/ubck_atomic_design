@@ -24,7 +24,7 @@ metadata:
     \ Target Description — trước đó 'Offeror Relationship Description'), xóa 6 attribute\
     \ không có cột nguồn hỗ trợ (Offeror Identification Number/OFFEROR_ID_NO, Acquired/Post\
     \ Offer Quantity/Ratio, Sync Indicator), bổ sung 24 attribute cho cột thật chưa\
-    \ thiết kế."
+    \ thiết kế. [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_NAME / PROCESSOR_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Tender Offer Id"
   physical_name: "pc_tender_offer_id"
@@ -455,32 +455,6 @@ attributes:
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.APPROVAL_STATUS_CD"
   comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Name"
-  physical_name: "approver_user_nm"
-  description: "Lãnh đạo duyệt phương án."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Name"
-  physical_name: "processor_user_nm"
-  description: "Chuyên viên xử lý."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_NAME"
-  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

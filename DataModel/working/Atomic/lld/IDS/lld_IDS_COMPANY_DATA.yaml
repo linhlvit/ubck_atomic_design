@@ -43,7 +43,7 @@ metadata:
     \ về draft để chờ review lại toàn bộ (không chỉ 11 cột mới). Table Type Fundamental\
     \ → Relative (2026-09-15, theo yêu cầu tường minh Data Modeler). FK \"Financial\
     \ Report Template Id/Code\" đổi tên thành \"Financial Report Id/Code\" cùng đợt\
-    \ — theo đúng việc đổi tên entity FORMS (xem atomic_entities.yaml)."
+    \ — theo đúng việc đổi tên entity FORMS (xem atomic_entities.yaml). [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Report Submission Id"
   physical_name: "pc_rpt_submission_id"
@@ -650,20 +650,6 @@ attributes:
   - "IDS.COMPANY_DATA.COMPANY_TREASURY_SHARE_ID"
   comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code.\
     \ Pair with Public Company Treasury Share Transaction Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Name"
-  physical_name: "approver_user_nm"
-  description: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "approved"
-  source_columns:
-  - "IDS.COMPANY_DATA.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

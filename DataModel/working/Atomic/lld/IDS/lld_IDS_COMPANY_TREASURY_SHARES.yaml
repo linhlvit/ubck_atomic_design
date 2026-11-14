@@ -20,7 +20,7 @@ metadata:
   notes: "Entity mới (2026-08-09) — tách khỏi Public Company Treasury Stock Activity\
     \ (COMPANY_TREASURY_STOCKS, chỉ là thống kê tổng hợp theo năm). Bảng này lưu từng\
     \ đợt/phương án mua-bán cổ phiếu quỹ có quy trình phê duyệt riêng. Xem IDS_HLD_Tier2.md\
-    \ 6f T2-17."
+    \ 6f T2-17. [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_NAME / PROCESSOR_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Treasury Share Transaction Id"
   physical_name: "pc_treasury_share_transaction_id"
@@ -189,32 +189,6 @@ attributes:
   - "IDS.COMPANY_TREASURY_SHARES.ADMINISTRATIVE_STATUS_CD"
   comment: "SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES\
     \ (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS')."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Name"
-  physical_name: "approver_user_nm"
-  description: "Lãnh đạo phê duyệt phương án."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Name"
-  physical_name: "processor_user_nm"
-  description: "Chuyên viên xử lý hồ sơ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_NAME"
-  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

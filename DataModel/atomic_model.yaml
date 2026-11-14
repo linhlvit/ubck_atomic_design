@@ -982,7 +982,7 @@ entities:
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
     comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-      \ Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
+      \ Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -994,11 +994,9 @@ entities:
       source_tables:
       - source_table: MB_FUND
         source_column: FMS.NATIONAL.CODE
-        business_meaning: Mã quốc gia/quốc tịch (CODE từ FMS.NATIONAL).
+        business_meaning: Mã quốc gia/quốc tịch.
         comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
-          \ Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID).\
-          \ Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết xem comment\
-          \ Nationality Id."
+          \ Id."
   - name: Classification FMS Stockholder Type Id
     physical_name: cl_fms_stockholder_tp_id
     business_meaning_1st: "FK -> STOCKHOLDER_TYPE: Loại cổ đông thành viên."
@@ -13442,48 +13440,6 @@ entities:
           Chờ duyệt; Đã duyệt; Từ chối).
         comment: SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='SO_APPROVAL_STATUS').
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning_1st: Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn,
-      độc lập với Approver User Code).
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-      đi kèm.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: SECURITIES_OFFERING
-        source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_NAME
-        business_meaning: Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn,
-          độc lập với Approver User Code).
-        comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-          đi kèm.
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning_1st: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
-      tại IDS).
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-      đi kèm.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: SECURITIES_OFFERING
-        source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME
-        business_meaning: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
-          tại IDS).
-        comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-          đi kèm.
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.
@@ -15564,27 +15520,6 @@ entities:
           phê duyệt dữ liệu phương án — snapshot text).
         comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
           đi kèm.
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning_1st: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
-      tại IDS).
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-      đi kèm.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: SECURITIES_OFFERING_RESULT
-        source_column: IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME
-        business_meaning: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
-          tại IDS).
-        comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
-          đi kèm.
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.
@@ -16673,40 +16608,6 @@ entities:
         business_meaning: Trạng thái phê duyệt phương án.
         comment: SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='SO_APPROVAL_STATUS').
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning_1st: Lãnh đạo duyệt phương án.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TENDER_OFFER
-        source_column: IDS.COMPANY_TENDER_OFFER.APPROVER_USER_NAME
-        business_meaning: Lãnh đạo duyệt phương án.
-        comment: null
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning_1st: Chuyên viên xử lý.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TENDER_OFFER
-        source_column: IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_NAME
-        business_meaning: Chuyên viên xử lý.
-        comment: null
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.
@@ -17155,42 +17056,6 @@ entities:
         business_meaning: Trạng thái phê duyệt kết quả.
         comment: SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='SO_APPROVAL_STATUS').
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning_1st: Lãnh đạo duyệt kết quả.
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,
-      khác với pattern Code (lookup qua Id).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TENDER_OFFER_RESULT
-        source_column: IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_NAME
-        business_meaning: Lãnh đạo duyệt kết quả.
-        comment: Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,
-          khác với pattern Code (lookup qua Id).
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning_1st: Chuyên viên xử lý.
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID.
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TENDER_OFFER_RESULT
-        source_column: IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_NAME
-        business_meaning: Chuyên viên xử lý.
-        comment: Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID.
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.
@@ -17498,40 +17363,6 @@ entities:
         business_meaning: Trạng thái thủ tục hành chính.
         comment: SCHEMA_CODE=IDS.SO_ADMINISTRATIVE_STATUS. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='SO_ADMINISTRATIVE_STATUS').
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning_1st: Lãnh đạo phê duyệt phương án.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TREASURY_SHARES
-        source_column: IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_NAME
-        business_meaning: Lãnh đạo phê duyệt phương án.
-        comment: null
-  - name: Processor User Name
-    physical_name: processor_user_nm
-    business_meaning_1st: Chuyên viên xử lý hồ sơ.
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_TREASURY_SHARES
-        source_column: IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_NAME
-        business_meaning: Chuyên viên xử lý hồ sơ.
-        comment: null
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.
@@ -18789,8 +18620,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: BANK_PERIODIC_REPORT.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -18803,16 +18636,15 @@ entities:
       - source_table: BANK_PERIODIC_REPORT
         source_column: SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID
         business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: BANK_PERIODIC_REPORT.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
     comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id. Giá trị lấy từ\
-      \ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join BANK_PERIODIC_REPORT.EVENT_TYPE_ID\
-      \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-      \ Event Type Id."
+      \ Pair with Classification Securities Company Event Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -18826,10 +18658,7 @@ entities:
         source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
         business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
         comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id. Giá trị lấy\
-          \ từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join BANK_PERIODIC_REPORT.EVENT_TYPE_ID\
-          \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-          \ Event Type Id."
+          \ Pair with Classification Securities Company Event Type Id."
   - name: Report Name
     physical_name: rpt_nm
     business_meaning_1st: Tên báo cáo/biểu mẫu.
@@ -19215,8 +19044,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -19229,13 +19060,17 @@ entities:
       - source_table: SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT
         source_column: SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID
         business_meaning: FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
       - source_table: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT
         source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID
         business_meaning: FK đến loại sự kiện pháp lý tương ứng với báo cáo định kỳ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự kiện pháp lý.
@@ -26674,7 +26509,9 @@ entities:
     physical_name: risk_ind_category_code
     business_meaning_1st: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị\
       \ trường cổ phiếu)."
-    comment_1st: SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY
+    comment_1st: "SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY. Cần ETL crosswalk sang\
+      \ MRMS.RISK_INDICATOR_CATEGORY: RISK_INDICATOR.CATEGORY_ID = RISK_INDICATOR_CATEGORY.ID\
+      \ để xác nhận CATEGORY_CODE."
     data_domain_most: Classification Value
     data_type_most: string
     nullable_most: true
@@ -26688,7 +26525,9 @@ entities:
         source_column: MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE
         business_meaning: "Mã nhóm chỉ tiêu (VD: Yếu tố vĩ mô, Yếu tố tiền tệ, Thị\
           \ trường cổ phiếu)."
-        comment: SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY
+        comment: "SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY. Cần ETL crosswalk sang\
+          \ MRMS.RISK_INDICATOR_CATEGORY: RISK_INDICATOR.CATEGORY_ID = RISK_INDICATOR_CATEGORY.ID\
+          \ để xác nhận CATEGORY_CODE."
   - name: Set Type Code
     physical_name: set_tp_code
     business_meaning_1st: "Bộ chỉ tiêu: 1=Trong nước, 2=Quốc tế."
@@ -27113,7 +26952,7 @@ entities:
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự\
       \ vụ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-      \ ID)."
+      \ EVENT_TYPE_CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -27124,11 +26963,11 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: CAT_EVENT_TYPE
-        source_column: SCMS.CAT_EVENT_TYPE.ID
+        source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự\
           \ vụ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-          \ ID)."
+          \ EVENT_TYPE_CODE)."
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã sự vụ (thành lập, điều chỉnh vốn, thay đổi tên). BK của
@@ -28098,7 +27937,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -49826,27 +49665,6 @@ entities:
         business_meaning: Mã phương án mua/bán cổ phiếu quỹ (denormalized lookup).
         comment: "Lookup pair: pc_treasury_share_transaction.pc_treasury_share_transaction_code.\
           \ Pair with Public Company Treasury Share Transaction Id."
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning_1st: Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join
-      auth-service).
-    comment_1st: Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,
-      khác với pattern Code (lookup qua Id).
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: IDS
-      source_tables:
-      - source_table: COMPANY_DATA
-        source_column: IDS.COMPANY_DATA.APPROVER_USER_NAME
-        business_meaning: Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join
-          auth-service).
-        comment: Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,
-          khác với pattern Code (lookup qua Id).
   - name: Flattened Indicator
     physical_name: flattened_ind
     business_meaning_1st: Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1).
@@ -51850,8 +51668,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -51864,8 +51684,10 @@ entities:
       - source_table: SC_FIRM_ADHOC_REPORT
         source_column: SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID
         business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
@@ -52367,8 +52189,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -52381,8 +52205,10 @@ entities:
       - source_table: SC_FIRM_PERIODIC_REPORT
         source_column: SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID
         business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ (CAT_EVENT_TYPE).
@@ -56193,9 +56019,7 @@ entities:
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ.
     comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id. Giá trị lấy từ\
-      \ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL crosswalk — chi tiết xem comment\
-      \ Classification Securities Company Event Type Id."
+      \ Pair with Classification Securities Company Event Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -56209,9 +56033,7 @@ entities:
         source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
         business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
         comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id. Giá trị lấy\
-          \ từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL crosswalk — chi tiết xem\
-          \ comment Classification Securities Company Event Type Id."
+          \ Pair with Classification Securities Company Event Type Id."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -66214,8 +66036,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -66228,16 +66052,15 @@ entities:
       - source_table: DISCLOSURE_SECURITIES_OFFERING
         source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID
         business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ.
     comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id. Giá trị lấy từ\
-      \ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID\
-      \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-      \ Event Type Id."
+      \ Pair with Classification Securities Company Event Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -66251,10 +66074,7 @@ entities:
         source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
         business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
         comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id. Giá trị lấy\
-          \ từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID\
-          \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-          \ Event Type Id."
+          \ Pair with Classification Securities Company Event Type Id."
   - name: Offering Type Code
     physical_name: offering_tp_code
     business_meaning_1st: Loại chào bán.
@@ -67697,8 +67517,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: FK đến loại sự vụ/sự kiện nghiệp vụ.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -67711,8 +67533,10 @@ entities:
       - source_table: SC_FIRM_PROFILE_CHANGE
         source_column: SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID
         business_meaning: FK đến loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ.
@@ -72956,10 +72780,10 @@ entities:
   - name: Foreign Capital Ratio
     physical_name: foreign_capital_ratio
     business_meaning_1st: Tỷ trọng vốn nước ngoài (%).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    comment_1st: Giữ nguyên giá trị text từ nguồn (VARCHAR2(200)) theo quyết định
+      Data Modeler 2026-11-14 — không cast sang số.
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -72970,8 +72794,8 @@ entities:
       - source_table: TAX_REGISTRATION_INFO
         source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO
         business_meaning: Tỷ trọng vốn nước ngoài (%).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần
-          validate không có giá trị non-numeric.
+        comment: Giữ nguyên giá trị text từ nguồn (VARCHAR2(200)) theo quyết định
+          Data Modeler 2026-11-14 — không cast sang số.
   - name: Temporary Suspension From Date
     physical_name: temporary_suspension_from_dt
     business_meaning_1st: Tạm nghỉ/từ ngày.
@@ -89634,8 +89458,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: Loại sự vụ/sự kiện nghiệp vụ.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID\
+      \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -89648,13 +89474,17 @@ entities:
       - source_table: SC_FIRM_FOREIGN_BRANCH
         source_column: SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID
         business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
       - source_table: SC_FIRM_FOREIGN_REP_OFFICE
         source_column: SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID
         business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ.
@@ -91987,8 +91817,10 @@ entities:
   - name: Classification Securities Company Event Type Id
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: Loại sự vụ/sự kiện nghiệp vụ.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_REP_OFFICE.EVENT_TYPE_ID =\
+      \ CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+      \ EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -92001,13 +91833,17 @@ entities:
       - source_table: SC_FIRM_REP_OFFICE
         source_column: SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID
         business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_REP_OFFICE.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)"
       - source_table: SC_FIRM_TRANSACTION_OFFICE
         source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID
         business_meaning: Loại sự vụ/sự kiện nghiệp vụ.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID\
+          \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+          \ EVENT_TYPE_CODE)."
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Loại sự vụ/sự kiện nghiệp vụ.
@@ -95852,8 +95688,9 @@ entities:
     physical_name: cl_sc_event_tp_id
     business_meaning_1st: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Securities
       Company Event Type.
-    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-      \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment_1st: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+      \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+      \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -95867,16 +95704,14 @@ entities:
         source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
         business_meaning: Loại sự vụ/sự kiện nghiệp vụ — FK tới Classification Securities
           Company Event Type.
-        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash:\
-          \ hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+        comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần\
+          \ ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+          \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   - name: Classification Securities Company Event Type Code
     physical_name: cl_sc_event_tp_code
     business_meaning_1st: Mã loại sự vụ/sự kiện nghiệp vụ.
     comment_1st: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-      \ Pair with Classification Securities Company Event Type Id. Giá trị lấy từ\
-      \ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID\
-      \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-      \ Event Type Id."
+      \ Pair with Classification Securities Company Event Type Id."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -95890,10 +95725,7 @@ entities:
         source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
         business_meaning: Mã loại sự vụ/sự kiện nghiệp vụ.
         comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code.\
-          \ Pair with Classification Securities Company Event Type Id. Giá trị lấy\
-          \ từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID\
-          \ = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company\
-          \ Event Type Id."
+          \ Pair with Classification Securities Company Event Type Id."
   - name: Financial Report Type Code
     physical_name: fr_tp_code
     business_meaning_1st: "Loại báo cáo tài chính: RIENG_LE=Riêng lẻ; HOP_NHAT=Hợp\

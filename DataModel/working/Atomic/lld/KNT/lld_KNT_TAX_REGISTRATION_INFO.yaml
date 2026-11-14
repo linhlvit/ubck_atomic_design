@@ -419,17 +419,16 @@ attributes:
 - attribute_name: "Foreign Capital Ratio"
   physical_name: "foreign_capital_ratio"
   description: "Tỷ trọng vốn nước ngoài (%)."
-  data_domain: "Percentage"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: "Giữ nguyên giá trị text từ nguồn (VARCHAR2(200)) theo quyết định Data Modeler 2026-11-14 — không cast sang số."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "string"
 - attribute_name: "Temporary Suspension From Date"
   physical_name: "temporary_suspension_from_dt"
   description: "Tạm nghỉ/từ ngày."

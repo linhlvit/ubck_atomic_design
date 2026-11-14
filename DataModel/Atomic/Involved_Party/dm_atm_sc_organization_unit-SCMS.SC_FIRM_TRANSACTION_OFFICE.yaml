@@ -200,7 +200,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_TRANSACTION_OFFICE
     source_column: SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID
-    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)."
     classification_context: null
     etl_derived_value: null
 

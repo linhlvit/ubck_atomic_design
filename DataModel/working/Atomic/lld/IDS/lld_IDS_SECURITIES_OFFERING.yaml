@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định. Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv). BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA, SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk hash theo APPLICATION_CD. design_status: draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml)."
+  notes: "FK loại trừ nhau (per HLD Tier3 T3-04, xác nhận): Public Company Id (tổ chức) hoặc Legal Entity Id (cá nhân) — dùng APPLICANT_TYPE_FLG để xác định. Giữ cả 2 FK nullable trên Atomic entity. Bổ sung Submission Date, Project Investment Indicator, Capital Purpose sau review coverage 2026-08-06 (gap so với IDS_Columns.csv). BK đổi sang APPLICATION_CD (2026-08-14): Public Company Securities Offering Code nay map từ APPLICATION_CD thay vì ID kỹ thuật (đúng rule 3e); loại bỏ attribute Application Code trùng lặp — xem pending_design.yaml. 3 FK con (COMPANY_DATA, SECURITIES_OFFERING_PLAN, SECURITIES_OFFERING_RESULT) đã sửa sang crosswalk hash theo APPLICATION_CD. design_status: draft, cần review/approve lại. [2026-11-13] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_ID, PROCESSOR_USER_ID khỏi Atomic (ghi trong pending_design.yaml). [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_NAME / PROCESSOR_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Securities Offering Id"
   physical_name: "pc_securities_offering_id"
@@ -377,33 +377,6 @@ attributes:
   source_columns:
   - "IDS.SECURITIES_OFFERING.APPROVAL_STATUS_CD"
   comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Name"
-  physical_name: "approver_user_nm"
-  description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
-    \ với Approver User Code)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Name"
-  physical_name: "processor_user_nm"
-  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

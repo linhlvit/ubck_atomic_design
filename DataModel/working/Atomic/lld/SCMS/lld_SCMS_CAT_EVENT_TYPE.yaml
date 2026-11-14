@@ -26,7 +26,7 @@ metadata:
     \ Table Type = Relative theo chỉ đạo tường minh (khác 3 entity Classification\
     \ cùng nhóm) — bảng không FK nghiệp vụ rõ ràng đến 1 Fundamental entity khác trong\
     \ scope hiện tại, xem 6f T1-07. BK dùng EVENT_TYPE_CODE; surrogate Id hash từ\
-    \ ID kỹ thuật. Nhiều cột không có mô tả gốc (TARGET_ENTITY, EVENT_GROUP_ID, CYCLE,\
+    \ EVENT_TYPE_CODE (BK) — đổi từ hash theo ID kỹ thuật theo yêu cầu Data Modeler 2026-11-14, đối xứng CAT_SC_FIRM_STATUS. Nhiều cột không có mô tả gốc (TARGET_ENTITY, EVENT_GROUP_ID, CYCLE,\
     \ FREQUENCY, SUBMISSION_METHOD, DEADLINE_CALCULATION_METHOD) — tạm gán Classification\
     \ Value/Text theo cấu trúc cột, cần profile dữ liệu trước ETL. EVENT_GROUP_ID\
     \ map 1:1 thành Event Group Code theo chỉ đạo Data Modeler (2026-07-10) — không\
@@ -41,10 +41,10 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "SCMS.CAT_EVENT_TYPE.ID"
+  - "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự vụ\
     \ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ ID)."
+    \ EVENT_TYPE_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

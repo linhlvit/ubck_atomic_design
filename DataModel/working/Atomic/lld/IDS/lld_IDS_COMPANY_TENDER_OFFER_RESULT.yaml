@@ -26,7 +26,7 @@ metadata:
     \ theo yêu cầu tường minh Data Modeler. Approver/Processor User mirror pattern\
     \ đã duyệt ở lld_IDS_SECURITIES_OFFERING_RESULT.yaml (status pending — chưa xác\
     \ nhận join key sang IAM.USERS). Audit block (CREATED_BY/CREATED_DATE/UPDATED_BY/UPDATED_DATE)\
-    \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml)."
+    \ loại bỏ — mirror quyết định đã áp dụng cho toàn phân hệ IDS (xem pending_design.yaml). [2026-11-14] Theo yêu cầu Data Modeler: bỏ thiết kế các cột APPROVER_USER_NAME / PROCESSOR_USER_NAME khỏi Atomic (denormalized snapshot tên người dùng, ghi trong pending_design.yaml)."
 attributes:
 - attribute_name: "Public Company Tender Offer Result Id"
   physical_name: "pc_tender_offer_result_id"
@@ -289,33 +289,6 @@ attributes:
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVAL_STATUS_CD"
   comment: "SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='SO_APPROVAL_STATUS')."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Name"
-  physical_name: "approver_user_nm"
-  description: "Lãnh đạo duyệt kết quả."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Name"
-  physical_name: "processor_user_nm"
-  description: "Chuyên viên xử lý."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -638,20 +638,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approver User Name
-    physical_name: approver_user_nm
-    business_meaning: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_DATA
-    source_column: IDS.COMPANY_DATA.APPROVER_USER_NAME
-    comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Flattened Indicator
     physical_name: flattened_ind
     business_meaning: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng cho tin định kỳ (DINH_KY); reader batch lọc = 0."

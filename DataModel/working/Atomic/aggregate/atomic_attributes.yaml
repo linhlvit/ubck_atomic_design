@@ -11376,39 +11376,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Approver User Name"
-  description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
-    \ với Approver User Code)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
-  atomic_attribute: "Processor User Name"
-  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING"
-  source_column: "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering"
-  atomic_column: "processor_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering"
   atomic_attribute: "Revision Reason"
   description: "Lý do chỉnh sửa."
   data_domain: "Text"
@@ -13271,22 +13238,6 @@ attributes:
   atomic_column: "approver_user_nm_snpst"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering Result"
-  atomic_attribute: "Processor User Name"
-  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "SECURITIES_OFFERING_RESULT"
-  source_column: "IDS.SECURITIES_OFFERING_RESULT.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_securities_offering_result"
-  atomic_column: "processor_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Securities Offering Result"
   atomic_attribute: "Revision Reason"
   description: "Lý do chỉnh sửa."
   data_domain: "Text"
@@ -14257,38 +14208,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer"
-  atomic_attribute: "Approver User Name"
-  description: "Lãnh đạo duyệt phương án."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER"
-  source_column: "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer"
-  atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer"
-  atomic_attribute: "Processor User Name"
-  description: "Chuyên viên xử lý."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER"
-  source_column: "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer"
-  atomic_column: "processor_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Revision Reason"
   description: "Lý do chỉnh sửa."
   data_domain: "Text"
@@ -14680,39 +14599,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Approver User Name"
-  description: "Lãnh đạo duyệt kết quả."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Processor User Name"
-  description: "Chuyên viên xử lý."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với PROCESSOR_USER_ID."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "processor_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Revision Reason"
   description: "Lý do chỉnh sửa."
   data_domain: "Text"
@@ -14971,38 +14857,6 @@ attributes:
   data_type: "string"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "administrative_status_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction"
-  atomic_attribute: "Approver User Name"
-  description: "Lãnh đạo phê duyệt phương án."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction"
-  atomic_attribute: "Processor User Name"
-  description: "Chuyên viên xử lý hồ sơ."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "processor_user_nm"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Revision Reason"
@@ -16112,8 +15966,9 @@ attributes:
   source_system: "SCMS"
   source_table: "BANK_PERIODIC_REPORT"
   source_column: "SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: BANK_PERIODIC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -16130,9 +15985,7 @@ attributes:
   source_table: "BANK_PERIODIC_REPORT"
   source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
-    \ sau ETL join BANK_PERIODIC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết\
-    \ xem comment Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -16459,8 +16312,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID\
+    \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -16901,8 +16756,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID\
+    \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -40265,23 +40122,6 @@ attributes:
   atomic_column: "pc_treasury_share_transaction_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Public Company Report Submission"
-  atomic_attribute: "Approver User Name"
-  description: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_DATA"
-  source_column: "IDS.COMPANY_DATA.APPROVER_USER_NAME"
-  comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
-    \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_report_submission"
-  atomic_column: "approver_user_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Public Company Report Submission"
   atomic_attribute: "Flattened Indicator"
   description: "Đã làm phẳng BCTC vào FINANCIAL_RATIOS_DETAIL chưa (0/1). Chỉ dùng\
     \ cho tin định kỳ (DINH_KY); reader batch lọc = 0."
@@ -40787,8 +40627,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
   source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41234,8 +41075,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PERIODIC_REPORT"
   source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID =\
+    \ CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -44455,9 +44298,7 @@ attributes:
   source_table: "LNK_EVENT_TYPE_FORM"
   source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment Classification Securities Company Event\
-    \ Type Id."
+    \ with Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -53104,8 +52945,10 @@ attributes:
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID\
+    \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -53122,9 +52965,7 @@ attributes:
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
-    \ sau ETL join DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
-    \ — chi tiết xem comment Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -54452,8 +54293,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
   source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57183,17 +57025,17 @@ attributes:
   atomic_entity: "External Tax Registration"
   atomic_attribute: "Foreign Capital Ratio"
   description: "Tỷ trọng vốn nước ngoài (%)."
-  data_domain: "Percentage"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: "Giữ nguyên giá trị text từ nguồn (VARCHAR2(200)) theo quyết định Data\
+    \ Modeler 2026-11-14 — không cast sang số."
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "string"
   atomic_table: "et_registration"
   atomic_column: "foreign_capital_ratio"
 - bcv_core_object: "Involved Party"
@@ -66052,8 +65894,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -66070,9 +65913,7 @@ attributes:
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
-    \ sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết xem comment\
-    \ Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -67898,8 +67739,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID\
+    \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -68290,8 +68133,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
   source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -70264,8 +70108,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
   source_column: "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_REP_OFFICE.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -70701,8 +70546,10 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
   source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID"
-  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ EVENT_TYPE_ID)."
+  comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL\
+    \ crosswalk sang SCMS.CAT_EVENT_TYPE: SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID\
+    \ = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE',\
+    \ EVENT_TYPE_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -83884,7 +83731,8 @@ attributes:
   source_system: "MRMS"
   source_table: "RISK_INDICATOR"
   source_column: "MRMS.RISK_INDICATOR_CATEGORY.CATEGORY_CODE"
-  comment: "SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY"
+  comment: "SCHEMA_CODE=MRMS.RISK_INDICATOR_CATEGORY. Cần ETL crosswalk sang MRMS.RISK_INDICATOR_CATEGORY:\
+    \ RISK_INDICATOR.CATEGORY_ID = RISK_INDICATOR_CATEGORY.ID để xác nhận CATEGORY_CODE."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -84231,10 +84079,10 @@ attributes:
   is_primary_key: true
   source_system: "SCMS"
   source_table: "CAT_EVENT_TYPE"
-  source_column: "SCMS.CAT_EVENT_TYPE.ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "PK surrogate. BCV: \"[Common] Event Type\". Danh mục loại sự kiện/sự vụ\
     \ nghiệp vụ làm cơ sở xác định nghĩa vụ báo cáo/CBTT. Hash: hash_id('SCMS_CAT_EVENT_TYPE',\
-    \ ID)."
+    \ EVENT_TYPE_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

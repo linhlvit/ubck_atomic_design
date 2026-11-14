@@ -445,14 +445,14 @@ attributes:
   - name: Foreign Capital Ratio
     physical_name: foreign_capital_ratio
     business_meaning: "Tỷ trọng vốn nước ngoài (%)."
-    data_domain: Percentage
-    data_type: decimal(5,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.FOREIGN_CAPITAL_RATIO
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(5,2). Cần validate không có giá trị non-numeric."
+    comment: "Giữ nguyên giá trị text từ nguồn (VARCHAR2(200)) theo quyết định Data Modeler 2026-11-14 — không cast sang số."
     classification_context: null
     etl_derived_value: null
 

@@ -130,7 +130,7 @@ attributes:
     source_system: SCMS
     source_table: BANK_PERIODIC_REPORT
     source_column: SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID
-    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Hash: hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_ID)."
+    comment: "FK target: cl_securities_company_event_type.cl_sc_event_tp_id. Cần ETL crosswalk sang SCMS.CAT_EVENT_TYPE: BANK_PERIODIC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID để xác nhận EVENT_TYPE_CODE sau đó hash_id('SCMS_CAT_EVENT_TYPE', EVENT_TYPE_CODE)"
     classification_context: null
     etl_derived_value: null
 
@@ -144,7 +144,7 @@ attributes:
     source_system: SCMS
     source_table: BANK_PERIODIC_REPORT
     source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
-    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join BANK_PERIODIC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company Event Type Id."
+    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id."
     classification_context: null
     etl_derived_value: null
 
