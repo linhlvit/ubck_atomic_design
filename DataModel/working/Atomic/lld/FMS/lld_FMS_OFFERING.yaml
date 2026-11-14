@@ -69,8 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.OFFERING.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES: OFFERING.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -82,9 +81,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.OFFERING.SEC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
+  - "FMS.SECURITIES.CODE"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

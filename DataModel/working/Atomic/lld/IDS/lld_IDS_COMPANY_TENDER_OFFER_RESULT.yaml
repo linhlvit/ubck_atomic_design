@@ -99,7 +99,7 @@ attributes:
 - attribute_name: "Registered Sale Share Quantity"
   physical_name: "registered_sale_share_quantity"
   description: "Số lượng cổ phiếu NĐT đăng ký bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -108,7 +108,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Registered Sale Investor Quantity"
   physical_name: "registered_sale_investor_quantity"
   description: "Số NĐT đăng ký bán."
@@ -125,7 +125,7 @@ attributes:
 - attribute_name: "Actual Purchased Share Quantity"
   physical_name: "actual_purchased_share_quantity"
   description: "Số lượng cổ phiếu thực tế đã mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -134,7 +134,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Actual Purchased Investor Quantity"
   physical_name: "actual_purchased_investor_quantity"
   description: "Số NĐT thực tế đã mua."
@@ -164,7 +164,7 @@ attributes:
 - attribute_name: "Post Offer Share Quantity"
   physical_name: "post_offer_share_quantity"
   description: "Số lượng CP sở hữu SAU chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -173,7 +173,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Post Offer Ownership Ratio Percentage"
   physical_name: "post_offer_ownership_ratio_percentage"
   description: "Tỷ lệ CP sở hữu SAU chào mua."
@@ -292,34 +292,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approver User Id"
-  physical_name: "approver_user_id"
-  description: "ID Login của Lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Approver User Code"
-  physical_name: "approver_user_code"
-  description: "Mã Lãnh đạo phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Approver User Name"
   physical_name: "approver_user_nm"
   description: "Lãnh đạo duyệt kết quả."
@@ -331,34 +303,6 @@ attributes:
   - "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_NAME"
   comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID,\
     \ khác với pattern Code (lookup qua Id)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Id"
-  physical_name: "processor_user_id"
-  description: "ID Login của Chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Code"
-  physical_name: "processor_user_code"
-  description: "Mã Chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

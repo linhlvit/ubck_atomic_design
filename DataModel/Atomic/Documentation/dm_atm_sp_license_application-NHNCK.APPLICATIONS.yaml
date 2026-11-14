@@ -522,7 +522,7 @@ attributes:
     source_system: NHNCK
     source_table: APPLICATIONS
     source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
-    comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
+    comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: APPLICATIONS.EXAM_SESSION_ID = EXAM_SESSIONS.ID để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
     classification_context: null
     etl_derived_value: null
 
@@ -535,7 +535,7 @@ attributes:
     is_primary_key: false
     source_system: NHNCK
     source_table: APPLICATIONS
-    source_column: NHNCK.APPLICATIONS.EXAM_SESSION_ID
+    source_column: NHNCK.EXAM_SESSIONS.CODE
     comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code. Pair with Securities Practitioner Qualification Examination Assessment Id."
     classification_context: null
     etl_derived_value: null

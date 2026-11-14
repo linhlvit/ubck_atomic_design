@@ -2438,7 +2438,7 @@ attributes:
   atomic_entity: "Stock Control"
   atomic_attribute: "Restricted Share Quantity"
   description: "SL cổ phiếu bị hạn chế chuyển nhượng."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -2447,7 +2447,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "stock_control"
   atomic_column: "restricted_share_quantity"
 - bcv_core_object: "Arrangement"
@@ -2722,11 +2722,9 @@ attributes:
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
   source_column: "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
-  comment: "FK target: Fund Management Company.Fund Management Company Id. Nguồn lưu\
-    \ ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy\
-    \ giá trị rồi hash_id('FMS_SECURITIES', ID). Quyết định Data Modeler 2026-07-20\
-    \ — thay thế placeholder Market Participant Organization/FIMS.FUNDCOMPANY trước\
-    \ đây."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ TRADINGAUTHORIZATION.FUNDCOMID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -2741,9 +2739,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.FUNDCOMID"
-  comment: "Lookup pair: Fund Management Company.Fund Management Company Code. Pair\
-    \ with Fund Management Company Id."
+  source_column: "FMS.SECURITIES.CODE"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
+    \ Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -2795,9 +2793,9 @@ attributes:
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
   source_column: "FIMS.TRADINGAUTHORIZATION.INVESTORID"
-  comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật\
-    \ của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode\
-    \ rồi hash_id('FIMS_INVESTOR', TransactionCode)."
+  comment: "FK target: foreign_investor.foreign_investor_id. Cần ETL crosswalk sang\
+    \ FIMS.INVESTOR: TRADINGAUTHORIZATION.INVESTORID = INVESTOR.ID để xác nhận TRANSACTIONCODE\
+    \ sau đó hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -2812,9 +2810,10 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "TRADINGAUTHORIZATION"
-  source_column: "FIMS.TRADINGAUTHORIZATION.INVESTORID"
+  source_column: "FIMS.INVESTOR.TRANSACTIONCODE"
   comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign\
-    \ Investor Id."
+    \ Investor Id. Giá trị lấy từ FIMS.INVESTOR.TRANSACTIONCODE sau ETL crosswalk\
+    \ — chi tiết xem comment Foreign Investor Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -5908,9 +5907,7 @@ attributes:
   source_table: "EXAMINATION_TEAM_MEMBER"
   source_column: "THANHTRA.EXAMINATION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT) | Chỉ map USER_ACCOUNT (BK trùng USERNAME\
-    \ của IAM.USERS); không map USER_ID kỹ thuật của nguồn. Chưa xác nhận USER_ACCOUNT\
-    \ khớp IAM.USERS.USERNAME — cần profile dữ liệu trước go-live."
+    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -6357,8 +6354,9 @@ attributes:
   source_system: "FMS"
   source_table: "OFFERING"
   source_column: "FMS.OFFERING.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ OFFERING.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -6373,7 +6371,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "OFFERING"
-  source_column: "FMS.OFFERING.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -7793,45 +7791,6 @@ attributes:
   atomic_column: "last_updated_dt"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Inspection Post Processing"
-  atomic_attribute: "Monitoring Officer Id"
-  description: "FK đến cán bộ theo dõi thực hiện kiến nghị."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "POST_INSPECTION_PROCESSING"
-  source_column: "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Cần ETL crosswalk sang IAM.USERS: POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID\
-    \ = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "inspection_post_processing"
-  atomic_column: "monitoring_officer_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Inspection Post Processing"
-  atomic_attribute: "Monitoring Officer Code"
-  description: "Username cán bộ theo dõi thực hiện kiến nghị (business key, lấy qua\
-    \ ETL crosswalk sang IAM.USERS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "THANHTRA"
-  source_table: "POST_INSPECTION_PROCESSING"
-  source_column: "IAM.USERS.USERNAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Monitoring Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk\
-    \ — chi tiết xem comment Monitoring Officer Id. Sửa 2026-09: source_columns cũ\
-    \ lặp lại chính cột MONITORING_OFFICER_ID (ID kỹ thuật) thay vì crosswalk — đã\
-    \ sửa."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "inspection_post_processing"
-  atomic_column: "monitoring_officer_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Inspection Post Processing"
   atomic_attribute: "Monitoring Officer Name"
   description: "Tên cán bộ theo dõi thực hiện kiến nghị."
   data_domain: "Text"
@@ -8286,9 +8245,7 @@ attributes:
   source_table: "INSPECTION_TEAM_MEMBER"
   source_column: "THANHTRA.INSPECTION_TEAM_MEMBER.USER_ACCOUNT"
   comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT) | Chỉ map USER_ACCOUNT (BK trùng USERNAME\
-    \ của IAM.USERS); không map USER_ID kỹ thuật của nguồn. Chưa xác nhận USER_ACCOUNT\
-    \ khớp IAM.USERS.USERNAME — cần profile dữ liệu trước go-live."
+    \ Hash: hash_id('IAM_USERS', USER_ACCOUNT)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -9210,8 +9167,9 @@ attributes:
   source_system: "FMS"
   source_table: "RANK"
   source_column: "FMS.RANK.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ RANK.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -9226,7 +9184,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "RANK"
-  source_column: "FMS.RANK.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -9976,7 +9934,7 @@ attributes:
   atomic_entity: "Public Company Capital Mobilization"
   atomic_attribute: "Capital Increase Count"
   description: "Số đợt tăng vốn trong năm."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -9985,7 +9943,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_capital_mobilization"
   atomic_column: "capital_increase_count"
 - bcv_core_object: "Business Activity"
@@ -13720,7 +13678,7 @@ attributes:
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Listed Share Quantity"
   description: "Số lượng cổ phiếu niêm yết."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -13729,14 +13687,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_stock_listing_history"
   atomic_column: "listed_share_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Change Share Quantity"
   description: "Số lượng cổ phiếu niêm yết bổ sung/ hủy."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -13745,14 +13703,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_stock_listing_history"
   atomic_column: "change_share_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Stock Listing History"
   atomic_attribute: "Total Share Quantity After Change"
   description: "Số lượng cổ phiếu sau niêm yết bổ sung/ hủy."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -13761,7 +13719,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_stock_listing_history"
   atomic_column: "total_share_quantity_after_change"
 - bcv_core_object: "Business Activity"
@@ -13963,7 +13921,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Pre Offer Share Quantity"
   description: "Cổ phiếu sở hữu trước khi chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -13972,7 +13930,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_tender_offer"
   atomic_column: "pre_offer_share_quantity"
 - bcv_core_object: "Business Activity"
@@ -13995,7 +13953,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Planned Offer Share Quantity"
   description: "Cổ phiếu dự kiến chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -14004,7 +13962,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_tender_offer"
   atomic_column: "planned_offer_share_quantity"
 - bcv_core_object: "Business Activity"
@@ -14300,23 +14258,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer"
-  atomic_attribute: "Approver User Id"
-  description: "ID Login của Lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER"
-  source_column: "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Approver User Name"
   description: "Lãnh đạo duyệt phương án."
   data_domain: "Text"
@@ -14331,23 +14272,6 @@ attributes:
   data_type: "string"
   atomic_table: "pc_tender_offer"
   atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer"
-  atomic_attribute: "Processor User Id"
-  description: "ID Login của Chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER"
-  source_column: "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer"
-  atomic_column: "processor_user_id"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer"
   atomic_attribute: "Processor User Name"
@@ -14518,7 +14442,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Registered Sale Share Quantity"
   description: "Số lượng cổ phiếu NĐT đăng ký bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -14527,7 +14451,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_tender_offer_result"
   atomic_column: "registered_sale_share_quantity"
 - bcv_core_object: "Business Activity"
@@ -14550,7 +14474,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Actual Purchased Share Quantity"
   description: "Số lượng cổ phiếu thực tế đã mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -14559,7 +14483,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_tender_offer_result"
   atomic_column: "actual_purchased_share_quantity"
 - bcv_core_object: "Business Activity"
@@ -14598,7 +14522,7 @@ attributes:
   atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Post Offer Share Quantity"
   description: "Số lượng CP sở hữu SAU chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -14607,7 +14531,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_tender_offer_result"
   atomic_column: "post_offer_share_quantity"
 - bcv_core_object: "Business Activity"
@@ -14757,40 +14681,6 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Approver User Id"
-  description: "ID Login của Lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Approver User Code"
-  description: "Mã Lãnh đạo phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "approver_user_code"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Approver User Name"
   description: "Lãnh đạo duyệt kết quả."
   data_domain: "Text"
@@ -14806,40 +14696,6 @@ attributes:
   data_type: "string"
   atomic_table: "pc_tender_offer_result"
   atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Processor User Id"
-  description: "ID Login của Chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "processor_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Tender Offer Result"
-  atomic_attribute: "Processor User Code"
-  description: "Mã Chuyên viên xử lý (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TENDER_OFFER_RESULT"
-  source_column: "IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_tender_offer_result"
-  atomic_column: "processor_user_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Tender Offer Result"
   atomic_attribute: "Processor User Name"
@@ -15118,23 +14974,6 @@ attributes:
   atomic_column: "administrative_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
-  atomic_attribute: "Approver User Id"
-  description: "ID Login của Lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Approver User Name"
   description: "Lãnh đạo phê duyệt phương án."
   data_domain: "Text"
@@ -15149,23 +14988,6 @@ attributes:
   data_type: "string"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "approver_user_nm"
-- bcv_core_object: "Business Activity"
-  atomic_entity: "Public Company Treasury Share Transaction"
-  atomic_attribute: "Processor User Id"
-  description: "ID Login của Chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_TREASURY_SHARES"
-  source_column: "IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_treasury_share_transaction"
-  atomic_column: "processor_user_id"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Processor User Name"
@@ -15202,7 +15024,7 @@ attributes:
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Total Treasury Share Before Quantity"
   description: "Tổng số cổ phiếu quỹ trước khi thực hiện đợt giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15211,14 +15033,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "total_treasury_share_before_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Latest Treasury Transaction Quantity"
   description: "Số lượng cổ phiếu quỹ giao dịch gần nhất."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15227,7 +15049,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "latest_treasury_transaction_quantity"
 - bcv_core_object: "Business Activity"
@@ -15266,7 +15088,7 @@ attributes:
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Total Registered Transaction Quantity"
   description: "Tổng số lượng cổ phiếu quỹ đăng ký giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15275,7 +15097,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "total_registered_transaction_quantity"
 - bcv_core_object: "Business Activity"
@@ -15394,7 +15216,7 @@ attributes:
   atomic_entity: "Public Company Treasury Share Transaction"
   atomic_attribute: "Daily Transaction Quantity"
   description: "Khối lượng giao dịch dự kiến mỗi ngày."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15403,7 +15225,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction"
   atomic_column: "daily_transaction_quantity"
 - bcv_core_object: "Business Activity"
@@ -15688,7 +15510,7 @@ attributes:
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Registered Transaction Quantity"
   description: "Số lượng đăng ký giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15697,14 +15519,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction_result"
   atomic_column: "registered_transaction_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Executed Transaction Quantity"
   description: "Số lượng thực hiện giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15713,14 +15535,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction_result"
   atomic_column: "executed_transaction_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Total Treasury Share Before Quantity"
   description: "Tổng số cổ phiếu quỹ trước khi thực hiện."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15729,14 +15551,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction_result"
   atomic_column: "total_treasury_share_before_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Treasury Share Transaction Result"
   atomic_attribute: "Total Treasury Share After Quantity"
   description: "Tổng số cổ phiếu quỹ sau khi thực hiện."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -15745,7 +15567,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_share_transaction_result"
   atomic_column: "total_treasury_share_after_quantity"
 - bcv_core_object: "Business Activity"
@@ -16108,7 +15930,7 @@ attributes:
   atomic_entity: "Public Company Treasury Stock Activity"
   atomic_attribute: "Treasury Buy Quantity"
   description: "Số lượng mua cổ phiếu quỹ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -16117,7 +15939,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_stock_activity"
   atomic_column: "treasury_buy_quantity"
 - bcv_core_object: "Business Activity"
@@ -16140,7 +15962,7 @@ attributes:
   atomic_entity: "Public Company Treasury Stock Activity"
   atomic_attribute: "Treasury Sell Quantity"
   description: "Số lượng bán cổ phiếu quỹ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -16149,7 +15971,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_treasury_stock_activity"
   atomic_column: "treasury_sell_quantity"
 - bcv_core_object: "Business Activity"
@@ -16307,9 +16129,11 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "BANK_PERIODIC_REPORT"
-  source_column: "SCMS.BANK_PERIODIC_REPORT.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
+    \ sau ETL join BANK_PERIODIC_REPORT.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết\
+    \ xem comment Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -16652,7 +16476,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -17094,7 +16918,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -23317,8 +23141,8 @@ attributes:
   source_table: "EXAM_SESSION_FEES"
   source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
   comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
-    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
-    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
+    \ Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: EXAM_SESSION_FEES.EXAM_SESSION_ID\
+    \ = EXAM_SESSIONS.ID để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -23334,7 +23158,7 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "EXAM_SESSION_FEES"
-  source_column: "NHNCK.EXAM_SESSION_FEES.EXAM_SESSION_ID"
+  source_column: "NHNCK.EXAM_SESSIONS.CODE"
   comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
     \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
@@ -23500,7 +23324,7 @@ attributes:
   atomic_entity: "Status Threshold Config"
   atomic_attribute: "From Value"
   description: "Giá trị cận dưới của ngưỡng."
-  data_domain: "Small Counter"
+  data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -23509,14 +23333,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(5,2)"
   atomic_table: "status_threshold_config"
   atomic_column: "from_val"
 - bcv_core_object: "Condition"
   atomic_entity: "Status Threshold Config"
   atomic_attribute: "To Value"
   description: "Giá trị cận trên của ngưỡng."
-  data_domain: "Small Counter"
+  data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -23525,7 +23349,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(5,2)"
   atomic_table: "status_threshold_config"
   atomic_column: "to_val"
 - bcv_core_object: "Condition"
@@ -34593,8 +34417,9 @@ attributes:
   source_system: "FMS"
   source_table: "RPT_MEMBER"
   source_column: "FMS.RPT_MEMBER.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ RPT_MEMBER.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -34609,7 +34434,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "RPT_MEMBER"
-  source_column: "FMS.RPT_MEMBER.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -34760,9 +34585,9 @@ attributes:
   source_system: "FMS"
   source_table: "RPT_MEMBER"
   source_column: "FMS.RPT_MEMBER.EVENT_TYPE_ID"
-  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
-    \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
-    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier6 6f)."
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang\
+    \ FMS.EVENT_TYPE: RPT_MEMBER.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận EVENT_CODE\
+    \ sau đó hash_id('FMS_EVENT_TYPE', EVENT_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -34777,9 +34602,10 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "RPT_MEMBER"
-  source_column: "FMS.RPT_MEMBER.EVENT_TYPE_ID"
+  source_column: "FMS.EVENT_TYPE.EVENT_CODE"
   comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
-    \ FMS Event Type Id."
+    \ FMS Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.EVENT_CODE sau ETL crosswalk\
+    \ — chi tiết xem comment Classification FMS Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -35232,8 +35058,9 @@ attributes:
   source_system: "FMS"
   source_table: "RPT_VALUES"
   source_column: "FMS.RPT_VALUES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ RPT_VALUES.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -35248,7 +35075,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "RPT_VALUES"
-  source_column: "FMS.RPT_VALUES.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -40450,41 +40277,6 @@ attributes:
   atomic_column: "pc_treasury_share_transaction_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Public Company Report Submission"
-  atomic_attribute: "Approver User Id"
-  description: "Id Login của lãnh đạo phê duyệt do chuyên viên chọn khi trình phê\
-    \ duyệt (SRS 2.12.3)."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_DATA"
-  source_column: "IDS.COMPANY_DATA.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_report_submission"
-  atomic_column: "approver_user_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Public Company Report Submission"
-  atomic_attribute: "Approver User Code"
-  description: "Mã người phê duyệt (denormalized lookup)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "IDS"
-  source_table: "COMPANY_DATA"
-  source_column: "IDS.COMPANY_DATA.APPROVER_USER_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Approver User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "pc_report_submission"
-  atomic_column: "approver_user_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Public Company Report Submission"
   atomic_attribute: "Approver User Name"
   description: "Tên lãnh đạo phê duyệt (denormalize để hiển thị, không join auth-service)."
   data_domain: "Text"
@@ -41023,7 +40815,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_ADHOC_REPORT"
-  source_column: "SCMS.SC_FIRM_ADHOC_REPORT.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -41470,7 +41262,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_PERIODIC_REPORT"
-  source_column: "SCMS.SC_FIRM_PERIODIC_REPORT.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -45348,8 +45140,8 @@ attributes:
   source_table: "APPLICATIONS"
   source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
   comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
-    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
-    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
+    \ Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: APPLICATIONS.EXAM_SESSION_ID = EXAM_SESSIONS.ID\
+    \ để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -45365,7 +45157,7 @@ attributes:
   is_primary_key: false
   source_system: "NHNCK"
   source_table: "APPLICATIONS"
-  source_column: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
+  source_column: "NHNCK.EXAM_SESSIONS.CODE"
   comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
     \ Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
@@ -53146,40 +52938,6 @@ attributes:
   atomic_column: "processing_tms"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Alert Violation"
-  atomic_attribute: "Processor IAM User Id"
-  description: "FK đến người xử lý vi phạm cảnh báo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ALERT_VIOLATION"
-  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_alert_violation"
-  atomic_column: "processor_iam_user_id"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Alert Violation"
-  atomic_attribute: "Processor IAM User Code"
-  description: "Mã người xử lý vi phạm cảnh báo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "SCMS"
-  source_table: "SC_FIRM_ALERT_VIOLATION"
-  source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code.\
-    \ Pair with Processor IAM User Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "sc_alert_violation"
-  atomic_column: "processor_iam_user_code"
-- bcv_core_object: "Event"
-  atomic_entity: "Securities Company Alert Violation"
   atomic_attribute: "Alert Period Type Code"
   description: "Loại kỳ của cảnh báo (mã số)."
   data_domain: "Text"
@@ -53374,9 +53132,11 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
+    \ sau ETL join DISCLOSURE_SECURITIES_OFFERING.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID\
+    \ — chi tiết xem comment Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -54720,7 +54480,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_PROFILE_CHANGE"
-  source_column: "SCMS.SC_FIRM_PROFILE_CHANGE.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -56747,8 +56507,9 @@ attributes:
   source_system: "FMS"
   source_table: "INVES"
   source_column: "FMS.INVES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ INVES.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -56763,7 +56524,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "INVES"
-  source_column: "FMS.INVES.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -60103,8 +59864,9 @@ attributes:
   source_system: "FMS"
   source_table: "SECURITIES"
   source_column: "FMS.SECURITIES.PAR_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ PAR_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk (self-join)\
+    \ sang FMS.SECURITIES: SECURITIES.PAR_ID = SECURITIES_PARENT.ID để xác nhận CODE\
+    \ sau đó hash_id('FMS_SECURITIES', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -60119,7 +59881,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.PAR_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Parent Fund Management\
     \ Company Id."
   classification_context: null
@@ -60275,8 +60037,9 @@ attributes:
   source_system: "FMS"
   source_table: "TL_PROFILES"
   source_column: "FMS.TL_PROFILES.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ TL_PROFILES.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -60291,7 +60054,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "TL_PROFILES"
-  source_column: "FMS.TL_PROFILES.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -61076,8 +60839,9 @@ attributes:
   source_system: "FMS"
   source_table: "INSIDER"
   source_column: "FMS.INSIDER.SC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ INSIDER.SC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61092,7 +60856,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "INSIDER"
-  source_column: "FMS.INSIDER.SC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -61758,8 +61522,9 @@ attributes:
   source_system: "FMS"
   source_table: "STAKE"
   source_column: "FMS.STAKE.SECURITY_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SECURITY_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ STAKE.SECURITY_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -61774,7 +61539,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "STAKE"
-  source_column: "FMS.STAKE.SECURITY_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -62438,8 +62203,9 @@ attributes:
   source_system: "FMS"
   source_table: "FUNDS"
   source_column: "FMS.FUNDS.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ FUNDS.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -62454,7 +62220,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "FUNDS"
-  source_column: "FMS.FUNDS.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -63947,8 +63713,9 @@ attributes:
   source_system: "FMS"
   source_table: "PENSION_FUND"
   source_column: "FMS.PENSION_FUND.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES:\
+    \ PENSION_FUND.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES',\
+    \ CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -63963,7 +63730,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "PENSION_FUND"
-  source_column: "FMS.PENSION_FUND.SEC_ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
     \ Company Id."
   classification_context: null
@@ -65794,7 +65561,7 @@ attributes:
   atomic_entity: "Public Company Related Entity"
   atomic_attribute: "Owned Share Quantity"
   description: "Số cổ phiếu sở hữu."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "IDS"
@@ -65803,7 +65570,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "pc_related_entity"
   atomic_column: "owned_share_quantity"
 - bcv_core_object: "Involved Party"
@@ -66158,9 +65925,9 @@ attributes:
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
   source_column: "SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID"
-  comment: "FK target: Securities Company.Securities Company Id. Self-referencing.\
-    \ Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS_SC_FIRM_INFO',\
-    \ CODE_CHA)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk (self-join) sang\
+    \ SCMS.SC_FIRM_INFO: SC_FIRM_INFO.SC_FIRM_INFO_ID = SC_FIRM_INFO_PARENT.ID để\
+    \ xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -66175,9 +65942,9 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
-  source_column: "SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID"
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Parent\
-    \ Securities Company Id."
+  source_column: "SCMS.SC_FIRM_INFO.CODE"
+  comment: "Lookup pair: securities_company.sc_code. Pair with Parent Securities Company\
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -66313,9 +66080,11 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_INFO"
-  source_column: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
+    \ with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE\
+    \ sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết xem comment\
+    \ Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -68157,7 +67926,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_REP_OFFICE"
-  source_column: "SCMS.SC_FIRM_FOREIGN_REP_OFFICE.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -68549,7 +68318,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_FOREIGN_BRANCH"
-  source_column: "SCMS.SC_FIRM_FOREIGN_BRANCH.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -70523,7 +70292,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_REP_OFFICE"
-  source_column: "SCMS.SC_FIRM_REP_OFFICE.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -70960,7 +70729,7 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_TRANSACTION_OFFICE"
-  source_column: "SCMS.SC_FIRM_TRANSACTION_OFFICE.EVENT_TYPE_ID"
+  source_column: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
   comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
     \ with Classification Securities Company Event Type Id."
   classification_context: null
@@ -82983,11 +82752,11 @@ attributes:
   is_primary_key: true
   source_system: "FMS"
   source_table: "COMPANY_TYPE"
-  source_column: "FMS.COMPANY_TYPE.ID"
-  comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', ID) — hash từ ID nguồn\
-    \ theo chỉ đạo Data Modeler (không hash từ Code vì CODE nguồn nullable). BCV:\
-    \ \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình\
-    \ thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh\
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', CODE) — hash từ Code nghiệp\
+    \ vụ (BK), Data Modeler sửa 2026-11-13 (thay quyết định hash từ ID ngày 2026-10-02).\
+    \ BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo\
+    \ hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh\
     \ nghiệp."
   classification_context: null
   etl_derived_value: null
@@ -82999,13 +82768,13 @@ attributes:
   atomic_attribute: "Classification FMS Company Type Code"
   description: "Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   source_system: "FMS"
   source_table: "COMPANY_TYPE"
   source_column: "FMS.COMPANY_TYPE.CODE"
-  comment: "Mã nghiệp vụ, không dùng làm đầu vào hash Id. Nguồn nullable (DDL UAT\
-    \ 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  comment: "BK chính — Id hash từ trường này. Nguồn nullable (DDL UAT 1) — cần profile\
+    \ dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -93922,8 +93691,8 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', ID)."
+  source_column: "FMS.SECURITIES.CODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', CODE)."
   classification_context: "Source System Code = 'FMS_SECURITIES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
   etl_derived_value: null
@@ -93939,7 +93708,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.SECURITIES"
   classification_context: "Source System Code = 'FMS_SECURITIES' | Identification\
     \ Type Code = 'BUSINESS_LICENSE'"
@@ -100347,8 +100116,8 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', ID)."
+  source_column: "FMS.SECURITIES.CODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', CODE)."
   classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address\
     \ Type Code = 'EMAIL'"
   etl_derived_value: null
@@ -100364,7 +100133,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.SECURITIES"
   classification_context: "Source System Code = 'FMS_SECURITIES' | Electronic Address\
     \ Type Code = 'EMAIL'"
@@ -105953,8 +105722,8 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
-  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', ID)."
+  source_column: "FMS.SECURITIES.CODE"
+  comment: "Surrogate Key của shared entity. Hash: hash_id('FMS_SECURITIES', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -105969,7 +105738,7 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "SECURITIES"
-  source_column: "FMS.SECURITIES.ID"
+  source_column: "FMS.SECURITIES.CODE"
   comment: "Mã nghiệp vụ của đối tượng IP, lấy trực tiếp từ FMS.SECURITIES"
   classification_context: null
   etl_derived_value: null

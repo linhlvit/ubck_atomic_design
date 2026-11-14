@@ -266,8 +266,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.RPT_MEMBER.SEC_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES',\
-    \ SEC_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES: RPT_MEMBER.SEC_ID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -279,9 +278,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.RPT_MEMBER.SEC_ID"
-  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management\
-    \ Company Id."
+  - "FMS.SECURITIES.CODE"
+  comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -403,9 +401,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.RPT_MEMBER.EVENT_TYPE_ID"
-  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Hash: hash_id('FMS_EVENT_TYPE',\
-    \ EVENT_TYPE_ID). Cùng pattern lld_FMS_ANNOUNCE.EVENT_TYPE_ID (BK của EVENT_TYPE\
-    \ là EVENT_CODE — cần xác nhận crosswalk, xem HLD Tier6 6f)."
+  comment: "FK target: cl_fms_event_type.cl_fms_event_tp_id. Cần ETL crosswalk sang FMS.EVENT_TYPE: RPT_MEMBER.EVENT_TYPE_ID = EVENT_TYPE.ID để xác nhận EVENT_CODE sau đó hash_id('FMS_EVENT_TYPE', EVENT_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -417,9 +413,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.RPT_MEMBER.EVENT_TYPE_ID"
-  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification\
-    \ FMS Event Type Id."
+  - "FMS.EVENT_TYPE.EVENT_CODE"
+  comment: "Lookup pair: cl_fms_event_type.cl_fms_event_tp_code. Pair with Classification FMS Event Type Id. Giá trị lấy từ FMS.EVENT_TYPE.EVENT_CODE sau ETL crosswalk — chi tiết xem comment Classification FMS Event Type Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

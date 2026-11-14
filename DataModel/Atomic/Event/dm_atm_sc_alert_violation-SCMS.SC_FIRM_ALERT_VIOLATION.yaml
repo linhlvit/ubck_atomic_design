@@ -400,34 +400,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Processor IAM User Id
-    physical_name: processor_iam_user_id
-    business_meaning: FK đến người xử lý vi phạm cảnh báo.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_ALERT_VIOLATION
-    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor IAM User Code
-    physical_name: processor_iam_user_code
-    business_meaning: Mã người xử lý vi phạm cảnh báo.
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: SCMS
-    source_table: SC_FIRM_ALERT_VIOLATION
-    source_column: SCMS.SC_FIRM_ALERT_VIOLATION.PROCESSOR_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor IAM User Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Alert Period Type Code
     physical_name: alert_period_tp_code
     business_meaning: Loại kỳ của cảnh báo (mã số).

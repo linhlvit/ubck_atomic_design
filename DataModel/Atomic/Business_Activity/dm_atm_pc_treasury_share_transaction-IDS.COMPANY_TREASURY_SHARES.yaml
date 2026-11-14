@@ -204,20 +204,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approver User Id
-    physical_name: approver_user_id
-    business_meaning: ID Login của Lãnh đạo phê duyệt.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TREASURY_SHARES
-    source_column: IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Approver User Name
     physical_name: approver_user_nm
     business_meaning: Lãnh đạo phê duyệt phương án.
@@ -229,20 +215,6 @@ attributes:
     source_table: COMPANY_TREASURY_SHARES
     source_column: IDS.COMPANY_TREASURY_SHARES.APPROVER_USER_NAME
     comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Id
-    physical_name: processor_user_id
-    business_meaning: ID Login của Chuyên viên xử lý.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TREASURY_SHARES
-    source_column: IDS.COMPANY_TREASURY_SHARES.PROCESSOR_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -277,8 +249,8 @@ attributes:
   - name: Total Treasury Share Before Quantity
     physical_name: total_treasury_share_before_quantity
     business_meaning: Tổng số cổ phiếu quỹ trước khi thực hiện đợt giao dịch.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -291,8 +263,8 @@ attributes:
   - name: Latest Treasury Transaction Quantity
     physical_name: latest_treasury_transaction_quantity
     business_meaning: Số lượng cổ phiếu quỹ giao dịch gần nhất.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -333,8 +305,8 @@ attributes:
   - name: Total Registered Transaction Quantity
     physical_name: total_registered_transaction_quantity
     business_meaning: Tổng số lượng cổ phiếu quỹ đăng ký giao dịch.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -445,8 +417,8 @@ attributes:
   - name: Daily Transaction Quantity
     physical_name: daily_transaction_quantity
     business_meaning: Khối lượng giao dịch dự kiến mỗi ngày.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS

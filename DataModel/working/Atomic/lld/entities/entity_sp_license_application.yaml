@@ -22,7 +22,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  comment: "PK surrogate. BCV: [Documentation] Government Registration Document."
+  comment: "PK surrogate. BCV: [Documentation] Government Registration Document. Id hash: hash_id('NHNCK_APPLICATIONS', ID)"
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -33,7 +33,7 @@ attributes:
   data_domain: "Text"
   nullable: false
   is_primary_key: false
-  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu NUMBER — ETL convert sang string. Id hash: hash_id('NHNCK_APPLICATIONS', ID). Mã hồ sơ nghiệp vụ do hệ thống sinh xem Application Code."
+  comment: "BK chính. Map từ PK nguồn ID."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -81,7 +81,7 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.APPLICATIONS: "NHNCK.APPLICATION_STATUSES.STATUS_CODE. Cần ETL crosswalk sang NHNCK.APPLICATION_STATUSES: APPLICATIONS.STATUS_ID = APPLICATION_STATUSES.ID để xác nhận STATUS_CODE."
+    NHNCK.APPLICATIONS: "NHNCK.APPLICATION_STATUSES.STATUS_CODE"
 - attribute_name: "Registration Type Code"
   physical_name: "registration_tp_code"
   description: "Nguồn tiếp nhận hồ sơ."
@@ -424,9 +424,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id.\
-    \ Nguồn lưu ID kỹ thuật của EXAM_SESSIONS — ETL join EXAM_SESSION_ID → NHNCK.EXAM_SESSIONS.ID\
-    \ để lấy CODE, rồi hash_id('NHNCK_EXAM_SESSIONS', CODE)."
+  comment: "FK target: sp_qualification_examination_assessment.sp_qualification_examination_assessment_id. Cần ETL crosswalk sang NHNCK.EXAM_SESSIONS: APPLICATIONS.EXAM_SESSION_ID = EXAM_SESSIONS.ID để xác nhận CODE sau đó hash_id('NHNCK_EXAM_SESSIONS', CODE)"
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -437,12 +435,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code.\
-    \ Pair with Securities Practitioner Qualification Examination Assessment Id."
+  comment: "Lookup pair: sp_qualification_examination_assessment.sp_qualification_examination_assessment_code. Pair with Securities Practitioner Qualification Examination Assessment Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    NHNCK.APPLICATIONS: "NHNCK.APPLICATIONS.EXAM_SESSION_ID"
+    NHNCK.APPLICATIONS: "NHNCK.EXAM_SESSIONS.CODE"
 - attribute_name: "Assignee Officer Id"
   physical_name: "assignee_officer_id"
   description: "FK đến Regulatory Authority Officer — cán bộ được phân công xử lý\

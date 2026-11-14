@@ -74,7 +74,7 @@ attributes:
     source_system: SCMS
     source_table: SC_FIRM_INFO
     source_column: SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID
-    comment: "FK target: securities_company.securities_company_id. Self-referencing. Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS_SC_FIRM_INFO', CODE_CHA)."
+    comment: "FK target: securities_company.sc_id. Cần ETL crosswalk (self-join) sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.SC_FIRM_INFO_ID = SC_FIRM_INFO_PARENT.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)"
     classification_context: null
     etl_derived_value: null
 
@@ -87,8 +87,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID
-    comment: "Lookup pair: securities_company.securities_company_code. Pair with Parent Securities Company Id."
+    source_column: SCMS.SC_FIRM_INFO.CODE
+    comment: "Lookup pair: securities_company.sc_code. Pair with Parent Securities Company Id."
     classification_context: null
     etl_derived_value: null
 
@@ -199,8 +199,8 @@ attributes:
     is_primary_key: false
     source_system: SCMS
     source_table: SC_FIRM_INFO
-    source_column: SCMS.SC_FIRM_INFO.EVENT_TYPE_ID
-    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id."
+    source_column: SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE
+    comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company Event Type Id."
     classification_context: null
     etl_derived_value: null
 

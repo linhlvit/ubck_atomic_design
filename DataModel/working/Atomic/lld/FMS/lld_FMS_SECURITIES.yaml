@@ -588,7 +588,7 @@ attributes:
   status: "draft"
   source_columns:
   - "FMS.SECURITIES.PAR_ID"
-  comment: "FK target: fund_management_company.fmc_id. Hash: hash_id('FMS_SECURITIES', PAR_ID)."
+  comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk (self-join) sang FMS.SECURITIES: SECURITIES.PAR_ID = SECURITIES_PARENT.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES', CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -600,7 +600,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FMS.SECURITIES.PAR_ID"
+  - "FMS.SECURITIES.CODE"
   comment: "Lookup pair: fund_management_company.fmc_code. Pair with Parent Fund Management Company Id."
   classification_context: null
   etl_derived_value: null

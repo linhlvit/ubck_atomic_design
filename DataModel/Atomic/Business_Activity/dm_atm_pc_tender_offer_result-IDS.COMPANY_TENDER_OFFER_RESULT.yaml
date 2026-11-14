@@ -95,8 +95,8 @@ attributes:
   - name: Registered Sale Share Quantity
     physical_name: registered_sale_share_quantity
     business_meaning: Số lượng cổ phiếu NĐT đăng ký bán.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -123,8 +123,8 @@ attributes:
   - name: Actual Purchased Share Quantity
     physical_name: actual_purchased_share_quantity
     business_meaning: Số lượng cổ phiếu thực tế đã mua.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -165,8 +165,8 @@ attributes:
   - name: Post Offer Share Quantity
     physical_name: post_offer_share_quantity
     business_meaning: Số lượng CP sở hữu SAU chào mua.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Large Counter
+    data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: IDS
@@ -302,34 +302,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Approver User Id
-    physical_name: approver_user_id
-    business_meaning: ID Login của Lãnh đạo phê duyệt.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TENDER_OFFER_RESULT
-    source_column: IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Approver User Code
-    physical_name: approver_user_code
-    business_meaning: Mã Lãnh đạo phê duyệt (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TENDER_OFFER_RESULT
-    source_column: IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Approver User Id."
-    classification_context: null
-    etl_derived_value: null
-
   - name: Approver User Name
     physical_name: approver_user_nm
     business_meaning: Lãnh đạo duyệt kết quả.
@@ -341,34 +313,6 @@ attributes:
     source_table: COMPANY_TENDER_OFFER_RESULT
     source_column: IDS.COMPANY_TENDER_OFFER_RESULT.APPROVER_USER_NAME
     comment: "Denormalized snapshot — nguồn lưu tên tự do song song với APPROVER_USER_ID, khác với pattern Code (lookup qua Id)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Id
-    physical_name: processor_user_id
-    business_meaning: ID Login của Chuyên viên xử lý.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TENDER_OFFER_RESULT
-    source_column: IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID
-    comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Processor User Code
-    physical_name: processor_user_code
-    business_meaning: Mã Chuyên viên xử lý (denormalized lookup).
-    data_domain: Text
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: IDS
-    source_table: COMPANY_TENDER_OFFER_RESULT
-    source_column: IDS.COMPANY_TENDER_OFFER_RESULT.PROCESSOR_USER_ID
-    comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Processor User Id."
     classification_context: null
     etl_derived_value: null
 
