@@ -147,32 +147,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "date"
-- attribute_name: "Monitoring Officer Id"
-  physical_name: "monitoring_officer_id"
-  description: "FK đến cán bộ theo dõi thực hiện kiến nghị."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "THANHTRA.POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id. Cần ETL crosswalk sang IAM.USERS: POST_INSPECTION_PROCESSING.MONITORING_OFFICER_ID = USERS.ID để xác nhận USERNAME sau đó hash_id('IAM_USERS', USERNAME)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Monitoring Officer Code"
-  physical_name: "monitoring_officer_code"
-  description: "Username cán bộ theo dõi thực hiện kiến nghị (business key, lấy qua ETL crosswalk sang IAM.USERS)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IAM.USERS.USERNAME"
-  comment: "Lookup pair: identity_and_access_management_user.identity_and_access_management_user_code. Pair with Monitoring Officer Id. Giá trị lấy từ IAM.USERS.USERNAME sau ETL crosswalk — chi tiết xem comment Monitoring Officer Id. Sửa 2026-09: source_columns cũ lặp lại chính cột MONITORING_OFFICER_ID (ID kỹ thuật) thay vì crosswalk — đã sửa."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Monitoring Officer Name"
   physical_name: "monitoring_officer_nm"
   description: "Tên cán bộ theo dõi thực hiện kiến nghị."

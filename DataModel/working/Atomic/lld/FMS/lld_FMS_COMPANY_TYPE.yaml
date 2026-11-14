@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_COMPANY_TYPE, nay deprecated — đảo ngược quyết định 2026-07-24 theo yêu cầu Data Modeler). Surrogate Id hash từ ID nguồn (theo chỉ đạo Data Modeler), Code map từ cột CODE (DDL UAT 1, nullable). Theo quyết định Data Modeler chỉ map ID, ITEM_NAME, DESCRIPTION, SYSTEM_OBJECT, JOINT_STOCK, CODE; RECORD_STATUS, DELETED, DATA_MIGRATION, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ SECURITIES.CT_ID (Fund Management Company) đổi sang cặp FK Id + Code."
+  notes: "[MỚI 2026-10-02] Promote từ Classification Value (scheme FMS_COMPANY_TYPE, nay deprecated — đảo ngược quyết định 2026-07-24 theo yêu cầu Data Modeler). Surrogate Id hash từ Code (BK) — sửa 2026-11-13, trước đó hash từ ID; Code map từ cột CODE (DDL UAT 1, nullable — cần profile). Theo quyết định Data Modeler chỉ map CODE, ITEM_NAME, DESCRIPTION, SYSTEM_OBJECT, JOINT_STOCK, CODE; RECORD_STATUS, DELETED, DATA_MIGRATION, DATE_CREATED, DATE_MODIFIED, CREATED_BY, MODIFY_BY document trong pending_design.yaml. Entity tiêu thụ SECURITIES.CT_ID (Fund Management Company) đổi sang cặp FK Id + Code."
 attributes:
 - attribute_name: "Classification FMS Company Type Id"
   physical_name: "cl_fms_company_tp_id"
@@ -26,9 +26,8 @@ attributes:
   nullable: false
   is_primary_key: true
   status: "draft"
-  source_columns:
-  - "FMS.COMPANY_TYPE.ID"
-  comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', ID) — hash từ ID nguồn theo chỉ đạo Data Modeler (không hash từ Code vì CODE nguồn nullable). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh nghiệp."
+  source_columns: []
+  comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', CODE) — hash từ Code nghiệp vụ (BK), Data Modeler sửa 2026-11-13 (thay quyết định hash từ ID ngày 2026-10-02). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh nghiệp."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -36,12 +35,12 @@ attributes:
   physical_name: "cl_fms_company_tp_code"
   description: "Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS."
   data_domain: "Text"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "FMS.COMPANY_TYPE.CODE"
-  comment: "Mã nghiệp vụ, không dùng làm đầu vào hash Id. Nguồn nullable (DDL UAT 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  comment: "BK chính — Id hash từ trường này. Nguồn nullable (DDL UAT 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

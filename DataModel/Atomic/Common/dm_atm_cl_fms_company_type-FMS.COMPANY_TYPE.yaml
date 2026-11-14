@@ -31,8 +31,8 @@ attributes:
     is_primary_key: true
     source_system: FMS
     source_table: COMPANY_TYPE
-    source_column: FMS.COMPANY_TYPE.ID
-    comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', ID) — hash từ ID nguồn theo chỉ đạo Data Modeler (không hash từ Code vì CODE nguồn nullable). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh nghiệp."
+    source_column: null
+    comment: "PK surrogate. Hash: hash_id('FMS_COMPANY_TYPE', CODE) — hash từ Code nghiệp vụ (BK), Data Modeler sửa 2026-11-13 (thay quyết định hash từ ID ngày 2026-10-02). BCV: \"[Common] Organization Legal Structure\" (phân biệt Organization theo hình thức pháp lý — cổ phần/TNHH, khớp cờ JOINT_STOCK). Danh mục loại hình doanh nghiệp."
     classification_context: null
     etl_derived_value: null
 
@@ -41,12 +41,12 @@ attributes:
     business_meaning: Mã loại hình doanh nghiệp eCAT được phép đồng bộ vào FMS.
     data_domain: Text
     data_type: string
-    nullable: true
+    nullable: false
     is_primary_key: false
     source_system: FMS
     source_table: COMPANY_TYPE
     source_column: FMS.COMPANY_TYPE.CODE
-    comment: "Mã nghiệp vụ, không dùng làm đầu vào hash Id. Nguồn nullable (DDL UAT 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+    comment: "BK chính — Id hash từ trường này. Nguồn nullable (DDL UAT 1) — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
     classification_context: null
     etl_derived_value: null
 

@@ -186,7 +186,7 @@ attributes:
 - attribute_name: "Pre Offer Share Quantity"
   physical_name: "pre_offer_share_quantity"
   description: "Cổ phiếu sở hữu trước khi chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -195,7 +195,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Pre Offer Ownership Ratio Percentage"
   physical_name: "pre_offer_ownership_ratio_percentage"
   description: "Tỷ lệ nắm giữ hiện tại trước khi chào mua."
@@ -212,7 +212,7 @@ attributes:
 - attribute_name: "Planned Offer Share Quantity"
   physical_name: "planned_offer_share_quantity"
   description: "Cổ phiếu dự kiến chào mua."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -221,7 +221,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Planned Offer Share Ratio Percentage"
   physical_name: "planned_offer_share_ratio_percentage"
   description: "%Cổ phiếu dự kiến chào mua."
@@ -458,20 +458,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Approver User Id"
-  physical_name: "approver_user_id"
-  description: "ID Login của Lãnh đạo phê duyệt."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', APPROVER_USER_ID)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
 - attribute_name: "Approver User Name"
   physical_name: "approver_user_nm"
   description: "Lãnh đạo duyệt phương án."
@@ -482,20 +468,6 @@ attributes:
   source_columns:
   - "IDS.COMPANY_TENDER_OFFER.APPROVER_USER_NAME"
   comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Processor User Id"
-  physical_name: "processor_user_id"
-  description: "ID Login của Chuyên viên xử lý."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "IDS.COMPANY_TENDER_OFFER.PROCESSOR_USER_ID"
-  comment: "FK target: identity_and_access_management_user.identity_and_access_management_user_id.\
-    \ Hash: hash_id('IAM_USERS', PROCESSOR_USER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -65,9 +65,7 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: true
   is_primary_key: false
-  comment: "FK target: Securities Company.Securities Company Id. Self-referencing.\
-    \ Resolve: join SC_FIRM_INFO_ID → SCMS.SC_FIRM_INFO.ID để lấy CODE, rồi hash_id('SCMS_SC_FIRM_INFO',\
-    \ CODE_CHA)."
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk (self-join) sang SCMS.SC_FIRM_INFO: SC_FIRM_INFO.SC_FIRM_INFO_ID = SC_FIRM_INFO_PARENT.ID để xác nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE)"
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -79,12 +77,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: Securities Company.Securities Company Code. Pair with Parent\
-    \ Securities Company Id."
+  comment: "Lookup pair: securities_company.sc_code. Pair with Parent Securities Company Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.SC_FIRM_INFO_ID"
+    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.CODE"
     FIMS.SECURITIESCOMPANY: null
 - attribute_name: "Securities Company Short Name"
   physical_name: "sc_short_nm"
@@ -185,12 +182,11 @@ attributes:
   data_domain: "Text"
   nullable: true
   is_primary_key: false
-  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair\
-    \ with Classification Securities Company Event Type Id."
+  comment: "Lookup pair: cl_securities_company_event_type.cl_sc_event_tp_code. Pair with Classification Securities Company Event Type Id. Giá trị lấy từ SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE sau ETL join SC_FIRM_INFO.EVENT_TYPE_ID = CAT_EVENT_TYPE.ID — chi tiết xem comment Classification Securities Company Event Type Id."
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    SCMS.SC_FIRM_INFO: "SCMS.SC_FIRM_INFO.EVENT_TYPE_ID"
+    SCMS.SC_FIRM_INFO: "SCMS.CAT_EVENT_TYPE.EVENT_TYPE_CODE"
     FIMS.SECURITIESCOMPANY: null
 - attribute_name: "Financial Report Type Code"
   physical_name: "fr_tp_code"

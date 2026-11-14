@@ -88,7 +88,7 @@ attributes:
     source_system: FIMS
     source_table: TRADINGAUTHORIZATION
     source_column: FIMS.TRADINGAUTHORIZATION.FUNDCOMID
-    comment: "FK target: fund_management_company.fund_management_company_id. Nguồn lưu ID kỹ thuật của FMS.SECURITIES — ETL join FundComId → FMS.SECURITIES.ID để lấy giá trị rồi hash_id('FMS_SECURITIES', ID). Quyết định Data Modeler 2026-07-20 — thay thế placeholder Market Participant Organization/FIMS.FUNDCOMPANY trước đây."
+    comment: "FK target: fund_management_company.fmc_id. Cần ETL crosswalk sang FMS.SECURITIES: TRADINGAUTHORIZATION.FUNDCOMID = SECURITIES.ID để xác nhận CODE sau đó hash_id('FMS_SECURITIES', CODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -101,8 +101,8 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: TRADINGAUTHORIZATION
-    source_column: FIMS.TRADINGAUTHORIZATION.FUNDCOMID
-    comment: "Lookup pair: fund_management_company.fund_management_company_code. Pair with Fund Management Company Id."
+    source_column: FMS.SECURITIES.CODE
+    comment: "Lookup pair: fund_management_company.fmc_code. Pair with Fund Management Company Id."
     classification_context: null
     etl_derived_value: null
 
@@ -144,7 +144,7 @@ attributes:
     source_system: FIMS
     source_table: TRADINGAUTHORIZATION
     source_column: FIMS.TRADINGAUTHORIZATION.INVESTORID
-    comment: "FK target: foreign_investor.foreign_investor_id. Nguồn lưu ID kỹ thuật của INVESTOR — ETL join InvestorId → FIMS.INVESTOR.ID để lấy TransactionCode rồi hash_id('FIMS_INVESTOR', TransactionCode)."
+    comment: "FK target: foreign_investor.foreign_investor_id. Cần ETL crosswalk sang FIMS.INVESTOR: TRADINGAUTHORIZATION.INVESTORID = INVESTOR.ID để xác nhận TRANSACTIONCODE sau đó hash_id('FIMS_INVESTOR', TRANSACTIONCODE)."
     classification_context: null
     etl_derived_value: null
 
@@ -157,8 +157,8 @@ attributes:
     is_primary_key: false
     source_system: FIMS
     source_table: TRADINGAUTHORIZATION
-    source_column: FIMS.TRADINGAUTHORIZATION.INVESTORID
-    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign Investor Id."
+    source_column: FIMS.INVESTOR.TRANSACTIONCODE
+    comment: "Lookup pair: foreign_investor.foreign_investor_code. Pair with Foreign Investor Id. Giá trị lấy từ FIMS.INVESTOR.TRANSACTIONCODE sau ETL crosswalk — chi tiết xem comment Foreign Investor Id."
     classification_context: null
     etl_derived_value: null
 
