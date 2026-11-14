@@ -233,31 +233,29 @@ attributes:
 - attribute_name: "Declaration From Date"
   physical_name: "declaration_from_dt"
   description: "Kỳ kê khai từ ngày."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT.DECLARATION_FROM_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
-    \ ngày thực tế."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
 - attribute_name: "Declaration To Date"
   physical_name: "declaration_to_dt"
   description: "Kỳ kê khai đến ngày."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT.DECLARATION_TO_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
-    \ ngày thực tế."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
 - attribute_name: "Declaration From Month"
   physical_name: "declaration_from_month"
   description: "Kỳ kê khai từ tháng."
@@ -314,16 +312,16 @@ attributes:
 - attribute_name: "Declaration Date"
   physical_name: "declaration_dt"
   description: "Ngày lập tờ khai."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT.DECLARATION_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
 - attribute_name: "Extension Reason Code"
   physical_name: "extension_reason_code"
   description: "Mã lý do gia hạn nộp báo cáo."
@@ -592,16 +590,16 @@ attributes:
 - attribute_name: "Audited Flag"
   physical_name: "audited_flag"
   description: "Cờ báo cáo tài chính đã được kiểm toán."
-  data_domain: "Small Counter"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT.AUDITED"
-  comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
 - attribute_name: "Audit Opinion Code"
   physical_name: "audit_opinion_code"
   description: "Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán)."

@@ -123,42 +123,42 @@ attributes:
   - name: Violation Fine Amount
     physical_name: violation_fine_amt
     business_meaning: Số tiền phạt hành vi vi phạm.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.VIOLATION_FINE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Administrative Violation Fine Amount
     physical_name: administrative_violation_fine_amt
     business_meaning: Số tiền phạt hành vi vi phạm hành chính về thuế.
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.ADMIN_VIOLATION_FINE
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Tax Recovery Amount
     physical_name: tax_recovery_amt
     business_meaning: "Số tiền truy thu (thuế, tiền nộp chậm)."
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TAX_RECOVERY_AMOUNT
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -221,28 +221,28 @@ attributes:
   - name: Total Fine Amount
     physical_name: total_fine_amt
     business_meaning: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)."
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TOTAL_FINE_AMOUNT
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Other Fine Amount
     physical_name: other_fine_amt
     business_meaning: Tổng tiền phạt khác (không phải phạt hành chính).
-    data_domain: Currency Amount
-    data_type: decimal(23,2)
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.OTHER_FINE_AMOUNT
-    comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    comment: null
     classification_context: null
     etl_derived_value: null
 

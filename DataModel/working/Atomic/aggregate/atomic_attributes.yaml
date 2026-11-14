@@ -964,7 +964,7 @@ attributes:
   atomic_entity: "Investment Fund Investor Membership"
   atomic_attribute: "Held Unit Quantity"
   description: "Số lượng CCQ đang nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -973,7 +973,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "investment_fund_investor_membership"
   atomic_column: "held_unit_quantity"
 - bcv_core_object: "Arrangement"
@@ -6464,7 +6464,7 @@ attributes:
   atomic_entity: "Fund Management Company Securities Offering"
   atomic_attribute: "Offered Quantity"
   description: "Số lượng chứng khoán đăng ký chào bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -6473,7 +6473,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "fmc_securities_offering"
   atomic_column: "offered_quantity"
 - bcv_core_object: "Business Activity"
@@ -6721,7 +6721,7 @@ attributes:
   atomic_entity: "Fund Management Company Securities Offering"
   atomic_attribute: "Sold Quantity"
   description: "Số lượng chứng khoán đã bán được trong đợt chào bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -6730,7 +6730,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "fmc_securities_offering"
   atomic_column: "sold_quantity"
 - bcv_core_object: "Business Activity"
@@ -7174,7 +7174,7 @@ attributes:
   atomic_entity: "Fund Management Company Securities Offering Plan"
   atomic_attribute: "Planned Quantity"
   description: "Số lượng chứng khoán trong kế hoạch chào bán."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -7183,7 +7183,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "fmc_securities_offering_plan"
   atomic_column: "planned_quantity"
 - bcv_core_object: "Business Activity"
@@ -7270,7 +7270,7 @@ attributes:
   atomic_entity: "Fund Management Company Securities Offering Plan"
   atomic_attribute: "Actual Quantity"
   description: "Số lượng thực tế đã bán trong kế hoạch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -7279,7 +7279,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "fmc_securities_offering_plan"
   atomic_column: "actual_quantity"
 - bcv_core_object: "Business Activity"
@@ -8819,7 +8819,7 @@ attributes:
   atomic_entity: "Investment Fund Investor Capital Change Log"
   atomic_attribute: "Pre-Transaction Unit Quantity"
   description: "Số lượng CCQ/cổ phần trước giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -8828,14 +8828,14 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "investment_fund_investor_capital_change_log"
   atomic_column: "pre_transaction_unit_quantity"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Investment Fund Investor Capital Change Log"
   atomic_attribute: "Post-Transaction Unit Quantity"
   description: "Số lượng CCQ/cổ phần sau giao dịch."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -8844,7 +8844,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "investment_fund_investor_capital_change_log"
   atomic_column: "post_transaction_unit_quantity"
 - bcv_core_object: "Business Activity"
@@ -27878,34 +27878,32 @@ attributes:
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Declaration From Date"
   description: "Kỳ kê khai từ ngày."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.DECLARATION_FROM_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
-    \ ngày thực tế."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
   atomic_table: "et_declaration_report"
   atomic_column: "declaration_from_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Declaration To Date"
   description: "Kỳ kê khai đến ngày."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.DECLARATION_TO_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format\
-    \ ngày thực tế."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
   atomic_table: "et_declaration_report"
   atomic_column: "declaration_to_dt"
 - bcv_core_object: "Documentation"
@@ -27977,16 +27975,16 @@ attributes:
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Declaration Date"
   description: "Ngày lập tờ khai."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.DECLARATION_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
   atomic_table: "et_declaration_report"
   atomic_column: "declaration_dt"
 - bcv_core_object: "Documentation"
@@ -28318,16 +28316,16 @@ attributes:
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Audited Flag"
   description: "Cờ báo cáo tài chính đã được kiểm toán."
-  data_domain: "Small Counter"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.AUDITED"
-  comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "string"
   atomic_table: "et_declaration_report"
   atomic_column: "audited_flag"
 - bcv_core_object: "Documentation"
@@ -28728,68 +28726,64 @@ attributes:
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Year End Value"
   description: "Giá trị cuối năm báo cáo (đầu kỳ của năm sau)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.YEAR_END_VALUE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric (một số chỉ tiêu có thể là ghi chú thay vì số liệu)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "year_end_val"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Year Begin Value"
   description: "Giá trị đầu năm báo cáo (số dư đầu kỳ)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.YEAR_BEGIN_VALUE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "year_begin_val"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Current Year Value"
   description: "Giá trị năm nay (kỳ hiện tại)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_VALUE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "current_year_val"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Prior Year Value"
   description: "Giá trị năm trước (kỳ so sánh)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.PRIOR_YEAR_VALUE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "prior_year_val"
 - bcv_core_object: "Documentation"
@@ -28828,16 +28822,16 @@ attributes:
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Preparation Date"
   description: "Ngày lập biểu."
-  data_domain: "Date"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.PREPARATION_DATE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang date."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "date"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "preparation_dt"
 - bcv_core_object: "Documentation"
@@ -28924,160 +28918,160 @@ attributes:
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Increase Prior Year Amount"
   description: "Số tăng năm trước."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.INCREASE_PRIOR_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "increase_prior_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Current Year Amount"
   description: "Số tiền/giá trị năm nay."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "current_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Previous Year Amount"
   description: "Số tiền/giá trị năm ngoái."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.PREVIOUS_YEAR_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "previous_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Begin Balance Current Year Amount"
   description: "Số dư đầu năm nay."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_CURRENT_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "begin_balance_current_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "End Balance Current Year Amount"
   description: "Số dư cuối năm nay."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.END_BALANCE_CURRENT_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "end_balance_current_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "End Balance Prior Year Amount"
   description: "Số dư cuối năm trước."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.END_BALANCE_PRIOR_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "end_balance_prior_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Begin Balance Prior Year Amount"
   description: "Số dư đầu năm trước."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_PRIOR_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "begin_balance_prior_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Increase Current Year Amount"
   description: "Số tăng năm nay."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.INCREASE_CURRENT_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "increase_current_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Decrease Current Year Amount"
   description: "Số giảm năm nay."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.DECREASE_CURRENT_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "decrease_current_year_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "Decrease Prior Year Amount"
   description: "Số giảm năm trước."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.DECREASE_PRIOR_YEAR"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2)."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_declaration_report_detail"
   atomic_column: "decrease_prior_year_amt"
 - bcv_core_object: "Documentation"
@@ -29694,51 +29688,48 @@ attributes:
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Violation Fine Amount"
   description: "Số tiền phạt hành vi vi phạm."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.VIOLATION_FINE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_violation_handling"
   atomic_column: "violation_fine_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Administrative Violation Fine Amount"
   description: "Số tiền phạt hành vi vi phạm hành chính về thuế."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.ADMIN_VIOLATION_FINE"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_violation_handling"
   atomic_column: "administrative_violation_fine_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Tax Recovery Amount"
   description: "Số tiền truy thu (thuế, tiền nộp chậm)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.TAX_RECOVERY_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_violation_handling"
   atomic_column: "tax_recovery_amt"
 - bcv_core_object: "Documentation"
@@ -29810,34 +29801,32 @@ attributes:
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Total Fine Amount"
   description: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.TOTAL_FINE_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_violation_handling"
   atomic_column: "total_fine_amt"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Other Fine Amount"
   description: "Tổng tiền phạt khác (không phải phạt hành chính)."
-  data_domain: "Currency Amount"
+  data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.OTHER_FINE_AMOUNT"
-  comment: "Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần validate\
-    \ không có giá trị non-numeric."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(23,2)"
+  data_type: "string"
   atomic_table: "et_violation_handling"
   atomic_column: "other_fine_amt"
 - bcv_core_object: "Documentation"
@@ -58217,7 +58206,7 @@ attributes:
   atomic_entity: "Foreign Fund Management Organization Unit Staff"
   atomic_attribute: "Held Unit Quantity"
   description: "Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -58226,7 +58215,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "foreign_fm_ou_staff"
   atomic_column: "held_unit_quantity"
 - bcv_core_object: "Involved Party"
@@ -60114,7 +60103,7 @@ attributes:
   atomic_entity: "Fund Management Company Employee"
   atomic_attribute: "Held Unit Quantity"
   description: "Số lượng CCQ/cổ phiếu nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "FMS"
@@ -60123,7 +60112,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "fmc_employee"
   atomic_column: "held_unit_quantity"
 - bcv_core_object: "Involved Party"

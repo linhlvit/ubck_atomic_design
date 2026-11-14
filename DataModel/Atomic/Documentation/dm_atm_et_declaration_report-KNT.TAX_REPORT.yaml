@@ -249,28 +249,28 @@ attributes:
   - name: Declaration From Date
     physical_name: declaration_from_dt
     business_meaning: Kỳ kê khai từ ngày.
-    data_domain: Date
-    data_type: date
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_FROM_DATE
-    comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format ngày thực tế.
+    comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Declaration To Date
     physical_name: declaration_to_dt
     business_meaning: Kỳ kê khai đến ngày.
-    data_domain: Date
-    data_type: date
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_TO_DATE
-    comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate format ngày thực tế.
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -333,14 +333,14 @@ attributes:
   - name: Declaration Date
     physical_name: declaration_dt
     business_meaning: Ngày lập tờ khai.
-    data_domain: Date
-    data_type: date
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.DECLARATION_DATE
-    comment: Nguồn lưu dạng string — ETL cần cast/parse sang date.
+    comment: null
     classification_context: null
     etl_derived_value: null
 
@@ -627,14 +627,14 @@ attributes:
   - name: Audited Flag
     physical_name: audited_flag
     business_meaning: Cờ báo cáo tài chính đã được kiểm toán.
-    data_domain: Small Counter
-    data_type: int
+    data_domain: Text
+    data_type: string
     nullable: true
     is_primary_key: false
     source_system: KNT
     source_table: TAX_REPORT
     source_column: KNT.TAX_REPORT.AUDITED
-    comment: "Nguồn lưu dạng string (\"true\"/\"false\") — ETL cần cast sang boolean."
+    comment: null
     classification_context: null
     etl_derived_value: null
 

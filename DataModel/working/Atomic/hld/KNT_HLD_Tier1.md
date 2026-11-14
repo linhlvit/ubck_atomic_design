@@ -95,7 +95,7 @@ erDiagram
         bigint ds_et_violation_handling_id PK
         string tax_code
         string handling_decision_number
-        decimal violation_fine_amount
+        string violation_fine_amount
     }
 ```
 

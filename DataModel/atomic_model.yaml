@@ -1168,8 +1168,8 @@ entities:
     physical_name: held_unit_quantity
     business_meaning_1st: Số lượng CCQ đang nắm giữ.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -7649,8 +7649,8 @@ entities:
     physical_name: offered_quantity
     business_meaning_1st: Số lượng chứng khoán đăng ký chào bán.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -7925,8 +7925,8 @@ entities:
     physical_name: sold_quantity
     business_meaning_1st: Số lượng chứng khoán đã bán được trong đợt chào bán.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -8437,8 +8437,8 @@ entities:
     physical_name: planned_quantity
     business_meaning_1st: Số lượng chứng khoán trong kế hoạch chào bán.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -8541,8 +8541,8 @@ entities:
     physical_name: actual_quantity
     business_meaning_1st: Số lượng thực tế đã bán trong kế hoạch.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -10379,8 +10379,8 @@ entities:
     physical_name: pre_transaction_unit_quantity
     business_meaning_1st: Số lượng CCQ/cổ phần trước giao dịch.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -10396,8 +10396,8 @@ entities:
     physical_name: post_transaction_unit_quantity
     business_meaning_1st: Số lượng CCQ/cổ phần sau giao dịch.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -36848,10 +36848,9 @@ entities:
   - name: Declaration From Date
     physical_name: declaration_from_dt
     business_meaning_1st: Kỳ kê khai từ ngày.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate
-      format ngày thực tế.
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -36862,15 +36861,13 @@ entities:
       - source_table: TAX_REPORT
         source_column: KNT.TAX_REPORT.DECLARATION_FROM_DATE
         business_meaning: Kỳ kê khai từ ngày.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate
-          format ngày thực tế.
+        comment: null
   - name: Declaration To Date
     physical_name: declaration_to_dt
     business_meaning_1st: Kỳ kê khai đến ngày.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate
-      format ngày thực tế.
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -36881,8 +36878,7 @@ entities:
       - source_table: TAX_REPORT
         source_column: KNT.TAX_REPORT.DECLARATION_TO_DATE
         business_meaning: Kỳ kê khai đến ngày.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang date. Cần validate
-          format ngày thực tế.
+        comment: null
   - name: Declaration From Month
     physical_name: declaration_from_month
     business_meaning_1st: Kỳ kê khai từ tháng.
@@ -36956,9 +36952,9 @@ entities:
   - name: Declaration Date
     physical_name: declaration_dt
     business_meaning_1st: Ngày lập tờ khai.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang date.
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -36969,7 +36965,7 @@ entities:
       - source_table: TAX_REPORT
         source_column: KNT.TAX_REPORT.DECLARATION_DATE
         business_meaning: Ngày lập tờ khai.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang date.
+        comment: null
   - name: Extension Reason Code
     physical_name: extension_reason_code
     business_meaning_1st: Mã lý do gia hạn nộp báo cáo.
@@ -37323,9 +37319,9 @@ entities:
   - name: Audited Flag
     physical_name: audited_flag
     business_meaning_1st: Cờ báo cáo tài chính đã được kiểm toán.
-    comment_1st: Nguồn lưu dạng string ("true"/"false") — ETL cần cast sang boolean.
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37336,7 +37332,7 @@ entities:
       - source_table: TAX_REPORT
         source_column: KNT.TAX_REPORT.AUDITED
         business_meaning: Cờ báo cáo tài chính đã được kiểm toán.
-        comment: Nguồn lưu dạng string ("true"/"false") — ETL cần cast sang boolean.
+        comment: null
   - name: Audit Opinion Code
     physical_name: audit_opinion_code
     business_meaning_1st: Mã ý kiến kiểm toán (theo chuẩn mực kiểm toán).
@@ -37800,11 +37796,9 @@ entities:
   - name: Year End Value
     physical_name: year_end_val
     business_meaning_1st: Giá trị cuối năm báo cáo (đầu kỳ của năm sau).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric (một số chỉ tiêu có thể là ghi chú thay
-      vì số liệu).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37815,16 +37809,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.YEAR_END_VALUE
         business_meaning: Giá trị cuối năm báo cáo (đầu kỳ của năm sau).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric (một số chỉ tiêu có thể là ghi chú
-          thay vì số liệu).
+        comment: null
   - name: Year Begin Value
     physical_name: year_begin_val
     business_meaning_1st: Giá trị đầu năm báo cáo (số dư đầu kỳ).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37835,15 +37826,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.YEAR_BEGIN_VALUE
         business_meaning: Giá trị đầu năm báo cáo (số dư đầu kỳ).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Current Year Value
     physical_name: current_year_val
     business_meaning_1st: Giá trị năm nay (kỳ hiện tại).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37854,15 +37843,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_VALUE
         business_meaning: Giá trị năm nay (kỳ hiện tại).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Prior Year Value
     physical_name: prior_year_val
     business_meaning_1st: Giá trị năm trước (kỳ so sánh).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37873,8 +37860,7 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.PRIOR_YEAR_VALUE
         business_meaning: Giá trị năm trước (kỳ so sánh).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Preparer Full Name
     physical_name: preparer_full_nm
     business_meaning_1st: Họ tên người lập biểu.
@@ -37912,9 +37898,9 @@ entities:
   - name: Preparation Date
     physical_name: preparation_dt
     business_meaning_1st: Ngày lập biểu.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang date.
-    data_domain_most: Date
-    data_type_most: date
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -37925,7 +37911,7 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.PREPARATION_DATE
         business_meaning: Ngày lập biểu.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang date.
+        comment: null
   - name: Director Full Name
     physical_name: director_full_nm
     business_meaning_1st: Họ tên Giám đốc/Tổng giám đốc ký báo cáo.
@@ -38014,9 +38000,9 @@ entities:
   - name: Increase Prior Year Amount
     physical_name: increase_prior_year_amt
     business_meaning_1st: Số tăng năm trước.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38027,13 +38013,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.INCREASE_PRIOR_YEAR
         business_meaning: Số tăng năm trước.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Current Year Amount
     physical_name: current_year_amt
     business_meaning_1st: Số tiền/giá trị năm nay.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38044,13 +38030,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.CURRENT_YEAR_AMOUNT
         business_meaning: Số tiền/giá trị năm nay.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Previous Year Amount
     physical_name: previous_year_amt
     business_meaning_1st: Số tiền/giá trị năm ngoái.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38061,13 +38047,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.PREVIOUS_YEAR_AMOUNT
         business_meaning: Số tiền/giá trị năm ngoái.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Begin Balance Current Year Amount
     physical_name: begin_balance_current_year_amt
     business_meaning_1st: Số dư đầu năm nay.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38078,13 +38064,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_CURRENT_YEAR
         business_meaning: Số dư đầu năm nay.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: End Balance Current Year Amount
     physical_name: end_balance_current_year_amt
     business_meaning_1st: Số dư cuối năm nay.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38095,13 +38081,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.END_BALANCE_CURRENT_YEAR
         business_meaning: Số dư cuối năm nay.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: End Balance Prior Year Amount
     physical_name: end_balance_prior_year_amt
     business_meaning_1st: Số dư cuối năm trước.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38112,13 +38098,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.END_BALANCE_PRIOR_YEAR
         business_meaning: Số dư cuối năm trước.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Begin Balance Prior Year Amount
     physical_name: begin_balance_prior_year_amt
     business_meaning_1st: Số dư đầu năm trước.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38129,13 +38115,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.BEGIN_BALANCE_PRIOR_YEAR
         business_meaning: Số dư đầu năm trước.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Increase Current Year Amount
     physical_name: increase_current_year_amt
     business_meaning_1st: Số tăng năm nay.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38146,13 +38132,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.INCREASE_CURRENT_YEAR
         business_meaning: Số tăng năm nay.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Decrease Current Year Amount
     physical_name: decrease_current_year_amt
     business_meaning_1st: Số giảm năm nay.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38163,13 +38149,13 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.DECREASE_CURRENT_YEAR
         business_meaning: Số giảm năm nay.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
   - name: Decrease Prior Year Amount
     physical_name: decrease_prior_year_amt
     business_meaning_1st: Số giảm năm trước.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38180,7 +38166,7 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.DECREASE_PRIOR_YEAR
         business_meaning: Số giảm năm trước.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2).
+        comment: null
 - ldm:
     id: ATM-et_enforcement_debt_decision
     logical_name_1st: External Tax Enforcement Debt Decision
@@ -38898,10 +38884,9 @@ entities:
   - name: Violation Fine Amount
     physical_name: violation_fine_amt
     business_meaning_1st: Số tiền phạt hành vi vi phạm.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38912,15 +38897,13 @@ entities:
       - source_table: TAX_VIOLATION_HANDLING
         source_column: KNT.TAX_VIOLATION_HANDLING.VIOLATION_FINE
         business_meaning: Số tiền phạt hành vi vi phạm.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Administrative Violation Fine Amount
     physical_name: administrative_violation_fine_amt
     business_meaning_1st: Số tiền phạt hành vi vi phạm hành chính về thuế.
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38931,15 +38914,13 @@ entities:
       - source_table: TAX_VIOLATION_HANDLING
         source_column: KNT.TAX_VIOLATION_HANDLING.ADMIN_VIOLATION_FINE
         business_meaning: Số tiền phạt hành vi vi phạm hành chính về thuế.
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Tax Recovery Amount
     physical_name: tax_recovery_amt
     business_meaning_1st: Số tiền truy thu (thuế, tiền nộp chậm).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -38950,8 +38931,7 @@ entities:
       - source_table: TAX_VIOLATION_HANDLING
         source_column: KNT.TAX_VIOLATION_HANDLING.TAX_RECOVERY_AMOUNT
         business_meaning: Số tiền truy thu (thuế, tiền nộp chậm).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Issuing Organization Name
     physical_name: issuing_organization_nm
     business_meaning_1st: Cơ quan ban hành quyết định.
@@ -39025,10 +39005,9 @@ entities:
   - name: Total Fine Amount
     physical_name: total_fine_amt
     business_meaning_1st: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)."
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -39039,15 +39018,13 @@ entities:
       - source_table: TAX_VIOLATION_HANDLING
         source_column: KNT.TAX_VIOLATION_HANDLING.TOTAL_FINE_AMOUNT
         business_meaning: "Tổng số tiền phạt theo quyết định (đơn vị: đồng)."
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Other Fine Amount
     physical_name: other_fine_amt
     business_meaning_1st: Tổng tiền phạt khác (không phải phạt hành chính).
-    comment_1st: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-      validate không có giá trị non-numeric.
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -39058,8 +39035,7 @@ entities:
       - source_table: TAX_VIOLATION_HANDLING
         source_column: KNT.TAX_VIOLATION_HANDLING.OTHER_FINE_AMOUNT
         business_meaning: Tổng tiền phạt khác (không phải phạt hành chính).
-        comment: Nguồn lưu dạng string — ETL cần cast/parse sang decimal(23,2). Cần
-          validate không có giá trị non-numeric.
+        comment: null
   - name: Message Packet Id
     physical_name: message_packet_id
     business_meaning_1st: Mã gói tin trao đổi liên quan.
@@ -73593,8 +73569,8 @@ entities:
     physical_name: held_unit_quantity
     business_meaning_1st: Số lượng CCQ/cổ phiếu nắm giữ.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -76168,8 +76144,8 @@ entities:
     physical_name: held_unit_quantity
     business_meaning_1st: Số lượng cổ phiếu/CCQ nắm giữ của người hành nghề.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
