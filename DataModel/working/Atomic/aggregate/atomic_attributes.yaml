@@ -787,7 +787,7 @@ attributes:
   source_column: "FMS.MB_FUND.NAT_ID"
   comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
     \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: MB_FUND.NAT_ID = NATIONAL.ID\
-    \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+    \ để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -802,10 +802,9 @@ attributes:
   is_primary_key: false
   source_system: "FMS"
   source_table: "MB_FUND"
-  source_column: "FMS.NATIONAL.SNAME"
-  comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT). Pair with\
-    \ Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk — chi tiết\
-    \ xem comment Nationality Id."
+  source_column: "FMS.NATIONAL.CODE"
+  comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+    \ Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -962,7 +962,7 @@ entities:
     business_meaning_1st: FK đến Geographic Area (quốc tịch).
     comment_1st: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
       \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: MB_FUND.NAT_ID = NATIONAL.ID\
-      \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+      \ để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -977,13 +977,12 @@ entities:
         business_meaning: FK đến Geographic Area (quốc tịch).
         comment: "FK target: geographic_area.geographic_area_id (geographic_area_tp_code\
           \ = 'COUNTRY'). Cần ETL crosswalk sang FMS.NATIONAL: MB_FUND.NAT_ID = NATIONAL.ID\
-          \ để xác nhận SNAME sau đó hash_id('ECAT_COUNTRY', SNAME)."
+          \ để xác nhận CODE sau đó hash_id('ECAT_COUNTRY', CODE)."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc gia/quốc tịch.
-    comment_1st: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
-      \ Pair with Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk\
-      \ — chi tiết xem comment Nationality Id."
+    comment_1st: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+      \ Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID)."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -994,11 +993,12 @@ entities:
     - source_system: FMS
       source_tables:
       - source_table: MB_FUND
-        source_column: FMS.NATIONAL.SNAME
-        business_meaning: Mã quốc gia/quốc tịch.
-        comment: "Lookup pair: geographic_area.geographic_area_code (nguồn ECAT).\
-          \ Pair with Nationality Id. Giá trị lấy từ FMS.NATIONAL.SNAME sau ETL crosswalk\
-          \ — chi tiết xem comment Nationality Id."
+        source_column: FMS.NATIONAL.CODE
+        business_meaning: Mã quốc gia/quốc tịch (CODE từ FMS.NATIONAL).
+        comment: "Lookup pair: geographic_area.geographic_area_code. Pair with Nationality\
+          \ Id. Giá trị lấy từ CODE (join FMS.NATIONAL qua NAT_ID = FMS.NATIONAL.ID).\
+          \ Giá trị lấy từ FMS.NATIONAL.CODE sau ETL crosswalk — chi tiết xem comment\
+          \ Nationality Id."
   - name: Classification FMS Stockholder Type Id
     physical_name: cl_fms_stockholder_tp_id
     business_meaning_1st: "FK -> STOCKHOLDER_TYPE: Loại cổ đông thành viên."
