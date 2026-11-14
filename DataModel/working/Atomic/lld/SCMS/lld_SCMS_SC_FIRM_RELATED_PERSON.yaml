@@ -28,7 +28,7 @@ metadata:
     \ CAT_COUNTRY ngoài scope). Audit: CREATED_AT + CREATED_BY + LAST_MODIFIED_AT\
     \ (bảng nguồn không có LAST_MODIFIED_BY). Hạ về draft (2026-07-27) để sửa lỗi\
     \ hash-mismatch FK Securities Company Id — trước đây hash trực tiếp theo SC_FIRM_INFO_ID\
-    \ (ID kỹ thuật) thay vì CODE của bảng đích."
+    \ (ID kỹ thuật) thay vì CODE của bảng đích. [2026-11-14] Theo yêu cầu Data Modeler: Shares Count đổi Small Counter/int → Large Counter/bigint (nguồn NUMBER(19))."
 attributes:
 - attribute_name: "Securities Company Related Person Id"
   physical_name: "sc_related_person_id"
@@ -342,7 +342,7 @@ attributes:
 - attribute_name: "Shares Count"
   physical_name: "shares_count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -351,7 +351,7 @@ attributes:
   comment: "NUMBER(19). Large integer. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Founding Shareholder Indicator"
   physical_name: "founding_shareholder_ind"
   description: "Cờ là cổ đông sáng lập: 1=Có; 0=Không."

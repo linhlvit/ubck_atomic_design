@@ -31,7 +31,7 @@ metadata:
     \ REPORT_PERIOD, RESOLUTION_NOTE, VIOLATION_DESCRIPTION, ENTITY_TYPE; bổ sung\
     \ 5 cột mới PERIOD_TYPE, PERIOD_VALUE, ALERT_DATE, SEVERITY_LEVEL_ALT, STRING_RESULT_VALUE\
     \ (DDL không có mô tả nghiệp vụ — cần Data Modeler xác nhận, đặc biệt khả năng\
-    \ trùng ý nghĩa với REPORT_PERIOD/REPORT_PERIOD_VALUE và SEVERITY_LEVEL/VIOLATION_SEVERITY)."
+    \ trùng ý nghĩa với REPORT_PERIOD/REPORT_PERIOD_VALUE và SEVERITY_LEVEL/VIOLATION_SEVERITY). [2026-11-14] Theo yêu cầu Data Modeler: Comparison Value (COMPARE_VALUE) đổi int → decimal(23,2) (domain Currency Amount)."
 attributes:
 - attribute_name: "Securities Company Alert Violation Id"
   physical_name: "sc_alert_violation_id"
@@ -215,17 +215,16 @@ attributes:
 - attribute_name: "Comparison Value"
   physical_name: "comparison_val"
   description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
-  data_domain: "Small Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE"
-  comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
-    \ là integer."
+  comment: "NUMBER (nguồn không khai báo precision/scale). Đổi Small Counter/int → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14, cùng kiểu với Actual Value. ETL cần kiểm tra giá trị nguồn không vượt dải decimal(23,2)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(23,2)"
 - attribute_name: "Actual Value"
   physical_name: "actual_val"
   description: "Giá trị thực tế của chỉ số tại thời điểm cảnh báo."

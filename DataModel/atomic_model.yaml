@@ -27937,7 +27937,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['draft', 'approved']"
+    conflict_review: "status: ['approved', 'draft']"
     sources:
     - AUDIT
     - FMS
@@ -65568,10 +65568,11 @@ entities:
   - name: Comparison Value
     physical_name: comparison_val
     business_meaning_1st: Giá trị so sánh dùng trong điều kiện cảnh báo.
-    comment_1st: NUMBER (no precision/scale — integer-like). Cần profile để xác nhận
-      luôn là integer.
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: NUMBER (nguồn không khai báo precision/scale). Đổi Small Counter/int
+      → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14, cùng kiểu
+      với Actual Value. ETL cần kiểm tra giá trị nguồn không vượt dải decimal(23,2).
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -65582,8 +65583,9 @@ entities:
       - source_table: SC_FIRM_ALERT_VIOLATION
         source_column: SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE
         business_meaning: Giá trị so sánh dùng trong điều kiện cảnh báo.
-        comment: NUMBER (no precision/scale — integer-like). Cần profile để xác nhận
-          luôn là integer.
+        comment: NUMBER (nguồn không khai báo precision/scale). Đổi Small Counter/int
+          → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14, cùng
+          kiểu với Actual Value. ETL cần kiểm tra giá trị nguồn không vượt dải decimal(23,2).
   - name: Actual Value
     physical_name: actual_val
     business_meaning_1st: Giá trị thực tế của chỉ số tại thời điểm cảnh báo.
@@ -67070,9 +67072,11 @@ entities:
   - name: Conversion Ratio
     physical_name: conversion_ratio
     business_meaning_1st: Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở).
-    comment_1st: NUMBER(19).
-    data_domain_most: Small Counter
-    data_type_most: int
+    comment_1st: NUMBER(19). Đổi Small Counter/int → Percentage/decimal(5,2) theo
+      yêu cầu Data Modeler 2026-11-14 — ETL cần kiểm tra giá trị nguồn nằm trong dải
+      decimal(5,2) (< 1000, tối đa 2 chữ số thập phân), nếu không sẽ tràn/làm tròn.
+    data_domain_most: Percentage
+    data_type_most: decimal(5,2)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -67083,7 +67087,10 @@ entities:
       - source_table: DISCLOSURE_SECURITIES_OFFERING
         source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO
         business_meaning: Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở).
-        comment: NUMBER(19).
+        comment: NUMBER(19). Đổi Small Counter/int → Percentage/decimal(5,2) theo
+          yêu cầu Data Modeler 2026-11-14 — ETL cần kiểm tra giá trị nguồn nằm trong
+          dải decimal(5,2) (< 1000, tối đa 2 chữ số thập phân), nếu không sẽ tràn/làm
+          tròn.
   - name: Converted Shares Quantity
     physical_name: converted_shares_quantity
     business_meaning_1st: Số cổ phiếu chuyển đổi.
@@ -90613,8 +90620,8 @@ entities:
     physical_name: shares_count
     business_meaning_1st: Số lượng cổ phần nắm giữ.
     comment_1st: NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -91044,8 +91051,8 @@ entities:
     physical_name: shares_count
     business_meaning_1st: Số lượng cổ phần nắm giữ.
     comment_1st: NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -93483,8 +93490,8 @@ entities:
     physical_name: shares_count
     business_meaning_1st: Số lượng cổ phần nắm giữ.
     comment_1st: NUMBER(19). Large integer. Mô tả gốc BRD trống.
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Large Counter
+    data_type_most: bigint
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -94167,8 +94174,8 @@ entities:
         source_column: SCMS.SC_FIRM_SENIOR_PERSONNEL.CONTRIBUTED_CAPITAL
         business_meaning: "Vốn góp của nhân sự này với tư cách cổ đông (đơn vị: đồng)."
         comment: Nguồn NUMBER(22,4).
-  - name: Ownership Ratio Percentage
-    physical_name: ownership_ratio_percentage
+  - name: Ownership Ratio
+    physical_name: ownership_ratio
     business_meaning_1st: Phần trăm sở hữu.
     comment_1st: null
     data_domain_most: Percentage
@@ -97858,8 +97865,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Individual Employment Status"
-    table_type_most: Fundamental
-    etl_pattern_most: SCD4A
+    table_type_most: Classification
+    etl_pattern_most: Upsert
     conflict_review: null
     sources:
     - NHNCK
@@ -98175,8 +98182,8 @@ entities:
       data_modeler: username@fssc.com.vn
     bcv_core_object_most: Involved Party
     bcv_concept_most: "[Involved Party] Individual"
-    table_type_most: Fundamental
-    etl_pattern_most: SCD4A
+    table_type_most: Classification
+    etl_pattern_most: Upsert
     conflict_review: null
     sources:
     - NHNCK

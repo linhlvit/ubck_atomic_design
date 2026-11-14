@@ -52539,17 +52539,18 @@ attributes:
   atomic_entity: "Securities Company Alert Violation"
   atomic_attribute: "Comparison Value"
   description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
-  data_domain: "Small Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
   source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE"
-  comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
-    \ là integer."
+  comment: "NUMBER (nguồn không khai báo precision/scale). Đổi Small Counter/int →\
+    \ Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14, cùng kiểu\
+    \ với Actual Value. ETL cần kiểm tra giá trị nguồn không vượt dải decimal(23,2)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(23,2)"
   atomic_table: "sc_alert_violation"
   atomic_column: "comparison_val"
 - bcv_core_object: "Event"
@@ -53905,16 +53906,18 @@ attributes:
   atomic_entity: "Securities Company Disclosure Securities Offering"
   atomic_attribute: "Conversion Ratio"
   description: "Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở)."
-  data_domain: "Small Counter"
+  data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO"
-  comment: "NUMBER(19)."
+  comment: "NUMBER(19). Đổi Small Counter/int → Percentage/decimal(5,2) theo yêu cầu\
+    \ Data Modeler 2026-11-14 — ETL cần kiểm tra giá trị nguồn nằm trong dải decimal(5,2)\
+    \ (< 1000, tối đa 2 chữ số thập phân), nếu không sẽ tràn/làm tròn."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(5,2)"
   atomic_table: "sc_disclosure_securities_offering"
   atomic_column: "conversion_ratio"
 - bcv_core_object: "Event"
@@ -69019,7 +69022,7 @@ attributes:
   atomic_entity: "Securities Company Insider Related Person"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -69028,7 +69031,7 @@ attributes:
   comment: "NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_insider_related_person"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -69388,7 +69391,7 @@ attributes:
   atomic_entity: "Securities Company Major Shareholder Relation"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -69397,7 +69400,7 @@ attributes:
   comment: "NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_major_shareholder_relation"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -71973,7 +71976,7 @@ attributes:
   atomic_entity: "Securities Company Related Person"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -71982,7 +71985,7 @@ attributes:
   comment: "NUMBER(19). Large integer. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_related_person"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -72572,7 +72575,7 @@ attributes:
   atomic_column: "contributed_capital_amt"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
-  atomic_attribute: "Ownership Ratio Percentage"
+  atomic_attribute: "Ownership Ratio"
   description: "Phần trăm sở hữu."
   data_domain: "Percentage"
   nullable: true
@@ -72585,7 +72588,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(5,2)"
   atomic_table: "sc_senior_personnel"
-  atomic_column: "ownership_ratio_percentage"
+  atomic_column: "ownership_ratio"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
   atomic_attribute: "Ownership Ratio Date"

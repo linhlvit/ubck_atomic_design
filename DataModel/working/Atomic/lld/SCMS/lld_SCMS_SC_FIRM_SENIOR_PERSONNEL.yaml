@@ -34,7 +34,7 @@ metadata:
     \ 2 (2026-09-18): đổi FK target NATIONALITY_ID từ cl_nationality sang geographic_area\
     \ (type=COUNTRY), crosswalk qua SCMS.CAT_NATIONALITY để lấy NATIONALITY_CODE trước\
     \ khi hash_id('ECAT_COUNTRY', ...) — nhất quán với pattern Nationality dùng ở\
-    \ NHNCK/FMS."
+    \ NHNCK/FMS. [2026-11-14] Theo yêu cầu Data Modeler: đổi tên attribute Ownership Ratio Percentage → Ownership Ratio (physical ownership_ratio_percentage → ownership_ratio), đồng bộ các entity SCMS cùng nhóm."
 attributes:
 - attribute_name: "Securities Company Senior Personnel Id"
   physical_name: "sc_senior_personnel_id"
@@ -488,8 +488,8 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
-- attribute_name: "Ownership Ratio Percentage"
-  physical_name: "ownership_ratio_percentage"
+- attribute_name: "Ownership Ratio"
+  physical_name: "ownership_ratio"
   description: "Phần trăm sở hữu."
   data_domain: "Percentage"
   nullable: true

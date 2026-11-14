@@ -31,7 +31,7 @@ metadata:
     \ canonical). SU_VU (DDL cũ) đổi tên thành MATTER trong DDL UAT mới — cùng cột,\
     \ đã cập nhật source_columns 2026-09-18. Hạ về draft (2026-07-27) để sửa lỗi hash-mismatch\
     \ FK Securities Company Id — trước đây hash trực tiếp theo ID kỹ thuật thay vì\
-    \ CODE của bảng đích."
+    \ CODE của bảng đích. [2026-11-14] Theo yêu cầu Data Modeler: Conversion Ratio đổi data type int → decimal(5,2) (domain Percentage)."
 attributes:
 - attribute_name: "Securities Company Disclosure Securities Offering Id"
   physical_name: "sc_disclosure_securities_offering_id"
@@ -887,16 +887,16 @@ attributes:
 - attribute_name: "Conversion Ratio"
   physical_name: "conversion_ratio"
   description: "Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở)."
-  data_domain: "Small Counter"
+  data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO"
-  comment: "NUMBER(19)."
+  comment: "NUMBER(19). Đổi Small Counter/int → Percentage/decimal(5,2) theo yêu cầu Data Modeler 2026-11-14 — ETL cần kiểm tra giá trị nguồn nằm trong dải decimal(5,2) (< 1000, tối đa 2 chữ số thập phân), nếu không sẽ tràn/làm tròn."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(5,2)"
 - attribute_name: "Converted Shares Quantity"
   physical_name: "converted_shares_quantity"
   description: "Số cổ phiếu chuyển đổi."
