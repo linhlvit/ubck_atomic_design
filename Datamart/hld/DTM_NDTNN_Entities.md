@@ -178,6 +178,35 @@ Nguồn Atomic: `fir_value`, `fir_structure`, `foreign_investor_report` (FIMS lu
 
 ---
 
+
+## Data Explorer FIMS — 4 bảng Operational bản sao 1:1 Atomic + 2 bảng khai thác (Operational)
+
+> **[MỚI 2026-11-14, O_NDTNN_61]** Theo `FIMS_MART_TO_CLICKHOUSE_MAPPING.md` (logic job `fims_ods_to_clickhouse`): ODS → Atomic 1:1 → Datamart 4 bảng Operational bản sao 1:1 của `fir_value`, `fir_structure`, `foreign_investor_report`, `cl_foreign_investor_reporting_entity` → flat. ClickHouse có đúng 2 bảng khai thác giữ cấu trúc của `default.bc_fims` (12 cột, không có `entity_code`) và phần FIMS của `default.metadata_etl`, chỉ chuẩn hóa tên: `ndtnn_opr_foreign_investor_report_explorer_val_flat` và `ndtnn_opr_foreign_investor_report_explorer_indicator_flat`. Logic nối bảng, đổi tên cột và dựng cây chỉ tiêu nằm ở DML flat (`02_populate_ndtnn_flat_tables.sql` khối 16, 17). Bốn bảng bản sao song song với `Fact Foreign Investor Report Value` và `Foreign Investor Report Structure Dimension` (dùng cho KPI Nhóm 1–43), không thay thế chúng.
+
+```mermaid
+erDiagram
+    Operational_Foreign_Investor_Report_Structure ||--o{ Operational_Foreign_Investor_Report_Value : " "
+    Operational_Foreign_Investor_Report ||--o{ Operational_Foreign_Investor_Report_Structure : " "
+    Operational_Foreign_Investor_Reporting_Entity ||--o{ Operational_Foreign_Investor_Report_Value : " "
+    Operational_Foreign_Investor_Report_Value ||--o{ Operational_Foreign_Investor_Report_Explorer_Value : " "
+    Operational_Foreign_Investor_Report_Structure ||--o{ Operational_Foreign_Investor_Report_Explorer_Value : " "
+    Operational_Foreign_Investor_Report ||--o{ Operational_Foreign_Investor_Report_Explorer_Value : " "
+    Operational_Foreign_Investor_Reporting_Entity ||--o{ Operational_Foreign_Investor_Report_Explorer_Value : " "
+    Operational_Foreign_Investor_Report_Structure ||--o{ Operational_Foreign_Investor_Report_Explorer_Indicator : " "
+    Operational_Foreign_Investor_Report ||--o{ Operational_Foreign_Investor_Report_Explorer_Indicator : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Foreign Investor Report Value | Operational | new | Bản sao 1:1 Atomic `fir_value` (Upsert) — giá trị từng ô của từng lần nộp | 1 ô × 1 lần nộp × 1 dòng động (PK `fir_val_id`) | — (chưa có KPI, O_NDTNN_61) |
+| Operational Foreign Investor Report Structure | Operational | new | Bản sao 1:1 Atomic `fir_structure` (SCD2) — danh mục chỉ tiêu, có `data_explorer_id` | 1 ô template (PK `fir_structure_id`) | — |
+| Operational Foreign Investor Report | Operational | new | Bản sao 1:1 Atomic `foreign_investor_report` (SCD2) — mẫu báo cáo/sheet | 1 sheet của 1 mẫu (PK `fir_id`) | — |
+| Operational Foreign Investor Reporting Entity | Operational | new | Bản sao 1:1 Atomic `cl_foreign_investor_reporting_entity` (SCD2) — danh mục đối tượng nộp | 1 đối tượng nộp (PK `cl_foreign_investor_reporting_entity_id`) | — |
+| Operational Foreign Investor Report Explorer Value | Operational | new | Bảng dữ liệu khai thác Data Explorer — thay `bc_fims` | 1 ô × 1 lần nộp × 1 dòng động | — (chưa có KPI) |
+| Operational Foreign Investor Report Explorer Indicator | Operational | new | Cây chỉ tiêu Data Explorer — thay phần FIMS của `metadata_etl` | 1 chỉ tiêu (`indicator_id` = `data_explorer_id`) | — |
+
+---
+
 ## Bảng đã bãi bỏ
 
 | Datamart Entity | Lý do |

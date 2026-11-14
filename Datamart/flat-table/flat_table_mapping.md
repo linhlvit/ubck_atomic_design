@@ -548,6 +548,101 @@ _Không có dim join (operational / self-contained table)._
 
 ---
 
+
+### Data Explorer FIMS — bảng khai thác thay `default.bc_fims` / `default.metadata_etl` (thêm 2026-11-14, O_NDTNN_61)
+
+_Logic theo `FIMS_MART_TO_CLICKHOUSE_MAPPING.md` (job `fims_ods_to_clickhouse`): ODS → Atomic 1:1 → Datamart 4 bảng Operational bản sao 1:1 → flat. Mọi phép lọc dòng/chỉ tiêu đã làm ở bước ODS → Atomic; flat chỉ nối 4 bảng, đổi tên cột và dựng cây chỉ tiêu. Chỉ lấy bản ghi hiện hành (`ds_rcrd_st = 'ACTIVE'`, bảng SCD2 thêm `ds_rcrd_end_dt = '2400-01-01'`)._
+
+**4 bảng bản sao Atomic (khối 12–15, TRUNCATE + INSERT):**
+
+| Bảng flat | Bảng Datamart | Bảng Atomic | Kiểu nạp Atomic | PK |
+|-----------|---------------|-------------|-----------------|----|
+| `datamart.ndtnn_opr_fir_value_flat` | `opr_fir_value` | `fir_value` | Upsert | `fir_val_id` |
+| `datamart.ndtnn_opr_fir_structure_flat` | `opr_fir_structure` | `fir_structure` | SCD2 | `fir_structure_id` |
+| `datamart.ndtnn_opr_foreign_investor_report_flat` | `opr_foreign_investor_report` | `foreign_investor_report` | SCD2 | `fir_id` |
+| `datamart.ndtnn_opr_foreign_investor_reporting_entity_flat` | `opr_foreign_investor_reporting_entity` | `cl_foreign_investor_reporting_entity` | SCD2 | `cl_foreign_investor_reporting_entity_id` |
+
+_Giữ nguyên tên và kiểu cột Atomic; thêm cột kỹ thuật `ds_rcrd_st`, `ds_rcrd_isrt_dt`, `ds_rcrd_udt_dt`, `ds_etl_pcs_tms` (+ `ds_rcrd_end_dt` dạng chuỗi ở 3 bảng SCD2 vì ClickHouse `Date` không biểu diễn được 2400-01-01)._
+
+---
+
+### `datamart.ndtnn_opr_foreign_investor_report_explorer_val_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` (bảng dữ liệu khai thác Data Explorer, thay `default.bc_fims`) |
+| **Entity nguồn** | Operational Foreign Investor Report Explorer Value |
+| **Bảng fact/operational** | `datamart.opr_foreign_investor_report_explorer_val` — không vật lý hóa riêng; flat tính trực tiếp từ `opr_fir_value` ⋈ `opr_fir_structure` ⋈ `opr_foreign_investor_report` (INNER JOIN) + `opr_foreign_investor_reporting_entity` (LEFT JOIN) |
+| **PK** | không có cột khóa đơn; khóa dedupe = ORDER BY `period_end_dt, object_id, object_nm, object_tp, dynamic_row_order, period_tp, period_val, indicator_id`; version column `rpt_log_id` |
+| **Số dim join** | 0 (join nằm trong SELECT, như job cũ) |
+
+_Giữ cấu trúc `bc_fims` (12 cột) — chỉ chuẩn hóa tên bảng/cột. Nạp bằng DELETE rồi INSERT các dòng có `submission_dt = :etl_date`; engine `ReplicatedReplacingMergeTree(rpt_log_id)` (lần nộp có id lớn nhất thắng); bảng đích không có cột `entity_code`._
+
+**Ánh xạ cột đích: `bc_fims` → `ndtnn_opr_foreign_investor_report_explorer_val_flat`**
+
+| Cột cũ | Cột mới | Lấy từ / ghi chú |
+|--------|---------|------------------|
+| `date` | `period_end_dt` | `coalesce(opr_fir_value.rpt_day, opr_fir_value.submission_dt)` — ngày báo cáo, trống thì ngày nộp |
+| `object_id` | `object_id` | `reporting_entity_code`; trống → `''` |
+| `object_name` | `object_nm` | `opr_foreign_investor_reporting_entity.reporting_entity_nm`; không khớp → `''` |
+| `object_type_name` | `object_tp` | `reporting_entity_tp_nm`; không khớp → `''` |
+| `period_type` | `period_tp` | `period_tp_code`; trống → `''` |
+| `period_value` | `period_val` | `period_val`; trống → `''` |
+| `row_order` | `dynamic_row_order` | `dynamic_row_order`; trống → `0` |
+| `id_chitieu` | `indicator_id` | `opr_fir_structure.data_explorer_id` (giữ nguyên) |
+| `gia_tri` | `indicator_val` | `val_raw` nguyên văn, không nhân 100, không đổi đơn vị |
+| `report_log_id` | `rpt_log_id` | `rpt_log_id` ép số (`toUInt64OrZero`); cột phiên bản của engine |
+| `ngay_nop` | `submission_dt` | `submission_dt`; khóa xóa–ghi lại |
+| `updated_at` | `ds_etl_pcs_tms` | Thời điểm chạy |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| *(chưa có KPI dùng — BI Data Explorer đọc trực tiếp bảng; O_NDTNN_61)* | 0 |
+
+---
+
+### `datamart.ndtnn_opr_foreign_investor_report_explorer_indicator_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `operational` (cây chỉ tiêu Data Explorer, thay phần FIMS của `default.metadata_etl`) |
+| **Entity nguồn** | Operational Foreign Investor Report Explorer Indicator |
+| **Bảng fact/operational** | `datamart.opr_foreign_investor_report_explorer_indicator` — không vật lý hóa riêng; flat tính từ `opr_fir_structure` ⋈ `opr_foreign_investor_report` và đọc `ndtnn_opr_foreign_investor_report_explorer_val_flat` để suy `unit_nm` |
+| **PK** | `indicator_id` |
+| **Số dim join** | 0 |
+
+_Mỗi `data_explorer_id` một dòng, dựng từ toàn bộ `opr_fir_structure` hiện hành (kể cả chỉ tiêu chưa có số liệu). Job FIMS chỉ ghi 15 cột; 8 cột còn lại (`changed_by_nm`, `rpt_nm`, `sheet_nm`, `row_path`, `column_path`, `object_tp_list`, `object_sub_tp_list`, `legal_basis`) để rỗng như job cũ. Phải chạy SAU bảng dữ liệu. Nạp toàn bộ (TRUNCATE + INSERT)._
+
+**Ánh xạ cột đích: `metadata_etl` → `ndtnn_opr_foreign_investor_report_explorer_indicator_flat`**
+
+| Cột cũ | Cột mới | Quy tắc |
+|--------|---------|---------|
+| `id_chitieu` | `indicator_id` | `fir_structure.data_explorer_id` |
+| `nhom_chitieu` | `indicator_group_nm` | Các nút nối bằng ` > `, bỏ nút rỗng: (1) `rpt_nm` nối `legal_basis` bằng ` - `; (2) `sheet_nm`; (3) có `column_path` thì cả `row_path`, không thì `row_path` bỏ lá cuối; (4) `dynamic_ind = 1` thêm `Chi tiết`. ` > ` bên trong `rpt_nm`, `legal_basis`, `sheet_nm` đổi thành ` / ` |
+| `ten_chitieu` | `indicator_nm` | `column_path`; rỗng thì lá cuối của `row_path` |
+| `don_vi` | `unit_nm` | `''` = số, `%` = tỷ lệ, `__text__` = chữ (xem O_NDTNN_61 mục c: suy theo dữ liệu ngày chạy) |
+| `sort_order` | `sort_order_nbr` | `fir_structure.sort_order`; trống → 0 |
+| `targettable` | `target_table_nm` | `ndtnn_opr_foreign_investor_report_explorer_val_flat` (trước: `bc_fims`) |
+| `sourcetable` | `source_table_nm` | `datamart.opr_fir_value` |
+| `group_keys` | `group_key_list` | `period_end_dt,object_id,object_nm,object_tp,dynamic_row_order,period_tp,period_val` (tên cột MỚI) |
+| `loai_chi_tieu` | `indicator_tp` | Luôn 1 |
+| `level` | `indicator_level` | Luôn 1 |
+| `active` | `active_ind` | Luôn 1 |
+| `logic_function` | `logic_function` | Rỗng |
+| `effective_from` / `effective_to` | `effective_from_dt` / `effective_to_dt` | `2000-01-01` / `2099-12-31` |
+| `updated_at` | `ds_etl_pcs_tms` | Thời điểm chạy |
+| `changed_by`, `report_name`, `sheet_name`, `row_path`, `column_path`, `object_types`, `fund_types`, `legal_basis` | `changed_by_nm`, `rpt_nm`, `sheet_nm`, `row_path`, `column_path`, `object_tp_list`, `object_sub_tp_list`, `legal_basis` | Job FIMS không ghi — để rỗng |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| *(chưa có KPI dùng — O_NDTNN_61)* | 0 |
+
+---
+
 ## NHNCK
 
 **12 bảng flat** (2 fact + 10 operational) · **123 KPI unique**

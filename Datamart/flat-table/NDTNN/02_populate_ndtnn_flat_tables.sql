@@ -405,3 +405,260 @@ LEFT JOIN datamart.cdr_dt_dim rpt_cal
     ON rpt_cal.cdr_dt_dim_id = f.rpt_dt_dim_id
 WHERE submission_cal.cdr_dt = :etl_date
 ;
+
+
+-- ==========================================================
+-- 12. OPERATIONAL: ndtnn_opr_fir_structure_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_opr_fir_structure_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_opr_fir_structure_flat
+SELECT
+    -- From: OPR_FIR_STRUCTURE
+    f.fir_structure_id,
+    f.fir_structure_code,
+    f.src_stm_code,
+    f.structure_code,
+    f.fir_id,
+    f.fir_code,
+    f.rpt_id,
+    f.row_index,
+    f.column_index,
+    f.data_tp,
+    f.row_path,
+    f.column_path,
+    f.section_id,
+    f.section_tp_code,
+    f.dynamic_ind,
+    f.last_band_ind,
+    f.total_row_ind,
+    f.ordinal_column_ind,
+    f.data_explorer_id,
+    f.sort_order,
+    f.excluded_by_config_ind,
+    f.override_src,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_rcrd_end_dt,
+    f.ds_etl_pcs_tms
+
+FROM datamart.opr_fir_structure f
+;
+
+
+-- ==========================================================
+-- 13. OPERATIONAL: ndtnn_opr_fir_value_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_opr_fir_value_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_opr_fir_value_flat
+SELECT
+    -- From: OPR_FIR_VALUE
+    f.fir_val_id,
+    f.fir_val_code,
+    f.src_stm_code,
+    f.fir_structure_id,
+    f.fir_structure_code,
+    f.structure_code,
+    f.rpt_log_id,
+    f.rpt_id,
+    f.fir_id,
+    f.fir_code,
+    f.reporting_entity_tp_code,
+    f.reporting_entity_code,
+    f.period_tp_code,
+    f.period_val,
+    f.rpt_year,
+    f.rpt_day,
+    f.submission_deadline_tms,
+    f.submission_status_code,
+    f.submission_status_tp_code,
+    f.late_duration,
+    f.total_row_ind,
+    f.ordinal_column_ind,
+    f.section_echo_ind,
+    f.band_overflow_ind,
+    f.static_copy_ind,
+    f.rpt_marker_ind,
+    f.dynamic_ind,
+    f.dynamic_row_order,
+    f.val_raw,
+    f.submission_dt,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_etl_pcs_tms
+
+FROM datamart.opr_fir_value f
+;
+
+
+-- ==========================================================
+-- 14. OPERATIONAL: ndtnn_opr_foreign_investor_report_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_opr_foreign_investor_report_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_opr_foreign_investor_report_flat
+SELECT
+    -- From: OPR_FOREIGN_INVESTOR_REPORT
+    f.fir_id,
+    f.fir_code,
+    f.src_stm_code,
+    f.rpt_id,
+    f.rpt_code,
+    f.rpt_nm,
+    f.legal_basis,
+    f.rpt_status,
+    f.sheet_code,
+    f.sheet_nm,
+    f.sheet_index,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_rcrd_end_dt,
+    f.ds_etl_pcs_tms
+
+FROM datamart.opr_foreign_investor_report f
+;
+
+
+-- ==========================================================
+-- 15. OPERATIONAL: ndtnn_opr_foreign_investor_reporting_entity_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_opr_foreign_investor_reporting_entity_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_opr_foreign_investor_reporting_entity_flat
+SELECT
+    -- From: OPR_FOREIGN_INVESTOR_REPORTING_ENTITY
+    f.cl_foreign_investor_reporting_entity_id,
+    f.cl_foreign_investor_reporting_entity_code,
+    f.src_stm_code,
+    f.reporting_entity_code,
+    f.reporting_entity_tp_code,
+    f.reporting_entity_tp_nm,
+    f.entity_reference_nbr,
+    f.reporting_entity_nm,
+    f.reporting_entity_short_nm,
+    f.ds_rcrd_st,
+    f.ds_rcrd_isrt_dt,
+    f.ds_rcrd_udt_dt,
+    f.ds_rcrd_end_dt,
+    f.ds_etl_pcs_tms
+
+FROM datamart.opr_foreign_investor_reporting_entity f
+;
+
+
+-- ============================================================
+-- 16. OPERATIONAL: ndtnn_opr_foreign_investor_report_explorer_val_flat
+--    Bảng dữ liệu Data Explorer NDTNN (FIMS) — logic job fims_ods_to_clickhouse (FIMS_MART_TO_CLICKHOUSE_MAPPING.md §2–§3, §5) — O_NDTNN_61.
+--    Không lọc lại dòng/chỉ tiêu (đã lọc ở Atomic); chỉ nối + đổi tên cột. Bản ghi hiện hành: ds_rcrd_st = 'ACTIVE' (+ ds_rcrd_end_dt = '2400-01-01' với SCD2).
+--    Xóa–ghi lại theo ngày nộp. rpt_log_id ép số: không phải số → 0 (version thấp nhất).
+-- ============================================================
+DELETE FROM datamart.ndtnn_opr_foreign_investor_report_explorer_val_flat ON CLUSTER 'my_cluster'
+WHERE submission_dt = :etl_date;
+INSERT INTO datamart.ndtnn_opr_foreign_investor_report_explorer_val_flat
+SELECT
+    coalesce(v.rpt_day, v.submission_dt)                                    AS period_end_dt,
+    coalesce(v.reporting_entity_code, '')                                   AS object_id,
+    coalesce(e.reporting_entity_nm, '')                                     AS object_nm,
+    coalesce(e.reporting_entity_tp_nm, '')                                  AS object_tp,
+    coalesce(v.period_tp_code, '')                                          AS period_tp,
+    coalesce(v.period_val, '')                                              AS period_val,
+    coalesce(v.dynamic_row_order, 0)                                        AS dynamic_row_order,
+    s.data_explorer_id                                                      AS indicator_id,
+    coalesce(v.val_raw, '')                                                 AS indicator_val,
+    toUInt64OrZero(v.rpt_log_id)                                            AS rpt_log_id,
+    v.submission_dt                                                         AS submission_dt,
+    now()                                                                   AS ds_etl_pcs_tms
+FROM datamart.opr_fir_value v
+INNER JOIN datamart.opr_fir_structure s
+    ON s.fir_structure_id = v.fir_structure_id
+   AND s.ds_rcrd_st = 'ACTIVE' AND toString(s.ds_rcrd_end_dt) = '2400-01-01'
+INNER JOIN datamart.opr_foreign_investor_report r
+    ON r.fir_id = s.fir_id
+   AND r.ds_rcrd_st = 'ACTIVE' AND toString(r.ds_rcrd_end_dt) = '2400-01-01'
+LEFT JOIN datamart.opr_foreign_investor_reporting_entity e
+    ON e.reporting_entity_tp_code = v.reporting_entity_tp_code
+   AND e.reporting_entity_code = v.reporting_entity_code
+   AND e.ds_rcrd_st = 'ACTIVE' AND toString(e.ds_rcrd_end_dt) = '2400-01-01'
+WHERE v.ds_rcrd_st = 'ACTIVE'
+  AND v.submission_dt = :etl_date
+;
+
+
+-- ============================================================
+-- 17. OPERATIONAL: ndtnn_opr_foreign_investor_report_explorer_indicator_flat
+--    Cây chỉ tiêu Data Explorer NDTNN (FIMS) — logic job fims_ods_to_clickhouse (FIMS_MART_TO_CLICKHOUSE_MAPPING.md §4–§5) — O_NDTNN_61.
+--    Phải chạy SAU khối 16 (đọc ndtnn_opr_foreign_investor_report_explorer_val_flat để suy unit_nm). Nạp toàn bộ (TRUNCATE + INSERT).
+--    Mỗi data_explorer_id một dòng (LIMIT 1 BY, thứ tự sort_order, fir_structure_id) từ TOÀN BỘ opr_fir_structure hiện hành.
+--    unit_nm phụ thuộc dữ liệu của ngày chạy (số ô chữ nhiều hơn số ô số → chữ), nên có thể khác nhau giữa hai lần chạy.
+--    8 cột cuối (changed_by_nm … legal_basis) job FIMS không ghi — để rỗng.
+-- ============================================================
+TRUNCATE TABLE IF EXISTS datamart.ndtnn_opr_foreign_investor_report_explorer_indicator_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.ndtnn_opr_foreign_investor_report_explorer_indicator_flat
+SELECT
+    x.indicator_id                                                          AS indicator_id,
+    x.nhom                                                                  AS indicator_group_nm,
+    x.ten                                                                   AS indicator_nm,
+    toInt32(1)                                                              AS indicator_tp,
+    'datamart.opr_fir_value'                                                AS source_table_nm,
+    'ndtnn_opr_foreign_investor_report_explorer_val_flat'                                                                  AS target_table_nm,
+    'period_end_dt,object_id,object_nm,object_tp,dynamic_row_order,period_tp,period_val'
+                                                                            AS group_key_list,
+    ''                                                                      AS logic_function,
+    toInt32(1)                                                              AS indicator_level,
+    toInt32(1)                                                              AS active_ind,
+    toDate('2000-01-01')                                                    AS effective_from_dt,
+    toDate('2099-12-31')                                                    AS effective_to_dt,
+    now()                                                                   AS ds_etl_pcs_tms,
+    -- số: khai numberic/percentage và trong khoảng ngày chạy số ô chữ KHÔNG nhiều hơn số ô số; chỉ tiêu số có lá column_path chứa '%' hoặc bắt đầu 'tỷ lệ' → '%'
+    multiIf(
+        NOT x.declared_num OR st.n_text > st.n_num, '__text__',
+        position(x.col_leaf, '%') > 0 OR startsWith(lowerUTF8(x.col_leaf), 'tỷ lệ'), '%',
+        '')                                                                 AS unit_nm,
+    x.sort_ord                                                              AS sort_order_nbr,
+    ''                                                                      AS changed_by_nm,
+    ''                                                                      AS rpt_nm,
+    ''                                                                      AS sheet_nm,
+    ''                                                                      AS row_path,
+    ''                                                                      AS column_path,
+    ''                                                                      AS object_tp_list,
+    ''                                                                      AS object_sub_tp_list,
+    ''                                                                      AS legal_basis
+FROM
+(
+    -- Lớp 2: dựng nhóm / tên / cờ số-chữ cho mỗi data_explorer_id (chuỗi ' > ' bên trong rpt_nm, legal_basis, sheet_nm đổi thành ' / ')
+    SELECT
+        s.data_explorer_id                                                  AS indicator_id,
+        arrayStringConcat(arrayFilter(p -> p != '', [
+            concat(replaceAll(coalesce(r.rpt_nm, ''), ' > ', ' / '),
+                   if(coalesce(r.legal_basis, '') != '', concat(' - ', replaceAll(r.legal_basis, ' > ', ' / ')), '')),
+            replaceAll(coalesce(r.sheet_nm, ''), ' > ', ' / '),
+            if(coalesce(s.column_path, '') != '', coalesce(s.row_path, ''),
+               arrayStringConcat(arrayPopBack(splitByString(' > ', coalesce(s.row_path, ''))), ' > ')),
+            if(s.dynamic_ind = 1, 'Chi tiết', '')
+        ]), ' > ')                                                          AS nhom,
+        if(coalesce(s.column_path, '') != '', s.column_path,
+           arrayElement(splitByString(' > ', coalesce(s.row_path, '')), -1)) AS ten,
+        arrayElement(splitByString(' > ', coalesce(s.column_path, '')), -1) AS col_leaf,
+        coalesce(s.data_tp, '') IN ('numberic', 'percentage')               AS declared_num,
+        toInt64(coalesce(s.sort_order, 0))                                  AS sort_ord
+    FROM datamart.opr_fir_structure s
+    INNER JOIN datamart.opr_foreign_investor_report r
+        ON r.fir_id = s.fir_id
+       AND r.ds_rcrd_st = 'ACTIVE' AND toString(r.ds_rcrd_end_dt) = '2400-01-01'
+    WHERE s.ds_rcrd_st = 'ACTIVE' AND toString(s.ds_rcrd_end_dt) = '2400-01-01'
+      AND coalesce(s.data_explorer_id, '') != ''
+    ORDER BY s.data_explorer_id, s.sort_order, s.fir_structure_id
+    LIMIT 1 BY s.data_explorer_id
+) x
+LEFT JOIN
+(
+    -- đếm ô chữ thật sự / ô ra số trong khoảng ngày chạy (chấp nhận dấu phẩy nghìn)
+    SELECT
+        indicator_id,
+        countIf(indicator_val != '' AND isNull(toFloat64OrNull(replaceAll(indicator_val, ',', '')))) AS n_text,
+        countIf(isNotNull(toFloat64OrNull(replaceAll(indicator_val, ',', ''))))                      AS n_num
+    FROM datamart.ndtnn_opr_foreign_investor_report_explorer_val_flat
+    WHERE submission_dt = :etl_date
+    GROUP BY indicator_id
+) st ON st.indicator_id = x.indicator_id
+;

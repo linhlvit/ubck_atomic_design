@@ -401,3 +401,223 @@ PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
 ORDER BY (assumeNotNull(snpst_cdr_dt), fir_val_id)
 COMMENT 'Flat table — Fact Foreign Bank Branch Portfolio Report Snapshot × Calendar Date Dimension'
 ;
+
+
+-- ==========================================================
+-- 12. OPERATIONAL: ndtnn_opr_fir_structure_flat
+--    opr_fir_structure — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_fir_structure_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FIR_STRUCTURE
+    fir_structure_id                             String                  COMMENT 'PK — id Atomic fir_structure.fir_structure_id. Bản sao 1:1 (Operational) của Atomic `fir_structure` (SCD2) phụ',
+    fir_structure_code                           String                  COMMENT 'Mã nghiệp vụ ô chỉ tiêu = SHEET_ID || INDICATOR_UID. BK.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    structure_code                               String                  COMMENT 'Mã định danh ô template (INDICATOR_UID) — sinh từ tọa độ ô trong cellsMeta, duy nhất trong 1 sheet.',
+    fir_id                                       Nullable(String)        COMMENT 'FK → Foreign Investor Report: sheet chứa ô chỉ tiêu.',
+    fir_code                                     Nullable(String)        COMMENT 'Mã sheet (SHEET_ID).',
+    rpt_id                                       Nullable(String)        COMMENT 'Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID).',
+    row_index                                    Nullable(Int64)         COMMENT 'Vị trí dòng 0-based trong template (SHEET_ROW). Excel_row = Row Index + 1.',
+    column_index                                 Nullable(Int64)         COMMENT 'Vị trí cột 0-based trong template (SHEET_COL).',
+    data_tp                                      Nullable(String)        COMMENT 'Kiểu dữ liệu nguồn khai cho ô (FORMAT_DATA_TYPE): numberic, percentage, string...',
+    row_path                                     Nullable(String)        COMMENT 'Đường dẫn CHA→CON của dòng, nối bằng " > " — tên nhóm chỉ tiêu hiển thị trên Data Explorer.',
+    column_path                                  Nullable(String)        COMMENT 'Đường dẫn header của cột (VD "Kỳ báo cáo").',
+    section_id                                   Nullable(String)        COMMENT 'Mã vùng dữ liệu (section) chứa ô.',
+    section_tp_code                              Nullable(String)        COMMENT 'Loại vùng dữ liệu: DYNAMIC (nhiều dòng) hay NULL (dòng cố định).',
+    dynamic_ind                                  Nullable(Int64)         COMMENT '1 = ô thuộc band/slot động (IS_DYNAMIC_SLOT).',
+    last_band_ind                                Nullable(Int64)         COMMENT '1 = band động cuối cùng trong nhóm (IS_GROUP_LAST_BAND) — nhận diện dữ liệu thật vs bản sao lỗi nguồn.',
+    total_row_ind                                Nullable(Int64)         COMMENT '1 = dòng TỔNG, không phải dòng nhập liệu chi tiết.',
+    ordinal_column_ind                           Nullable(Int64)         COMMENT '1 = cột số thứ tự (STT), không phải chỉ tiêu nghiệp vụ.',
+    data_explorer_id                             Nullable(String)        COMMENT 'Mã chỉ tiêu dùng trên Data Explorer (ITEM_ID) = MD5(REPORT_CODE + LEGAL_BASIS + SHEET_NAME + ROW_PATH + COLUMN',
+    sort_order                                   Nullable(Int64)         COMMENT 'Thứ tự hiển thị trên UI.',
+    excluded_by_config_ind                       Nullable(Int64)         COMMENT '1 = dòng bị loại khỏi cây chỉ tiêu do khai drop: true trong file cấu hình đè.',
+    override_src                                 Nullable(String)        COMMENT 'Nguồn cấu hình đè đã sửa dòng: "<tên file>.yaml#<excel_row>".',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi — bản sao chỉ chứa bản ghi hiện hành của Atomic nên luôn ACTIVE (job FIMS vẫn lọc ds_rcrd_s',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày chèn bản ghi vào Datamart',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày cập nhật bản ghi gần nhất trong Datamart',
+    ds_rcrd_end_dt                               String                  COMMENT 'Ngày hết hiệu lực bản ghi (SCD2), dạng chuỗi yyyy-mm-dd vì ClickHouse Date không biểu diễn được 2400-01-01 — bản ghi hiện hành luôn 2400-01-01',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (fir_structure_id)
+COMMENT 'Flat table — opr_fir_structure — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 13. OPERATIONAL: ndtnn_opr_fir_value_flat
+--    opr_fir_value — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_fir_value_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FIR_VALUE
+    fir_val_id                                   String                  COMMENT 'PK — id Atomic fir_value.fir_val_id. Bản sao 1:1 (Operational) của Atomic `fir_value` (Upsert) phục vụ Data Ex',
+    fir_val_code                                 String                  COMMENT 'Mã nghiệp vụ ô giá trị = REPORT_LOG_ID || SHEET_ID || INDICATOR_UID || ROW_ORDER. BK.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    fir_structure_id                             Nullable(String)        COMMENT 'FK → Foreign Investor Report Structure: ô chỉ tiêu template tương ứng.',
+    fir_structure_code                           Nullable(String)        COMMENT 'Mã ô chỉ tiêu = SHEET_ID || INDICATOR_UID.',
+    structure_code                               Nullable(String)        COMMENT 'Mã định danh ô template (INDICATOR_UID).',
+    rpt_log_id                                   Nullable(String)        COMMENT 'Mã LẦN NỘP cụ thể (REPORT_LOG_ID = RPTMEMBER.ID) — dùng để lọc toàn bộ số liệu của 1 lần nộp.',
+    rpt_id                                       Nullable(String)        COMMENT 'Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID).',
+    fir_id                                       Nullable(String)        COMMENT 'FK → Foreign Investor Report: sheet chứa ô chỉ tiêu.',
+    fir_code                                     Nullable(String)        COMMENT 'Mã sheet (SHEET_ID).',
+    reporting_entity_tp_code                     Nullable(Int64)         COMMENT 'Loại đối tượng đã nộp báo cáo (OBJECT_TYPE).',
+    reporting_entity_code                        Nullable(String)        COMMENT 'Mã định danh đối tượng đã nộp báo cáo (OBJECT_ID).',
+    period_tp_code                               Nullable(String)        COMMENT 'Loại kỳ báo cáo (THANG, QUY, NAM...).',
+    period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo (VD T09/2026).',
+    rpt_year                                     Nullable(Int64)         COMMENT 'Năm của kỳ báo cáo (YEAR_VALUE).',
+    rpt_day                                      Nullable(Date)          COMMENT 'Ngày báo cáo (DAY_REPORT).',
+    submission_deadline_tms                      Nullable(DateTime)      COMMENT 'Hạn nộp báo cáo (HAN_NOP).',
+    submission_status_code                       Nullable(String)        COMMENT 'Nhãn trạng thái nộp đúng hạn/trễ hạn (LATE_STATUS).',
+    submission_status_tp_code                    Nullable(Int64)         COMMENT 'Mã trạng thái nộp đúng hạn/trễ hạn.',
+    late_duration                                Nullable(Int64)         COMMENT 'Thời gian nộp trễ so với hạn nộp.',
+    total_row_ind                                Nullable(Int64)         COMMENT '1 = ô thuộc dòng TỔNG.',
+    ordinal_column_ind                           Nullable(Int64)         COMMENT '1 = ô thuộc cột số thứ tự (STT).',
+    section_echo_ind                             Nullable(Int64)         COMMENT '1 = dòng nhãn của một mục bị nguồn ghi lẫn vào như dòng dữ liệu — không lên Data Explorer.',
+    band_overflow_ind                            Nullable(Int64)         COMMENT '1 = band động bị tràn (nguồn cắt sai ranh giới) — không lên Data Explorer.',
+    static_copy_ind                              Nullable(Int64)         COMMENT '1 = ô tĩnh của band không phải cuối nhóm, giá trị là bản sao nhầm từ band cuối — không lên Data Explorer.',
+    rpt_marker_ind                               Nullable(Int64)         COMMENT '1 = ô mang giá trị "..." — chỗ đánh dấu của template, không phải dữ liệu thật.',
+    dynamic_ind                                  Nullable(Int64)         COMMENT '1 = ô thuộc dòng động (IS_DYNAMIC).',
+    dynamic_row_order                            Int64                   COMMENT 'Thứ tự dòng trong band động (ROW_ORDER) — 0 = ô TĨNH của band.',
+    val_raw                                      Nullable(String)        COMMENT 'Giá trị gốc nguồn nộp (VALUE_RAW).',
+    submission_dt                                Nullable(Date)          COMMENT 'Ngày THỰC TẾ nộp (NGAY_NOP) — khác kỳ báo cáo; partition ODS.',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi — bản sao chỉ chứa bản ghi hiện hành của Atomic nên luôn ACTIVE (job FIMS vẫn lọc ds_rcrd_s',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày chèn bản ghi vào Datamart',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày cập nhật bản ghi gần nhất trong Datamart',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (fir_val_id)
+COMMENT 'Flat table — opr_fir_value — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 14. OPERATIONAL: ndtnn_opr_foreign_investor_report_flat
+--    opr_foreign_investor_report — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_report_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FOREIGN_INVESTOR_REPORT
+    fir_id                                       String                  COMMENT 'PK — id Atomic foreign_investor_report.fir_id. Bản sao 1:1 (Operational) của Atomic `foreign_investor_report` ',
+    fir_code                                     String                  COMMENT 'Mã sheet của mẫu báo cáo (SHEET_ID). BK.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    rpt_id                                       Nullable(String)        COMMENT 'Mã kỹ thuật mẫu báo cáo nguồn (RPT_ID = RPTTEMP.ID).',
+    rpt_code                                     Nullable(String)        COMMENT 'Mã mẫu báo cáo — mã KỸ THUẬT do hệ thống tự sinh (VD BZ5X4, H0I8J), không phải tên gọi tắt nghiệp vụ.',
+    rpt_nm                                       Nullable(String)        COMMENT 'Tên đầy đủ của mẫu báo cáo (VD "Phụ lục III...").',
+    legal_basis                                  Nullable(String)        COMMENT 'Căn cứ pháp lý (thông tư/quyết định) của mẫu báo cáo.',
+    rpt_status                                   Nullable(Int64)         COMMENT 'Trạng thái mẫu báo cáo (TEMPLATE_STATUS) — ODS chỉ nạp mẫu Status = 1 (đang dùng).',
+    sheet_code                                   Nullable(String)        COMMENT 'Mã sheet/tab trong mẫu báo cáo.',
+    sheet_nm                                     Nullable(String)        COMMENT 'Tên sheet/tab trong mẫu (VD "I", "II", "III").',
+    sheet_index                                  Nullable(Int64)         COMMENT 'Thứ tự sheet trong mẫu báo cáo.',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi — bản sao chỉ chứa bản ghi hiện hành của Atomic nên luôn ACTIVE (job FIMS vẫn lọc ds_rcrd_s',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày chèn bản ghi vào Datamart',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày cập nhật bản ghi gần nhất trong Datamart',
+    ds_rcrd_end_dt                               String                  COMMENT 'Ngày hết hiệu lực bản ghi (SCD2), dạng chuỗi yyyy-mm-dd vì ClickHouse Date không biểu diễn được 2400-01-01 — bản ghi hiện hành luôn 2400-01-01',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (fir_id)
+COMMENT 'Flat table — opr_foreign_investor_report — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 15. OPERATIONAL: ndtnn_opr_foreign_investor_reporting_entity_flat
+--    opr_foreign_investor_reporting_entity — sinh tự động từ master registry + Entities.csv
+--    Joins: không JOIN dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_reporting_entity_flat ON CLUSTER 'my_cluster'
+(
+    -- From: OPR_FOREIGN_INVESTOR_REPORTING_ENTITY
+    cl_foreign_investor_reporting_entity_id      String                  COMMENT 'PK — id Atomic cl_foreign_investor_reporting_entity.cl_foreign_investor_reporting_entity_id. Bản sao 1:1 (Oper',
+    cl_foreign_investor_reporting_entity_code    String                  COMMENT 'Mã nghiệp vụ duy nhất của đối tượng nộp báo cáo = OBJECT_ID || OBJECT_TYPE. BK.',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    reporting_entity_code                        String                  COMMENT 'Mã định danh đối tượng nộp báo cáo trong hệ thống nguồn (OBJECT_ID).',
+    reporting_entity_tp_code                     Nullable(String)        COMMENT 'Loại đối tượng nộp báo cáo: quỹ, công ty chứng khoán, ngân hàng lưu ký, VSDC, Sở GDCK, đại diện CBTT, CN QLQ n',
+    reporting_entity_tp_nm                       Nullable(String)        COMMENT 'Tên loại đối tượng nộp báo cáo (OBJECT_TYPE_NAME).',
+    entity_reference_nbr                         Nullable(String)        COMMENT 'Mã tra cứu đối tượng (OBJECT_CODE): regno/taxcode/certno/transactioncode tùy loại; riêng "Đại diện giao dịch" ',
+    reporting_entity_nm                          Nullable(String)        COMMENT 'Tên đầy đủ đối tượng nộp báo cáo (OBJECT_NAME).',
+    reporting_entity_short_nm                    Nullable(String)        COMMENT 'Tên viết tắt đối tượng nộp báo cáo (OBJECT_SHORT_NAME).',
+    ds_rcrd_st                                   String                  COMMENT 'Trạng thái bản ghi — bản sao chỉ chứa bản ghi hiện hành của Atomic nên luôn ACTIVE (job FIMS vẫn lọc ds_rcrd_s',
+    ds_rcrd_isrt_dt                              Date                    COMMENT 'Ngày chèn bản ghi vào Datamart',
+    ds_rcrd_udt_dt                               Date                    COMMENT 'Ngày cập nhật bản ghi gần nhất trong Datamart',
+    ds_rcrd_end_dt                               String                  COMMENT 'Ngày hết hiệu lực bản ghi (SCD2), dạng chuỗi yyyy-mm-dd vì ClickHouse Date không biểu diễn được 2400-01-01 — bản ghi hiện hành luôn 2400-01-01',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+ORDER BY (cl_foreign_investor_reporting_entity_id)
+COMMENT 'Flat table — opr_foreign_investor_reporting_entity — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ============================================================
+-- 16. OPERATIONAL: ndtnn_opr_foreign_investor_report_explorer_val_flat
+--    Bảng dữ liệu khai thác Data Explorer NDTNN (báo cáo động FIMS) — thay default.bc_fims của job fims_ods_to_clickhouse.
+--    Nguồn: opr_fir_value ⋈ opr_fir_structure ⋈ opr_foreign_investor_report (INNER) + opr_foreign_investor_reporting_entity (LEFT)
+--    — logic theo FIMS_MART_TO_CLICKHOUSE_MAPPING.md §2–§3: không lọc lại (đã lọc ở Atomic), chỉ nối 4 bảng + đổi tên cột; giữ nguyên văn val_raw.
+--    Nạp theo ngày nộp: DELETE rồi INSERT lại các dòng có submission_dt = :etl_date — [MỚI 2026-11-14, O_NDTNN_61] (O_NDTNN_61)
+--    Bảng đích KHÔNG có cột entity_code (khác bản đề xuất 2026-11-13). Tên cột chung với QLQ để BI Data Explorer dùng chung.
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_report_explorer_val_flat ON CLUSTER 'my_cluster'
+(
+    period_end_dt                                Date                    COMMENT 'Ngày của dòng dữ liệu = NGÀY BÁO CÁO (opr_fir_value.rpt_day, FIMS DayReport); trống thì lấy ngày nộp (bc_fims.date cũ)',
+    object_id                                    String                  COMMENT 'Mã định danh đối tượng nộp báo cáo (reporting_entity_code); trống → rỗng',
+    object_nm                                    String                  COMMENT 'Tên đối tượng nộp báo cáo (reporting_entity_nm của danh mục đối tượng nộp); không khớp → rỗng',
+    object_tp                                    String                  COMMENT 'Nhãn loại đối tượng nộp báo cáo (reporting_entity_tp_nm); không khớp → rỗng',
+    period_tp                                    String                  COMMENT 'Loại kỳ báo cáo (THANG, QUY, NAM, ...); trống → rỗng',
+    period_val                                   String                  COMMENT 'Giá trị kỳ báo cáo (VD T09/2026); trống → rỗng',
+    dynamic_row_order                            Int64 DEFAULT 0         COMMENT 'Thứ tự dòng trong band động (opr_fir_value.dynamic_row_order); 0 = ô tĩnh; trống → 0',
+    indicator_id                                 String                  COMMENT 'Mã chỉ tiêu = opr_fir_structure.data_explorer_id (MD5 do ETL Atomic sinh, giữ nguyên) — khóa nối với bảng chỉ tiêu',
+    indicator_val                                String                  COMMENT 'Giá trị ô — NGUYÊN VĂN opr_fir_value.val_raw, không nhân 100, không đổi đơn vị',
+    rpt_log_id                                   UInt64                  COMMENT 'Mã LẦN NỘP (opr_fir_value.rpt_log_id ép số) — version column của ReplacingMergeTree: lần nộp có id lớn nhất thắng',
+    submission_dt                                Date                    COMMENT 'Ngày THỰC TẾ nộp báo cáo (opr_fir_value.submission_dt) — khóa xóa–ghi lại của job',
+    ds_etl_pcs_tms                               DateTime                COMMENT 'Thời điểm ETL ghi dòng'
+)
+ENGINE = ReplicatedReplacingMergeTree('/clickhouse/tables/{shard}/datamart/ndtnn_opr_foreign_investor_report_explorer_val_flat', '{replica}', rpt_log_id)
+ORDER BY (period_end_dt, object_id, object_nm, object_tp, dynamic_row_order, period_tp, period_val, indicator_id)
+SETTINGS allow_nullable_key = 1, index_granularity = 8192
+COMMENT 'Flat Data Explorer NDTNN — giá trị ô báo cáo FIMS (thay default.bc_fims)'
+;
+
+
+-- ============================================================
+-- 17. OPERATIONAL: ndtnn_opr_foreign_investor_report_explorer_indicator_flat
+--    Bảng chỉ tiêu (cây chỉ tiêu) Data Explorer NDTNN — thay phần FIMS của default.metadata_etl của job fims_ods_to_clickhouse.
+--    Mỗi data_explorer_id một dòng, dựng từ TOÀN BỘ opr_fir_structure hiện hành (kể cả chỉ tiêu chưa có số liệu) — §4 của md.
+--    Job chỉ ghi 15 cột; 8 cột còn lại (changed_by_nm, rpt_nm, sheet_nm, row_path, column_path, object_tp_list, object_sub_tp_list, legal_basis)
+--    để rỗng như job cũ. Phải chạy SAU khối 16 (đọc bảng dữ liệu để suy unit_nm số/%/chữ). Nạp toàn bộ (TRUNCATE + INSERT) — [MỚI 2026-11-14, O_NDTNN_61]
+-- ============================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_report_explorer_indicator_flat ON CLUSTER 'my_cluster'
+(
+    indicator_id                                 String                  COMMENT 'Mã chỉ tiêu (data_explorer_id) — khớp indicator_id của bảng dữ liệu',
+    indicator_group_nm                           String                  COMMENT 'Nhóm hiển thị: tên báo cáo [- căn cứ pháp lý] > sheet > nhóm hàng [> Chi tiết]',
+    indicator_nm                                 String                  COMMENT 'Tên chỉ tiêu: column_path; rỗng thì lá cuối của row_path',
+    indicator_tp                                 Int32                   COMMENT 'Loại chỉ tiêu: luôn 1 = base',
+    source_table_nm                              String                  COMMENT 'Bảng nguồn của giá trị chỉ tiêu (datamart.opr_fir_value)',
+    target_table_nm                              String                  COMMENT 'Bảng dữ liệu chứa giá trị chỉ tiêu (ndtnn_opr_foreign_investor_report_explorer_val_flat)',
+    group_key_list                               String                  COMMENT 'Danh sách cột chiều của bảng dữ liệu, cách nhau dấu phẩy; Data Explorer dựng GROUP BY theo chuỗi này (tên cột MỚI)',
+    logic_function                               String                  COMMENT 'Hàm logic tổng hợp — rỗng với chỉ tiêu base',
+    indicator_level                              Int32                   COMMENT 'Cấp chỉ tiêu: luôn 1',
+    active_ind                                   Int32 DEFAULT 1         COMMENT '1 = chỉ tiêu đang hiệu lực: luôn 1',
+    effective_from_dt                            Date                    COMMENT 'Ngày bắt đầu hiệu lực: 2000-01-01',
+    effective_to_dt                              Date                    COMMENT 'Ngày hết hiệu lực: 2099-12-31',
+    ds_etl_pcs_tms                               DateTime DEFAULT now()  COMMENT 'Thời điểm ETL ghi dòng',
+    unit_nm                                      String DEFAULT ''       COMMENT 'Đơn vị: rỗng = số, % = tỷ lệ (chỉ là nhãn, không nhân 100), __text__ = chữ; phụ thuộc dữ liệu khoảng ngày chạy',
+    sort_order_nbr                               Int64 DEFAULT 0         COMMENT 'Thứ tự sắp xếp theo mẫu báo cáo (fir_structure.sort_order); trống → 0',
+    changed_by_nm                                String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    rpt_nm                                       String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    sheet_nm                                     String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    row_path                                     String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    column_path                                  String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    object_tp_list                               String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    object_sub_tp_list                           String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng',
+    legal_basis                                  String DEFAULT ''       COMMENT 'Job FIMS không ghi — để rỗng'
+)
+ENGINE = ReplicatedMergeTree()
+ORDER BY (indicator_level, indicator_id)
+COMMENT 'Flat Data Explorer NDTNN — cây chỉ tiêu báo cáo FIMS (thay phần FIMS của default.metadata_etl)'
+;
