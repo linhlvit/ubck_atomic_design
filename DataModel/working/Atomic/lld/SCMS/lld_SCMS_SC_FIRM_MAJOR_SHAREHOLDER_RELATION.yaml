@@ -27,7 +27,7 @@ metadata:
     \ sẽ bị loại khỏi thiết kế sau. Audit: CREATED_AT + LAST_MODIFIED_AT only — bảng\
     \ nguồn không có CREATED_BY/LAST_MODIFIED_BY. Sửa 2026-10-07: SHAREHOLDER_ID thành\
     \ FK, ISSUE_DATE/ISSUE_PLACE chuyển sang shared entity, NATIONALITY_ID đổi target\
-    \ cl_nationality → geographic_area."
+    \ cl_nationality → geographic_area. [2026-11-14] Theo yêu cầu Data Modeler: Shares Count đổi Small Counter/int → Large Counter/bigint (nguồn NUMBER(19))."
 attributes:
 - attribute_name: "Securities Company Major Shareholder Relation Id"
   physical_name: "sc_major_shareholder_relation_id"
@@ -253,7 +253,7 @@ attributes:
 - attribute_name: "Shares Count"
   physical_name: "shares_count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
@@ -262,7 +262,7 @@ attributes:
   comment: "NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
 - attribute_name: "Contributed Capital"
   physical_name: "contributed_capital"
   description: "Vốn góp (đơn vị: đồng)."

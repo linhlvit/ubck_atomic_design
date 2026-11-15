@@ -12,7 +12,7 @@
 | T1 (extend) | Brokerage Market Share | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HOSE.BROKERAGE_MARKET_SHARE | Định nghĩa ở HNX |
 | T1 (extend) | Listed Share Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HOSE.LISTED_SECURITIES_LIST | Định nghĩa ở VSDC |
 | T1 (extend) | Listing Status Change | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HOSE.LISTING_STATUS_CHANGE | Định nghĩa ở HNX |
-| T1 (extend) | Securities Order | Communication | [Communication] Financial Market Order | Fact Append | HOSE.ORDER_BOOK | Định nghĩa ở HNX |
+| T1 (extend) | Securities Order | Transaction | [Transaction] Financial Market Transaction | Fact Append | HOSE.ORDER_BOOK | Định nghĩa ở HNX |
 | T1 (extend) | Share Auction Result | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HOSE.SHARE_AUCTION | Định nghĩa ở HNX |
 | T2 (extend) | Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | HOSE.TRADE_BOOK | Định nghĩa ở HNX |
 
@@ -59,7 +59,7 @@ graph TD
 | T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | LISTED_SECURITIES_LIST | Append | Danh sách chứng khoán niêm yết HOSE — entity định nghĩa ở VSDC | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | listing_status_change | Append | Quyết định thay đổi niêm yết tại HOSE — entity định nghĩa ở HNX | Listing Status Change | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | SHARE_AUCTION | Append | Kết quả đấu giá cổ phiếu tại HOSE — entity định nghĩa ở HNX | Share Auction Result | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 (extend) | Communication | [Communication] Financial Market Order | Financial Markets Trading | ORDER_BOOK | Update | Sổ lệnh chi tiết HOSE — mỗi bản ghi là 1 event lệnh (cổ phiếu/trái phiếu/repo) — entity định nghĩa ở HNX | Securities Order | Fact Append | Financial Market Order (8539) — xem HNX_HLD_Overview 7a |
+| T1 (extend) | Transaction | [Transaction] Financial Market Transaction | Transaction | ORDER_BOOK | Update | Sổ lệnh chi tiết HOSE — mỗi bản ghi là 1 event lệnh (cổ phiếu/trái phiếu/repo) — entity định nghĩa ở HNX | Securities Order | Fact Append | Financial Market Transaction (13339) — Core Object Transaction theo chỉ định Data Modeler; xem HNX_HLD_Overview 7a |
 | T2 (extend) | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | TRADE_BOOK | Update | Sổ khớp chi tiết HOSE — mỗi bản ghi là 1 lần khớp, chứa đồng thời bên mua và bên bán — entity định nghĩa ở HNX | Securities Trade | Fact Append | Financial Market Transaction (13339) — xem HNX_HLD_Overview 7a |
 
 #### 7b. Diagram Atomic tổng (Mermaid)

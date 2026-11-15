@@ -20450,7 +20450,7 @@ attributes:
   data_type: "string"
   atomic_table: "petition"
   atomic_column: "target_nm"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Id"
   description: "Khóa đại diện (surrogate key)."
@@ -20460,7 +20460,7 @@ attributes:
   source_system: "HNX"
   source_table: "ORDER_BOOK"
   source_column: "HNX.ORDER_BOOK.ORDER_ID"
-  comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng\
+  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh chứng\
     \ khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi\
     \ Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business Key\
     \ (cột ORDER_ID)."
@@ -20469,7 +20469,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "securities_order_id"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Code"
   description: "Mã định danh của lệnh giao dịch (BK chính). BK."
@@ -20486,7 +20486,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "securities_order_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -20502,7 +20502,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "src_stm_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Trade Date"
   description: "Ngày giao dịch. Định dạng yyyymmdd"
@@ -20520,7 +20520,7 @@ attributes:
   data_type: "date"
   atomic_table: "securities_order"
   atomic_column: "trade_dt"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Market Code"
   description: "Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market\
@@ -20537,7 +20537,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "market_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Ticker Symbol"
   description: "Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường\
@@ -20556,7 +20556,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "ticker_symbol"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Board Type Code"
   description: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
@@ -20572,7 +20572,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "board_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Session Code"
   description: "Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về."
@@ -20588,7 +20588,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "session_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Side"
   description: "Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán."
@@ -20604,7 +20604,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "side"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Action Type Code"
   description: "Mã xác định loại hành động đối với lệnh hiện tại: sửa lệnh (Replace/Amend)\
@@ -20621,7 +20621,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_action_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Member Code"
   description: "Mã định danh thành viên giao dịch trên thị trường – thường là công\
@@ -20638,7 +20638,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "member_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Account Number"
   description: "Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng\
@@ -20657,7 +20657,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "account_nbr"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Account Type Code"
   description: "Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán\
@@ -20674,7 +20674,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "account_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Investor Type Code"
   description: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân,\
@@ -20691,7 +20691,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "investor_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Foreign Investor Type Code"
   description: "Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao\
@@ -20708,7 +20708,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "foreign_investor_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Type Code"
   description: "Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống\
@@ -20725,7 +20725,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Condition Type Code"
   description: "Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi\
@@ -20742,7 +20742,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_condition_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Price"
   description: "Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán."
@@ -20760,7 +20760,7 @@ attributes:
   data_type: "decimal(23,2)"
   atomic_table: "securities_order"
   atomic_column: "order_price"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Quantity"
   description: "Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh"
@@ -20778,7 +20778,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "order_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Remaining Quantity"
   description: "Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy"
@@ -20796,7 +20796,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "order_remaining_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Date"
   description: "Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của\
@@ -20817,7 +20817,7 @@ attributes:
   data_type: "date"
   atomic_table: "securities_order"
   atomic_column: "order_dt"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Time"
   description: "Thời điểm lệnh được hệ thống giao dịch (matching engine) chấp nhận\
@@ -20839,7 +20839,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_time"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Reception Code"
   description: "Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp\
@@ -20858,7 +20858,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_reception_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Reception Code"
   description: "Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang\
@@ -20876,7 +20876,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_reception_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Code"
   description: "Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel)\
@@ -20893,7 +20893,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Sequence Number"
   description: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo\
@@ -20913,7 +20913,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "sequence_nbr"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Reject Reason Code"
   description: "Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống"
@@ -20930,7 +20930,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_reject_reason_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Public Quantity"
   description: "Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order\
@@ -20948,7 +20948,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "public_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Condition Price"
   description: "Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order\
@@ -20966,7 +20966,7 @@ attributes:
   data_type: "decimal(23,2)"
   atomic_table: "securities_order"
   atomic_column: "condition_price"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Type Code"
   description: "Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc\
@@ -20983,7 +20983,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Automated Cancel Type Code"
   description: "Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay\
@@ -21000,7 +21000,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "automated_cancel_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Quote Request Type Code"
   description: "Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một\
@@ -21018,7 +21018,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "quote_request_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Year"
   description: "Năm báo cáo"
@@ -21034,7 +21034,7 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_year"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Month"
   description: "Tháng báo cáo"
@@ -21050,7 +21050,7 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_month"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Day"
   description: "Ngày báo cáo"
@@ -21066,7 +21066,7 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_day"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Id"
   description: "Khóa đại diện (surrogate key)."
@@ -21076,7 +21076,7 @@ attributes:
   source_system: "HOSE"
   source_table: "ORDER_BOOK"
   source_column: "HOSE.ORDER_BOOK.ORDER_ID"
-  comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng\
+  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh chứng\
     \ khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi\
     \ Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash từ Business Key\
     \ (cột ORDER_ID)."
@@ -21085,7 +21085,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "securities_order_id"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Code"
   description: "Mã định danh của lệnh giao dịch (BK chính). BK."
@@ -21102,7 +21102,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "securities_order_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
@@ -21118,7 +21118,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "src_stm_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Trade Date"
   description: "Ngày giao dịch. Định dạng yyyymmdd"
@@ -21135,7 +21135,7 @@ attributes:
   data_type: "date"
   atomic_table: "securities_order"
   atomic_column: "trade_dt"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Market Code"
   description: "Thị trường: Dùng để xác định lệnh đó thuộc thị trường nào. Mỗi Market\
@@ -21152,7 +21152,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "market_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Ticker Symbol"
   description: "Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường\
@@ -21169,7 +21169,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "ticker_symbol"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Board Type Code"
   description: "Loại bảng giao dịch: xác định kiểu mua bán trong thị trường."
@@ -21185,7 +21185,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "board_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Session Code"
   description: "Mã xác định phiên giao dịch (trading session) mà lệnh đang thuộc về."
@@ -21201,7 +21201,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "session_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Side"
   description: "Trường dữ liệu dùng để xác định hướng của lệnh: Mua/Bán."
@@ -21217,7 +21217,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "side"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Action Type Code"
   description: "Mã xác định loại hành động đối với lệnh hiện tại: sửa lệnh (Replace/Amend)\
@@ -21234,7 +21234,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_action_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Member Code"
   description: "Mã định danh thành viên giao dịch trên thị trường – thường là công\
@@ -21251,7 +21251,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "member_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Account Number"
   description: "Mã định danh tài khoản giao dịch của nhà đầu tư tại công ty chứng\
@@ -21270,7 +21270,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "account_nbr"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Account Type Code"
   description: "Lệnh này là của khách hàng (client) hay của chính công ty chứng khoán\
@@ -21287,7 +21287,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "account_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Investor Type Code"
   description: "Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân,\
@@ -21304,7 +21304,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "investor_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Foreign Investor Type Code"
   description: "Mã dùng để phân loại loại hình nhà đầu tư nước ngoài tham gia giao\
@@ -21321,7 +21321,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "foreign_investor_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Type Code"
   description: "Trường dữ liệu xác định loại lệnh (order type) — tức là cách hệ thống\
@@ -21338,7 +21338,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Condition Type Code"
   description: "Trường xác định điều kiện thực hiện lệnh — tức là lệnh được khớp khi\
@@ -21355,7 +21355,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_condition_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Price"
   description: "Mức giá mà nhà đầu tư sẵn sàng mua hoặc bán chứng khoán."
@@ -21372,7 +21372,7 @@ attributes:
   data_type: "decimal(23,2)"
   atomic_table: "securities_order"
   atomic_column: "order_price"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Quantity"
   description: "Số lượng chứng khoán mà nhà đầu tư muốn mua hoặc bán trong một lệnh"
@@ -21389,7 +21389,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "order_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Remaining Quantity"
   description: "Khối lượng còn lại của lệnh chưa được khớp hoặc chưa bị hủy"
@@ -21406,7 +21406,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "order_remaining_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Date"
   description: "Ngày mà lệnh được ghi nhận (được tạo/nhận) theo ngày giao dịch của\
@@ -21425,7 +21425,7 @@ attributes:
   data_type: "date"
   atomic_table: "securities_order"
   atomic_column: "order_dt"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Time"
   description: "Thời điểm lệnh được hệ thống giao dịch (matching engine) chấp nhận\
@@ -21444,7 +21444,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_time"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Reception Code"
   description: "Số định danh của lệnh tại thời điểm hệ thống (KRX hoặc gateway) tiếp\
@@ -21462,7 +21462,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_reception_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Reception Code"
   description: "Số Order Reception Number của lệnh gốc mà một yêu cầu (sửa/hủy) đang\
@@ -21479,7 +21479,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_reception_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Code"
   description: "Order ID của lệnh GỐC mà một lệnh sửa (replace) hoặc hủy (cancel)\
@@ -21496,7 +21496,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Sequence Number"
   description: "Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo\
@@ -21513,7 +21513,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "sequence_nbr"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Order Reject Reason Code"
   description: "Mã lý do giải thích vì sao lệnh bị từ chối (reject) bởi hệ thống"
@@ -21530,7 +21530,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "order_reject_reason_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Public Quantity"
   description: "Phần khối lượng của lệnh được hiển thị công khai trên sổ lệnh (order\
@@ -21548,7 +21548,7 @@ attributes:
   data_type: "bigint"
   atomic_table: "securities_order"
   atomic_column: "public_quantity"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Condition Price"
   description: "Mức giá điều kiện dùng để kích hoạt một lệnh (thường là stop order\
@@ -21566,7 +21566,7 @@ attributes:
   data_type: "decimal(23,2)"
   atomic_table: "securities_order"
   atomic_column: "condition_price"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Original Order Type Code"
   description: "Loại lệnh (Order Type) của lệnh GỐC trước khi bị sửa (amend) hoặc\
@@ -21583,7 +21583,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "original_order_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Automated Cancel Type Code"
   description: "Mã xác định việc hủy lệnh có được thực hiện tự động bởi hệ thống hay\
@@ -21600,7 +21600,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "automated_cancel_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Quote Request Type Code"
   description: "Mã xác định loại yêu cầu báo giá (Request For Quote – RFQ) mà một\
@@ -21618,7 +21618,7 @@ attributes:
   data_type: "string"
   atomic_table: "securities_order"
   atomic_column: "quote_request_tp_code"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Year"
   description: "Năm báo cáo"
@@ -21634,7 +21634,7 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_year"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Month"
   description: "Tháng báo cáo"
@@ -21650,7 +21650,7 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_month"
-- bcv_core_object: "Communication"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Report Day"
   description: "Ngày báo cáo"
@@ -52539,17 +52539,18 @@ attributes:
   atomic_entity: "Securities Company Alert Violation"
   atomic_attribute: "Comparison Value"
   description: "Giá trị so sánh dùng trong điều kiện cảnh báo."
-  data_domain: "Small Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "SC_FIRM_ALERT_VIOLATION"
   source_column: "SCMS.SC_FIRM_ALERT_VIOLATION.COMPARE_VALUE"
-  comment: "NUMBER (no precision/scale — integer-like). Cần profile để xác nhận luôn\
-    \ là integer."
+  comment: "NUMBER (nguồn không khai báo precision/scale). Đổi Small Counter/int →\
+    \ Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14, cùng kiểu\
+    \ với Actual Value. ETL cần kiểm tra giá trị nguồn không vượt dải decimal(23,2)."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(23,2)"
   atomic_table: "sc_alert_violation"
   atomic_column: "comparison_val"
 - bcv_core_object: "Event"
@@ -53905,16 +53906,18 @@ attributes:
   atomic_entity: "Securities Company Disclosure Securities Offering"
   atomic_attribute: "Conversion Ratio"
   description: "Tỷ lệ chuyển đổi (số CW/1 cổ phiếu cơ sở)."
-  data_domain: "Small Counter"
+  data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING"
   source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING.CONVERSION_RATIO"
-  comment: "NUMBER(19)."
+  comment: "NUMBER(19). Đổi Small Counter/int → Percentage/decimal(5,2) theo yêu cầu\
+    \ Data Modeler 2026-11-14 — ETL cần kiểm tra giá trị nguồn nằm trong dải decimal(5,2)\
+    \ (< 1000, tối đa 2 chữ số thập phân), nếu không sẽ tràn/làm tròn."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "decimal(5,2)"
   atomic_table: "sc_disclosure_securities_offering"
   atomic_column: "conversion_ratio"
 - bcv_core_object: "Event"
@@ -69019,7 +69022,7 @@ attributes:
   atomic_entity: "Securities Company Insider Related Person"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -69028,7 +69031,7 @@ attributes:
   comment: "NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_insider_related_person"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -69388,7 +69391,7 @@ attributes:
   atomic_entity: "Securities Company Major Shareholder Relation"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -69397,7 +69400,7 @@ attributes:
   comment: "NUMBER(19). Large integer — ETL cần long type. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_major_shareholder_relation"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -71973,7 +71976,7 @@ attributes:
   atomic_entity: "Securities Company Related Person"
   atomic_attribute: "Shares Count"
   description: "Số lượng cổ phần nắm giữ."
-  data_domain: "Small Counter"
+  data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
@@ -71982,7 +71985,7 @@ attributes:
   comment: "NUMBER(19). Large integer. Mô tả gốc BRD trống."
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "bigint"
   atomic_table: "sc_related_person"
   atomic_column: "shares_count"
 - bcv_core_object: "Involved Party"
@@ -72572,7 +72575,7 @@ attributes:
   atomic_column: "contributed_capital_amt"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
-  atomic_attribute: "Ownership Ratio Percentage"
+  atomic_attribute: "Ownership Ratio"
   description: "Phần trăm sở hữu."
   data_domain: "Percentage"
   nullable: true
@@ -72585,7 +72588,7 @@ attributes:
   etl_derived_value: null
   data_type: "decimal(5,2)"
   atomic_table: "sc_senior_personnel"
-  atomic_column: "ownership_ratio_percentage"
+  atomic_column: "ownership_ratio"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company Senior Personnel"
   atomic_attribute: "Ownership Ratio Date"
@@ -90066,17 +90069,18 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Listed Share Count"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
   source_table: "JAD_STOCKINFOR"
   source_column: "MDDS.JAD_STOCKINFOR.LISTEDSHARE"
-  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint.\
-    \ Cần validate không có giá trị non-numeric."
+  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2).\
+    \ Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency\
+    \ Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"
   atomic_table: "security_trading_snapshot"
   atomic_column: "listed_share_count"
 - bcv_core_object: "Product"
@@ -90261,17 +90265,18 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Total Listing Volume"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
   source_table: "JAD_STOCKINFOR"
   source_column: "MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY"
-  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint.\
-    \ Cần validate không có giá trị non-numeric."
+  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2).\
+    \ Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency\
+    \ Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"
   atomic_table: "security_trading_snapshot"
   atomic_column: "total_listing_vol"
 - bcv_core_object: "Product"
