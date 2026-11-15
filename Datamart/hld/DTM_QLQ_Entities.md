@@ -350,22 +350,20 @@ erDiagram
 
 ---
 
-## Data Explorer — engine báo cáo động FMS: 2 bảng khai thác (Operational) từ 2 Dimension kéo 1:1 từ Atomic `dr_*`
+## Data Explorer — engine báo cáo động FMS: 2 Dimension + 1 Fact append kéo 1:1 từ Atomic `dr_*`
 
-> **[CẬP NHẬT 2026-11-08, O_QLQ_80]** Atomic có engine báo cáo động FMS: `dr_structure` (FMS.ITEM_LIST), `dr_submission_history` (FMS.REPORT_HISTORY), `dr_value` (FMS.ITEM_VALUE). Datamart giữ 2 Dimension kéo 1:1 (`dynamic_report_structure_dim`, `dynamic_report_submission_history_dim`); bảng giá trị `fct_dynamic_report_val` vẫn nạp vật lý ở Datamart nhưng không còn là entity thiết kế riêng (chỉ làm nguồn của 2 flat). ClickHouse có đúng 2 bảng khai thác, giữ cấu trúc bảng của job Data Explorer ODS cũ và chỉ chuẩn hóa tên: `qlq_opr_dynamic_report_explorer_val_flat` (thay `bc_bao_cao_quy`) và `qlq_opr_dynamic_report_explorer_indicator_flat` (thay `metadata_etl` của QLQ). Logic biến đổi của job cũ nằm trong DML flat (`02_populate_qlq_flat_tables.sql` khối 21, 22). Rủi ro khóa `acc_value` ở Atomic: O_QLQ_81.
+> **[CẬP NHẬT 2026-11-15, O_QLQ_91]** Atomic có engine báo cáo động FMS: `dr_structure` (FMS.ITEM_LIST), `dr_submission_history` (FMS.REPORT_HISTORY), `dr_value` (FMS.ITEM_VALUE). Datamart giữ đúng **2 Dimension + 1 Fact append**, kéo 1:1 từ Atomic: `dynamic_report_structure_dim`, `dynamic_report_submission_history_dim` và `Fact Dynamic Report Value` (`fct_dynamic_report_val`, PK `dr_val_id` = id dòng Atomic, Dạng A). Atomic `dr_value` xử lý delta (MERGE theo `dr_val_id`, 1 id = 1 dòng mới nhất, mỗi dòng mang `ds_snpst_dt` = etl_date của lần ghi gần nhất): Fact nạp APPEND dòng có `ds_snpst_dt` = ngày chạy; flat mỏng `qlq_fct_dynamic_report_val_flat` (khối 25, `ReplicatedReplacingMergeTree(ds_snpst_dt)`, ORDER BY chứa PK) giữ bản nạp sau cùng của mỗi `dr_val_id`, đọc bằng `FINAL`. **Đã gỡ 2 bảng khai thác `Operational Dynamic Report Explorer Value` / `Indicator` (O_QLQ_80, dựng 11-08 thay `bc_bao_cao_quy` / `metadata_etl` của job ODS cũ) cùng flat khối 21, 22** khi thêm Fact mới; chưa có KPI dùng 3 bảng này (O_QLQ_79).
 
 ```mermaid
 erDiagram
-    Dynamic_Report_Structure_Dimension ||--o{ Operational_Dynamic_Report_Explorer_Value : " "
-    Dynamic_Report_Submission_History_Dimension ||--o{ Operational_Dynamic_Report_Explorer_Value : " "
-    Dynamic_Report_Structure_Dimension ||--o{ Operational_Dynamic_Report_Explorer_Indicator : " "
-    Dynamic_Report_Submission_History_Dimension ||--o{ Operational_Dynamic_Report_Explorer_Indicator : " "
+    Calendar_Date_Dimension ||--o{ Fact_Dynamic_Report_Value : " "
+    Dynamic_Report_Structure_Dimension ||--o{ Fact_Dynamic_Report_Value : " "
+    Dynamic_Report_Submission_History_Dimension ||--o{ Fact_Dynamic_Report_Value : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Dynamic Report Explorer Value | Operational | new | Bảng dữ liệu khai thác Data Explorer — giá trị ô báo cáo động đã biến đổi (thay `bc_bao_cao_quy`) | 1 ô × 1 lần nộp (× dòng động × tài khoản lưu ký) | — (chưa có KPI, O_QLQ_79) |
-| Operational Dynamic Report Explorer Indicator | Operational | new | Bảng chỉ tiêu (metadata) Data Explorer — mỗi ô của mẫu là một chỉ tiêu (thay `metadata_etl` của QLQ) | 1 chỉ tiêu (`indicator_id`) | — |
+| Fact Dynamic Report Value | Fact Append | new | Giá trị từng ô chỉ tiêu của lần nộp báo cáo động (Atomic `dr_value` ← FMS.ITEM_VALUE) kéo 1:1 — nạp APPEND theo delta `ds_snpst_dt` = ngày chạy; nguồn của 2 bảng khai thác Data Explorer [MỚI 2026-11-15, O_QLQ_91] | 1 ô chỉ tiêu × 1 lần nộp (× dòng động), PK `dr_val_id` = id dòng Atomic | — (chưa có KPI, O_QLQ_79) |
 | Dynamic Report Structure Dimension | Dimension | new | Cây chỉ tiêu mẫu báo cáo động (`dr_structure`) — mã/tên mẫu, sheet, đường dẫn cột-dòng, mã ô | 1 ô chỉ tiêu của 1 sheet (current state) | — |
 | Dynamic Report Submission History Dimension | Dimension | new | Lịch sử nộp báo cáo động (`dr_submission_history`) — đối tượng nộp, kỳ, ngày nộp, phiên bản | 1 lần nộp báo cáo của 1 đối tượng theo kỳ | — |
 
