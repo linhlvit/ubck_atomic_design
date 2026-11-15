@@ -448,7 +448,7 @@ N/A
 | 82 | trading_dt | DATE | X |  |  |  | Ngày giao dịch format dd/mm/yyyy. ETL cần parse sang Date. |
 | 83 | underlying_symbol | STRING | X |  |  |  | Chứng khoán cơ sở — dành cho CW/phái sinh. |
 | 84 | yield | DECIMAL(8,5) | X |  |  |  | YTM (Yield to Maturity). |
-| 85 | vol_weighted_average_price | BIGINT | X |  |  |  | Giá bình quân gia quyền theo khối lượng (VWAP). |
+| 85 | vol_weighted_average_price | DECIMAL(23,2) | X |  |  |  | Giá bình quân gia quyền theo khối lượng (VWAP). |
 
 
 #### Constraint

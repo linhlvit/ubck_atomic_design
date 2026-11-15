@@ -91292,7 +91292,7 @@ attributes:
   atomic_entity: "Security Trading Snapshot"
   atomic_attribute: "Volume Weighted Average Price"
   description: "Giá bình quân gia quyền theo khối lượng (VWAP)."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "MDDS"
@@ -91300,11 +91300,12 @@ attributes:
   source_column: "MDDS.JAD_STOCKINFOR.VWAP"
   comment: "VWAP = Volume Weighted Average Price. Nguồn (DDL UAT 1) không có mô tả\
     \ cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận. Nguồn\
-    \ lưu dạng FLOAT(126) — ETL cần cast sang bigint; validate giá trị nguyên (không\
-    \ mất phần thập phân)."
+    \ lưu dạng FLOAT(126) — ETL cần cast sang decimal(23,2) (làm tròn 2 chữ số thập\
+    \ phân). Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu\
+    \ Data Modeler 2026-11-15."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"
   atomic_table: "security_trading_snapshot"
   atomic_column: "vol_weighted_average_price"
 - bcv_core_object: "Involved Party"

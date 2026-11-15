@@ -102643,10 +102643,11 @@ entities:
     business_meaning_1st: Giá bình quân gia quyền theo khối lượng (VWAP).
     comment_1st: VWAP = Volume Weighted Average Price. Nguồn (DDL UAT 1) không có
       mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận.
-      Nguồn lưu dạng FLOAT(126) — ETL cần cast sang bigint; validate giá trị nguyên
-      (không mất phần thập phân).
-    data_domain_most: Large Counter
-    data_type_most: bigint
+      Nguồn lưu dạng FLOAT(126) — ETL cần cast sang decimal(23,2) (làm tròn 2 chữ
+      số thập phân). Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo
+      yêu cầu Data Modeler 2026-11-15.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -102659,8 +102660,9 @@ entities:
         business_meaning: Giá bình quân gia quyền theo khối lượng (VWAP).
         comment: VWAP = Volume Weighted Average Price. Nguồn (DDL UAT 1) không có
           mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận.
-          Nguồn lưu dạng FLOAT(126) — ETL cần cast sang bigint; validate giá trị nguyên
-          (không mất phần thập phân).
+          Nguồn lưu dạng FLOAT(126) — ETL cần cast sang decimal(23,2) (làm tròn 2 chữ
+          số thập phân). Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo
+          yêu cầu Data Modeler 2026-11-15.
 - ldm:
     id: ATM-bond_order_book
     logical_name_1st: Bond Order Book

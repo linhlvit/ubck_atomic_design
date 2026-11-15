@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập. Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint). [2026-11-14] Theo yêu cầu Data Modeler: Listed Share Count (LISTEDSHARE) và Total Listing Volume (TOTALLISTINGQTTY) đổi bigint → decimal(23,2) (domain Currency Amount)."
+  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập. Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint). [2026-11-14] Theo yêu cầu Data Modeler: Listed Share Count (LISTEDSHARE) và Total Listing Volume (TOTALLISTINGQTTY) đổi bigint → decimal(23,2) (domain Currency Amount). [2026-11-15] Theo yêu cầu Data Modeler: Volume Weighted Average Price (VWAP) đổi bigint → decimal(23,2) (domain Currency Amount)."
 attributes:
 - attribute_name: "Security Trading Snapshot Id"
   physical_name: "security_trading_snpst_id"
@@ -1113,13 +1113,13 @@ attributes:
 - attribute_name: "Volume Weighted Average Price"
   physical_name: "vol_weighted_average_price"
   description: "Giá bình quân gia quyền theo khối lượng (VWAP)."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.VWAP"
-  comment: "VWAP = Volume Weighted Average Price. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận. Nguồn lưu dạng FLOAT(126) — ETL cần cast sang bigint; validate giá trị nguyên (không mất phần thập phân)."
+  comment: "VWAP = Volume Weighted Average Price. Nguồn (DDL UAT 1) không có mô tả cột — tên và diễn giải suy từ tên cột, cần Data Modeler/MDDS xác nhận. Nguồn lưu dạng FLOAT(126) — ETL cần cast sang decimal(23,2) (làm tròn 2 chữ số thập phân). Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-15."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"

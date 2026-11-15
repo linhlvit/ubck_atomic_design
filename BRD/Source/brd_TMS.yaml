@@ -1114,7 +1114,7 @@ brd_entries:
   content:
     table_meaning: Du lieu dong bao cao tuan thu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: null
     table: COMPLIANCE_REPORT_DATA
     related_tables:
@@ -1124,9 +1124,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_FILE
   brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_FILE
   type: Theo Source
@@ -1156,7 +1156,7 @@ brd_entries:
   content:
     table_meaning: File bieu mau da upload trong bao cao tuan thu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: null
     table: COMPLIANCE_REPORT_FORM
     related_tables:
@@ -1181,7 +1181,7 @@ brd_entries:
   content:
     table_meaning: Bieu mau trong phu luc bao cao tuan thu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: null
     table: COMPLIANCE_REPORT_FORM_TEMPLATE
     related_tables:
@@ -1218,9 +1218,9 @@ brd_entries:
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
-      data_change_mode: Update
-      filter_logic: null
-      filter_note: null
+      data_change_mode: Append
+      filter_logic: (CREATED_AT >= {etl_date} AND CREATED_AT < {etl_date} + 1) OR (UPDATED_AT >= {etl_date} AND UPDATED_AT < {etl_date} + 1)
+      filter_note: Ngày tạo bản ghi, ngày thay đổi — Append theo CREATED_AT, UPDATED_AT
 - brd_id: BRD-SRC-TMS-COMPLIANCE_REPORT_TEMPLATE
   brd_name: Design Atomic từ nguồn TMS bảng COMPLIANCE_REPORT_TEMPLATE
   type: Theo Source
@@ -1229,7 +1229,7 @@ brd_entries:
   content:
     table_meaning: Mau phu luc bao cao tuan thu
     functional_group: CHƯA PHÂN NHÓM
-    scope_status: out_of_scope
+    scope_status: in_scope
     scope_reason: null
     table: COMPLIANCE_REPORT_TEMPLATE
     related_tables:
