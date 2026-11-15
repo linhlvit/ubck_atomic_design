@@ -144,7 +144,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_opr_foreign_investor_360_profile_flat 
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu',
     investor_status_code            Nullable(String)        COMMENT 'Trạng thái hoạt động NĐTNN (proxy hiển thị ở thẻ Đại diện giao dịch)',
     investor_status_nm              Nullable(String)        COMMENT 'Tên trạng thái NĐTNN (K_NDTNN_255, BA STATUS.Name)',
-    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED (IdNo cá nhân hoặc BusinessNumber tổ chức) — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13, so sánh =), không hiển thị [PII mã hóa AES-256-CBC Base64 - PA2]'
+    identification_nbr              Nullable(String)        COMMENT 'Số giấy tờ ĐÃ MASKED (IdNo cá nhân hoặc BusinessNumber tổ chức) — khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13, so sánh =), không hiển thị [PII mã hóa AES-256-CBC Base64 - PA2]',
+    investor_object_tp_code         Nullable(String)        COMMENT 'Loại đối tượng NĐT (FIMS.INVESTOR.OBJECTTYPE nguyên văn) — BA Nhóm 4/6 lọc ObjectType = 2 để nhận diện quỹ [MỚI 2026-11-15, O_NDTNN_62]'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (investor_code)
@@ -309,6 +310,8 @@ CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_capital_flow_snps
     investor_nm                                Nullable(String)           COMMENT 'Tên nhà đầu tư (cột Tên nhà đầu tư) [PII mã hóa AES-256-CBC Base64 - PA1]',
     capital_flow_net_val                       Nullable(Decimal(23,2))    COMMENT 'Giá trị dòng vốn vào ròng trong kỳ báo cáo (+/-), đơn vị USD (cột Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD))',
     src_stm_code                               String                     COMMENT 'Mã hệ thống nguồn',
+    investor_group_nm                            Nullable(String)        COMMENT 'Nhóm nhà đầu tư theo nhãn dòng IBOU9 sheet I: A-Tổ chức / B-Cá nhân (BA STT 4 dòng 36: row_path = A-Tổ chức hoặc B-Cá nhân). Cá nhân, Tổ chức và Tổ chức khác quỹ (Tổ chức − Quỹ) nhận diện theo cột này. [CẬP NHẬT 2026-11-15, O_NDTNN_62]',
+    transaction_cd                               Nullable(String)        COMMENT 'Mã số giao dịch chứng khoán của NĐT trong báo cáo IBOU9 — 6 ký tự cuối, in hoa (BA STT 4 dòng 36/42–45: SUBSTR(UPPER(TRIM(value_raw)), -6), cột Mã số giao dịch chứng khoán). Khóa nối `opr_foreign_investor_360_profile` (cùng 6 ký tự cuối của investor_code) để lấy quốc tịch, tên NĐT, loại hình — BA không đọc cột Quốc tịch/Tên nhà đầu tư của báo cáo nữa. [CẬP NHẬT 2026-11-15, O_NDTNN_62]',
 
     -- From: CALENDAR DATE DIMENSION
     snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',

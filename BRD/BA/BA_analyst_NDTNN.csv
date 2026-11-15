@@ -1990,76 +1990,114 @@ Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng
     SELECT
         report_log_id,
         section_id,
-        row_path,
         row_order,
-        entity_code,
         column_path,
+        row_path ,
+        sheet_name,
+        report_code,
         value_raw
     FROM uat_fims_ods.fir_value
-    WHERE report_code  = 'IBOU9'
-      AND is_mirror = 0 
-      AND is_section_echo = 0 
+    WHERE report_code = 'IBOU9'
+	and sheet_name = 'I'
+      AND is_mirror = 0
+      AND is_section_echo = 0
       AND is_band_overflow = 0
-      AND is_static_copy = 0 
+      AND is_static_copy = 0
       AND is_template_marker = 0
       AND is_total_row = 0
-      AND ngay_nop = :ngaynop
+--      and row_order = 1
+      AND day_report  = :ngaybc
 ),
+-- ===== Phần 1: NĐT cá nhân / tổ chức (sheet II) =====
 base_rows AS (
-    SELECT DISTINCT
-        report_log_id,
-        section_id,
-        row_path,
-        row_order,
-        entity_code
+    SELECT DISTINCT report_log_id, section_id, row_order
     FROM base_cell
 ),
-c_loai_hinh AS (
-    SELECT report_log_id, section_id, row_order, COALESCE(value_raw, value_raw) AS loai_hinh_to_chuc
-    FROM base_cell WHERE column_path = 'Loại hình đối với tổ chức'
+c_ma_gd AS (
+    SELECT report_log_id, section_id, row_order,
+           -- vd 085FCA5632 -> CA5632 (6 ký tự cuối)
+           SUBSTR(UPPER(TRIM(value_raw)), -6) AS ma_gd_key
+    FROM base_cell
+    WHERE column_path in ('Mã số giao dịch chứng khoán')
+      AND value_raw IS NOT NULL
 ),
 c_gtri_danh_muc AS (
-    SELECT report_log_id, section_id, row_order, 
-           COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, """"^'"""", """""""") AS DOUBLE)) AS tong_gtri_danh_muc
-    FROM base_cell WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+    SELECT report_log_id, section_id, row_order,
+           TRY_CAST(value_raw AS DECIMAL(38,6)) AS tong_gtri
+    FROM base_cell
+    WHERE column_path in (
+     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+     	)
 ),
-pvt_data AS (
+inv AS (
     SELECT
-        b.row_path,
-        b.row_order,
-        b.entity_code,
-        c_loai_hinh.loai_hinh_to_chuc,
-        c_gtri_danh_muc.tong_gtri_danh_muc
+        SUBSTR(UPPER(TRIM(TransactionCode)), -6) AS ma_gd_key,
+        Name,
+        ObjectType,
+        InvestorTypeId
+    FROM uat_fims_stg.investor
+    WHERE TRIM(TransactionCode) <> '' 
+      AND Deleted = 0
+),
+quy AS (
+    SELECT
+        'Quỹ' as nhom_loai_hinh,
+        sum(g.tong_gtri) as tong_gtri
     FROM base_rows b
-    LEFT JOIN c_loai_hinh     ON b.report_log_id = c_loai_hinh.report_log_id     AND b.section_id = c_loai_hinh.section_id     AND b.row_order = c_loai_hinh.row_order
-    LEFT JOIN c_gtri_danh_muc ON b.report_log_id = c_gtri_danh_muc.report_log_id AND b.section_id = c_gtri_danh_muc.section_id AND b.row_order = c_gtri_danh_muc.row_order
+    LEFT JOIN c_ma_gd m
+           ON b.report_log_id = m.report_log_id
+          AND b.section_id    = m.section_id
+          AND b.row_order     = m.row_order
+    LEFT JOIN c_gtri_danh_muc g
+           ON b.report_log_id = g.report_log_id
+          AND b.section_id    = g.section_id
+          AND b.row_order     = g.row_order
+    JOIN inv
+           ON m.ma_gd_key = inv.ma_gd_key
+    LEFT JOIN uat_fims_stg.investortype it
+           ON inv.InvestorTypeId = it.Id
+    WHERE inv.ObjectType = 2 and it.Name LIKE '%Quỹ%' or it.Name like '%Fund%*'
+                 AND it.Name NOT LIKE '%Không phải quỹ%' 
+),
+ca_nhan as 
+(
+	    SELECT
+        'Cá nhân' AS nhom_loai_hinh,
+        SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+    FROM base_cell
+    WHERE row_path = 'B-Cá nhân'
+      and column_path in (
+     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+     	)
+),
+to_chuc as 
+(
+	SELECT
+        'Tổ chức' AS nhom_loai_hinh,
+        SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+    FROM base_cell
+    WHERE row_path = 'A-Tổ chức'
+      and column_path in (
+     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+     	)
+),
+tong_hop as 
+(
+SELECT nhom_loai_hinh, ROUND(tong_gtri, 4) tong_gtri
+FROM ca_nhan
+UNION ALL 
+SELECT nhom_loai_hinh, ROUND(tong_gtri, 4) tong_gtri
+FROM to_chuc
+UNION ALL 
+SELECT nhom_loai_hinh, ROUND(tong_gtri, 4) tong_gtri
+FROM quy
 )
-SELECT
-    COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định') AS loai_hinh_to_chuc,
-    ROUND(SUM(CASE WHEN row_path = 'B-Cá nhân' THEN tong_gtri_danh_muc END), 4) AS tong_gtri_danh_muc_ca_nhan,
-    ROUND(SUM(CASE
-        WHEN row_path = 'A-Tổ chức' 
-             AND (loai_hinh_to_chuc LIKE '%Công ty%' 
-                  OR loai_hinh_to_chuc LIKE '%Ngân hàng%' 
-                  OR loai_hinh_to_chuc LIKE '%Tổ chức%' 
-                  OR loai_hinh_to_chuc LIKE '%Không phải quỹ%' 
-                  OR loai_hinh_to_chuc LIKE '%Các loại khác%') 
-        THEN tong_gtri_danh_muc
-    END), 4) AS dong_von_rong_tochuc_khac_quy,
-    ROUND(SUM(CASE
-        WHEN row_path = 'A-Tổ chức' 
-             AND loai_hinh_to_chuc LIKE '%Quỹ%' 
-             AND loai_hinh_to_chuc NOT LIKE '%Không phải quỹ%' 
-        THEN tong_gtri_danh_muc
-    END), 4) AS dong_von_rong_quy
-FROM pvt_data
-WHERE tong_gtri_danh_muc IS NOT NULL
-GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');
-
-
-
-
-"
+select 
+	sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) as Ca_nhan,
+	sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) as To_chuc,
+	sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end) as Quy,
+	(sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)) as to_chuc_khac_quy
+from tong_hop;"
 4,34,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
       AND is_mirror = 0 
@@ -2125,36 +2163,37 @@ GROUP BY COALESCE(loai_hinh_to_chuc, 'Cá nhân / Chưa xác định');
       AND is_static_copy = 0 
       AND is_template_marker = 0
       AND is_total_row = 0
-      AND ngay_nop = :ngaynop
+      AND day_report = :ngaybc
 ),
-c_quoc_tich AS (
+c_msgd AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, value_raw) AS quoc_tich
+        SUBSTR(UPPER(TRIM(value_raw)), -6) AS msgd
     FROM base_cell
-    WHERE column_path = 'Quốc tịch'
+    WHERE column_path = 'Mã số giao dịch chứng khoán'
 ),
 c_dong_von AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, ""^'"", """") AS DOUBLE)) AS dong_von_rong
+        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, """"'^'"""", """""""") AS DOUBLE)) AS dong_von_rong
     FROM base_cell
     WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
 SELECT 
-    q.quoc_tich,
+    n.Name as ndtnn,
     ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
 FROM c_dong_von d
-JOIN c_quoc_tich q 
+JOIN c_msgd q 
     ON d.report_log_id = q.report_log_id 
    AND d.section_id    = q.section_id 
    AND d.row_order     = q.row_order
-WHERE q.quoc_tich IS NOT NULL
-GROUP BY q.quoc_tich
+JOIN uat_fims_stg.investor i on SUBSTR(UPPER(TRIM(transactioncode)), -6) = q.msgd and i.deleted = 0
+LEFT JOIN uat_fims_stg.national n on i.NaId  = n.Id
+GROUP BY n.Name
 ORDER BY vao_rong DESC
 LIMIT 5;"
 4,40,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 quốc gia rút ròng,Top 5 quốc gia có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, Quốc gia",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
@@ -2177,37 +2216,38 @@ LIMIT 5;"
       AND is_static_copy = 0 
       AND is_template_marker = 0
       AND is_total_row = 0
-      AND ngay_nop = :ngaynop
+      AND day_report = :ngaybc
 ),
-c_quoc_tich AS (
+c_msgd AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, value_raw) AS quoc_tich
+        SUBSTR(UPPER(TRIM(value_raw)), -6) AS msgd
     FROM base_cell
-    WHERE column_path = 'Quốc tịch'
+    WHERE column_path = 'Mã số giao dịch chứng khoán'
 ),
 c_dong_von AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, ""^'"", """") AS DOUBLE)) AS dong_von_rong
+        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, """"'^'"""", """""""") AS DOUBLE)) AS dong_von_rong
     FROM base_cell
     WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
 SELECT 
-    q.quoc_tich,
-    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+    n.Name as ndtnn,
+    ROUND(SUM(d.dong_von_rong), 4) AS ra_rong
 FROM c_dong_von d
-JOIN c_quoc_tich q 
+JOIN c_msgd q 
     ON d.report_log_id = q.report_log_id 
    AND d.section_id    = q.section_id 
    AND d.row_order     = q.row_order
-WHERE q.quoc_tich IS NOT NULL
-GROUP BY q.quoc_tich
-ORDER BY vao_rong ASC
+JOIN uat_fims_stg.investor i on SUBSTR(UPPER(TRIM(transactioncode)), -6) = q.msgd and i.deleted = 0
+LEFT JOIN uat_fims_stg.national n on i.NaId  = n.Id
+GROUP BY n.Name
+ORDER BY ra_rong ASC
 LIMIT 5;"
 4,41,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT vào ròng,Tên top 5 NĐT có dòng vốn đầu tư vào ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
@@ -2229,36 +2269,37 @@ LIMIT 5;"
       AND is_static_copy = 0 
       AND is_template_marker = 0
       AND is_total_row = 0
-      AND ngay_nop = :ngaynop
+      AND day_report = :ngaybc
 ),
-c_ndt AS (
+c_msgd AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, value_raw) AS ten_ndt
+        SUBSTR(UPPER(TRIM(value_raw)), -6) AS msgd
     FROM base_cell
-    WHERE column_path = 'Tên nhà đầu tư'
+    WHERE column_path = 'Mã số giao dịch chứng khoán'
 ),
 c_dong_von AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        value_raw AS dong_von_rong
+        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, ""'^'"", """") AS DOUBLE)) AS dong_von_rong
     FROM base_cell
     WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
 SELECT 
-    c.ten_ndt,
+    i.name as ndtnn,
     ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
 FROM c_dong_von d
-JOIN c_ndt c 
-    ON d.report_log_id = c.report_log_id 
-   AND d.section_id    = c.section_id 
-   AND d.row_order     = c.row_order
-GROUP BY c.ten_ndt
-ORDER BY vao_rong DESC
+JOIN c_msgd q 
+    ON d.report_log_id = q.report_log_id 
+   AND d.section_id    = q.section_id 
+   AND d.row_order     = q.row_order
+JOIN uat_fims_stg.investor i on SUBSTR(UPPER(TRIM(transactioncode)), -6) = q.msgd and i.deleted = 0
+GROUP BY i.name
+ORDER BY vao_rong desc
 LIMIT 5;"
 4,42,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Top 5 NĐT  rút ròng,Tên top 5 NĐT có dòng vốn đầu tư rút ròng lớn nhất,Dashboard,Chỉ tiêu phái sinh,TB,"Ngày, NĐT",FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = 'IBOU9'
           AND sheet_name  = 'I'
@@ -2280,36 +2321,37 @@ LIMIT 5;"
       AND is_static_copy = 0 
       AND is_template_marker = 0
       AND is_total_row = 0
-      AND ngay_nop = :ngaynop
+      AND day_report = :ngaybc
 ),
-c_ndt AS (
+c_msgd AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        COALESCE(value_raw, value_raw) AS ten_ndt
+        SUBSTR(UPPER(TRIM(value_raw)), -6) AS msgd
     FROM base_cell
-    WHERE column_path = 'Tên nhà đầu tư'
+    WHERE column_path = 'Mã số giao dịch chứng khoán'
 ),
 c_dong_von AS (
     SELECT 
         report_log_id, 
         section_id, 
         row_order, 
-        value_raw AS dong_von_rong
+        COALESCE(value_raw, CAST(REGEXP_REPLACE(value_raw, ""'^'"", """") AS DOUBLE)) AS dong_von_rong
     FROM base_cell
     WHERE column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
 )
 SELECT 
-    c.ten_ndt,
-    ROUND(SUM(d.dong_von_rong), 4) AS vao_rong
+    i.name as ndtnn,
+    ROUND(SUM(d.dong_von_rong), 4) AS ra_rong
 FROM c_dong_von d
-JOIN c_ndt c 
-    ON d.report_log_id = c.report_log_id 
-   AND d.section_id    = c.section_id 
-   AND d.row_order     = c.row_order
-GROUP BY c.ten_ndt
-ORDER BY vao_rong ASC
+JOIN c_msgd q 
+    ON d.report_log_id = q.report_log_id 
+   AND d.section_id    = q.section_id 
+   AND d.row_order     = q.row_order
+JOIN uat_fims_stg.investor i on SUBSTR(UPPER(TRIM(transactioncode)), -6) = q.msgd and i.deleted = 0
+GROUP BY i.name
+ORDER BY ra_rong asc
 LIMIT 5;"
 5,43,Dashboard/Giám sát dòng vốn/Tương quan Net Flow và VN-Index của NĐTNN,Dòng tiền ròng,Chênh lệch giữa dòng tiền vào và dòng tiền ra của NĐTNN.,Dashboard,Chỉ tiêu phái sinh,Trùng,Tháng,FIMS,,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"where report_code = 'IBOU9'
 and column_path = 'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
@@ -2504,15 +2546,15 @@ c_gtri_danh_muc AS (
     FROM base_cell
     WHERE sheet_name = 'II'
       AND column_path in (
-     		'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
-			,'Tín phiếu > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
-			,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
-     	)
+                     'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
+                        ,'Tín phiếu > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
+                        ,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
+             )
 ),
 inv AS (
     SELECT
@@ -2556,41 +2598,41 @@ chi_nhanh_nhnn AS (
 ),
 ca_nhan as 
 (
-	    SELECT
+            SELECT
         'Cá nhân' AS nhom_loai_hinh,
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE sheet_name = 'II'
     AND row_path = 'B-Cá nhân'
       and column_path in (
-     		'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
-			,'Tín phiếu > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
-			,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
-     	)
+                     'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
+                        ,'Tín phiếu > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
+                        ,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
+             )
 ),
 to_chuc as 
 (
-	SELECT
+        SELECT
         'Tổ chức' AS nhom_loai_hinh,
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE sheet_name = 'II'
     AND row_path = 'A-Tổ chức'
       and column_path in (
-     		'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
-			,'Tín phiếu > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
-			,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
-			,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
-			,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
-     	)
+                     'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
+                        ,'Tín phiếu > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị'
+                        ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Trung hạn > Từ 12 tháng đến 24 tháng > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
+                        ,'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
+                        ,'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
+             )
 ),
 tong_hop as 
 (
@@ -2607,12 +2649,15 @@ SELECT nhom_loai_hinh, ROUND(tong_gtri, 4) tong_gtri
 FROM quy
 )
 select 
-	sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) as Ca_nhan,
-	sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) as To_chuc,
-	sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end) as Quy,
-	(sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)) as to_chuc_khac_quy,
-	sum(case when nhom_loai_hinh = 'Chi nhánh ngân hàng nước ngoài' then tong_gtri end) as Chi_nhanh_nhnn
-from tong_hop;
+        sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) as Ca_nhan,
+        sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) as To_chuc,
+        sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end) as Quy,
+        (sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)) as to_chuc_khac_quy,
+        sum(case when nhom_loai_hinh = 'Chi nhánh ngân hàng nước ngoài' then tong_gtri end) as Chi_nhanh_nhnn,
+                sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) + sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)
+                + (sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end))
+                + sum(case when nhom_loai_hinh = 'Chi nhánh ngân hàng nước ngoài' then tong_gtri end) as tong_gtri_danh_muc
+from tong_hop; 
 
 
 
@@ -2632,7 +2677,7 @@ from tong_hop;
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0
           and ngay_nop = :ngaynop",
-6,50,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của ngân hàng nước ngoài tại VN,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,,,"        WHERE report_code = '59WJB'
+6,50,Dashboard/Danh mục/Thống kê danh mục,Tổng giá trị danh mục của ngân hàng nước ngoài tại VN,Tổng giá trị danh mục của NĐTNN là chi nhánh ngân hàng nước ngoài,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, loại hình NĐT",FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code = '59WJB'
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
           AND is_static_copy = 0 AND is_template_marker = 0

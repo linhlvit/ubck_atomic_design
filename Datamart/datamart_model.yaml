@@ -10645,6 +10645,15 @@ entities:
         description: "Số giấy tờ định danh của NĐT — giá trị ĐÃ MASKED/mã hóa từ nguồn (Data Modeler xác nhận 2026-10-01), dùng làm khóa nối kỹ thuật sang Lịch sử tuân thủ (Nhóm 13); không hiển thị. Mỗi NĐT có 1 giấy tờ trên Atomic (cá nhân: số IdNo; tổ chức: số BusinessNumber) nên là chuỗi đơn, không phải mảng."
         source_atomic_table: "ip_alternative_identification"
         source_atomic_column: "ip_alternative_identification.identification_nbr"
+      - logical_name: "Investor Object Type Code"
+        physical_name: "investor_object_tp_code"
+        data_domain: "Classification Value"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Loại đối tượng NĐT — FIMS.INVESTOR.OBJECTTYPE nguyên văn. BA SQL Nhóm 4 và Nhóm 6 nhận diện NĐT là quỹ bằng `ObjectType = 2` kết hợp tên loại hình chứa 'Quỹ'; nguồn lưu dạng số nên so sánh phải ép số. [MỚI 2026-11-15, O_NDTNN_62]"
+        source_atomic_table: "foreign_investor"
+        source_atomic_column: "foreign_investor.foreign_investor.investor_object_tp_code"
 
   - id: "DTM-opr_investor_compliance_hist"
     logical_name: "Operational Investor Compliance History"
@@ -26064,7 +26073,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "DD"
-        description: "Quốc tịch NĐTNN (cột 'Quốc tịch' — PLIV-TT51, báo cáo IBOU9 sheet I)"
+        description: "Quốc tịch NĐTNN (cột 'Quốc tịch' — PLIV-TT51, báo cáo IBOU9 sheet I) [2026-11-15, O_NDTNN_62: K_NDTNN_29–32 (Nhóm 4) không còn đọc cột này — BA lấy qua `opr_foreign_investor_360_profile`; vẫn dùng cho Data Explorer Nhóm 16 (K_NDTNN_90–94)]"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
         source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Investor Name"
@@ -26073,7 +26082,7 @@ entities:
         data_type: "string"
         nullable: true
         key: "DD"
-        description: "Tên nhà đầu tư (cột 'Tên nhà đầu tư')"
+        description: "Tên nhà đầu tư (cột 'Tên nhà đầu tư') [2026-11-15, O_NDTNN_62: K_NDTNN_29–32 (Nhóm 4) không còn đọc cột này — BA lấy qua `opr_foreign_investor_360_profile`; vẫn dùng cho Data Explorer Nhóm 16 (K_NDTNN_90–94)]"
         source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
         source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
       - logical_name: "Capital Flow Net Value"
@@ -26094,6 +26103,24 @@ entities:
         description: "Mã hệ thống nguồn"
         source_atomic_table: "fir_value"
         source_atomic_column: "fir_value.src_stm_code"
+      - logical_name: "Investor Group Name"
+        physical_name: "investor_group_nm"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: "DD"
+        description: "Nhóm nhà đầu tư theo nhãn dòng IBOU9 sheet I: 'A-Tổ chức' / 'B-Cá nhân' (BA STT 4 dòng 36: row_path = 'A-Tổ chức' hoặc 'B-Cá nhân'). Cá nhân, Tổ chức và Tổ chức khác quỹ (Tổ chức − Quỹ) nhận diện theo cột này. [CẬP NHẬT 2026-11-15, O_NDTNN_62]"
+        source_atomic_table: "fir_structure"
+        source_atomic_column: "fir_structure.row_path"
+      - logical_name: "Transaction Code"
+        physical_name: "transaction_cd"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: "DD"
+        description: "Mã số giao dịch chứng khoán của NĐT trong báo cáo IBOU9 — 6 ký tự cuối, in hoa (BA STT 4 dòng 36/42–45: SUBSTR(UPPER(TRIM(value_raw)), -6), cột 'Mã số giao dịch chứng khoán'). Khóa nối `opr_foreign_investor_360_profile` (cùng 6 ký tự cuối của investor_code) để lấy quốc tịch, tên NĐT, loại hình — BA không đọc cột 'Quốc tịch'/'Tên nhà đầu tư' của báo cáo nữa. [CẬP NHẬT 2026-11-15, O_NDTNN_62]"
+        source_atomic_table: "fir_value / fir_structure / foreign_investor_report"
+        source_atomic_column: "fir_value / fir_structure / foreign_investor_report.val_raw"
 
   - id: "DTM-fct_foreign_investor_portfolio_report_snpst"
     logical_name: "Fact Foreign Investor Portfolio Report Snapshot"
@@ -26278,7 +26305,7 @@ entities:
         data_type: "int"
         nullable: true
         key: "DD"
-        description: "1 = tổ chức là quỹ (BA: row_path = 'A-Tổ chức' AND loại hình LIKE '%Quỹ%' AND NOT LIKE '%Không phải quỹ%')"
+        description: "1 = tổ chức là quỹ (BA: row_path = 'A-Tổ chức' AND loại hình LIKE '%Quỹ%' AND NOT LIKE '%Không phải quỹ%') [2026-11-15, O_NDTNN_62: không còn KPI nào dùng — BA nhận diện Quỹ qua danh mục NĐT (`opr_foreign_investor_360_profile`), 'Tổ chức khác quỹ' = Tổ chức − Quỹ; giữ cột để không đổi flat]"
         source_atomic_table: "fct_foreign_investor_portfolio_report_snpst"
         source_atomic_column: "fct_foreign_investor_portfolio_report_snpst.investor_type_nm"
       - logical_name: "Non Fund Organization Indicator"
@@ -26287,7 +26314,7 @@ entities:
         data_type: "int"
         nullable: true
         key: "DD"
-        description: "1 = tổ chức khác quỹ (BA: A-Tổ chức AND loại hình LIKE Công ty/Ngân hàng/Tổ chức/Không phải quỹ/Các loại khác). Điều kiện của BA KHÔNG loại trừ lẫn nhau với quỹ — xem O_NDTNN_38"
+        description: "1 = tổ chức khác quỹ (BA: A-Tổ chức AND loại hình LIKE Công ty/Ngân hàng/Tổ chức/Không phải quỹ/Các loại khác). Điều kiện của BA KHÔNG loại trừ lẫn nhau với quỹ — xem O_NDTNN_38 [2026-11-15, O_NDTNN_62: không còn KPI nào dùng — BA nhận diện Quỹ qua danh mục NĐT (`opr_foreign_investor_360_profile`), 'Tổ chức khác quỹ' = Tổ chức − Quỹ; giữ cột để không đổi flat]"
         source_atomic_table: "fct_foreign_investor_portfolio_report_snpst"
         source_atomic_column: "fct_foreign_investor_portfolio_report_snpst.investor_type_nm"
       - logical_name: "Foreign Bank Branch Indicator"

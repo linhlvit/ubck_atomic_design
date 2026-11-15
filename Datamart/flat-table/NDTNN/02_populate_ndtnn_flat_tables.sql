@@ -147,7 +147,8 @@ SELECT
     o.src_stm_code,
     o.investor_status_code,
     o.investor_status_nm,
-    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr
+    fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
+    o.investor_object_tp_code
 
 FROM datamart.opr_foreign_investor_360_profile o
 ;
@@ -318,6 +319,8 @@ SELECT
     fn_pii_encrypt(f.investor_nm, :aes_key_hex) AS investor_nm,
     f.capital_flow_net_val,
     f.src_stm_code,
+    f.investor_group_nm,
+    f.transaction_cd,
 
     submission_cal.cdr_dt AS snpst_cdr_dt,
 
