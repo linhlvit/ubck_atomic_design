@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập. Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint)."
+  notes: "Snapshot bảng giá đa loại instrument (CP/CW/PS/TP/CCQ). Grain = 1 lần chụp trạng thái của 1 mã CK (historyid). Không có FK đến entity khác — Tier 1 độc lập. Thiết kế lại 2026-10-13 từ DDL UAT 1 (ubck_all_jad_tables_ddl.sql); khối lượng (Volume) dùng Large Counter (bigint). [2026-11-14] Theo yêu cầu Data Modeler: Listed Share Count (LISTEDSHARE) và Total Listing Volume (TOTALLISTINGQTTY) đổi bigint → decimal(23,2) (domain Currency Amount)."
 attributes:
 - attribute_name: "Security Trading Snapshot Id"
   physical_name: "security_trading_snpst_id"
@@ -150,16 +150,16 @@ attributes:
 - attribute_name: "Listed Share Count"
   physical_name: "listed_share_count"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.LISTEDSHARE"
-  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"
 - attribute_name: "Maturity Date"
   physical_name: "maturity_dt"
   description: "Ngày đáo hạn."
@@ -306,16 +306,16 @@ attributes:
 - attribute_name: "Total Listing Volume"
   physical_name: "total_listing_vol"
   description: "Khối lượng CK niêm yết."
-  data_domain: "Large Counter"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
   - "MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY"
-  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+  comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "decimal(23,2)"
 - attribute_name: "Average Price"
   physical_name: "average_price"
   description: "Giá khớp trung bình."

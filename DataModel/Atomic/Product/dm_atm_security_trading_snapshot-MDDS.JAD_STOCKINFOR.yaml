@@ -165,14 +165,14 @@ attributes:
   - name: Listed Share Count
     physical_name: listed_share_count
     business_meaning: Khối lượng CK niêm yết.
-    data_domain: Large Counter
-    data_type: bigint
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE
-    comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+    comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
     classification_context: null
     etl_derived_value: null
 
@@ -333,14 +333,14 @@ attributes:
   - name: Total Listing Volume
     physical_name: total_listing_vol
     business_meaning: Khối lượng CK niêm yết.
-    data_domain: Large Counter
-    data_type: bigint
+    data_domain: Currency Amount
+    data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
     source_system: MDDS
     source_table: JAD_STOCKINFOR
     source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY
-    comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+    comment: "Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14."
     classification_context: null
     etl_derived_value: null
 

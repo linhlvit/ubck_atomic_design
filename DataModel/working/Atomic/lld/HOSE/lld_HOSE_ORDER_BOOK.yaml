@@ -5,8 +5,8 @@ metadata:
   source_table: "ORDER_BOOK"
   atomic_entity: "Securities Order"
   entity_physical_name: "securities_order"
-  bcv_core_object: "Communication"
-  bcv_concept: "[Communication] Financial Market Order"
+  bcv_core_object: "Transaction"
+  bcv_concept: "[Transaction] Financial Market Transaction"
   table_type: "Fact Append"
   group: "T1"
   design_status: "approved"
@@ -28,7 +28,7 @@ attributes:
   status: "draft"
   source_columns:
   - "HOSE.ORDER_BOOK.ORDER_ID"
-  comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
+  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

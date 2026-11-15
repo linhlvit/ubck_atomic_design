@@ -2,24 +2,24 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-securities_order-HOSE.ORDER_BOOK
+  id: ATM-securities_order-HNX.ORDER_BOOK
   logical_name: Securities Order
   physical_name: securities_order
   layer: Atomic
   version: "1.0"
   status: draft
-  bcv_core_object: Communication
-  bcv_concept: "[Communication] Financial Market Order"
+  bcv_core_object: Transaction
+  bcv_concept: "[Transaction] Financial Market Transaction"
   table_type: Fact Append
   etl_pattern: Fact Append
-  source: HOSE
+  source: HNX
   description: |
     Sổ lệnh chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 event lệnh (mới/sửa/hủy) với thị trường, bảng giao dịch, mã chứng khoán, thời điểm nhận lệnh, thành viên, tài khoản, loại và điều kiện lệnh, giá, khối lượng, trạng thái và các thuộc tính đặc thù (Iceberg, Stop order, báo giá RFQ).
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-HOSE-ORDER_BOOK
+    brd: BRD-SRC-HNX-ORDER_BOOK
 
 attributes:
   - name: Securities Order Id
@@ -29,10 +29,10 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: true
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_ID
-    comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
+    source_column: HNX.ORDER_BOOK.ORDER_ID
+    comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business Key (cột ORDER_ID)."
     classification_context: null
     etl_derived_value: null
 
@@ -43,10 +43,10 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_ID
-    comment: BK chính. Mã định danh nghiệp vụ duy nhất của Securities Order; nguồn HOSE.ORDER_BOOK.ORDER_ID.
+    source_column: HNX.ORDER_BOOK.ORDER_ID
+    comment: BK chính. Mã định danh nghiệp vụ duy nhất của Securities Order; nguồn HNX.ORDER_BOOK.ORDER_ID.
     classification_context: null
     etl_derived_value: null
 
@@ -57,12 +57,12 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'HOSE_ORDER_BOOK'"
-    etl_derived_value: HOSE_ORDER_BOOK
+    classification_context: "Source System Code = 'HNX_ORDER_BOOK'"
+    etl_derived_value: HNX_ORDER_BOOK
 
   - name: Trade Date
     physical_name: trade_dt
@@ -71,10 +71,10 @@ attributes:
     data_type: date
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.TRADE_DATE
-    comment: Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng.
+    source_column: HNX.ORDER_BOOK.TRADE_DATE
+    comment: "Gộp với HOSE.ORDER_BOOK.TRADE_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng."
     classification_context: null
     etl_derived_value: null
 
@@ -85,10 +85,10 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.MARKET_ID
-    comment: "SCHEMA_CODE=HOSE.MARKET"
+    source_column: HNX.ORDER_BOOK.MARKET_ID
+    comment: "SCHEMA_CODE=HNX.MARKET"
     classification_context: null
     etl_derived_value: null
 
@@ -99,10 +99,10 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ISSUE_CODE
-    comment: null
+    source_column: HNX.ORDER_BOOK.ISSUE_CODE
+    comment: "Gộp với HOSE.ORDER_BOOK.SYMBOL (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HNX ISSUE_CODE thường là mã ISIN (riêng Repo do Sở tự định nghĩa), HOSE SYMBOL là mã giao dịch — chưa xác nhận cùng định dạng giá trị; phân biệt theo src_stm_code."
     classification_context: null
     etl_derived_value: null
 
@@ -113,10 +113,10 @@ attributes:
     data_type: string
     nullable: false
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.BOARD_ID
-    comment: "SCHEMA_CODE=HOSE.BOARD_TYPE"
+    source_column: HNX.ORDER_BOOK.BOARD_ID
+    comment: "SCHEMA_CODE=HNX.BOARD_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -127,10 +127,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.SESSION_ID
-    comment: "SCHEMA_CODE=HOSE.SESSION"
+    source_column: HNX.ORDER_BOOK.SESSION_ID
+    comment: "SCHEMA_CODE=HNX.SESSION"
     classification_context: null
     etl_derived_value: null
 
@@ -141,10 +141,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.SELL_BUY_CLASSIFICATION_CODE
-    comment: "SCHEMA_CODE=HOSE.SIDE"
+    source_column: HNX.ORDER_BOOK.SELL_BUY_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.SIDE"
     classification_context: null
     etl_derived_value: null
 
@@ -155,10 +155,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.REPLACE_CANCEL
-    comment: "SCHEMA_CODE=HOSE.ORDER_ACTION_TYPE"
+    source_column: HNX.ORDER_BOOK.REPLACE_CANCEL
+    comment: "SCHEMA_CODE=HNX.ORDER_ACTION_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -169,10 +169,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.MEMBER_ID
-    comment: null
+    source_column: HNX.ORDER_BOOK.MEMBER_ID
+    comment: "Gộp với HOSE.ORDER_BOOK.BRK_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
     classification_context: null
     etl_derived_value: null
 
@@ -183,10 +183,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ACCOUNT_NUMBER
-    comment: null
+    source_column: HNX.ORDER_BOOK.ACCOUNT_NUMBER
+    comment: "Gộp với HOSE.ORDER_BOOK.ACCT_NO (mức A: cùng ý nghĩa, cùng bộ mã)."
     classification_context: null
     etl_derived_value: null
 
@@ -197,10 +197,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.CLIENT_HOUSE_CLASSIFICATION_CODE
-    comment: "SCHEMA_CODE=HOSE.ACCOUNT_TYPE"
+    source_column: HNX.ORDER_BOOK.CLIENT_HOUSE_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.ACCOUNT_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -211,10 +211,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.INVESTOR_CLASSIFICATION_CODE
-    comment: "SCHEMA_CODE=HOSE.INVESTOR_TYPE"
+    source_column: HNX.ORDER_BOOK.INVESTOR_CLASSIFICATION_CODE
+    comment: "SCHEMA_CODE=HNX.INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -225,10 +225,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.FOREIGN_INVESTOR_TYPE_CODE
-    comment: "SCHEMA_CODE=HOSE.FOREIGN_INVESTOR_TYPE"
+    source_column: HNX.ORDER_BOOK.FOREIGN_INVESTOR_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.FOREIGN_INVESTOR_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -239,10 +239,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_TYPE_CODE
-    comment: "SCHEMA_CODE=HOSE.ORDER_TYPE"
+    source_column: HNX.ORDER_BOOK.ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -253,10 +253,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_CONDITION_CODE
-    comment: "SCHEMA_CODE=HOSE.ORDER_CONDITION_TYPE"
+    source_column: HNX.ORDER_BOOK.ORDER_CONDITION_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_CONDITION_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -267,10 +267,10 @@ attributes:
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_PRICE
-    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
+    source_column: HNX.ORDER_BOOK.ORDER_PRICE
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_PRICE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -281,10 +281,10 @@ attributes:
     data_type: bigint
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_QUANTITY
-    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+    source_column: HNX.ORDER_BOOK.ORDER_QUANTITY
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_VOL (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -295,10 +295,10 @@ attributes:
     data_type: bigint
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_REMAINING_QUANTITY
-    comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
+    source_column: HNX.ORDER_BOOK.ORDER_REMAINING_QUANTITY
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_RQTY (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
 
@@ -309,10 +309,10 @@ attributes:
     data_type: date
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_DATE
-    comment: Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng.
+    source_column: HNX.ORDER_BOOK.ORDER_DATE
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_DATE (mức B: cùng ý nghĩa, khác bộ mã/kiểu/định dạng). HOSE: ngày đặt lệnh; HNX: ngày ghi nhận theo ngày giao dịch của hệ thống. Nguồn lưu dạng STRING (yyyymmdd) — ETL cần cast sang date. Cần validate không có giá trị sai định dạng."
     classification_context: null
     etl_derived_value: null
 
@@ -323,10 +323,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_ACCEPT_TIME
-    comment: null
+    source_column: HNX.ORDER_BOOK.ORDER_ACCEPT_TIME
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_TIME (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE ORDER_TIME là lúc người dùng đặt lệnh; HNX ORDER_ACCEPT_TIME là lúc KRX core chấp nhận lệnh (không phải lúc đặt) — ý nghĩa thời điểm khác nhau, phân biệt theo src_stm_code."
     classification_context: null
     etl_derived_value: null
 
@@ -337,10 +337,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_RECEPTION_NUMBER
-    comment: null
+    source_column: HNX.ORDER_BOOK.ORDER_RECEPTION_NUMBER
+    comment: "Gộp với HOSE.ORDER_BOOK.ORDER_ACCEPT_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
     classification_context: null
     etl_derived_value: null
 
@@ -351,10 +351,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORIGINAL_ORDER_RECEPTION_NUMBER
-    comment: null
+    source_column: HNX.ORDER_BOOK.ORIGINAL_ORDER_RECEPTION_NUMBER
+    comment: "Gộp với HOSE.ORDER_BOOK.ORIG_ORDER_ACCEPT_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
     classification_context: null
     etl_derived_value: null
 
@@ -365,10 +365,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORIGINAL_ORDER_ID
-    comment: null
+    source_column: HNX.ORDER_BOOK.ORIGINAL_ORDER_ID
+    comment: "Gộp với HOSE.ORDER_BOOK.ORIG_ORDER_ID (mức A: cùng ý nghĩa, cùng bộ mã)."
     classification_context: null
     etl_derived_value: null
 
@@ -379,10 +379,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.MESSAGE_SEQUENCE
-    comment: null
+    source_column: HNX.ORDER_BOOK.MESSAGE_SEQUENCE
+    comment: "Gộp với HOSE.ORDER_BOOK.REFERENCE_SEQUENCE_NO (mức C: gần nghĩa, chưa xác nhận hoàn toàn). HOSE REFERENCE_SEQUENCE_NO là số tham chiếu theo thứ tự giao dịch; HNX MESSAGE_SEQUENCE là số thứ tự message trong luồng dữ liệu — cùng vai trò sắp thứ tự, chưa kiểm chứng trên dữ liệu."
     classification_context: null
     etl_derived_value: null
 
@@ -393,9 +393,9 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORDER_REJECT_REASON_CODE
+    source_column: HNX.ORDER_BOOK.ORDER_REJECT_REASON_CODE
     comment: "Mã phân loại — schema_code do Data Modeler đặt sau; giữ mã raw của sàn, phân biệt theo src_stm_code."
     classification_context: null
     etl_derived_value: null
@@ -407,9 +407,9 @@ attributes:
     data_type: bigint
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.PUBLIC_QUANTITY
+    source_column: HNX.ORDER_BOOK.PUBLIC_QUANTITY
     comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang bigint. Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
@@ -421,9 +421,9 @@ attributes:
     data_type: decimal(23,2)
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.CONDITION_PRICE
+    source_column: HNX.ORDER_BOOK.CONDITION_PRICE
     comment: "Nguồn lưu dạng STRING — ETL cần cast/parse sang decimal(23,2). Cần validate không có giá trị non-numeric."
     classification_context: null
     etl_derived_value: null
@@ -435,10 +435,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.ORIGINAL_ORDER_TYPE_CODE
-    comment: "SCHEMA_CODE=HOSE.ORDER_TYPE"
+    source_column: HNX.ORDER_BOOK.ORIGINAL_ORDER_TYPE_CODE
+    comment: "SCHEMA_CODE=HNX.ORDER_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -449,10 +449,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.AUTOMATED_CANCEL
-    comment: "SCHEMA_CODE=HOSE.AUTOMATED_CANCEL_TYPE"
+    source_column: HNX.ORDER_BOOK.AUTOMATED_CANCEL
+    comment: "SCHEMA_CODE=HNX.AUTOMATED_CANCEL_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -463,10 +463,10 @@ attributes:
     data_type: string
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.QUOTE_REQUEST_TYPE
-    comment: "SCHEMA_CODE=HOSE.QUOTE_REQUEST_TYPE"
+    source_column: HNX.ORDER_BOOK.QUOTE_REQUEST_TYPE
+    comment: "SCHEMA_CODE=HNX.QUOTE_REQUEST_TYPE"
     classification_context: null
     etl_derived_value: null
 
@@ -477,9 +477,9 @@ attributes:
     data_type: int
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.REPORT_YEAR
+    source_column: HNX.ORDER_BOOK.REPORT_YEAR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -491,9 +491,9 @@ attributes:
     data_type: int
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.REPORT_MONTH
+    source_column: HNX.ORDER_BOOK.REPORT_MONTH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -505,9 +505,9 @@ attributes:
     data_type: int
     nullable: true
     is_primary_key: false
-    source_system: HOSE
+    source_system: HNX
     source_table: ORDER_BOOK
-    source_column: HOSE.ORDER_BOOK.REPORT_DAY
+    source_column: HNX.ORDER_BOOK.REPORT_DAY
     comment: null
     classification_context: null
     etl_derived_value: null

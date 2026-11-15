@@ -29262,8 +29262,8 @@ entities:
     owner_1st:
       steward: username@ubck.com.vn
       data_modeler: username@fssc.com.vn
-    bcv_core_object_most: Communication
-    bcv_concept_most: "[Communication] Financial Market Order"
+    bcv_core_object_most: Transaction
+    bcv_concept_most: "[Transaction] Financial Market Transaction"
     table_type_most: Fact Append
     etl_pattern_most: Fact Append
     conflict_review: null
@@ -29278,7 +29278,7 @@ entities:
   - name: Securities Order Id
     physical_name: securities_order_id
     business_meaning_1st: Khóa đại diện (surrogate key).
-    comment_1st: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh\
+    comment_1st: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh\
       \ chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1\
       \ bản ghi Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business\
       \ Key (cột ORDER_ID)."
@@ -29294,7 +29294,7 @@ entities:
       - source_table: ORDER_BOOK
         source_column: HNX.ORDER_BOOK.ORDER_ID
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh\
+        comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh\
           \ chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là\
           \ 1 bản ghi Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash\
           \ từ Business Key (cột ORDER_ID)."
@@ -29303,7 +29303,7 @@ entities:
       - source_table: ORDER_BOOK
         source_column: HOSE.ORDER_BOOK.ORDER_ID
         business_meaning: Khóa đại diện (surrogate key).
-        comment: "PK surrogate. BCV: \"[Communication] Financial Market Order\". Lệnh\
+        comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh\
           \ chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là\
           \ 1 bản ghi Fact Append. Hash: hash_id('HOSE_ORDER_BOOK', ORDER_ID) — hash\
           \ từ Business Key (cột ORDER_ID)."
@@ -101304,9 +101304,10 @@ entities:
     physical_name: listed_share_count
     business_meaning_1st: Khối lượng CK niêm yết.
     comment_1st: Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang
-      bigint. Cần validate không có giá trị non-numeric.
-    data_domain_most: Large Counter
-    data_type_most: bigint
+      decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint
+      → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -101318,7 +101319,8 @@ entities:
         source_column: MDDS.JAD_STOCKINFOR.LISTEDSHARE
         business_meaning: Khối lượng CK niêm yết.
         comment: Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang
-          bigint. Cần validate không có giá trị non-numeric.
+          decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint
+          → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14.
   - name: Maturity Date
     physical_name: maturity_dt
     business_meaning_1st: Ngày đáo hạn.
@@ -101514,9 +101516,10 @@ entities:
     physical_name: total_listing_vol
     business_meaning_1st: Khối lượng CK niêm yết.
     comment_1st: Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang
-      bigint. Cần validate không có giá trị non-numeric.
-    data_domain_most: Large Counter
-    data_type_most: bigint
+      decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint
+      → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -101528,7 +101531,8 @@ entities:
         source_column: MDDS.JAD_STOCKINFOR.TOTALLISTINGQTTY
         business_meaning: Khối lượng CK niêm yết.
         comment: Nguồn lưu dạng string (VARCHAR2(255 CHAR)) — ETL cần cast/parse sang
-          bigint. Cần validate không có giá trị non-numeric.
+          decimal(23,2). Cần validate không có giá trị non-numeric. Đổi Large Counter/bigint
+          → Currency Amount/decimal(23,2) theo yêu cầu Data Modeler 2026-11-14.
   - name: Average Price
     physical_name: average_price
     business_meaning_1st: Giá khớp trung bình.
