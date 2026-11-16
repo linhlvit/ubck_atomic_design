@@ -157,7 +157,7 @@ attributes:
   status: "draft"
   source_columns:
   - "VSDC.UPDATED_INVESTORS.NATIONALITY"
-  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk sang VSDC.NATIONALITY: UPDATED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không khớp AUTOID."
+  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Hash: hash_id('VSDC_NATIONALITY', NATIONALITY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -169,8 +169,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.NATIONALITY.AUTOID"
-  comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk — chi tiết xem comment Nationality Id. Kiểu INT theo DDL atomic đã chốt — ETL CAST AUTOID (BIGINT) sang INT."
+  - "VSDC.UPDATED_INVESTORS.NATIONALITY"
+  comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality Id."
   classification_context: null
   etl_derived_value: null
   data_type: "int"

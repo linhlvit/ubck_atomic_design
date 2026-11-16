@@ -3641,11 +3641,8 @@ entities:
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Classification VSDC Nationality — Quốc tịch.
-    comment_1st: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
-      \ sang VSDC.NATIONALITY: UPDATED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID\
-      \ để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu\
-      \ STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không\
-      \ khớp AUTOID."
+    comment_1st: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Hash: hash_id('VSDC_NATIONALITY',\
+      \ NATIONALITY)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -3658,18 +3655,13 @@ entities:
       - source_table: UPDATED_INVESTORS
         source_column: VSDC.UPDATED_INVESTORS.NATIONALITY
         business_meaning: FK đến Classification VSDC Nationality — Quốc tịch.
-        comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
-          \ sang VSDC.NATIONALITY: UPDATED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID\
-          \ để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn\
-          \ lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị\
-          \ non-numeric/không khớp AUTOID."
+        comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Hash: hash_id('VSDC_NATIONALITY',\
+          \ NATIONALITY)."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc tịch (denormalized) — Quốc tịch.
     comment_1st: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair\
-      \ with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk\
-      \ — chi tiết xem comment Nationality Id. Kiểu INT theo DDL atomic đã chốt —\
-      \ ETL CAST AUTOID (BIGINT) sang INT."
+      \ with Nationality Id."
     data_domain_most: Small Counter
     data_type_most: int
     nullable_most: true
@@ -3680,12 +3672,10 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: UPDATED_INVESTORS
-        source_column: VSDC.NATIONALITY.AUTOID
+        source_column: VSDC.UPDATED_INVESTORS.NATIONALITY
         business_meaning: Mã quốc tịch (denormalized) — Quốc tịch.
         comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair\
-          \ with Nationality Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk\
-          \ — chi tiết xem comment Nationality Id. Kiểu INT theo DDL atomic đã chốt\
-          \ — ETL CAST AUTOID (BIGINT) sang INT."
+          \ with Nationality Id."
   - name: Phone Number
     physical_name: phone_nbr
     business_meaning_1st: Số điện thoại
@@ -27937,7 +27927,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -79640,7 +79630,11 @@ entities:
       - source_table: IDENTITY
         source_column: IDS.IDENTITY.IDENTITY_TYPE_CD
         business_meaning: Loại giấy tờ.
-        comment: SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE').
+        comment: "Scheme: IP_ALT_ID_TYPE. SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load\
+          \ từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE'). RULE: CASE WHEN IDENTITY_TYPE_CD\
+          \ = 1 THEN 'NATIONAL_ID' WHEN IDENTITY_TYPE_CD = 2 THEN 'PASSPORT' WHEN\
+          \ IDENTITY_TYPE_CD = 3 THEN 'BUSINESS_LICENSE' WHEN IDENTITY_TYPE_CD = 4\
+          \ THEN 'CITIZEN_ID' END."
     - source_system: NHNCK
       source_tables:
       - source_table: PROFESSIONALS
