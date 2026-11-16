@@ -885,16 +885,15 @@ SELECT DISTINCT
 FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION;",Done
 5,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động,Số lượng CTCK đang duy trì tốt,Số lượng CTCK đang duy trì tốt,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
 ALERT_INDICATOR, 
-SC_FIRM_INFO","av.ALERT_YEAR, 
-av.REPORT_PERIOD, 
-av.PERIOD_VALUE, 
-av.ENTITY_TYPE, 
-av.SC_FIRM_INFO_ID, 
-av.ALERT_INDICATOR_ID, 
-av.SEVERITY_LEVEL_ALT, 
-ai.ID, 
-sfi.ID, 
-sfi.PROVISIONAL",,"-- Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động
+SC_FIRM_INFO","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ENTITY_TYPE
+av.SC_FIRM_INFO_ID
+av.ALERT_INDICATOR_ID
+av.SEVERITY_LEVEL_ALT
+ai.ID
+sfi.ID",,"-- 1. Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động
 WITH
 param AS (
     SELECT ai.ID AS alert_indicator_id
@@ -939,7 +938,7 @@ xep_hang AS (
           AND d.nam_du_lieu     = k.nam_du_lieu
           AND d.loai_ky         = k.loai_ky
           AND NVL(d.gia_tri_ky, '#') = NVL(k.gia_tri_ky, '#')
-    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- Hồ sơ CTCK chính thức
+--    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- Hồ sơ CTCK chính thức
 ),
 nhom AS (
     SELECT 'Đang duy trì tốt' AS xep_loai, 1 AS thu_tu FROM dual UNION ALL
@@ -962,6 +961,67 @@ GROUP BY k.nam_du_lieu, k.loai_ky, k.gia_tri_ky, n.xep_loai, n.thu_tu
 ORDER BY k.nam_du_lieu, k.loai_ky, LPAD(NVL(k.gia_tri_ky, '0'), 3, '0'), n.thu_tu;",Done
 5,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động,Số lượng CTCK gần đến giới hạn duy trì,Số lượng CTCK gần đến giới hạn duy trì,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
 5,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động,Số lượng CTCK không duy trì điều kiện cấp phép,Số lượng CTCK không duy trì điều kiện cấp phép,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
+5,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động,Chi tiết cảnh báo,"Chi tiết cảnh báo:
+- Năm dữ liệu
+- Kỳ dữ liệu
+- Mã CTCK
+- Tên CTCK
+- Tên tham số
+- Giá trị
+- Nội dung cảnh báo
+- Ngày cảnh báo
+- Mức độ cảnh báo",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
+ALERT_INDICATOR, 
+SC_FIRM_INFO","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ACTUAL_VALUE
+av.VIOLATION_DESCRIPTION
+av.ALERT_DATE
+av.SEVERITY_LEVEL_ALT
+av.ALERT_INDICATOR_ID
+av.SC_FIRM_INFO_ID
+av.ENTITY_TYPE
+ai.ID
+ai.INDICATOR_NAME
+sfi.ID
+sfi.SHORT_NAME
+sfi.NAME_VI",,"-- Check chi tiết: Biểu đồ Duy trì điều kiện cấp phép - Giấy phép hoạt động
+-- Mỗi dòng = 1 tham số của 1 CTCK đang ở mức Vi phạm / Cảnh báo trong 1 kỳ
+WITH
+param AS (
+    SELECT ai.ID AS alert_indicator_id
+    FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
+    WHERE TRIM(ai.ID) IN (450, 451) -- ID tham số cảnh báo
+)
+SELECT av.ALERT_YEAR AS nam_du_lieu,
+       TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) AS ky_du_lieu,
+       sfi.SHORT_NAME AS ma_ctck,
+       sfi.NAME_VI AS ten_ctck,
+       ai.INDICATOR_NAME AS ten_tham_so,
+       av.ACTUAL_VALUE AS gia_tri,
+       av.VIOLATION_DESCRIPTION AS nd_canh_bao,
+       av.ALERT_DATE AS ngay_canh_bao,
+       CASE
+           WHEN av.SEVERITY_LEVEL_ALT = 2 THEN 'Vi phạm'
+           WHEN av.SEVERITY_LEVEL_ALT = 1 THEN 'Cảnh báo'
+       END AS muc_do_tham_so
+FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION av
+JOIN param p ON p.alert_indicator_id = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.ALERT_INDICATOR ai ON ai.ID = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.SC_FIRM_INFO sfi ON sfi.ID = av.SC_FIRM_INFO_ID
+WHERE av.ENTITY_TYPE = 'CTCK'
+  AND av.ALERT_YEAR IS NOT NULL
+  AND av.SEVERITY_LEVEL_ALT IN (1, 2)
+--  AND sfi.SHORT_NAME = 'AGRISECO'   -- lọc 1 CTCK
+--  AND av.ALERT_YEAR = 2026 AND TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) = 'THANG 2'   -- lọc 1 kỳ
+ORDER BY av.ALERT_YEAR,
+         av.REPORT_PERIOD,
+         LPAD(NVL(TRIM(av.PERIOD_VALUE), '0'), 3, '0'),
+         sfi.NAME_VI,
+         av.SEVERITY_LEVEL_ALT DESC,
+         av.ALERT_DATE DESC,
+         ai.INDICATOR_NAME;",Done
 6,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh ,Chiều thời gian theo ngày,Chiều thời gian theo ngày: Trải từ ngày min có dữ liệu đến ngày được chọn ,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,SC_FIRM_ALERT_VIOLATION,"ALERT_YEAR, 
 REPORT_PERIOD, 
 PERIOD_VALUE",,"-- Chiều thời gian theo năm, kỳ dữ liệu
@@ -971,21 +1031,40 @@ SELECT DISTINCT
 FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION;",Done
 6,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh ,Số lượng công ty đang duy trì tốt,"Số lượng CTCK phái sinh, dịch vụ là kinh doanh CKPS đang duy trì tốt",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
 ALERT_INDICATOR, 
-SC_FIRM_INFO","av.ALERT_YEAR, 
-av.REPORT_PERIOD, 
-av.PERIOD_VALUE, 
-av.ENTITY_TYPE, 
-av.SC_FIRM_INFO_ID, 
-av.ALERT_INDICATOR_ID, 
-av.SEVERITY_LEVEL_ALT, 
-ai.ID, 
-sfi.ID, 
-sfi.PROVISIONAL",,"-- Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh
+SC_FIRM_INFO, 
+LNK_SC_FIRM_SERVICE, 
+CAT_SERVICE_LEGAL_CAPITAL","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ENTITY_TYPE
+av.SC_FIRM_INFO_ID
+av.ALERT_INDICATOR_ID
+av.SEVERITY_LEVEL_ALT
+ai.ID
+sfi.ID
+sfi.SC_FIRM_INFO_ID
+lnk.SC_FIRM_INFO_ID
+lnk.SERVICE_ID
+lnk.START_DATE
+lnk.END_DATE
+lnk.RECORD_STATUS
+sl.SERVICE_ID
+sl.CATALOG_CODE
+sl.RECORD_STATUS",,"-- 2. Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh
 WITH
 param AS (
     SELECT ai.ID AS alert_indicator_id
     FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
     WHERE TRIM(ai.ID) IN (457,458,459,460,461,462,463,464,467,468,469,470,471,472) -- ID tham số cảnh báo
+),
+-- Dịch vụ phái sinh được cấp phép của CTCK: môi giới (MGPS), tư vấn (TVDTPS), tự doanh (TDPS)
+dv_phai_sinh AS (
+    SELECT lnk.SC_FIRM_INFO_ID, lnk.START_DATE, lnk.END_DATE
+    FROM SSC_SCMS_MIG.LNK_SC_FIRM_SERVICE lnk
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lnk.SERVICE_ID
+                                                  AND sl.RECORD_STATUS = 1
+                                                  AND sl.CATALOG_CODE IN ('MGPS', 'TVDTPS', 'TDPS')
+    WHERE lnk.RECORD_STATUS = 1
 ),
 ky AS (
     SELECT DISTINCT
@@ -1022,10 +1101,18 @@ xep_hang AS (
     CROSS JOIN SSC_SCMS_MIG.SC_FIRM_INFO sfi
     LEFT JOIN dem_tham_so d
            ON d.SC_FIRM_INFO_ID = sfi.ID
-          AND d.nam_du_lieu     = k.nam_du_lieu
-          AND d.loai_ky         = k.loai_ky
+          AND d.nam_du_lieu = k.nam_du_lieu
+          AND d.loai_ky = k.loai_ky
           AND NVL(d.gia_tri_ky, '#') = NVL(k.gia_tri_ky, '#')
-    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- bỏ bản ghi tạm; thêm điều kiện RECORD_STATUS nếu chỉ tính CTCK đang hoạt động
+--    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- bỏ bản ghi tạm
+    -- Chỉ xét CTCK đang được cấp phép ít nhất 1 dịch vụ phái sinh (MG/TV/TD)
+    WHERE EXISTS (
+        SELECT 1
+        FROM dv_phai_sinh dv
+        WHERE dv.SC_FIRM_INFO_ID = sfi.SC_FIRM_INFO_ID
+          AND NVL(TRUNC(dv.START_DATE), TRUNC(SYSDATE)) <= TRUNC(SYSDATE)
+          AND (dv.END_DATE IS NULL OR dv.END_DATE > TRUNC(SYSDATE))
+    )
 ),
 nhom AS (
     SELECT 'Đang duy trì tốt' AS xep_loai, 1 AS thu_tu FROM dual UNION ALL
@@ -1048,6 +1135,95 @@ GROUP BY k.nam_du_lieu, k.loai_ky, k.gia_tri_ky, n.xep_loai, n.thu_tu
 ORDER BY k.nam_du_lieu, k.loai_ky, LPAD(NVL(k.gia_tri_ky, '0'), 3, '0'), n.thu_tu;",Done
 6,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh ,Số lượng công ty gần đến giới hạn duy trì,"Số lượng CTCK phái sinh, dịch vụ là kinh doanh CKPS gần đến giới hạn duy trì",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
 6,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh ,Số lượng công ty không duy trì điều kiện cấp phép,"Số lượng CTCK phái sinh, dịch vụ là kinh doanh CKPS không duy trì điều kiện cấp phép",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
+6,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh ,Chi tiết cảnh báo,"Chi tiết cảnh báo:
+- Năm dữ liệu
+- Kỳ dữ liệu
+- Mã CTCK
+- Tên CTCK
+- Tên tham số
+- Giá trị
+- Nội dung cảnh báo
+- Ngày cảnh báo
+- Mức độ cảnh báo",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
+ALERT_INDICATOR, 
+SC_FIRM_INFO, 
+LNK_SC_FIRM_SERVICE, 
+CAT_SERVICE_LEGAL_CAPITAL","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ACTUAL_VALUE
+av.VIOLATION_DESCRIPTION
+av.ALERT_DATE
+av.SEVERITY_LEVEL_ALT
+av.ALERT_INDICATOR_ID
+av.SC_FIRM_INFO_ID
+av.ENTITY_TYPE
+ai.ID
+ai.INDICATOR_NAME
+sfi.ID
+sfi.SC_FIRM_INFO_ID
+sfi.SHORT_NAME
+sfi.NAME_VI
+lnk.SC_FIRM_INFO_ID
+lnk.SERVICE_ID
+lnk.START_DATE
+lnk.END_DATE
+lnk.RECORD_STATUS
+sl.SERVICE_ID
+sl.CATALOG_CODE
+sl.RECORD_STATUS",,"-- Check chi tiết: Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là kinh doanh chứng khoán phái sinh
+-- Mỗi dòng = 1 tham số của 1 CTCK (được cấp phép dịch vụ phái sinh MG/TV/TD) ở mức Vi phạm / Cảnh báo trong 1 kỳ
+WITH
+param AS (
+    SELECT ai.ID AS alert_indicator_id
+    FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
+    WHERE TRIM(ai.ID) IN (457,458,459,460,461,462,463,464,467,468,469,470,471,472) -- ID tham số cảnh báo
+),
+-- Dịch vụ phái sinh được cấp phép của CTCK: môi giới (MGPS), tư vấn (TVDTPS), tự doanh (TDPS)
+dv_phai_sinh AS (
+    SELECT lnk.SC_FIRM_INFO_ID, lnk.START_DATE, lnk.END_DATE
+    FROM SSC_SCMS_MIG.LNK_SC_FIRM_SERVICE lnk
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lnk.SERVICE_ID
+                                                  AND sl.RECORD_STATUS = 1
+                                                  AND sl.CATALOG_CODE IN ('MGPS', 'TVDTPS', 'TDPS')
+    WHERE lnk.RECORD_STATUS = 1
+)
+SELECT av.ALERT_YEAR AS nam_du_lieu,
+       TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) AS ky_du_lieu,
+       sfi.SHORT_NAME AS ma_ctck,
+       sfi.NAME_VI AS ten_ctck,
+       ai.INDICATOR_NAME AS ten_tham_so,
+       av.ACTUAL_VALUE AS gia_tri,
+       av.VIOLATION_DESCRIPTION AS nd_canh_bao,
+       av.ALERT_DATE AS ngay_canh_bao,
+       CASE
+           WHEN av.SEVERITY_LEVEL_ALT = 2 THEN 'Vi phạm'
+           WHEN av.SEVERITY_LEVEL_ALT = 1 THEN 'Cảnh báo'
+       END AS muc_do_tham_so
+FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION av
+JOIN param p ON p.alert_indicator_id = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.ALERT_INDICATOR ai ON ai.ID = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.SC_FIRM_INFO sfi ON sfi.ID = av.SC_FIRM_INFO_ID
+WHERE av.ENTITY_TYPE = 'CTCK'
+  AND av.ALERT_YEAR IS NOT NULL
+  AND av.SEVERITY_LEVEL_ALT IN (1, 2)
+  -- Chỉ xét CTCK đang được cấp phép ít nhất 1 dịch vụ phái sinh (MG/TV/TD)
+  AND EXISTS (
+      SELECT 1
+      FROM dv_phai_sinh dv
+      WHERE dv.SC_FIRM_INFO_ID = sfi.SC_FIRM_INFO_ID
+        AND NVL(TRUNC(dv.START_DATE), TRUNC(SYSDATE)) <= TRUNC(SYSDATE)
+        AND (dv.END_DATE IS NULL OR dv.END_DATE > TRUNC(SYSDATE))
+  )
+--  AND sfi.SHORT_NAME = 'VPBS'  -- lọc 1 CTCK
+--  AND av.ALERT_YEAR = 2026 AND TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) = 'THANG 2'   -- lọc 1 kỳ
+ORDER BY av.ALERT_YEAR,
+         av.REPORT_PERIOD,
+         LPAD(NVL(TRIM(av.PERIOD_VALUE), '0'), 3, '0'),
+         sfi.NAME_VI,
+         av.SEVERITY_LEVEL_ALT DESC,
+         av.ALERT_DATE DESC,
+         ai.INDICATOR_NAME;",Done
 7,,"Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh",Chiều thời gian theo ngày,Chiều thời gian theo ngày: Trải từ ngày min có dữ liệu đến ngày được chọn ,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,SC_FIRM_ALERT_VIOLATION,"ALERT_YEAR, 
 REPORT_PERIOD, 
 PERIOD_VALUE",,"-- Chiều thời gian theo năm, kỳ dữ liệu
@@ -1057,21 +1233,40 @@ SELECT DISTINCT
 FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION;",Done
 7,,"Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh",Số lượng công ty đang duy trì tốt,"Số lượng CTCK phái sinh, dịch vụ là bù trừ, thanh toán giao dịch CKPS đang duy trì tốt",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
 ALERT_INDICATOR, 
-SC_FIRM_INFO","av.ALERT_YEAR, 
-av.REPORT_PERIOD, 
-av.PERIOD_VALUE, 
-av.ENTITY_TYPE, 
-av.SC_FIRM_INFO_ID, 
-av.ALERT_INDICATOR_ID, 
-av.SEVERITY_LEVEL_ALT, 
-ai.ID, 
-sfi.ID, 
-sfi.PROVISIONAL",,"-- Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh
+SC_FIRM_INFO, 
+LNK_SC_FIRM_SERVICE, 
+CAT_SERVICE_LEGAL_CAPITAL","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ENTITY_TYPE
+av.SC_FIRM_INFO_ID
+av.ALERT_INDICATOR_ID
+av.SEVERITY_LEVEL_ALT
+ai.ID
+sfi.ID
+sfi.SC_FIRM_INFO_ID
+lnk.SC_FIRM_INFO_ID
+lnk.SERVICE_ID
+lnk.START_DATE
+lnk.END_DATE
+lnk.RECORD_STATUS
+sl.SERVICE_ID
+sl.CATALOG_CODE
+sl.RECORD_STATUS",,"-- 3. Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh
 WITH
 param AS (
     SELECT ai.ID AS alert_indicator_id
     FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
     WHERE TRIM(ai.ID) IN (1404)  -- ID tham số cảnh báo (thay vào, ID đang test)
+),
+-- Dịch vụ bù trừ, thanh toán giao dịch chứng khoán phái sinh (03)
+dv_bu_tru AS (
+    SELECT lnk.SC_FIRM_INFO_ID, lnk.START_DATE, lnk.END_DATE
+    FROM SSC_SCMS_MIG.LNK_SC_FIRM_SERVICE lnk
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lnk.SERVICE_ID
+                                                  AND sl.RECORD_STATUS = 1
+                                                  AND sl.CATALOG_CODE IN ('03')
+    WHERE lnk.RECORD_STATUS = 1
 ),
 ky AS (
     SELECT DISTINCT
@@ -1108,10 +1303,18 @@ xep_hang AS (
     CROSS JOIN SSC_SCMS_MIG.SC_FIRM_INFO sfi
     LEFT JOIN dem_tham_so d
            ON d.SC_FIRM_INFO_ID = sfi.ID
-          AND d.nam_du_lieu     = k.nam_du_lieu
-          AND d.loai_ky         = k.loai_ky
+          AND d.nam_du_lieu = k.nam_du_lieu
+          AND d.loai_ky = k.loai_ky
           AND NVL(d.gia_tri_ky, '#') = NVL(k.gia_tri_ky, '#')
-    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- Hồ sơ CTCK chính thức
+--    WHERE NVL(sfi.PROVISIONAL, 0) = 0   -- bỏ bản ghi tạm
+    -- Chỉ xét CTCK đang được cấp phép dịch vụ bù trừ, thanh toán giao dịch chứng khoán phái sinh
+    WHERE EXISTS (
+        SELECT 1
+        FROM dv_bu_tru dv
+        WHERE dv.SC_FIRM_INFO_ID = sfi.SC_FIRM_INFO_ID
+          AND NVL(TRUNC(dv.START_DATE), TRUNC(SYSDATE)) <= TRUNC(SYSDATE)
+          AND (dv.END_DATE IS NULL OR dv.END_DATE > TRUNC(SYSDATE))
+    )
 ),
 nhom AS (
     SELECT 'Đang duy trì tốt' AS xep_loai, 1 AS thu_tu FROM dual UNION ALL
@@ -1134,6 +1337,95 @@ GROUP BY k.nam_du_lieu, k.loai_ky, k.gia_tri_ky, n.xep_loai, n.thu_tu
 ORDER BY k.nam_du_lieu, k.loai_ky, LPAD(NVL(k.gia_tri_ky, '0'), 3, '0'), n.thu_tu;",Done
 7,,"Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh",Số lượng công ty gần đến giới hạn duy trì,"Số lượng CTCK phái sinh, dịch vụ là bù trừ, thanh toán giao dịch CKPS gần đến giới hạn duy trì",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
 7,,"Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh",Số lượng công ty không duy trì điều kiện cấp phép,"Số lượng CTCK phái sinh, dịch vụ là bù trừ, thanh toán giao dịch CKPS không duy trì điều kiện cấp phép",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
+7,,"Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh",Chi tiết cảnh báo,"Chi tiết cảnh báo:
+- Năm dữ liệu
+- Kỳ dữ liệu
+- Mã CTCK
+- Tên CTCK
+- Tên tham số
+- Giá trị
+- Nội dung cảnh báo
+- Ngày cảnh báo
+- Mức độ cảnh báo",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
+ALERT_INDICATOR, 
+SC_FIRM_INFO, 
+LNK_SC_FIRM_SERVICE, 
+CAT_SERVICE_LEGAL_CAPITAL","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ACTUAL_VALUE
+av.VIOLATION_DESCRIPTION
+av.ALERT_DATE
+av.SEVERITY_LEVEL_ALT
+av.ALERT_INDICATOR_ID
+av.SC_FIRM_INFO_ID
+av.ENTITY_TYPE
+ai.ID
+ai.INDICATOR_NAME
+sfi.ID
+sfi.SC_FIRM_INFO_ID
+sfi.SHORT_NAME
+sfi.NAME_VI
+lnk.SC_FIRM_INFO_ID
+lnk.SERVICE_ID
+lnk.START_DATE
+lnk.END_DATE
+lnk.RECORD_STATUS
+sl.SERVICE_ID
+sl.CATALOG_CODE
+sl.RECORD_STATUS",,"-- Check chi tiết: Biểu đồ Duy trì điều kiện cấp phép – Phái sinh: dịch vụ là bù trừ, thanh toán giao dịch chứng khoán phái sinh
+-- Mỗi dòng = 1 tham số của 1 CTCK (được cấp phép dịch vụ bù trừ, thanh toán) ở mức Vi phạm / Cảnh báo trong 1 kỳ
+WITH
+param AS (
+    SELECT ai.ID AS alert_indicator_id
+    FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
+    WHERE TRIM(ai.ID) IN (1404)  -- ID tham số cảnh báo (thay vào, ID đang test)
+),
+-- Dịch vụ bù trừ, thanh toán giao dịch chứng khoán phái sinh (03)
+dv_bu_tru AS (
+    SELECT lnk.SC_FIRM_INFO_ID, lnk.START_DATE, lnk.END_DATE
+    FROM SSC_SCMS_MIG.LNK_SC_FIRM_SERVICE lnk
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lnk.SERVICE_ID
+                                                  AND sl.RECORD_STATUS = 1
+                                                  AND sl.CATALOG_CODE IN ('03')
+    WHERE lnk.RECORD_STATUS = 1
+)
+SELECT av.ALERT_YEAR AS nam_du_lieu,
+       TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) AS ky_du_lieu,
+       sfi.SHORT_NAME AS ma_ctck,
+       sfi.NAME_VI AS ten_ctck,
+       ai.INDICATOR_NAME AS ten_tham_so,
+       av.ACTUAL_VALUE AS gia_tri,
+       av.VIOLATION_DESCRIPTION AS nd_canh_bao,
+       av.ALERT_DATE AS ngay_canh_bao,
+       CASE
+           WHEN av.SEVERITY_LEVEL_ALT = 2 THEN 'Vi phạm'
+           WHEN av.SEVERITY_LEVEL_ALT = 1 THEN 'Cảnh báo'
+       END AS muc_do_tham_so
+FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION av
+JOIN param p ON p.alert_indicator_id = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.ALERT_INDICATOR ai ON ai.ID = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.SC_FIRM_INFO sfi ON sfi.ID = av.SC_FIRM_INFO_ID
+WHERE av.ENTITY_TYPE = 'CTCK'
+  AND av.ALERT_YEAR IS NOT NULL
+  AND av.SEVERITY_LEVEL_ALT IN (1, 2)
+  -- Chỉ xét CTCK đang được cấp phép dịch vụ bù trừ, thanh toán giao dịch chứng khoán phái sinh
+  AND EXISTS (
+      SELECT 1
+      FROM dv_bu_tru dv
+      WHERE dv.SC_FIRM_INFO_ID = sfi.SC_FIRM_INFO_ID
+        AND NVL(TRUNC(dv.START_DATE), TRUNC(SYSDATE)) <= TRUNC(SYSDATE)
+        AND (dv.END_DATE IS NULL OR dv.END_DATE > TRUNC(SYSDATE))
+  )
+--  AND sfi.SHORT_NAME = 'VPBS'  -- lọc 1 CTCK
+--  AND av.ALERT_YEAR = 2026 AND TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) = 'THANG 2'   -- lọc 1 kỳ
+ORDER BY av.ALERT_YEAR,
+         av.REPORT_PERIOD,
+         LPAD(NVL(TRIM(av.PERIOD_VALUE), '0'), 3, '0'),
+         sfi.NAME_VI,
+         av.SEVERITY_LEVEL_ALT DESC,
+         av.ALERT_DATE DESC,
+         ai.INDICATOR_NAME;",Done
 8,,Dashboard Tổng quan công ty chứng khoán toàn thị trường >> Biểu đồ cơ cấu tài sản,Chiều thời gian theo quý,Chiều thời gian theo quý: Lấy các Quý có dữ liệu,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,SC_FIRM_PERIODIC_REPORT,"PERIOD
 REPORT_YEAR
 REPORT_PERIOD
@@ -2275,28 +2567,28 @@ ORDER BY 1;",Done
 o.ITEM_CATEGORY, 
 o.DOCUMENT_DATE, 
 o.CREATED_AT,
-o.PROCEEDS_COLLECTED, 
-o.PLAN_JSON ($.loaiChaoBan tại index [0])",,"-- Biểu đồ Nguồn vốn tăng thêm trong kỳ
+o.PLAN_JSON ($.loaiChaoBan)
+o.PLAN_JSON ($.giaTriThucTe)",,"-- Biểu đồ Nguồn vốn tăng thêm trong kỳ
 SELECT
     TO_CHAR(nd.thang, 'MM-YYYY') AS thang_nam,
     -- Chào bán (Cổ phiếu)
     SUM(CASE WHEN o.ITEM_CATEGORY = 'CP'
               AND o.loai_chao_ban = 'CHAO_BAN_RA_CONG_CHUNG'
-             THEN o.PROCEEDS_COLLECTED ELSE 0 END) AS chao_ban_cong_chung,
+             THEN o.gia_tri_thuc_te ELSE 0 END) AS chao_ban_cong_chung,
     SUM(CASE WHEN o.ITEM_CATEGORY = 'CP'
               AND o.loai_chao_ban = 'CHAO_BAN_RIENG_LE'
-             THEN o.PROCEEDS_COLLECTED ELSE 0 END) AS chao_ban_rieng_le,
+             THEN o.gia_tri_thuc_te ELSE 0 END) AS chao_ban_rieng_le,
     SUM(CASE WHEN o.ITEM_CATEGORY = 'CP'
               AND o.loai_chao_ban != 'CHAO_BAN_RA_CONG_CHUNG'
               AND o.loai_chao_ban != 'CHAO_BAN_RIENG_LE'
-             THEN o.PROCEEDS_COLLECTED ELSE 0 END) AS chao_ban_khac,
+             THEN o.gia_tri_thuc_te ELSE 0 END) AS chao_ban_khac,
     -- Trái phiếu
     SUM(CASE WHEN o.ITEM_CATEGORY = 'TP'
               AND o.loai_chao_ban = 'CHAO_BAN_RIENG_LE'
-             THEN o.PROCEEDS_COLLECTED ELSE 0 END) AS trai_phieu_rieng_le,
+             THEN o.gia_tri_thuc_te ELSE 0 END) AS trai_phieu_rieng_le,
     SUM(CASE WHEN o.ITEM_CATEGORY = 'TP'
               AND o.loai_chao_ban = 'CHAO_BAN_RA_CONG_CHUNG'
-             THEN o.PROCEEDS_COLLECTED ELSE 0 END) AS trai_phieu_cong_chung
+             THEN o.gia_tri_thuc_te ELSE 0 END) AS trai_phieu_cong_chung
 FROM (
     SELECT ADD_MONTHS(
         TRUNC(TO_DATE(TO_CHAR(:p_nam_tu) || LPAD(TO_CHAR(:p_thang_tu), 2, '0') || '01', 'YYYYMMDD'), 'MM'),
@@ -2310,15 +2602,23 @@ FROM (
 ) nd
 JOIN (
     SELECT
-        o.ID,
-        o.ITEM_CATEGORY,
-        COALESCE(o.DOCUMENT_DATE, o.CREATED_AT) AS ngay_du_lieu,  -- RESULT_REPORT_DATE
-        o.PROCEEDS_COLLECTED, 
-        JSON_VALUE(o.PLAN_JSON, '$[0].loaiChaoBan') AS loai_chao_ban  -- Lấy loaiChaoBan từ phần tử đầu tiên [0]
-    FROM SCMS_UAT.DISCLOSURE_SECURITIES_OFFERING o
-    WHERE o.ITEM_CATEGORY IN ('CP', 'TP')
-      AND o.PLAN_JSON IS NOT NULL
-      AND o.CREATED_AT IS NOT NULL  
+        dso.ID,
+        dso.ITEM_CATEGORY,
+        COALESCE(dso.DOCUMENT_DATE, dso.CREATED_AT) AS ngay_du_lieu,
+        COALESCE(rj.loai_chao_ban,
+                 JSON_VALUE(dso.PLAN_JSON, '$[0].loaiChaoBan')) AS loai_chao_ban,
+        rj.gia_tri_thuc_te
+    FROM SSC_SCMS_MIG.DISCLOSURE_SECURITIES_OFFERING dso
+    CROSS JOIN JSON_TABLE(
+        dso.RESULT_JSON, '$[*]'
+        COLUMNS (
+            loai_chao_ban   VARCHAR2(200) PATH '$.loaiChaoBan',
+            gia_tri_thuc_te NUMBER        PATH '$.giaTriThucTe'
+        )
+    ) rj
+    WHERE dso.ITEM_CATEGORY IN ('CP', 'TP')
+      AND dso.RESULT_JSON IS NOT NULL
+      AND dso.CREATED_AT IS NOT NULL
 ) o ON TRUNC(o.ngay_du_lieu, 'MM') = nd.thang
 WHERE :p_thang_tu  BETWEEN 1 AND 12
   AND :p_thang_den BETWEEN 1 AND 12
@@ -2996,14 +3296,17 @@ FROM (
 ) t
 ORDER BY stt;",Done
 17,,Dashboard Giám sát tình hình hoạt động của công ty chứng khoán toàn thị trường >> Biểu đồ thị phần môi giới,Xếp hạng thị phần môi giới,Xếp hạng thị phần môi giới từ cao nhất đến thấp nhất để xác định top n,Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, sàn giao dịch",VSDC,X,X,X,Done,,"uat_hose_stg.brokerage_market_share
-uat_hnx_stg.brokerage_market_share 
-uat_scms_stg.sc_firm_info","bms.report_quarter, 
-bms.market_share_by_value, 
-bms.member_code, 
-bms.classification, 
-f.CODE, 
-f.SHORT_NAME, 
-f.NAME_VI",,"-- Xếp hạng thị phần môi giới
+uat_hnx_stg.brokerage_market_share","- HOSE: 
+bms.broker_name
+bms.report_quarter
+bms.market_share_by_value
+t.ds_snpst_dt; 
+- HNX: 
+bms.broker_name
+bms.report_quarter
+bms.market_share_by_value
+bms.classification
+t.ds_snpst_dt",,"-- Xếp hạng thị phần môi giới
 WITH
 params AS (
     SELECT 'Q4/2025' AS p_quy,
@@ -6976,7 +7279,7 @@ ORDER BY nd.ngay;",Done
 33,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo từng nghiệp vụ","Số lượng CN, PGD, VPĐD theo nghiệp vụ bảo lãnh","Số lượng CN, PGD, VPĐD theo nghiệp vụ bảo lãnh",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục nghiệp vụ",SCMS,X,X,,Done,,,,,,Done
 33,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo từng nghiệp vụ","Số lượng CN, PGD, VPĐD theo nghiệp vụ tư vấn","Số lượng CN, PGD, VPĐD theo nghiệp vụ tư vấn",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục nghiệp vụ",SCMS,X,X,,Done,,,,,,Done
 33,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo từng nghiệp vụ","Số lượng CN, PGD, VPĐD theo nghiệp vụ tự doanh","Số lượng CN, PGD, VPĐD theo nghiệp vụ tự doanh",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục nghiệp vụ",SCMS,X,X,,Done,,,,,,Done
-34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: giao dịch ký quỹ, ứng trước tiền bán, lưu ký",Chiều thời gian theo Ngày,Chiều thời gian theo ngày: Trải từ ngày min có dữ liệu đến ngày được chọn ,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,"SSC_SCMS.SC_FIRM_BRANCH, 
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký",Chiều thời gian theo Ngày,Chiều thời gian theo ngày: Trải từ ngày min có dữ liệu đến ngày được chọn ,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,"SSC_SCMS.SC_FIRM_BRANCH, 
 SSC_SCMS.SC_FIRM_TRANSACTION_OFFICE, 
 SSC_SCMS.SC_FIRM_REP_OFFICE","b.DECISION_DATE, 
 t.DECISION_DATE, 
@@ -6991,17 +7294,17 @@ FROM (
 )
 CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
 ORDER BY ngay;",Done
-34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: giao dịch ký quỹ, ứng trước tiền bán, lưu ký",Chiều dịch vụ kinh doanh chứng khoán,"Dịch vụ Giao dịch ký quỹ, Ứng trước tiền bán, Lưu ký",Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,CAT_SERVICE_LEGAL_CAPITAL,"SERVICE_NAME, 
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký",Chiều dịch vụ kinh doanh chứng khoán,"Môi giới PS, Tư vấn PS, Tự doanh PS, Lưu ký",Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,CAT_SERVICE_LEGAL_CAPITAL,"SERVICE_NAME, 
 RECORD_STATUS, 
 CATALOG_CODE",,"-- Chiều: Dịch vụ kinh doanh chứng khoán
 SELECT DISTINCT
-	SERVICE_ID,
+        SERVICE_ID,
     SERVICE_NAME AS dich_vu_kinh_doanh
 FROM SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL
 WHERE RECORD_STATUS  = 1
-  AND CATALOG_CODE IN ('02', '01', '04')
+  AND CATALOG_CODE IN ('MGPS','TVDTPS','TDPS','04')
 ORDER BY 1;",Done
-34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: giao dịch ký quỹ, ứng trước tiền bán, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ","Số lượng CN, PGD, VPĐD theo dịch vụ giao dịch ký quỹ",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,"SCMS_UAT.SC_FIRM_BRANCH, 
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ môi giới PS","Số lượng CN, PGD, VPĐD theo dịch vụ môi giới PS",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,"SCMS_UAT.SC_FIRM_BRANCH, 
 SCMS_UAT.SC_FIRM_TRANSACTION_OFFICE, 
 SCMS_UAT.SC_FIRM_REP_OFFICE, 
 SCMS_UAT.SC_FIRM_INFO, 
@@ -7028,21 +7331,22 @@ lts.RECORD_STATUS,
 sl.SERVICE_ID, 
 sl.CATALOG_CODE, 
 sl.RECORD_STATUS",,"-- Tổng số CN + PGD + VPĐD trong nước theo dịch vụ
--- CN: Dịch vụ: Giao dịch ký quỹ, Ứng trước tiền bán, Lưu ký
--- PGD: Chỉ đếm PGD có hỗ trợ Lưu ký
+-- CN: Dịch vụ: Môi giới PS, Tư vấn PS, Tự doanh PS, Lưu ký
+-- PGD: Chỉ đếm PGD có hỗ trợ Môi giới, Tư vấn, Lưu ký
 -- VPĐD: Không có các dịch vụ này
 SELECT
     nd.ngay,
-    COUNT(DISTINCT CASE WHEN catalog_code = '02' THEN unit_id END) AS so_cn_pgd_vpdd_giao_dich_ky_quy,
-    COUNT(DISTINCT CASE WHEN catalog_code = '01' THEN unit_id END) AS so_cn_pgd_vpdd_ung_truoc_tien_ban,
-    COUNT(DISTINCT CASE WHEN catalog_code = '04' THEN unit_id END) AS so_cn_pgd_vpdd_luu_ky
+    COUNT(DISTINCT CASE WHEN catalog_code = 'MGPS' THEN unit_id END) AS so_cn_pgd_vpdd_ckps_moi_gioi,
+    COUNT(DISTINCT CASE WHEN catalog_code = 'TVDTPS' THEN unit_id END) AS so_cn_pgd_vpdd_ckps_tu_van,
+    COUNT(DISTINCT CASE WHEN catalog_code = 'TDPS' THEN unit_id END) AS so_cn_pgd_vpdd_ckps_tu_doanh,
+        COUNT(DISTINCT CASE WHEN catalog_code = '04' THEN unit_id END) AS so_cn_pgd_vpdd_luu_ky
 FROM (
     SELECT TRUNC(min_ngay) + LEVEL - 1 AS ngay
     FROM (
         SELECT LEAST(
-            NVL((SELECT MIN(DECISION_DATE) FROM SCMS_UAT.SC_FIRM_BRANCH WHERE DECISION_DATE IS NOT NULL), SYSDATE),
-            NVL((SELECT MIN(DECISION_DATE) FROM SCMS_UAT.SC_FIRM_TRANSACTION_OFFICE WHERE DECISION_DATE IS NOT NULL), SYSDATE),
-            NVL((SELECT MIN(DECISION_DATE) FROM SCMS_UAT.SC_FIRM_REP_OFFICE WHERE DECISION_DATE IS NOT NULL), SYSDATE)
+            NVL((SELECT MIN(DECISION_DATE) FROM SSC_SCMS_MIG.SC_FIRM_BRANCH WHERE DECISION_DATE IS NOT NULL), SYSDATE),
+            NVL((SELECT MIN(DECISION_DATE) FROM SSC_SCMS_MIG.SC_FIRM_TRANSACTION_OFFICE WHERE DECISION_DATE IS NOT NULL), SYSDATE),
+            NVL((SELECT MIN(DECISION_DATE) FROM SSC_SCMS_MIG.SC_FIRM_REP_OFFICE WHERE DECISION_DATE IS NOT NULL), SYSDATE)
         ) AS min_ngay FROM DUAL
     )
     CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
@@ -7053,19 +7357,19 @@ LEFT JOIN (
         'CN_' || b.ID AS unit_id,
         b.DECISION_DATE AS decision_date,
         sl.CATALOG_CODE
-    FROM SCMS_UAT.SC_FIRM_BRANCH b
-    JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = b.SC_FIRM_INFO_ID
+    FROM SSC_SCMS_MIG.SC_FIRM_BRANCH b
+    JOIN SSC_SCMS_MIG.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = b.SC_FIRM_INFO_ID
     JOIN LATERAL (
         SELECT TRIM(REGEXP_SUBSTR(b.BUSINESS_LINES, '[^,]+', 1, LEVEL)) AS svc_id
         FROM DUAL
         CONNECT BY LEVEL <= REGEXP_COUNT(b.BUSINESS_LINES, ',') + 1
     ) t ON 1 = 1
-    JOIN SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = TO_NUMBER(t.svc_id)
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = TO_NUMBER(t.svc_id)
                                                AND sl.RECORD_STATUS = 1
-                                               AND sl.CATALOG_CODE IN ('02', '01', '04')
+                                               AND sl.CATALOG_CODE IN ('MGPS','TVDTPS','TDPS','04')
     WHERE b.RECORD_STATUS = 1
       AND b.BUSINESS_LINES IS NOT NULL
-      AND f.SHORT_NAME = 'SSI'  -- Test
+--      AND f.SHORT_NAME = 'SSI'  -- Test
 
     UNION ALL
 
@@ -7074,16 +7378,16 @@ LEFT JOIN (
         'PGD_' || t.ID AS unit_id,
         t.DECISION_DATE AS decision_date,
         sl.CATALOG_CODE
-    FROM SCMS_UAT.SC_FIRM_TRANSACTION_OFFICE t
-    JOIN SCMS_UAT.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = t.SC_FIRM_INFO_ID
-    JOIN SCMS_UAT.LNK_TRANSACTION_OFFICE_SERVICE lts ON lts.SC_FIRM_TRANSACTION_OFFICE_ID = t.ID
+    FROM SSC_SCMS_MIG.SC_FIRM_TRANSACTION_OFFICE t
+    JOIN SSC_SCMS_MIG.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = t.SC_FIRM_INFO_ID
+    JOIN SSC_SCMS_MIG.LNK_TRANSACTION_OFFICE_SERVICE lts ON lts.SC_FIRM_TRANSACTION_OFFICE_ID = t.ID
                                                     AND lts.RECORD_STATUS = 1
-    JOIN SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lts.SERVICE_ID
+    JOIN SSC_SCMS_MIG.CAT_SERVICE_LEGAL_CAPITAL sl ON sl.SERVICE_ID = lts.SERVICE_ID
                                                AND sl.RECORD_STATUS = 1
-                                               AND sl.CATALOG_CODE IN ('LKCK')
+                                               AND sl.CATALOG_CODE IN ('MGPS','TVDTPS','04')
     WHERE t.RECORD_STATUS = 1
-      AND f.SHORT_NAME = 'SSI'  -- Test
-	
+--      AND f.SHORT_NAME = 'SSI'  -- Test
+        
     UNION ALL
 
     -- VPĐD: Không có LNK nghiệp vụ → CATALOG_CODE = NULL
@@ -7091,17 +7395,18 @@ LEFT JOIN (
         'VPDD_' || r.ID AS unit_id,
         r.DECISION_DATE AS decision_date,
         NULL AS catalog_code  -- Không có nghiệp vụ
-    FROM SCMS_UAT.SC_FIRM_REP_OFFICE r
-    JOIN SCMS_UAT.SC_FIRM_INFO f ON f.ID = r.SC_FIRM_INFO_ID
+    FROM SSC_SCMS_MIG.SC_FIRM_REP_OFFICE r
+    JOIN SSC_SCMS_MIG.SC_FIRM_INFO f ON f.SC_FIRM_INFO_ID = r.SC_FIRM_INFO_ID
     WHERE r.RECORD_STATUS = 1
-      AND f.SHORT_NAME = 'SSI'  -- Test
+--      AND f.SHORT_NAME = 'SSI'  -- Test
 
 ) units ON TRUNC(units.decision_date) <= nd.ngay
-WHERE nd.ngay = DATE '2026-09-11'
+WHERE nd.ngay = DATE '2026-11-13'
 GROUP BY nd.ngay
 ORDER BY nd.ngay;",Done
-34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: giao dịch ký quỹ, ứng trước tiền bán, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán","Số lượng CN, PGD, VPĐD theo dịch vụ ứng trước tiền bán",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,,,,,Done
-34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: giao dịch ký quỹ, ứng trước tiền bán, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ lưu ký",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,,,,,Done
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ tư vấn PS","Số lượng CN, PGD, VPĐD theo dịch vụ tư vấn PS",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,,,,,Done
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ tự doanhPS","Số lượng CN, PGD, VPĐD theo dịch vụ tự doanhPS",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,,,,,Done
+34,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK theo dịch vụ được chấp thuận: môi giới PS, tư vấn PS, tự doanh PS, lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ lưu ký","Số lượng CN, PGD, VPĐD theo dịch vụ lưu ký",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ",SCMS,X,X,,Done,,,,,,Done
 35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh",Chiều thời gian theo Ngày,Chiều thời gian theo ngày: Trải từ ngày min có dữ liệu đến ngày được chọn ,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,"SSC_SCMS.SC_FIRM_BRANCH, 
 SSC_SCMS.SC_FIRM_TRANSACTION_OFFICE, 
 SSC_SCMS.SC_FIRM_REP_OFFICE","b.DECISION_DATE, 
@@ -7116,7 +7421,7 @@ FROM (
     ) AS min_ngay FROM DUAL
 )
 CONNECT BY TRUNC(min_ngay) + LEVEL - 1 <= TRUNC(SYSDATE)
-ORDER BY ngay;",Done
+ORDER BY ngay;",Deleted
 35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh",Chiều Dịch vụ phái sinh,"Dịch vụ phái sinh: Môi giới phái sinh, Tư vấn phái sinh, Tự doanh phái sinh",Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,CAT_SERVICE_LEGAL_CAPITAL,"SERVICE_NAME, 
 RECORD_STATUS, 
 CATALOG_CODE",,"-- Chiều: Dịch vụ phái sinh
@@ -7126,7 +7431,7 @@ SELECT DISTINCT
 FROM SCMS_UAT.CAT_SERVICE_LEGAL_CAPITAL
 WHERE RECORD_STATUS  = 1
   AND CATALOG_CODE IN ('MGPS', 'TVDTPS', 'TDPS')
-ORDER BY 1;",Done
+ORDER BY 1;",Deleted
 35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ môi giới",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ phái sinh",SCMS,X,X,,Done,,"SCMS_UAT.SC_FIRM_BRANCH, 
 SCMS_UAT.SC_FIRM_TRANSACTION_OFFICE, 
 SCMS_UAT.SC_FIRM_REP_OFFICE, 
@@ -7225,9 +7530,9 @@ LEFT JOIN (
 ) units ON TRUNC(units.decision_date) <= nd.ngay
 WHERE nd.ngay = DATE '2026-09-11'
 GROUP BY nd.ngay
-ORDER BY nd.ngay;",Done
-35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ phái sinh",SCMS,X,X,,Done,,,,,,Done
-35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ phái sinh",SCMS,X,X,,Done,,,,,,Done
+ORDER BY nd.ngay;",Deleted
+35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tư vấn",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ phái sinh",SCMS,X,X,,Done,,,,,,Deleted
+35,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Số lượng CN, PGD, VPĐD của CTCK được chấp thuận cung cấp dịch vụ liên quan chứng khoán phái sinh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh","Số lượng CN, PGD, VPĐD liên quan CK phái sinh theo dịch vụ tự doanh",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, Danh mục dịch vụ phái sinh",SCMS,X,X,,Done,,,,,,Deleted
 36,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Duy trì điều kiện cấp phép","Chiều thời gian theo năm, kỳ dữ liệu",,Dashboard,Chiều,Trùng,,SCMS,,X,,Done,,SC_FIRM_ALERT_VIOLATION,"ALERT_YEAR
 REPORT_PERIOD
 PERIOD_VALUE",,"-- Chiều thời gian theo năm, kỳ dữ liệu
@@ -7327,6 +7632,84 @@ CROSS JOIN so_don_vi t
 ORDER BY x.nam_du_lieu, x.loai_ky, LPAD(NVL(x.gia_tri_ky, '0'), 3, '0'), n.thu_tu;",Done
 36,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Duy trì điều kiện cấp phép","Số lượng CN, PGD, VPDD gần đến giới hạn duy trì","Số lượng CN, PGD, VPDD gần đến giới hạn duy trì",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
 36,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Duy trì điều kiện cấp phép","Số lượng CN, PGD, VPDD không duy trì điều kiện cấp phép","Số lượng CN, PGD, VPDD không duy trì điều kiện cấp phép",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, phân loại điều kiện duy trì",SCMS,X,X,,Done,,,,,,Done
+36,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Biểu đồ Duy trì điều kiện cấp phép",Chi tiết cảnh báo,"Chi tiết cảnh báo:
+- Năm dữ liệu
+- Kỳ dữ liệu
+- Mã CTCK
+- Tên CTCK
+- Tên tham số
+- Ngày cảnh báo
+- Mức độ cảnh báo",Dashboard,Chỉ tiêu cơ sở,TB,"Ngày, CTCK, phân loại điều kiện duy trì",SCMS,X,X,,Done,,"SC_FIRM_ALERT_VIOLATION, 
+ALERT_INDICATOR, 
+SC_FIRM_INFO, 
+SC_FIRM_BRANCH, 
+SC_FIRM_TRANSACTION_OFFICE","av.ALERT_YEAR
+av.REPORT_PERIOD
+av.PERIOD_VALUE
+av.ALERT_DATE
+av.SEVERITY_LEVEL_ALT
+av.ALERT_INDICATOR_ID
+av.SC_FIRM_INFO_ID
+av.ENTITY_TYPE
+ai.ID
+ai.INDICATOR_NAME
+f.ID
+f.SC_FIRM_INFO_ID
+f.SHORT_NAME
+f.NAME_VI
+b.SC_FIRM_INFO_ID
+b.RECORD_STATUS
+t.SC_FIRM_INFO_ID
+t.RECORD_STATUS",,"-- Check chi tiết: Số lượng CN, PGD trong nước theo duy trì điều kiện cấp phép (tra cứu theo 1 CTCK)
+-- Mỗi dòng = 1 tham số của CTCK đang ở mức Vi phạm / Cảnh báo trong 1 kỳ
+-- Note: Cảnh báo chỉ lưu ở mức CTCK, không phân biệt từng CN/PGD -> rule xếp loại áp dụng chung cho toàn bộ CN/PGD của CTCK
+WITH
+ctck AS (
+    SELECT f.ID, f.SC_FIRM_INFO_ID, f.SHORT_NAME, f.NAME_VI
+    FROM SSC_SCMS_MIG.SC_FIRM_INFO f
+    WHERE f.SHORT_NAME = 'VPS'
+),
+so_don_vi AS (
+    SELECT (SELECT COUNT(*)
+            FROM SSC_SCMS_MIG.SC_FIRM_BRANCH b
+            WHERE b.RECORD_STATUS = 1
+              AND b.SC_FIRM_INFO_ID IN (SELECT c.SC_FIRM_INFO_ID FROM ctck c)) AS so_cn,
+           (SELECT COUNT(*)
+            FROM SSC_SCMS_MIG.SC_FIRM_TRANSACTION_OFFICE t
+            WHERE t.RECORD_STATUS = 1
+              AND t.SC_FIRM_INFO_ID IN (SELECT c.SC_FIRM_INFO_ID FROM ctck c)) AS so_pgd
+    FROM dual
+),
+param AS (
+    SELECT ai.ID AS alert_indicator_id
+    FROM SSC_SCMS_MIG.ALERT_INDICATOR ai
+    WHERE TRIM(ai.ID) IN (452,453,454,455,456)  -- ID tham số cảnh báo
+)
+SELECT av.ALERT_YEAR AS nam_du_lieu,
+       TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) AS ky_du_lieu,
+       c.SHORT_NAME AS ma_ctck,
+       c.NAME_VI AS ten_ctck,
+       ai.INDICATOR_NAME AS ten_tham_so,
+       av.ALERT_DATE AS ngay_canh_bao,
+       CASE
+           WHEN av.SEVERITY_LEVEL_ALT = 2 THEN 'Vi phạm'
+           WHEN av.SEVERITY_LEVEL_ALT = 1 THEN 'Cảnh báo'
+       END AS muc_do_tham_so
+FROM SSC_SCMS_MIG.SC_FIRM_ALERT_VIOLATION av
+JOIN param p ON p.alert_indicator_id = av.ALERT_INDICATOR_ID
+JOIN SSC_SCMS_MIG.ALERT_INDICATOR ai ON ai.ID = av.ALERT_INDICATOR_ID
+JOIN ctck c ON c.ID = av.SC_FIRM_INFO_ID
+CROSS JOIN so_don_vi t
+WHERE av.ENTITY_TYPE = 'CTCK'
+  AND av.ALERT_YEAR IS NOT NULL
+  AND av.SEVERITY_LEVEL_ALT IN (1, 2)
+--  AND av.ALERT_YEAR = 2026 AND TRIM(av.REPORT_PERIOD || ' ' || av.PERIOD_VALUE) = 'THANG 2'   -- lọc 1 kỳ
+ORDER BY av.ALERT_YEAR,
+         av.REPORT_PERIOD,
+         LPAD(NVL(TRIM(av.PERIOD_VALUE), '0'), 3, '0'),
+         av.SEVERITY_LEVEL_ALT DESC,
+         av.ALERT_DATE DESC,
+         ai.INDICATOR_NAME;",Done
 37,,"Dashboard Tra cứu hồ sơ 360 CTCK >> Dashboard CN, PGD, VPĐD của CTCK >> Danh sách CN, PGD, VPĐD","Tên CN, PGD, VPĐD","Tên CN, PGD, VPĐD",Dashboard,Chỉ tiêu cơ sở,Dễ,CTCK,SCMS,X,X,,Done,,"SCMS_UAT.SC_FIRM_BRANCH, 
 SCMS_UAT.SC_FIRM_TRANSACTION_OFFICE, 
 SCMS_UAT.SC_FIRM_REP_OFFICE, 
@@ -52589,14 +52972,14 @@ HDTTTGDCK | CT | SEC_1 | 17 | 4 | TS036",Data Explorer,Chỉ tiêu cơ sở,Dễ
 ,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,
 ,,,SL tổng,SL đã map,,,,,,,,,,,,,,,
-,,Dashboard,252,252,,,,,,,,,,,,,,,
+,,Dashboard,257,257,,,,,,,,,,,,,,,
 ,,Data Explorer,7786,7441,,,,,,,,,,,,,,,
 ,,Báo cáo,0,0,,,,,,,,,,,,,,,
-,,Tổng số chỉ tiêu:,8038,,,,,,,,,,,,,,,,
+,,Tổng số chỉ tiêu:,8043,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,
 ,Dashboard,,,,,,,,,,,,,,,,,,
 ,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,
-,252,252,100,,,,,,,,,,,,,,,,
+,257,252,98.05,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,
 ,Data Explorer,,,,,,,,,,,,,,,,,,
 ,Tổng,Đã map (SL),Đã map (%),,,,,,,,,,,,,,,,
