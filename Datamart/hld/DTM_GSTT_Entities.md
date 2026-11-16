@@ -3,6 +3,7 @@
 **Phiên bản:** 2.3
 **Ngày cập nhật:** 2026-09-14
 **Phạm vi:** Star schema diagram theo Fact chính — GSTT module, khớp `DTM_GSTT_HLD.md` v4.15 (49/49 Nhóm)
+**Thay đổi v2.23 (2026-11-16, đồng bộ HLD — Atomic TMS thêm `cr_value`; O_GSTT_87/88):** Bổ sung `Fact Index Contribution Report Snapshot` (Nhóm 24, nhánh VN30/HNX30 của K_GSTT_124 và chiều Chỉ số K_GSTT_4) — nguồn Atomic `Compliance Report Value` (`cr_value`, TMS biểu mẫu PL01_W_F02), khép phần 'chờ Atomic' của O_GSTT_81. Không đổi bảng/cột khác.
 **Thay đổi v2.22 (2026-11-12, đồng bộ HLD — BA GSTT Nhóm 39 thêm 4 chiều; O_GSTT_84):** Nhóm 39 thêm 4 KPI chiều K_GSTT_453–456 đọc `Public Company Dimension` (Mã DN, Tên DN, Sàn) và `Industry Dimension` (Ngành) qua FK của `Fact Public Company Financial Summary Snapshot`; 13 KPI YoY đọc `Public Company Financial YoY Report` theo chiều Sàn/Ngành (chiều không chọn = dòng rollup 'ALL'). Không thêm bảng/cột.
 **Thay đổi v2.21 (2026-11-11, đồng bộ HLD v4.60 — BA GSTT Nhóm 24/39; O_GSTT_81/82):** (1) Nhóm 39 cũ ('Chỉ số') bị thay bằng Nhóm 39 mới 'GSĐC' — bỏ Nhóm 39 khỏi danh sách phục vụ của `Fact Stock Portfolio Snapshot`, `Fact Index Constituent Snapshot`, `Fact Market Index Snapshot`; (2) thêm 2 dòng reuse từ GSDC (`Fact Public Company Financial Summary Snapshot`, `Public Company Financial YoY Report`) phục vụ Nhóm 39; (3) `prior_market_cap`/`prior_free_float_market_cap` (`Fact Stock Portfolio Snapshot`) và `idx_prior_market_cap`/`idx_prior_free_float_market_cap` (`Fact Index Constituent Snapshot`) đổi công thức theo SQL mới của BA Nhóm 24 (vốn hóa t-1 = giá đóng cửa t-1 × số cổ phiếu t-1) — không đổi cấu trúc bảng.
 **Thay đổi v2.20 (2026-10-22, đồng bộ HLD v4.57 — BA Nhóm 38 mới = Nhóm 37 cũ, bổ sung phái sinh):** `Operational Trading Liquidity Explorer` mở phạm vi sổ lệnh thêm `DVX` (phái sinh) và `HCX` (TPDN riêng lẻ) cho 42 cột chỉ tiêu giao dịch; không đổi cột/grain (O_GSTT_77).
@@ -212,6 +213,24 @@ erDiagram
 |---|---|---|---|---|---|
 | Fact Investor Category Index Trading Snapshot | Fact Snapshot | new | GT mua/bán theo Phân loại NĐT theo rổ chỉ số + điểm/thay đổi/% thay đổi chỉ số. **[SỬA 2026-10-15]** Phân loại theo số tài khoản + Atomic `Open Investor Account` (cùng quy tắc Fact cấp Mã CK) | 1 row / Index Code / ngày giao dịch / Phân loại NĐT | K_GSTT_85, 35, 38, 39, 161–169 |
 | Index Constituent Dimension | Dimension | reuse | Mô tả rổ chỉ số — đã thiết kế ở Nhóm 1 | 1 row / Index Code (SCD4A) | — |
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
+
+---
+
+## Fact Index Contribution Report Snapshot (phục vụ Nhóm 24 — nhánh VN30/HNX30)
+
+**[MỚI 2026-11-16, O_GSTT_87]** % điểm đóng góp theo vốn hóa lưu hành của mã CK vào chỉ số **VN30/HNX30** do HOSE/HNX báo cáo qua biểu mẫu TMS `PL01_W_F02` (Atomic `Compliance Report Value` = `cr_value`, nguồn ODS). Tách riêng khỏi `Fact Index Constituent Snapshot` vì nguồn khác (báo cáo nộp, không phải MDDS CSIDXINFOR) và grain khác (1 ô báo cáo); không phụ thuộc việc `JAD_CSIDXINFOR` có dòng VN30/HNX30 hay không (O_GSTT_81 (a)). Chỉ số suy từ `submitter_tp_code` (HOSE → VN30, HNX → HNX30; ánh xạ nhãn ở Detail Mapping K_GSTT_4, A36); giá/KLGD/GTGD/Sàn của cùng mã CK đọc qua FK `Security Trading Snapshot Dimension`.
+
+```mermaid
+erDiagram
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Index_Contribution_Report_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Index_Contribution_Report_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Fact Index Contribution Report Snapshot | Fact Snapshot | new | % điểm đóng góp lưu hành của mã CK vào VN30/HNX30 do sàn báo cáo (TMS PL01_W_F02). PK `index_contribution_rpt_id` = `cr_val_id` Atomic (Dạng A) | 1 row / ô báo cáo = mã CK / chỉ số (VN30, HNX30) / ngày dữ liệu / lần nộp | K_GSTT_124 (nhánh VN30/HNX30), K_GSTT_4 (SLICER Chỉ số) |
+| Security Trading Snapshot Dimension | Dimension | reuse | Hồ sơ mã CK — đã thiết kế ở Nhóm 1 | 1 row / mã CK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — conformed toàn hệ thống | 1 row / ngày | — |
 
 ---

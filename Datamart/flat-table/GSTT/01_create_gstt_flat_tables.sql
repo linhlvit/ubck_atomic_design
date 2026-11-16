@@ -719,6 +719,17 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_hose_securities_trade_flat ON CLUST
     sell_trader_nbr                         Nullable(String)        COMMENT 'Mã/số định danh người thực hiện đặt bán.',
     sell_trader_nm                          Nullable(String)        COMMENT '[PII] Tên người thực hiện đặt bán. — hiển thị theo quyết định Data Modeler 2026-09-26, bắt buộc phân quyền/masking tầng BI [PII mã hóa AES-256-CBC Base64 - PA1]',
     sell_reference_sequence_nbr             Nullable(String)        COMMENT 'Số tham chiếu theo thứ tự đặt bán trong ngày.',
+    sell_order_action_tp_code                    Nullable(String)        COMMENT 'Loại hành động sửa/hủy của lệnh bên bán. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    sell_order_tp_code                           Nullable(String)        COMMENT 'Loại lệnh của phía bán. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    sell_order_condition_code                    Nullable(String)        COMMENT 'Điều kiện hiệu lực và cách xử lý của lệnh bán. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    buy_order_action_tp_code                     Nullable(String)        COMMENT 'Loại hành động sửa/hủy của lệnh bên mua. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    buy_order_tp_code                            Nullable(String)        COMMENT 'Loại lệnh mua. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    buy_order_condition_code                     Nullable(String)        COMMENT 'Điều kiện thực hiện lệnh mua. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    message_sequence_nbr                         Nullable(Int64)         COMMENT 'Số thứ tự message trong luồng dữ liệu (tăng dần từ 1). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    sell_quote_request_tp_code                   Nullable(String)        COMMENT 'Mã loại yêu cầu báo giá của bên bán (HNX RFQ). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    buy_quote_request_tp_code                    Nullable(String)        COMMENT 'Mã loại yêu cầu báo giá của bên mua (HNX RFQ). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    execution_price_spread_first                 Nullable(Decimal(23,2)) COMMENT 'Giá khớp của leg thứ nhất trong spread trade (HNX-only: phái sinh/repo 2 vế). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    execution_price_spread_second                Nullable(Decimal(23,2)) COMMENT 'Giá khớp của leg thứ hai trong spread trade (HNX-only: phái sinh/repo 2 vế). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 43 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
 
     -- From: CALENDAR DATE DIMENSION
     trade_cdr_dt                            Nullable(Date)          COMMENT 'Ngày giao dịch — từ Calendar Date Dimension',
@@ -898,6 +909,12 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_hose_securities_order_flat ON CLUST
     reference_sequence_nbr                       Nullable(String)        COMMENT 'Số tham chiếu theo thứ tự giao dịch.',
     securities_order_code                        String                  COMMENT 'Mã định danh của lệnh đặt (Order ID 17 ký tự — BK chính). BK.',
     original_order_code                          Nullable(String)        COMMENT 'Mã định danh của lệnh đặt trước khi chỉnh sửa.',
+    order_reject_reason_code                     Nullable(String)        COMMENT 'Mã lý do lệnh bị từ chối bởi hệ thống KRX. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    public_vol                                   Nullable(Int64)         COMMENT 'Phần khối lượng hiển thị công khai trên sổ lệnh (Iceberg order: pub_qty ≤ order_qty). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    condition_price                              Nullable(Decimal(23,2)) COMMENT 'Mức giá điều kiện để kích hoạt lệnh Stop order. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    original_order_tp_code                       Nullable(String)        COMMENT 'Loại lệnh của lệnh gốc trước khi bị sửa/hủy. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    quote_request_tp_code                        Nullable(String)        COMMENT 'Loại yêu cầu báo giá RFQ (HNX-only). [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
+    auto_cancel_reason_code                      Nullable(String)        COMMENT 'Mã xác định việc hủy lệnh tự động do cơ chế nào. [MỚI 2026-11-16, O_GSTT_89] Cột của mẫu sổ lệnh HNX — HOSE đã chuyển sang cùng mẫu (copy job HNX, lọc `market_code = STO`); chưa có dòng BA Nhóm 46 tương ứng nên chưa có KPI (chờ BA cập nhật); giá trị có thể trống với HOSE.',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -1037,4 +1054,73 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(trade_dt)
 ORDER BY (trade_dt, symbol, index_code)
 COMMENT 'Flat table — Operational Trading Liquidity Explorer (Data Explorer Nhóm 37; 1 dòng / mã CK / chỉ số hoặc không theo rổ / ngày; không Dimension)'
+;
+
+
+-- ==========================================================
+-- 19. FACT: gstt_fct_index_contribution_rpt_snpst_flat
+--    fct_index_contribution_rpt_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Security Trading Snapshot Dimension, Calendar Date Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_contribution_rpt_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_INDEX_CONTRIBUTION_RPT_SNPST
+    index_contribution_rpt_id                    String                  COMMENT 'PK — id dòng Atomic driving cr_value.cr_val_id (Dạng A, A22). Grain = 1 ô % đóng góp của 1 mã CK trong 1 dòng ',
+    security_trading_snpst_dim_id                Nullable(String)        COMMENT 'FK tới Security Trading Snapshot Dimension — nullable: nhãn cột của báo cáo TMS là text tự do, có thể không kh',
+    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension (Role-Playing: Snapshot Date) — ngày dữ liệu của dòng báo cáo (ô Ngày/ mã chứng',
+    ticker_symbol                                String                  COMMENT 'Mã chứng khoán = nhãn cột chỉ tiêu của ô (BA: indicator_label → Ma_CK) — giữ làm mã dự phòng khi FK Security T',
+    contribution_percentage                      Nullable(Decimal(18,10)) COMMENT 'Điểm đóng góp tương đối (%) theo vốn hóa lưu hành của mã CK vào chỉ số, do sàn báo cáo (BA STT 24: Phan_tram_d',
+    submission_dt                                Date                    COMMENT 'Ngày nộp báo cáo — dùng chọn bản nộp mới nhất khi cùng (ngày, mã CK, chỉ số) có nhiều lần nộp',
+    submitter_tp_code                            String                  COMMENT 'Loại người nộp báo cáo (HOSE / HNX) — giá trị thực tế chờ profile Atomic',
+    form_code                                    String                  COMMENT 'Mã biểu mẫu — luôn PL01_W_F02 (báo cáo tỷ trọng/điểm đóng góp rổ VN30/HNX30 theo BA STT 24)',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                                       Nullable(String)        COMMENT 'Khóa nghiệp vụ — mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                             Nullable(String)        COMMENT 'Tên chứng khoán (tiếng Việt) — từ Security Trading Snapshot Dimension',
+    floor_code                                   Nullable(String)        COMMENT 'Mã sàn — scheme MDDS_FLOOR_CODE (10-HOSE, 02-HNX, 04-UPCOM, 03-FDS) — từ Security Trading Snapshot Dimension',
+    stock_tp_code                                Nullable(String)        COMMENT 'Loại chứng khoán — scheme MDDS_STOCK_TYPE — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                                  Nullable(String)        COMMENT '[SỬA 2026-10-08, BA GSTT cập nhật CASE] Loại chứng khoán — dẫn xuất theo mã sàn (`10` HOSE; `02` HNX, `03` DVX — từ Security Trading Snapshot Dimension',
+    underlying_symbol                            Nullable(String)        COMMENT 'Chứng khoán cơ sở — dành cho CW/phái sinh — từ Security Trading Snapshot Dimension',
+    isin_code                                    Nullable(String)        COMMENT 'Mã ISIN của CK — từ Security Trading Snapshot Dimension',
+    issuer_nm                                    Nullable(String)        COMMENT 'Tổ chức phát hành — từ Security Trading Snapshot Dimension',
+    listed_share_count                           Nullable(Int64)         COMMENT 'Khối lượng CK niêm yết — từ Security Trading Snapshot Dimension',
+    first_trading_dt                             Nullable(Date)          COMMENT 'Ngày giao dịch đầu tiên — dành cho phái sinh/CW — từ Security Trading Snapshot Dimension',
+    last_trading_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch cuối cùng — dành cho phái sinh/CW — từ Security Trading Snapshot Dimension',
+    issue_dt                                     Nullable(Date)          COMMENT 'Ngày phát hành — từ Security Trading Snapshot Dimension',
+    maturity_dt                                  Nullable(Date)          COMMENT 'Ngày đáo hạn — từ Security Trading Snapshot Dimension',
+    fund_tp_code                                 Nullable(String)        COMMENT 'Loại quỹ — chỉ có giá trị khi Stock Type Code = MF — từ Security Trading Snapshot Dimension',
+    covered_warrant_tp_code                      Nullable(String)        COMMENT 'Kiểu chứng quyền — scheme MDDS_COVERED_WARRANT_TYPE — từ Security Trading Snapshot Dimension',
+    exercise_price                               Nullable(Decimal(23,2)) COMMENT 'Giá thực hiện CW — từ Security Trading Snapshot Dimension',
+    exercise_ratio                               Nullable(String)        COMMENT 'Tỉ lệ thực hiện CW — từ Security Trading Snapshot Dimension',
+    exercise_style_code                          Nullable(String)        COMMENT 'Kiểu thực hiện phái sinh — scheme MDDS_EXERCISE_STYLE (A/E/B/Z) — từ Security Trading Snapshot Dimension',
+    put_or_call_code                             Nullable(String)        COMMENT 'Loại quyền phái sinh — scheme MDDS_PUT_OR_CALL (P/C) — từ Security Trading Snapshot Dimension',
+    contract_multiplier                          Nullable(String)        COMMENT 'Hệ số nhân HĐTL — chỉ có giá trị khi Stock Type Code = FU — từ Security Trading Snapshot Dimension',
+    maturity_month_year                          Nullable(String)        COMMENT 'Năm tháng đáo hạn HĐTL — từ Security Trading Snapshot Dimension',
+    coupon_rate                                  Nullable(Decimal(8,5))  COMMENT 'Lãi suất trái phiếu — từ Security Trading Snapshot Dimension',
+    yield                                        Nullable(Decimal(8,5))  COMMENT 'YTM (Yield to Maturity) — từ Security Trading Snapshot Dimension',
+    open_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa — từ Security Trading Snapshot Dimension',
+    high_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất — từ Security Trading Snapshot Dimension',
+    low_price                                    Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất — từ Security Trading Snapshot Dimension',
+    ceiling_price                                Nullable(Decimal(23,2)) COMMENT '[MOI 2026-09-22, BA bo sung gap STT 23] Gia tran — từ Security Trading Snapshot Dimension',
+    floor_price                                  Nullable(Decimal(23,2)) COMMENT '[MOI 2026-09-22, BA bo sung gap STT 23] Gia san — từ Security Trading Snapshot Dimension',
+    reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu — từ Security Trading Snapshot Dimension',
+    close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá khớp gần nhất (giá đóng cửa) — từ Security Trading Snapshot Dimension',
+    price_change                                 Nullable(Decimal(23,2)) COMMENT 'Thay đổi giữa giá khớp gần nhất và giá tham chiếu — từ Security Trading Snapshot Dimension',
+    product_group_id                             Nullable(String)        COMMENT 'Mã nhóm sản phẩm của chứng khoán theo Sở (VD FBX = hợp đồng tương lai trái phiếu Chính phủ) — dùng nhận diện s — từ Security Trading Snapshot Dimension',
+    sts_dim_src_stm_code                         Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu — từ Security Trading Snapshot Dimension',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), index_contribution_rpt_id)
+COMMENT 'Flat table — fct_index_contribution_rpt_snpst — sinh tự động từ master registry + Entities.csv'
 ;

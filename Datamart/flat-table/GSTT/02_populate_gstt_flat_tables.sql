@@ -718,6 +718,17 @@ SELECT
     f.sell_trader_nbr,
     fn_pii_encrypt(f.sell_trader_nm, :aes_key_hex) AS sell_trader_nm,
     f.sell_reference_sequence_nbr,
+    f.sell_order_action_tp_code,
+    f.sell_order_tp_code,
+    f.sell_order_condition_code,
+    f.buy_order_action_tp_code,
+    f.buy_order_tp_code,
+    f.buy_order_condition_code,
+    f.message_sequence_nbr,
+    f.sell_quote_request_tp_code,
+    f.buy_quote_request_tp_code,
+    f.execution_price_spread_first,
+    f.execution_price_spread_second,
 
     -- From: CALENDAR DATE DIMENSION
     trade_cal.cdr_dt                    AS trade_cdr_dt,
@@ -896,6 +907,12 @@ SELECT
     f.reference_sequence_nbr,
     f.securities_order_code,
     f.original_order_code,
+    f.order_reject_reason_code,
+    f.public_vol,
+    f.condition_price,
+    f.original_order_tp_code,
+    f.quote_request_tp_code,
+    f.auto_cancel_reason_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -1032,4 +1049,75 @@ SELECT
 
 FROM datamart.opr_trading_liquidity_explorer f
 WHERE f.trade_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 19. FACT: gstt_fct_index_contribution_rpt_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.gstt_fct_index_contribution_rpt_snpst_flat ON CLUSTER 'my_cluster'
+WHERE submission_dt = :etl_date;
+INSERT INTO datamart.gstt_fct_index_contribution_rpt_snpst_flat
+SELECT
+    -- From: FCT_INDEX_CONTRIBUTION_RPT_SNPST
+    f.index_contribution_rpt_id,
+    f.security_trading_snpst_dim_id,
+    f.snpst_dt_dim_id,
+    f.ticker_symbol,
+    f.contribution_percentage,
+    f.submission_dt,
+    f.submitter_tp_code,
+    f.form_code,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sts_dim.symbol AS symbol,
+    sts_dim.security_full_nm AS security_full_nm,
+    sts_dim.floor_code AS floor_code,
+    sts_dim.stock_tp_code AS stock_tp_code,
+    sts_dim.stock_tp_nm AS stock_tp_nm,
+    sts_dim.underlying_symbol AS underlying_symbol,
+    sts_dim.isin_code AS isin_code,
+    sts_dim.issuer_nm AS issuer_nm,
+    sts_dim.listed_share_count AS listed_share_count,
+    sts_dim.first_trading_dt AS first_trading_dt,
+    sts_dim.last_trading_dt AS last_trading_dt,
+    sts_dim.issue_dt AS issue_dt,
+    sts_dim.maturity_dt AS maturity_dt,
+    sts_dim.fund_tp_code AS fund_tp_code,
+    sts_dim.covered_warrant_tp_code AS covered_warrant_tp_code,
+    sts_dim.exercise_price AS exercise_price,
+    sts_dim.exercise_ratio AS exercise_ratio,
+    sts_dim.exercise_style_code AS exercise_style_code,
+    sts_dim.put_or_call_code AS put_or_call_code,
+    sts_dim.contract_multiplier AS contract_multiplier,
+    sts_dim.maturity_month_year AS maturity_month_year,
+    sts_dim.coupon_rate AS coupon_rate,
+    sts_dim.yield AS yield,
+    sts_dim.open_price AS open_price,
+    sts_dim.high_price AS high_price,
+    sts_dim.low_price AS low_price,
+    sts_dim.ceiling_price AS ceiling_price,
+    sts_dim.floor_price AS floor_price,
+    sts_dim.reference_price AS reference_price,
+    sts_dim.close_price AS close_price,
+    sts_dim.price_change AS price_change,
+    sts_dim.product_group_id AS product_group_id,
+    sts_dim.src_stm_code AS sts_dim_src_stm_code,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date
+
+FROM datamart.fct_index_contribution_rpt_snpst f
+LEFT JOIN datamart.security_trading_snpst_dim sts_dim
+    ON sts_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE f.submission_dt = :etl_date
 ;
