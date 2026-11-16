@@ -394,6 +394,40 @@ erDiagram
 | Fact Private Corporate Bond Offering Snapshot | Fact Snapshot | new | GT chào bán TPDN riêng lẻ lũy kế từ đầu năm theo tháng báo cáo HNX (BM 27/28) — phát sinh tháng bằng LAG ở Detail Mapping [MỚI 2026-11-10, O_VP_76] | 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo (PK hash Dạng B) | K_VP_436 |
 | Fact Government Bond Bidding Result Snapshot | Fact Snapshot | reuse (Nhóm 30) | GT trúng thầu TPCP theo ngày phát hành | 1 kết quả đấu thầu (Dạng A) | K_VP_273 |
 
+## Nhóm 27 - Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — mốc cuối kỳ (dư nợ) và trục kỳ Tháng/Quý/Năm tại kỳ tra cứu + kỳ liền trước | 1 ngày dương lịch | K_VP_449 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 8) | Dư nợ TPDN niêm yết theo KL niêm yết MDDS × mệnh giá và kỳ hạn còn lại (ngày) — thêm 2 cột `listed_bond_val`, `remaining_term_days` [MỚI 2026-11-16, O_VP_81] | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_451, 453, 454, 455, 462 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse (Nhóm 11) | Dư nợ TPDN riêng lẻ (KL lưu hành × mệnh giá) và kỳ hạn còn lại — thêm 2 cột `outstanding_bond_quantity`, `remaining_bond_term` [MỚI 2026-11-16, O_VP_81] | 1 mã trái phiếu × 1 tháng báo cáo (PK hash Dạng B) | K_VP_452, 453, 454, 455, 462 |
+| Fact Securities Offering Event | Fact Event | reuse (Nhóm 23) | GT phát hành thành công TPDN do UBCK quản lý (huy động vốn, loại CK TP/TPCD/TPKCQ), kỳ hạn và lãi suất phát hành — thêm 2 cột `bond_term_years`, `issue_interest_rate` [MỚI 2026-11-16, O_VP_81] | 1 đợt × 1 hình thức | K_VP_390, 456–461 |
+| Fact Private Corporate Bond Offering Snapshot | Fact Snapshot | reuse (Nhóm 26) | GT chào bán TPDN riêng lẻ lũy kế (phát sinh tháng bằng LAG ở Detail Mapping), kỳ hạn và lãi suất phát hành — thêm 2 cột `bond_term_years`, `issue_interest_rate` [MỚI 2026-11-16, O_VP_81] | 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo (PK hash Dạng B) | K_VP_456–461 |
+
+## Nhóm 29 - Huy động vốn >> TPDN >> Biểu đồ Dư nợ TPDN niêm yết theo ngành
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — mốc cuối kỳ tra cứu (một kỳ) | 1 ngày dương lịch | K_VP_449 |
+| Industry Dimension | Dimension | reuse | Ngành nghề kinh tế cấp 1 của tổ chức phát hành (CTCK/CTQLQ mặc định '07000'); TPDN riêng lẻ không có ngành | 1 ngành | K_VP_463 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 27) | Dư nợ TPDN niêm yết theo ngành (`listed_bond_val`, `industry_dim_id`) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_464, 465 |
+| Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse (Nhóm 27) | Dư nợ TPDN riêng lẻ gán nhóm cố định 'TPDNRL - Chưa phân ngành' (`outstanding_bond_quantity`, `par_val`) | 1 mã trái phiếu × 1 tháng báo cáo (PK hash Dạng B) | K_VP_464, 465 |
+
 ## Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
 
 ```mermaid

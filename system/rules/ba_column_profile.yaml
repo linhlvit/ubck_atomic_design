@@ -278,7 +278,7 @@ modules:
 
   VP:
     delimiter: ","
-    expect_columns: 20
+    expect_columns: 19
     stt_column: "TT"
     sql_columns: ["Câu lệnh tham khảo"]
     expect_header_contains: ["TT", "Mã", "Dashboard/báo cáo", "Trạng thái mapping", "Câu lệnh tham khảo"]
@@ -309,3 +309,5 @@ modules:
       [CẬP NHẬT 2026-11-11, xác minh qua header sống: 652 bản ghi đều 20 cột, delimiter ',', dòng 0 banner 'Khai thác nguồn' (ô index 15), header dòng 1, md5 111c0173]
       BA THÊM cột cuối 'Note' (index 19, sau 'Câu lệnh tham khảo' index 18) → expect_columns 19 → 20; các cột còn lại giữ index. Parser tra theo TÊN nên chỉ đổi
       expect_columns. ba_diff so với HEAD (19 cột) phải dùng bản HEAD đã thêm 1 cột rỗng ở cuối (--against <file tạm>).
+      [CẬP NHẬT 2026-11-16 13:56, xác minh qua header sống: 709 bản ghi đều 19 cột, delimiter ',', dòng 0 banner 'Khai thác nguồn' (ô index 15), header dòng 1, legend dòng 2, md5 e2fe0a14]
+      BA BỎ lại cột cuối 'Note' → expect_columns 20 → 19 (header như 2026-11-05). HEAD lúc đó vẫn 20 cột nên ba_diff phải dùng bản HEAD đã bỏ cột cuối (--against <file tạm>).

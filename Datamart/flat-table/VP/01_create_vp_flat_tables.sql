@@ -181,6 +181,8 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_corporate_bond_snpst_flat ON C
     foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong ngày theo mã: giá trị khớp của giao dịch có ký tự thứ 4 của số tài',
     outstanding_bond_quantity                    Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đang lưu hành tại ngày của bản tin theo danh mục chứng khoán niêm yết HNX (nối theo mã v',
     bond_outstanding_val                         Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu = khối lượng lưu hành × mệnh giá. Mệnh giá không có ở nguồn nên tính ngược từ giá tham chiếu ',
+    listed_bond_val                              Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu niêm yết theo KL niêm yết MDDS = KL niêm yết (LISTEDSHARE) × mệnh giá; mệnh giá suy ngược từ giá tham chiếu (100000 × 10^ROUND(LOG10(giá tham chiếu / 100000))), chỉ là trung gian. Khác bond_outstanding_val (KL lưu hành HNX); để trống khi dòng không có bản tin MDDS cùng ngày. [MỚI 2026-11-16, O_VP_81]',
+    remaining_term_days                          Nullable(Int64)         COMMENT 'Số ngày từ ngày giao dịch đến ngày đáo hạn (DATEDIFF); âm khi đã quá hạn; để trống khi dòng không có bản tin MDDS cùng ngày hoặc không có ngày đáo hạn. BI chia 365.0 ra năm khi tính kỳ hạn còn lại bình quân (Nhóm 27). [MỚI 2026-11-16, O_VP_81]',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -286,6 +288,8 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_registration_s
     registered_trading_bond_quantity             Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đăng ký giao dịch của mã trong báo cáo tháng HNX (BA Nhóm 17: registered_trading_volume) — KL niêm yết/ĐKGD của TPDN riêng lẻ. [MỚI 2026-11-08, O_VP_68]',
     par_val                                      Nullable(Int64)         COMMENT 'Mệnh giá trái phiếu theo báo cáo tháng HNX (BA Nhóm 17: par_value) — dùng tính giá trị đăng ký giao dịch (mệnh giá TPDN riêng lẻ lấy từ báo cáo Quy mô đăng ký giao dịch và khối lượng đang lưu hành). [MỚI 2026-11-08, O_VP_68]',
     registered_trading_val                       Nullable(Decimal(23,2)) COMMENT 'Giá trị đăng ký giao dịch (VND) = khối lượng đăng ký giao dịch × mệnh giá (BA Nhóm 17: registered_trading_volume * par_value). [MỚI 2026-11-08, O_VP_68]',
+    outstanding_bond_quantity                    Nullable(Int64)         COMMENT 'Khối lượng trái phiếu còn lưu hành của mã trong báo cáo tháng HNX (OUTSTANDING_VOLUME); dư nợ = khối lượng lưu hành × mệnh giá (Nhóm 27, 29). [MỚI 2026-11-16, O_VP_81]',
+    remaining_bond_term                          Nullable(Int64)         COMMENT 'Kỳ hạn còn lại của trái phiếu theo báo cáo tháng HNX (REMAINING_TERM), đơn vị ngày — BA chia 365.0 ra năm khi tính kỳ hạn còn lại bình quân (Nhóm 27). [MỚI 2026-11-16, O_VP_81]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
 
     -- From: CALENDAR DATE DIMENSION
@@ -728,7 +732,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLU
     security_tp_code                             Nullable(String)        COMMENT 'Loại chứng khoán chào bán — mã gốc từng nguồn: IDS plan.security_tp_code (''CP'',''CPUD'' cổ phiếu; ''TP'',''TPCD'',''TPKCQ'' TPDN), SCMS item_category_code (''CP''/''TP''), FMS securities_tp_code (''CP''/''TP''). [SỬA 2026-11-11, O_VP_77]',
     offering_method_code                         Nullable(String)        COMMENT 'Mã hình thức phát hành gốc theo nguồn: IDS plan.offering_method_code (''1''…''15'', scheme IDS.SO_OFFERING_METHOD); SCMS item.offering_method (loaiChaoBan của BA: CHA...',
     security_nm                                  Nullable(String)        COMMENT 'Tên chứng khoán trong phương án IDS (plan.security_nm) — BA chỉ dùng để tách mã 9 ''Phát hành cổ phiếu cho người lao động'': ''Phát hành thưởng cho người lao động'' KHÔNG phải h...',
-    offering_method_group_code                   Nullable(String)        COMMENT 'Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA: PUBLIC, PRIVATE, DIVIDEND_EQUITY, ESOP, SWAP, INTERNATIONAL (Phát hành ra quốc tế), OTHER; NULL = chưa phân nhóm. [SỬA 2026-11-11, O_VP_77: bỏ LLC_CAPITAL, thêm INTERNATIONAL]',
+    offering_method_group_code                   Nullable(String)        COMMENT 'Nhóm hình thức phát hành — mã do ETL gán theo bảng ánh xạ của BA: PUBLIC, PRIVATE, DIVIDEND (Phát hành để trả cổ tức), EQUITY_CAPITAL (Phát hành tăng vốn từ vốn CSH), ESOP, SWAP, INTERNATIONAL (Phát hành ra thị trường quốc tế), OTHER; NULL = chưa phân nhóm. [SỬA 2026-11-16, O_VP_80: tách DIVIDEND_EQUITY thành DIVIDEND + EQUITY_CAPITAL; đổi nhãn INTERNATIONAL; trước đó 2026-11-11, O_VP_77: bỏ LLC_CAPITAL, thêm INTERNATIONAL]',
     raising_capital_ind                          Nullable(Int64)         COMMENT 'Cờ ''Huy động vốn'' theo BA (''Y'' = 1, ''N'' = 0; mã ngoài bảng ánh xạ = NULL): IDS 0 khi offering_method_code IN (''4'',''6'',''10'') hoặc (''9'' và security_nm = ''Phát hành thưởng cho người lao động''); SCMS/FMS theo bảng ánh xạ. [SỬA 2026-11-11, O_VP_77]',
     plan_quantity                                Nullable(Int64)         COMMENT 'KL đăng ký phát hành (kế hoạch): IDS SUM(plan.total_registered_quantity) theo (hồ sơ, loại CK, hình thức, tên CK, mệnh giá, giá); SCMS SUM(item.planned_quantity); FMS plan.planned_q...',
     plan_val_amt                                 Nullable(Decimal(23,2)) COMMENT 'GT đăng ký phát hành (VNĐ): IDS = total_expected_amt, nếu 0/NULL thì (giá chào bán, 0/NULL → mệnh giá) × KL đăng ký (đúng IF của BA, không lấy am_orig); SCMS SUM(item.planned_val_at_par_amt)...',
@@ -736,6 +740,8 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLU
     result_val_amt                               Nullable(Decimal(23,2)) COMMENT 'GT phát hành thành công (VNĐ): IDS = SUM(total_collected_amt), nếu 0/NULL thì (giá chào bán kế hoạch, 0/NULL → mệnh giá) × KL thành công (IF của BA); SCMS SUM(item.actual_val_amt)...',
     has_result_ind                               Int64                   COMMENT 'Đợt đã có kết quả chào bán (1/0) theo BA: IDS result.total_successful_quantity IS NOT NULL; SCMS có dòng item với actual_quantity/actual_val_amt khác NULL; FMS rpt_result_dt IS NOT NULL. KPI ''Số đợ...',
     result_rpt_dt                                Nullable(Date)          COMMENT 'Ngày báo cáo kết quả chào bán: IDS COALESCE(result.result_rpt_dt, result.offering_end_dt); SCMS result_rpt_dt; FMS rpt_result_dt. KPI ''Ngày BCKQ gần nhất'' = MAX trên đợt có kế...',
+    bond_term_years                              Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn trái phiếu quy đổi ra năm của dòng kế hoạch (IDS: từ bond_term_val dạng … tháng/… năm; SCMS: maturity_years; FMS: bond_term_years); để trống với cổ phiếu hoặc khi nguồn không có kỳ hạn. [MỚI 2026-11-16, O_VP_81]',
+    issue_interest_rate                          Nullable(Decimal(8,5))  COMMENT 'Lãi suất phát hành của dòng kế hoạch (%/năm) — chỉ IDS có (interest_rate); SCMS, FMS và cổ phiếu để trống. [MỚI 2026-11-16, O_VP_81]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của dòng: IDS_SECURITIES_OFFERING (CTĐC) / SCMS_DISCLOSURE_SECURITIES_OFFERING (CTCK) / FMS_OFFERING (CTQLQ); tham gia PK. [MỚI 2026-11-10, O_VP_75]',
 
     -- From: CALENDAR DATE DIMENSION
@@ -771,6 +777,8 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_offering_snpst
     rpt_year                                     Int64                   COMMENT 'Năm báo cáo HNX. [MỚI 2026-11-10, O_VP_76]',
     rpt_month                                    Int64                   COMMENT 'Tháng báo cáo HNX (1–12; BA chuẩn hóa CAST AS INT). [MỚI 2026-11-10, O_VP_76]',
     rpt_day                                      Nullable(Int64)         COMMENT 'Ngày báo cáo HNX — để đối chiếu bản nộp; không vào khóa. [MỚI 2026-11-10, O_VP_76]',
+    bond_term_years                              Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn trái phiếu quy đổi ra năm: đơn vị Tháng → kỳ hạn / 12, Năm → kỳ hạn (BA Nhóm 27); đơn vị khác hoặc thiếu → để trống. [MỚI 2026-11-16, O_VP_81]',
+    issue_interest_rate                          Nullable(Decimal(5,2))  COMMENT 'Lãi suất phát hành của mã trái phiếu (%/năm) theo báo cáo chào bán HNX (ISSUE_INTEREST_RATE). [MỚI 2026-11-16, O_VP_81]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_PRIVATE_CORP_BOND_OFFERING; tham gia PK. [MỚI 2026-11-10, O_VP_76]',
 
     -- From: CALENDAR DATE DIMENSION

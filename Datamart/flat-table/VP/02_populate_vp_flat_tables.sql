@@ -185,6 +185,8 @@ SELECT
     f.foreign_sell_val,
     f.outstanding_bond_quantity,
     f.bond_outstanding_val,
+    f.listed_bond_val,
+    f.remaining_term_days,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -293,6 +295,8 @@ SELECT
     f.registered_trading_bond_quantity,
     f.par_val,
     f.registered_trading_val,
+    f.outstanding_bond_quantity,
+    f.remaining_bond_term,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
@@ -745,6 +749,8 @@ SELECT
     f.result_val_amt,
     f.has_result_ind,
     f.result_rpt_dt,
+    f.bond_term_years,
+    f.issue_interest_rate,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
@@ -779,6 +785,8 @@ SELECT
     f.rpt_year,
     f.rpt_month,
     f.rpt_day,
+    f.bond_term_years,
+    f.issue_interest_rate,
     f.src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
