@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_equity_snpst_flat ON CLUSTER '
     listed_share_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị niêm yết/đăng ký giao dịch (VND) = khối lượng niêm yết × mệnh giá 10.000 đồng (mệnh giá cổ phiếu, chứng chỉ quỹ).',
     close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa cuối ngày giao dịch (VND) — giá tính vốn hóa HOSE/HNX theo BA Nhóm 55.',
     reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu cuối ngày giao dịch (VND) — thay cho VWAP khi VWAP ngày T+1 bằng 0 (mã UPCoM không có giao dịch',
-    next_day_vol_weighted_average_price          Nullable(Int64)         COMMENT 'VWAP của ngày giao dịch T do Sở gửi trong bản tin MDDS của ngày giao dịch LIỀN SAU (T+1) — BA Nhóm 55: VWAP ng',
+    next_day_vol_weighted_average_price          Nullable(Decimal(23,2)) COMMENT 'VWAP của ngày giao dịch T do Sở gửi trong bản tin MDDS của ngày giao dịch LIỀN SAU (T+1) — BA Nhóm 55: VWAP ng',
     market_price                                 Nullable(Decimal(23,2)) COMMENT 'Giá tính vốn hóa (VND) theo BA Nhóm 55: HOSE/HNX = giá đóng cửa; UPCoM (floor_code = 04) = VWAP ngày T (lấy ở ',
     market_cap_val                               Nullable(Decimal(23,2)) COMMENT 'Vốn hóa cổ phiếu (VND) = giá tính vốn hóa × khối lượng lưu hành; chỉ tính cho cổ phiếu (stock_tp_code = 2), ch',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: MDDS_JAD_STOCKINFOR (bản tin cuối ngày, ghép thêm VSDC OUTSTANDING_SHARES cho khối ',
