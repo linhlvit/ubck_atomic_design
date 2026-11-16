@@ -3069,11 +3069,8 @@ attributes:
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
   source_column: "VSDC.UPDATED_INVESTORS.NATIONALITY"
-  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
-    \ sang VSDC.NATIONALITY: UPDATED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để\
-    \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING,\
-    \ AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không\
-    \ khớp AUTOID."
+  comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Hash: hash_id('VSDC_NATIONALITY',\
+    \ NATIONALITY)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -3088,11 +3085,9 @@ attributes:
   is_primary_key: false
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.NATIONALITY.AUTOID"
+  source_column: "VSDC.UPDATED_INVESTORS.NATIONALITY"
   comment: "Lookup pair: cl_vsdc_nationality.cl_vsdc_nationality_code. Pair with Nationality\
-    \ Id. Giá trị lấy từ VSDC.NATIONALITY.AUTOID sau ETL crosswalk — chi tiết xem\
-    \ comment Nationality Id. Kiểu INT theo DDL atomic đã chốt — ETL CAST AUTOID (BIGINT)\
-    \ sang INT."
+    \ Id."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
@@ -75041,8 +75036,7 @@ attributes:
   source_table: "WARD_NEW"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. BK. Hardcode."
-  classification_context: "Source System Code = 'ECAT_WARD_NEW' | Identification Type\
-    \ Code = '(RULE)'"
+  classification_context: "Source System Code = 'ECAT_WARD_NEW'"
   etl_derived_value: "ECAT_WARD_NEW"
   data_type: "string"
   atomic_table: "geographic_area"
@@ -75059,8 +75053,7 @@ attributes:
   source_column: null
   comment: "RULE: CASE WHEN CATEGORY = '1' THEN 'WARD' WHEN CATEGORY = '2' THEN 'COMMUNE'\
     \ END."
-  classification_context: "Source System Code = 'ECAT_WARD_NEW' | Identification Type\
-    \ Code = '(RULE)'"
+  classification_context: "(RULE)"
   etl_derived_value: null
   data_type: "string"
   atomic_table: "geographic_area"
@@ -95666,7 +95659,7 @@ attributes:
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM."
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: "IDS_IDENTITY"
   data_type: "string"
   atomic_table: "ip_alternative_identification"
@@ -95681,10 +95674,13 @@ attributes:
   source_system: "IDS"
   source_table: "IDENTITY"
   source_column: "IDS.IDENTITY.IDENTITY_TYPE_CD"
-  comment: "SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE')."
+  comment: "Scheme: IP_ALT_ID_TYPE. SCHEMA_CODE=IDS.IDENTITY_TYPE. Values load từ\
+    \ LOOKUP_VALUES (LOOKUP_GROUP='IDENTITY_TYPE'). RULE: CASE WHEN IDENTITY_TYPE_CD\
+    \ = 1 THEN 'NATIONAL_ID' WHEN IDENTITY_TYPE_CD = 2 THEN 'PASSPORT' WHEN IDENTITY_TYPE_CD\
+    \ = 3 THEN 'BUSINESS_LICENSE' WHEN IDENTITY_TYPE_CD = 4 THEN 'CITIZEN_ID' END."
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
-  etl_derived_value: "IDENTIFICATION"
+    \ Code = '(RULE)'"
+  etl_derived_value: null
   data_type: "string"
   atomic_table: "ip_alternative_identification"
   atomic_column: "identification_tp_code"
@@ -95700,7 +95696,7 @@ attributes:
   source_column: "IDS.IDENTITY.IDENTITY_NO"
   comment: null
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   data_type: "string"
   atomic_table: "ip_alternative_identification"
@@ -95717,7 +95713,7 @@ attributes:
   source_column: "IDS.IDENTITY.IDENTITY_ISSUED_DATE"
   comment: null
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   data_type: "date"
   atomic_table: "ip_alternative_identification"
@@ -95734,7 +95730,7 @@ attributes:
   source_column: "IDS.IDENTITY.IDENTITY_ISSUED_PLACE"
   comment: null
   classification_context: "Source System Code = 'IDS_IDENTITY' | Identification Type\
-    \ Code = 'IDENTIFICATION'"
+    \ Code = '(RULE)'"
   etl_derived_value: null
   data_type: "string"
   atomic_table: "ip_alternative_identification"
