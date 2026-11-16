@@ -3124,6 +3124,7 @@ schemes:
     source_table: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_TYPE"
     used_in_entities:
       - "Compliance Report"
+      - "Compliance Report Value"
     values: []
 
   - scheme_code: "TMS_AUTO_CHECK_STATUS"
@@ -3148,7 +3149,22 @@ schemes:
     source_table: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE"
     used_in_entities:
       - "Compliance Report"
+      - "Compliance Report Value"
     values: []
+
+  - scheme_code: "TMS_REPORT_FORM_STATUS"
+    name: "Trạng thái biểu mẫu báo cáo tuân thủ: 0=Không hoạt động, 1=Hoạt động"
+    source_type: "source_table"
+    source_table: "TMS.COMPLIANCE_REPORT.STATUS"
+    used_in_entities:
+      - "Compliance Report Structure"
+    values:
+      - code: "0"
+        label: "Không hoạt động"
+        source_value: "0"
+      - code: "1"
+        label: "Hoạt động"
+        source_value: "1"
 
   - scheme_code: "KNT_OPERATION_STATUS"
     name: "Trạng thái hoạt động doanh nghiệp (TrangThaiHoatDongEnum) — KNT"

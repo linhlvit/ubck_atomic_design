@@ -682,18 +682,6 @@ entities:
     \ kiến nghị, khiếu nại và tố cáo, với khả năng nhận diện đơn trùng qua self-reference."
   source_table: "THANHTRA.PETITION"
   status: "draft"
-- bcv_core_object: "Transaction"
-  bcv_concept: "[Transaction] Financial Market Transaction"
-  atomic_entity: "Securities Order"
-  table_type: "Fact Append"
-  domain_prefix: ""
-  entity_physical_name: "securities_order"
-  description: "Sổ lệnh chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 event lệnh\
-    \ (mới/sửa/hủy) với thị trường, bảng giao dịch, mã chứng khoán, thời điểm nhận\
-    \ lệnh, thành viên, tài khoản, loại và điều kiện lệnh, giá, khối lượng, trạng\
-    \ thái và các thuộc tính đặc thù (Iceberg, Stop order, báo giá RFQ)."
-  source_table: "HNX.ORDER_BOOK, HOSE.ORDER_BOOK"
-  status: "draft"
 - bcv_core_object: "Communication"
   bcv_concept: "[Communication] Notification"
   atomic_entity: "Securities Practitioner License Application Result Notification"
@@ -2650,6 +2638,18 @@ entities:
     \ Repo và Repo2: thông tin lệnh, trái phiếu, giá, khối lượng, bên bán, bên mua\
     \ và thông tin thanh toán."
   source_table: "HNX.OUTRIGHT_ORDER_BOOK, HNX.REPO_ORDER_BOOK, HNX.REPO2_ORDER_BOOK"
+  status: "draft"
+- bcv_core_object: "Transaction"
+  bcv_concept: "[Transaction] Financial Market Transaction"
+  atomic_entity: "Securities Order"
+  table_type: "Fact Append"
+  domain_prefix: ""
+  entity_physical_name: "securities_order"
+  description: "Sổ lệnh chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 event lệnh\
+    \ (mới/sửa/hủy) với thị trường, bảng giao dịch, mã chứng khoán, thời điểm nhận\
+    \ lệnh, thành viên, tài khoản, loại và điều kiện lệnh, giá, khối lượng, trạng\
+    \ thái và các thuộc tính đặc thù (Iceberg, Stop order, báo giá RFQ)."
+  source_table: "HNX.ORDER_BOOK, HOSE.ORDER_BOOK"
   status: "draft"
 - bcv_core_object: "Transaction"
   bcv_concept: "[Event] Transaction"
