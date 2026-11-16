@@ -860,16 +860,27 @@ entities:
   source_table: "HNX.BROKERAGE_MARKET_SHARE, HOSE.BROKERAGE_MARKET_SHARE"
   status: "draft"
 - bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Regulatory Report"
-  atomic_entity: "Compliance Report"
+  bcv_concept: "[Documentation] Form Document"
+  atomic_entity: "Compliance Report Structure"
   table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "compliance_report"
-  description: "Báo cáo tuân thủ đã nộp theo từng kỳ (ngày/tuần/tháng/năm), ghi nhận\
-    \ người nộp, kết quả kiểm tra tự động, vòng phê duyệt hoặc từ chối và khoảng thời\
-    \ gian được phép nộp lại."
-  source_table: "TMS.COMPLIANCE_REPORT_MASTER"
-  status: "draft"
+  domain_prefix: "Compliance Report"
+  entity_physical_name: "cr_structure"
+  description: "Cấu trúc cột (chỉ tiêu) của biểu mẫu báo cáo tuân thủ — 1 dòng = 1\
+    \ cột của 1 biểu mẫu, kèm mã và tên biểu mẫu, mã phụ lục, trạng thái, phiên bản\
+    \ và thứ tự, mã, nhãn cột. Nguồn ODS, không có BRD."
+  source_table: "TMS.COMPLIANCE_REPORT_STRUCTURE"
+  status: "approved"
+- bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  atomic_entity: "Compliance Report Value"
+  table_type: "Classification"
+  domain_prefix: "Compliance Report"
+  entity_physical_name: "cr_value"
+  description: "Giá trị đã nộp của từng cột (ô) trong biểu mẫu báo cáo tuân thủ —\
+    \ 1 dòng = 1 cột của 1 dòng dữ liệu trong 1 lần nộp, kèm kỳ báo cáo, loại người\
+    \ nộp, thời điểm và tên file tải lên. Nguồn ODS, không có BRD."
+  source_table: "TMS.COMPLIANCE_REPORT_VALUE"
+  status: "approved"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Form Document"
   atomic_entity: "Dynamic Report Structure"

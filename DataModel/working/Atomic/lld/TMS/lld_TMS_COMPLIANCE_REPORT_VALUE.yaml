@@ -1,0 +1,245 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  atomic_entity: "Compliance Report Value"
+  entity_physical_name: "cr_value"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: "Classification"
+  group: "T2"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-11-16"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler 2026-11-15, nguồn 'TMS.xlsx' + note_logic_ods_tms_report_cho_atomic_20261111.md; chỉnh 2026-11-16). Không có DDL trong Source/*.txt nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo ý nghĩa mô tả cột. Chỉ map cột 'Map? = có' trong TMS.xlsx. Không thiết kế technical fields ds_* và cột kỹ thuật ODS theo tiền lệ ODS-origin FMS 2026-11-07 (chờ Data Modeler xác nhận, HLD TMS Tier1 T1-12). Grain: 1 dòng = 1 giá trị của 1 cột (ô) trong 1 dòng dữ liệu của 1 lần nộp (luồng: STG compliance_report_data ⋈ compliance_report_form ⋈ compliance_report_master ⋈ compliance_report_form_template, bung ROW_DATA → ODS ods_tms_report_value, truncate + insert toàn bộ mỗi lần chạy → ATM Upsert theo hash_id). Hash_id = hash(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT) theo quyết định Data Modeler 2026-11-16; khóa không có đơn vị nộp/kỳ báo cáo nên 2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng hash (HLD Tier2 T2-01). Table Type = Classification theo TMS.xlsx (ETL Upsert theo hash_id, tiền lệ FMS dr_value; HLD T2-02)."
+attributes:
+- attribute_name: "Compliance Report Value Id"
+  physical_name: "cr_val_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('TMS_COMPLIANCE_REPORT_VALUE', FORM_CODE || COLUMN_CODE || ROW_INDEX || SUBMISSION_DT)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Compliance Report Value Code"
+  physical_name: "cr_val_code"
+  description: "Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX || SUBMISSION_DT. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
+  - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  - "TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX"
+  - "TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT"
+  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT) từ ODS COMPLIANCE_REPORT_VALUE (SUBMISSION_DT định dạng yyyy-MM-dd) — BK theo quyết định Data Modeler 2026-11-16. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng BK — HLD Tier2 T2-01)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=TMS_COMPLIANCE_REPORT_VALUE"
+  etl_derived_value: "TMS_COMPLIANCE_REPORT_VALUE"
+  data_type: "string"
+- attribute_name: "Compliance Report Structure Id"
+  physical_name: "cr_structure_id"
+  description: "FK → Compliance Report Structure: cột chỉ tiêu của biểu mẫu tương ứng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
+  - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "FK target: cr_structure.cr_structure_id. Hash: hash_id('TMS_COMPLIANCE_REPORT_STRUCTURE', FORM_CODE || COLUMN_CODE). Join bắt buộc đủ form_code + column_code — column_code chỉ duy nhất trong 1 biểu mẫu | Nullable: layout động của lần nộp có thể có cột không nằm trong header đầu tiên của biểu mẫu nên không có dòng trong cr_structure (HLD Tier2 T2-03)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Compliance Report Structure Code"
+  physical_name: "cr_structure_code"
+  description: "Mã cột chỉ tiêu của biểu mẫu (FORM_CODE || COLUMN_CODE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
+  - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "Lookup pair: cr_structure.cr_structure_code. Pair with Compliance Report Structure Id. ETL-derived: concat(FORM_CODE, COLUMN_CODE) — khớp BK composite của cr_structure."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Code"
+  physical_name: "form_code"
+  description: "Mã biểu mẫu (VD: PL01_W_F01)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
+  comment: "Thành phần BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã cột chỉ tiêu (dạng COL_xx)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "Thành phần BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Label"
+  physical_name: "column_label"
+  description: "Nhãn cột chỉ tiêu theo layout của lần nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Cell Value"
+  physical_name: "cell_val"
+  description: "Giá trị ô đã nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.CELL_VAL"
+  comment: "Giữ dạng text (ô nguồn có thể là JSON {\"value\": ...} hoặc text — ODS đã tách). Atomic tự cast khi cần, ODS đã bỏ cột số theo note 2026-11-11."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Submission Date"
+  physical_name: "submission_dt"
+  description: "Ngày nộp báo cáo."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT"
+  comment: "Thành phần BK. ODS cast ngày nộp của master sang date (chỉ đến mức ngày)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Row Index"
+  physical_name: "row_index"
+  description: "Thứ tự dòng dữ liệu trong 1 lần nộp (bắt đầu từ 1)."
+  data_domain: "Large Counter"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX"
+  comment: "Thành phần BK. Nguồn ODS bigint."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+- attribute_name: "Report Period Type Code"
+  physical_name: "rpt_period_tp_code"
+  description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP"
+  comment: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance Report."
+  classification_context: "TMS_REPORT_PERIOD_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Report Period Value"
+  physical_name: "rpt_period_val"
+  description: "Giá trị kỳ (VD: tuần 5, tháng 1)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_VAL"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Report Period Year"
+  physical_name: "rpt_period_year"
+  description: "Năm của kỳ báo cáo."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_YEAR"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Submitter Type Code"
+  physical_name: "submitter_tp_code"
+  description: "Loại người nộp báo cáo (nguồn không có mô tả)."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.SUBMITTER_TP"
+  comment: "Scheme: TMS_SUBMITTER_TYPE. Dùng chung scheme với Compliance Report; cần profile giá trị thực tế."
+  classification_context: "TMS_SUBMITTER_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Upload Timestamp"
+  physical_name: "upload_tms"
+  description: "Thời gian tải file báo cáo lên."
+  data_domain: "Timestamp"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.UPLOAD_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "timestamp"
+- attribute_name: "File Name"
+  physical_name: "file_nm"
+  description: "Tên file Excel gốc khi tải lên."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_VALUE.FILE_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

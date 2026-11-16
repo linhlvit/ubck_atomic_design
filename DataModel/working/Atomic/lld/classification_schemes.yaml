@@ -3121,41 +3121,23 @@ schemes:
   - scheme_code: "TMS_REPORT_PERIOD_TYPE"
     name: "Kỳ báo cáo tuân thủ: DAILY, WEEKLY, MONTHLY, YEARLY"
     source_type: "source_table"
-    source_table: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_TYPE"
+    source_table: "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP"
     used_in_entities:
-      - "Compliance Report"
       - "Compliance Report Value"
-    values: []
-
-  - scheme_code: "TMS_AUTO_CHECK_STATUS"
-    name: "Kết quả kiểm tra tự động báo cáo tuân thủ: 0=Không đạt, 1=Đạt, NULL=Chưa kiểm tra"
-    source_type: "source_table"
-    source_table: "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS"
-    used_in_entities:
-      - "Compliance Report"
-    values: []
-
-  - scheme_code: "TMS_COMPLIANCE_APPROVAL_STATUS"
-    name: "Trạng thái phê duyệt báo cáo tuân thủ: 0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối"
-    source_type: "source_table"
-    source_table: "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS"
-    used_in_entities:
-      - "Compliance Report"
     values: []
 
   - scheme_code: "TMS_SUBMITTER_TYPE"
     name: "Loại người nộp báo cáo tuân thủ (chưa có mô tả nguồn — cần profile)"
     source_type: "modeler_defined"
-    source_table: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE"
+    source_table: "TMS.COMPLIANCE_REPORT_VALUE.SUBMITTER_TP"
     used_in_entities:
-      - "Compliance Report"
       - "Compliance Report Value"
     values: []
 
   - scheme_code: "TMS_REPORT_FORM_STATUS"
     name: "Trạng thái biểu mẫu báo cáo tuân thủ: 0=Không hoạt động, 1=Hoạt động"
     source_type: "source_table"
-    source_table: "TMS.COMPLIANCE_REPORT.STATUS"
+    source_table: "TMS.COMPLIANCE_REPORT_STRUCTURE.STATUS"
     used_in_entities:
       - "Compliance Report Structure"
     values:

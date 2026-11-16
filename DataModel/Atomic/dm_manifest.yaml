@@ -1614,18 +1614,31 @@ entries:
   attribute_count: 12
   brd_ref: BRD-SRC-HOSE-BROKERAGE_MARKET_SHARE
 - subfolder: Documentation
-  file_name: dm_atm_compliance_report-TMS.COMPLIANCE_REPORT_MASTER.yaml
-  id: ATM-compliance_report-TMS.COMPLIANCE_REPORT_MASTER
-  physical_name: compliance_report
-  logical_name: Compliance Report
+  file_name: dm_atm_cr_structure-TMS.COMPLIANCE_REPORT_STRUCTURE.yaml
+  id: ATM-cr_structure-TMS.COMPLIANCE_REPORT_STRUCTURE
+  physical_name: cr_structure
+  logical_name: Compliance Report Structure
   bcv_core_object: Documentation
-  bcv_concept: "[Documentation] Regulatory Report"
+  bcv_concept: "[Documentation] Form Document"
   table_type: Relative
   etl_pattern: SCD2
   source: TMS
-  status: draft
-  attribute_count: 25
-  brd_ref: BRD-SRC-TMS-COMPLIANCE_REPORT_MASTER
+  status: approved
+  attribute_count: 12
+  brd_ref: BRD-SRC-TMS-COMPLIANCE_REPORT_STRUCTURE
+- subfolder: Documentation
+  file_name: dm_atm_cr_value-TMS.COMPLIANCE_REPORT_VALUE.yaml
+  id: ATM-cr_value-TMS.COMPLIANCE_REPORT_VALUE
+  physical_name: cr_value
+  logical_name: Compliance Report Value
+  bcv_core_object: Documentation
+  bcv_concept: "[Documentation] Regulatory Information"
+  table_type: Classification
+  etl_pattern: Upsert
+  source: TMS
+  status: approved
+  attribute_count: 17
+  brd_ref: BRD-SRC-TMS-COMPLIANCE_REPORT_VALUE
 - subfolder: Documentation
   file_name: dm_atm_dr_structure-FMS.ITEM_LIST.yaml
   id: ATM-dr_structure-FMS.ITEM_LIST

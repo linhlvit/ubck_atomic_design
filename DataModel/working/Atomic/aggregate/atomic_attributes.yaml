@@ -24054,413 +24054,496 @@ attributes:
   atomic_table: "brokerage_market_share"
   atomic_column: "rpt_day"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Compliance Report Id"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Compliance Report Structure Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
   source_column: null
-  comment: "PK surrogate. Hash: hash_id('TMS_COMPLIANCE_REPORT_MASTER', CODE). BCV:\
-    \ [Documentation] Regulatory Report."
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('TMS_COMPLIANCE_REPORT_STRUCTURE',\
+    \ FORM_CODE || COLUMN_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "compliance_rpt_id"
+  atomic_table: "cr_structure"
+  atomic_column: "cr_structure_id"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Compliance Report Code"
-  description: "BK chính. PK nguồn (UUID) — bảng nguồn không có mã nghiệp vụ riêng;\
-    \ Id hash từ trường này."
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Compliance Report Structure Code"
+  description: "Mã nghiệp vụ cột chỉ tiêu của biểu mẫu = FORM_CODE || COLUMN_CODE.\
+    \ BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.ID"
-  comment: "BK chính. PK nguồn (VARCHAR2(36) UUID)."
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_CODE, TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_CODE"
+  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE) từ ODS COMPLIANCE_REPORT_STRUCTURE\
+    \ — BK theo quyết định Data Modeler 2026-11-16 (không gồm TEMPLATE_CODE). Cần\
+    \ profile dữ liệu xác nhận NOT NULL/unique trước go-live: FORM_CODE phải duy nhất\
+    \ trên mọi template, COLUMN_CODE không lặp trong header đầu tiên."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "compliance_rpt_code"
+  atomic_table: "cr_structure"
+  atomic_column: "cr_structure_code"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
+  atomic_entity: "Compliance Report Structure"
   atomic_attribute: "Source System Code"
   description: "Mã hệ thống nguồn dữ liệu."
   data_domain: "Classification Value"
   nullable: false
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'TMS_COMPLIANCE_REPORT_MASTER'"
-  etl_derived_value: "TMS_COMPLIANCE_REPORT_MASTER"
+  classification_context: "Source System Code = 'TMS_COMPLIANCE_REPORT_STRUCTURE'"
+  etl_derived_value: "TMS_COMPLIANCE_REPORT_STRUCTURE"
   data_type: "string"
-  atomic_table: "compliance_report"
+  atomic_table: "cr_structure"
   atomic_column: "src_stm_code"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Report Template Source Id"
-  description: "Mã mẫu báo cáo tuân thủ (UUID của COMPLIANCE_REPORT_TEMPLATE ở nguồn).\
-    \ Map 1:1 dạng cột thường, không tạo FK."
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Template Code"
+  description: "Mã phụ lục báo cáo (VD: PL01_W, PL01_M, PL02_D)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.TEMPLATE_ID"
-  comment: "Không phải FK/Surrogate Key — giữ nguyên giá trị nguồn theo quyết định\
-    \ Data Modeler. COMPLIANCE_REPORT_TEMPLATE ngoài scope."
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.TEMPLATE_CODE"
+  comment: "Mã phụ lục từ COMPLIANCE_REPORT_TEMPLATE.TEMPLATE_CODE (ODS đã join).\
+    \ Không FK tới template vì template ngoài scope (HLD T1-01); không thuộc khóa\
+    \ hash."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "rpt_template_src_id"
+  atomic_table: "cr_structure"
+  atomic_column: "template_code"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Report Period Type Code"
-  description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Form Code"
+  description: "Mã biểu mẫu (VD: PL01_W_F01)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_CODE"
+  comment: "Thành phần BK cùng Column Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_structure"
+  atomic_column: "form_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Form Name"
+  description: "Tên biểu mẫu."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_TYPE"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
+  atomic_table: "cr_structure"
+  atomic_column: "form_nm"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Column Index"
+  description: "Vị trí cột chỉ tiêu trong dòng header đầu tiên của layout biểu mẫu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_INDEX"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL. Theo note\
+    \ ODS: vị trí posexplode, bắt đầu từ 0."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "cr_structure"
+  atomic_column: "column_index"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Column Code"
+  description: "Mã cột chỉ tiêu (dạng COL_xx)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_CODE"
+  comment: "Thành phần BK cùng Form Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_structure"
+  atomic_column: "column_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Column Label"
+  description: "Nhãn cột chỉ tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_structure"
+  atomic_column: "column_label"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Form Status Code"
+  description: "Trạng thái biểu mẫu: 0 = Không hoạt động, 1 = Hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.STATUS"
+  comment: "Scheme: TMS_REPORT_FORM_STATUS. Nguồn lưu dạng số (int) có mã nghiệp vụ\
+    \ — ETL convert sang string, giữ nguyên giá trị 0/1."
+  classification_context: "TMS_REPORT_FORM_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_structure"
+  atomic_column: "form_status_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Form Version"
+  description: "Phiên bản biểu mẫu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.VERSION"
+  comment: "Nguồn ODS lưu int (note ODS ghi bigint) — cần profile. Bảng gốc không\
+    \ có mô tả cột; chưa xác nhận là version nghiệp vụ hay bộ đếm optimistic locking."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "cr_structure"
+  atomic_column: "form_version"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Structure"
+  atomic_attribute: "Key Columns"
+  description: "Danh sách cột khóa của biểu mẫu (cấu hình nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  source_column: "TMS.COMPLIANCE_REPORT_STRUCTURE.KEY_COLUMNS"
+  comment: "Bảng gốc không có mô tả cột (VARCHAR2(500)) — cần xác nhận định dạng danh\
+    \ sách (phân cách dấu phẩy?)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_structure"
+  atomic_column: "key_columns"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Compliance Report Value Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: null
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('TMS_COMPLIANCE_REPORT_VALUE',\
+    \ FORM_CODE || COLUMN_CODE || ROW_INDEX || SUBMISSION_DT)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "cr_val_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Compliance Report Value Code"
+  description: "Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX ||\
+    \ SUBMISSION_DT. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE, TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE,\
+    \ TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX, TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT"
+  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT)\
+    \ từ ODS COMPLIANCE_REPORT_VALUE (SUBMISSION_DT định dạng yyyy-MM-dd) — BK theo\
+    \ quyết định Data Modeler 2026-11-16. Cần profile dữ liệu xác nhận NOT NULL/unique\
+    \ trước go-live (2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng BK — HLD Tier2\
+    \ T2-01)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "cr_val_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'TMS_COMPLIANCE_REPORT_VALUE'"
+  etl_derived_value: "TMS_COMPLIANCE_REPORT_VALUE"
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Compliance Report Structure Id"
+  description: "FK → Compliance Report Structure: cột chỉ tiêu của biểu mẫu tương\
+    \ ứng."
+  data_domain: "Surrogate Key"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE, TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "FK target: cr_structure.cr_structure_id. Hash: hash_id('TMS_COMPLIANCE_REPORT_STRUCTURE',\
+    \ FORM_CODE || COLUMN_CODE). Join bắt buộc đủ form_code + column_code — column_code\
+    \ chỉ duy nhất trong 1 biểu mẫu | Nullable: layout động của lần nộp có thể có\
+    \ cột không nằm trong header đầu tiên của biểu mẫu nên không có dòng trong cr_structure\
+    \ (HLD Tier2 T2-03)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "cr_structure_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Compliance Report Structure Code"
+  description: "Mã cột chỉ tiêu của biểu mẫu (FORM_CODE || COLUMN_CODE)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE, TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "Lookup pair: cr_structure.cr_structure_code. Pair with Compliance Report\
+    \ Structure Id. ETL-derived: concat(FORM_CODE, COLUMN_CODE) — khớp BK composite\
+    \ của cr_structure."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "cr_structure_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Form Code"
+  description: "Mã biểu mẫu (VD: PL01_W_F01)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
+  comment: "Thành phần BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "form_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Column Code"
+  description: "Mã cột chỉ tiêu (dạng COL_xx)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
+  comment: "Thành phần BK."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "column_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Column Label"
+  description: "Nhãn cột chỉ tiêu theo layout của lần nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "column_label"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Cell Value"
+  description: "Giá trị ô đã nộp."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.CELL_VAL"
+  comment: "Giữ dạng text (ô nguồn có thể là JSON {\"value\": ...} hoặc text — ODS\
+    \ đã tách). Atomic tự cast khi cần, ODS đã bỏ cột số theo note 2026-11-11."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
+  atomic_column: "cell_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Submission Date"
+  description: "Ngày nộp báo cáo."
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT"
+  comment: "Thành phần BK. ODS cast ngày nộp của master sang date (chỉ đến mức ngày)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "cr_value"
+  atomic_column: "submission_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Row Index"
+  description: "Thứ tự dòng dữ liệu trong 1 lần nộp (bắt đầu từ 1)."
+  data_domain: "Large Counter"
+  nullable: false
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX"
+  comment: "Thành phần BK. Nguồn ODS bigint."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "cr_value"
+  atomic_column: "row_index"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Report Period Type Code"
+  description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP"
+  comment: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance Report."
+  classification_context: "TMS_REPORT_PERIOD_TYPE"
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cr_value"
   atomic_column: "rpt_period_tp_code"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
+  atomic_entity: "Compliance Report Value"
   atomic_attribute: "Report Period Value"
   description: "Giá trị kỳ (VD: tuần 5, tháng 1)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_VALUE"
-  comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer."
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_VAL"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-  atomic_table: "compliance_report"
+  atomic_table: "cr_value"
   atomic_column: "rpt_period_val"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
+  atomic_entity: "Compliance Report Value"
   atomic_attribute: "Report Period Year"
-  description: "Năm báo cáo."
+  description: "Năm của kỳ báo cáo."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.PERIOD_YEAR"
-  comment: "Nguồn lưu dạng NUMBER(4,0) — ETL cast sang integer. Năm dương lịch 4 chữ\
-    \ số."
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_YEAR"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
-  atomic_table: "compliance_report"
+  atomic_table: "cr_value"
   atomic_column: "rpt_period_year"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Report Period Label"
-  description: "Nhãn hiển thị kỳ báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.REPORT_PERIOD_LABEL"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "rpt_period_label"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Submitter Id"
-  description: "ID người nộp báo cáo (ID người dùng hệ thống nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_ID"
-  comment: "Denormalized — không tạo FK (grain = 1 báo cáo, không phải Involved Party).\
-    \ HLD T1-03."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "submitter_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Submitter Name"
-  description: "Tên người nộp báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "submitter_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Submitter Title"
-  description: "Chức vụ người nộp báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TITLE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "submitter_title"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
+  atomic_entity: "Compliance Report Value"
   atomic_attribute: "Submitter Type Code"
   description: "Loại người nộp báo cáo (nguồn không có mô tả)."
-  data_domain: "Text"
+  data_domain: "Classification Value"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE"
-  comment: null
-  classification_context: null
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.SUBMITTER_TP"
+  comment: "Scheme: TMS_SUBMITTER_TYPE. Dùng chung scheme với Compliance Report; cần\
+    \ profile giá trị thực tế."
+  classification_context: "TMS_SUBMITTER_TYPE"
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
+  atomic_table: "cr_value"
   atomic_column: "submitter_tp_code"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Submission Timestamp"
-  description: "Thời gian hệ thống tiếp nhận báo cáo."
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "Upload Timestamp"
+  description: "Thời gian tải file báo cáo lên."
   data_domain: "Timestamp"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.SUBMISSION_DATE"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.UPLOAD_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "timestamp"
-  atomic_table: "compliance_report"
-  atomic_column: "submission_tms"
+  atomic_table: "cr_value"
+  atomic_column: "upload_tms"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Auto Check Status Code"
-  description: "Kết quả kiểm tra tự động: 0 = Không đạt, 1 = Đạt, NULL = Chưa kiểm\
-    \ tra."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "compliance_report"
-  atomic_column: "auto_check_status_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Auto Check Reason"
-  description: "Lý do kiểm tra tự động không đạt."
+  atomic_entity: "Compliance Report Value"
+  atomic_attribute: "File Name"
+  description: "Tên file Excel gốc khi tải lên."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_REASON"
+  source_table: "COMPLIANCE_REPORT_VALUE"
+  source_column: "TMS.COMPLIANCE_REPORT_VALUE.FILE_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "auto_check_reason"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Auto Check Timestamp"
-  description: "Thời gian hoàn thành kiểm tra tự động."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.AUTO_CHECK_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "compliance_report"
-  atomic_column: "auto_check_tms"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Approval Status Code"
-  description: "Trạng thái phê duyệt: 0 = Chờ duyệt, 1 = Đã duyệt, 2 = Bị từ chối."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "compliance_report"
-  atomic_column: "approval_status_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Approval Timestamp"
-  description: "Thời gian phê duyệt hoặc từ chối."
-  data_domain: "Timestamp"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.APPROVAL_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "timestamp"
-  atomic_table: "compliance_report"
-  atomic_column: "approval_tms"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Approver Id"
-  description: "ID người phê duyệt (ID người dùng hệ thống nguồn)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_ID"
-  comment: "Denormalized — không tạo FK. HLD T1-03."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "approver_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Approver Name"
-  description: "Tên người phê duyệt."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "approver_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Approver Title"
-  description: "Chức vụ người phê duyệt."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.APPROVER_TITLE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "approver_title"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Rejection Reason"
-  description: "Lý do từ chối báo cáo."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.REJECTION_REASON"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "compliance_report"
-  atomic_column: "rejection_reason"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Resubmit From Date"
-  description: "Ngày bắt đầu cho phép nộp lại."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.RESUBMIT_FROM_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "compliance_report"
-  atomic_column: "resubmit_from_dt"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Resubmit To Date"
-  description: "Ngày kết thúc cho phép nộp lại."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.RESUBMIT_TO_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "compliance_report"
-  atomic_column: "resubmit_to_dt"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Compliance Report"
-  atomic_attribute: "Draft Revision"
-  description: "Số lần chỉnh sửa bản nháp báo cáo (nguồn không có mô tả)."
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "TMS"
-  source_table: "COMPLIANCE_REPORT_MASTER"
-  source_column: "TMS.COMPLIANCE_REPORT_MASTER.DRAFT_REVISION"
-  comment: "Nguồn lưu dạng NUMBER(10,0) — ETL cast sang integer. Nguồn không mô tả\
-    \ ý nghĩa — cần xác nhận."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "compliance_report"
-  atomic_column: "draft_revision"
+  atomic_table: "cr_value"
+  atomic_column: "file_nm"
 - bcv_core_object: "Documentation"
   atomic_entity: "Dynamic Report Structure"
   atomic_attribute: "Dynamic Report Structure Id"

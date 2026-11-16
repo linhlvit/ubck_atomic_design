@@ -1,0 +1,176 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "TMS"
+  source_table: "COMPLIANCE_REPORT_STRUCTURE"
+  atomic_entity: "Compliance Report Structure"
+  entity_physical_name: "cr_structure"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Form Document"
+  table_type: "Relative"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: "2026-11-16"
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler 2026-11-15, nguồn 'TMS.xlsx' + note_logic_ods_tms_report_cho_atomic_20261111.md; chỉnh 2026-11-16). Không có DDL trong Source/*.txt nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo ý nghĩa mô tả cột. Chỉ map cột 'Map? = có' trong TMS.xlsx. Không thiết kế technical fields ds_* và cột kỹ thuật ODS theo tiền lệ ODS-origin FMS 2026-11-07 (chờ Data Modeler xác nhận, HLD TMS Tier1 T1-12). Grain: 1 dòng = 1 cột (chỉ tiêu) của 1 biểu mẫu báo cáo tuân thủ (luồng: STG compliance_report_form_template ⋈ compliance_report_template, bung dòng header đầu tiên của table_header_layout → ODS ods_tms_report, truncate + insert toàn bộ mỗi lần chạy → ATM SCD2). Hash_id = hash(FORM_CODE, COLUMN_CODE) theo quyết định Data Modeler 2026-11-16 (không gồm TEMPLATE_CODE). Table Type = Relative theo TMS.xlsx dù chưa có FK Atomic (HLD T1-08)."
+attributes:
+- attribute_name: "Compliance Report Structure Id"
+  physical_name: "cr_structure_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns: []
+  comment: "PK surrogate. BCV: \"[Documentation] Form Document\". Hash: hash_id('TMS_COMPLIANCE_REPORT_STRUCTURE', FORM_CODE || COLUMN_CODE)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Compliance Report Structure Code"
+  physical_name: "cr_structure_code"
+  description: "Mã nghiệp vụ cột chỉ tiêu của biểu mẫu = FORM_CODE || COLUMN_CODE. BK."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_CODE"
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_CODE"
+  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE) từ ODS COMPLIANCE_REPORT_STRUCTURE — BK theo quyết định Data Modeler 2026-11-16 (không gồm TEMPLATE_CODE). Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live: FORM_CODE phải duy nhất trên mọi template, COLUMN_CODE không lặp trong header đầu tiên."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=TMS_COMPLIANCE_REPORT_STRUCTURE"
+  etl_derived_value: "TMS_COMPLIANCE_REPORT_STRUCTURE"
+  data_type: "string"
+- attribute_name: "Template Code"
+  physical_name: "template_code"
+  description: "Mã phụ lục báo cáo (VD: PL01_W, PL01_M, PL02_D)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.TEMPLATE_CODE"
+  comment: "Mã phụ lục từ COMPLIANCE_REPORT_TEMPLATE.TEMPLATE_CODE (ODS đã join). Không FK tới template vì template ngoài scope (HLD T1-01); không thuộc khóa hash."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Code"
+  physical_name: "form_code"
+  description: "Mã biểu mẫu (VD: PL01_W_F01)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_CODE"
+  comment: "Thành phần BK cùng Column Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Name"
+  physical_name: "form_nm"
+  description: "Tên biểu mẫu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.FORM_NAME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Index"
+  physical_name: "column_index"
+  description: "Vị trí cột chỉ tiêu trong dòng header đầu tiên của layout biểu mẫu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_INDEX"
+  comment: "Data type nguồn ODS (int) không có DDL — cần profile trước ETL. Theo note ODS: vị trí posexplode, bắt đầu từ 0."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Column Code"
+  physical_name: "column_code"
+  description: "Mã cột chỉ tiêu (dạng COL_xx)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_CODE"
+  comment: "Thành phần BK cùng Form Code."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Column Label"
+  physical_name: "column_label"
+  description: "Nhãn cột chỉ tiêu."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.COLUMN_LABEL"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Status Code"
+  physical_name: "form_status_code"
+  description: "Trạng thái biểu mẫu: 0 = Không hoạt động, 1 = Hoạt động."
+  data_domain: "Classification Value"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.STATUS"
+  comment: "Scheme: TMS_REPORT_FORM_STATUS. Nguồn lưu dạng số (int) có mã nghiệp vụ — ETL convert sang string, giữ nguyên giá trị 0/1."
+  classification_context: "TMS_REPORT_FORM_STATUS"
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Form Version"
+  physical_name: "form_version"
+  description: "Phiên bản biểu mẫu."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.VERSION"
+  comment: "Nguồn ODS lưu int (note ODS ghi bigint) — cần profile. Bảng gốc không có mô tả cột; chưa xác nhận là version nghiệp vụ hay bộ đếm optimistic locking."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+- attribute_name: "Key Columns"
+  physical_name: "key_columns"
+  description: "Danh sách cột khóa của biểu mẫu (cấu hình nguồn)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "TMS.COMPLIANCE_REPORT_STRUCTURE.KEY_COLUMNS"
+  comment: "Bảng gốc không có mô tả cột (VARCHAR2(500)) — cần xác nhận định dạng danh sách (phân cách dấu phẩy?)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

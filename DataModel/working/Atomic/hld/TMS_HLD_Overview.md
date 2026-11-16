@@ -4,9 +4,9 @@
 >
 > **Trạng thái:** Theo quyết định Data Modeler 2026-10-21, **LLD là chuẩn** ("LLD đã đủ cho dự án, HLD có mà LLD chưa làm là sai"). TMS **không có LLD** (không có thư mục `lld/TMS/`, không có trong `manifest.yaml`), nên toàn bộ 12 Atomic entity từng thiết kế ở HLD đã gỡ; 14 bảng nguồn thuộc phạm vi cũ chuyển vào mục 7f nhóm `Chưa có LLD`. Các bảng TMS khác (ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT*, CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình...) chưa được đánh giá scope.
 >
-> **[CẬP NHẬT 2026-10-28]** Thiết kế bổ sung 1 entity mới theo yêu cầu Data Modeler: `COMPLIANCE_REPORT_MASTER` → `Compliance Report` (Tier 1). LLD chưa làm — xem [TMS_HLD_Tier1.md](TMS_HLD_Tier1.md) mục 6f T1-05.
+> **[CẬP NHẬT 2026-11-16]** Entity `Compliance Report` (nguồn `COMPLIANCE_REPORT_MASTER`, thêm 2026-10-28) đã **xóa** theo yêu cầu Data Modeler — bảng này đã được dùng để xây dựng 2 bảng ODS bên dưới (`COMPLIANCE_REPORT_STRUCTURE`, `COMPLIANCE_REPORT_VALUE`). LLD, entity, scheme `TMS_AUTO_CHECK_STATUS`/`TMS_COMPLIANCE_APPROVAL_STATUS` và file Atomic sinh ra từ MASTER cũng đã gỡ.
 >
-> **[CẬP NHẬT 2026-11-15]** Thiết kế bổ sung 2 entity lấy từ tầng ODS, không có bảng nguồn BRD (nguồn `TMS.xlsx` + `note_logic_ods_tms_report_cho_atomic_20261111.md`): `COMPLIANCE_REPORT` → `Compliance Report Structure` (Tier 1, `[Documentation] Form Document`, Relative) và `COMPLIANCE_REPORT_VALUE` → `Compliance Report Value` (Tier 2, `[Documentation] Regulatory Information`, Classification). LLD chưa làm — xem 7e #5–#11.
+> **[CẬP NHẬT 2026-11-15, chỉnh 2026-11-16]** Thiết kế bổ sung 2 entity lấy từ tầng ODS, không có bảng nguồn BRD (nguồn `TMS.xlsx` + `note_logic_ods_tms_report_cho_atomic_20261111.md`): `COMPLIANCE_REPORT_STRUCTURE` → `Compliance Report Structure` (Tier 1, physical `cr_structure`, `[Documentation] Form Document`, Relative, hash_id = `form_code` + `column_code`) và `COMPLIANCE_REPORT_VALUE` → `Compliance Report Value` (Tier 2, physical `cr_value`, `[Documentation] Regulatory Information`, Classification, hash_id = `form_code` + `column_code` + `row_index` + `submission_dt`). Cột ODS `Map? = không` trong `TMS.xlsx` không lên Atomic. LLD đã `approved` (2026-11-16); điểm còn mở xem 7e #1–#6.
 >
 > **File chi tiết theo tầng:** [TMS_HLD_Tier1.md](TMS_HLD_Tier1.md) (2 entity), [TMS_HLD_Tier2.md](TMS_HLD_Tier2.md) (1 entity), [TMS_HLD_Tier3.md](TMS_HLD_Tier3.md) — Tier 3 không có entity Atomic trong scope.
 
@@ -16,9 +16,8 @@
 
 | Tier | BCV Core Object | BCV Concept | Category | Source Table | Source Table Change Mode | Mô tả bảng nguồn | Atomic Entity | Table Type | BCV Term |
 |---|---|---|---|---|---|---|---|---|---|
-| T1 | Documentation | [Documentation] Regulatory Report | Compliance Report Management | COMPLIANCE_REPORT_MASTER | Update | Báo cáo tuân thủ đã nộp theo kỳ: PERIOD_TYPE/VALUE/YEAR, người nộp, kiểm tra tự động (AUTO_CHECK_*), phê duyệt/từ chối (APPROVAL_*), cho phép nộp lại (RESUBMIT_*), TEMPLATE_ID (map 1:1 cột thường, không FK) | Compliance Report | Relative | (1) Regulatory Report — BCV: "Regulatory Information which is a report on regulations". (2) Bảng: 1 dòng = 1 báo cáo tuân thủ của 1 kỳ, có vòng nộp → kiểm tra tự động → duyệt/từ chối → nộp lại. (3) Regulatory Report khớp báo cáo định kỳ nộp cho cơ quan quản lý; Table Type = Relative theo quyết định Data Modeler dù chưa có FK Atomic (TEMPLATE_ID map 1:1 cột thường, xem 7e #1). Chi tiết xem TMS_HLD_Tier1.md. |
-| T1 | Documentation | [Documentation] Form Document | Compliance Report Management | COMPLIANCE_REPORT | N/A | Bảng ODS (không BRD): 1 dòng = 1 chỉ tiêu của 1 biểu mẫu báo cáo tuân thủ — mã/tên/mô tả biểu mẫu, trạng thái, phiên bản, `key_columns`, `template_code`, thứ tự/mã/nhãn chỉ tiêu | Compliance Report Structure | Relative | (1) Form Document — BCV: "Documentation Item presented in a standard template layout"; Regulatory Report không chọn vì đã dùng cho `Compliance Report`. (2) Bảng mô tả khung biểu mẫu + danh sách chỉ tiêu, không chứa dữ liệu nộp. (3) Cùng cách xử lý `Dynamic Report Structure` (FMS); Table Type = Relative theo `TMS.xlsx`. Chi tiết xem TMS_HLD_Tier1.md. |
-| T2 | Documentation | [Documentation] Regulatory Information | Compliance Report Management | COMPLIANCE_REPORT_VALUE | N/A | Bảng ODS (không BRD): 1 dòng = 1 giá trị của 1 chỉ tiêu (1 ô) trong 1 dòng dữ liệu của 1 lần nộp biểu mẫu, kèm kỳ báo cáo, loại người nộp, thời điểm và tên file tải lên | Compliance Report Value | Classification | (1) Regulatory Information — BCV: "Reported Information that is required to be filed with regulatory bodies"; Regulatory Report không chọn vì 1 dòng là 1 ô giá trị, không phải 1 báo cáo. (2) Bảng chứa giá trị đã nộp theo từng ô (`indicator_value`, `row_index`). (3) Cùng BCV với `Dynamic Report Value` (FMS); Table Type = Classification (ETL Upsert) theo `TMS.xlsx`, xem 7e #7. Chi tiết xem TMS_HLD_Tier2.md. |
+| T1 | Documentation | [Documentation] Form Document | Compliance Report Management | COMPLIANCE_REPORT_STRUCTURE | N/A | Bảng ODS (không BRD): 1 dòng = 1 cột (chỉ tiêu) của 1 biểu mẫu báo cáo tuân thủ — mã/tên biểu mẫu, mã phụ lục, trạng thái, phiên bản, `key_columns`, thứ tự/mã/nhãn cột | Compliance Report Structure | Relative | (1) Form Document — BCV: "Documentation Item presented in a standard template layout"; Regulatory Report không chọn vì bảng không chứa dữ liệu nộp. (2) Bảng mô tả khung biểu mẫu + danh sách cột, không chứa dữ liệu nộp. (3) Cùng cách xử lý `Dynamic Report Structure` (FMS); Table Type = Relative theo `TMS.xlsx`; hash_id = `form_code` + `column_code`. Chi tiết xem TMS_HLD_Tier1.md. |
+| T2 | Documentation | [Documentation] Regulatory Information | Compliance Report Management | COMPLIANCE_REPORT_VALUE | N/A | Bảng ODS (không BRD): 1 dòng = 1 giá trị của 1 cột (ô) trong 1 dòng dữ liệu của 1 lần nộp biểu mẫu, kèm kỳ báo cáo, loại người nộp, thời điểm và tên file tải lên | Compliance Report Value | Classification | (1) Regulatory Information — BCV: "Reported Information that is required to be filed with regulatory bodies"; Regulatory Report không chọn vì 1 dòng là 1 ô giá trị, không phải 1 báo cáo. (2) Bảng chứa giá trị đã nộp theo từng ô (`cell_val`, `row_index`). (3) Cùng BCV với `Dynamic Report Value` (FMS); Table Type = Classification (ETL Upsert) theo `TMS.xlsx`, xem 7e #7; hash_id = `form_code` + `column_code` + `row_index` + `submission_dt`. Chi tiết xem TMS_HLD_Tier2.md. |
 
 **Tổng: 3 Atomic entity** (T1: 2, T2: 1)
 
@@ -29,7 +28,6 @@
 ```mermaid
 graph TD
     subgraph T1["Tier 1 — Independent Entities"]
-        CR["Compliance Report"]
         CRS["Compliance Report Structure"]
     end
     subgraph T2["Tier 2 — Phụ thuộc Tier 1"]
@@ -62,13 +60,9 @@ graph TD
 | CASE_APPROVAL_STEP.STEP_CODE / NEXT_STEP_CODE | Mã bước duyệt | Classification Value | Scheme: `GSGD_APPROVAL_STEP_CODE`. |
 | CASE_APPROVAL_STEP.STATUS / CASE_FILE_WORKFLOW.STATUS | Trạng thái bước duyệt/quy trình | Classification Value | Scheme: `GSGD_APPROVAL_STEP_STATUS` (dùng chung — value set có thể khác nhau, cần profile riêng). |
 | ACCOUNT_GROUP_MEMBER.STATUS | Trạng thái tài khoản trong nhóm | Classification Value | Scheme: `GSGD_ACCOUNT_STATUS`. |
-| COMPLIANCE_REPORT_MASTER.PERIOD_TYPE | Kỳ báo cáo tuân thủ: DAILY/WEEKLY/MONTHLY/YEARLY | Classification Value | Scheme: `TMS_REPORT_PERIOD_TYPE`. |
-| COMPLIANCE_REPORT_MASTER.AUTO_CHECK_STATUS | Kết quả kiểm tra tự động (0=Không đạt, 1=Đạt, NULL=Chưa kiểm tra) | Classification Value | Scheme: `TMS_AUTO_CHECK_STATUS`. |
-| COMPLIANCE_REPORT_MASTER.APPROVAL_STATUS | Trạng thái phê duyệt báo cáo (0=Chờ duyệt, 1=Đã duyệt, 2=Bị từ chối) | Classification Value | Scheme: `TMS_COMPLIANCE_APPROVAL_STATUS`. |
-| COMPLIANCE_REPORT_MASTER.SUBMITTER_TYPE | Loại người nộp báo cáo (chưa có mô tả nguồn) | Classification Value | Scheme: `TMS_SUBMITTER_TYPE` (modeler_defined — cần profile). |
-| COMPLIANCE_REPORT.STATUS | Trạng thái biểu mẫu báo cáo (0=Không hoạt động, 1=Hoạt động) | Classification Value | Scheme: `TMS_REPORT_FORM_STATUS`. Cân nhắc Indicator — quyết định tại LLD. |
-| COMPLIANCE_REPORT_VALUE.PERIOD_TYPE | Kỳ báo cáo: DAILY/WEEKLY/MONTHLY/YEARLY | Classification Value | Dùng lại scheme `TMS_REPORT_PERIOD_TYPE`. |
-| COMPLIANCE_REPORT_VALUE.SUBMITTER_TYPE | Loại người nộp báo cáo | Classification Value | Dùng lại scheme `TMS_SUBMITTER_TYPE` (modeler_defined — cần profile). |
+| COMPLIANCE_REPORT_STRUCTURE.STATUS | Trạng thái biểu mẫu báo cáo (0=Không hoạt động, 1=Hoạt động) | Classification Value | Scheme: `TMS_REPORT_FORM_STATUS`. Cân nhắc Indicator — quyết định tại LLD. |
+| COMPLIANCE_REPORT_VALUE.PERIOD_TP | Kỳ báo cáo: DAILY/WEEKLY/MONTHLY/YEARLY | Classification Value | Scheme: `TMS_REPORT_PERIOD_TYPE`. |
+| COMPLIANCE_REPORT_VALUE.SUBMITTER_TP | Loại người nộp báo cáo | Classification Value | Scheme: `TMS_SUBMITTER_TYPE` (modeler_defined — cần profile). |
 
 ---
 
@@ -82,17 +76,12 @@ Không có junction table.
 
 | # | Tier | Câu hỏi | Ảnh hưởng |
 |---|---|---|---|
-| 1 | T1 | `COMPLIANCE_REPORT_MASTER.TEMPLATE_ID` (FK curated đến `COMPLIANCE_REPORT_TEMPLATE`) map 1:1 thành cột thường `Report Template Source Id`, không tạo FK theo quyết định Data Modeler (xem Tier1 T1-01) | Mất ràng buộc tới template trên Atomic; đổi sang FK Id + Code nếu sau này đưa template vào scope |
-| 2 | T1 | Bộ audit bảng nguồn chỉ có 7/9 cột chuẩn (thiếu `STATUS`, `VERSION`) — chưa tự loại trừ (Tier1 T1-02) | Xác nhận khi làm LLD |
-| 3 | T1 | Bảng con `COMPLIANCE_REPORT_FORM`/`COMPLIANCE_REPORT_DATA` chưa đánh giá scope (Tier1 T1-04) | Chờ quyết định |
-| 4 | T1 | Chưa có LLD cho TMS — entity mới mới ở mức HLD (Tier1 T1-05) | Cần `/atomic-lld-design` |
-| 5 | T2 | `submission_id` (khóa ODS của `COMPLIANCE_REPORT_VALUE`) và `report_form_id` có `Map? = không` trong `TMS.xlsx`; bảng cũng không có `SUBMITTER_ID`. Không còn cột nào phân biệt 2 đơn vị nộp cùng loại cùng nộp 1 biểu mẫu/kỳ (Tier2 T2-01) | BK trùng → upsert ghi đè dữ liệu. Đề xuất đổi `submission_id` sang `Map? = có` |
-| 6 | T1 | `Compliance Report Structure`: `form_template_id` không map nên BK tạm = `report_code` ‖ `indicator_code`; cần xác nhận `FORM_CODE` duy nhất (Tier1 T1-09) | Nếu không duy nhất phải map `form_template_id` |
-| 7 | T1/T2 | Table Type: `Compliance Report Structure` = Relative nhưng chưa có FK Fundamental (Tier1 T1-08); `Compliance Report Value` = Classification dù chứa instance data (Tier2 T2-02) | Xác nhận ETL pattern (Upsert/SCD2 hay Snapshot) |
-| 8 | T1 | Bảng đích `compliance_report` trong `TMS.xlsx` trùng physical name entity `Compliance Report` đã approved → dùng tên `Compliance Report Structure` / `Compliance Report Value`, Domain Prefix `Compliance Report` (Tier1 T1-11) | Xác nhận tên; đổi prefix cho entity approved phải về draft rồi rename downstream |
-| 9 | T1/T2 | Structure lặp thông tin biểu mẫu trên mỗi chỉ tiêu (Tier1 T1-10); Value lặp thuộc tính kỳ/người nộp trùng `Compliance Report` (Tier2 T2-04); Value FK về Structure phải nullable (Tier2 T2-03) | Chờ quyết định tách entity / thêm FK sang `Compliance Report` |
-| 10 | T1 | Tên bảng nguồn ghi theo `TMS.xlsx`, tên ODS thực `ods_tms_report`/`ods_tms_report_value`; Change Mode = N/A; không `ds_*` (Tier1 T1-12) | Xác nhận |
-| 11 | T1 | Không nhất quán sẵn có: phần đầu file và #4 ghi `COMPLIANCE_REPORT_MASTER` chưa có LLD, nhưng `manifest.yaml` đã có `TMS/lld_TMS_COMPLIANCE_REPORT_MASTER.yaml` (`design_status: approved`) trong khi `atomic_entities.yaml` vẫn `draft` | Chưa sửa trong lượt này (thuộc thiết kế tầng trước) — cần cập nhật câu chữ + đồng bộ status |
+| 1 | T2 | Hash_id `Compliance Report Value` = `form_code` + `column_code` + `row_index` + `submission_dt` (Data Modeler chốt 2026-11-16; `submission_id`/`form_id` không map). Khóa không chứa đơn vị nộp (ODS không có `SUBMITTER_ID`), `submission_dt` chỉ đến mức ngày, `row_index` bắt đầu từ 1 mỗi lần nộp (Tier2 T2-01) | Hai lần nộp cùng biểu mẫu trong cùng 1 ngày vẫn trùng hash, upsert chỉ giữ 1 lần. Cần xác nhận hoặc thêm `period_*` vào hash |
+| 2 | T1 | Hash_id `Compliance Report Structure` = `form_code` + `column_code` (Data Modeler chốt 2026-11-16; không gồm `template_code`). Cần xác nhận `form_code` duy nhất toàn cục (Tier1 T1-09) | Nếu không duy nhất phải thêm `template_code` vào hash |
+| 3 | T1/T2 | Table Type: `Compliance Report Structure` = Relative nhưng chưa có FK Fundamental (Tier1 T1-08); `Compliance Report Value` = Classification dù chứa instance data (Tier2 T2-02) | Xác nhận ETL pattern (Upsert/SCD2 hay Snapshot) |
+| 4 | T1 | Đặt tên (Data Modeler chốt 2026-11-16): `Compliance Report Structure` → `cr_structure`, `Compliance Report Value` → `cr_value`; Domain Prefix `Compliance Report` → `cr` (Tier1 T1-11). Entity `Compliance Report` cũ (nguồn MASTER) đã xóa 2026-11-16 nên không còn xung đột tên | Đã chốt |
+| 5 | T1/T2 | Structure lặp thông tin biểu mẫu trên mỗi cột (Tier1 T1-10); Value lặp thuộc tính kỳ/người nộp ở mọi dòng giá trị (Tier2 T2-04); Value FK về Structure phải nullable (Tier2 T2-03) | Chờ quyết định tách entity |
+| 6 | T1 | Tên bảng nguồn và tên cột ghi theo `TMS.xlsx` (khác note ODS); Change Mode = N/A; không `ds_*` (Tier1 T1-12) | Xác nhận |
 
 ---
 
@@ -116,7 +105,7 @@ Không có junction table.
 | Chưa có LLD | ACCOUNT_GROUP_MEMBER | Quan hệ thành viên giữa tài khoản và nhóm giám sát | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 | Chưa có LLD | ACCOUNT_RELATIONSHIP | Mối quan hệ giữa 2 tài khoản NĐT trong giám sát | Không có LLD trong dự án — HLD gỡ theo quyết định Data Modeler 2026-10-21 |
 
-*(Các bảng TMS khác ngoài 15 bảng phạm vi cũ — ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT* (trừ COMPLIANCE_REPORT_MASTER — đã vào scope 2026-10-28), CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình... — chưa được đánh giá scope.)*
+*(Các bảng TMS khác ngoài 15 bảng phạm vi cũ — ANALYSIS_*, SUSPICIOUS_ACCOUNT*, REPORT_TEMPLATE*, ANALYSIS_WORKFLOW*, ABNORMAL_REPORT*, COMPLIANCE_REPORT* (gồm COMPLIANCE_REPORT_MASTER — entity Atomic đã xóa 2026-11-16 vì đã được dùng để dựng 2 bảng ODS `COMPLIANCE_REPORT_STRUCTURE`/`COMPLIANCE_REPORT_VALUE`), CATEGORY_ITEM, TRANSACTION_REVIEW*, hệ thống/cấu hình... — chưa được đánh giá scope.)*
 
 ---
 
@@ -125,17 +114,12 @@ Không có junction table.
 > Single source of truth cho metadata entity. `aggregate_atomic.py` parse section này để sinh `atomic_entities.yaml`.
 > Format bắt buộc: heading `### N.` + dòng `**Description:**` trong 500 ký tự đầu tiên sau heading.
 
-### 1. Compliance Report
-**Tier:** 1 | **Source:** `COMPLIANCE_REPORT_MASTER` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Báo cáo tuân thủ đã nộp theo từng kỳ (ngày/tuần/tháng/năm), ghi nhận người nộp, kết quả kiểm tra tự động, vòng phê duyệt hoặc từ chối và khoảng thời gian được phép nộp lại.
-
-### 2. Compliance Report Structure
-**Tier:** 1 | **Source:** `COMPLIANCE_REPORT` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
+### 1. Compliance Report Structure
+**Tier:** 1 | **Source:** `COMPLIANCE_REPORT_STRUCTURE` | **BCV Concept:** [Documentation] Form Document | **BCO:** Documentation | **Table Type:** Relative
 **Domain Prefix:** Compliance Report
-**Description:** Cấu trúc chỉ tiêu của biểu mẫu báo cáo tuân thủ — 1 dòng = 1 chỉ tiêu của 1 biểu mẫu, kèm mã, tên, mô tả, trạng thái, phiên bản biểu mẫu, mã phụ lục và thứ tự, mã, nhãn chỉ tiêu. Nguồn ODS, không có BRD.
+**Description:** Cấu trúc cột (chỉ tiêu) của biểu mẫu báo cáo tuân thủ — 1 dòng = 1 cột của 1 biểu mẫu, kèm mã và tên biểu mẫu, mã phụ lục, trạng thái, phiên bản và thứ tự, mã, nhãn cột. Nguồn ODS, không có BRD.
 
-### 3. Compliance Report Value
+### 2. Compliance Report Value
 **Tier:** 2 | **Source:** `COMPLIANCE_REPORT_VALUE` | **BCV Concept:** [Documentation] Regulatory Information | **BCO:** Documentation | **Table Type:** Classification
 **Domain Prefix:** Compliance Report
-**Description:** Giá trị đã nộp của từng chỉ tiêu (ô) trong biểu mẫu báo cáo tuân thủ — 1 dòng = 1 chỉ tiêu của 1 dòng dữ liệu trong 1 lần nộp, kèm kỳ báo cáo, loại người nộp, thời điểm và tên file tải lên. Nguồn ODS, không có BRD.
+**Description:** Giá trị đã nộp của từng cột (ô) trong biểu mẫu báo cáo tuân thủ — 1 dòng = 1 cột của 1 dòng dữ liệu trong 1 lần nộp, kèm kỳ báo cáo, loại người nộp, thời điểm và tên file tải lên. Nguồn ODS, không có BRD.
