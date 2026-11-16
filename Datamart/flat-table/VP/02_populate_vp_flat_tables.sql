@@ -541,6 +541,9 @@ SELECT
     f.domestic_winning_val,
     f.foreign_winning_val,
     f.src_stm_code,
+    f.registered_share_quantity,
+    f.domestic_winning_share_quantity,
+    f.foreign_winning_share_quantity,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -752,6 +755,9 @@ SELECT
     f.bond_term_years,
     f.issue_interest_rate,
     f.src_stm_code,
+    f.industry_code,
+    f.foreign_result_val_amt,
+    f.administrative_procedure_code,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -788,6 +794,11 @@ SELECT
     f.bond_term_years,
     f.issue_interest_rate,
     f.src_stm_code,
+    f.enterprise_tp,
+    f.business_sector,
+    f.convertible_bond_ind,
+    f.warrant_linked_bond_ind,
+    f.secured_bond_ind,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,

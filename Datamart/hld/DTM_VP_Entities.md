@@ -728,6 +728,25 @@ erDiagram
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — loại chứng khoán, mã sàn | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_161–164 |
 | Fact Listing Status Change Snapshot | Fact Snapshot | new | Quyết định thay đổi niêm yết/đăng ký giao dịch của cổ phiếu trên HNX (gồm UPCoM) và HOSE — dùng cho Nhóm 17 (sự kiện niêm yết mới/bổ sung/hủy của cổ phiếu, CCQ, ETF, chứng quyền, TPDN niêm yết), Nhóm 50 (cổ phiếu niêm yết mới/bổ sung) và Nhóm 51 (cổ phiếu hủy niêm yết); grain 1 quyết định × 1 mã × 1 Sở (PK listing_status_change_snpst_id = id dòng Atomic listing_status_change); kỳ theo ngày hiệu lực (effective_dt); Listing Floor Code = sàn tại ngày sự kiện (MDDS) cho các chỉ tiêu theo sàn (O_VP_53); Listing Stock Type Code / Listing Fund Type Code = loại chứng khoán / loại quỹ của mã (bản tin MDDS mới nhất, loại phái sinh) để phân loại sự kiện Nhóm 17 (O_VP_74); Detail Mapping lọc new/additional_listed_share_quantity > 0 (Nhóm 50) hoặc delisted_share_quantity > 0 (Nhóm 51) | 1 quyết định × 1 mã × 1 Sở (PK id dòng Atomic) | K_VP_160–164 |
 
+## Nhóm 53 - Data Explorer Thống kê hoạt động huy động vốn
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Share_Auction_Result_Snapshot : " "
+```
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Calendar Date Dimension | Dimension | reuse | Lịch ngày — trục kỳ Ngày/Tháng/Quý/Năm; mỗi nguồn nối theo trục ngày riêng (ngày GCN/CV, ngày phát hành, cuối tháng báo cáo) | 1 ngày dương lịch | K_VP_466 |
+| Industry Dimension | Dimension | reuse | Tên ngành theo mã `industry_code` của Fact chào bán UBCK (không FK; SCMS/FMS '07000'); TPDNRL dùng `business_sector` HNX nguyên văn | 1 ngành | K_VP_468 |
+| Fact Securities Offering Event | Fact Event | reuse (Nhóm 23) | Nhánh IDS/SCMS/FMS: KL/GT đăng ký và thành công, GT NĐTNN, kỳ hạn, lãi suất, ngành, loại CK, nhóm hình thức, huy động vốn — thêm 3 cột `industry_code`, `foreign_result_val_amt`, `administrative_procedure_code` | 1 đợt chào bán × hình thức (PK `securities_offering_event_id`, Dạng B) | K_VP_466–477, 400, 405 |
+| Fact Private Corporate Bond Offering Snapshot | Fact Snapshot | reuse (Nhóm 26) | Nhánh TPDNRL HNX: KL/GT phát sinh tháng (lũy kế − tháng trước), GT NĐTNN (thị trường 'Quốc tế'), kỳ hạn, lãi suất — thêm 5 cột `enterprise_tp`, `business_sector`, `convertible_bond_ind`, `warrant_linked_bond_ind`, `secured_bond_ind` | 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo | K_VP_467–477, 400, 405 |
+| Fact Government Bond Bidding Result Snapshot | Fact Snapshot | reuse (Nhóm 30) | Nhánh TPCP: GT gọi thầu, GT trúng thầu, kỳ hạn, lãi suất trúng thầu theo ngày phát hành | 1 dòng kết quả đấu thầu (PK `government_bond_bidding_result_snpst_id`) | K_VP_473, 405, 475–477 |
+| Fact Share Auction Result Snapshot | Fact Snapshot | reuse (Nhóm 45) | Nhánh đấu giá cổ phần: KL đăng ký chào bán, KL/GT trúng giá trong nước và nước ngoài theo nhóm loại hình — thêm 3 cột `registered_share_quantity`, `domestic_winning_share_quantity`, `foreign_winning_share_quantity` | 1 dòng biểu mẫu = 1 đợt đấu giá (PK `share_auction_result_snpst_id`) | K_VP_470, 472, 400, 405, 474 |
+
 ## Nhóm 54 - Data Explorer Tài khoản giao dịch
 
 ```mermaid

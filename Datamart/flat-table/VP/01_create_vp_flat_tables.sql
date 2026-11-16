@@ -527,6 +527,9 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_share_auction_result_snpst_flat ON CL
     domestic_winning_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phần trúng giá của nhà đầu tư trong nước trong đợt đấu giá (VND).',
     foreign_winning_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị cổ phần trúng giá của nhà đầu tư nước ngoài trong đợt đấu giá (VND).',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa.',
+    registered_share_quantity                    Nullable(Int64)         COMMENT 'Số cổ phần đăng ký chào bán của đợt đấu giá (BA Nhóm 53 dòng 606 — `SỐ CP ĐĂNG KÝ CHÀO BÁN`). [MỚI 2026-11-16, O_VP_83]',
+    domestic_winning_share_quantity              Nullable(Int64)         COMMENT 'Số cổ phần trúng giá của nhà đầu tư trong nước (BA Nhóm 53 dòng 607 — HNX05 `SỐ CP TRÚNG GIÁ > NĐT TRONG NƯỚC`, HSX03 `SỐ CP TRÚNG GIÁ(CHỨNG KHOÁN) > NĐT TRONG NƯỚC`). [MỚI 2026-11-16, O_VP_83]',
+    foreign_winning_share_quantity               Nullable(Int64)         COMMENT 'Số cổ phần trúng giá của nhà đầu tư nước ngoài (BA Nhóm 53 dòng 607 — HNX05 `SỐ CP TRÚNG GIÁ > NĐT NƯỚC NGOÀI`, HSX03 `SỐ CP TRÚNG GIÁ(CHỨNG KHOÁN) > NĐT NƯỚC NGOÀI`). [MỚI 2026-11-16, O_VP_83]',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -743,6 +746,9 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_securities_offering_event_flat ON CLU
     bond_term_years                              Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn trái phiếu quy đổi ra năm của dòng kế hoạch (IDS: từ bond_term_val dạng … tháng/… năm; SCMS: maturity_years; FMS: bond_term_years); để trống với cổ phiếu hoặc khi nguồn không có kỳ hạn. [MỚI 2026-11-16, O_VP_81]',
     issue_interest_rate                          Nullable(Decimal(8,5))  COMMENT 'Lãi suất phát hành của dòng kế hoạch (%/năm) — chỉ IDS có (interest_rate); SCMS, FMS và cổ phiếu để trống. [MỚI 2026-11-16, O_VP_81]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn của dòng: IDS_SECURITIES_OFFERING (CTĐC) / SCMS_DISCLOSURE_SECURITIES_OFFERING (CTCK) / FMS_OFFERING (CTQLQ); tham gia PK. [MỚI 2026-11-10, O_VP_75]',
+    industry_code                                Nullable(String)        COMMENT 'Mã ngành nghề kinh tế cấp 1 (BA Nhóm 53 dòng 602): IDS lấy từ hồ sơ công ty đại chúng (`company_profiles.category_l1_id`); SCMS/FMS (CTCK, CTQLQ) cố định 07000 (Tài chính ngân hàng). Cột thường (không FK) — tên ngành tra `Industry Dimension` theo mã; NULL = chưa phân ngành. [MỚI 2026-11-16, O_VP_83]',
+    foreign_result_val_amt                       Nullable(Decimal(23,2)) COMMENT 'Giá trị phát hành thực tế cho NĐTNN (BA Nhóm 53 dòng 611): IDS tổng `foreign_collected_amt` theo (đợt, hình thức); FMS `foreign_issuance_val_amt`; SCMS (`giaTriPhatHanhNdtnn` trong result_json) chưa có nguồn Atomic nên để trống — chờ Atomic map `sc_disclosure_securities_offering_item`. [MỚI 2026-11-16, O_VP_83]',
+    administrative_procedure_code                Nullable(String)        COMMENT 'Mã thủ tục hành chính của hồ sơ chào bán IDS — BA Nhóm 53 dòng 604 dùng 1.009.496, 1.009.501 để gán nhóm IPO của DN thông thường; SCMS/FMS không có. Cột từng bị gỡ 2026-11-11 (BA bỏ `administrative_proc_cd`), nay BA Nhóm 53 dùng lại. [MỚI 2026-11-16, O_VP_83]',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact (ngày GCN/CV) — từ Calendar Date Dimension',
@@ -780,6 +786,11 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_private_corporate_bond_offering_snpst
     bond_term_years                              Nullable(Decimal(10,4)) COMMENT 'Kỳ hạn trái phiếu quy đổi ra năm: đơn vị Tháng → kỳ hạn / 12, Năm → kỳ hạn (BA Nhóm 27); đơn vị khác hoặc thiếu → để trống. [MỚI 2026-11-16, O_VP_81]',
     issue_interest_rate                          Nullable(Decimal(5,2))  COMMENT 'Lãi suất phát hành của mã trái phiếu (%/năm) theo báo cáo chào bán HNX (ISSUE_INTEREST_RATE). [MỚI 2026-11-16, O_VP_81]',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu: HNX_PRIVATE_CORP_BOND_OFFERING; tham gia PK. [MỚI 2026-11-10, O_VP_76]',
+    enterprise_tp                                Nullable(String)        COMMENT 'Loại hình doanh nghiệp phát hành nguyên văn HNX (Công ty đại chúng, Công ty TNHH) — chiều Đối tượng phát hành của BA Nhóm 53 dòng 601. [MỚI 2026-11-16, O_VP_83]',
+    business_sector                              Nullable(String)        COMMENT 'Ngành nghề của doanh nghiệp phát hành nguyên văn HNX — chiều Ngành của BA Nhóm 53 dòng 602. [MỚI 2026-11-16, O_VP_83]',
+    convertible_bond_ind                         Nullable(Int64)         COMMENT 'Cờ trái phiếu chuyển đổi (1 = Có, 0 = Không) — phân loại TPDN riêng lẻ - TP chuyển đổi (BA Nhóm 53 dòng 603). [MỚI 2026-11-16, O_VP_83]',
+    warrant_linked_bond_ind                      Nullable(Int64)         COMMENT 'Cờ trái phiếu kèm chứng quyền (1 = Có, 0 = Không) — phân loại TPDN riêng lẻ - TP kèm chứng quyền (BA Nhóm 53 dòng 603). [MỚI 2026-11-16, O_VP_83]',
+    secured_bond_ind                             Nullable(Int64)         COMMENT 'Cờ trái phiếu có bảo đảm (1 = Có, 0 = Không) — BA Nhóm 53 dòng 603 liệt kê TP bảo đảm nhưng SQL chưa dùng cờ này. [MỚI 2026-11-16, O_VP_83]',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',

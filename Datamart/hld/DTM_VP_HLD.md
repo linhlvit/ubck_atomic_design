@@ -255,17 +255,17 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Case 1 — reuse Calendar Date Dimension (cdr_dt_dim); kỳ = tham số lọc tại presentation layer | READY |
-| K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STK', HNX = 'STX', UPCOM = 'UPX') | Tham số lọc Sàn; ánh xạ HOSE→STK, HNX→STX, UPCOM→UPX theo Điều kiện BA | READY |
+| K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STO', HNX = 'STX', UPCOM = 'UPX') | Tham số lọc Sàn; ánh xạ HOSE→STK, HNX→STX, UPCOM→UPX theo Điều kiện BA | READY |
 | K_VP_3 | Chỉ số | — | Chiều | Market Index Dimension.Index Name với Market Code IN ('HOSE','HNX','UPCOM'); Sàn = 'Toàn thị trường' lấy cả 3 chỉ số | Case 1 — reuse Market Index Dimension (QLKD) | READY |
 | K_VP_4 | Giá trị chỉ số | Điểm | Cơ sở | Fact Market Index Snapshot.Market Index Value tại ngày giao dịch cuối cùng của kỳ (Fact giữ bản ghi cuối ngày: Index Time DESC, Sequence DESC) | Case 1 — reuse Fact Market Index Snapshot (QLKD); chọn chỉ số theo Market Code, không theo Index Name (H14) | READY |
 | K_VP_5 | GT mua/bán ròng NĐTNN | VND | Phái sinh | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'FOREIGN', Market Id Code theo Sàn và `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` (cổ phiếu + CCQ, bỏ chứng quyền), trong kỳ | NĐTNN = ký tự thứ 4 của số tài khoản ∈ (E, F). [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK: Stock Type Code ∈ ('2','3','6') theo BA 2026-10-28 (O_VP_4 đã đóng); độ chi tiết 'Loại chứng khoán' = Stock Type Code/Name. Case 2 — tính tại presentation layer từ Buy Value / Sell Value | READY |
 | K_VP_6 | Giá trị chỉ số - VN-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HOSE' (VN-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
 | K_VP_7 | Giá trị chỉ số - HNX-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HNX' (HNX-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
 | K_VP_8 | Giá trị chỉ số - UPCoM-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'UPCOM' (UPCoM-Index) | Case 2 — K_VP_4 lọc Market Code; tính tại presentation layer | READY |
-| K_VP_9 | GT mua/bán ròng NĐTNN - HOSE | VND | Cơ sở | K_VP_5 với Market Id Code = 'STK' (HOSE) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
+| K_VP_9 | GT mua/bán ròng NĐTNN - HOSE | VND | Cơ sở | K_VP_5 với Market Id Code = 'STO' (HOSE) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 | K_VP_10 | GT mua/bán ròng NĐTNN - HNX | VND | Cơ sở | K_VP_5 với Market Id Code = 'STX' (HNX) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 | K_VP_11 | GT mua/bán ròng NĐTNN - UPCoM | VND | Cơ sở | K_VP_5 với Market Id Code = 'UPX' (UPCoM) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
-| K_VP_12 | GT mua/bán ròng NĐTNN - Toàn thị trường | VND | Cơ sở | K_VP_5 với Market Id Code IN ('STK','STX','UPX') (toàn thị trường) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
+| K_VP_12 | GT mua/bán ròng NĐTNN - Toàn thị trường | VND | Cơ sở | K_VP_5 với Market Id Code IN ('STO','STX','UPX') (toàn thị trường) | Case 2 — K_VP_5 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 
 **Star Schema:**
 
@@ -416,17 +416,17 @@ Tham số: Sàn (HOSE / HNX / UPCOM / Toàn thị trường) · Loại kỳ (D/M
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
 | K_VP_1 | Kỳ | — | Chiều | Calendar Date Dimension: Calendar Date → ngày/tháng/quý/năm; Loại kỳ (D/M/Q/Y) và Từ kỳ — Đến kỳ là tham số lọc | Reuse từ Nhóm 1 (K_VP_1) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
-| K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STK', HNX = 'STX', UPCOM = 'UPX') | Reuse từ Nhóm 1 (K_VP_2) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
+| K_VP_2 | Sàn | — | Chiều | HOSE / HNX / UPCOM / Toàn thị trường. Chỉ số: Market Index Dimension.Market Code ('HOSE','HNX','UPCOM'); giao dịch: Fact Investor Group Trading Snapshot.Market Id Code (HOSE = 'STO', HNX = 'STX', UPCOM = 'UPX') | Reuse từ Nhóm 1 (K_VP_2) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
 | K_VP_3 | Chỉ số | — | Chiều | Market Index Dimension.Index Name với Market Code IN ('HOSE','HNX','UPCOM'); Sàn = 'Toàn thị trường' lấy cả 3 chỉ số | Reuse từ Nhóm 1 (K_VP_3) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
 | K_VP_4 | Giá trị chỉ số | Điểm | Cơ sở | Fact Market Index Snapshot.Market Index Value tại ngày giao dịch cuối cùng của kỳ (Fact giữ bản ghi cuối ngày: Index Time DESC, Sequence DESC) | Reuse từ Nhóm 1 (K_VP_4) — Case 1: measure vật lý có sẵn trên Fact/Dim | READY |
 | K_VP_13 | GT mua/bán ròng Tự doanh | VND | Cơ sở | SUM(Buy Value − Sell Value) trên Fact Investor Group Trading Snapshot với Investor Group Code = 'PROPRIETARY', Market Id Code theo Sàn và `Security Trading Snapshot Dimension.Stock Type Code IN ('2','3','6')` (cổ phiếu + CCQ, bỏ chứng quyền), trong kỳ | Tự doanh = ký tự thứ 4 của số tài khoản ∈ (P, E, A) theo BA; GSTT chỉ dùng (P, E) — O_VP_2. [!] Nguồn Securities Trade — O_VP_1; phạm vi loại CK: Stock Type Code ∈ ('2','3','6') theo BA 2026-10-28 (O_VP_4 đã đóng); độ chi tiết 'Loại chứng khoán' = Stock Type Code/Name. Case 2 — tính tại presentation layer | READY |
 | K_VP_6 | Giá trị chỉ số - VN-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HOSE' (VN-Index) | Reuse từ Nhóm 1 (K_VP_6) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
 | K_VP_7 | Giá trị chỉ số - HNX-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'HNX' (HNX-Index) | Reuse từ Nhóm 1 (K_VP_7) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
 | K_VP_8 | Giá trị chỉ số - UPCoM-Index | Điểm | Cơ sở | K_VP_4 với Market Code = 'UPCOM' (UPCoM-Index) | Reuse từ Nhóm 1 (K_VP_8) — Case 2: tính toán tại presentation layer, không lưu cột riêng trên Fact | READY |
-| K_VP_14 | GT mua/bán ròng Tự doanh - HOSE | VND | Cơ sở | K_VP_13 với Market Id Code = 'STK' (HOSE) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
+| K_VP_14 | GT mua/bán ròng Tự doanh - HOSE | VND | Cơ sở | K_VP_13 với Market Id Code = 'STO' (HOSE) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 | K_VP_15 | GT mua/bán ròng Tự doanh - HNX | VND | Cơ sở | K_VP_13 với Market Id Code = 'STX' (HNX) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 | K_VP_16 | GT mua/bán ròng Tự doanh - UPCOM | VND | Cơ sở | K_VP_13 với Market Id Code = 'UPX' (UPCoM) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
-| K_VP_17 | GT mua/bán ròng Tự doanh - Toàn thị trường | VND | Cơ sở | K_VP_13 với Market Id Code IN ('STK','STX','UPX') (toàn thị trường) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
+| K_VP_17 | GT mua/bán ròng Tự doanh - Toàn thị trường | VND | Cơ sở | K_VP_13 với Market Id Code IN ('STO','STX','UPX') (toàn thị trường) | Case 2 — K_VP_13 lọc Market Id Code; [!] Nguồn Securities Trade — O_VP_1 | READY |
 
 **Star Schema:**
 
@@ -2885,6 +2885,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
 ```
@@ -2982,6 +2985,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
 ```
@@ -3082,6 +3088,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
 ```
@@ -3183,6 +3192,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Fact_Private_Corporate_Bond_Offering_Snapshot {
         string Private_Corporate_Bond_Offering_Snapshot_Id PK
@@ -3200,6 +3212,11 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Enterprise_Type
+        string Business_Sector
+        int Convertible_Bond_Indicator
+        int Warrant_Linked_Bond_Indicator
+        int Secured_Bond_Indicator
     }
     Fact_Government_Bond_Bidding_Result_Snapshot {
         string Government_Bond_Bidding_Result_Snapshot_Id PK
@@ -3361,6 +3378,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Fact_Private_Corporate_Bond_Offering_Snapshot {
         string Private_Corporate_Bond_Offering_Snapshot_Id PK
@@ -3378,6 +3398,11 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Enterprise_Type
+        string Business_Sector
+        int Convertible_Bond_Indicator
+        int Warrant_Linked_Bond_Indicator
+        int Secured_Bond_Indicator
     }
     Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Registration_Snapshot : " "
@@ -3489,6 +3514,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Fact_Private_Corporate_Bond_Offering_Snapshot {
         string Private_Corporate_Bond_Offering_Snapshot_Id PK
@@ -3506,6 +3534,11 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Enterprise_Type
+        string Business_Sector
+        int Convertible_Bond_Indicator
+        int Warrant_Linked_Bond_Indicator
+        int Secured_Bond_Indicator
     }
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
@@ -5372,6 +5405,9 @@ erDiagram
         decimal Domestic_Winning_Value
         decimal Foreign_Winning_Value
         string Source_System_Code
+        bigint Registered_Share_Quantity
+        bigint Domestic_Winning_Share_Quantity
+        bigint Foreign_Winning_Share_Quantity
     }
     Calendar_Date_Dimension ||--o{ Fact_Share_Auction_Result_Snapshot : " "
 ```
@@ -5473,6 +5509,9 @@ erDiagram
         decimal Bond_Term_Years
         decimal Issue_Interest_Rate
         string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
     }
     Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
 ```
@@ -6034,6 +6073,174 @@ flowchart LR
 | Calendar Date Dimension | 1 ngày dương lịch (Conformed Dimension) |
 | Security Trading Snapshot Dimension | 1 mã chứng khoán / hợp đồng phái sinh (SCD4A current-state); sở hữu bởi GSTT |
 | Fact Listing Status Change Snapshot | 1 quyết định thay đổi niêm yết × 1 mã chứng khoán × 1 Sở (HNX gồm UPCoM, HOSE); PK Listing Status Change Snapshot Id = id dòng Atomic `listing_status_change_id` (Dạng A, direct); kỳ theo ngày hiệu lực (Effective Date) |
+
+#### Nhóm 53 - Data Explorer Thống kê hoạt động huy động vốn
+
+> Phân loại: **Phân tích**
+> Atomic: `Public Company Securities Offering` (+ `Plan`, `Result`) ← IDS, `SC Disclosure Securities Offering` ← SCMS, `Fund Management Company Securities Offering` (+ `Plan`) ← FMS (dùng lại `Fact Securities Offering Event`, Nhóm 23–28/46); `Private Corp Bond Offering` ← HNX BM 27/28 (dùng lại `Fact Private Corporate Bond Offering Snapshot`, Nhóm 26–28); `Gov Bond Bidding Result` ← HNX (dùng lại `Fact Government Bond Bidding Result Snapshot`); `Internal Statistical Report` ← ISS HNX05/HSX03 (dùng lại `Fact Share Auction Result Snapshot`, Nhóm 45) — **READY** (Case 1/Case 2, không Fact mới; thêm 11 cột vào 3 Fact có sẵn, TPCP đã đủ cột)
+
+**[GHI CHÚ 2026-11-16 — BA VP mapping Nhóm 53 (Data Explorer huy động vốn), O_VP_83]** BA 14 dòng 555–613 (Kỳ + 5 chiều + 8 chỉ tiêu), đồng bộ 5 nguồn: IDS (CTĐC), SCMS (CTCK), FMS (CTQLQ), TPDNRL HNX, TPCP HNX và đấu giá cổ phần (ISS HNX05/HSX03). **SQL dòng 555 bị CẮT CỤT** (31.318 ký tự, 433 '(' so với 428 ')', đuôi nằm giữa danh sách `IN (…)` của CTE `auction_agg`, thiếu phần còn lại của `auction_agg` và `SELECT` cuối) — thiết kế theo 13 dòng BA 601–613 (không SQL, đủ liệt kê cột output — H17) và 18 CTE đọc được; phần suy luận: lọc kỳ/`GROUP BY` của `auction_agg` (theo mẫu `private_corpbond_agg`: tháng báo cáo, kỳ Ngày không có số liệu), `SELECT` cuối là `UNION ALL` 5 nhánh cùng lược đồ (period_code, doi_tuong, nganh, loai_ck, huy_dong_von, nhom_hinhthuc, kl/gt đăng ký, kl/gt thành công, gt NĐTNN, tử/mẫu số tỷ lệ, kỳ hạn, lãi suất). Cần BA gửi lại SQL đầy đủ (tách nhiều ô — giới hạn ô Excel 32.767 ký tự) để đối chiếu.
+
+**Kiểm kê SQL BA (A38) — CTE → Fact → KPI → điều kiện:** (1) `params`, `industry_fix_ctck_ctqlq` → tham số Từ kỳ/Đến kỳ (`:period_*`) và ngành cố định '07000' cho SCMS/FMS; (2) `ids_so_certificate`/`ids_so_plan`/`ids_so_result*`/`ids_offering_data`, `scms_*`, `fms_offering_data`, `ubck_offering`/`ubck_agg` → `Fact Securities Offering Event` (ngày GCN/CV; lọc loại CK, nhóm hình thức, huy động vốn, ngành, NĐTNN, kỳ hạn, lãi suất) → K_VP_466–477; (3) `private_corpbond_ytd`/`monthly`/`agg` → `Fact Private Corporate Bond Offering Snapshot` (lũy kế năm − tháng liền trước, theo thị trường × đối tượng × ngành × loại TP; 'Quốc tế' = GT NĐTNN); (4) `govbond_agg` → `Fact Government Bond Bidding Result Snapshot` (ngày phát hành; gọi thầu / trúng thầu / kỳ hạn tuần-tháng-năm quy đổi năm / lãi suất trúng thầu); (5) `auction_agg` → `Fact Share Auction Result Snapshot` (tháng báo cáo; nhóm loại hình; KL/GT trúng giá trong nước + nước ngoài). Mọi nhánh cùng lược đồ; Đối tượng/Ngành chỉ có ở IDS/SCMS/FMS/TPDNRL, TPCP và đấu giá để trống.
+
+**Cột Fact thêm (kèm flat DDL/DML + erDiagram mọi Nhóm dùng Fact):** `Fact Securities Offering Event` +`industry_code`, +`foreign_result_val_amt`, +`administrative_procedure_code` (cột từng gỡ 2026-11-11, BA Nhóm 53 dùng lại); `Fact Private Corporate Bond Offering Snapshot` +`enterprise_tp`, `business_sector`, `convertible_bond_ind`, `warrant_linked_bond_ind`, `secured_bond_ind`; `Fact Share Auction Result Snapshot` +`registered_share_quantity`, `domestic_winning_share_quantity`, `foreign_winning_share_quantity` (mở rộng danh sách cột lọc `column_path` của HNX05/HSX03).
+
+**Quyết định / lệch BA (xem O_VP_83):** (a) nhóm hình thức: Mô tả dòng 604 liệt kê 13 nhóm nhưng giá trị SQL khác (IDS mã 12 = 'Phát hành để chào mua công khai' ở dòng 604 và SQL, 'Khác' ở dòng 605 — theo dòng 604 + SQL; nhóm 'Chào bán để tăng vốn của Công ty TNHH', 'Chào bán TP ra công chúng tại VN của Tổ chức tài chính quốc tế', 'IPO của DN Nhà nước' không có nhánh trong SQL); (b) KL thành công TPDNRL: Điều kiện dòng 607 có, SQL ghi NULL — theo Điều kiện; (c) kỳ hạn/lãi suất IDS: Fact không giữ grain kỳ hạn × lãi suất (O_VP_81 (a)); (d) SCMS NĐTNN chưa có Atomic; (e) nhãn 'Cổ phiếu' (Mô tả) thay mã 'CP' (SQL); (f) K_VP_477 cấp mới vì dòng 610 'Trùng' không có KPI cùng tên; (g) Δ BA↔HLD của Gate 10 = +3 có chủ ý: BA đếm 11 dòng (loại 3 dòng 'Trùng' 607/609/610); HLD 14 KPI = 11 + K_VP_400, K_VP_405 (dùng lại cho dòng 607/609 'Trùng', phạm vi Nhóm 53 gộp 5 nhánh) + K_VP_477 (dòng 610 'Trùng' nhưng chưa có KPI cùng tên); Δ HLD↔DM = +11 là các dòng SLICER/GROUP_BY riêng từng Fact nguồn của 5 chiều (cùng 1 KPI); (h) SQL cố định `ds_snpst_dt` ('2026-11-07'/'2026-11-08'/'2026-11-11') → bản ghi hiện hành của Atomic.
+
+**Mockup (suy từ BA — chưa có screenshot):**
+
+Tham số: Loại kỳ (Ngày / Tháng / Quý / Năm) · Từ kỳ — Đến kỳ
+
+| Kỳ | Đối tượng | Ngành | Loại CK | Nhóm hình thức | Huy động vốn | KL đăng ký | KL thành công | GT đăng ký | GT thành công | Tỷ lệ TC (%) | GT NĐTNN | Kỳ hạn BQ | Lãi suất BQ |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2026-09 | Công ty đại chúng | Bất động sản | Cổ phiếu | Phát hành ra công chúng | Có | … | … | … | … | … | … | — | — |
+| 2026-09 | — | — | TPCP | Đấu thầu | Có | — | — | … | … | … | — | … | … |
+
+> ⚠️ Presentation Grain: 1 dòng = 1 kỳ × 1 đối tượng × 1 ngành × 1 loại CK × 1 nhóm hình thức × 1 mức huy động vốn. Storage Grain mịn hơn ở từng Fact nguồn (đợt chào bán × hình thức; bản ghi trái phiếu × tháng; phiên đấu thầu; dòng báo cáo đấu giá × tháng) — đạt Iso-Grain.
+
+**Source:** `Fact Securities Offering Event`, `Fact Private Corporate Bond Offering Snapshot`, `Fact Government Bond Bidding Result Snapshot`, `Fact Share Auction Result Snapshot` → `Calendar Date Dimension`; `Industry Dimension` (tra tên ngành theo mã)
+
+**Bảng KPI:**
+
+| KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
+|---|---|---|---|---|---|---|
+| K_VP_466 | Kỳ | — | Chiều | `Calendar Date Dimension.Calendar Date` | Từ kỳ — Đến kỳ theo loại kỳ Ngày/Tháng/Quý/Năm; trục ngày theo nguồn: OE = ngày GCN/CV, TPCP = ngày phát hành, TPDNRL và đấu giá = cuối tháng báo cáo (kỳ Ngày không có số liệu) | READY |
+| K_VP_467 | Đối tượng phát hành | — | Chiều | `Fact Securities Offering Event.Issuer Type Code`; `Fact Private Corporate Bond Offering Snapshot.Enterprise Type` | IDS = CTĐC, SCMS = CTCK, FMS = CTQLQ; TPDNRL theo enterprise_type HNX; TPCP và đấu giá để trống | READY |
+| K_VP_468 | Ngành | — | Chiều | `Industry Dimension.Industry Name` (qua `Fact Securities Offering Event.Industry Code`); `Fact Private Corporate Bond Offering Snapshot.Business Sector` | IDS = ngành cấp 1 của CTĐC (thiếu = 'Chưa phân ngành'); SCMS/FMS = '07000' Tài chính ngân hàng; TPDNRL = business_sector HNX | READY |
+| K_VP_469 | Loại chứng khoán | — | Chiều | `Fact Securities Offering Event.Security Type Code` + `Offering Method Group Code`; `Fact Private Corporate Bond Offering Snapshot.Convertible Bond Indicator` / `Warrant Linked Bond Indicator` | Cổ phiếu / TPDN niêm yết / TPDN riêng lẻ (thường, chuyển đổi, kèm chứng quyền) / Chứng chỉ quỹ / Chứng quyền / TPCP (cố định) — nhãn 'Cổ phiếu' theo Mô tả BA (SQL xuất 'CP'); 'TP bảo đảm' có ở Mô tả nhưng SQL không có nhánh | READY |
+| K_VP_470 | Nhóm hình thức phát hành | — | Chiều | `Fact Securities Offering Event.Offering Method Group Code` + `Administrative Procedure Code`; `Fact Share Auction Result Snapshot.Auction Type Group Name` | Ánh xạ theo SQL BA (IDS mã 12 = chào mua công khai; IPO của DN thông thường theo thủ tục hành chính); TPDNRL = Phát hành riêng lẻ; TPCP = Đấu thầu; đấu giá = Cổ phần hóa (IPO) / Thoái vốn / Phát hành ra công chúng - quyền mua / Đấu giá - Khác | READY |
+| K_VP_471 | Huy động vốn | — | Chiều | `Fact Securities Offering Event.Raising Capital Indicator` | Có / Không / Không xác định (IDS, SCMS, FMS); TPDNRL và TPCP = Có; đấu giá = NA | READY |
+| K_VP_472 | KL phát hành - Đăng ký | CP/TP | Cơ sở | `SUM(Fact Securities Offering Event.Plan Quantity) + SUM(Fact Share Auction Result Snapshot.Registered Share Quantity)` | TPDNRL và TPCP không có KL đăng ký | READY |
+| K_VP_400 | KL phát hành - Thành công | CP/TP | Cơ sở | `SUM(Fact Securities Offering Event.Result Quantity)` + TPDNRL (lũy kế − tháng trước) + `SUM(Fact Share Auction Result Snapshot.Domestic Winning Share Quantity + Foreign Winning Share Quantity)` | Dùng lại K_VP_400 (BA Trùng), phạm vi Nhóm 53; lệch SQL BA (kl_tc TPDNRL = NULL) — theo Điều kiện BA, O_VP_83 | READY |
+| K_VP_473 | GT phát hành - Đăng ký | VNĐ | Cơ sở | `SUM(Fact Securities Offering Event.Plan Value Amount) + SUM(Fact Government Bond Bidding Result Snapshot.Calling Value)` | TPCP = GT gọi thầu; TPDNRL và đấu giá không có GT đăng ký | READY |
+| K_VP_405 | GT phát hành - Thành công | VNĐ | Cơ sở | `SUM(Fact Securities Offering Event.Result Value Amount)` + TPDNRL (lũy kế − tháng trước) + `SUM(Fact Government Bond Bidding Result Snapshot.Winning Value)` + `SUM(Fact Share Auction Result Snapshot.Domestic Winning Value + Foreign Winning Value)` | Dùng lại K_VP_405 (BA Trùng), phạm vi Nhóm 53 | READY |
+| K_VP_477 | Tỷ lệ thực hiện thành công (%) | % | Cơ sở | `ROUND(100 × Σ GT thành công / Σ GT đăng ký, 2)` — OE và TPCP | BA dòng 610 'Trùng' nhưng chưa có KPI cùng tên nên cấp KPI riêng; chỉ dòng có GT đăng ký | READY |
+| K_VP_474 | GT phát hành NĐTNN | VNĐ | Cơ sở | `SUM(Fact Securities Offering Event.Foreign Result Value Amount)` + TPDNRL thị trường 'Quốc tế' + `SUM(Fact Share Auction Result Snapshot.Foreign Winning Value)` | SCMS (`giaTriPhatHanhNdtnn`) chưa có nguồn Atomic — nhánh SCMS để trống (O_VP_83); TPCP không có | READY |
+| K_VP_475 | Kỳ hạn phát hành bình quân (năm) | Năm | Cơ sở | `Σ(Bond Term Years × GT thành công) / Σ(GT thành công)` — OE, TPDNRL, TPCP | Fact IDS không giữ grain kỳ hạn × lãi suất của SQL BA (O_VP_81 (a)) — bình quân IDS chỉ gồm đợt 1 kỳ hạn | READY |
+| K_VP_476 | Lãi suất phát hành bình quân (%) | % | Cơ sở | `Σ(Issue Interest Rate × GT thành công) / Σ(GT thành công)` — OE, TPDNRL; TPCP lãi suất trúng thầu | SCMS/FMS không có lãi suất; cùng lệch grain IDS như kỳ hạn | READY |
+
+**Star Schema:**
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Event {
+        string Securities_Offering_Event_Id PK
+        string Certificate_Date_Dimension_Id FK
+        string Issuer_Type_Code
+        string Issuer_Code
+        string Equity_Ticker_Symbol
+        string Offering_Code
+        string Certificate_Number
+        date Certificate_Date
+        string Offering_Round_Key
+        string Security_Type_Code
+        string Offering_Method_Code
+        string Security_Name
+        string Offering_Method_Group_Code
+        int Raising_Capital_Indicator
+        bigint Plan_Quantity
+        decimal Plan_Value_Amount
+        bigint Result_Quantity
+        decimal Result_Value_Amount
+        int Has_Result_Indicator
+        date Result_Report_Date
+        decimal Bond_Term_Years
+        decimal Issue_Interest_Rate
+        string Source_System_Code
+        string Industry_Code
+        decimal Foreign_Result_Value_Amount
+        string Administrative_Procedure_Code
+    }
+    Fact_Private_Corporate_Bond_Offering_Snapshot {
+        string Private_Corporate_Bond_Offering_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Bond_Code
+        string Market_Type
+        date Posting_Date
+        date Issue_Date
+        bigint Offering_Bond_Quantity
+        decimal Par_Value
+        decimal Offering_Value_Amount
+        int Report_Year
+        int Report_Month
+        int Report_Day
+        decimal Bond_Term_Years
+        decimal Issue_Interest_Rate
+        string Source_System_Code
+        string Enterprise_Type
+        string Business_Sector
+        int Convertible_Bond_Indicator
+        int Warrant_Linked_Bond_Indicator
+        int Secured_Bond_Indicator
+    }
+    Fact_Government_Bond_Bidding_Result_Snapshot {
+        string Government_Bond_Bidding_Result_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Government_Bond_Term_Dimension_Id FK
+        int Report_Year
+        int Report_Month
+        string Bidding_Session
+        string Bond_Code
+        string Bond_Term
+        decimal Issue_Term_Years
+        decimal Calling_Value
+        decimal Winning_Value
+        decimal Winning_Interest_Rate
+        string Source_System_Code
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Event : " "
+    Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Bidding_Result_Snapshot : " "
+    Fact_Share_Auction_Result_Snapshot {
+        string Share_Auction_Result_Snapshot_Id PK
+        string Snapshot_Date_Dimension_Id FK
+        string Report_Code
+        int Row_Number
+        string Auction_Type_Name
+        string Auction_Type_Group_Name
+        decimal Domestic_Winning_Value
+        decimal Foreign_Winning_Value
+        string Source_System_Code
+        bigint Registered_Share_Quantity
+        bigint Domestic_Winning_Share_Quantity
+        bigint Foreign_Winning_Share_Quantity
+    }
+    Calendar_Date_Dimension ||--o{ Fact_Share_Auction_Result_Snapshot : " "
+```
+
+**Lineage Mart → Báo cáo:**
+
+```mermaid
+flowchart LR
+    F1["Fact Securities Offering Event"] --> RPT53["K_VP_466-477, 400, 405: Data Explorer Thống kê hoạt động huy động vốn"]
+    F2["Fact Private Corporate Bond Offering Snapshot"] --> RPT53
+    F3["Fact Government Bond Bidding Result Snapshot"] --> RPT53
+    F4["Fact Share Auction Result Snapshot"] --> RPT53
+    D1["Calendar Date Dimension"] --> RPT53
+```
+
+**Bảng grain:**
+
+| Tên bảng | Grain |
+|---|---|
+| Fact Securities Offering Event | 1 đợt chào bán × 1 hình thức × (IDS: loại CK, mệnh giá, giá) — PK `securities_offering_event_id` (Dạng B) |
+| Fact Private Corporate Bond Offering Snapshot | 1 mã trái phiếu × thị trường × ngày đăng tin × 1 tháng báo cáo (lũy kế năm) |
+| Fact Government Bond Bidding Result Snapshot | 1 phiên đấu thầu TPCP × kỳ hạn (ngày phát hành) |
+| Fact Share Auction Result Snapshot | 1 dòng báo cáo đấu giá (báo cáo × tháng × số dòng) |
+| Calendar Date Dimension | 1 row / ngày |
+
+> **Coverage rule:** Không thêm Fact mới — thêm đúng các cột BA Nhóm 53 cần ở 3 Fact có sẵn (TPCP đã đủ cột); nhánh SCMS của NĐTNN chờ Atomic.
+
+---
 
 #### Nhóm 54 - Data Explorer Tài khoản giao dịch
 
@@ -6614,3 +6821,5 @@ Không có.
 | O_VP_79 | Quy chuẩn LLD — Atomic `securities_trade` bỏ `match_amt` (commit `40a6a9bd`): Fact Investor Group Trading Snapshot và Fact Listed Corporate Bond Snapshot đọc `match_price × match_quantity` | **[MỚI 2026-11-13]** Gate 0 VP FAIL 14 CRITICAL do Atomic commit `40a6a9bd` (2026-11-12) viết lại `securities_trade` (HOSE/HNX TRADE_BOOK) và bỏ cột `match_amt` (← `EXECUTION_VALUE`). Xử lý cùng cách O_GSTT_86: thay `securities_trade.match_amt` bằng `(securities_trade.match_price * securities_trade.match_quantity)` ở 9 chỗ `etl_logic` của 5 cột (`fct_investor_group_trading_snpst.buy_val`/`sell_val`; `fct_listed_corporate_bond_snpst.trading_val`/`foreign_buy_val`/`foreign_sell_val`), cập nhật `atomic_column`/`source_attribute` và 11 dòng ghi chú Detail Mapping (Nhóm 1, 2, 7, 8, 9). Không đổi cột Fact, flat hay KPI. Công thức khớp BA (BA tính `trade_quantity × trade_price` cho TPDN HCX và HNX). **Giả định / cần kiểm chứng:** (a) HOSE cùng công thức giá × khối lượng như HNX (giống O_GSTT_86); nếu dữ liệu vật lý HOSE còn cột giá trị mà YAML Atomic thiếu thì báo Atomic bổ sung YAML rồi hoàn nguyên; (b) đơn vị `match_price` (VNĐ hay nghìn đồng) chưa đối chiếu với `execution_val` cũ — dev kiểm tổng GTGD 1 ngày giữa bản cũ và bản mới; (c) `match_price` là giá khớp từng dòng nên `match_price × match_quantity` đúng cho từng giao dịch, không dùng được trên dữ liệu đã gộp. | Dev nạp lại 2 Fact + flat và đối chiếu GTGD 1 ngày (cũ `execution_val` so với mới giá × KL) | K_VP_5, 9, 13, 14, 73, 75, 77, 79, 86, 112 | Datamart Modeling Team + dev ETL | Open |
 | O_VP_80 | Nhóm 23/24/25/26/28/46 - BA VP cập nhật mapping 2026-11-16: bảng ánh xạ nhóm hình thức mới, Cancel 'Tỷ lệ thành công', TPDNRL theo market_type, KPI 'Đăng ký' | **[MỚI 2026-11-16]** BA VP đổi mapping (ba_diff: Nhóm 17, 23–29, 46, 52–53; file BA bỏ lại cột 'Note' → 19 cột, profile VP 20→19). Đã áp cho Nhóm 23, 24, 25, 26, 28, 46: (a) bảng ánh xạ nhóm hình thức 8 nhóm — tách `DIVIDEND_EQUITY` thành `DIVIDEND` ('Phát hành để trả cổ tức') và `EQUITY_CAPITAL` ('Phát hành tăng vốn từ vốn CSH'); `INTERNATIONAL` đổi nhãn 'Phát hành ra thị trường quốc tế'; IDS 4/12/15, SCMS CO_DONG_LON_CHAO_BAN/KHAC, FMS 08/10 → `OTHER`; SCMS PHAT_HANH_CO_THU_TIEN → `ESOP` (cùng chiều FMS '04' → ESOP đã nghi ngờ ở O_VP_77 — hai nguồn cùng ánh xạ nên có thể chủ ý, nhưng 'Phát hành có thu tiền' thuộc ESOP cần BA xác nhận); (b) SQL IDS: kế hoạch (plan) nay là INNER JOIN với hồ sơ (trước LEFT JOIN) ⇒ hồ sơ chưa có kế hoạch bị loại khỏi mọi KPI chào bán; (c) Nhóm 26: SQL BA lấy `gt_tc AS gt_dangky` cho TPDN riêng lẻ HNX nhưng Mô tả/Điều kiện BA ghi 'chưa có số liệu đăng ký' (SQL Nhóm 27 để NULL) ⇒ Data Modeler CHỐT THEO SQL (2026-11-16): K_VP_447 'TPDN - Đăng ký' = TPDN UBCK + TPDNRL HNX (GT đăng ký = GT phát hành thực tế, phát sinh tháng theo market_tp); BA nên sửa Mô tả dòng 301; (d) Nhóm 28: SQL bỏ lọc nhóm (hiển thị mọi nhóm) nhưng Mô tả BA 'Tỷ trọng' còn ghi 'Tổng GT phát hành 2 loại' ⇒ Data Modeler CHỐT THEO SQL (2026-11-16): K_VP_442 mẫu số = Σ mọi nhóm; BA nên sửa Mô tả; (e) SQL Nhóm 25 trả thêm cột `gt_dangky` theo nhóm hình thức nhưng BA CSV không có dòng 'GT phát hành đăng ký theo hình thức' ⇒ chưa cấp KPI (H17); (f) TPDNRL: SQL thêm `market_type` — lũy kế (ytd) và LAG tính riêng từng thị trường chào bán rồi cộng (K_VP_437/438/441/442; Fact đã có `market_tp` trong grain); (g) Nhóm 23 'Tỷ lệ thành công (%)' có `mapping_status = Cancel` ⇒ gỡ K_VP_402; 4 dòng nhóm 'Chào bán để tăng vốn của Công ty TNHH' (Nhóm 23 K_VP_415–418, Nhóm 25 K_VP_426) BA ghi 'NULL (Chưa có dữ liệu)' ⇒ giữ PENDING; (h) Nhóm 46: BA bỏ dòng gộp 'trả cổ tức, tăng vốn từ vốn CSH' và thêm 3 dòng (cổ tức / tăng vốn CSH / thị trường quốc tế); SQL xuất mọi nhóm, không còn gộp quốc tế vào 'Khác' (đảo phần quốc tế của O_VP_77(d)); loại CK 'CP' vs IN ('CP','CPUD') vẫn mâu thuẫn BA (giữ O_VP_77(d)). | Đã sửa: LLD Fact Securities Offering Event (cột `offering_method_group_code`: ánh xạ mới + INNER JOIN plan ở mọi cột ETL IDS), Entities, DDL flat (comment cột), model yaml/registry; Detail Mapping + HLD Nhóm 23/24/25/26/28/46 (gỡ K_VP_402; KPI mới K_VP_443, K_VP_444 [Nhóm 46], K_VP_445 [Nhóm 25], K_VP_446, K_VP_447, K_VP_448 [Nhóm 26]; đổi tên K_VP_432, K_VP_434, K_VP_437, K_VP_438). Nhóm 27, 29, 53 (BA báo 'mới') và Nhóm 17 (1 dòng điều kiện mệnh giá CQ) xử lý ở bước kế; Nhóm 52 BA đổi nhưng toàn dòng Pending nên chưa thiết kế. | K_VP_391, K_VP_402 (gỡ), K_VP_415–418, K_VP_422, K_VP_423, K_VP_426, K_VP_427, K_VP_428, K_VP_432, K_VP_434, K_VP_437, K_VP_438, K_VP_441, K_VP_442, K_VP_443–448 | Data Modeler / BA | Open
 | O_VP_81 | Nhóm 27/29 - BA VP cập nhật mapping 2026-11-16: dư nợ, GT/kỳ hạn/lãi suất phát hành TPDN và dư nợ theo ngành | **[MỚI 2026-11-16]** BA VP mapping 2026-11-16 — Nhóm 27 (TPDN chỉ tiêu tổng hợp, K_VP_449–462) và Nhóm 29 (dư nợ TPDN theo ngành, K_VP_463–465) thiết kế mới; thêm 8 cột Fact: `listed_bond_val`, `remaining_term_days` (Fact TPDN niêm yết, MDDS); `outstanding_bond_quantity`, `remaining_bond_term` (Fact đăng ký TPDNRL); `bond_term_years`, `issue_interest_rate` (Fact chào bán UBCK và Fact HNX chào bán). Lệch/giả định: (a) SQL BA Nhóm 27 gom kế hoạch IDS theo cả kỳ hạn và lãi suất, còn SQL Nhóm 23–26/28/46 không gom ⇒ Fact giữ grain cũ; ĐKCB có nhiều dòng kế hoạch cùng (hình thức, tên CK, mệnh giá, giá) nhưng khác kỳ hạn/lãi suất thì kỳ hạn/lãi suất = NULL và bị loại khỏi trung bình gia quyền (SQL BA tách dòng và nhân bản kết quả); (b) SQL Nhóm 27 xuất `gt_dang_ky` (GT phát hành đăng ký, kỳ trước, %) nhưng BA CSV không có dòng ⇒ chưa cấp KPI (H17; TPDNRL = NULL theo SQL); (c) thêm K_VP_462 (% thay đổi kỳ hạn còn lại BQ) theo alias SQL `ky_han_con_lai_bq_nam_pct` vì BA có dòng '% thay đổi' cho 4 chỉ tiêu còn lại; (d) BA Nhóm 29 Mô tả 'Từ kỳ - Đến kỳ' mâu thuẫn SQL 'TÍNH TẠI 1 KỲ' (:period_to) ⇒ theo SQL, dư nợ là số dư cuối kỳ; (e) thứ tự ưu tiên ngành: SQL Nhóm 29 ưu tiên IDS rồi CTCK/CTQLQ (COALESCE), Fact dùng chung (Nhóm 8/10) ưu tiên CTCK/CTQLQ rồi IDS (CASE theo SQL BA Nhóm 8/10) — chỉ khác khi mã vừa có hồ sơ IDS ngành ≠ 07000 vừa là CTCK/CTQLQ; giữ Fact; (f) dư nợ TPDN niêm yết theo KL niêm yết MDDS (`listed_bond_val`) khác KL lưu hành HNX của K_VP_87 (`bond_outstanding_val`) — hai nguồn KL song song, mốc ngày = MAX(cdr_dt) của Fact có bản tin MDDS (BA MAX(tradingdate) không lọc stocktype ở truy vấn con); (g) SQL Nhóm 29 CTE `stock_eod` thiếu cột `industry_cd` (ma_nganh không xác định được từ SQL) ⇒ lấy `industry_code` của Industry Dimension; (h) literal 'Tháng'/'Năm' của `bond_term_unit` chỉ có ở SQL BA (Atomic chưa có value set); Atomic IDS `bond_term_val` mô tả '(tháng)' nhưng BA parse cả 'năm'; `remaining_bond_term` coi là NGÀY (chú thích SQL BA); lãi suất IDS decimal(8,5) và HNX decimal(5,2) đều coi là %/năm. | Đã thiết kế Nhóm 27/29 theo SQL BA (trừ (a), (e) giữ quy tắc Fact dùng chung). BA xác nhận (a)–(e), bổ sung dòng 'GT phát hành - đăng ký' và '% thay đổi kỳ hạn còn lại' vào BA CSV; dev xác nhận value set `bond_term_unit` và đơn vị `remaining_bond_term`. Nếu (a) có dữ liệu thật: đổi grain Fact chào bán IDS thêm (kỳ hạn, lãi suất) vào PK — ảnh hưởng Nhóm 23–26/28/46 (nhân bản dòng kết quả), cần Data Modeler quyết. | K_VP_449-465 | BA Team / Datamart Modeling Team | Open |
+| O_VP_82 | Thay đổi nguồn Atomic (HOSE mẫu HNX) | **[MỚI 2026-11-16 — HOSE chuyển sang mẫu khai thác HNX]** HOSE đã chuyển sang mẫu khai thác HNX (stg → ODS → Atomic: copy job HNX đổi sang bảng nguồn HOSE mới, `src_stm_code` = `HOSE_TRADE_BOOK` / `HOSE_ORDER_BOOK`; khai thác từ Atomic: copy job HNX thành job HOSE, đổi điều kiện lọc cho HOSE — `market_id = 'STO'`, `src_stm_code` HOSE). Datamart đổi mã thị trường HOSE `'STK'` → `'STO'` ở 8 cột LLD (`fct_investor_group_trading_snpst`), 53 dòng Detail Mapping (Nhóm 1, 2, 32, 33, 34, 35, 36, 55; gồm `MAP('STO','HOSE','STX','HNX',…)`) và 6 dòng KPI HLD (Nhóm 1, 2). | **Chưa đổi / chờ xác nhận:** (i) nhánh nối mã CK ↔ ISIN của HOSE vẫn theo ký hiệu mã CK (`ticker_symbol`) — mẫu HNX nối bằng ISIN (A17) nếu `ISSUE_CODE` HOSE mới là ISIN; chờ xác nhận bằng dữ liệu; (ii) dữ liệu HOSE trước ngày chuyển đổi (MARKET_ID `'STK'`) nếu còn trong Atomic thì điều kiện mới không lấy được — cần thêm lại `'STK'`; (iii) bảng ánh xạ phiên giao dịch HOSE (`board_tp_code` G1–G4) chưa đổi. Ghi chú '[Khớp SQL BA: HOSE market_id `'STK'` nối Symbol…]' ở LLD giữ làm lịch sử. | K_VP_2, K_VP_5, K_VP_13 và các KPI đọc `fct_investor_group_trading_snpst`. | Data Modeler / dev ETL | Resolved một phần — chờ xác nhận (i)–(iii) |
+| O_VP_83 | Thiếu SQL BA / Atomic và mâu thuẫn mapping | Nhóm 53 - Data Explorer Thống kê hoạt động huy động vốn (K_VP_466–477, dùng lại K_VP_400/K_VP_405): **[MỚI 2026-11-16]** BA VP mapping 14 dòng 555–613 thiết kế mới theo 13 dòng BA 601–613 + 18 CTE đọc được; ô SQL dòng 555 bị cắt cụt (31.318 ký tự, 433 '(' so với 428 ')', đuôi nằm giữa danh sách IN của CTE `auction_agg`, thiếu phần còn lại của `auction_agg` và SELECT cuối). Thêm 11 cột vào 3 Fact có sẵn (đồng bộ flat DDL/DML + erDiagram mọi Nhóm): `fct_securities_offering_event` +`industry_code`, `foreign_result_val_amt`, `administrative_procedure_code`; `fct_private_corporate_bond_offering_snpst` +`enterprise_tp`, `business_sector`, `convertible_bond_ind`, `warrant_linked_bond_ind`, `secured_bond_ind`; `fct_share_auction_result_snpst` +`registered_share_quantity`, `domestic_winning_share_quantity`, `foreign_winning_share_quantity`. Cần BA/Data Modeler xác nhận: (a) gửi lại SQL dòng 555 đầy đủ (tách nhiều ô, giới hạn 32.767 ký tự/ô Excel) để đối soát `auction_agg` và SELECT cuối (lọc kỳ, nhãn nhóm, tỷ lệ); (b) Mô tả dòng 604 liệt kê 13 nhóm hình thức nhưng giá trị SQL khác: IDS mã '12' = 'Phát hành để chào mua công khai' ở dòng 604 và SQL, 'Khác' ở dòng 605 — thiết kế theo dòng 604 + SQL; 3 nhóm ('Chào bán để tăng vốn của Công ty TNHH', 'Chào bán TP ra công chúng tại VN của Tổ chức tài chính quốc tế', 'IPO của DN Nhà nước') không có nhánh trong SQL; (c) KL thành công TPDNRL: Điều kiện dòng 607 có (lũy kế năm − tháng liền trước), SQL ghi `kl_tc` NULL ('Không có KL') — thiết kế theo Điều kiện; (d) dòng 601/602 ghi đối tượng/ngành TPDNRL = NULL nhưng SQL lấy `enterprise_type`/`business_sector` — theo SQL; (e) 'TPDN riêng lẻ - TP bảo đảm' có ở Mô tả dòng 603, SQL không có nhánh (Fact đã thêm cờ `secured_bond_ind`); (f) dòng 610 'Trùng' nhưng không có KPI cùng tên nên cấp K_VP_477; K_VP_400/K_VP_405 dùng lại cho dòng 607/609 với phạm vi Nhóm 53 gộp 5 nhánh; (g) nhãn 'Cổ phiếu' (Mô tả) thay mã 'CP' (SQL); (h) SQL cố định `ds_snpst_dt` (2026-11-07/08/11) — thiết kế lấy bản ghi hiện hành. | Nhánh thiết kế: (1) IDS/SCMS/FMS theo ngày GCN/CV (`certificate_dt_dim_id`); (2) TPDNRL HNX phát sinh tháng = lũy kế năm − `LAG` tháng liền trước, kỳ Ngày không có số liệu; (3) TPCP theo ngày phát hành, nhóm 'Đấu thầu'; (4) đấu giá cổ phần theo tháng, kỳ Ngày không có số liệu, `auction_agg` phần đuôi suy theo mẫu `private_corpbond_agg`. SCMS GT phát hành NĐTNN (`giaTriPhatHanhNdtnn`) chưa có cột Atomic — nhánh SCMS của K_VP_474 để trống, yêu cầu Atomic bổ sung item. Kỳ hạn/lãi suất IDS: Fact không giữ grain kỳ hạn × lãi suất (O_VP_81 (a)) — bình quân IDS chỉ gồm đợt 1 kỳ hạn. | K_VP_466–477, K_VP_400, K_VP_405 | BA Team / Data Modeler / Atomic IDS-SCMS | Open
