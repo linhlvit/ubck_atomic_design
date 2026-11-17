@@ -72,6 +72,7 @@ SELECT
     sts_dim.close_price AS close_price,
     sts_dim.price_change AS price_change,
     sts_dim.product_group_id AS product_group_id,
+    sts_dim.product_id AS product_id,
     sts_dim.src_stm_code AS sts_dim_src_stm_code
 
 FROM datamart.fct_derivative_contract_snpst f
@@ -103,6 +104,10 @@ SELECT
     f.sell_vol,
     f.sell_val,
     f.src_stm_code,
+    f.order_matching_vol,
+    f.order_matching_val,
+    f.negotiated_trade_vol,
+    f.negotiated_trade_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -147,6 +152,7 @@ SELECT
     sts_dim.close_price AS close_price,
     sts_dim.price_change AS price_change,
     sts_dim.product_group_id AS product_group_id,
+    sts_dim.product_id AS product_id,
     sts_dim.src_stm_code AS sts_dim_src_stm_code,
 
     -- From: INDUSTRY DIMENSION
@@ -187,6 +193,19 @@ SELECT
     f.bond_outstanding_val,
     f.listed_bond_val,
     f.remaining_term_days,
+    f.foreign_buy_vol,
+    f.proprietary_buy_vol,
+    f.proprietary_buy_val,
+    f.foreign_sell_vol,
+    f.proprietary_sell_vol,
+    f.proprietary_sell_val,
+    f.order_matching_vol,
+    f.order_matching_val,
+    f.negotiated_trade_vol,
+    f.negotiated_trade_val,
+    f.yield_to_maturity_rate,
+    f.floor_code,
+    f.ticker_symbol,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -225,6 +244,8 @@ SELECT
     f.foreign_buy_val,
     f.foreign_sell_val,
     f.src_stm_code,
+    f.proprietary_buy_val,
+    f.proprietary_sell_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -259,6 +280,12 @@ SELECT
     f.foreign_buy_val,
     f.foreign_sell_val,
     f.src_stm_code,
+    f.foreign_buy_vol,
+    f.proprietary_buy_vol,
+    f.proprietary_buy_val,
+    f.foreign_sell_vol,
+    f.proprietary_sell_vol,
+    f.proprietary_sell_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -392,6 +419,7 @@ SELECT
     f.listing_floor_code,
     f.listing_stock_tp_code,
     f.listing_fund_tp_code,
+    f.par_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -436,6 +464,7 @@ SELECT
     sts_dim.close_price AS close_price,
     sts_dim.price_change AS price_change,
     sts_dim.product_group_id AS product_group_id,
+    sts_dim.product_id AS product_id,
     sts_dim.src_stm_code AS sts_dim_src_stm_code
 
 FROM datamart.fct_listing_status_change_snpst f
@@ -674,6 +703,7 @@ SELECT
     f.listing_status_nm,
     f.additional_bond_quantity,
     f.src_stm_code,
+    f.par_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,
@@ -706,6 +736,7 @@ SELECT
     f.trading_registration_status_nm,
     f.registered_trading_bond_quantity,
     f.src_stm_code,
+    f.par_val,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt AS cdr_dt,

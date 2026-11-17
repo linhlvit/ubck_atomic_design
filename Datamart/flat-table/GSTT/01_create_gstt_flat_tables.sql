@@ -1107,6 +1107,7 @@ CREATE TABLE IF NOT EXISTS datamart.gstt_fct_index_contribution_rpt_snpst_flat O
     close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá khớp gần nhất (giá đóng cửa) — từ Security Trading Snapshot Dimension',
     price_change                                 Nullable(Decimal(23,2)) COMMENT 'Thay đổi giữa giá khớp gần nhất và giá tham chiếu — từ Security Trading Snapshot Dimension',
     product_group_id                             Nullable(String)        COMMENT 'Mã nhóm sản phẩm của chứng khoán theo Sở (VD FBX = hợp đồng tương lai trái phiếu Chính phủ) — dùng nhận diện s — từ Security Trading Snapshot Dimension',
+    product_id                                   Nullable(String)        COMMENT 'Mã bộ sản phẩm của chứng khoán theo Sở (Tag 20003 PRODUCTID); ký tự 6–7 = EW nhận diện chứng quyền — từ Security Trading Snapshot Dimension',
     sts_dim_src_stm_code                         Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu — từ Security Trading Snapshot Dimension',
 
     -- From: CALENDAR DATE DIMENSION

@@ -1102,6 +1102,7 @@ SELECT
     sts_dim.close_price AS close_price,
     sts_dim.price_change AS price_change,
     sts_dim.product_group_id AS product_group_id,
+    sts_dim.product_id AS product_id,
     sts_dim.src_stm_code AS sts_dim_src_stm_code,
 
     -- From: CALENDAR DATE DIMENSION
