@@ -624,3 +624,34 @@ ENGINE = ReplicatedMergeTree()
 ORDER BY (indicator_level, indicator_id)
 COMMENT 'Flat Data Explorer NDTNN — cây chỉ tiêu báo cáo FIMS (thay phần FIMS của default.metadata_etl)'
 ;
+
+
+-- ==========================================================
+-- 18. FACT: ndtnn_fct_foreign_investor_portfolio_total_row_report_snpst_flat
+--    Dòng tổng ('A-Tổ chức > Tổng (1)', 'B-Cá nhân > Tổng (2)') của sheet II báo cáo PLIII-TT51 (59WJB/BZ5X4) — Nhóm 6 (K_NDTNN_37, 38, 40)
+--    Grain: 1 ô giá trị (1 trong 8 column_path thành phần) của 1 dòng tổng × 1 lần nộp; PK fir_val_id (Dạng A, id dòng Atomic fir_value)
+--    [MỚI 2026-11-17, O_NDTNN_63] BI Nhóm 6 lọc theo rpt_cdr_dt (ngày báo cáo, BA day_report), KHÔNG phải snpst_cdr_dt (ngày nộp)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.ndtnn_fct_foreign_investor_portfolio_total_row_report_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FACT Fact Foreign Investor Portfolio Total Row Report Snapshot
+    fir_val_id                                   String                  COMMENT 'PK — id dòng Atomic driving fir_value.fir_val_id (Dạng A, A22). Grain = 1 ô giá trị (1 trong 8 column_path thà',
+    snpst_dt_dim_id                              String                  COMMENT 'FK to Calendar Date Dimension — ngày snapshot = ngày thực tế nộp báo cáo (BA: ngay_nop)',
+    rpt_dt_dim_id                                Nullable(String)        COMMENT 'FK to Calendar Date Dimension (Role-Playing: Report Date) — ngày báo cáo (BA STT 6: day_report = :ngaybc; FIMS',
+    rpt_log_id                                   Nullable(String)        COMMENT 'Mã LẦN NỘP (REPORT_LOG_ID)',
+    period_val                                   Nullable(String)        COMMENT 'Giá trị kỳ báo cáo (VD T09/2026) — BA: Tháng',
+    rpt_code                                     Nullable(String)        COMMENT 'Mã báo cáo: 59WJB (báo cáo của CTCK) hoặc BZ5X4 (ngân hàng lưu ký) — PLIII-TT51; SQL BA STT 6 cộng cả hai mã (',
+    total_row_nm                                 Nullable(String)        COMMENT 'Đường dẫn dòng tổng của sheet II (row_path): A-Tổ chức > Tổng (1) (tổng NĐT tổ chức) hoặc B-Cá nhân > Tổng (2)',
+    asset_column_nm                              Nullable(String)        COMMENT 'Đường dẫn cột giá trị (column_path) — 1 trong 8 cột thành phần mà SQL BA cộng thành tổng giá trị danh mục (CP/',
+    asset_val                                    Nullable(Decimal(23,2)) COMMENT 'Giá trị ô (cột Giá trị của 1 nhóm tài sản) trên dòng tổng. K_NDTNN_37/38/40 = SUM theo dòng tổng (SQL BA khối ',
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn',
+
+    -- From: CALENDAR DATE DIMENSION
+    snpst_cdr_dt                               Nullable(Date)             COMMENT 'Ngày nộp báo cáo — từ Calendar Date Dimension',
+    rpt_cdr_dt                                 Nullable(Date)             COMMENT 'Ngày báo cáo (ngày chốt số liệu) — từ Calendar Date Dimension (role Report Date)'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
+ORDER BY (assumeNotNull(snpst_cdr_dt), fir_val_id)
+COMMENT 'Flat table — Fact Foreign Investor Portfolio Total Row Report Snapshot × Calendar Date Dimension'
+;

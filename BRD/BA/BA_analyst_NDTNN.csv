@@ -1998,7 +1998,7 @@ Hiển thị lũy kế đầu tháng đến cuối tháng (có dữ liệu hàng
         value_raw
     FROM uat_fims_ods.fir_value
     WHERE report_code = 'IBOU9'
-	and sheet_name = 'I'
+        and sheet_name = 'I'
       AND is_mirror = 0
       AND is_section_echo = 0
       AND is_band_overflow = 0
@@ -2026,8 +2026,8 @@ c_gtri_danh_muc AS (
            TRY_CAST(value_raw AS DECIMAL(38,6)) AS tong_gtri
     FROM base_cell
     WHERE column_path in (
-     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-     	)
+                     'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+             )
 ),
 inv AS (
     SELECT
@@ -2061,25 +2061,25 @@ quy AS (
 ),
 ca_nhan as 
 (
-	    SELECT
+            SELECT
         'Cá nhân' AS nhom_loai_hinh,
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE row_path = 'B-Cá nhân'
       and column_path in (
-     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-     	)
+                     'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+             )
 ),
 to_chuc as 
 (
-	SELECT
+        SELECT
         'Tổ chức' AS nhom_loai_hinh,
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE row_path = 'A-Tổ chức'
       and column_path in (
-     		'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
-     	)
+                     'Giá trị dòng vốn vào trong kỳ báo cáo (+/-) (đơn vị USD)'
+             )
 ),
 tong_hop as 
 (
@@ -2093,10 +2093,10 @@ SELECT nhom_loai_hinh, ROUND(tong_gtri, 4) tong_gtri
 FROM quy
 )
 select 
-	sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) as Ca_nhan,
-	sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) as To_chuc,
-	sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end) as Quy,
-	(sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)) as to_chuc_khac_quy
+        sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) as Ca_nhan,
+        sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) as To_chuc,
+        sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end) as Quy,
+        (sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)) as to_chuc_khac_quy
 from tong_hop;"
 4,34,Dashboard/Giám sát dòng vốn/Dòng vốn đầu tư gián tiếp nước ngoài của NĐTNN,Loại hình NĐTNN,,Dashboard,Chiều,Dễ,,FIMS,X,X,X,Done,,uat_fims_ods.fir_value,value_raw  ,"   WHERE report_code IN ('59WJB', 'BZ5X4')
       AND sheet_name  = 'II'
@@ -2514,6 +2514,7 @@ ORDER BY tradingdate, marketId, marketCode;"
         row_path ,
         sheet_name,
         report_code,
+        is_total_row,
         value_raw
     FROM uat_fims_ods.fir_value
     WHERE report_code IN ('59WJB', 'BZ5X4')
@@ -2522,7 +2523,7 @@ ORDER BY tradingdate, marketId, marketCode;"
       AND is_band_overflow = 0
       AND is_static_copy = 0
       AND is_template_marker = 0
-      AND is_total_row = 0
+--      AND is_total_row = 0
 --      and row_order = 1
       AND day_report  = :ngaybc
 ),
@@ -2537,7 +2538,7 @@ c_ma_gd AS (
            -- vd 085FCA5632 -> CA5632 (6 ký tự cuối)
            SUBSTR(UPPER(TRIM(value_raw)), -6) AS ma_gd_key
     FROM base_cell
-    WHERE column_path in ('Mã số giao dịch chứng khoán', 
+    WHERE column_path in ('Mã số giao dịch chứng khoán')
       AND value_raw IS NOT NULL
 ),
 c_gtri_danh_muc AS (
@@ -2594,6 +2595,7 @@ chi_nhanh_nhnn AS (
     FROM base_cell
     WHERE sheet_name = 'III'   and report_code = '59WJB' 
       AND column_path = 'Số dư cuối kỳ > Giá trị'
+      and is_total_row = 0
 --      and row_order = 1
 ),
 ca_nhan as 
@@ -2603,7 +2605,7 @@ ca_nhan as
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE sheet_name = 'II'
-    AND row_path = 'B-Cá nhân'
+    AND row_path = 'B-Cá nhân > Tổng (2)'
       and column_path in (
                      'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
                         ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
@@ -2622,7 +2624,7 @@ to_chuc as
         SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell
     WHERE sheet_name = 'II'
-    AND row_path = 'A-Tổ chức'
+    AND row_path = 'A-Tổ chức > Tổng (1)'
       and column_path in (
                      'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
                         ,'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Dài hạn > Trên 24 tháng > Giá trị'
@@ -2657,11 +2659,7 @@ select
                 sum(case when nhom_loai_hinh = 'Cá nhân' then tong_gtri end) + sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end)
                 + (sum(case when nhom_loai_hinh = 'Tổ chức' then tong_gtri end) - sum(case when nhom_loai_hinh = 'Quỹ' then tong_gtri end))
                 + sum(case when nhom_loai_hinh = 'Chi nhánh ngân hàng nước ngoài' then tong_gtri end) as tong_gtri_danh_muc
-from tong_hop; 
-
-
-
-"
+from tong_hop; "
 6,47,Dashboard/Danh mục/Thống kê danh mục,Loại hình nhà đầu tư,,Dashboard,Chiều,Trùng,,FIMS,,,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
@@ -2866,19 +2864,19 @@ LIMIT 5;"
 ),
 c_tin_phieu AS (
     SELECT 
-    	'Tín phiếu' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Tín phiếu' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE sheet_name = 'II' and column_path = 'Tín phiếu > Giá trị' 
     union all 
     SELECT 
-    	'Tín phiếu' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Tín phiếu' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'III' and column_path = 'A. Tín phiếu' and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_trai_phieu AS (
     SELECT 
         'Trái phiếu' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell 
     WHERE column_path IN (
         'Trái phiếu > Thời gian còn lại tới khi đáo hạn > Ngắn hạn > Dưới 12 tháng > Giá trị',
@@ -2887,80 +2885,80 @@ c_trai_phieu AS (
     )
     union all 
     SELECT 
-    	'Trái phiếu' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Trái phiếu' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'III' and column_path in 
     (
-    	'B. Trái phiếu > B1.Trái phiếu có thời gian tới khi đáo hạn còn lại dưới 12 tháng'
-		,'B. Trái phiếu > B3. Trái phiếu có thời gian tới khi đáo hạn còn lại trên 24 tháng đến 60 tháng'
-		,'B. Trái phiếu > B2. Trái phiếu có thời gian tới khi đáo hạn còn lại từ 12 tháng đến 24 tháng'
-		,'B. Trái phiếu > B4. Trái phiếu có thời gian đáo hạn trên 60 tháng'
+            'B. Trái phiếu > B1.Trái phiếu có thời gian tới khi đáo hạn còn lại dưới 12 tháng'
+                ,'B. Trái phiếu > B3. Trái phiếu có thời gian tới khi đáo hạn còn lại trên 24 tháng đến 60 tháng'
+                ,'B. Trái phiếu > B2. Trái phiếu có thời gian tới khi đáo hạn còn lại từ 12 tháng đến 24 tháng'
+                ,'B. Trái phiếu > B4. Trái phiếu có thời gian đáo hạn trên 60 tháng'
     )
     and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_CCQ AS (
     SELECT 'CP/CCQ' AS loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE sheet_name = 'II' and column_path = 'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết > Giá trị'
     union all 
     SELECT 
-    	'CP/CCQ' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'CP/CCQ' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'III' and row_path = 'C. Cổ phiếu niêm yết, chứng chỉ quỹ niêm yết' and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_upcom AS (
     SELECT 'Upcom' AS loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'II' and column_path = 'Cổ phiếu/Chứng chỉ quỹ > Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom) > Giá trị'
     union all 
     SELECT 
-    	'Upcom' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Upcom' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE sheet_name = 'III' and row_path = 'D. Cổ phiếu công ty đại chúng đăng ký giao dịch (upcom)' and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_gtri_von_gop AS (
     SELECT 'Giá trị vốn góp' AS loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE  sheet_name = 'II' and column_path = 'Cổ phiếu/Chứng chỉ quỹ > Giá trị vốn góp mua cổ phần, quỹ thành viên và chứng khoán khác > Giá trị'
     union all 
     SELECT 
-    	'Giá trị vốn góp' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Giá trị vốn góp' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'III' and row_path = 'Đ. Giá trị vốn góp mua cổ phần, đơn vị quỹ thành viên' and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_tien AS (
     SELECT 'Tiền và các khoản tương đương tiền' AS loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE sheet_name = 'II' and column_path = 'Tiền và các khoản tương đương tiền (chứng chỉ tiền gửi...) > Giá trị'
     union all 
     SELECT 
-    	'Tiền và các khoản tương đương tiền' as loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            'Tiền và các khoản tương đương tiền' as loai_hinh,
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE report_code = '59WJB' and sheet_name = 'III' and row_path in 
     (
-    	'G. Tiền và các khoản tương đương tiền (Chứng chỉ tiền gửi và các công cụ thị trường tiền tệ ..) > 2. Chứng chỉ tiền gửi và công cụ thị trường tiền tệ...'
-		,'G. Tiền và các khoản tương đương tiền (Chứng chỉ tiền gửi và các công cụ thị trường tiền tệ ..) > 1. Tiền'
+            'G. Tiền và các khoản tương đương tiền (Chứng chỉ tiền gửi và các công cụ thị trường tiền tệ ..) > 2. Chứng chỉ tiền gửi và công cụ thị trường tiền tệ...'
+                ,'G. Tiền và các khoản tương đương tiền (Chứng chỉ tiền gửi và các công cụ thị trường tiền tệ ..) > 1. Tiền'
     )
     and column_path = 'Số dư cuối kỳ > Giá trị'
 ),
 c_gtri_danh_muc AS (
     SELECT 'Tổng' AS loai_hinh,
-    	SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
+            SUM(TRY_CAST(value_raw AS DECIMAL(38,6))) AS tong_gtri
     FROM base_cell WHERE column_path = 'Tổng giá trị danh mục > Giá trị'
 ),
 pvt_data AS (
-	select 
-		sum(case when loai_hinh = 'Tín phiếu' then tong_gtri end) as tin_phieu,
-		sum(case when loai_hinh = 'Trái phiếu' then tong_gtri end) as trai_phieu,
-		sum(case when loai_hinh = 'CP/CCQ' then tong_gtri end) as CP_CCQ,
-		sum(case when loai_hinh = 'Upcom' then tong_gtri end) as upcom,
-		sum(case when loai_hinh = 'Giá trị vốn góp' then tong_gtri end) as gtri_von_gop,
-		sum(case when loai_hinh = 'Tiền và các khoản tương đương tiền' then tong_gtri end) as tien,
-		sum(case when loai_hinh = 'Tín phiếu' then tong_gtri end) + sum(case when loai_hinh = 'Trái phiếu' then tong_gtri end)
-		+ sum(case when loai_hinh = 'CP/CCQ' then tong_gtri end) + sum(case when loai_hinh = 'Upcom' then tong_gtri end) 
-		+ sum(case when loai_hinh = 'Upcom' then tong_gtri end) + sum(case when loai_hinh = 'Giá trị vốn góp' then tong_gtri end)
-		+ sum(case when loai_hinh = 'Tiền và các khoản tương đương tiền' then tong_gtri end) as tong_tai_san
-	from (
+        select 
+                sum(case when loai_hinh = 'Tín phiếu' then tong_gtri end) as tin_phieu,
+                sum(case when loai_hinh = 'Trái phiếu' then tong_gtri end) as trai_phieu,
+                sum(case when loai_hinh = 'CP/CCQ' then tong_gtri end) as CP_CCQ,
+                sum(case when loai_hinh = 'Upcom' then tong_gtri end) as upcom,
+                sum(case when loai_hinh = 'Giá trị vốn góp' then tong_gtri end) as gtri_von_gop,
+                sum(case when loai_hinh = 'Tiền và các khoản tương đương tiền' then tong_gtri end) as tien,
+                sum(case when loai_hinh = 'Tín phiếu' then tong_gtri end) + sum(case when loai_hinh = 'Trái phiếu' then tong_gtri end)
+                + sum(case when loai_hinh = 'CP/CCQ' then tong_gtri end) + sum(case when loai_hinh = 'Upcom' then tong_gtri end) 
+                + sum(case when loai_hinh = 'Upcom' then tong_gtri end) + sum(case when loai_hinh = 'Giá trị vốn góp' then tong_gtri end)
+                + sum(case when loai_hinh = 'Tiền và các khoản tương đương tiền' then tong_gtri end) as tong_tai_san
+        from (
     select loai_hinh, sum(tong_gtri) as tong_gtri from c_tin_phieu group by loai_hinh
     union all 
      select loai_hinh, sum(tong_gtri) as tong_gtri from c_trai_phieu group by loai_hinh
@@ -2975,12 +2973,12 @@ pvt_data AS (
     )
 )
 select 
-	tin_phieu*100/tong_tai_san as tin_phieu,
-	trai_phieu*100/tong_tai_san as trai_phieu,
-	CP_CCQ*100/tong_tai_san as CP_CCQ,
-	upcom*100/tong_tai_san as upcom,
-	gtri_von_gop*100/tong_tai_san as gtri_von_gop,
-	tien*100/tong_tai_san as tien
+        tin_phieu*100/tong_tai_san as tin_phieu,
+        trai_phieu*100/tong_tai_san as trai_phieu,
+        CP_CCQ*100/tong_tai_san as CP_CCQ,
+        upcom*100/tong_tai_san as upcom,
+        gtri_von_gop*100/tong_tai_san as gtri_von_gop,
+        tien*100/tong_tai_san as tien
 from pvt_data;"
 7,55,Dashboard/Danh mục/Cơ cấu danh mục theo loại hình tài sản của NĐTNN,Loại tài sản,,Dashboard,Chiều,TB,,FIMS,X,X,,Done,,uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
@@ -3074,16 +3072,16 @@ uat_vsdc_stg.foreign_investor_info.current_shares_foreign_hold
 uat_vsdc_stg.foreign_investor_info.total_issued_shares
 
 uat_mdds_stg.jad_stockinfor.close_price ",,
-9,63,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Mã CK,,Dashboard,Chỉ tiêu cơ sở,Dễ,,CSDLTT,,,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,ticker_symbol,,"select 
+9,63,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Mã CK,,Dashboard,Chỉ tiêu cơ sở,Dễ,,CSDLTT,,,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,ticker_symbol,,"select 
         ticker_symbol as ma_ck,
         max_foreign_ownership_ratio as ty_le_so_huu,
         remaining_shares_foreign_can_hold as room_con_lai,
         max_shares_foreign_can_hold as room_toi_da
 from uat_vsdc_stg.foreign_investor_info;"
-9,64,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,max_foreign_ownership_ratio,,
-9,65,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room còn lại (theo mã CK),Giá trị room còn được phép nắm giữ của NĐTNN,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,,
-9,66,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room tối đa,Giới hạn room theo quy định từng mã CK.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,max_shares_foreign_can_hold,,
-9,67,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,,"select 
+9,64,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Tỷ lệ sở hữu (theo mã CK),Tỷ lệ sở hữu của NĐTNN với từng mã chứng khoán,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_foreign_ownership_ratio,,
+9,65,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room còn lại (theo mã CK),Giá trị room còn được phép nắm giữ của NĐTNN,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,
+9,66,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room tối đa,Giới hạn room theo quy định từng mã CK.,Dashboard,Chỉ tiêu cơ sở,Dễ,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,max_shares_foreign_can_hold,,
+9,67,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Top 5 mã có room còn lại thấp nhất.,Lấy top 5 mã có room còn lại thấp nhất.,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,CSDLTT,X,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,,"select 
         ticker_symbol as ma_ck,
         remaining_shares_foreign_can_hold as room_con_lai
 from uat_vsdc_stg.foreign_investor_info
@@ -3091,7 +3089,7 @@ order by remaining_shares_foreign_can_hold asc
 limit 5; "
 9,68,Dashboard/Danh mục/Sở hữu NĐT nước ngoài (ROOM),Room theo ngành (%),Room theo ngành = Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành,Dashboard,Chỉ tiêu phái sinh,TB,Ngày,"IDS, CSDLTT",X,X,,Done,,"IDS.CATEGORIES
 
-UAT_VSDC_STG.FOREIGN_INVESTKR_INFO","IDS:
+UAT_VSDC_STG.FOREIGN_INVESTOR_INFO","IDS:
 - CATEGORIES. INDUSTRY_NAME
 
 Tổng số cổ phiếu NĐTNN đang nắm giữ*100/Tổng số cổ phiếu tối đa NĐTNN có thể sở hữu của tất cả các mã trong ngành",GROUP BY CATEGORIES. INDUSTRY_NAME,"select 
@@ -3105,14 +3103,14 @@ from uat_vsdc_stg.foreign_investor_info fii
            ON cp.category_l1_id = c.id
            AND c.ds_snpst_dt = to_date('2026-09-02')
 group by nvl(c.industry_name, 'Chưa phân ngành');"
-10,69,Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN,Room còn lại (cổ phiếu),Những mã cổ phiếu có Room còn lại = 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,CSDLTT,,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTKR_INFO,remaining_shares_foreign_can_hold,"where max_foreign_ownership_ratio= 0
+10,69,Dashboard/Danh mục/Cảnh báo ngưỡng Room còn lại của NĐTNN,Room còn lại (cổ phiếu),Những mã cổ phiếu có Room còn lại = 0,Dashboard,Chỉ tiêu phái sinh,Trùng,Ngày,CSDLTT,,X,,Done,,UAT_VSDC_STG.FOREIGN_INVESTOR_INFO,remaining_shares_foreign_can_hold,"where max_foreign_ownership_ratio= 0
 ","select 
         ticker_symbol as ma_ck,
         remaining_shares_foreign_can_hold as room_con_lai
 from uat_vsdc_stg.foreign_investor_info
 where max_foreign_ownership_ratio = 0
 order by remaining_shares_foreign_can_hold asc;"
-11,70,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Dễ,,FIMS,,,,Done,,INVESTKR,Name,,"select 
+11,70,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Dễ,,FIMS,,,,Done,,INVESTOR,Name,,"select 
         i.`name` ten_ndt,
         SUBSTR(UPPER(TRIM(TransactionCode)), -6) ma_so_gd,
         n.`name` quoc_tich,
@@ -3127,20 +3125,20 @@ left join uat_fims_stg.investortype it on i.investortypeid = it.id and it.ds_snp
 left join uat_fims_stg.status s on i.statusid = s.id and s.ds_snpst_dt = '2026-08-28'
 where i.ds_snpst_dt = '2026-08-28' and i.deleted = 0;"
 11,71,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Quốc tịch,Quốc tịch nhà đầu tư nước ngoài,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"NATIONAL
-INVESTKR","NATIONAL.Name
-INVESTKR.Naid",,
-11,72,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Mã số giao dịch,"Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,INVESTKR,INVESTKR.TransactionCode,,
+INVESTOR","NATIONAL.Name
+INVESTOR.Naid",,
+11,72,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Mã số giao dịch,"Mã số giao dịch của nhà đầu tư, là định danh duy nhất của một nhà đầu tư nước ngoài",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,INVESTOR,INVESTOR.TransactionCode,,
 11,73,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Ngân hàng lưu ký,Ngân hàng lưu ký nơi nhà đầu tư nước ngoài mở tài khoản giao dịch,Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"BANKMONI
-INVESTKR","BANKMONI.Name
-INVESTKR.bankaddid",,
-11,74,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Loại hình nhà đầu tư,"Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTKRTYPE
-INVESTKR",INVESTKRTYPE.Name,,
+INVESTOR","BANKMONI.Name
+INVESTOR.bankaddid",,
+11,74,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Loại hình nhà đầu tư,"Phân loại nhà đầu tư là tổ chức, cá nhân, quỹ…",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTORTYPE
+INVESTOR",INVESTORTYPE.Name,,
 11,75,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Đại diện giao dịch,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"
-INVESTKR","INVESTKR.Director
+INVESTOR","INVESTOR.Director
 ",,
-11,76,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Trạng thái,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTKR
+11,76,Dashboard/NĐT 360/Hồ sơ định danh của NĐTNN,Trạng thái,"Thông tin người đại diện giao dịch của nhà đầu tư nước ngoài: Tên, số CCCD, Trạng thái (đã xác thực)",Dashboard,Chỉ tiêu cơ sở,Dễ,NĐT,FIMS,X,X,,Done,,"INVESTOR
 STATUS","STATUS.Name
-INVESTKR.statusid",,
+INVESTOR.statusid",,
 12,77,Dashboard/NĐT 360/Biến động tài sản của NĐTNN,Thông tin nhà đầu tư,"Tên, MSGD của NĐTNN",Dashboard,Chỉ tiêu cơ sở,Trùng,,FIMS,,,,Doing,, uat_fims_ods.fir_value,value_raw,"        WHERE report_code  in ('59WJB', 'BZ5X4')
           AND sheet_name  = 'II'
           AND is_mirror = 0 AND is_section_echo = 0 AND is_band_overflow = 0
