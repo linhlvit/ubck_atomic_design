@@ -110,6 +110,12 @@ def erd_type(t: str) -> str:
 
 
 def module_vi(root: Path, module: str) -> str:
+    """Tên module trong tiêu đề TKCSLD: doc_registry (template v1.2) trước, rồi reference/module_names_vi.md."""
+    try:
+        import doc_registry
+        return doc_registry.get_module(module).tkcsld_name
+    except (KeyError, ImportError):
+        pass
     p = _HERE.parent / "reference" / "module_names_vi.md"
     if p.is_file():
         for line in p.read_text(encoding="utf-8").splitlines():

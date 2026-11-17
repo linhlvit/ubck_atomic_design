@@ -51,6 +51,8 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 REPO_ROOT = Path(__file__).resolve().parents[4]
 OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
 
@@ -159,34 +161,10 @@ def _set_shading(cell, color: str, qn_fn, OxmlElement) -> None:
 
 
 def _find_reference_doc(doc_type: str, custom_ref: Path | None = None) -> Path | None:
-    """Tìm kiếm file template mẫu --reference-doc theo thứ tự ưu tiên."""
-    if custom_ref and custom_ref.exists():
-        return custom_ref
+    """Bản mẫu --reference-doc: `custom_ref` nếu có, không thì bản hiện hành trong doc_registry (PTTK / TKCSLD v1.2)."""
+    import doc_registry
 
-    candidates = [
-        # 1. Bản mẫu Q5 hiện hành (đặt tại gốc thư mục skill) — ưu tiên cao nhất cho PTTK
-        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
-        # 2. Thư mục reference trong skill
-        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
-        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
-        REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Thiet ke co so du lieu_Template.docx",
-        # 3. Thư mục template sample của dự án (fallback)
-        REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
-    ]
-    if doc_type.lower() == "tkcsld":
-        candidates.insert(
-            0,
-            REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "reference" / "UBCKNN_Thiet ke co so du lieu_Template.docx"
-        )
-        candidates.insert(
-            1,
-            REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Thiet ke co so du lieu_Template.docx"
-        )
-
-    for p in candidates:
-        if p.exists():
-            return p
-    return None
+    return doc_registry.find_template(doc_type, custom=custom_ref)
 
 
 def post_process_docx(docx_path: Path, doc_type: str = "pttk") -> None:

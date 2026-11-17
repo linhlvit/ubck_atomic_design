@@ -1,0 +1,348 @@
+# etl_job_info.yaml — "Thông tin chung luồng đồng bộ" (mục 3.1.X.1 của PTTK) cho 11 phân hệ Datamart.
+#
+# Vì sao có file này: comment review #305 (LaMT, 2026-11-14, Critical) trên template PTTK v1.2 — 6/7 dòng của mục 3.1.X.1
+# đang để trống ở cả 11 luồng. Giá trị KHÔNG suy ra được từ HLD/LLD nên phải do dev ETL / Data Modeler cung cấp và lưu ở đây.
+#
+# QUY TẮC (Data Modeler chốt 2026-11-17):
+#   - Tài liệu CHỈ in `value` của dòng có `confirmed: true`; dòng `confirmed: false` in nhãn và để trống giá trị.
+#   - Giá trị nạp sẵn với `confirmed: false` là ĐỀ XUẤT lấy từ comment review #513–#523 (job name, giờ chạy, dung lượng,
+#     thời gian lưu trữ, thư mục) — chưa đối chiếu với job/scheduler thật. Muốn in: sửa `value` cho đúng thực tế,
+#     đổi `confirmed: true`, ghi `source` là người/tài liệu xác nhận + ngày.
+#   - AI KHÔNG tự đổi `confirmed` thành true và KHÔNG tự đặt giá trị mới — chỉ người có thẩm quyền xác nhận.
+#   - Xem trạng thái: python .claude/skills/datamart-gen-docs/scripts/pttk_facts.py job-info -m ALL --status
+#   - Đưa vào Markdown PTTK: python .claude/skills/datamart-gen-docs/scripts/pttk_facts.py job-info -m {MODULE} [--apply]
+#
+# Khóa mỗi dòng: value (chuỗi in ra), confirmed (true/false), source (ai/tài liệu nào xác nhận hoặc đề xuất), note (tùy chọn).
+
+schema_version: 1
+modules:
+  TT:
+    ten_job:
+      value: job_etl_tt_daily_sync (chạy dtm_fct_inspection_case_activity, dtm_fct_penalty_decision trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.tt_fct_inspection_team_activity_flat, dwh_prod.tt_fct_examination_team_activity_flat, dwh_prod.tt_opr_inspection_case_list_flat).
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: THANHTRA
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #513 đề xuất diễn giải: Hệ thống THANHTRA (các bảng TT_HO_SO, TT_KET_LUAN, TT_QUYET_DINH, TT_VI_PHAM...).'
+    cach_thuc_dong_bo:
+      value: Batch trích xuất delta theo ngày qua Kafka/Spark, nạp vào Staging uat_thanhtra_stg, làm sạch tại ODS ods_tt_*, tổng hợp vào Atomic atm_inspection_*, và nạp bảng phẳng ClickHouse dwh_prod.tt_*_flat.
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 02:00 AM UTC+7 (Daily EOD batch).
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 50 - 100 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic (Iceberg), 5 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/TT/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #513 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  NHNCK:
+    ten_job:
+      value: job_etl_nhnck_daily_sync (chạy dtm_fct_practitioner_dly_snpst, dtm_fct_practitioner_license_cert_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.nhnck_fct_practitioner_daily_snpst_flat, dwh_prod.nhnck_fct_practitioner_license_certificate_snpst_flat, dwh_prod.nhnck_opr_practitioner_360_profile_flat... 12 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: NHNCK
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #514 đề xuất diễn giải: CSDL NHNCK (QL_NGUOI_HANH_NGHE, CHUNG_CHI_HANH_NGHE, QUA_TRINH_CONG_TAC, VI_PHAM...).'
+    cach_thuc_dong_bo:
+      value: CDC Debezium/Kafka vào Staging stg_nhnck_*, chuẩn hóa tại ODS ods_nhnck_* (xem Mapping/ods/nhnck/), lưu trữ SCD4A vào Atomic atm_scr_prac_*, tổng hợp vào Datamart dtm và nạp ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 02:30 AM UTC+7 (Daily EOD batch).
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 20 - 50 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/NHNCK/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #514 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  NDTNN:
+    ten_job:
+      value: job_etl_ndtnn_daily_sync (chạy dtm_fct_foreign_investor_trading, dtm_fct_foreign_capital_flow trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.ndtnn_fct_securities_foreign_trading_snpst_flat, dwh_prod.ndtnn_fct_foreign_investor_trading_snpst_flat, dwh_prod.ndtnn_fct_foreign_capital_flow_snpst_flat... 17 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: FIMS, IDS, THANHTRA
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #515 đề xuất diễn giải: VSDC, HOSE, HNX, CSDL Quản lý NĐTNN.'
+    cach_thuc_dong_bo:
+      value: Batch EOD trích xuất giao dịch và số dư sở hữu mã giao dịch chứng khoán (Trading Code), nạp qua Staging, ODS, Atomic và nạp bảng phẳng ClickHouse schema dwh_prod theo phân vùng toYYYYMM.
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 03:00 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 100 - 300 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/NDTNN/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #515 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  QLCB:
+    ten_job:
+      value: job_etl_qlcb_daily_sync (chạy dtm_fct_securities_offering_snpst, dtm_fct_securities_offering_result_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.qlcb_fct_securities_offering_snpst_flat, dwh_prod.qlcb_fct_securities_offering_plan_snpst_flat, dwh_prod.qlcb_opr_securities_offering_360_profile_flat... 5 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: IDS, TTHC
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #516 đề xuất diễn giải: CSDL Quản lý Chào bán & Phát hành (ISS, ECAT, TTHC).'
+    cach_thuc_dong_bo:
+      value: Batch delta hàng ngày trích xuất hồ sơ đăng ký chào bán, phương án phát hành và kết quả phân phối chào bán; lưu SCD4A trên Atomic và nạp ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 03:30 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 10 - 30 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/QLCB/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #516 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  GSDC:
+    ten_job:
+      value: job_etl_gsdc_daily_sync (chạy dtm_fct_public_company_financial_rpt_val, dtm_fct_public_company_risk_evaluation_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.gsdc_fct_public_company_financial_rpt_val_flat, dwh_prod.gsdc_fct_public_company_risk_evaluation_snpst_flat, dwh_prod.gsdc_opr_public_company_360_profile_flat... 20 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: IDS
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #517 đề xuất diễn giải: CSDL FIMS, SCMS, CSDL Báo cáo tài chính doanh nghiệp TMS.'
+    cach_thuc_dong_bo:
+      value: Batch EOD trích xuất chỉ tiêu tài chính, báo cáo quản trị, bóc tách JSON qua ODS TMS Report (ods_tms_report_value), tính điểm rủi ro tuân thủ trên Atomic và nạp ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 01:30 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 200 - 500 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/GSDC/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #517 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  GSTT:
+    ten_job:
+      value: job_etl_gstt_daily_sync (chạy dtm_fct_security_trading_daily, dtm_fct_instrument_price_daily trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.gstt_fct_security_trading_daily_flat, dwh_prod.gstt_fct_instrument_price_daily_flat, dwh_prod.gstt_fct_index_valuation_flat... 19 bảng chính + buffer).
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: MDDS, OrderTrade, IDS, ECAT
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #518 đề xuất diễn giải: Dữ liệu giao dịch khớp lệnh và sổ lệnh từ HOSE, HNX, MDDS.'
+    cach_thuc_dong_bo:
+      value: File transfer qua SFTP / Stream Kafka cuối ngày; nạp vào Staging, tính toán chỉ số định giá và đột biến khối lượng, nạp bảng phẳng ClickHouse schema dwh_prod với partition theo toYYYYMM.
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 18:00 UTC+7 (ngay sau khi đóng phiên và đối soát 2 Sở).
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 1 - 3 GB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 5 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/GSTT/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #518 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  QLQ:
+    ten_job:
+      value: job_etl_qlq_daily_sync (chạy dtm_fct_fund_management_company_snpst, dtm_fct_investment_fund_count_snpst, dtm_fct_fund_portfolio_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.qlq_fct_fund_management_company_snpst_flat, dwh_prod.qlq_fct_fund_nav_per_share_snpst_flat, dwh_prod.qlq_opr_fund_management_company_profile_flat... 23 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: FMS, ECAT, QLRR, GSGD
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #519 đề xuất diễn giải: CSDL FIMS (Phân hệ Quản lý Quỹ và CTQLQ).'
+    cach_thuc_dong_bo:
+      value: Batch EOD trích xuất danh mục tài sản, giá trị tài sản ròng (NAV), danh sách người hành nghề và hợp đồng ủy thác; tổng hợp vào Datamart dtm và nạp ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 03:00 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 50 - 150 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/QLQ/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #519 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  QLKD:
+    ten_job:
+      value: job_etl_qlkd_daily_sync (chạy dtm_fct_securities_company_status_snpst, dtm_fct_financial_safety_ratio_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.qlkd_fct_securities_company_status_snpst_flat, dwh_prod.qlkd_fct_financial_safety_ratio_snpst_flat, dwh_prod.qlkd_opr_securities_company_profile_flat... 22 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: SCMS, FIMS, NHNCK, THANHTRA, IDS
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #520 đề xuất diễn giải: CSDL Quản lý Kinh doanh Chứng khoán, Báo cáo tỷ lệ an toàn tài chính CTCK.'
+    cach_thuc_dong_bo:
+      value: Batch trích xuất delta từ hệ thống nguồn, tính toán tỷ lệ an toàn tài chính (vốn khả dụng / tổng rủi ro), tổng hợp Datamart dtm và nạp bảng phẳng ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 02:45 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 80 - 200 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/QLKD/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #520 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  PTTT:
+    ten_job:
+      value: job_etl_pttt_daily_sync (chạy dtm_fct_corporate_bond_market_snpst, dtm_fct_market_risk_snpst, dtm_fct_investor_flow_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.pttt_fct_corporate_bond_market_snpst_flat, dwh_prod.pttt_fct_market_risk_snpst_flat, dwh_prod.pttt_fct_investor_flow_snpst_flat... 17 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: MDDS, MSS, QLRR, IDS, SCMS, FMS, ECAT
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #521 đề xuất diễn giải: Dữ liệu giao dịch cổ phiếu, TPDN riêng lẻ, dữ liệu vĩ mô và dòng tiền đầu tư.'
+    cach_thuc_dong_bo:
+      value: Batch trích xuất tổng hợp từ các bảng Fact Atomic giao dịch và doanh nghiệp, tính toán rủi ro ngành và tỷ trọng nợ vay, nạp ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 04:00 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 150 - 350 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/PTTT/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #521 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  TKNB:
+    ten_job:
+      value: job_etl_tknb_daily_sync (chạy dtm_fct_market_trading_snpst, dtm_fct_derivatives_security_detail_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.tknb_fct_market_trading_snpst_flat, dwh_prod.tknb_fct_derivatives_security_detail_snpst_flat, dwh_prod.tknb_fct_tk_hnx01_snpst_flat... 27 bảng gồm bảng phẳng và per-report).
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: MDDS, ORDERTRADE, SCMS, IDS, FMS
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #522 đề xuất diễn giải: Báo cáo định kỳ từ HNX, HOSE, VSDC và các biểu mẫu tổng hợp UBCK.'
+    cach_thuc_dong_bo:
+      value: Batch nạp file báo cáo định kỳ, bóc tách item-value và tổng hợp các biểu mẫu thống kê theo tháng/quý/năm, nạp ClickHouse schema dwh_prod với partition theo toYYYYMM.
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 04:30 AM UTC+7 và cuối kỳ báo cáo.
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 100 - 250 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/TKNB/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #522 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+  VP:
+    ten_job:
+      value: job_etl_vp_daily_sync (chạy dtm_fct_government_bond_trading_snpst, dtm_fct_listed_equity_snpst, dtm_fct_investor_group_trading_snpst trên Lakehouse schema dtm; và job nạp ClickHouse dwh_prod.vp_fct_government_bond_trading_snpst_flat, dwh_prod.vp_fct_listed_equity_snpst_flat, dwh_prod.vp_fct_investor_group_trading_snpst_flat... 18 bảng).
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    nguon_du_lieu:
+      value: ORDERTRADE, MDDS, ECAT, VSDC, HNX, IDS, SCMS, FMS, ISS
+      confirmed: true
+      source: Thân template PTTK v1.2 (tên hệ thống nguồn suy từ prefix bảng Staging trong diagram)
+      note: 'Comment #523 đề xuất diễn giải: Dữ liệu giao dịch TPCP, cổ phiếu niêm yết, phái sinh từ Sở GDCK và TT Lưu ký.'
+    cach_thuc_dong_bo:
+      value: Batch tổng hợp số liệu phục vụ báo cáo điều hành của Lãnh đạo UBCKNN và Bộ Tài chính, nạp bảng phẳng ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    tan_suat:
+      value: Hàng ngày lúc 05:00 AM UTC+7.
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    dung_luong:
+      value: 50 - 120 MB/ngày.
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thoi_gian_luu_tru:
+      value: Vĩnh viễn trên Atomic, 10 năm trên ClickHouse dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'
+    thu_muc_luu_tru:
+      value: MinIO s3a://lakehouse/gold/datamart/VP/ (schema dtm) & ClickHouse schema dwh_prod.
+      confirmed: false
+      source: 'Đề xuất tại comment review #523 (Viettel Solution Review, 2026-11-17) trên template PTTK v1.2 — CHƯA kiểm chứng'

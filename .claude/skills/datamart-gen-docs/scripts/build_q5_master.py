@@ -1,5 +1,9 @@
-"""Script tạo và biên dịch 1 quyển tài liệu Phân tích Thiết kế (Q5) duy nhất
-cho toàn bộ 10 phân hệ Datamart theo chuẩn template UBCKNN Q5.
+"""[DEPRECATED 2026-11-17] Quyển Q5 'chỉ Datamart' dựng bằng pandoc.
+
+Đã được thay bằng update_q5_with_datamart_modules.py: ghép Mục 3.1 của 11 phân hệ VÀO quyển PTTK theo bản mẫu hiện hành
+(giữ nguyên bìa, kiến trúc, API, Web App, style — xem SKILL.md Phase 3). File này còn lại vì lý do lịch sử: văn bản mở đầu/
+phụ lục bên dưới là bản cứng của 10 phân hệ (số liệu ma trận Phần 6 không còn đúng với 11 phân hệ) nên mặc định KHÔNG chạy;
+chỉ chạy khi có cờ --legacy.
 """
 
 from __future__ import annotations
@@ -16,37 +20,24 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-# Paths
-REPO_ROOT = Path(__file__).resolve().parents[4]
-OUTPUT_DIR = REPO_ROOT / "docs" / "output" / "datamart"
-SCRIPTS_DIR = REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs" / "scripts"
-SKILL_DIR = REPO_ROOT / ".claude" / "skills" / "datamart-gen-docs"
+# Paths — danh sách module và bản mẫu lấy từ doc_registry (nguồn sự thật duy nhất)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import doc_registry as R  # noqa: E402
 
-# Ưu tiên bản mẫu Q5 hiện hành (đặt tại gốc thư mục skill); fallback về
-# Template.docx chung nếu bản hiện hành chưa có mặt.
-_TEMPLATE_CANDIDATES = [
-    SKILL_DIR / "UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx",
-    REPO_ROOT / "docs" / "templates" / "sample" / "UBCKNN_Q5_Tai lieu phan tich thiet ke_Template.docx",
-]
-TEMPLATE_DOCX = next((p for p in _TEMPLATE_CANDIDATES if p.exists()), _TEMPLATE_CANDIDATES[0])
+REPO_ROOT = R.REPO_ROOT
+OUTPUT_DIR = R.OUTPUT_DIR
+SCRIPTS_DIR = R.SKILL_DIR / "scripts"
+SKILL_DIR = R.SKILL_DIR
+
+# Bản mẫu PTTK hiện hành (v1.2); lùi về bản cũ + cảnh báo nếu máy chưa có
+TEMPLATE_DOCX = R.find_template("pttk") or R.current_template("pttk")
 
 # Ensure pandoc in PATH
 pandoc_appdata = Path(os.environ.get("LOCALAPPDATA", "C:/Users/ADMIN/AppData/Local")) / "Pandoc"
 if pandoc_appdata.exists() and str(pandoc_appdata) not in os.environ.get("PATH", ""):
     os.environ["PATH"] = str(pandoc_appdata) + os.pathsep + os.environ.get("PATH", "")
 
-MODULES = [
-    ("TT", "1", "Hoạt động Thanh tra"),
-    ("NHNCK", "2", "Người hành nghề"),
-    ("NDTNN", "3", "Quản lý NĐTNN"),
-    ("QLCB", "4", "Quản lý chào bán"),
-    ("GSDC", "5", "Giám sát Công ty Đại chúng"),
-    ("GSTT", "6", "Giám sát Thị trường"),
-    ("QLQ", "7", "Công ty Quản lý Quỹ (AMC)"),
-    ("QLKD", "8", "Hoạt động Công ty Chứng khoán"),
-    ("PTTT", "9", "Phân tích thị trường"),
-    ("TKNB", "10", "Thống kê Thị trường"),
-]
+MODULES = [(m.code, str(m.idx), m.tkcsld_name) for m in R.MODULES]
 
 
 def generate_q5_full_markdown() -> Path:
@@ -85,7 +76,7 @@ Tài liệu bao quát toàn bộ 10 phân hệ dữ liệu Datamart nghiệp v�
 ## 1.4 Tài liệu Tham khảo
 - Tài liệu Thiết kế Kiến trúc Tổng thể Hệ thống CNTT UBCKNN (High-Level Design - HLD).
 - Tài liệu Đặc tả Thiết kế Chi tiết và Từ điển Thuộc tính (Low-Level Design - LLD).
-- Quy chuẩn Tài liệu Phân tích Thiết kế UBCKNN Quyển 5 (Q5 — `UBCKNN_Q5_Tai lieu phan tich thiet ke_v1.0_20260429.docx`).
+- Quy chuẩn Tài liệu Phân tích Thiết kế UBCKNN Quyển 5 (PTTK — bản mẫu hiện hành trong `doc_registry.py`).
 - Các văn bản quy phạm pháp luật liên quan: Luật Chứng khoán, các Nghị định và Thông tư hướng dẫn thi hành.
 
 ## 1.5 Bố cục Tài liệu
@@ -159,7 +150,7 @@ Hệ thống thiết lập các chốt kiểm soát tự động trong pipeline 
 - **Cơ chế Cảnh báo (Alerting):** Tự động phát thông báo khi có bản ghi lỗi (quarantine records) để quản trị viên xử lý kịp thời.
 
 ## 5.4 Quản lý Siêu dữ liệu và Dòng dữ liệu (Metadata & Lineage Management)
-- Thiết lập sơ đồ dòng dữ liệu trực quan 4 tầng (Staging ➔ ODS ➔ Atomic ➔ Datamart) cho 100% các nhóm thông tin báo cáo.
+- Thiết lập sơ đồ dòng dữ liệu trực quan 5 tầng (Staging ➔ ODS ➔ Atomic ➔ Datamart ➔ ClickHouse) cho 100% các nhóm thông tin báo cáo.
 - Quản lý metadata tự động: Lưu trữ thông tin hệ thống nguồn, bảng nguồn, trường nguồn và công thức tính toán phục vụ tra cứu ngược (Reverse Lineage Tracing).
 
 ## 5.5 Lưu trữ và Vận hành (Data Retention & Operations)
@@ -281,6 +272,11 @@ def build_q5_docx(md_path: Path) -> Path:
 
 
 def main():
+    if "--legacy" not in sys.argv:
+        raise SystemExit(
+            "build_q5_master.py đã DEPRECATED — dùng update_q5_with_datamart_modules.py "
+            "(ghép Mục 3.1 vào bản mẫu PTTK hiện hành). Thêm --legacy nếu thật sự cần quyển pandoc cũ."
+        )
     print("=== BẮT ĐẦU GỘM TOÀN BỘ 10 PHÂN HỆ THÀNH 1 QUYỂN Q5 DUY NHẤT ===")
     print(f"Template DOCX (--reference-doc): {TEMPLATE_DOCX} ({'tồn tại' if TEMPLATE_DOCX.exists() else 'KHÔNG TỒN TẠI'})")
     md_file = generate_q5_full_markdown()
