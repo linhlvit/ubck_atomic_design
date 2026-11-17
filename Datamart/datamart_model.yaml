@@ -11687,7 +11687,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ hẳn điều kiện `EXISTS (violation_report...)` — sai ngữ nghĩa: việc CTĐC có bị ghi nhận vi phạm CBTT không liên quan đến việc lấy số liệu tài chính đã duyệt (thực đo SHB: 402 báo cáo hợp lệ → điều kiện này chỉ còn giữ 13). (2) Bỏ công thức lùi-kỳ cứng theo tháng — nay lấy kỳ QUÝ (1-4) gần nhất ĐÃ CÔNG BỐ tính đến ngày giao dịch (lookback), không rỗng chỉ vì kỳ lịch-lùi-1 chưa nộp. (3) Chốt đúng 1 báo cáo/kỳ (ưu tiên HN>TH>ME>RI, trùng lấy submission_dt mới nhất) TRƯỚC khi xếp hạng kỳ, tránh nhân bản khi 1 kỳ có nhiều mẫu biểu. Doanh thu công bố theo BCKQKD (row_desc 10 DN/BH · 03 TD). Nguồn Atomic: pc_report_submission, fr_value, fr_catalog, fr_row_template, fr_column_template."
+        description: "[SỬA 2026-09-19, dev report SIT — sync 7 phát hiện] (1) Bỏ hẳn điều kiện `EXISTS (violation_report...)` — sai ngữ nghĩa: việc CTĐC có bị ghi nhận vi phạm CBTT không liên quan đến việc lấy số liệu tài chính đã duyệt (thực đo SHB: 402 báo cáo hợp lệ → điều kiện này chỉ còn giữ 13). (2) Bỏ công thức lùi-kỳ cứng theo tháng — nay lấy kỳ QUÝ (1-4) gần nhất ĐÃ CÔNG BỐ tính đến ngày giao dịch (lookback), không rỗng chỉ vì kỳ lịch-lùi-1 chưa nộp. (3) Chốt đúng 1 báo cáo/kỳ (ưu tiên HN>TH>ME>RI, trùng lấy submission_dt mới nhất) TRƯỚC khi xếp hạng kỳ, tránh nhân bản khi 1 kỳ có nhiều mẫu biểu. Doanh thu công bố theo BCKQKD (cột 1): DN/BH chỉ tiêu 10; TD = tổng 5 chỉ tiêu 01 + 04 + 07 + 08 + 09 (theo mô tả `net_revenue` của GSĐC: Thu nhập lãi và các khoản thu nhập tương tự, Thu nhập từ hoạt động dịch vụ, Lãi/lỗ thuần từ KD ngoại hối, từ mua bán CK kinh doanh, từ mua bán CK đầu tư). [SỬA 2026-11-17, O_GSTT_90] BA 16/11 (Thủy) sửa logic doanh thu: TD đổi từ chỉ tiêu 03 sang tổng 5 chỉ tiêu trên (BA: SUM(d.data_value) AS doanh_thu); cách chọn kỳ/mẫu biểu ở trên giữ nguyên. Nguồn Atomic: pc_report_submission, fr_value, fr_catalog, fr_row, fr_column."
         source_atomic_table: "fr_value"
         source_atomic_column: "fr_value.cell_val"
       - logical_name: "Net Profit After Tax"
@@ -13382,7 +13382,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn hóa thị trường của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu đang lưu hành) — dùng tính điểm đóng góp vào chỉ số. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Nay = LAG(market_cap) theo quy tắc giá tính vốn hóa mới."
+        description: "Vốn hóa thị trường của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu đang lưu hành) — dùng tính điểm đóng góp vào chỉ số. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Nay = LAG(market_cap) theo quy tắc giá tính vốn hóa mới. [SỬA 2026-11-17, O_GSTT_91 — BA 17/11 (Thủy): điểm đóng góp của Data Explorer Nhóm 38 giống Nhóm 24] ĐẢO [SỬA 2026-10-30] CHỈ cho cột `prior_*`: BA Nhóm 38 dùng đúng SQL Nhóm 24 — vốn hóa t-1 = Giá đóng cửa t-1 × Số cổ phiếu lưu hành t-1 (LAG giá đóng cửa × LAG số cổ phiếu lưu hành), mọi sàn HOSE/HNX/UPCOM, KHÔNG áp quy tắc VWAP UPCOM T+1 của `market_cap`; cùng định nghĩa `Fact Stock Portfolio Snapshot.prior_market_cap` (O_GSTT_81). `market_cap` giữ nguyên quy tắc VWAP."
         source_atomic_table: "security_trading_snapshot"
         source_atomic_column: "security_trading_snapshot.close_price / trading_dt"
       - logical_name: "Prior Free Float Market Cap"
@@ -13391,9 +13391,9 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn hóa tự do chuyển nhượng của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu tự do chuyển nhượng) — dùng tính điểm đóng góp vào chỉ số. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Nay = LAG(free_float_market_cap) theo quy tắc giá tính vốn hóa mới."
-        source_atomic_table: "security_trading_snapshot"
-        source_atomic_column: "security_trading_snapshot.close_price / trading_dt"
+        description: "Vốn hóa tự do chuyển nhượng của mã chứng khoán ở phiên giao dịch trước (giá đóng cửa × số cổ phiếu tự do chuyển nhượng) — dùng tính điểm đóng góp vào chỉ số. [SỬA 2026-10-30 v4.58, O_GSTT_78 mục (a)] Nay = LAG(free_float_market_cap) theo quy tắc giá tính vốn hóa mới. [SỬA 2026-11-17, O_GSTT_91 — BA 17/11 (Thủy): điểm đóng góp của Data Explorer Nhóm 38 giống Nhóm 24] ĐẢO [SỬA 2026-10-30] CHỈ cho cột `prior_*`: vốn hóa tự do chuyển nhượng t-1 = Giá đóng cửa t-1 × Số cổ phiếu tự do chuyển nhượng t-1 (LAG giá đóng cửa × LAG số cổ phiếu tự do chuyển nhượng), mọi sàn, KHÔNG áp VWAP UPCOM T+1; cùng định nghĩa `Fact Stock Portfolio Snapshot.prior_free_float_market_cap` (O_GSTT_81). `free_float_market_cap` giữ nguyên quy tắc VWAP."
+        source_atomic_table: "security_trading_snapshot / listed_share_information"
+        source_atomic_column: "security_trading_snapshot / listed_share_information.close_price / free_float_share_quantity"
       - logical_name: "Market Index Value"
         physical_name: "market_index_val"
         data_domain: "Currency Amount"
@@ -13553,7 +13553,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn hóa thị trường của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Vốn hóa thị trường của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-11-17, O_GSTT_91 — BA 17/11 (Thủy): điểm đóng góp của Data Explorer Nhóm 38 giống Nhóm 24] Nay = tổng vốn hóa t-1 của các mã THUỘC RỔ NGÀY T (SUM `prior_market_cap` theo chỉ số + ngày T; mọi sàn, giá đóng cửa, không VWAP UPCOM) — đúng mẫu số trọng số của BA Nhóm 38 (SQL Nhóm 24) và `Fact Index Constituent Snapshot.idx_prior_market_cap` (O_GSTT_81). Thay LAG(idx_market_cap) (rổ của phiên liền trước): khi thành phần rổ đổi giữa 2 phiên thì tổng trọng số theo LAG khác 100%."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.index_code / trading_dt"
       - logical_name: "Index Prior Free Float Market Cap"
@@ -13562,7 +13562,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Vốn hóa tự do chuyển nhượng của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'."
+        description: "Vốn hóa tự do chuyển nhượng của rổ chỉ số ở phiên giao dịch trước — dùng tính điểm đóng góp vào chỉ số. Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [SỬA 2026-11-17, O_GSTT_91 — BA 17/11 (Thủy): điểm đóng góp của Data Explorer Nhóm 38 giống Nhóm 24] Nay = tổng vốn hóa tự do chuyển nhượng t-1 của các mã THUỘC RỔ NGÀY T (SUM `prior_free_float_market_cap` theo chỉ số + ngày T; mọi sàn, giá đóng cửa, không VWAP UPCOM) — đúng mẫu số trọng số của BA Nhóm 38 (SQL Nhóm 24) và `Fact Index Constituent Snapshot.idx_prior_free_float_market_cap` (O_GSTT_81). Thay LAG(idx_free_float_market_cap) (rổ của phiên liền trước)."
         source_atomic_table: "index_constituent_snapshot"
         source_atomic_column: "index_constituent_snapshot.index_code / trading_dt"
       - logical_name: "Index Foreign Buy Value"
