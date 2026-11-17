@@ -22789,7 +22789,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Phạm vi dòng nạp: (1) chỉ ô có `table_idx` xác định (`dynamic_val_ind` ∈ {0,1}); (2) ô thuộc sheet '@QLDMDT' của biểu mẫu LOWER(fmr_nm) LIKE '%danh mục đầu tư%'; (3) NEO HỢP ĐỒNG: ô phải nằm trên dòng MẪU có nhãn 'Tên khách hàng' (`fmr_sheet.label_nm`, cột 1) — dòng động lồng (danh mục chứng khoán, `dynamic_row_nbr` 1000, 2000…) không phải hợp đồng, nếu không neo sẽ sinh dòng NULL `customer_nm`/`custody_account_nbr` (điều kiện này do dev thêm, SQL BA không nêu tường minh — O_QLQ_90). `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72)."
+        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72) [ĐỒNG BỘ job ETL dev 2026-11-12, O_QLQ_90] Phạm vi dòng nạp: (1) chỉ ô có `table_idx` xác định (`dynamic_val_ind` ∈ {0,1}); (2) ô thuộc sheet '@QLDMDT' của biểu mẫu LOWER(fmr_nm) LIKE '%danh mục đầu tư%'; (3) NEO HỢP ĐỒNG: ô phải nằm trên dòng MẪU có nhãn 'Tên khách hàng' (`fmr_sheet.label_nm`, cột 1) — dòng động lồng (danh mục chứng khoán, `dynamic_row_nbr` 1000, 2000…) không phải hợp đồng, nếu không neo sẽ sinh dòng NULL `customer_nm`/`custody_account_nbr` (điều kiện này do dev thêm, SQL BA không nêu tường minh — O_QLQ_90). `fmr_sheet`, `fund_management_report`, `investment_fund` đọc History companion `*_hstr` tại `ds_snpst_dt = :etl_date` và `ds_rcrd_st = 'ACTIVE'` (code dev; bản mẫu/quỹ đúng ngày chạy); `fmr_submission`, `fmr_value` đọc bản ACTIVE hiện hành (code dev lọc `ds_rcrd_st = 'ACTIVE'`; cột kỹ thuật `ds_*` không khai trong YAML Atomic nên không viết vào etl_logic — Gate 0), không chặn ngày nộp (O_QLQ_72). Chỉ nạp giá trị thuộc đúng biểu mẫu của ô (mã biểu mẫu của giá trị bằng mã biểu mẫu của ô)."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.src_stm_code"
       - logical_name: "Record Status"
@@ -23022,7 +23022,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72) Chỉ nạp ô mã chỉ tiêu (cột 3 của bảng hợp đồng) có giá trị trong danh sách mã tài sản của BA STT 32/33 (O_QLQ_86)."
+        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của CTQLQ (record_tp = '2'), không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72) Chỉ nạp ô mã chỉ tiêu (cột 3 của bảng hợp đồng) có giá trị trong danh sách mã tài sản của BA STT 32/33 (O_QLQ_86). Chỉ nạp giá trị thuộc đúng biểu mẫu của ô (mã biểu mẫu của giá trị bằng mã biểu mẫu của ô)."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.src_stm_code"
       - logical_name: "Record Status"
@@ -23192,7 +23192,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của chi nhánh CTQLQ NN (record_tp = '4'), sheet `@QLDMDT`, biểu mẫu có tên chứa 'danh mục đầu tư'; không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72). [SỬA 2026-11-09, O_QLQ_82] BA bỏ điều kiện cơ sở pháp lý `97/2020/TT` và chọn đúng sheet `@QLDMDT` (trước đó `s.ITEM_NAME = ''`)"
+        description: "Mã hệ thống nguồn dữ liệu; lọc bản nộp hợp lệ record_status_code IN ('2','3','5','10') của chi nhánh CTQLQ NN (record_tp = '4'), sheet `@QLDMDT`, biểu mẫu có tên chứa 'danh mục đầu tư'; không chặn submitted_dt theo ngày chạy ETL để không sót báo cáo nộp muộn (O_QLQ_72). [SỬA 2026-11-09, O_QLQ_82] BA bỏ điều kiện cơ sở pháp lý `97/2020/TT` và chọn đúng sheet `@QLDMDT` (trước đó `s.ITEM_NAME = ''`) Chỉ nạp giá trị thuộc đúng biểu mẫu của ô (mã biểu mẫu của giá trị bằng mã biểu mẫu của ô)."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.src_stm_code"
       - logical_name: "Record Status"
@@ -23487,7 +23487,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột \"Trường nguồn\" dòng 186 BA; SQL BA nhánh HNX bên bán dùng trade_quantity × trade_price lệch cột (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36)."
+        description: "Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột \"Trường nguồn\" dòng 186 BA; SQL BA nhánh HNX bên bán đã sửa sang sell_order_quantity × sell_order_price từ 2026-11-17, khớp cột \"Trường nguồn\" (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.buy_order_quantity / buy_order_price / sell_order_quantity / sell_order_price"
       - logical_name: "Source System Code"
@@ -29718,7 +29718,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "FK"
-        description: "FK -> Fund Management Report Cell Dimension (ô báo cáo: sheet + cell id)"
+        description: "FK -> Fund Management Report Cell Dimension (ô báo cáo: sheet + cell id) Giá trị chỉ nối với ô của đúng biểu mẫu: mã biểu mẫu của giá trị (`fmr_code`) phải bằng mã biểu mẫu của ô."
         source_atomic_table: "fmr_value"
         source_atomic_column: "fmr_value.cell_id"
       - logical_name: "Fund Type Dimension Id"

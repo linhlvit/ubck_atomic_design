@@ -40,7 +40,8 @@ AND (s.STOP_DATE IS NULL OR s.TO_DATE IS NULL)
 --=========================== báo cáo
 , cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
+LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ID rtid
+, rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
 , rt.DELETED, rt.RECORD_STATUS
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -83,7 +84,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -319,7 +320,8 @@ TRUNC(LAST_DAY(NVL(BANK_MONI.DEC_DATE, DATE '1900-01-01'))) <= LAST_DAY(TO_DATE(
 FMS_UAT.RPT_PERIOD","COALESCE(RPT_MEMBER.PERIOD_TYPE, RPT_PERIOD.PERIOD_TYPE) = 3
 AND RPT_MEMBER.PERIOD_VALUE = EXTRACT(MONTH FROM TO_DATE(:filter_month,'MM/YYYY')) AND RPT_MEMBER.YEAR_VALUE = EXTRACT(YEAR FROM TO_DATE(:filter_month,'MM/YYYY')) ",,"WITH cte AS (
 SELECT 
-LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION
+LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ID rtid
+, rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION
 , rt.DELETED, rt.RECORD_STATUS
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -362,7 +364,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -657,7 +659,7 @@ RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 3,,Dashboard >> Tổng quan CTQLQ >> Danh sách các Công ty quản lý quỹ,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.SECURITIES,SECURITIES.REAL_ACTIVE_DATE,"TRUNC(LAST_DAY(SECURITIES.REAL_ACTIVE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) --Điều liện lọc
 AND (SECURITIES.STOP_DATE IS NULL OR SECURITIES.TO_DATE IS NULL)","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -719,7 +721,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -794,7 +796,7 @@ months_between(last_day(TO_DATE(:filter_month,'mm/yyyy')),hc.MONTH_VALUE) PERIOD
 , hr_fn.rr, hr_fn.rn_r, hr_fn.s_r, hr_fn.csm
 , hc.rn_c, hc.s_c
 , hc.PERIOD_TYPE, hc.PERIOD_VALUE, hc.YEAR_VALUE, hc.MONTH_VALUE
-, hr_fn.""STT"", hr_fn.""Chỉ tiêu"", CASE WHEN hr_fn.""Mã chỉ tiêu"" IS NOT NULL THEN hr_fn.""Mã chỉ tiêu"" ELSE hc.""Mã chỉ tiêu"" END ""Mã chỉ tiêu""
+, hr_fn.""STT"", hr_fn.""Chỉ tiêu"", CASE WHEN hr_fn.""Mã chỉ tiêu"" IS NOT NULL THEN to_char(hr_fn.""Mã chỉ tiêu"") ELSE to_char(hc.""Mã chỉ tiêu"") END ""Mã chỉ tiêu""
 , hc.""Giá trị"", hc.""Tổng""
 FROM (SELECT hr.*, dc.csm, dc.sec_id, dc.rn_c, dc.s_c, dc.table_idx FROM hr
 LEFT JOIN (SELECT DISTINCT csm, sec_id, rn_c, s_c, table_idx FROM hc) dc ON hr.rn_r = dc.rn_c AND hr.s_r = dc.s_c
@@ -1139,7 +1141,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 4,,Dashboard >> Tổng quan CTQLQ >> Danh sách các Công ty quản lý quỹ >> Chi tiết Quỹ của một CTQLQ,Tên quỹ,Tên các quỹ đầu tư của CTQLQ,Dashboard,Chỉ tiêu cơ sở,Dễ,"Tháng, CTQLQ, Quỹ",FMS,X,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ITEM_NAME,FUNDS.DELETED = 0,"WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -1187,7 +1189,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -1332,7 +1334,7 @@ lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 7
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -1380,7 +1382,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -1531,7 +1533,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 6,,Dashboard >> Tổng quan QĐT >> Thống kê chung của QĐT,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) AND FUNDS.DELETED = 0","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -1579,7 +1581,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -1734,7 +1736,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 7,,Dashboard >> Tổng quan QĐT >> Biểu đồ Tổng NAV Quỹ và Tỷ lệ NAV/GDP,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"LAST_DAY(FUNDS.ID_DATE) = ""filter_value"" AND FUNDS.DELETED = 0","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -1782,7 +1784,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -2013,7 +2015,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 8,,Dashboard >> Tổng quan QĐT >> Biểu đồ Phân bổ tài sản của Quỹ đầu tư,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) AND FUNDS.DELETED = 0","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -2061,7 +2063,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -2349,7 +2351,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 9,,Dashboard >> Tổng quan QĐT >> Sự biến động về NAV của các Quỹ ĐTCK,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"LAST_DAY(FUNDS.ID_DATE) = ""filter_value"" AND FUNDS.DELETED = 0","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -2397,7 +2399,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -2634,7 +2636,7 @@ ORDER BY MIN(a.""filter_value"")"
 10,,Dashboard >> Tổng quan QĐT >> Số lượng quỹ đầu tư chứng khoán,Quỹ đầu tư trái phiếu hạ tầng,Tổng số lượng Quỹ đầu tư trái phiếu hạ tầng.,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng/Quý/Năm, Loại hình quỹ",FMS,,X,X,Done,,,FMS_UAT.FUNDS,FUNDS.ID,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) = ""filter_value"" and FUNDS.DELETED = 0 ",
 11,,Dashboard >> Tổng quan QĐT >> Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,X,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) = ""filter_value"" and FUNDS.DELETED = 0 ","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -2682,7 +2684,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -2779,8 +2781,7 @@ RIGHT JOIN label b ON LAST_DAY(f.ID_DATE) <= b.""filter_value"" AND f.DELETED = 
 LEFT JOIN rp ON f.id = rp.fnd_id AND b.""filter_value"" = rp.month_value AND rp.""Mã chỉ tiêu"" IN ('2218')
 WHERE 1=1
 GROUP BY b.""filter_label"", ft.ITEM_NAME
-ORDER BY min(b.""filter_value"")
-"
+ORDER BY min(b.""filter_value"")"
 11,,Dashboard >> Tổng quan QĐT >> Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư,Loại hình quỹ,,Dashboard,Chiều,Trùng,,FMS,,X,X,Done,,,FMS_UAT.FUND_TYPE,FUND_TYPE.ITEM_NAME,FUND_TYPE.RECORD_STATUS = 1 AND FUND_TYPE.DELETED = 0,
 11,,Dashboard >> Tổng quan QĐT >> Tăng trưởng số lượng CCQ lưu hành của các quỹ đầu tư,Quỹ mở,Số lượng CCQ lưu hành của quỹ mở,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Loại hình quỹ",FMS,,X,X,Done,,,"FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
@@ -2966,7 +2967,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 12,,Dashboard >> Tổng quan QĐT >> Tỉ lệ tăng trưởng NAV/CCQ một năm theo loại hình quỹ so với VN-Index và Lãi suất liên ngân hàng qua đêm,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) = ""filter_value"" and FUNDS.DELETED = 0 ","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -3014,7 +3015,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -3112,7 +3113,7 @@ decode(riv.UNIT_CODE,1,'%',2,'Điểm',3,'Tỷ VND',4,'Triệu USD',5,'Hợp đ�
 row_number() over(PARTITION BY EXTRACT(YEAR FROM riv.PERIOD_DATE), EXTRACT(MONTH FROM riv.PERIOD_DATE),INDICATOR_CODE  ORDER BY riv.PERIOD_DATE DESC) last_v
 FROM UAT_MRMS.RISK_INDICATOR ri
 LEFT JOIN UAT_MRMS.RISK_INDICATOR_VALUE riv ON ri.ID = riv.INDICATOR_ID AND riv.PERIOD_TYPE = 1
---RIGHT JOIN label ON LAST_DAY(riv.PERIOD_DATE) = label.""filter_value"" AND ri.STATUS = 1 AND ri.DELETED = 0 AND ri.INDICATOR_CODE = 'INTERBANK_IR'
+RIGHT JOIN label ON LAST_DAY(riv.PERIOD_DATE) = label.""filter_value"" AND ri.STATUS = 1 AND ri.DELETED = 0 AND ri.INDICATOR_CODE = 'INTERBANK_IR'
 WHERE 1=1
 --AND riv.PERIOD_DATE BETWEEN TO_DATE(:filter_from,'mm/yyyy') AND last_day(TO_DATE(:filter_to,'mm/yyyy'))
 )
@@ -3128,14 +3129,15 @@ WHERE 1=1
 , dt AS (
 SELECT label.""filter_label"" ""Tháng"",
 label.""filter_value"" mth,
-case when f.open_fund_type is not null then f.open_fund_type else ft.item_name end ""Loại"",
+case when f.open_fund_type is not null then to_char(f.open_fund_type) else to_char(ft.item_name) end ""Loại"",
 SUM(CAST(rp.""Kỳ báo cáo"" AS number)) ""Giá trị"" 
 FROM  FMS_UAT.FUNDS f
 LEFT JOIN FMS_UAT.FUND_TYPE ft ON f.FTYPE_ID = ft.ID AND ft.DELETED = 0 AND ft.RECORD_STATUS = 1
 RIGHT JOIN label ON LAST_DAY(f.ID_DATE) <= label.""filter_value"" AND f.DELETED = 0
 LEFT JOIN rp ON f.id = rp.fnd_id AND label.""filter_value"" = rp.month_value AND rp.""Mã chỉ tiêu"" IN ('2219')
 WHERE 1=1
-GROUP BY label.""filter_label"", label.""filter_value"", ""Loại""
+GROUP BY label.""filter_label"", label.""filter_value""
+, case when f.open_fund_type is not null then to_char(f.open_fund_type) else to_char(ft.item_name) end
 ORDER BY label.""filter_value""
 )
 SELECT ""Tháng"", ""Loại"", ""Giá trị"" FROM (
@@ -3145,7 +3147,7 @@ SELECT a.""Tháng"", a.""Loại""
 FROM dt a
 LEFT JOIN dt b ON a.mth = add_months(b.mth,1) AND a.""Loại"" = b.""Loại""
 UNION
-SELECT to_char(PERIOD_DATE,'mm/yyyy') ""Tháng"", N'Lãi suất LNHQĐ' ""Loại"" , 
+SELECT to_char(PERIOD_DATE,'mm/yyyy') ""Tháng"", 'Lãi suất LNHQĐ' ""Loại"" , 
 VALUE ""Giá trị"", last_day(PERIOD_DATE) mth
 FROM lslnhqd
 WHERE 1=1
@@ -3465,7 +3467,7 @@ row_number() over(PARTITION BY EXTRACT(YEAR FROM riv.PERIOD_DATE), EXTRACT(MONTH
 last_day(tradingdate) = ""filter_value""",
 13,,Dashboard >> Tổng quan QĐT >> Danh sách các quỹ đầu tư,Thời gian,Ngày thống kê (Tháng),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.ID_DATE,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY')) AND FUNDS.DELETED = 0","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -3527,7 +3529,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 7
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -3581,7 +3583,7 @@ SELECT DISTINCT row_idx AS cr , LOWER(RAWTOHEX(SUBMIT)) AS csm, report_name AS r
 , max(CASE WHEN col_idx = 2 AND SHEET_NAME LIKE '%BCTaiSan%' THEN vl END) AS ""Chỉ tiêu""
 , max(CASE WHEN col_idx = 3 AND SHEET_NAME LIKE '%BCTaiSan%' THEN vl END) AS ""Mã chỉ tiêu""
 , max(CASE WHEN col_idx = 5 AND legal_basis LIKE '%198%' THEN vl 
-		   WHEN col_idx = 4 AND legal_basis not LIKE '%198%' THEN vl
+                   WHEN col_idx = 4 AND legal_basis not LIKE '%198%' THEN vl
 END) AS ""Giá trị""
 FROM ord_rp
 WHERE 1=1
@@ -3637,7 +3639,7 @@ CAST(nav.""Giá trị"" AS number) ""NAV (tỷ đồng)"",
 CAST(lnlk.""Giá trị"" AS number) ""Lợi nhuận (tỷ đồng)"",
 CAST(ccq.""Giá trị"" AS number) ""Số lượng CCQ"",
 dlpp.total ""Số lượng ĐLPP"",
-bm.SHORT_NAME ""NHGS"",
+bm.ITEM_NAME ""NHGS"",
 dd.total ""Số lượng TV ban DD"",
 dh.total ""Số lượng người điều hành""
 FROM FMS_UAT.FUNDS f 
@@ -3807,7 +3809,7 @@ AND f.DELETED = 0
 AND TRUNC(LAST_DAY(f.ID_DATE)) <= LAST_DAY(TO_DATE(:filter_month, 'MM/YYYY'))"
 17,,Dashboard >> Tổng quan Đại lý phân phối >> Thống kê chung,Thời gian,Ngày thống kê (Quý/Năm),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE,"TRUNC(LAST_DAY(DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE)) <= ""filter_value"" AND DISTRIBUTOR_AGENT.DELETED = 0 AND DISTRIBUTOR_AGENT.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -3859,7 +3861,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -4099,7 +4101,7 @@ END MONTH_VALUE
 CASE WHEN lower(:filter_type) = 'quý' AND decode(COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE),4,'quý',5,'bán niên',6,'năm') = 'quý' AND month_value = label.""filter_value"" THEN 1
 WHEN lower(:filter_type) = 'năm' AND rm.year_value = :filter THEN DENSE_RANK() OVER (PARTITION BY DISTRIBUTOR_ID, rm.YEAR_VALUE ORDER BY COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE) DESC, rm.PERIOD_VALUE ASC)","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -4151,7 +4153,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -4357,7 +4359,7 @@ END MONTH_VALUE
 CASE WHEN lower(:filter_type) = 'quý' AND decode(COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE),4,'quý',5,'bán niên',6,'năm') = 'quý' AND month_value = label.""filter_value"" THEN 1
 WHEN lower(:filter_type) = 'năm' AND rm.year_value = :filter THEN DENSE_RANK() OVER (PARTITION BY DISTRIBUTOR_ID, rm.YEAR_VALUE ORDER BY COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE) DESC, rm.PERIOD_VALUE ASC)","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -4409,7 +4411,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -4506,19 +4508,19 @@ FROM  label
 LEFT JOIN (SELECT ""filter_label"", SUM(CAST(""Kỳ báo cáo"" AS number)) total
 FROM rp
 WHERE 1=1
-AND ""STT"" = '2.1'
+AND ""STT"" = '3.1'
 AND ord_period = 1
 GROUP BY ""filter_label"") tc ON label.""filter_label"" = tc.""filter_label"" 
 LEFT JOIN (SELECT ""filter_label"", SUM(CAST(""Kỳ báo cáo"" AS number)) total
 FROM rp
 WHERE 1=1
-AND ""STT"" = '2.2'
+AND ""STT"" = '3.2'
 AND ord_period = 1
 GROUP BY ""filter_label"") cn ON label.""filter_label"" = cn.""filter_label"" 
 LEFT JOIN (SELECT ""filter_label"", SUM(CAST(""Kỳ báo cáo"" AS number)) total
 FROM rp
 WHERE 1=1
-AND ""STT"" = '2.3'
+AND ""STT"" = '3.3'
 AND ord_period = 1
 GROUP BY ""filter_label"") nn ON label.""filter_label"" = nn.""filter_label"" "
 19,,Dashboard >> Tổng quan Đại lý phân phối >> Số tài khoản nắm giữ chứng chỉ chỉ quỹ,Tổ chức,Số lượng tài khoản nắm giữ chứng chỉ quỹ cuối kỳ của nhà đầu tư tổ chức trong nước,Dashboard,Chỉ tiêu cơ sở,Dễ,Quý/Năm,FMS,,X,,Done,Chỉ tiêu BC,Báo cáo hoạt động đại lý phân phối >> TinhHinhGiaoDichCCQ_06268 >> Số lượng tài khoản nắm giữ chứng chỉ quỹ cuối kỳ của nhà đầu tư tổ chức trong nước,"FMS_UAT.RPT_TEMP
@@ -4615,7 +4617,7 @@ END MONTH_VALUE
 CASE WHEN lower(:filter_type) = 'quý' AND decode(COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE),4,'quý',5,'bán niên',6,'năm') = 'quý' AND month_value = label.""filter_value"" THEN 1
 WHEN lower(:filter_type) = 'năm' AND rm.year_value = :filter THEN DENSE_RANK() OVER (PARTITION BY DISTRIBUTOR_ID, rm.YEAR_VALUE ORDER BY COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE) DESC, rm.PERIOD_VALUE ASC)","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -4667,7 +4669,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -4873,7 +4875,7 @@ END MONTH_VALUE
 CASE WHEN lower(:filter_type) = 'quý' AND decode(COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE),4,'quý',5,'bán niên',6,'năm') = 'quý' AND month_value = label.""filter_value"" THEN 1
 WHEN lower(:filter_type) = 'năm' AND rm.year_value = :filter THEN DENSE_RANK() OVER (PARTITION BY DISTRIBUTOR_ID, rm.YEAR_VALUE ORDER BY COALESCE(rm.PERIOD_TYPE, rp.PERIOD_TYPE) DESC, rm.PERIOD_VALUE ASC)","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -4925,7 +4927,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -5083,7 +5085,7 @@ RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 22,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối,Thời gian,Ngày thống kê (Quý/Năm),Dashboard,Chiều,Dễ,,FMS,,X,,Done,,,FMS_UAT.DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE,"TRUNC(LAST_DAY(DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE)) <= ""filter_value"" AND DISTRIBUTOR_AGENT.DELETED = 0 AND DISTRIBUTOR_AGENT.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -5135,7 +5137,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 8
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -5261,7 +5263,7 @@ FROM (
                 RIGHT JOIN label ON TRUNC(LAST_DAY(da.DISTRIBUTION_CERT_DATE)) <= label.""filter_value"" AND da.DELETED = 0 AND da.RECORD_STATUS = 1
                 WHERE 1=1
                 GROUP BY da.ID, label.""filter_label"", label.""filter_value"", da.ITEM_NAME, da.BUSINESS_LICENSE_NO, da.LICENSE_ISSUE_DATE, da.ADDRESS
-                , CASE WHEN TERMINATION_DATE IS NOT NULL THEN 'Hoạt động' ELSE 'Đóng cửa' END
+                , CASE WHEN TERMINATION_DATE IS NULL THEN 'Hoạt động' ELSE 'Đóng cửa' END
 ) inf
 LEFT JOIN (SELECT ""filter_label"", month_value, DISTRIBUTOR_ID, SUM(CAST(""Kỳ báo cáo"" AS number)) total, SUM(CAST(""Lũy kế"" AS number)) luyke 
                    FROM rp
@@ -5310,8 +5312,7 @@ LEFT JOIN (SELECT ""filter_label"", month_value, DISTRIBUTOR_ID
                    WHERE 1=1
                    AND ""STT"" IN ('6.1','6.2','6.3')
                    AND ord_period = 1
-                   GROUP BY ""filter_label"", month_value, DISTRIBUTOR_ID) ml ON ml.DISTRIBUTOR_ID = inf.ID
-                  "
+                   GROUP BY ""filter_label"", month_value, DISTRIBUTOR_ID) ml ON ml.DISTRIBUTOR_ID = inf.ID"
 22,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối,Tên Đại lý phân phối,Tên Đại lý phân phối,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý/Năm, ĐLPP",FMS,,X,,Done,,,FMS_UAT.DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT.ITEM_NAME,"TRUNC(LAST_DAY(DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE)) <= ""filter_value"" AND DISTRIBUTOR_AGENT.DELETED = 0 AND DISTRIBUTOR_AGENT.RECORD_STATUS = 1",
 22,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối,Số GP thành lập,Số ký hiệu GP thành lập VPDD,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý/Năm, ĐLPP",FMS,,X,,Done,,,FMS_UAT.DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT.BUSINESS_LICENSE_NO,"TRUNC(LAST_DAY(DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE)) <= ""filter_value"" AND DISTRIBUTOR_AGENT.DELETED = 0 AND DISTRIBUTOR_AGENT.RECORD_STATUS = 1",
 22,,Dashboard >> Tổng quan Đại lý phân phối >> Danh sách Đại lý phân phối,Ngày cấp GP thành lập,Ngày của GP thành lập VPDD,Dashboard,Chỉ tiêu cơ sở,Dễ,"Quý/Năm, ĐLPP",FMS,,X,,Done,,,FMS_UAT.DISTRIBUTOR_AGENT,DISTRIBUTOR_AGENT.LICENSE_ISSUE_DATE,"TRUNC(LAST_DAY(DISTRIBUTOR_AGENT.DISTRIBUTION_CERT_DATE)) <= ""filter_value"" AND DISTRIBUTOR_AGENT.DELETED = 0 AND DISTRIBUTOR_AGENT.RECORD_STATUS = 1",
@@ -5744,7 +5745,8 @@ WHERE 1=1"""
 AND FOR_BRCH.BRANCH_FLAG = 1
 AND LAST_DAY(FOR_BRCH.LICENSE_DATE) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
+LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ID rtid
+, rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
 , rt.DELETED, rt.RECORD_STATUS
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -5787,7 +5789,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 4
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -5927,7 +5929,8 @@ RPT_MEMBER.PERIOD_VALUE
 RPT_MEMBER.YEAR_VALUE","AND PERIOD_VALUE = EXTRACT(MONTH FROM TO_DATE(:filter_month,'MM/YYYY')) AND YEAR_VALUE = EXTRACT(YEAR FROM TO_DATE(:filter_month,'MM/YYYY')) 
 AND COALESCE(RPT_MEMBER.PERIOD_TYPE, RPT_PERIOD.PERIOD_TYPE) = 3","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
+LOWER(RAWTOHEX(s.ID)) ""sid"", s.ID ""sraw"", rt.ID rtid
+, rt.ITEM_NAME ""REPORT_NAME"", rt.CODE, s.ITEM_NAME ""SHEET_NAME"", rt.LEGAL_BASIS, rt.VERSION 
 , rt.DELETED, rt.RECORD_STATUS
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -5970,7 +5973,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 4
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -6254,7 +6257,7 @@ RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 AND FOR_BRCH.BRANCH_FLAG = 1
 AND LAST_DAY(COALESCE(FOR_BRCH.START_DATE, FOR_BRCH.LICENSE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c,
@@ -6316,7 +6319,7 @@ END MONTH_VALUE
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 4
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 WHERE 1=1
@@ -6632,7 +6635,7 @@ lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 4
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME ""REPORT_NAME"", rt.LEGAL_BASIS, rt.CODE, s.ITEM_NAME ""SHEET_NAME""
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , name.row_idx, name.col_idx
 , posi.r, posi.c
@@ -6680,7 +6683,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID))
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON cte.""uid"" = lower(rawtohex(rv.TGT_ID)) AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 4
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -6904,7 +6907,7 @@ end trade_method,
 issue_code stock_code,
 sell_order_quantity total,
 sell_order_price price,
-trade_quantity*trade_price amount
+sell_order_quantity *sell_order_price amount
 FROM uat_hnx_stg.trade_book
 UNION
 SELECT 
@@ -6935,10 +6938,10 @@ FROM uat_hnx_stg.trade_book
 select  concat(${filter_fr}, ' -- ', ${filter_to}) filter_value, tp.item_name, tp.id_no, ivt.trading_account_no, trade.* from uat_fms_stg.tl_profiles tp
 left join ivt on tp.id_no = ivt.id_number
 left join 
-	(select stk, stock_comp_code, trade_date, trade_method, b_s, stock_code 
-	, sum(total) total, sum(price) price, sum(amount) amount
-	from trade
-	group by stk, stock_comp_code, trade_date, trade_method, b_s, stock_code) trade
+        (select stk, stock_comp_code, trade_date, trade_method, b_s, stock_code 
+        , sum(total) total, sum(price) price, sum(amount) amount
+        from trade
+        group by stk, stock_comp_code, trade_date, trade_method, b_s, stock_code) trade
 on trade.stk = ivt.trading_account_no 
 where 1=1 
 and tp.deleted = 0 and tp.record_status = 1 and tp.ds_snpst_dt = '2026-10-15'
@@ -7034,7 +7037,7 @@ AND FOR_BRCH.DELETED = 0",
 31,,Dashboard >> Tổng quan CTQLQ >> Danh sách hợp đồng UTDMĐT,Tên CTQLQ,Tên đầy đủ của công ty,Dashboard,Chỉ tiêu cơ sở,TB,Tháng,FMS,X,X,,Done,,,FMS_UAT.SECURITIES,SECURITIES.ITEM_NAME,"SECURITIES.DELETED = 0
 AND TRUNC(LAST_DAY(SECURITIES.REAL_ACTIVE_DATE)) <= LAST_DAY(TO_DATE(:filter_month,'MM/YYYY'))","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
 , decode(rt.REPORT_TYPE,1,'Báo cáo định kỳ',2,'Báo cáo bất thường',3,'Báo cáo theo yêu cầu',4,'Báo cáo khác') REPORT_TYPE
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , s.ITEM_NAME SHEET_NAME, s.CODE SHEET_CODE
@@ -7082,7 +7085,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -7181,7 +7184,7 @@ LEFT JOIN rp on s.id = rp.sec_id
 WHERE 1=1
 AND s.DELETED = 0
 AND LAST_DAY(s.REAL_ACTIVE_DATE) <= LAST_DAY(to_date(:filter_month,'MM/YYYY'))
-and (lower(rp.loai) LIKE '%tên khách hàng%' or lower(rp.loai) LIKE '%tk lưu ký%' or lower(rp.loai) LIKE '%ngân hàng lưu ký%' or rp.mct in ('180298','180299','201205','180311','180313','180316'))
+and (lower(rp.""Loại"") LIKE '%tên khách hàng%' or lower(rp.""Loại"") LIKE '%tk lưu ký%' or lower(rp.""Loại"") LIKE '%ngân hàng lưu ký%' or rp.""Mã chỉ tiêu"" in ('180298','180299','201205','180311','180313','180316'))
 group by :filter_month,
 s.ITEM_NAME,
 rp.table_idx"
@@ -7446,7 +7449,7 @@ lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
 , decode(rt.REPORT_TYPE,1,'Báo cáo định kỳ',2,'Báo cáo bất thường',3,'Báo cáo theo yêu cầu',4,'Báo cáo khác') REPORT_TYPE
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , s.ITEM_NAME SHEET_NAME, s.CODE SHEET_CODE
@@ -7494,7 +7497,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c
@@ -7580,11 +7583,11 @@ SELECT DISTINCT :filter_month mth,
 s.ITEM_NAME,
 rp.table_idx
 , case when rp.""Mã chỉ tiêu"" = '202001' then 'Cổ phiếu niêm yết'
-	   when rp.""Mã chỉ tiêu"" = '202002' then 'Chứng chỉ quỹ'
-	   when rp.""Mã chỉ tiêu"" = '202003' then 'Cổ phiếu đăng ký giao dịch'
-	   when rp.""Mã chỉ tiêu"" = '202004' then 'Trái phiếu'
-	   when rp.""Mã chỉ tiêu"" = '202005' then 'Các loại chứng khoán niêm yết khác'
-	   when rp.""Mã chỉ tiêu"" = '201205' then 'Chứng khoán niêm yết'
+           when rp.""Mã chỉ tiêu"" = '202002' then 'Chứng chỉ quỹ'
+           when rp.""Mã chỉ tiêu"" = '202003' then 'Cổ phiếu đăng ký giao dịch'
+           when rp.""Mã chỉ tiêu"" = '202004' then 'Trái phiếu'
+           when rp.""Mã chỉ tiêu"" = '202005' then 'Các loại chứng khoán niêm yết khác'
+           when rp.""Mã chỉ tiêu"" = '201205' then 'Chứng khoán niêm yết'
 end ""Loại tài sản""
 , CAST(rp.""Tổng giá trị thị trường tại thời điểm báo cáo (VND)"" AS number) ""Giá thị trường""
 FROM fms_uat.SECURITIES s 
@@ -7647,7 +7650,7 @@ lower(RPT_TEMP.ITEM_NAME) LIKE '%danh mục đầu tư% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 2
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1","WITH cte AS (
 SELECT
-LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rpid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
+LOWER(RAWTOHEX(s.ID)) ""sid"", rt.ID rtid, rt.ITEM_NAME REPORT_NAME, rt.LEGAL_BASIS, rt.CODE REPORT_CODE
 , decode(rt.REPORT_TYPE,1,'Báo cáo định kỳ',2,'Báo cáo bất thường',3,'Báo cáo theo yêu cầu',4,'Báo cáo khác') REPORT_TYPE
 , rt.DELETED, rt.RECORD_STATUS, rt.VERSION
 , s.ITEM_NAME SHEET_NAME, s.CODE SHEET_CODE
@@ -7695,7 +7698,7 @@ cte.*
 , rm.PENSION_FUND_ID
 , rm.AUDIT_FIRM_ID
 FROM cte
-LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID
+LEFT JOIN FMS_UAT.RPT_VALUES rv ON HEXTORAW(UPPER(REPLACE(cte.id,'-',''))) = rv.TGT_ID AND rv.rpt_id = cte.rtid
 LEFT JOIN FMS_UAT.RPT_MEMBER rm ON rv.MEB_ID = rm.ID AND rm.DELETED = 0 AND rm.RECORD_STATUS IN (2,3,5,10) AND rm.RECORD_TYPE = 2
 LEFT JOIN FMS_UAT.RPT_PERIOD rp ON rm.PRD_ID = rp.ID AND rp.DELETED = 0 AND rp.RECORD_STATUS = 1
 ORDER BY cte.r, cte.c

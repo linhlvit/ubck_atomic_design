@@ -494,7 +494,7 @@ CREATE TABLE IF NOT EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_
     trade_direction_nm                       Nullable(String)           COMMENT 'Lệnh mua/bán (K_QLQ_111): "Mua" hoặc "Bán" theo bên của nhân viên',
     order_vol                                Nullable(Int64)            COMMENT 'Số lượng chứng khoán của LỆNH (K_QLQ_113) theo bên mua/bán — không phải khối lượng khớp. Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
     order_price                              Nullable(Decimal(23,2))    COMMENT 'Giá của LỆNH (K_QLQ_114) theo bên mua/bán — không phải giá khớp (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
-    order_amt                                Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột "Trường nguồn" dòng 186 BA; SQL BA nhánh HNX bên bán dùng trade_quantity × trade_price lệch cột (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
+    order_amt                                Nullable(Decimal(23,2))    COMMENT 'Tổng giá trị (K_QLQ_115) = số lượng lệnh × giá lệnh theo cột "Trường nguồn" dòng 186 BA; SQL BA nhánh HNX bên bán đã sửa sang sell_order_quantity × sell_order_price từ 2026-11-17, khớp cột "Trường nguồn" (O_QLQ_36). Khử trùng theo UNION của SQL BA: các dòng trùng toàn bộ cột chỉ giữ 1 (O_QLQ_36).',
     src_stm_code                             String                     COMMENT 'Mã hệ thống nguồn dữ liệu'
 )
 ENGINE = ReplicatedReplacingMergeTree()
