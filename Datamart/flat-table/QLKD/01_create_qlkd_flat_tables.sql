@@ -117,6 +117,8 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_fct_securities_company_license_conditio
     severity_level_alt_code         Nullable(String)        COMMENT 'Mức nghiêm trọng của dòng cảnh báo: 1 = cảnh báo, 2 = vi phạm (SEVERITY_LEVEL_ALT)',
     alert_dt                        Nullable(Date)          COMMENT 'Ngày phát sinh cảnh báo (ALERT_DATE) — thuộc tính ngày của dòng, không phải trục thời gian',
     securities_company_alert_indicator_dim_id    Nullable(String)        COMMENT 'FK tham số cảnh báo — nối Securities Company Alert Indicator Dimension; PK Dim = Atomic sc_alert_ind_id (A23) nên mang thẳng sc_alert_violation.sc_alert_ind_id, không lookup. [MỚI 2026-11-10, O_QLKD_75] Thay cho lọc indicator_code tự đặt: Detail Mapping chọn nhóm tham số của từng biểu đồ bằng securities_company_alert_indicator_dim.sc_alert_ind_code IN (<ID BA>) — Nhóm 5: 450, 451; Nhóm 6: 457–464, 467–472; Nhóm 7: 1404; Nhóm 36: 452–456. NULL khi dòng cảnh báo không gắn tham số. Cột đặt CUỐI bảng để flat #3 có thể ALTER ADD COLUMN.',
+    actual_val                                   Nullable(Decimal(23,2)) COMMENT 'Giá trị thực tế của chỉ số tại thời điểm cảnh báo (SC_FIRM_ALERT_VIOLATION.ACTUAL_VALUE, NUMBER(38,2)) — cột Giá trị của danh sách Chi tiết cảnh báo (K_QLKD_224, 225, 226).',
+    violation_description                        Nullable(String)        COMMENT 'Mô tả chi tiết cảnh báo/vi phạm của dòng (SC_FIRM_ALERT_VIOLATION.VIOLATION_DESCRIPTION, VARCHAR2(4000)) — cột Nội dung cảnh báo của danh sách Chi tiết cảnh báo (K_QLKD_224, 225, 226).',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                          Nullable(Date)          COMMENT 'Ngày của dòng cảnh báo (Alert Date) — từ Calendar Date Dimension',

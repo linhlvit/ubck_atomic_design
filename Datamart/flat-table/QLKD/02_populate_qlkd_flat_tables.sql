@@ -126,6 +126,8 @@ SELECT
     f.severity_level_alt_code,
     f.alert_dt,
     f.securities_company_alert_indicator_dim_id,
+    f.actual_val,
+    f.violation_description,
 
     -- From: CALENDAR DATE DIMENSION
     cal.cdr_dt                      AS cdr_dt,

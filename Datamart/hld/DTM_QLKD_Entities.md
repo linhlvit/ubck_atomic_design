@@ -174,7 +174,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Operational Securities Company Organization Unit Profile | Tác nghiệp | new | CN/PGD/VPĐD — số lượng theo loại (Nhóm 32), Tên/Địa chỉ/Nghiệp vụ/Ngày thành lập/Giám đốc (Nhóm 37) | 1 đơn vị × 1 CTCK | K_QLKD_161–164, 181–185 READY; K_QLKD_178–180 (Nhóm 36) — xem O_QLKD_7 |
-| Operational Securities Company Organization Unit Service | Tác nghiệp | new | Bảng cầu đơn vị × dịch vụ được cấp phép — CN/PGD theo nghiệp vụ, dịch vụ, dịch vụ phái sinh (Nhóm 33/34/35) | 1 đơn vị × 1 dịch vụ được cấp phép | K_QLKD_165–177 READY (xem O_QLKD_26, O_QLKD_32) |
+| Operational Securities Company Organization Unit Service | Tác nghiệp | new | Bảng cầu đơn vị × dịch vụ được cấp phép — CN/PGD theo nghiệp vụ, dịch vụ, dịch vụ phái sinh (Nhóm 33/34; Nhóm 35 đã xóa 17/11/2026) | 1 đơn vị × 1 dịch vụ được cấp phép | K_QLKD_165–170, 173, 175–177 READY; K_QLKD_171/172/174 DEPRECATED 17/11/2026 (xem O_QLKD_26, O_QLKD_32, O_QLKD_78) |
 
 ---
 
