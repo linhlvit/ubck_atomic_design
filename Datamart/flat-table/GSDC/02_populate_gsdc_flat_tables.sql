@@ -426,7 +426,8 @@ SELECT
     catalog_dim.financial_rpt_catalog_tp_code,
     catalog_dim.enterprise_tp_code       AS fr_catalog_enterprise_tp_code,
     catalog_dim.row_description_reference,
-    catalog_dim.column_description_reference
+    catalog_dim.column_description_reference,
+    catalog_dim.financial_statement_tp_code    -- [MỚI 2026-11-17, O_GSDC_48] lọc báo cáo công ty mẹ (Nhóm 24 / 24.1)
 FROM datamart.fct_public_company_financial_rpt_val f
 JOIN datamart.cdr_dt_dim snpst_cal
     ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id

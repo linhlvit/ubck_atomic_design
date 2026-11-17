@@ -39,7 +39,8 @@ JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE a1.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 1,,Dashboard tổng hợp chấm điểm phân loại CTDC,Tên doanh nghiệp,,Dashboard,Chiều,Dễ,"CTDC, ngày",IDS,X,X,,Done,,company_profiles,cp.company_name_vn AS ten_dn,cp.status_ids_cd = 'APPROVED_PUBLIC',
 1,,Dashboard tổng hợp chấm điểm phân loại CTDC,Tuân thủ,Điểm tuân thủ trên phân hệ: Đánh giá mức độ tuân thủ về Công bố thông tin của các Công ty đại chúng,Dashboard,Chỉ tiêu cơ sở,TB,"CTDC, ngày",IDS,X,X,,Done,,"evaluations (ev)
  evaluation_details (ed)
@@ -132,7 +133,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 2,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu tuân thủ,Tên doanh nghiệp,,Dashboard,Chiều,Trùng,"CTDC, ngày",IDS,X,X,,Done,,trùng dòng 4,,,
 2,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu tuân thủ,Công bố BCTC,"Điểm Công bố BCTC trên phân hệ: Thông tin định kỳ - Báo cáo tài chính
 - Đánh giá tiêu chí dựa trên :
@@ -433,7 +435,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 3,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu phát hành,Tên doanh nghiệp,,Dashboard,Chiều,Trùng,"CTDC, ngày",IDS,X,X,,Done,,trùng dòng 4,,,
 3,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu phát hành,Phát hành tăng vốn nhanh,"Điểm Phát hành tăng vốn nhanh trên phân hệ:
 - Đánh giá tiêu chí dựa trên :
@@ -600,7 +603,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 4,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu tài chính,Tên doanh nghiệp,,Dashboard,Chiều,Trùng,"CTDC, ngày",IDS,X,X,,Done,,trùng dòng 4,,,
 4,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu tài chính,Kiểm toán - Ý kiến kiểm toán,"Điểm Kiểm toán - Ý kiến kiểm toán trên phân hệ:
 ",Dashboard,Chỉ tiêu cơ sở,TB,"CTDC, ngày",IDS,x,X,,Done,,"evaluation_details (ed)
@@ -787,7 +791,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 5,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu phi tài chính & M- Score,Tên doanh nghiệp,,Dashboard,Chiều,Trùng,"CTDC, ngày",IDS,X,X,,Done,,trùng dòng 4,,,
 5,,Dashboard top chấm điểm phân loại công ty đại chúng theo chỉ tiêu phi tài chính & M- Score,Tình trạng Doanh nghiệp từ Cục Đăng ký kinh doanh (Cổng thông tin DN),"Điểm Tình trạng Doanh nghiệp từ Cục Đăng ký kinh doanh (Cổng thông tin DN) trên phân hệ:
 - Đánh giá tiêu chí dựa trên :
@@ -1132,9 +1137,15 @@ Chitiet_DN AS (
             report_year, report_quarter,
             CASE
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='270')
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='270')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='280')   -- [UPD-DN2026]
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='270')
                       OR (upper(enterprise_type_cd)='TD' AND row_desc='300')) THEN 'TAI_SAN'
+                WHEN col_desc = '2' AND report_cd LIKE 'BCDKT%'
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='270')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='280')   -- [UPD-DN2026]
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='270')
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='300')) THEN 'TAI_SAN_DK'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='300')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='300')
@@ -1143,6 +1154,10 @@ Chitiet_DN AS (
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='400')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='400')
                       OR (upper(enterprise_type_cd)='TD' AND row_desc='500')) THEN 'VCSH'
+                WHEN col_desc = '2' AND report_cd LIKE 'BCDKT%'
+                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='400')
+                      OR (upper(enterprise_type_cd)='BH' AND row_desc='400')
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='500')) THEN 'VCSH_DK'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='411')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='411')
@@ -1155,32 +1170,28 @@ Chitiet_DN AS (
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='60')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='60')
                       OR (upper(enterprise_type_cd)='TD' AND row_desc='21')) THEN 'LNST_LK'
-                WHEN col_desc = '2' AND report_cd LIKE 'BCDKT%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='270')
-                      OR (upper(enterprise_type_cd)='BH' AND row_desc='270')
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc='300')) THEN 'TAI_SAN_DK'
-                WHEN col_desc = '2' AND report_cd LIKE 'BCDKT%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='400')
-                      OR (upper(enterprise_type_cd)='BH' AND row_desc='400')
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc='500')) THEN 'VCSH_DK'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='140')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='140')) THEN 'HTK'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='10')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='10')
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc='03')) THEN 'DOANH_THU'
+                      --thay đổi UAT2
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc in ('01', '04', '07', '08', '09'))) THEN 'DOANH_THU'
                 WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='10')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='10')
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc='03')) THEN 'DOANH_THU_LK'
+                      --thay đổi UAT2
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc in ('01', '04', '07', '08', '09'))) THEN 'DOANH_THU_LK'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='421')
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='421')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='420')   -- [UPD-DN2026]
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='421')) THEN 'LN_YTD'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc IN ('130','210'))
                       OR (upper(enterprise_type_cd)='BH' AND row_desc IN ('130','210'))
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc IN ('251'))) THEN 'PHAI_THU'
+                      --OR (upper(enterprise_type_cd)='TD' AND row_desc IN ('251'))) THEN 'PHAI_THU' --thay đổi UAT2
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc IN ('251', '252'))) THEN 'PHAI_THU'
                 WHEN col_desc = '1' AND report_cd LIKE 'BCDKT%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='110')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='110')
@@ -1192,8 +1203,8 @@ Chitiet_DN AS (
                 WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='50')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='50')
-                      OR (upper(enterprise_type_cd)='TD' AND row_desc='17')) THEN 'LNTT_LK'                      
-                                ----BS UAT
+                      OR (upper(enterprise_type_cd)='TD' AND row_desc='17')) THEN 'LNTT_LK'  
+                ----BS UAT
                                 WHEN col_desc = '1' AND report_cd LIKE 'BCLCTT_TT%'
                                         AND ((upper(enterprise_type_cd)='DN' AND row_desc='20')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='20')) THEN 'Dong_tien_TT'
@@ -1207,21 +1218,29 @@ Chitiet_DN AS (
                                         AND ((upper(enterprise_type_cd)='DN' AND row_desc='310')
                       OR (upper(enterprise_type_cd)='BH' AND row_desc='310')) THEN 'NO_NH'
                                 WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='23')) THEN 'CP_laivay'          
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='23')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='24')) THEN 'CP_laivay'   -- [UPD-DN2026]  
                                 WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='21')
-                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='12')) THEN 'DT_HDTC'
-                                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='21')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='22')                     -- [UPD-DN2026]
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD <> 'ME' AND row_desc='12')
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD = 'ME' AND row_desc='23')) THEN 'DT_HDTC'   -- [UPD-BHME]
+                WHEN col_desc = '1' AND report_cd LIKE 'BCKQKD%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='31')
-                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='13')) THEN 'DT_HDKH'
-                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='23')) THEN 'CP_laivay_LK'          
-                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
-                    AND ((upper(enterprise_type_cd)='DN' AND row_desc='21')
-                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='12')) THEN 'DT_HDTC_LK'
-                                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                                          OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD <> 'ME' AND row_desc='13')
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD = 'ME' AND row_desc='31')) THEN 'DT_HDKH'   -- [UPD-BHME]
+                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='23')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='24')) THEN 'CP_laivay_LK'   -- [UPD-DN2026]
+                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
+                    AND ((upper(enterprise_type_cd)='DN' AND rc.report_year <= 2025 AND row_desc='21')
+                      OR (upper(enterprise_type_cd)='DN' AND rc.report_year >= 2026 AND row_desc='22')                     -- [UPD-DN2026]
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD <> 'ME' AND row_desc='12')
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD = 'ME' AND row_desc='23')) THEN 'DT_HDTC_LK'   -- [UPD-BHME]
+                WHEN col_desc = '3' AND report_cd LIKE 'BCKQKD%'
                     AND ((upper(enterprise_type_cd)='DN' AND row_desc='31')
-                                          OR (upper(enterprise_type_cd)='BH' AND row_desc='13')) THEN 'DT_HDKH_LK'
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD <> 'ME' AND row_desc='13')
+                      OR (upper(enterprise_type_cd)='BH' AND rc.FINANCIAL_STATEMENT_CD = 'ME' AND row_desc='31')) THEN 'DT_HDKH_LK'   -- [UPD-BHME]
             END AS chi_tieu,
             data_value
         FROM (
@@ -3731,15 +3750,15 @@ SELECT
         ct.LNTT, ct.LNTT_LK,
         CASE WHEN ct.LNST > 0 THEN 1 ELSE 0 END AS DNBaoLai,
         CASE WHEN ct.LNST_LK > 0 THEN 1 ELSE 0 END AS DNBaoLai_LK,
-	--BS UAT
-	COALESCE(Dong_tien_GT,Dong_tien_TT) AS Dong_tien,
-	TSAN_NH/NULLIF(NO_NH,0)			AS KN_HD_hienthoi,
-	(LNTT + CP_laivay)/NULLIF(CP_laivay,0) 			AS EBIT_laivay,
-	DT_HDTC/NULLIF(LNST,0)			AS DTTC_LNST,
-	DT_HDKH/NULLIF(LNST,0)			AS DTKH_LNST,
-	(LNTT_LK + CP_laivay_LK)/NULLIF(CP_laivay_LK,0)	AS EBIT_laivay_LK,
-	DT_HDTC_LK/NULLIF(LNST_LK,0)	AS DTTC_LNST_LK,
-	DT_HDKH_LK/NULLIF(LNST_LK,0)	AS DTKH_LNST_LK
+        --BS UAT
+        COALESCE(Dong_tien_GT,Dong_tien_TT) AS Dong_tien,
+        TSAN_NH/NULLIF(NO_NH,0)                        AS KN_HD_hienthoi,
+        (LNTT + CP_laivay)/NULLIF(CP_laivay,0)                         AS EBIT_laivay,
+        DT_HDTC/NULLIF(LNST,0)                        AS DTTC_LNST,
+        DT_HDKH/NULLIF(LNST,0)                        AS DTKH_LNST,
+        (LNTT_LK + CP_laivay_LK)/NULLIF(CP_laivay_LK,0)        AS EBIT_laivay_LK,
+        DT_HDTC_LK/NULLIF(LNST_LK,0)        AS DTTC_LNST_LK,
+        DT_HDKH_LK/NULLIF(LNST_LK,0)        AS DTKH_LNST_LK
 FROM Chitiet_DN ct
 LEFT JOIN UAT_IDS_STG.CATEGORIES c ON c.ID = ct.category_l1_id AND c.ds_snpst_dt = DATE '2026-09-24'
 where 1=1 
@@ -3985,6 +4004,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '123'",
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng đầu tư nắm giữ đến ngày đáo hạn ngắn hạn (*),Từ năm 2026 trở đi: 124,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Đầu tư ngắn hạn khác,Từ năm 2026 trở đi: 125,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng tổn thất các khoản đầu tư ngắn hạn khác (*),Từ năm 2026 trở đi: 126,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
 19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,III – Các khoản phải thu ngắn hạn,130,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
@@ -4035,7 +4057,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '134'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải thu về cho vay ngắn hạn,135,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải thu về cho vay ngắn hạn,"Từ năm 2025 về trước: 135
+Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4045,7 +4068,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '135'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải thu ngắn hạn khác,136,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải thu ngắn hạn khác,"Từ năm 2025 về trước: 136
+Từ năm 2026 trở đi: 135",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4055,7 +4079,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '136'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Dự phòng phải thu ngắn hạn khó đòi (*),137,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Dự phòng phải thu ngắn hạn khó đòi (*),"Từ năm 2025 về trước: 137
+Từ năm 2026 trở đi: 136",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4065,7 +4090,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '137'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Tài sản thiếu chờ xử lý,139,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Tài sản thiếu chờ xử lý,"Từ năm 2025 về trước: 139
+Từ năm 2026 trở đi: 137",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4095,7 +4121,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '141'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Dự phòng giảm giá hàng tồn kho (*),149,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Dự phòng giảm giá hàng tồn kho (*),"Từ năm 2025 về trước: 149
+Từ năm 2026 trở đi: 142",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4105,7 +4132,12 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '149'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,V – Tài sản ngắn hạn khác,150,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,V. Tài sản sinh học ngắn hạn,Từ năm 2026 trở đi: 150,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Súc vật nuôi lấy sản phẩm một lần ngắn hạn,Từ năm 2026 trở đi: 151,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Cây trồng theo mùa vụ hoặc lấy sản phẩm một lần ngắn hạn,Từ năm 2026 trở đi: 152,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng tổn thất tài sản sinh học ngắn hạn (*),Từ năm 2026 trở đi: 153,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,V – Tài sản ngắn hạn khác,"Từ năm 2025 về trước: 150
+ Từ năm 2026 trở đi: 160",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4115,7 +4147,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '150'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Chi phí trả trước ngắn hạn,151,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Chi phí trả trước ngắn hạn,"Từ năm 2025 về trước: 155
+ Từ năm 2026 trở đi: 165",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4125,7 +4158,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '151'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Thuế GTGT được khấu trừ,152,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Thuế GTGT được khấu trừ,"Từ năm 2025 về trước: 151
+ Từ năm 2026 trở đi: 161",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4135,7 +4169,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '152'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Thuế và các khoản khác phải thu Nhà nước,153,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Thuế và các khoản khác phải thu Nhà nước,"Từ năm 2025 về trước: 152
+ Từ năm 2026 trở đi: 162",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4145,7 +4180,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '153'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Giao dịch mua bán lại trái phiếu Chính phủ,154,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Giao dịch mua bán lại trái phiếu Chính phủ,"Từ năm 2025 về trước: 153
+ Từ năm 2026 trở đi: 163",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4155,7 +4191,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '154'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Tài sản ngắn hạn khác,155,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Tài sản ngắn hạn khác,"Từ năm 2025 về trước: 154
+ Từ năm 2026 trở đi: 164",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4225,7 +4262,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '214'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải thu về cho vay dài hạn,215,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải thu về cho vay dài hạn,"Từ năm 2025 về trước: 215
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4235,7 +4273,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '215'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải thu dài hạn khác,216,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải thu dài hạn khác,"Từ năm 2025 về trước: 216
+ Từ năm 2026 trở đi: 215",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4245,7 +4284,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '216'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Dự phòng phải thu dài hạn khó đòi (*),219,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Dự phòng phải thu dài hạn khó đòi (*),"Từ năm 2025 về trước: 219
+ Từ năm 2026 trở đi: 216",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4355,7 +4395,17 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '229'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,III – Bất động sản đầu tư,230,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,III. Tài sản sinh học dài hạn,Từ năm 2026 trở đi: 230,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Súc vật nuôi cho sản phẩm định kỳ,Từ năm 2026 trở đi: 231,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,a) Súc vật nuôi cho sản phẩm định kỳ chưa đến giai đoạn trưởng thành, Từ năm 2026 trở đi: 232,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,b) Súc vật nuôi cho sản phẩm định kỳ đến giai đoạn trưởng thành,Từ năm 2026 trở đi: 233,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,#NAME?,Từ năm 2026 trở đi: 234,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,+ Giá trị hao mòn luỹ kế (*),Từ năm 2026 trở đi: 235,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Súc vật nuôi lấy sản phẩm một lần dài hạn,Từ năm 2026 trở đi: 236,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Cây trồng theo mùa vụ hoặc lấy sản phẩm một lần dài hạn,Từ năm 2026 trở đi: 237,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng tổn thất tài sản sinh học dài hạn (*),Từ năm 2026 trở đi: 238,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,III – Bất động sản đầu tư,"Từ năm 2025 về trước: 230
+ Từ năm 2026 trở đi: 240",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4365,7 +4415,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '230'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,#NAME?,231,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,#NAME?,"Từ năm 2025 về trước: 231
+ Từ năm 2026 trở đi: 241",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4375,7 +4426,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '231'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Giá trị hao mòn lũy kế (*),232,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Giá trị hao mòn lũy kế (*),"Từ năm 2025 về trước: 232
+ Từ năm 2026 trở đi: 242",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4385,7 +4437,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '232'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,IV – Tài sản dở dang dài hạn,240,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,IV – Tài sản dở dang dài hạn,"Từ năm 2025 về trước: 240
+ Từ năm 2026 trở đi: 250",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4395,7 +4448,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '240'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"1. Chi phí sản xuất, kinh doanh dở dang dài hạn",241,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"1. Chi phí sản xuất, kinh doanh dở dang dài hạn","Từ năm 2025 về trước: 241
+ Từ năm 2026 trở đi: 251",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4405,7 +4459,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '241'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Chi phí xây dựng cơ bản dở dang,242,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Chi phí xây dựng cơ bản dở dang,"Từ năm 2025 về trước: 242
+ Từ năm 2026 trở đi: 252",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4415,7 +4470,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '242'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,V – Đầu tư tài chính dài hạn,250,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,V – Đầu tư tài chính dài hạn,"Từ năm 2025 về trước: 250
+ Từ năm 2026 trở đi: 260",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4425,7 +4481,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '250'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Đầu tư vào công ty con,251,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Đầu tư vào công ty con,"Từ năm 2025 về trước: 251
+ Từ năm 2026 trở đi: 261",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4435,7 +4492,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '251'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"2. Đầu tư vào công ty liên doanh, liên kết",252,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"2. Đầu tư vào công ty liên doanh, liên kết","Từ năm 2025 về trước: 252
+ Từ năm 2026 trở đi: 262",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4445,7 +4503,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '252'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Đầu tư góp vốn vào đơn vị khác,253,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Đầu tư góp vốn vào đơn vị khác,"Từ năm 2025 về trước: 253
+ Từ năm 2026 trở đi: 263",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4455,7 +4514,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '253'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Dự phòng đầu tư tài chính dài hạn (*),254,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Dự phòng đầu tư tài chính dài hạn (*),"Từ năm 2025 về trước: 254
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4465,7 +4525,10 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '254'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Đầu tư nắm giữ đến ngày đáo hạn,255,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng tổn thất đầu tư vào đơn vị khác dài hạn (*),Từ năm 2026 trở đi: 264,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Dự phòng đầu tư nắm giữ đến ngày đáo hạn dài hạn (*),Từ năm 2026 trở đi: 266,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Đầu tư nắm giữ đến ngày đáo hạn,"Từ năm 2025 về trước: 255
+ Từ năm 2026 trở đi: 265",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4475,7 +4538,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '255'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,VI – Tài sản dài hạn khác,260,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,VI – Tài sản dài hạn khác,"Từ năm 2025 về trước: 260
+ Từ năm 2026 trở đi: 270",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4485,7 +4549,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '260'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Chi phí trả trước dài hạn,261,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Chi phí trả trước dài hạn,"Từ năm 2025 về trước: 261
+ Từ năm 2026 trở đi: 271",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4495,7 +4560,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '261'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Tài sản thuế thu nhập hoãn lại,262,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Tài sản thuế thu nhập hoãn lại,"Từ năm 2025 về trước: 262
+ Từ năm 2026 trở đi: 272",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4505,7 +4571,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '262'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"3. Thiết bị, vật tư, phụ tùng thay thế dài hạn",263,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"3. Thiết bị, vật tư, phụ tùng thay thế dài hạn","Từ năm 2025 về trước: 263
+ Từ năm 2026 trở đi: 273",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4515,7 +4582,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '263'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Tài sản dài hạn khác,268,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Tài sản dài hạn khác,"Từ năm 2025 về trước: 268
+ Từ năm 2026 trở đi: 274",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4525,7 +4593,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '268'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Lợi thế thương mại,269,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Lợi thế thương mại,"Từ năm 2025 về trước: 269
+ Từ năm 2026 trở đi: 279",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4535,7 +4604,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '269'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,TỔNG CỘNG TÀI SẢN (270 = 100 + 200),270,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,TỔNG CỘNG TÀI SẢN (270 = 100 + 200),"Từ năm 2025 về trước: 270
+ Từ năm 2026 trở đi: 280",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4585,7 +4655,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '312'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Thuế và các khoản phải nộp Nhà nước,313,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"- Phải trả cổ tức, lợi nhuận",Từ năm 2026 trở đi: 313,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Thuế và các khoản phải nộp Nhà nước,"Từ năm 2025 về trước: 313
+ Từ năm 2026 trở đi: 314",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4595,7 +4667,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '313'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Phải trả người lao động,314,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Phải trả người lao động,"Từ năm 2025 về trước: 314
+ Từ năm 2026 trở đi: 315",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4605,7 +4678,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '314'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Chi phí phải trả ngắn hạn,315,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Chi phí phải trả ngắn hạn,"Từ năm 2025 về trước: 315
+ Từ năm 2026 trở đi: 316",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4615,7 +4689,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '315'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải trả nội bộ ngắn hạn,316,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Phải trả nội bộ ngắn hạn,"Từ năm 2025 về trước: 316
+ Từ năm 2026 trở đi: 317",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4625,7 +4700,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '316'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Phải trả theo tiến độ kế hoạch hợp đồng xây dựng,317,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Phải trả theo tiến độ kế hoạch hợp đồng xây dựng,"Từ năm 2025 về trước: 317
+ Từ năm 2026 trở đi: 318",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4635,7 +4711,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '317'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Doanh thu chưa thực hiện ngắn hạn,318,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Doanh thu chưa thực hiện ngắn hạn,"Từ năm 2025 về trước: 318
+ Từ năm 2026 trở đi: 319",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4645,7 +4722,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '318'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Phải trả ngắn hạn khác,319,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Phải trả ngắn hạn khác,"Từ năm 2025 về trước: 319
+ Từ năm 2026 trở đi: 320",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4655,7 +4733,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '319'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Vay và nợ thuê tài chính ngắn hạn,320,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Vay và nợ thuê tài chính ngắn hạn,"Từ năm 2025 về trước: 320
+ Từ năm 2026 trở đi: 321",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4665,7 +4744,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '320'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Dự phòng phải trả ngắn hạn,321,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Dự phòng phải trả ngắn hạn,"Từ năm 2025 về trước: 321
+ Từ năm 2026 trở đi: 322",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4675,7 +4755,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '321'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"12. Quỹ khen thưởng, phúc lợi",322,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,"12. Quỹ khen thưởng, phúc lợi","Từ năm 2025 về trước: 322
+ Từ năm 2026 trở đi: 323",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4685,7 +4766,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '322'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,13. Quỹ bình ổn giá,323,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,13. Quỹ bình ổn giá,"Từ năm 2025 về trước: 323
+ Từ năm 2026 trở đi: 324",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4695,7 +4777,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '323'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,14. Giao dịch mua bán lại trái phiếu Chính phủ,324,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,14. Giao dịch mua bán lại trái phiếu Chính phủ,"Từ năm 2025 về trước: 324
+ Từ năm 2026 trở đi: 325",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4735,7 +4818,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '332'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Chi phí phải trả dài hạn,333,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- Thuế và các khoản phải nộp Nhà nước dài hạn,Từ năm 2026 trở đi: 333,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,3. Chi phí phải trả dài hạn,"Từ năm 2025 về trước: 333
+ Từ năm 2026 trở đi: 334",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4745,7 +4830,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '333'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Phải trả nội bộ về vốn kinh doanh,334,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,4. Phải trả nội bộ về vốn kinh doanh,"Từ năm 2025 về trước: 334
+ Từ năm 2026 trở đi: 335",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4755,7 +4841,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '334'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải trả nội bộ dài hạn,335,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,5. Phải trả nội bộ dài hạn,"Từ năm 2025 về trước: 335
+ Từ năm 2026 trở đi: 336",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4765,7 +4852,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '335'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Doanh thu chưa thực hiện dài hạn,336,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,6. Doanh thu chưa thực hiện dài hạn,"Từ năm 2025 về trước: 336
+ Từ năm 2026 trở đi: 337",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4775,7 +4863,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '336'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Phải trả dài hạn khác,337,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,7. Phải trả dài hạn khác,"Từ năm 2025 về trước: 337
+ Từ năm 2026 trở đi: 338",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4785,7 +4874,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '337'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Vay và nợ thuê tài chính dài hạn,338,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,8. Vay và nợ thuê tài chính dài hạn,"Từ năm 2025 về trước: 338
+ Từ năm 2026 trở đi: 339",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4795,7 +4885,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '338'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Trái phiếu chuyển đổi,339,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Trái phiếu chuyển đổi,"Từ năm 2025 về trước: 339
+ Từ năm 2026 trở đi: 340",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4805,7 +4896,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '339'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Cổ phiếu ưu đãi,340,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Cổ phiếu ưu đãi,"Từ năm 2025 về trước: 340
+ Từ năm 2026 trở đi: 341",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4815,7 +4907,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '340'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Thuế thu nhập hoãn lại phải trả,341,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Thuế thu nhập hoãn lại phải trả,"Từ năm 2025 về trước: 341
+ Từ năm 2026 trở đi: 342",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4825,7 +4918,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '341'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,12. Dự phòng phải trả dài hạn,342,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,12. Dự phòng phải trả dài hạn,"Từ năm 2025 về trước: 342
+ Từ năm 2026 trở đi: 343",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4835,7 +4929,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '342'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,13. Quỹ phát triển khoa học và công nghệ,343,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,13. Quỹ phát triển khoa học và công nghệ,"Từ năm 2025 về trước: 343
+ Từ năm 2026 trở đi: 344",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4855,7 +4950,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '400'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,I – Vốn chủ sở hữu,410,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,I – Vốn chủ sở hữu,"
+Từ năm 2025 về trước: 410
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4965,7 +5062,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '418'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Quỹ hỗ trợ sắp xếp doanh nghiệp,419,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,9. Quỹ hỗ trợ sắp xếp doanh nghiệp,"
+Từ năm 2025 về trước: 419
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4975,7 +5074,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '419'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Quỹ khác thuộc vốn chủ sở hữu,420,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,10. Quỹ khác thuộc vốn chủ sở hữu,"Từ năm 2025 về trước: 420
+ Từ năm 2026 trở đi: 419",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4985,7 +5085,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '420'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Lợi nhuận sau thuế chưa phân phối,421,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,11. Lợi nhuận sau thuế chưa phân phối,"Từ năm 2025 về trước: 421
+ Từ năm 2026 trở đi: 420",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -4995,7 +5096,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '421'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- LNST chưa phân phối lũy kế đến cuối kỳ trước,421a,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- LNST chưa phân phối lũy kế đến cuối kỳ trước,"Từ năm 2025 về trước: 421a
+ Từ năm 2026 trở đi: 420a",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5005,7 +5107,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '421a'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- LNST chưa phân phối kỳ này,421b,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,- LNST chưa phân phối kỳ này,"Từ năm 2025 về trước: 421b
+ Từ năm 2026 trở đi: 420b",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5015,7 +5118,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '421b'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,12. Nguồn vốn đầu tư XDCB,422,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,12. Nguồn vốn đầu tư XDCB,"Từ năm 2025 về trước: 422
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5035,7 +5139,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '429'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,II – Nguồn kinh phí và quỹ khác,430,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,II – Nguồn kinh phí và quỹ khác,"Từ năm 2025 về trước: 430
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5045,7 +5150,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '430'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Nguồn kinh phí,431,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,1. Nguồn kinh phí,"Từ năm 2025 về trước: 431
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5055,7 +5161,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '431'",
-19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Nguồn kinh phí đã hình thành TSCĐ,432,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+19,,Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Bảng cân đối kế toán ,2. Nguồn kinh phí đã hình thành TSCĐ,"Từ năm 2025 về trước: 432
+ Từ năm 2026 trở đi: trống",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5136,7 +5243,9 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '20'",
-20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",6. Doanh thu hoạt động tài chính,21,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên","-Lãi/lỗ của hoạt động bán,thanh lý bất động sản đầu tư",Từ năm 2026 trở đi: 21,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",6. Doanh thu hoạt động tài chính,"Từ năm 2025 về trước: 21
+ Từ năm 2026 trở đi: 22",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5146,7 +5255,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '21'",
-20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",7. Chi phí tài chính,22,Data Explorer,Chỉ tiêu phái sinh,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",7. Chi phí tài chính,"Từ năm 2025 về trước: 22
+ Từ năm 2026 trở đi: 23",Data Explorer,Chỉ tiêu phái sinh,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5156,7 +5266,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '22'",
-20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",7. Chi phí tài chính (Trong đó: Chi phí lãi vay),23,Data Explorer,Chỉ tiêu phái sinh,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên",7. Chi phí tài chính (Trong đó: Chi phí lãi vay),"Từ năm 2025 về trước: 23
+ Từ năm 2026 trở đi: 24",Data Explorer,Chỉ tiêu phái sinh,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -5166,7 +5277,8 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '23'",
-20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên","8. Phần lãi hoặc lỗ trong công ty liên doanh, liên kết",24,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+20,,"Dữ liệu tài chính về doanh nghiệp thông thường chi tiết - Báo cáo kết quả kinh doanh theo năm, bán niên","8. Phần lãi hoặc lỗ trong công ty liên doanh, liên kết","Từ năm 2025 về trước: 24
+ Từ năm 2026 trở đi: 27",Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7016,7 +7128,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '440'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",1. Doanh thu thuần hoạt động kinh doanh bảo hiểm,10,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",1. Doanh thu thuần hoạt động kinh doanh bảo hiểm,10,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7028,7 +7140,7 @@ GROUP BY
  AND rr.row_desc = '10'","Tương tự mục 19, thay điều kiện:
                 WHERE UPPER(rc.enterprise_type_cd) = 'BH'
                         AND rc.report_cd LIKE 'BCKQKD%'"
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",2. Doanh thu kinh doanh bất động sản đầu tư,11,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",2. Doanh thu kinh doanh bất động sản đầu tư,11,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7038,7 +7150,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '11'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",3. Doanh thu hoạt động tài chính,12,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",3. Doanh thu hoạt động tài chính,12,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7048,7 +7160,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '12'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",4. Thu nhập khác,13,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",4. Thu nhập khác,13,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7058,7 +7170,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '13'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",5. Tổng chi phí hoạt động kinh doanh bảo hiểm,20,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",5. Tổng chi phí hoạt động kinh doanh bảo hiểm,20,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7068,7 +7180,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '20'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",6. Giá vốn bất động sản đầu tư,21,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",6. Giá vốn bất động sản đầu tư,21,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7078,7 +7190,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '21'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",7. Chi phí hoạt động tài chính,22,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",7. Chi phí hoạt động tài chính,22,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7088,7 +7200,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '22'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",8. Chi phí quản lý doanh nghiệp,23,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",8. Chi phí quản lý doanh nghiệp,23,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7098,7 +7210,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '23'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",9. Chi phí khác,24,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",9. Chi phí khác,24,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7108,7 +7220,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '24'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",10. Tổng lợi nhuận kế toán trước thuế (50=10+11+12+13-20-21-22-23-24),50,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",10. Tổng lợi nhuận kế toán trước thuế (50=10+11+12+13-20-21-22-23-24),50,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7118,7 +7230,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '50'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",11. Chi phí thuế TNDN hiện hành,51,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",11. Chi phí thuế TNDN hiện hành,51,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7128,7 +7240,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '51'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",12. Chi phí thuế TNDN hoãn lại,52,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",12. Chi phí thuế TNDN hoãn lại,52,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7138,7 +7250,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '52'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",13. Lợi nhuận sau thuế thu nhập doanh nghiệp (60=50-51-52),60,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",13. Lợi nhuận sau thuế thu nhập doanh nghiệp (60=50-51-52),60,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7148,7 +7260,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '60'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",14. Lợi ích của cổ đông không kiểm soát,61,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",14. Lợi ích của cổ đông không kiểm soát,61,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7158,7 +7270,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '61'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",15. Lợi nhuận sau thuế (62=60-61),62,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",15. Lợi nhuận sau thuế (62=60-61),62,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7168,7 +7280,7 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '62'",
-24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên)",16. Lãi cơ bản trên cổ phiếu,70,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
+24,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính hợp nhất/Tổng hợp/Riêng lẻ",16. Lãi cơ bản trên cổ phiếu,70,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,"IDS.data (d),
  IDS.report_catalog (rc),
  IDS.rrow (rr),
  IDS.rcol (rc2),
@@ -7178,6 +7290,51 @@ GROUP BY
  AND cd.report_year = :year
  AND cd.report_quarter = :quarter
  AND rr.row_desc = '70'",
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",1. Doanh thu phí bảo hiểm (01=01.1+01.2-01.3),1,Data Explorer,Chỉ tiêu cơ sở,TB,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,x,,Done,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Phí bảo hiểm gốc,1.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Phí nhận tái bảo hiểm,1.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Tăng(giảm) dự phòng phí bảo hiểm gốc và nhận tái bảo hiểm,1.3,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",2. Phí nhượng tái bảo hiểm(02=02.1-02.2),2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Tổng phí nhượng tái bảo hiểm,2.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Tăng(giảm) dự phòng phí nhượng tái bảo hiểm,2.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",3. Doanh thu phí bảo hiểm thuần(03=01-02),3,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",4. Hoa hồng nhượng tái bảo hiểm và doanh thu khác hoạt động kinh doanh bảo hiểm(04=04.1+04.2),4,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Hoa hồng nhượng tái bảo hiểm,4.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Doanh thu khác hoạt động kinh doanh bảo hiểm,4.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",5. Doanh thu thuần hoạt động kinh doanh bảo hiểm(10=03+04),10,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",6. Chi bồi thường(11=11.1-11.2),11,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Tổng chi bồi thường,11.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ","- Các khoản giảm trừ( thu đòi người thứ 3 bồi hoàn, thu hàng đã xử lý bồi thường 100%)",11.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",7. Thu bồi thường nhượng tái bảo hiểm,12,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",8. Tăng(giảm) dự phòng bồi thường bảo hiểm gốc và nhận tái bảo hiểm,13,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",9. Tăng(giảm) dự phòng bồi thường nhượng tái bảo hiểm,14,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",10. Tổng chi bồi thường bảo hiểm(15=11-12+13-14),15,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",11. Tăng(giảm) dự phòng dao động lớn,16,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",12. Chi phí khác hoạt động kinh doanh bảo hiểm(17=17.1+17.2),17,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Chi hoa hồng bảo hiểm,17.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Chi khác hoạt động kinh doanh bảo hiểm,17.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",13. Tổng chi phí hoạt động kinh doanh bảo hiểm(18=15+16+17),18,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",14. Lợi nhuận gộp hoạt động kinh doanh bảo hiểm( 19=10-18),19,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",15. Doanh thu kinh doanh bất động sản đầu tư,20,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",16. Giá vốn bất động sản đầu tư,21,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",17. Lợi nhuận từ hoạt động đầu tư bất động sản(22=20-21),22,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",18. Doanh thu hoạt động tài chính,23,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",19. Chi phí hoạt động tài chính,24,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",20. Lợi nhuận gộp hoạt động tài chính(25=23-24),25,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",21. Chi phí quản lý doanh nghiệp,26,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",22. Lợi nhuận thuần từ hoạt động kinh doanh(30=19+22+25-26),30,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",23. Thu nhập khác,31,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",24. Chi phí khác,32,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",25. Lợi nhuận khác(40=31-32),40,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- Phần lợi nhuận thuần trong công ty liên kết,40.1,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",- (Lỗ) thí điểm bảo hiểm nông nghiệp,40.2,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",26. Tổng lợi nhuận kế toán(50=30+40+40.1+40.2),50,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",27. Chi phí thuế TNDN hiện hành,51,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",28. Chi phí thuế thu nhập doanh nghiệp hoãn lại,52,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",29. Lợi nhuận sau thuế thu nhập doanh nghiệp(60=50-51-52),60,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",Lợi nhuận sau thuế của cổ đông công ty mẹ,61,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",Lợi nhuận sau thuế của cổ đông không kiểm soát,62,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
+24.1,,"Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo kết quả kinh doanh theo (năm, bán niên) - Báo cáo tài chính công ty mẹ",30. Lãi trên cổ phiếu,70,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,,,,,,
 25,,Dữ liệu tài chính doanh nghiệp bảo hiểm chi tiết -  Báo cáo lưu chuyển tiền tệ - trực tiếp ,I - Lưu chuyển tiền từ hoạt động kinh doanh,null,Data Explorer,Chỉ tiêu cơ sở,Dễ,"kỳ quý hoặc năm hoặc bán niên, sàn, Ngành, CTDC, chỉ tiêu BC",IDS,,X,,Done,,,,,"Tương tự mục 19, thay điều kiện:
                 WHERE UPPER(rc.enterprise_type_cd) = 'BH'
                         AND rc.report_cd LIKE 'BCLCTT_TT%'"
@@ -10072,7 +10229,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 33,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu tuân thủ ,Tên doanh nghiệp,,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Tháng, sàn, Ngành, CTDC",IDS,,X,,Done,,company_profiles,cp.company_name_vn AS ten_dn,cp.status_ids_cd = 'APPROVED_PUBLIC',
 33,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu tuân thủ ,Công bố BCTC,"Điểm Công bố BCTC trên phân hệ: Thông tin định kỳ - Báo cáo tài chính
 - Đánh giá tiêu chí dựa trên :
@@ -10364,7 +10522,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 34,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu tài chính ,Tên doanh nghiệp,,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Tháng, sàn, Ngành, CTDC",IDS,,X,,Done,,company_profiles,cp.company_name_vn AS ten_dn,cp.status_ids_cd = 'APPROVED_PUBLIC',
 34,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu tài chính ,Kiểm toán - Ý kiến kiểm toán,"Điểm Kiểm toán - Ý kiến kiểm toán trên phân hệ:
 ",Data Explorer,Chỉ tiêu cơ sở,Trùng,"Tháng, sàn, Ngành, CTDC",IDS,,X,,Done,,"evaluation_details (ed)
@@ -10543,7 +10702,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 35,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phát hành,Tên doanh nghiệp,,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Tháng, sàn, Ngành, CTDC",IDS,,X,,Done,,company_profiles,cp.company_name_vn AS ten_dn,cp.status_ids_cd = 'APPROVED_PUBLIC',
 35,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phát hành,Phát hành tăng vốn nhanh,"Điểm Phát hành tăng vốn nhanh trên phân hệ:
 - Đánh giá tiêu chí dựa trên :
@@ -10680,10 +10840,10 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
             SELECT ev.evaluation_date,
             company_id, ep.YEAR||lpad(ep.MONTH,2,0) AS per
             , criterion_cd--, ed.score AS diem
-			, (CASE WHEN evaluate =1 THEN 'Bình thường: '
-				WHEN evaluate =2 THEN 'Cảnh báo: '
-				WHEN evaluate =3 THEN 'Rủi ro: '
-				ELSE 'NULL: ' END)		||RESULT AS KQ
+                        , (CASE WHEN evaluate =1 THEN 'Bình thường: '
+                                WHEN evaluate =2 THEN 'Cảnh báo: '
+                                WHEN evaluate =3 THEN 'Rủi ro: '
+                                ELSE 'NULL: ' END)                ||RESULT AS KQ
             FROM GMS_IDS_UAT.evaluation_details ed
             JOIN GMS_IDS_UAT.evaluation_criteria ec ON ec.id = ed.criterion_id
             JOIN GMS_IDS_UAT.evaluation_groups eg ON eg.id = ec.group_id
@@ -10699,7 +10859,8 @@ FROM GMS_IDS_UAT.company_profiles cp JOIN
                         ) 
 ) aa ON cp.id = aa.COMPANY_ID 
 WHERE aa.per = '202607' AND aa.per = '202607'
-AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)"
+AND (cp.delete_flg = 0 OR cp.delete_flg IS NULL)
+AND cp.status_ids_cd  = 'APPROVED_PUBLIC'"
 36,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phi tài chính & M- Score,Tên doanh nghiệp,,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Tháng, sàn, Ngành, CTDC",IDS,,X,,Done,,company_profiles,cp.company_name_vn AS ten_dn,cp.status_ids_cd = 'APPROVED_PUBLIC',
 36,,Dữ liệu về phân loại công ty đại chúng theo chỉ tiêu phi tài chính & M- Score,Tình trạng Doanh nghiệp từ Cục Đăng ký kinh doanh (Cổng thông tin DN),"Điểm Tình trạng Doanh nghiệp từ Cục Đăng ký kinh doanh (Cổng thông tin DN) trên phân hệ:
 - Đánh giá tiêu chí dựa trên :
@@ -11113,6 +11274,13 @@ GROUP BY equity_listing_exch"
 39,,Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.2),ROE (%) - Năm N-1,,Báo cáo,Chỉ tiêu cơ sở,Trùng,"Ngành, Năm",IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
  IDS.rcol (rc2), IDS.company_data (cd),
  IDS.company_profiles (cp), IDS.categories (cat)","ROUND(lnst/AVG(vcsh)*100,4) AS roe_nam_n1","rc2.col_desc='1' | report_quarter IS NULL (kỳ năm) | GROUP BY cat.industry_cd, cd.report_year | Năm N và N-1 trong cùng 1 query CASE WHEN",
+39,,Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.2),Số lượng công ty đã ghi nhận dữ liệu báo cáo năm N,,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,"THam khảo câu lệnh mục 7:
+Lấy sum(chỉ tiêu SL) để đếm số lượng công ty theo từng kỳ"
+39,,Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.2),Số lượng công ty đã ghi nhận dữ liệu báo cáo năm N-1,,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,IDS,,X,,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
+ IDS.rcol (rc2), IDS.company_data (cd),
+ IDS.company_profiles (cp), IDS.categories (cat)",,,
 40,,Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.3),Kỳ báo cáo,,Báo cáo,Chiều,Trùng,,IDS,,X,,Done,,dữ liệu kỳ năm,,,
 40,,Báo cáo giám sát công ty đại chúng - Báo cáo vĩ mô (GSĐC-BC01.3),Tổng tài sản - Năm N,,Báo cáo,Chỉ tiêu cơ sở,TB,Năm,IDS,,X,x,Done,,"IDS.data (d), IDS.report_catalog (rc), IDS.rrow (rr),
  IDS.rcol (rc2), IDS.company_data (cd),

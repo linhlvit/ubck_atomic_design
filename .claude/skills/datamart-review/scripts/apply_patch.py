@@ -56,11 +56,11 @@ from datamart_common.csv_io import (  # noqa: E402
 )
 
 BACKUP_REL = "Datamart/context/.backup"
-_RE_NHOM_NUM = re.compile(r"(?:Nhóm|Nhom|Group)\s*(\d+)", re.IGNORECASE)
+_RE_NHOM_NUM = re.compile(r"(?:Nhóm|Nhom|Group)\s*(\d+(?:\.\d+)?)", re.IGNORECASE)
 
 
 def _nhom_re(n: str) -> re.Pattern:
-    return re.compile(rf"^####\s*(?:Nhóm|Nhom|Group)\s*0*{re.escape(str(n))}\b", re.IGNORECASE)
+    return re.compile(rf"^####\s*(?:Nhóm|Nhom|Group)\s*0*{re.escape(str(n))}\b(?!\.\d)", re.IGNORECASE)
 
 
 def backup(root: Path, p: Path) -> Path:
@@ -181,7 +181,7 @@ def patch_dm(path: Path, nhom: str, src: Path) -> Tuple[DesignCsv, DesignCsv]:
         raise SystemExit("❌ Header file nguồn khác header Detail Mapping.\n"
                          f"   nguồn: {inc.header}\n   đích  : {cur.header}")
     j = cur.ix["nhom"]
-    pat = re.compile(rf"^\s*(?:Nhóm|Nhom|Group)?\s*0*{re.escape(str(nhom))}\b", re.IGNORECASE)
+    pat = re.compile(rf"^\s*(?:Nhóm|Nhom|Group)?\s*0*{re.escape(str(nhom))}\b(?!\.\d)", re.IGNORECASE)
 
     bad = [n for n, r in enumerate(inc.rows, start=2)
            if not (j < len(r) and pat.match(r[j]))]
@@ -200,12 +200,12 @@ def patch_dm(path: Path, nhom: str, src: Path) -> Tuple[DesignCsv, DesignCsv]:
         rows = keep_before + inc.rows + keep_after
     else:
         # Nhóm mới -> chèn đúng vị trí theo SỐ nhóm tăng dần, giữ TC6 luôn PASS.
-        target = int(nhom) if str(nhom).isdigit() else None
+        target = float(nhom) if re.fullmatch(r"\d+(?:\.\d+)?", str(nhom)) else None
         pos = len(cur.rows)
         if target is not None:
             for k, r in enumerate(cur.rows):
                 m = _RE_NHOM_NUM.search(r[j]) if j < len(r) else None
-                if m and int(m.group(1)) > target:
+                if m and float(m.group(1)) > target:
                     pos = k
                     break
         rows = cur.rows[:pos] + inc.rows + cur.rows[pos:]

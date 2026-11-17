@@ -443,7 +443,8 @@ CREATE TABLE IF NOT EXISTS datamart.gsdc_fct_public_company_financial_rpt_val_fl
     financial_rpt_catalog_tp_code Nullable(String)    COMMENT 'Loại báo cáo (I/O) — từ Financial Report Catalog Dimension.',
     fr_catalog_enterprise_tp_code  Nullable(String)    COMMENT 'Loại hình doanh nghiệp (DN, BH, TD, CK) — từ Financial Report Catalog Dimension.',
     row_description_reference     Nullable(String)    COMMENT 'Mã dòng hiển thị trên biểu mẫu — từ Financial Report Catalog Dimension.',
-    column_description_reference  Nullable(String)    COMMENT 'Mã cột hiển thị trên biểu mẫu — từ Financial Report Catalog Dimension.'
+    column_description_reference  Nullable(String)    COMMENT 'Mã cột hiển thị trên biểu mẫu — từ Financial Report Catalog Dimension.',
+    financial_statement_tp_code   Nullable(String)    COMMENT '[MỚI 2026-11-17, O_GSDC_48] Loại báo cáo tài chính của biểu mẫu (FINANCIAL_STATEMENT_CD; ''ME'' = báo cáo công ty mẹ) — từ Financial Report Catalog Dimension. Nhóm 24 lọc <> ''ME'', Nhóm 24.1 lọc = ''ME''.'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(snpst_cdr_dt))
