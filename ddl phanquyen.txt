@@ -1,0 +1,184 @@
+CREATE TABLE prod_staging.vsdc_stg.closed_investors (
+  customer_name STRING COMMENT 'Nguồn: HOTEN',
+  investor_type INT COMMENT 'Nguồn: LOAI_DKSH',
+  trading_account_no STRING COMMENT 'Nguồn: TKGD',
+  address STRING COMMENT 'Nguồn: DIACHI',
+  id_number STRING COMMENT 'Nguồn: DKSH',
+  issue_date DATE COMMENT 'Nguồn: NGAYCAP',
+  issue_place STRING COMMENT 'Nguồn: NOICAP',
+  close_date DATE COMMENT 'Nguồn: NGAYDONG',
+  nationality INT COMMENT 'Nguồn: QUOCTICH',
+  phone_number STRING COMMENT 'Nguồn: DIENTHOAI',
+  email STRING COMMENT 'Nguồn: EMAIL',
+  notes STRING COMMENT 'Nguồn: GHICHU',
+  report_year INT COMMENT 'Năm của kỳ báo cáo',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày:dấu vân tay)',
+  ds_snpst_dt DATE COMMENT 'Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn')
+USING iceberg
+PARTITIONED BY (ds_snpst_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/closed_investors'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '5205246071802965812',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.end_of_day_open_interest (
+  contract_code STRING,
+  open_interest_volume BIGINT,
+  report_year INT,
+  report_month INT,
+  report_day INT,
+  _batch_id STRING,
+  ds_snpst_dt DATE,
+  ds_etl_pcs_tms TIMESTAMP,
+  _source_system STRING,
+  _source_table STRING,
+  _source_file STRING,
+  _file_checksum STRING,
+  _file_modified_at TIMESTAMP)
+USING iceberg
+PARTITIONED BY (ds_snpst_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/end_of_day_open_interest'
+TBLPROPERTIES (
+  'current-snapshot-id' = 'none',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.parquet.compression-codec' = 'zstd')
+
+CREATE TABLE prod_staging.vsdc_stg.major_shareholder (
+  seq_no BIGINT COMMENT 'Nguồn: STT',
+  ticker_symbol STRING COMMENT 'Nguồn: MÃ CHỨNG KHOÁN',
+  isin_code STRING COMMENT 'Nguồn: MÃ ISIN',
+  voting_shares STRING COMMENT 'Nguồn: SỐ LƯỢNG CHỨNG KHOÁN ĐĂNG KÝ',
+  shareholder_name STRING COMMENT 'Nguồn: TÊN CỔ ĐÔNG',
+  id_number STRING COMMENT 'Nguồn: SỐ ĐĂNG KÝ SỞ HỮU',
+  issue_date DATE COMMENT 'Nguồn: NGÀY CẤP',
+  contact_address STRING COMMENT 'Nguồn: ĐỊA CHỈ LIÊN HỆ',
+  begin_period_shares BIGINT COMMENT 'Nguồn: ĐẦU KỲ - SỐ LƯỢNG CHỨNG KHOÁN SỞ HỮU',
+  begin_period_ratio FLOAT COMMENT 'Nguồn: ĐẦU KỲ - TỶ LỆ %',
+  end_period_shares BIGINT COMMENT 'Nguồn: CUỐI KỲ - SỐ LƯỢNG CHỨNG KHOÁN SỞ HỮU',
+  end_period_ratio FLOAT COMMENT 'Nguồn: CUỐI KỲ - TỶ LỆ %',
+  notes STRING COMMENT 'Nguồn: GHI CHÚ',
+  from_year INT COMMENT 'Năm bắt đầu kỳ dữ liệu',
+  from_month INT COMMENT 'Tháng bắt đầu kỳ dữ liệu',
+  from_day INT COMMENT 'Ngày bắt đầu kỳ dữ liệu',
+  to_year INT COMMENT 'Năm kết thúc kỳ dữ liệu',
+  to_month INT COMMENT 'Tháng kết thúc kỳ dữ liệu',
+  to_day INT COMMENT 'Ngày kết thúc kỳ dữ liệu',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày:dấu vân tay)',
+  ds_snpst_dt DATE COMMENT 'Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn')
+USING iceberg
+PARTITIONED BY (ds_snpst_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/major_shareholder'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '8538765373314172954',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.open_investors (
+  customer_name STRING COMMENT 'Nguồn: HOTEN',
+  investor_type INT COMMENT 'Nguồn: LOAI_DKSH',
+  trading_account_no STRING COMMENT 'Nguồn: TKGD',
+  address STRING COMMENT 'Nguồn: DIACHI',
+  id_number STRING COMMENT 'Nguồn: DKSH',
+  issue_date DATE COMMENT 'Nguồn: NGAYCAP',
+  issue_place STRING COMMENT 'Nguồn: NOICAP',
+  open_date DATE COMMENT 'Nguồn: NGAYMO',
+  nationality INT COMMENT 'Nguồn: QUOCTICH',
+  phone_number STRING COMMENT 'Nguồn: DIENTHOAI',
+  email STRING COMMENT 'Nguồn: EMAIL',
+  notes STRING COMMENT 'Nguồn: GHICHU',
+  report_year INT COMMENT 'Năm của kỳ báo cáo',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày:dấu vân tay)',
+  ds_snpst_dt DATE COMMENT 'Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn')
+USING iceberg
+PARTITIONED BY (ds_snpst_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/open_investors'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '4398578476299714513',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.updated_investors (
+  customer_name STRING COMMENT 'Nguồn: HOTEN',
+  investor_type INT COMMENT 'Nguồn: STATUS',
+  trading_account_no STRING COMMENT 'Nguồn: TKGD',
+  address STRING COMMENT 'Nguồn: ADDRESS',
+  id_number STRING COMMENT 'Nguồn: DKSH',
+  issue_date DATE COMMENT 'Nguồn: NGAYCAP',
+  issue_place STRING COMMENT 'Nguồn: CARDISSUE',
+  nationality INT COMMENT 'Nguồn: QUOCTICH',
+  phone_number STRING COMMENT 'Nguồn: DIENTHOAI',
+  email STRING COMMENT 'Nguồn: EMAIL',
+  notes STRING COMMENT 'Nguồn: NOTE',
+  from_year INT COMMENT 'Năm bắt đầu kỳ dữ liệu',
+  from_month INT COMMENT 'Tháng bắt đầu kỳ dữ liệu',
+  from_day INT COMMENT 'Ngày bắt đầu kỳ dữ liệu',
+  to_year INT COMMENT 'Năm kết thúc kỳ dữ liệu',
+  to_month INT COMMENT 'Tháng kết thúc kỳ dữ liệu',
+  to_day INT COMMENT 'Ngày kết thúc kỳ dữ liệu',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày:dấu vân tay)',
+  ds_snpst_dt DATE COMMENT 'Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn')
+USING iceberg
+PARTITIONED BY (ds_snpst_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/updated_investors'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '7873075426097718662',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')

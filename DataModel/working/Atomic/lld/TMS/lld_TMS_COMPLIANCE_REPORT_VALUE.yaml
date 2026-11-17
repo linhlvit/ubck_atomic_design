@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler 2026-11-15, nguồn 'TMS.xlsx' + note_logic_ods_tms_report_cho_atomic_20261111.md; chỉnh 2026-11-16). Không có DDL trong Source/*.txt nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo ý nghĩa mô tả cột. Chỉ map cột 'Map? = có' trong TMS.xlsx. Không thiết kế technical fields ds_* và cột kỹ thuật ODS theo tiền lệ ODS-origin FMS 2026-11-07 (chờ Data Modeler xác nhận, HLD TMS Tier1 T1-12). Grain: 1 dòng = 1 giá trị của 1 cột (ô) trong 1 dòng dữ liệu của 1 lần nộp (luồng: STG compliance_report_data ⋈ compliance_report_form ⋈ compliance_report_master ⋈ compliance_report_form_template, bung ROW_DATA → ODS ods_tms_report_value, truncate + insert toàn bộ mỗi lần chạy → ATM Upsert theo hash_id). Hash_id = hash(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT) theo quyết định Data Modeler 2026-11-16; khóa không có đơn vị nộp/kỳ báo cáo nên 2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng hash (HLD Tier2 T2-01). Table Type = Classification theo TMS.xlsx (ETL Upsert theo hash_id, tiền lệ FMS dr_value; HLD T2-02)."
+  notes: "Bảng ODS (không có BRD — phát sinh từ tầng ODS theo yêu cầu Data Modeler 2026-11-15, nguồn 'TMS.xlsx' + note_logic_ods_tms_report_cho_atomic_20261111.md; chỉnh 2026-11-16). Không có DDL trong Source/*.txt nên data type nguồn không khai báo — cần profile trước ETL; domain chọn theo ý nghĩa mô tả cột. Chỉ map cột 'Map? = có' trong TMS.xlsx. Không thiết kế technical fields ds_* và cột kỹ thuật ODS theo tiền lệ ODS-origin FMS 2026-11-07 (chờ Data Modeler xác nhận, HLD TMS Tier1 T1-12). Grain: 1 dòng = 1 giá trị của 1 cột (ô) trong 1 dòng dữ liệu của 1 lần nộp (luồng: STG compliance_report_data ⋈ compliance_report_form ⋈ compliance_report_master ⋈ compliance_report_form_template, bung ROW_DATA → ODS ods_tms_report_value, truncate + insert toàn bộ mỗi lần chạy → ATM Upsert theo hash_id). Hash_id = hash(FORM_CODE, COLUMN_CODE, ROW_INDEX, PERIOD_TP, PERIOD_VAL, PERIOD_YEAR) theo quyết định Data Modeler 2026-11-17 (thay SUBMISSION_DT của quyết định 2026-11-16); khóa không có đơn vị nộp (ODS không có SUBMITTER_ID) nên 2 đơn vị nộp cùng biểu mẫu cùng kỳ sẽ trùng hash, nộp lại cùng kỳ sẽ ghi đè (HLD Tier2 T2-01). Table Type = Classification theo TMS.xlsx (ETL Upsert theo hash_id, tiền lệ FMS dr_value; HLD T2-02)."
 attributes:
 - attribute_name: "Compliance Report Value Id"
   physical_name: "cr_val_id"
@@ -27,13 +27,13 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns: []
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('TMS_COMPLIANCE_REPORT_VALUE', FORM_CODE || COLUMN_CODE || ROW_INDEX || SUBMISSION_DT)."
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash: hash_id('TMS_COMPLIANCE_REPORT_VALUE', FORM_CODE || COLUMN_CODE || ROW_INDEX || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Compliance Report Value Code"
   physical_name: "cr_val_code"
-  description: "Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX || SUBMISSION_DT. BK."
+  description: "Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
@@ -42,8 +42,10 @@ attributes:
   - "TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE"
   - "TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE"
   - "TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX"
-  - "TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT"
-  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT) từ ODS COMPLIANCE_REPORT_VALUE (SUBMISSION_DT định dạng yyyy-MM-dd) — BK theo quyết định Data Modeler 2026-11-16. Cần profile dữ liệu xác nhận NOT NULL/unique trước go-live (2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng BK — HLD Tier2 T2-01)."
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP"
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_VAL"
+  - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_YEAR"
+  comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, PERIOD_TP, PERIOD_VAL, PERIOD_YEAR) từ ODS COMPLIANCE_REPORT_VALUE (PERIOD_VAL, PERIOD_YEAR là int — ETL cast sang string) — BK theo quyết định Data Modeler 2026-11-17 (thay SUBMISSION_DT của quyết định 2026-11-16). PERIOD_TP/PERIOD_VAL/PERIOD_YEAR là thành phần BK nên NOT NULL — cần profile dữ liệu xác nhận không NULL (kỳ YEARLY có thể không có PERIOD_VAL) và unique trước go-live (2 đơn vị nộp cùng biểu mẫu cùng kỳ sẽ trùng BK — HLD Tier2 T2-01)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -169,12 +171,12 @@ attributes:
   physical_name: "rpt_period_tp_code"
   description: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
   data_domain: "Classification Value"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP"
-  comment: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance Report."
+  comment: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance Report. Thành phần BK."
   classification_context: "TMS_REPORT_PERIOD_TYPE"
   etl_derived_value: null
   data_type: "string"
@@ -182,7 +184,7 @@ attributes:
   physical_name: "rpt_period_val"
   description: "Giá trị kỳ (VD: tuần 5, tháng 1)."
   data_domain: "Small Counter"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
@@ -195,7 +197,7 @@ attributes:
   physical_name: "rpt_period_year"
   description: "Năm của kỳ báo cáo."
   data_domain: "Small Counter"
-  nullable: true
+  nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:

@@ -27927,7 +27927,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['draft', 'approved']"
+    conflict_review: "status: ['approved', 'draft']"
     sources:
     - AUDIT
     - FMS
@@ -33754,7 +33754,7 @@ entities:
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash:\
       \ hash_id('TMS_COMPLIANCE_REPORT_VALUE', FORM_CODE || COLUMN_CODE || ROW_INDEX\
-      \ || SUBMISSION_DT)."
+      \ || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -33769,16 +33769,18 @@ entities:
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Information\". Hash:\
           \ hash_id('TMS_COMPLIANCE_REPORT_VALUE', FORM_CODE || COLUMN_CODE || ROW_INDEX\
-          \ || SUBMISSION_DT)."
+          \ || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR)."
   - name: Compliance Report Value Code
     physical_name: cr_val_code
     business_meaning_1st: Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX
-      || SUBMISSION_DT. BK.
-    comment_1st: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT)\
-      \ từ ODS COMPLIANCE_REPORT_VALUE (SUBMISSION_DT định dạng yyyy-MM-dd) — BK theo\
-      \ quyết định Data Modeler 2026-11-16. Cần profile dữ liệu xác nhận NOT NULL/unique\
-      \ trước go-live (2 lần nộp cùng biểu mẫu trong cùng ngày sẽ trùng BK — HLD Tier2\
-      \ T2-01)."
+      || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR. BK.
+    comment_1st: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, PERIOD_TP,\
+      \ PERIOD_VAL, PERIOD_YEAR) từ ODS COMPLIANCE_REPORT_VALUE (PERIOD_VAL, PERIOD_YEAR\
+      \ là int — ETL cast sang string) — BK theo quyết định Data Modeler 2026-11-17\
+      \ (thay SUBMISSION_DT của quyết định 2026-11-16). PERIOD_TP/PERIOD_VAL/PERIOD_YEAR\
+      \ là thành phần BK nên NOT NULL — cần profile dữ liệu xác nhận không NULL (kỳ\
+      \ YEARLY có thể không có PERIOD_VAL) và unique trước go-live (2 đơn vị nộp cùng\
+      \ biểu mẫu cùng kỳ sẽ trùng BK — HLD Tier2 T2-01)."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -33790,14 +33792,17 @@ entities:
       source_tables:
       - source_table: COMPLIANCE_REPORT_VALUE
         source_column: TMS.COMPLIANCE_REPORT_VALUE.FORM_CODE, TMS.COMPLIANCE_REPORT_VALUE.COLUMN_CODE,
-          TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX, TMS.COMPLIANCE_REPORT_VALUE.SUBMISSION_DT
+          TMS.COMPLIANCE_REPORT_VALUE.ROW_INDEX, TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP,
+          TMS.COMPLIANCE_REPORT_VALUE.PERIOD_VAL, TMS.COMPLIANCE_REPORT_VALUE.PERIOD_YEAR
         business_meaning: Mã nghiệp vụ ô giá trị = FORM_CODE || COLUMN_CODE || ROW_INDEX
-          || SUBMISSION_DT. BK.
-        comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, SUBMISSION_DT)\
-          \ từ ODS COMPLIANCE_REPORT_VALUE (SUBMISSION_DT định dạng yyyy-MM-dd) —\
-          \ BK theo quyết định Data Modeler 2026-11-16. Cần profile dữ liệu xác nhận\
-          \ NOT NULL/unique trước go-live (2 lần nộp cùng biểu mẫu trong cùng ngày\
-          \ sẽ trùng BK — HLD Tier2 T2-01)."
+          || PERIOD_TP || PERIOD_VAL || PERIOD_YEAR. BK.
+        comment: "ETL-derived: concat(FORM_CODE, COLUMN_CODE, ROW_INDEX, PERIOD_TP,\
+          \ PERIOD_VAL, PERIOD_YEAR) từ ODS COMPLIANCE_REPORT_VALUE (PERIOD_VAL, PERIOD_YEAR\
+          \ là int — ETL cast sang string) — BK theo quyết định Data Modeler 2026-11-17\
+          \ (thay SUBMISSION_DT của quyết định 2026-11-16). PERIOD_TP/PERIOD_VAL/PERIOD_YEAR\
+          \ là thành phần BK nên NOT NULL — cần profile dữ liệu xác nhận không NULL\
+          \ (kỳ YEARLY có thể không có PERIOD_VAL) và unique trước go-live (2 đơn\
+          \ vị nộp cùng biểu mẫu cùng kỳ sẽ trùng BK — HLD Tier2 T2-01)."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -33973,10 +33978,10 @@ entities:
     physical_name: rpt_period_tp_code
     business_meaning_1st: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
     comment_1st: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance\
-      \ Report."
+      \ Report. Thành phần BK."
     data_domain_most: Classification Value
     data_type_most: string
-    nullable_most: true
+    nullable_most: false
     is_primary_key_most: false
     etl_derived_value: null
     conflict_review: null
@@ -33987,14 +33992,14 @@ entities:
         source_column: TMS.COMPLIANCE_REPORT_VALUE.PERIOD_TP
         business_meaning: "Kỳ báo cáo: DAILY, WEEKLY, MONTHLY, YEARLY."
         comment: "Scheme: TMS_REPORT_PERIOD_TYPE. Dùng chung scheme với Compliance\
-          \ Report."
+          \ Report. Thành phần BK."
   - name: Report Period Value
     physical_name: rpt_period_val
     business_meaning_1st: "Giá trị kỳ (VD: tuần 5, tháng 1)."
     comment_1st: Data type nguồn ODS (int) không có DDL — cần profile trước ETL.
     data_domain_most: Small Counter
     data_type_most: int
-    nullable_most: true
+    nullable_most: false
     is_primary_key_most: false
     etl_derived_value: null
     conflict_review: null
@@ -34011,7 +34016,7 @@ entities:
     comment_1st: Data type nguồn ODS (int) không có DDL — cần profile trước ETL.
     data_domain_most: Small Counter
     data_type_most: int
-    nullable_most: true
+    nullable_most: false
     is_primary_key_most: false
     etl_derived_value: null
     conflict_review: null
