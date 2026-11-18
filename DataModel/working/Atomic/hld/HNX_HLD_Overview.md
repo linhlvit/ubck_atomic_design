@@ -16,7 +16,7 @@
 | T1 | Gov Bond Bidding Result | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.GOV_BOND_OFFERING | Kết quả đấu thầu trái phiếu Chính phủ |
 | T1 | Gov Bond Listing | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.GOV_BOND_LISTED_LIST | Danh sách trái phiếu Chính phủ niêm yết |
 | T1 | Listing Status Change | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.LISTING_STATUS_CHANGE, HOSE.LISTING_STATUS_CHANGE | Dùng chung HNX + HOSE |
-| T1 | Private Corp Bond Offering | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_OFFERING | Chào bán trái phiếu doanh nghiệp riêng lẻ |
+| T1 | Private Corp Bond Offering | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL, HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC | Chào bán trái phiếu doanh nghiệp riêng lẻ |
 | T1 | Private Corp Bond Registration | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_REGISTRATION | Đăng ký giao dịch trái phiếu doanh nghiệp |
 | T1 | Private Corp Bond Service Organization | Documentation | [Documentation] Regulatory Report | Relative | HNX.PRIVATE_CORP_BOND_SERVICE_ORGS | BM 34 — tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH và thông tin TPDNRL tương ứng |
 | T1 | Private Corp Bond Trading Summary | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_TRADING | Chỉ tiêu giao dịch thị trường |
@@ -251,7 +251,7 @@ Không có junction table.
 **Attributes chính:** `decision_nbr`, `decision_dt`, `ticker_symbol` (BK ghép), số lượng và giá trị niêm yết, ngày hiệu lực, ngày giao dịch đầu/cuối, lý do hủy/chuyển, ETL-derived `src_stm_code`.
 
 ### 8. Private Corp Bond Offering
-**Tier:** 1 | **Source:** `HNX.PRIVATE_CORP_BOND_OFFERING` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
+**Tier:** 1 | **Source:** `HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL`, `HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
 **Domain Prefix:** (none)
 **Description:** Thông tin chào bán trái phiếu doanh nghiệp riêng lẻ: thị trường, ngày đăng tin, tổ chức phát hành, loại hình và ngành doanh nghiệp, mã trái phiếu, kỳ hạn, khối lượng chào bán, mệnh giá, lãi suất phát hành và các cờ điều kiện.
 

@@ -2,7 +2,7 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_OFFERING"
+  source_table: "PRIVATE_CORP_BOND_OFFERING_DOMESTIC"
   atomic_entity: "Private Corp Bond Offering"
   entity_physical_name: "private_corp_bond_offering"
   bcv_core_object: "Documentation"
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_PRIVATE_CORP_BOND_OFFERING.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+  notes: "Thiết kế lại 2026-11-18: tách bảng gộp HNX.PRIVATE_CORP_BOND_OFFERING thành 2 bảng nguồn (HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL / _DOMESTIC), cùng đổ vào 1 entity Private Corp Bond Offering. Nguồn cột: ddl phanquyen.txt (prod_staging.hnx_stg) + BRD/Source/HNX/brd_HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho HNX — Market Type là Text hardcode theo bảng nguồn ('Trong nước') (Data Modeler 2026-11-18). Id hash từ BK (BOND_CODE, Market Type, POSTING_DATE), literal theo bảng nguồn; BK không gồm data_dt nên Id lặp lại giữa các kỳ snapshot. Cột kỹ thuật ds_*, _batch_id, _source_*, _file_*, _row_number, _sheet_name không khai báo trong LLD — ghi vào pending_design.yaml."
 attributes:
 - attribute_name: "Private Corp Bond Offering Id"
   physical_name: "private_corp_bond_offering_id"
@@ -27,10 +27,9 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.BOND_CODE"
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.MARKET_TYPE"
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.POSTING_DATE"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_OFFERING',\"concat_ws('-', BOND_CODE, MARKET_TYPE, POSTING_DATE)\")"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BOND_CODE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.POSTING_DATE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC',\"concat_ws('-', BOND_CODE, 'Trong nước', POSTING_DATE)\")"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -43,8 +42,8 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=HNX_PRIVATE_CORP_BOND_OFFERING"
-  etl_derived_value: "HNX_PRIVATE_CORP_BOND_OFFERING"
+  classification_context: "SOURCE_SYSTEM=HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC"
+  etl_derived_value: "HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC"
   data_type: "string"
 - attribute_name: "Bond Code"
   physical_name: "bond_code"
@@ -54,7 +53,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.BOND_CODE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BOND_CODE"
   comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
   etl_derived_value: null
@@ -66,11 +65,10 @@ attributes:
   nullable: false
   is_primary_key: false
   status: "draft"
-  source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.MARKET_TYPE"
-  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  source_columns: []
+  comment: "Hardcode theo bảng nguồn HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: 'Trong nước'. Bảng nguồn không có cột phân biệt thị trường. BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
-  etl_derived_value: null
+  etl_derived_value: "Trong nước"
   data_type: "string"
 - attribute_name: "Posting Date"
   physical_name: "posting_dt"
@@ -80,7 +78,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.POSTING_DATE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.POSTING_DATE"
   comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
   etl_derived_value: null
@@ -93,7 +91,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.ISSUER_NAME"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUER_NAME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -106,7 +104,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_NO"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BUSINESS_NO"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -119,7 +117,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.ENTERPRISE_TYPE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ENTERPRISE_TYPE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -132,20 +130,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_SECTOR"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Currency Code"
-  physical_name: "currency_code"
-  description: "Tiền tệ"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.CURRENCY"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BUSINESS_SECTOR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -158,7 +143,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.TERM_UNIT"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.TERM_UNIT"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -171,7 +156,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.TERM"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.TERM"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -184,7 +169,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_DATE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUE_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -197,7 +182,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.MATURITY_DATE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.MATURITY_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -210,7 +195,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REMAINING_TERM"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REMAINING_TERM"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -223,7 +208,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.OFFERING_VOLUME"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.OFFERING_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -236,8 +221,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.PAR_VALUE"
-  comment: "Nguồn DECIMAL(18,2) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.PAR_VALUE"
+  comment: "Nguồn DECIMAL(30,6) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
@@ -249,7 +234,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_PAYMENT_TYPE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_PAYMENT_TYPE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -262,7 +247,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_RATE_TYPE"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_RATE_TYPE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -275,7 +260,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_PAYMENT_METHOD"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_PAYMENT_METHOD"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -288,20 +273,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPURCHASE_AND_SWAP"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "Issue Market"
-  physical_name: "issue_market"
-  description: "Thị trường phát hành"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_MARKET"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPURCHASE_AND_SWAP"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -314,8 +286,8 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_INTEREST_RATE"
-  comment: null
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUE_INTEREST_RATE"
+  comment: "Nguồn DECIMAL(20,10) — ETL cần ROUND/CAST sang decimal(5,2); validate không mất độ chính xác ngoài 2 chữ số thập phân."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -327,7 +299,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.CONVERTIBLE_BOND"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.CONVERTIBLE_BOND"
   comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
   classification_context: null
   etl_derived_value: null
@@ -340,7 +312,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.WARRANT_LINKED_BOND"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.WARRANT_LINKED_BOND"
   comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
   classification_context: null
   etl_derived_value: null
@@ -353,7 +325,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.SECURED_BOND"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.SECURED_BOND"
   comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
   classification_context: null
   etl_derived_value: null
@@ -366,7 +338,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_YEAR"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -379,7 +351,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_MONTH"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -392,8 +364,34 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_DAY"
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

@@ -1,0 +1,414 @@
+schema_type: "entity_consolidation"
+schema_version: "1.0"
+entity:
+  entity_name: "Private Corp Bond Offering"
+  physical_name: "private_corp_bond_offering"
+  bcv_core_object: "Documentation"
+  bcv_concept: "[Documentation] Regulatory Report"
+  table_type: "Fact Snapshot"
+  etl_pattern: "Fact Snapshot"
+  consolidation_status: "approved"
+  consolidated_by: null
+  consolidated_at: null
+sources:
+- source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL"
+  lld_file: "HNX/lld_HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.yaml"
+- source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_OFFERING_DOMESTIC"
+  lld_file: "HNX/lld_HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC.yaml"
+consolidation_notes:
+- "Entity gộp từ 2 bảng nguồn cùng cấu trúc (HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL\
+  \ / _DOMESTIC) thay cho bảng gộp cũ HNX.PRIVATE_CORP_BOND_OFFERING."
+- "Currency Code, Issue Market: chỉ có ở _INTERNATIONAL → nullable=true; dòng từ _DOMESTIC\
+  \ để NULL."
+- "Market Type: hardcode theo bảng nguồn ('Quốc tế' cho _INTERNATIONAL, 'Trong nước'\
+  \ cho _DOMESTIC), không có cột nguồn."
+- "Hash Id và Source System Code dùng literal theo từng bảng nguồn (HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL\
+  \ / _DOMESTIC) — ETL cần áp đúng theo bảng đang nạp."
+- "Issue Interest Rate: nguồn DECIMAL(20,10) → decimal(5,2); Par Value: nguồn DECIMAL(30,6)\
+  \ → BIGINT. Cần profile dữ liệu trước go-live."
+attributes:
+- attribute_name: "Private Corp Bond Offering Id"
+  physical_name: "private_corp_bond_offering_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL'\
+    \ hoặc 'HNX_PRIVATE_CORP_BOND_OFFERING_DOMESTIC' theo bảng nguồn,\"concat_ws('-',\
+    \ BOND_CODE, Market Type, POSTING_DATE)\")"
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BOND_CODE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BOND_CODE"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=..."
+  etl_derived_value: "HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL"
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: null
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: null
+- attribute_name: "Bond Code"
+  physical_name: "bond_code"
+  description: "Mã trái phiếu"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BOND_CODE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BOND_CODE"
+- attribute_name: "Market Type"
+  physical_name: "market_tp"
+  description: "Loại thị trường (Trong nước/Quốc tế)"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  comment: "Hardcode theo bảng nguồn: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL\
+    \ = 'Quốc tế'; HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC = 'Trong nước'. Bảng nguồn\
+    \ không có cột phân biệt thị trường. BK nghiệp vụ — tham gia hash Id."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: null
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: null
+- attribute_name: "Posting Date"
+  physical_name: "posting_dt"
+  description: "Ngày đăng tin"
+  data_domain: "Date"
+  nullable: false
+  is_primary_key: false
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.POSTING_DATE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.POSTING_DATE"
+- attribute_name: "Issuer Name"
+  physical_name: "issuer_nm"
+  description: "Tên doanh nghiệp phát hành"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUER_NAME"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUER_NAME"
+- attribute_name: "Business Number"
+  physical_name: "business_nbr"
+  description: "Mã số doanh nghiệp"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BUSINESS_NO"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BUSINESS_NO"
+- attribute_name: "Enterprise Type"
+  physical_name: "enterprise_tp"
+  description: "Loại hình doanh nghiệp"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ENTERPRISE_TYPE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ENTERPRISE_TYPE"
+- attribute_name: "Business Sector"
+  physical_name: "business_sector"
+  description: "Lĩnh vực hoạt động"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BUSINESS_SECTOR"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.BUSINESS_SECTOR"
+- attribute_name: "Currency Code"
+  physical_name: "currency_code"
+  description: "Tiền tệ"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.CURRENCY"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: null
+- attribute_name: "Bond Term Unit"
+  physical_name: "bond_term_unit"
+  description: "Đơn vị kỳ hạn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.TERM_UNIT"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.TERM_UNIT"
+- attribute_name: "Bond Term"
+  physical_name: "bond_term"
+  description: "Kỳ hạn"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.TERM"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.TERM"
+- attribute_name: "Issue Date"
+  physical_name: "issue_dt"
+  description: "Ngày phát hành"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_DATE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUE_DATE"
+- attribute_name: "Maturity Date"
+  physical_name: "maturity_dt"
+  description: "Ngày đáo hạn"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.MATURITY_DATE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.MATURITY_DATE"
+- attribute_name: "Remaining Bond Term"
+  physical_name: "remaining_bond_term"
+  description: "Kỳ hạn còn lại"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REMAINING_TERM"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REMAINING_TERM"
+- attribute_name: "Offering Bond Quantity"
+  physical_name: "offering_bond_quantity"
+  description: "Khối lượng chào bán"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.OFFERING_VOLUME"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.OFFERING_VOLUME"
+- attribute_name: "Par Value"
+  physical_name: "par_val"
+  description: "Mệnh giá"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn DECIMAL(30,6) — ETL cần CAST sang BIGINT; validate không có phần\
+    \ thập phân."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.PAR_VALUE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.PAR_VALUE"
+- attribute_name: "Interest Payment Type"
+  physical_name: "interest_payment_tp"
+  description: "Loại hình trả lãi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_PAYMENT_TYPE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_PAYMENT_TYPE"
+- attribute_name: "Interest Rate Type"
+  physical_name: "interest_rate_tp"
+  description: "Loại lãi suất"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_RATE_TYPE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_RATE_TYPE"
+- attribute_name: "Interest Payment Method"
+  physical_name: "interest_payment_method"
+  description: "Phương thức thanh toán lãi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_PAYMENT_METHOD"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.INTEREST_PAYMENT_METHOD"
+- attribute_name: "Repurchase And Swap"
+  physical_name: "repurchase_and_swap"
+  description: "Mua lại và hoán đổi"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPURCHASE_AND_SWAP"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPURCHASE_AND_SWAP"
+- attribute_name: "Issue Market"
+  physical_name: "issue_market"
+  description: "Thị trường phát hành"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_MARKET"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: null
+- attribute_name: "Issue Interest Rate"
+  physical_name: "issue_interest_rate"
+  description: "Lãi suất phát hành (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  comment: "Nguồn DECIMAL(20,10) — ETL cần ROUND/CAST sang decimal(5,2); validate\
+    \ không mất độ chính xác ngoài 2 chữ số thập phân."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_INTEREST_RATE"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.ISSUE_INTEREST_RATE"
+- attribute_name: "Convertible Bond Indicator"
+  physical_name: "convertible_bond_ind"
+  description: "Trái phiếu chuyển đổi (Có/Không)"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn\
+    \ STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.CONVERTIBLE_BOND"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.CONVERTIBLE_BOND"
+- attribute_name: "Warrant Linked Bond Indicator"
+  physical_name: "warrant_linked_bond_ind"
+  description: "Trái phiếu kèm chứng quyền (Có/Không)"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn\
+    \ STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.WARRANT_LINKED_BOND"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.WARRANT_LINKED_BOND"
+- attribute_name: "Secured Bond Indicator"
+  physical_name: "secured_bond_ind"
+  description: "Trái phiếu bảo đảm (Có/Không)"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: "Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn\
+    \ STRING (Có/Không) — ETL map sang 1/0 và validate giá trị."
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.SECURED_BOND"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.SECURED_BOND"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_YEAR"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_YEAR"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_MONTH"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_MONTH"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_DAY"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_DAY"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_PERIOD"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.REPORT_PERIOD"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.DATA_DT"
+    HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC: "HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC.DATA_DT"

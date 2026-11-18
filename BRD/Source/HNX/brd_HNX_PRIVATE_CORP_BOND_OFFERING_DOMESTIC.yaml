@@ -1,29 +1,9 @@
 schema_type: brd_source_columns
 schema_version: '1.0'
 source: HNX
-table: PRIVATE_CORP_BOND_OFFERING
-brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_OFFERING
+table: PRIVATE_CORP_BOND_OFFERING_DOMESTIC
+brd_ref: BRD-SRC-HNX-PRIVATE_CORP_BOND_OFFERING_DOMESTIC
 columns:
-- name: REPORT_DAY
-  data_type: INT
-  description: Ngày báo cáo
-  key: null
-  fk_note: null
-- name: REPORT_MONTH
-  data_type: INT
-  description: Tháng báo cáo
-  key: null
-  fk_note: null
-- name: REPORT_YEAR
-  data_type: INT
-  description: Năm báo cáo
-  key: null
-  fk_note: null
-- name: MARKET_TYPE
-  data_type: STRING
-  description: Loại thị trường (Trong nước/Quốc tế)
-  key: null
-  fk_note: null
 - name: POSTING_DATE
   data_type: DATE
   description: Ngày đăng tin
@@ -32,6 +12,11 @@ columns:
 - name: ISSUER_NAME
   data_type: STRING
   description: Tên doanh nghiệp phát hành
+  key: null
+  fk_note: null
+- name: BUSINESS_NO
+  data_type: STRING
+  description: Mã số doanh nghiệp
   key: null
   fk_note: null
 - name: ENTERPRISE_TYPE
@@ -47,11 +32,6 @@ columns:
 - name: BOND_CODE
   data_type: STRING
   description: Mã trái phiếu
-  key: null
-  fk_note: null
-- name: CURRENCY
-  data_type: STRING
-  description: Tiền tệ
   key: null
   fk_note: null
 - name: TERM_UNIT
@@ -85,7 +65,7 @@ columns:
   key: null
   fk_note: null
 - name: PAR_VALUE
-  data_type: DECIMAL(18,2)
+  data_type: DECIMAL(30,6)
   description: Mệnh giá
   key: null
   fk_note: null
@@ -109,13 +89,8 @@ columns:
   description: Mua lại và hoán đổi
   key: null
   fk_note: null
-- name: ISSUE_MARKET
-  data_type: STRING
-  description: Thị trường phát hành
-  key: null
-  fk_note: null
 - name: ISSUE_INTEREST_RATE
-  data_type: DECIMAL(10,2)
+  data_type: DECIMAL(20,10)
   description: Lãi suất phát hành (%)
   key: null
   fk_note: null
@@ -134,9 +109,34 @@ columns:
   description: Trái phiếu bảo đảm (Có/Không)
   key: null
   fk_note: null
-- name: BUSINESS_NO
+- name: REPORT_YEAR
+  data_type: INT
+  description: Năm báo cáo
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: INT
+  description: Tháng báo cáo
+  key: null
+  fk_note: null
+- name: REPORT_DAY
+  data_type: INT
+  description: Ngày báo cáo
+  key: null
+  fk_note: null
+- name: REPORT_PERIOD
   data_type: STRING
-  description: Mã số doanh nghiệp
+  description: 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)'
+  key: null
+  fk_note: null
+- name: _BATCH_ID
+  data_type: STRING
+  description: Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+  key: null
+  fk_note: null
+- name: DATA_DT
+  data_type: DATE
+  description: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
   key: null
   fk_note: null
 - name: DS_SNPST_DT
@@ -147,5 +147,40 @@ columns:
 - name: DS_ETL_PCS_TMS
   data_type: TIMESTAMP
   description: Thời gian chạy ETL
+  key: null
+  fk_note: null
+- name: _SOURCE_SYSTEM
+  data_type: STRING
+  description: source_id trong registry
+  key: null
+  fk_note: null
+- name: _SOURCE_TABLE
+  data_type: STRING
+  description: bucket/prefix của dataset
+  key: null
+  fk_note: null
+- name: _SOURCE_FILE
+  data_type: STRING
+  description: Object key của file nguồn (bucket/key)
+  key: null
+  fk_note: null
+- name: _FILE_CHECKSUM
+  data_type: STRING
+  description: ETag của file nguồn (định danh phiên bản, không phải MD5)
+  key: null
+  fk_note: null
+- name: _FILE_MODIFIED_AT
+  data_type: TIMESTAMP
+  description: LastModified của file nguồn
+  key: null
+  fk_note: null
+- name: _ROW_NUMBER
+  data_type: BIGINT
+  description: Số dòng trong sheet
+  key: null
+  fk_note: null
+- name: _SHEET_NAME
+  data_type: STRING
+  description: Tên sheet
   key: null
   fk_note: null

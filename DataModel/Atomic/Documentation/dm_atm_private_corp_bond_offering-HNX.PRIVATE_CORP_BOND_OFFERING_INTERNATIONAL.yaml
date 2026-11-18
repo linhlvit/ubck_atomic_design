@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-private_corp_bond_offering-HNX.PRIVATE_CORP_BOND_OFFERING
+  id: ATM-private_corp_bond_offering-HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
   logical_name: Private Corp Bond Offering
   physical_name: private_corp_bond_offering
   layer: Atomic
@@ -19,7 +19,7 @@ ldm:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-HNX-PRIVATE_CORP_BOND_OFFERING
+    brd: BRD-SRC-HNX-PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
 
 attributes:
   - name: Private Corp Bond Offering Id
@@ -30,9 +30,9 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: "HNX.PRIVATE_CORP_BOND_OFFERING.BOND_CODE, HNX.PRIVATE_CORP_BOND_OFFERING.MARKET_TYPE, HNX.PRIVATE_CORP_BOND_OFFERING.POSTING_DATE"
-    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_OFFERING',\"concat_ws('-', BOND_CODE, MARKET_TYPE, POSTING_DATE)\")"
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: "HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BOND_CODE, HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.POSTING_DATE"
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL',\"concat_ws('-', BOND_CODE, 'Quốc tế', POSTING_DATE)\")"
     classification_context: null
     etl_derived_value: null
 
@@ -44,11 +44,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'HNX_PRIVATE_CORP_BOND_OFFERING'"
-    etl_derived_value: HNX_PRIVATE_CORP_BOND_OFFERING
+    classification_context: "Source System Code = 'HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL'"
+    etl_derived_value: HNX_PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
 
   - name: Bond Code
     physical_name: bond_code
@@ -58,8 +58,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.BOND_CODE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BOND_CODE
     comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
     classification_context: null
     etl_derived_value: null
@@ -72,11 +72,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.MARKET_TYPE
-    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: null
+    comment: "Hardcode theo bảng nguồn HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL: 'Quốc tế'. Bảng nguồn không có cột phân biệt thị trường. BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
     classification_context: null
-    etl_derived_value: null
+    etl_derived_value: Quốc tế
 
   - name: Posting Date
     physical_name: posting_dt
@@ -86,8 +86,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.POSTING_DATE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.POSTING_DATE
     comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
     classification_context: null
     etl_derived_value: null
@@ -100,8 +100,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.ISSUER_NAME
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUER_NAME
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -114,8 +114,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_NO
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BUSINESS_NO
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -128,8 +128,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.ENTERPRISE_TYPE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ENTERPRISE_TYPE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -142,8 +142,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.BUSINESS_SECTOR
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.BUSINESS_SECTOR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -156,8 +156,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.CURRENCY
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.CURRENCY
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -170,8 +170,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.TERM_UNIT
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.TERM_UNIT
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -184,8 +184,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.TERM
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.TERM
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -198,8 +198,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_DATE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_DATE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -212,8 +212,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.MATURITY_DATE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.MATURITY_DATE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -226,8 +226,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.REMAINING_TERM
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REMAINING_TERM
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -240,8 +240,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.OFFERING_VOLUME
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.OFFERING_VOLUME
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -254,9 +254,9 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.PAR_VALUE
-    comment: "Nguồn DECIMAL(18,2) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.PAR_VALUE
+    comment: "Nguồn DECIMAL(30,6) — ETL cần CAST sang BIGINT; validate không có phần thập phân."
     classification_context: null
     etl_derived_value: null
 
@@ -268,8 +268,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_PAYMENT_TYPE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_PAYMENT_TYPE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -282,8 +282,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_RATE_TYPE
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_RATE_TYPE
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -296,8 +296,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.INTEREST_PAYMENT_METHOD
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.INTEREST_PAYMENT_METHOD
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -310,8 +310,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.REPURCHASE_AND_SWAP
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPURCHASE_AND_SWAP
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -324,8 +324,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_MARKET
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_MARKET
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -338,9 +338,9 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.ISSUE_INTEREST_RATE
-    comment: null
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.ISSUE_INTEREST_RATE
+    comment: "Nguồn DECIMAL(20,10) — ETL cần ROUND/CAST sang decimal(5,2); validate không mất độ chính xác ngoài 2 chữ số thập phân."
     classification_context: null
     etl_derived_value: null
 
@@ -352,8 +352,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.CONVERTIBLE_BOND
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.CONVERTIBLE_BOND
     comment: Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị.
     classification_context: null
     etl_derived_value: null
@@ -366,8 +366,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.WARRANT_LINKED_BOND
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.WARRANT_LINKED_BOND
     comment: Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị.
     classification_context: null
     etl_derived_value: null
@@ -380,8 +380,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.SECURED_BOND
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.SECURED_BOND
     comment: Cờ lưu INT (1/0) theo DDL atomic đã chốt (đã khảo sát dữ liệu); nguồn STRING (Có/Không) — ETL map sang 1/0 và validate giá trị.
     classification_context: null
     etl_derived_value: null
@@ -394,8 +394,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_YEAR
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_YEAR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -408,8 +408,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_MONTH
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_MONTH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -422,8 +422,36 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: HNX
-    source_table: PRIVATE_CORP_BOND_OFFERING
-    source_column: HNX.PRIVATE_CORP_BOND_OFFERING.REPORT_DAY
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.REPORT_PERIOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL
+    source_column: HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL.DATA_DT
     comment: null
     classification_context: null
     etl_derived_value: null
