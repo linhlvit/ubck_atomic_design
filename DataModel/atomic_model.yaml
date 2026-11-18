@@ -27927,7 +27927,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['draft', 'approved']"
+    conflict_review: "status: ['approved', 'draft']"
     sources:
     - AUDIT
     - FMS
@@ -55429,15 +55429,18 @@ entities:
     - HNX
     references:
       brd:
-      - BRD-SRC-HNX-MARKET_CAPITALIZATION
+      - BRD-SRC-HNX-MARKET_CAPITALIZATION_STX
+      - BRD-SRC-HNX-MARKET_CAPITALIZATION_UPX
   attributes:
   - name: Security Market Capitalization Id
     physical_name: security_market_capitalization_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
-      \ hash_id('HNX_MARKET_CAPITALIZATION', TICKER_SYMBOL). Business Key của entity\
-      \ = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT\
-      \ chỉ dùng làm Business Key, không tham gia hash Id."
+      \ hash_id('HNX_MARKET_CAPITALIZATION_STX', TICKER_SYMBOL). Business Key của\
+      \ entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT\
+      \ chỉ dùng làm Business Key, không tham gia hash Id. Literal hash theo bảng\
+      \ nguồn; BK không gồm thị trường — giả định một mã chỉ niêm yết ở một sàn trong\
+      \ cùng kỳ."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -55447,13 +55450,24 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
-          \ hash_id('HNX_MARKET_CAPITALIZATION', TICKER_SYMBOL). Business Key của\
-          \ entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT\
-          \ chỉ dùng làm Business Key, không tham gia hash Id."
+          \ hash_id('HNX_MARKET_CAPITALIZATION_STX', TICKER_SYMBOL). Business Key\
+          \ của entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30);\
+          \ DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id. Literal\
+          \ hash theo bảng nguồn; BK không gồm thị trường — giả định một mã chỉ niêm\
+          \ yết ở một sàn trong cùng kỳ."
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.TICKER_SYMBOL
+        business_meaning: Khóa đại diện (surrogate key).
+        comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash:\
+          \ hash_id('HNX_MARKET_CAPITALIZATION_UPX', TICKER_SYMBOL). Business Key\
+          \ của entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30);\
+          \ DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id. Literal\
+          \ hash theo bảng nguồn; BK không gồm thị trường — giả định một mã chỉ niêm\
+          \ yết ở một sàn trong cùng kỳ."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -55462,12 +55476,18 @@ entities:
     data_type_most: string
     nullable_most: false
     is_primary_key_most: false
-    etl_derived_value: HNX_MARKET_CAPITALIZATION
+    etl_derived_value:
+    - HNX_MARKET_CAPITALIZATION_STX
+    - HNX_MARKET_CAPITALIZATION_UPX
     conflict_review: null
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: null
+        business_meaning: Mã hệ thống nguồn dữ liệu.
+        comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+      - source_table: MARKET_CAPITALIZATION_UPX
         source_column: null
         business_meaning: Mã hệ thống nguồn dữ liệu.
         comment: "Scheme: SOURCE_SYSTEM. Hardcode."
@@ -55484,8 +55504,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL
+        business_meaning: Mã chứng khoán
+        comment: BK nghiệp vụ — tham gia hash Id.
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.TICKER_SYMBOL
         business_meaning: Mã chứng khoán
         comment: BK nghiệp vụ — tham gia hash Id.
   - name: Reference Price
@@ -55501,8 +55525,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.REFERENCE_PRICE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.REFERENCE_PRICE
+        business_meaning: Giá tham chiếu
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.REFERENCE_PRICE
         business_meaning: Giá tham chiếu
         comment: null
   - name: Open Price
@@ -55518,8 +55546,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.OPEN_PRICE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.OPEN_PRICE
+        business_meaning: Giá mở cửa
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.OPEN_PRICE
         business_meaning: Giá mở cửa
         comment: null
   - name: Close Price
@@ -55535,26 +55567,13 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.CLOSE_PRICE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.CLOSE_PRICE
         business_meaning: Giá đóng cửa
         comment: null
-  - name: Average Price
-    physical_name: average_price
-    business_meaning_1st: Giá trung bình
-    comment_1st: null
-    data_domain_most: Currency Amount
-    data_type_most: decimal(23,2)
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: HNX
-      source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.AVERAGE_PRICE
-        business_meaning: Giá trung bình
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.CLOSE_PRICE
+        business_meaning: Giá đóng cửa
         comment: null
   - name: Highest Price
     physical_name: highest_price
@@ -55569,8 +55588,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.HIGHEST_PRICE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.HIGHEST_PRICE
+        business_meaning: Giá cao nhất
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.HIGHEST_PRICE
         business_meaning: Giá cao nhất
         comment: null
   - name: Lowest Price
@@ -55586,8 +55609,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.LOWEST_PRICE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.LOWEST_PRICE
+        business_meaning: Giá thấp nhất
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.LOWEST_PRICE
         business_meaning: Giá thấp nhất
         comment: null
   - name: Change Point
@@ -55603,8 +55630,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.CHANGE_POINTS
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.CHANGE_POINTS
+        business_meaning: Thay đổi (điểm)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.CHANGE_POINTS
         business_meaning: Thay đổi (điểm)
         comment: null
   - name: Change Percentage
@@ -55612,7 +55643,7 @@ entities:
     business_meaning_1st: Thay đổi (%)
     comment_1st: null
     data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    data_type_most: decimal(13,10)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -55620,8 +55651,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.CHANGE_PERCENTAGE
+        business_meaning: Thay đổi (%)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.CHANGE_PERCENTAGE
         business_meaning: Thay đổi (%)
         comment: null
   - name: Even Lot Match Volume
@@ -55637,8 +55672,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VOLUME
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VOLUME
+        business_meaning: Khối lượng giao dịch (Khớp lệnh lô chẵn)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_MATCH_VOLUME
         business_meaning: Khối lượng giao dịch (Khớp lệnh lô chẵn)
         comment: null
   - name: Even Lot Match Value
@@ -55654,8 +55693,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VALUE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VALUE
+        business_meaning: Giá trị giao dịch (Khớp lệnh lô chẵn)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_MATCH_VALUE
         business_meaning: Giá trị giao dịch (Khớp lệnh lô chẵn)
         comment: null
   - name: Odd Lot Match Volume
@@ -55671,8 +55714,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VOLUME
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VOLUME
+        business_meaning: Khối lượng giao dịch (Khớp lệnh lô lẻ)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_MATCH_VOLUME
         business_meaning: Khối lượng giao dịch (Khớp lệnh lô lẻ)
         comment: null
   - name: Odd Lot Match Value
@@ -55688,8 +55735,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VALUE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VALUE
+        business_meaning: Giá trị giao dịch (Khớp lệnh lô lẻ)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_MATCH_VALUE
         business_meaning: Giá trị giao dịch (Khớp lệnh lô lẻ)
         comment: null
   - name: Even Lot Put Through Volume
@@ -55705,8 +55756,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VOLUME
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VOLUME
+        business_meaning: Khối lượng giao dịch (Thỏa thuận lô chẵn)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_PUT_THROUGH_VOLUME
         business_meaning: Khối lượng giao dịch (Thỏa thuận lô chẵn)
         comment: null
   - name: Even Lot Put Through Value
@@ -55722,8 +55777,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VALUE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VALUE
+        business_meaning: Giá trị giao dịch (Thỏa thuận lô chẵn)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_PUT_THROUGH_VALUE
         business_meaning: Giá trị giao dịch (Thỏa thuận lô chẵn)
         comment: null
   - name: Odd Lot Put Through Volume
@@ -55739,8 +55798,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VOLUME
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VOLUME
+        business_meaning: Khối lượng giao dịch (Thỏa thuận lô lẻ)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_PUT_THROUGH_VOLUME
         business_meaning: Khối lượng giao dịch (Thỏa thuận lô lẻ)
         comment: null
   - name: Odd Lot Put Through Value
@@ -55756,8 +55819,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VALUE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VALUE
+        business_meaning: Giá trị giao dịch (Thỏa thuận lô lẻ)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_PUT_THROUGH_VALUE
         business_meaning: Giá trị giao dịch (Thỏa thuận lô lẻ)
         comment: null
   - name: Total Trading Volume
@@ -55773,8 +55840,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VOLUME
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VOLUME
+        business_meaning: Tổng khối lượng giao dịch
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.TOTAL_TRADING_VOLUME
         business_meaning: Tổng khối lượng giao dịch
         comment: null
   - name: Volume Weight Percentage
@@ -55782,7 +55853,7 @@ entities:
     business_meaning_1st: Tỷ trọng khối lượng (%)
     comment_1st: null
     data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    data_type_most: decimal(13,10)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -55790,8 +55861,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.VOLUME_WEIGHT_PERCENTAGE
+        business_meaning: Tỷ trọng khối lượng (%)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.VOLUME_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng khối lượng (%)
         comment: null
   - name: Total Trading Value
@@ -55807,8 +55882,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VALUE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VALUE
+        business_meaning: Tổng giá trị giao dịch
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.TOTAL_TRADING_VALUE
         business_meaning: Tổng giá trị giao dịch
         comment: null
   - name: Value Weight Percentage
@@ -55816,7 +55895,7 @@ entities:
     business_meaning_1st: Tỷ trọng giá trị (%)
     comment_1st: null
     data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    data_type_most: decimal(13,10)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -55824,8 +55903,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.VALUE_WEIGHT_PERCENTAGE
+        business_meaning: Tỷ trọng giá trị (%)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.VALUE_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng giá trị (%)
         comment: null
   - name: Outstanding Share Quantity
@@ -55841,8 +55924,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.OUTSTANDING_SHARES
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.OUTSTANDING_SHARES
+        business_meaning: Khối lượng lưu hành
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.OUTSTANDING_SHARES
         business_meaning: Khối lượng lưu hành
         comment: null
   - name: Market Capitalization Value
@@ -55858,8 +55945,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.MARKET_CAPITALIZATION
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.MARKET_CAPITALIZATION
+        business_meaning: Giá trị vốn hóa
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.MARKET_CAPITALIZATION
         business_meaning: Giá trị vốn hóa
         comment: null
   - name: Market Capitalization Weight Percentage
@@ -55867,7 +55958,7 @@ entities:
     business_meaning_1st: Tỷ trọng giá trị vốn hóa (%)
     comment_1st: null
     data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    data_type_most: decimal(13,10)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -55875,8 +55966,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.MARKET_CAP_WEIGHT_PERCENTAGE
+        business_meaning: Tỷ trọng giá trị vốn hóa (%)
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.MARKET_CAP_WEIGHT_PERCENTAGE
         business_meaning: Tỷ trọng giá trị vốn hóa (%)
         comment: null
   - name: Report Year
@@ -55892,8 +55987,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.REPORT_YEAR
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.REPORT_YEAR
+        business_meaning: Năm báo cáo
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.REPORT_YEAR
         business_meaning: Năm báo cáo
         comment: null
   - name: Report Month
@@ -55909,8 +56008,12 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.REPORT_MONTH
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.REPORT_MONTH
+        business_meaning: Tháng báo cáo
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.REPORT_MONTH
         business_meaning: Tháng báo cáo
         comment: null
   - name: Report Day
@@ -55926,9 +56029,78 @@ entities:
     source_mappings:
     - source_system: HNX
       source_tables:
-      - source_table: MARKET_CAPITALIZATION
-        source_column: HNX.MARKET_CAPITALIZATION.REPORT_DAY
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.REPORT_DAY
+        business_meaning: Ngày báo cáo
+        comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: MARKET_CAPITALIZATION_STX
+        source_column: HNX.MARKET_CAPITALIZATION_STX.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+  - name: Average Price
+    physical_name: average_price
+    business_meaning_1st: Giá trung bình
+    comment_1st: null
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: MARKET_CAPITALIZATION_UPX
+        source_column: HNX.MARKET_CAPITALIZATION_UPX.AVERAGE_PRICE
+        business_meaning: Giá trung bình
         comment: null
 - ldm:
     id: ATM-share_auction_result

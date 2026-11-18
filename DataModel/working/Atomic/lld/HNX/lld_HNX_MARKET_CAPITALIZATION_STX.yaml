@@ -2,7 +2,7 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
+  source_table: "MARKET_CAPITALIZATION_STX"
   atomic_entity: "Security Market Capitalization"
   entity_physical_name: "security_market_capitalization"
   bcv_core_object: "Documentation"
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-30 từ BRD/Source/HNX/brd_HNX_MARKET_CAPITALIZATION.yaml (BM 42). HLD: HNX_HLD_Tier1.md. Business Key chốt 2026-10-30: TICKER_SYMBOL + DS_SNPST_DT; hash Id chỉ từ TICKER_SYMBOL. DS_SNPST_DT chỉ dùng làm Business Key, không khai báo thành attribute (quy ước 2026-10-19); DS_ETL_PCS_TMS ghi pending_design.yaml. Cột phân loại giữ Text."
+  notes: "Thiết kế lại 2026-11-18: tách bảng gộp HNX.MARKET_CAPITALIZATION thành 2 bảng nguồn (HNX.MARKET_CAPITALIZATION_STX / _UPX), cùng đổ vào 1 entity Security Market Capitalization. Nguồn cột: ddl phanquyen hnx.txt (prod_staging.hnx_stg) + BRD/Source/HNX/brd_HNX_MARKET_CAPITALIZATION_STX.yaml (BM 42). HLD: HNX_HLD_Tier1.md. Business Key giữ nguyên TICKER_SYMBOL + DS_SNPST_DT; hash Id chỉ từ TICKER_SYMBOL, literal theo bảng nguồn (Data Modeler 2026-11-18). Không thêm cột phân biệt thị trường (Data Modeler 2026-11-18): sàn chỉ phân biệt qua bảng nguồn / Source System Code; BK giả định một mã chỉ niêm yết ở một sàn trong cùng kỳ. DS_SNPST_DT chỉ dùng làm Business Key, không khai báo thành attribute (quy ước 2026-10-19); các cột kỹ thuật ds_*, _batch_id, _source_*, _file_*, _row_number, _sheet_name ghi pending_design.yaml. Cột phân loại giữ Text. Bảng _STX không có cột AVERAGE_PRICE (Giá trung bình) — không có attribute Average Price ở LLD này."
 attributes:
 - attribute_name: "Security Market Capitalization Id"
   physical_name: "security_market_capitalization_id"
@@ -27,8 +27,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION', TICKER_SYMBOL). Business Key của entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id."
+  - "HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION_STX', TICKER_SYMBOL). Business Key của entity = TICKER_SYMBOL + DS_SNPST_DT (Data Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash Id. Literal hash theo bảng nguồn; BK không gồm thị trường — giả định một mã chỉ niêm yết ở một sàn trong cùng kỳ."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41,8 +41,8 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=HNX_MARKET_CAPITALIZATION"
-  etl_derived_value: "HNX_MARKET_CAPITALIZATION"
+  classification_context: "SOURCE_SYSTEM=HNX_MARKET_CAPITALIZATION_STX"
+  etl_derived_value: "HNX_MARKET_CAPITALIZATION_STX"
   data_type: "string"
 - attribute_name: "Ticker Symbol"
   physical_name: "ticker_symbol"
@@ -52,7 +52,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL"
+  - "HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL"
   comment: "BK nghiệp vụ — tham gia hash Id."
   classification_context: null
   etl_derived_value: null
@@ -65,7 +65,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.REFERENCE_PRICE"
+  - "HNX.MARKET_CAPITALIZATION_STX.REFERENCE_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -78,7 +78,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.OPEN_PRICE"
+  - "HNX.MARKET_CAPITALIZATION_STX.OPEN_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -91,20 +91,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.CLOSE_PRICE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-- attribute_name: "Average Price"
-  physical_name: "average_price"
-  description: "Giá trung bình"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.MARKET_CAPITALIZATION.AVERAGE_PRICE"
+  - "HNX.MARKET_CAPITALIZATION_STX.CLOSE_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -117,7 +104,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.HIGHEST_PRICE"
+  - "HNX.MARKET_CAPITALIZATION_STX.HIGHEST_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -130,7 +117,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.LOWEST_PRICE"
+  - "HNX.MARKET_CAPITALIZATION_STX.LOWEST_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -143,7 +130,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.CHANGE_POINTS"
+  - "HNX.MARKET_CAPITALIZATION_STX.CHANGE_POINTS"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -156,11 +143,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE"
+  - "HNX.MARKET_CAPITALIZATION_STX.CHANGE_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
 - attribute_name: "Even Lot Match Volume"
   physical_name: "even_lot_match_vol"
   description: "Khối lượng giao dịch (Khớp lệnh lô chẵn)"
@@ -169,7 +156,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VOLUME"
+  - "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -182,7 +169,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VALUE"
+  - "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -195,7 +182,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VOLUME"
+  - "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -208,7 +195,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VALUE"
+  - "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -221,7 +208,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VOLUME"
+  - "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -234,7 +221,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VALUE"
+  - "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -247,7 +234,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VOLUME"
+  - "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -260,7 +247,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VALUE"
+  - "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -273,7 +260,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VOLUME"
+  - "HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -286,11 +273,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE"
+  - "HNX.MARKET_CAPITALIZATION_STX.VOLUME_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
 - attribute_name: "Total Trading Value"
   physical_name: "total_trading_val"
   description: "Tổng giá trị giao dịch"
@@ -299,7 +286,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VALUE"
+  - "HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -312,11 +299,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE"
+  - "HNX.MARKET_CAPITALIZATION_STX.VALUE_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
 - attribute_name: "Outstanding Share Quantity"
   physical_name: "outstanding_share_quantity"
   description: "Khối lượng lưu hành"
@@ -325,7 +312,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.OUTSTANDING_SHARES"
+  - "HNX.MARKET_CAPITALIZATION_STX.OUTSTANDING_SHARES"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -338,7 +325,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.MARKET_CAPITALIZATION"
+  - "HNX.MARKET_CAPITALIZATION_STX.MARKET_CAPITALIZATION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -351,11 +338,11 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE"
+  - "HNX.MARKET_CAPITALIZATION_STX.MARKET_CAP_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
 - attribute_name: "Report Year"
   physical_name: "rpt_year"
   description: "Năm báo cáo"
@@ -364,7 +351,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.REPORT_YEAR"
+  - "HNX.MARKET_CAPITALIZATION_STX.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -377,7 +364,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.REPORT_MONTH"
+  - "HNX.MARKET_CAPITALIZATION_STX.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -390,8 +377,34 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.MARKET_CAPITALIZATION.REPORT_DAY"
+  - "HNX.MARKET_CAPITALIZATION_STX.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.MARKET_CAPITALIZATION_STX.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.MARKET_CAPITALIZATION_STX.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

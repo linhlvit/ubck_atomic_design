@@ -46998,12 +46998,13 @@ attributes:
   nullable: false
   is_primary_key: true
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION',\
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION_STX',\
     \ TICKER_SYMBOL). Business Key của entity = TICKER_SYMBOL + DS_SNPST_DT (Data\
     \ Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham\
-    \ gia hash Id."
+    \ gia hash Id. Literal hash theo bảng nguồn; BK không gồm thị trường — giả định\
+    \ một mã chỉ niêm yết ở một sàn trong cùng kỳ."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -47017,11 +47018,11 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
+  source_table: "MARKET_CAPITALIZATION_STX"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'HNX_MARKET_CAPITALIZATION'"
-  etl_derived_value: "HNX_MARKET_CAPITALIZATION"
+  classification_context: "Source System Code = 'HNX_MARKET_CAPITALIZATION_STX'"
+  etl_derived_value: "HNX_MARKET_CAPITALIZATION_STX"
   data_type: "string"
   atomic_table: "security_market_capitalization"
   atomic_column: "src_stm_code"
@@ -47033,8 +47034,8 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.TICKER_SYMBOL"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.TICKER_SYMBOL"
   comment: "BK nghiệp vụ — tham gia hash Id."
   classification_context: null
   etl_derived_value: null
@@ -47049,8 +47050,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.REFERENCE_PRICE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.REFERENCE_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47065,8 +47066,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.OPEN_PRICE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.OPEN_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47081,8 +47082,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.CLOSE_PRICE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.CLOSE_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47091,30 +47092,14 @@ attributes:
   atomic_column: "close_price"
 - bcv_core_object: "Documentation"
   atomic_entity: "Security Market Capitalization"
-  atomic_attribute: "Average Price"
-  description: "Giá trung bình"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.AVERAGE_PRICE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-  atomic_table: "security_market_capitalization"
-  atomic_column: "average_price"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Security Market Capitalization"
   atomic_attribute: "Highest Price"
   description: "Giá cao nhất"
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.HIGHEST_PRICE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.HIGHEST_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47129,8 +47114,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.LOWEST_PRICE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.LOWEST_PRICE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47145,8 +47130,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.CHANGE_POINTS"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.CHANGE_POINTS"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47161,12 +47146,12 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.CHANGE_PERCENTAGE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.CHANGE_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
   atomic_table: "security_market_capitalization"
   atomic_column: "change_percentage"
 - bcv_core_object: "Documentation"
@@ -47177,8 +47162,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VOLUME"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47193,8 +47178,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.EVEN_LOT_MATCH_VALUE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_MATCH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47209,8 +47194,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VOLUME"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47225,8 +47210,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.ODD_LOT_MATCH_VALUE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_MATCH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47241,8 +47226,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VOLUME"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47257,8 +47242,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.EVEN_LOT_PUT_THROUGH_VALUE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.EVEN_LOT_PUT_THROUGH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47273,8 +47258,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VOLUME"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47289,8 +47274,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.ODD_LOT_PUT_THROUGH_VALUE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.ODD_LOT_PUT_THROUGH_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47305,8 +47290,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VOLUME"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VOLUME"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47321,12 +47306,12 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.VOLUME_WEIGHT_PERCENTAGE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.VOLUME_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
   atomic_table: "security_market_capitalization"
   atomic_column: "vol_weight_percentage"
 - bcv_core_object: "Documentation"
@@ -47337,8 +47322,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.TOTAL_TRADING_VALUE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.TOTAL_TRADING_VALUE"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47353,12 +47338,12 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.VALUE_WEIGHT_PERCENTAGE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.VALUE_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
   atomic_table: "security_market_capitalization"
   atomic_column: "val_weight_percentage"
 - bcv_core_object: "Documentation"
@@ -47369,8 +47354,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.OUTSTANDING_SHARES"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.OUTSTANDING_SHARES"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47385,8 +47370,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.MARKET_CAPITALIZATION"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.MARKET_CAPITALIZATION"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47401,12 +47386,12 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.MARKET_CAP_WEIGHT_PERCENTAGE"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.MARKET_CAP_WEIGHT_PERCENTAGE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(13,10)"
   atomic_table: "security_market_capitalization"
   atomic_column: "market_capitalization_weight_percentage"
 - bcv_core_object: "Documentation"
@@ -47417,8 +47402,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.REPORT_YEAR"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47433,8 +47418,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.REPORT_MONTH"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -47449,14 +47434,550 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "HNX"
-  source_table: "MARKET_CAPITALIZATION"
-  source_column: "HNX.MARKET_CAPITALIZATION.REPORT_DAY"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "security_market_capitalization"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_STX"
+  source_column: "HNX.MARKET_CAPITALIZATION_STX.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Security Market Capitalization Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_MARKET_CAPITALIZATION_UPX',\
+    \ TICKER_SYMBOL). Business Key của entity = TICKER_SYMBOL + DS_SNPST_DT (Data\
+    \ Modeler chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham\
+    \ gia hash Id. Literal hash theo bảng nguồn; BK không gồm thị trường — giả định\
+    \ một mã chỉ niêm yết ở một sàn trong cùng kỳ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "security_market_capitalization_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'HNX_MARKET_CAPITALIZATION_UPX'"
+  etl_derived_value: "HNX_MARKET_CAPITALIZATION_UPX"
+  data_type: "string"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.TICKER_SYMBOL"
+  comment: "BK nghiệp vụ — tham gia hash Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Reference Price"
+  description: "Giá tham chiếu"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.REFERENCE_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "reference_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Open Price"
+  description: "Giá mở cửa"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.OPEN_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "open_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Close Price"
+  description: "Giá đóng cửa"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.CLOSE_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "close_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Average Price"
+  description: "Giá trung bình"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.AVERAGE_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "average_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Highest Price"
+  description: "Giá cao nhất"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.HIGHEST_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "highest_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Lowest Price"
+  description: "Giá thấp nhất"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.LOWEST_PRICE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "lowest_price"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Change Point"
+  description: "Thay đổi (điểm)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.CHANGE_POINTS"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "change_point"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Change Percentage"
+  description: "Thay đổi (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.CHANGE_PERCENTAGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(13,10)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "change_percentage"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Even Lot Match Volume"
+  description: "Khối lượng giao dịch (Khớp lệnh lô chẵn)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_MATCH_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "even_lot_match_vol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Even Lot Match Value"
+  description: "Giá trị giao dịch (Khớp lệnh lô chẵn)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_MATCH_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "even_lot_match_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Odd Lot Match Volume"
+  description: "Khối lượng giao dịch (Khớp lệnh lô lẻ)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_MATCH_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "odd_lot_match_vol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Odd Lot Match Value"
+  description: "Giá trị giao dịch (Khớp lệnh lô lẻ)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_MATCH_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "odd_lot_match_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Even Lot Put Through Volume"
+  description: "Khối lượng giao dịch (Thỏa thuận lô chẵn)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_PUT_THROUGH_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "even_lot_put_through_vol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Even Lot Put Through Value"
+  description: "Giá trị giao dịch (Thỏa thuận lô chẵn)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.EVEN_LOT_PUT_THROUGH_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "even_lot_put_through_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Odd Lot Put Through Volume"
+  description: "Khối lượng giao dịch (Thỏa thuận lô lẻ)"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_PUT_THROUGH_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "odd_lot_put_through_vol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Odd Lot Put Through Value"
+  description: "Giá trị giao dịch (Thỏa thuận lô lẻ)"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.ODD_LOT_PUT_THROUGH_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "odd_lot_put_through_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Total Trading Volume"
+  description: "Tổng khối lượng giao dịch"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.TOTAL_TRADING_VOLUME"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "total_trading_vol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Volume Weight Percentage"
+  description: "Tỷ trọng khối lượng (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.VOLUME_WEIGHT_PERCENTAGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(13,10)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "vol_weight_percentage"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Total Trading Value"
+  description: "Tổng giá trị giao dịch"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.TOTAL_TRADING_VALUE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "total_trading_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Value Weight Percentage"
+  description: "Tỷ trọng giá trị (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.VALUE_WEIGHT_PERCENTAGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(13,10)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "val_weight_percentage"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Outstanding Share Quantity"
+  description: "Khối lượng lưu hành"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.OUTSTANDING_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "outstanding_share_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Market Capitalization Value"
+  description: "Giá trị vốn hóa"
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.MARKET_CAPITALIZATION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "market_capitalization_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Market Capitalization Weight Percentage"
+  description: "Tỷ trọng giá trị vốn hóa (%)"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.MARKET_CAP_WEIGHT_PERCENTAGE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(13,10)"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "market_capitalization_weight_percentage"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Security Market Capitalization"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "MARKET_CAPITALIZATION_UPX"
+  source_column: "HNX.MARKET_CAPITALIZATION_UPX.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "security_market_capitalization"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Share Auction Result"
   atomic_attribute: "Share Auction Result Id"
