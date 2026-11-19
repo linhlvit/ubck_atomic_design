@@ -12142,7 +12142,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng KLGD thỏa thuận lô chẵn); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng KLGD thỏa thuận lô chẵn); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Round Lot Negotiated Value"
@@ -12151,7 +12151,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô chẵn); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô chẵn); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Matched Volume"
@@ -12178,7 +12178,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng KLGD thỏa thuận lô lẻ); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng KLGD thỏa thuận lô lẻ); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Odd Lot Negotiated Value"
@@ -12187,7 +12187,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô lẻ); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 27–34 (Tổng GTGD thỏa thuận lô lẻ); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Round Lot Matched Volume"
@@ -12214,7 +12214,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng KLGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng KLGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Derivative Round Lot Negotiated Value"
@@ -12223,7 +12223,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn phái sinh (Market ID DVX) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô chẵn phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Derivative Odd Lot Matched Volume"
@@ -12250,7 +12250,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng KLGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng KLGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Derivative Odd Lot Negotiated Value"
@@ -12259,7 +12259,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ phái sinh (Market ID DVX) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 40–47 (Tổng GTGD thỏa thuận lô lẻ phái sinh); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Open Interest Quantity"
@@ -12295,7 +12295,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng KLGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng KLGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Bond Round Lot Negotiated Value"
@@ -12304,7 +12304,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/T6/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô chẵn trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô chẵn T1/T2/T3/R1; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô chẵn trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Bond Odd Lot Matched Volume"
@@ -12331,7 +12331,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng KLGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78"
+        description: "Tổng khối lượng giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_vol. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng KLGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Bond Odd Lot Negotiated Value"
@@ -12340,7 +12340,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch thỏa thuận lô lẻ trái phiếu (Market ID BDO/HCX) — bảng thỏa thuận lô lẻ T4/T6; cùng grain mã CK × ngày với total_negotiated_val. [MỚI 2026-10-30 v4.58] BA dòng 65–72 (Tổng GTGD thỏa thuận lô lẻ trái phiếu); xem O_GSTT_78 [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Ceiling Price"
@@ -12918,7 +12918,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_vol`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
+        description: "Khối lượng mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_vol`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Round Lot Sell Volume"
@@ -12927,7 +12927,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_vol`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
+        description: "Khối lượng bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_vol`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Round Lot Buy Value"
@@ -12936,7 +12936,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Giá trị mua theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Sell Value"
@@ -12945,7 +12945,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/T6/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','T6','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Giá trị bán theo Phân loại NĐT — lô chẵn (khớp lệnh G1/G2/G3/G6/G7/G8 + thỏa thuận T1/T2/T3/R1), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G1','G2','G3','G6','G7','G8','T1','T2','T3','R1')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô chẵn); O_GSTT_80]. [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Buy Volume"
@@ -12954,7 +12954,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_vol`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b)."
+        description: "Khối lượng mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4/T6), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_vol`; chỉ thêm điều kiện Board Type `('G4','T4','T6')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. [SỬA 2026-11-19, O_GSTT_93] BA 19/11 đã thống nhất KLGD/GTGD lô lẻ theo phân loại NĐT cùng Board ('T4','T6','G4') — hết lệch dòng 559/560; lô chẵn bỏ T6 (T6 chuyển sang lô lẻ)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Odd Lot Sell Volume"
@@ -12963,7 +12963,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Khối lượng bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_vol`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b)."
+        description: "Khối lượng bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4/T6), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_vol`; chỉ thêm điều kiện Board Type `('G4','T4','T6')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. [SỬA 2026-11-19, O_GSTT_93] BA 19/11 đã thống nhất KLGD/GTGD lô lẻ theo phân loại NĐT cùng Board ('T4','T6','G4') — hết lệch dòng 559/560; lô chẵn bỏ T6 (T6 chuyển sang lô lẻ)."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Odd Lot Buy Value"
@@ -12972,7 +12972,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Giá trị mua theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4/T6), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `buy_val`; chỉ thêm điều kiện Board Type `('G4','T4','T6')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. [SỬA 2026-11-19, O_GSTT_93] BA 19/11 đã thống nhất KLGD/GTGD lô lẻ theo phân loại NĐT cùng Board ('T4','T6','G4') — hết lệch dòng 559/560; lô chẵn bỏ T6 (T6 chuyển sang lô lẻ). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Sell Value"
@@ -12981,7 +12981,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Giá trị bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G4','T4')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. Lưu ý BA: dòng 559 (KLGD lô lẻ) ghi Board chỉ ('T4') còn dòng 560 (GTGD lô lẻ) ghi ('T4','G4') — thiết kế lấy G4 + T4 cho cả KL và GT để KL/GT cùng phạm vi (cần BA xác nhận, O_GSTT_80 mục b). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Giá trị bán theo Phân loại NĐT — lô lẻ (khớp lệnh G4 + thỏa thuận T4/T6), cổ phiếu/CCQ 3 sàn (Market ID UPX/STX/STK/STO). Cùng grain (mã CK × ngày × phân loại NĐT), cùng quy tắc phân loại NĐT theo số tài khoản (loại trừ nhau theo thứ tự ưu tiên Nước ngoài → Tự doanh → Cá nhân → Tổ chức → Không xác định) và cùng cách tính với `sell_val`; chỉ thêm điều kiện Board Type `('G4','T4','T6')`. [MỚI 2026-11-09, BA STT 23 dòng 559–562 'Tổng KLGD/GTGD theo phân loại nhà đầu tư' (lô lẻ); O_GSTT_80]. [SỬA 2026-11-19, O_GSTT_93] BA 19/11 đã thống nhất KLGD/GTGD lô lẻ theo phân loại NĐT cùng Board ('T4','T6','G4') — hết lệch dòng 559/560; lô chẵn bỏ T6 (T6 chuyển sang lô lẻ). [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
 
@@ -13972,7 +13972,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4/T6) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Odd Lot Negotiated Volume"
@@ -13981,7 +13981,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Volume. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng khối lượng giao dịch lô lẻ thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T4/T6) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Odd Lot Negotiated Volume. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Owner Equity Average 4 Quarter"
@@ -14035,7 +14035,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Value. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Round Lot Negotiated Volume"
@@ -14044,7 +14044,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Volume. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
+        description: "Tổng khối lượng giao dịch lô chẵn thỏa thuận cổ phiếu/CCQ (Market ID UPX/STX/STK/STO; Board T1,T2,T3,R1) của mã CK trong ngày — cùng định nghĩa cột Fact Stock Portfolio Snapshot.Round Lot Negotiated Volume. Mức mã CK (không có biến thể theo rổ chỉ số). [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–834, O_GSTT_78 mục (d)]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Weighted Average Outstanding Share Quantity"
@@ -14089,7 +14089,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4/T6). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Odd Lot Negotiated Volume"
@@ -14098,7 +14098,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng khối lượng giao dịch lô lẻ thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T4/T6). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
       - logical_name: "Index Round Lot Matched Value"
@@ -14125,7 +14125,7 @@ entities:
         data_type: "decimal(23,2)"
         nullable: true
         key: ""
-        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
+        description: "Tổng giá trị giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78] [SỬA 2026-11-13, O_GSTT_86] Giá trị khớp tính từ `match_price × match_quantity` vì Atomic `securities_trade` đã bỏ `match_amt`."
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_price / match_quantity"
       - logical_name: "Index Round Lot Negotiated Volume"
@@ -14134,7 +14134,7 @@ entities:
         data_type: "bigint"
         nullable: true
         key: ""
-        description: "Tổng khối lượng giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,T6,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
+        description: "Tổng khối lượng giao dịch lô chẵn thỏa thuận của toàn bộ mã CK thành viên rổ chỉ số trong ngày (Market ID UPX/STX/STK/STO; Board T1,T2,T3,R1). Lặp lại trên mỗi mã CK của rổ — gộp bằng MAX theo chỉ số + ngày, không SUM; NULL ở dòng 'không theo rổ'. [MỚI 2026-10-30 v4.58, BA STT 38 dòng 811–818 độ chi tiết 'Mã CK/Chỉ số', O_GSTT_78]"
         source_atomic_table: "securities_trade"
         source_atomic_column: "securities_trade.match_quantity"
 
