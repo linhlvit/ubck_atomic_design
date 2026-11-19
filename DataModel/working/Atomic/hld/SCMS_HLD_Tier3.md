@@ -1,7 +1,7 @@
 # SCMS HLD — Tier 3
 
 **Source system:** SCMS (Quản lý Giám sát Công ty Chứng khoán)
-**Tier 3:** Các entity có FK đến Tier 2 — bao gồm thay đổi sở hữu cổ đông, báo cáo định kỳ chi nhánh/VPĐD nước ngoài, giá trị ô dữ liệu báo cáo đầu vào, hàng/cột sheet biểu mẫu báo cáo.
+**Tier 3:** Các entity có FK đến Tier 2 — bao gồm thay đổi sở hữu cổ đông, báo cáo định kỳ chi nhánh/VPĐD nước ngoài, giá trị ô dữ liệu báo cáo đầu vào, hàng/cột sheet biểu mẫu báo cáo, kết quả chào bán chứng khoán (chi tiết theo phương thức × đối tượng).
 
 > **Lưu ý cập nhật:** `Securities Company Major Shareholder Relation` đã được **hạ xuống Tier 2** sau khi xác nhận từ BRD (SHAREHOLDER_ID có `key: null, fk_note: null` — không phải FK khai báo). `Securities Company Foreign Branch Personnel` và `Securities Company Foreign Representative Office Personnel` đã **chuyển lên Tier 2** (table_type Fundamental) — xem `SCMS_HLD_Tier2.md`. Các entity rủi ro/cảnh báo, cổ đông đại diện/chuyển nhượng/quan hệ cổ đông và Practitioner Business Transaction Relationship đã **gỡ khỏi HLD** (không có LLD) — xem SCMS_HLD_Overview.md mục 7f nhóm `Chưa có LLD`.
 
@@ -17,6 +17,7 @@
 | Documentation | [Documentation] Regulatory Report | Documentation | REPORT_INPUT_CELL_VALUE | Giá trị từng ô dữ liệu (cell) trong 1 lần nộp báo cáo đầu vào (eForm), xác định theo tọa độ sheet/section/cell | Securities Company Report Input Value | Classification | (1) Cùng BCV Concept `[Documentation] Regulatory Report` (id 9297) với entity cha Securities Company Report Input Submission, ở grain chi tiết từng ô dữ liệu — tiền lệ IDS: `Financial Report Value` (DATA) dùng cùng term 9297 ở cấp giá trị cell. Không có BCV term riêng cho "Cell". (2) Cấu trúc bảng: REPORT_INPUT_SUBMISSION_ID (FK→REPORT_INPUT_SUBMISSION, khai báo rõ trong BRD), SHEET_ID/SECTION_ID/CELL_ID (tọa độ text trong cấu trúc eForm động — không FK đến family FORM_SHEET* nguồn, hiện ngoài scope), ROW_NO, ITEM_VALUE. (3) Chọn `[Documentation] Regulatory Report`. Đặt tên `Securities Company Report Input Value` theo chỉ đạo Data Modeler — xem 6f T3-07 về ngoại lệ Rule #8. Table Type = **Classification (Upsert/SCD1)** theo chỉ đạo tường minh Data Modeler (2026-09-15, đổi từ Relative) — ngoại lệ so với định nghĩa mặc định (entity không phải reference/danh mục thuần mà là chi tiết/dòng con phụ thuộc Submission, vẫn giữ FK surrogate tới `Report Input Submission Id`), xem 6f T3-09. **[CẬP NHẬT 2026-09-16]** Family `FORM_SHEET*` nay đã vào scope (xem SCMS_HLD_Tier2.md/Tier3.md/Tier4.md mới) — SHEET_ID/SECTION_ID/CELL_ID **chưa đổi thành FK thật trong lượt này**, xem 6f T3-08 (cập nhật) và 7e Overview. |
 | Documentation | [Documentation] Form Document | Documentation | FORM_SHEET_ROW | Hàng dữ liệu trong 1 sheet của biểu mẫu báo cáo — mã, tên, định dạng, phân cấp cha-con | Securities Company Report Sheet Row | Relative | (1) Tái dùng term `Form Document` (id 9348) — cùng concept với entity cha `Securities Company Report Sheet` (Tier 2), là thành phần cấu trúc chi tiết của biểu mẫu. (2) Cấu trúc bảng: FORM_SHEET_ID (FK), ROW_CODE/ROW_NAME, SORT_ORDER, NAME_FORMAT, COLOR/ALIGNMENT/BOLD/ITALIC/BACKGROUND_COLOR (định dạng hiển thị), FROZEN_ROW/HIDDEN_ROW/EDITABLE, FORMULA, ROW_TYPE (DU_LIEU/TONG_CONG/TIEU_DE), PARENT_ROW_ID (self-ref) — mã/tên/loại hàng mang ý nghĩa nghiệp vụ (loại dòng dữ liệu/tổng cộng/tiêu đề), không chỉ hiển thị thuần túy. (3) Chọn Documentation, Relative — phụ thuộc `Securities Company Report Sheet` (Tier 2). Đặt tên chứa trọn "Securities Company Report Sheet" (Rule #8). Đảo ngược quyết định loại-scope trước đây (xem 7e/7f Overview, T1-14). |
 | Documentation | [Documentation] Form Document | Documentation | FORM_SHEET_COLUMN | Cột dữ liệu trong 1 sheet của biểu mẫu báo cáo — mã, tên, kiểu dữ liệu, định dạng | Securities Company Report Sheet Column | Relative | (1) Tái dùng term `Form Document` (id 9348) — cùng concept với entity cha `Securities Company Report Sheet` (Tier 2). (2) Cấu trúc bảng: FORM_SHEET_ID (FK), COLUMN_CODE/COLUMN_NAME, SORT_ORDER, DATA_TYPE (TEXT/NUMBER/DATE/BOOLEAN/SELECT), FORMULA, REQUIRED/EDITABLE, WIDTH, COLOR/ALIGNMENT/FROZEN_COLUMN/LOCKED_COLUMN/HIDDEN_COLUMN — DATA_TYPE/REQUIRED mang ý nghĩa nghiệp vụ (kiểu dữ liệu, bắt buộc nhập), không chỉ hiển thị thuần túy. (3) Chọn Documentation, Relative — phụ thuộc `Securities Company Report Sheet` (Tier 2). Đặt tên chứa trọn "Securities Company Report Sheet" (Rule #8). Đảo ngược quyết định loại-scope trước đây (xem 7e/7f Overview, T1-14). |
+| Event | [Event] Communication | Event | DISCLOSURE_SECURITIES_OFFERING_RESULT | Kết quả/kế hoạch chào bán chứng khoán theo từng phương thức × đối tượng chào bán, bóc tách từ mảng JSON `RESULT_JSON` của đợt chào bán (1 dòng = 1 phần tử mảng) | Securities Company Disclosure Securities Offering Result | Relative | (1) Cùng BCV Concept `[Event] Communication` với entity cha `Securities Company Disclosure Securities Offering` (Tier 2) — không có term BCV riêng cho "kết quả chào bán" (tra `terms.csv` theo Offering/Issuance: không có concept khớp), nên giữ term của cha ở grain chi tiết. (2) Cấu trúc: bảng ODS `ods_scms_disclosure_securities_offering_result` không có BRD — sinh từ `RESULT_JSON` (fallback `PLAN_JSON` cho `duKienTuNgay`/`duKienDenNgay`) của `DISCLOSURE_SECURITIES_OFFERING`; mỗi phần tử mảng gồm nhóm kế hoạch (đối tượng, loại chào bán, mệnh giá, số lượng/giá/giá trị theo kế hoạch, số nhà đầu tư dự kiến, mô tả đối tượng, mục đích hoán đổi), thời gian dự kiến và kết quả thực tế (số lượng/giá/giá trị thực tế, số người tham gia, số/giá trị NĐTNN). FK `id` → `DISCLOSURE_SECURITIES_OFFERING.ID` (Tier 2) và `sc_firm_info_id` → `SC_FIRM_INFO` (Tier 1, lưu dư thừa cùng cha). (3) Chọn `[Event] Communication`, **Relative (SCD2) giống entity cha** theo yêu cầu Data Modeler — phụ thuộc `Securities Company Disclosure Securities Offering` (Tier 2) → Tier 3. Đặt tên chứa trọn tên cha (Rule #8). Grain = 1 phần tử mảng `result_json` = (id, offering_target, offering_method). Xem 6f T3-12. |
 
 ---
 
@@ -79,7 +80,17 @@ erDiagram
         nvarchar DATA_TYPE
     }
 
+    DISCLOSURE_SECURITIES_OFFERING_RESULT {
+        int ID FK "→ DISCLOSURE_SECURITIES_OFFERING.ID"
+        int SC_FIRM_INFO_ID FK
+        string offering_target "doiTuongChaoBan"
+        string OFFERING_METHOD "loaiChaoBan"
+        string PLANNED_QUANTITY "soLuongCb"
+        string ACTUAL_QUANTITY "soLuongThucTe"
+    }
+
     SC_FIRM_SHAREHOLDER ||--o{ SC_FIRM_SHAREHOLDER_OWNERSHIP_CHANGE : "SHAREHOLDER_ID"
+    DISCLOSURE_SECURITIES_OFFERING ||--o{ DISCLOSURE_SECURITIES_OFFERING_RESULT : "ID (parse RESULT_JSON/PLAN_JSON)"
     SC_FIRM_FOREIGN_BRANCH ||--o{ SC_FIRM_FOREIGN_BRANCH_PERIODIC_REPORT : "SC_FIRM_FOREIGN_BRANCH_ID"
     SC_FIRM_FOREIGN_REP_OFFICE ||--o{ SC_FIRM_FOREIGN_REP_OFFICE_PERIODIC_REPORT : "SC_FIRM_FOREIGN_REP_OFFICE_ID"
     REPORT_INPUT_SUBMISSION ||--o{ REPORT_INPUT_CELL_VALUE : "REPORT_INPUT_SUBMISSION_ID"
@@ -101,6 +112,19 @@ erDiagram
     Securities_Company_Foreign_Organization_Unit {
         bigint ds_id PK
         bigint securities_company_id FK
+    }
+    Securities_Company_Disclosure_Securities_Offering {
+        bigint sc_disclosure_securities_offering_id PK
+    }
+    Securities_Company_Disclosure_Securities_Offering_Result {
+        bigint sc_disclosure_securities_offering_result_id PK
+        string sc_disclosure_securities_offering_result_code "BK: id-offering_target-offering_method"
+        bigint sc_disclosure_securities_offering_id FK
+        bigint sc_id FK
+        string offering_target
+        string offering_method
+        decimal planned_quantity
+        decimal actual_quantity
     }
     Classification_Securities_Company_Firm_Service {
         bigint cl_sc_firm_service_id PK
@@ -153,6 +177,7 @@ erDiagram
         string ds_data_type_code
     }
 
+    Securities_Company_Disclosure_Securities_Offering ||--o{ Securities_Company_Disclosure_Securities_Offering_Result : "sc_disclosure_securities_offering_id"
     Securities_Company_Shareholder ||--o{ Securities_Company_Shareholder_Ownership_Change : "securities_company_shareholder_id"
     Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Organization_Unit_Periodic_Report : "securities_company_foreign_branch_id"
     Securities_Company_Foreign_Organization_Unit ||--o{ Securities_Company_Foreign_Organization_Unit_Periodic_Report : "securities_company_foreign_representative_office_id"
@@ -192,3 +217,4 @@ erDiagram
 | T3-09 | Table Type của `Securities Company Report Input Value` đổi từ Relative → Classification (Upsert/SCD1) theo yêu cầu tường minh Data Modeler (2026-09-15) — entity vẫn có FK tới Submission (Tier 2) + attribute nghiệp vụ riêng (SHEET_ID/SECTION_ID/CELL_ID/ROW_NO/ITEM_VALUE), không phải reference/danh mục thuần (Code+Name) như định nghĩa mặc định của Classification. | **Quyết định Data Modeler (chốt, 2026-09-15) — ngoại lệ so với định nghĩa mặc định**, ghi nhận minh bạch tương tự các ngoại lệ table_type khác đã có trong dự án (T1-07). ETL pattern đổi từ SCD2 sang Upsert (SCD1) — không còn theo dõi lịch sử thay đổi giá trị ô dữ liệu qua các lần ETL, chỉ giữ trạng thái mới nhất. Xem `lld_SCMS_REPORT_INPUT_CELL_VALUE.yaml` (technical field đổi từ `ds_rcrd_eff_dt`/`ds_rcrd_end_dt` sang chỉ còn `ds_etl_pcs_tms`, theo `reference/technical_fields.md`). |
 | T3-10 | **[MỚI 2026-09-16]** `FORM_SHEET_ROW`/`FORM_SHEET_COLUMN`/`FORM_ROW_HEADER` — đánh giá lại nhóm cascade bị loại khỏi scope với lý do lỗi thời (xem Tier1 T1-14). | **Quyết định Data Modeler (chốt, 2026-09-16).** Đưa cả 3 vào scope Tier 3, phụ thuộc `Securities Company Report Sheet` (Tier 2). Xem 6a/6b/6c. `FORM_SHEET_CELL` (phụ thuộc cả 2 bảng này + FORM_SHEET + FORM_INDICATOR_INPUT) đặt Tier 4 — xem `SCMS_HLD_Tier4.md` (file mới). **[CẬP NHẬT — xem T3-11]** `FORM_ROW_HEADER` đã bị đảo ngược lại ngoài scope cùng ngày; quyết định "vào scope" ở dòng này chỉ còn áp dụng cho `FORM_SHEET_ROW`/`FORM_SHEET_COLUMN`. |
 | T3-11 | **[MỚI 2026-09-16]** `FORM_ROW_HEADER` (vừa đưa vào scope ở T3-10) — Data Modeler yêu cầu loại lại ngay trong cùng lượt: bảng phục vụ khai thác báo cáo đầu ra ở hệ thống cũ, hiện không còn cần thiết. | **Quyết định Data Modeler (chốt, 2026-09-16).** Gỡ bỏ hoàn toàn thiết kế `Securities Company Report Row Header` (entity, LLD, manifest, scheme `SCMS_FORM_ROW_HEADER_RECORD_STATUS`) — chuyển `FORM_ROW_HEADER` về `atomic_out_of_scope.yaml`, `scope_status: out_of_scope` trong `brd_SCMS.yaml`. Không ảnh hưởng `FORM_SHEET_ROW`/`FORM_SHEET_COLUMN`/`FORM_SHEET_CELL` — các entity này không FK đến Row Header. |
+| T3-12 | **[MỚI 2026-11-19]** Thêm `DISCLOSURE_SECURITIES_OFFERING_RESULT` → `Securities Company Disclosure Securities Offering Result` (Relative, giống entity cha, theo yêu cầu Data Modeler). (a) **Nguồn không có BRD** — bảng ODS bóc từ `RESULT_JSON`/`PLAN_JSON` của `DISCLOSURE_SECURITIES_OFFERING` (tiền lệ #31 Overview), nên không có dòng trong `brd_SCMS.yaml`. (b) **BK = `id` ‖ `offering_target` ‖ `offering_method`** (nối 3 trường, theo chỉ định Data Modeler 2026-11-19; code SQL do Data Modeler cung cấp chỉ mang tính tham khảo). (c) **Tên cột đồng bộ theo DDL ODS** `ods_scms_disclosure_securities_offering_result` (Data Modeler, 2026-11-19); các file SQL/DDL Atomic cung cấp chỉ tham khảo. (d) `RESULT_JSON`/`PLAN_JSON` của entity cha được parsing sang entity con này — bỏ ghi chú "loại khỏi Atomic" ở LLD entity cha (Data Modeler, 2026-11-19). | **(a)** Đã ghi nhận. **(b)** Chốt; LLD sinh PK theo 3 trường này. **(c)** Chốt; LLD dùng tên cột ODS. **(d)** Đã sửa `lld_SCMS_DISCLOSURE_SECURITIES_OFFERING.yaml` (notes); `pending_design.yaml` không có dòng nào cho 2 cột này nên không cần gỡ. Xem Overview 7e #32. |

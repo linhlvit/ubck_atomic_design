@@ -21,7 +21,8 @@ metadata:
     \ hành. OFFERING_TYPE phân loại đợt: 1=Công chúng/2=CP thường/3=Trả cổ tức CP/4=CTLC>100/5=CTLC<100/6=Đấu\
     \ giá/7=Riêng lẻ/8=Khác/9=CP hoán đổi/10=CB cổ đông lớn. Nhiều cột CW chỉ populate\
     \ khi SECURITIES_TYPE=CW; nhiều cột bond chỉ populate khi SECURITIES_TYPE=TP.\
-    \ JSON fields excluded: RESULT_JSON, PLAN_JSON, CAPITAL_USE_PLAN, CAPITAL_USE_RESULT_JSON.\
+    \ JSON fields excluded: CAPITAL_USE_PLAN, CAPITAL_USE_RESULT_JSON. RESULT_JSON/PLAN_JSON\
+    \ được parsing sang entity con sc_disclosure_securities_offering_result.\
     \ LEGACY_FILEDATA (BLOB) excluded. Audit block loại trừ hoàn toàn khỏi Atomic\
     \ (quyết định 2026-07): CREATED_AT/CREATED_BY (không đổi tên), LAST_MODIFIED_AT_LEGACY/LAST_MODIFIED_BY_LEGACY\
     \ (tên cũ trước 2026-09-18: LAST_MODIFIED_AT/LAST_MODIFIED_BY), và LAST_MODIFIED_AT/LAST_MODIFIED_BY\

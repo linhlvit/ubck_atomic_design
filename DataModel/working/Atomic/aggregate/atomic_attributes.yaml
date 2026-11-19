@@ -54028,6 +54028,426 @@ attributes:
   atomic_table: "sc_disclosure_securities_offering"
   atomic_column: "src_rcrd_isrt_tms"
 - bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Disclosure Securities Offering Result Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: null
+  comment: "PK surrogate. Hash: hash_id('SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT',\
+    \ ID || OFFERING_TARGET || OFFERING_METHOD)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_disclosure_securities_offering_result_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Disclosure Securities Offering Result Code"
+  description: "Mã nghiệp vụ kết quả chào bán = ID đợt chào bán || mã đối tượng chào\
+    \ bán || phương thức chào bán. BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID, SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET,\
+    \ SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD"
+  comment: "ETL-derived: nối 3 trường id, offering_target, offering_method của ODS\
+    \ (chỉ định Data Modeler 2026-11-19). Grain = 1 phần tử mảng RESULT_JSON. offering_target/offering_method\
+    \ có thể NULL trong JSON — ETL coalesce về chuỗi rỗng khi nối."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_disclosure_securities_offering_result_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT'"
+  etl_derived_value: "SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Disclosure Securities Offering Id"
+  description: "FK đến đợt chào bán chứng khoán chứa kết quả/kế hoạch chào bán này."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID"
+  comment: "FK target: sc_disclosure_securities_offering.sc_disclosure_securities_offering_id.\
+    \ Hash: hash_id('SCMS_DISCLOSURE_SECURITIES_OFFERING', ID)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_disclosure_securities_offering_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Disclosure Securities Offering Code"
+  description: "Mã đợt chào bán chứng khoán (ID kỹ thuật SCMS của đợt chào bán, dạng\
+    \ chuỗi)."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID"
+  comment: "Lookup pair: sc_disclosure_securities_offering.sc_disclosure_securities_offering_code.\
+    \ Pair with Securities Company Disclosure Securities Offering Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_disclosure_securities_offering_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Id"
+  description: "FK đến Công ty chứng khoán chào bán chứng khoán."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.SC_FIRM_INFO_ID"
+  comment: "FK target: securities_company.sc_id. Cần ETL crosswalk sang SCMS.SC_FIRM_INFO:\
+    \ DISCLOSURE_SECURITIES_OFFERING_RESULT.SC_FIRM_INFO_ID = SC_FIRM_INFO.ID để xác\
+    \ nhận CODE sau đó hash_id('SCMS_SC_FIRM_INFO', CODE). Cùng công thức với sc_id\
+    \ của entity cha."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_id"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Securities Company Code"
+  description: "Mã Công ty chứng khoán."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.SC_FIRM_INFO.CODE"
+  comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
+    \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết xem comment\
+    \ Securities Company Id."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "sc_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Offering Target"
+  description: "Đối tượng chào bán (JSON doiTuongChaoBan)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET"
+  comment: "Thành phần của BK. Chưa profile tập giá trị (mã hữu hạn hay văn bản tự\
+    \ do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi profile."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "offering_target"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Offering Method"
+  description: "Loại/phương thức chào bán (JSON loaiChaoBan)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD"
+  comment: "Thành phần của BK. Chưa profile tập giá trị — giữ Text, chưa đăng ký scheme.\
+    \ Khác Offering Type Code (số nguyên) của entity cha."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "offering_method"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Par Value"
+  description: "Mệnh giá chứng khoán chào bán (JSON menhGia)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PAR_VAL"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "par_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Planned Quantity"
+  description: "Số lượng chứng khoán dự kiến chào bán (JSON soLuongCb)."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_QUANTITY"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có giá\
+    \ trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "planned_quantity"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Planned Price Amount"
+  description: "Giá chào bán dự kiến (JSON giaCb)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PRICE_AMT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "planned_price_amt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Planned Value At Par"
+  description: "Giá trị chào bán dự kiến theo mệnh giá (JSON giaTriCbTheoMenhGia)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_VALUE_AT_PAR"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "planned_val_at_par"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Planned Participant Count"
+  description: "Số lượng nhà đầu tư dự kiến chào bán (JSON soLuongNguoiCb)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PARTICIPANT_COUNT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "planned_participant_count"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Offering Target Description"
+  description: "Mô tả đối tượng chào bán (JSON moTaDoiTuong)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET_DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "offering_target_description"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Swap Purpose Description"
+  description: "Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (JSON mucDichHoanDoi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.SWAP_PURPOSE_DESCRIPTION"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "swap_purpose_description"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Expected Start Date"
+  description: "Ngày dự kiến bắt đầu chào bán (JSON duKienTuNgay)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_START_DT"
+  comment: "ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng. Nguồn\
+    \ ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng → NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "expected_start_dt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Expected End Date"
+  description: "Ngày dự kiến kết thúc chào bán (JSON duKienDenNgay)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_END_DT"
+  comment: "ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng. Nguồn\
+    \ ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng → NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "expected_end_dt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Actual Quantity"
+  description: "Số lượng chứng khoán chào bán thực tế (JSON soLuongThucTe)."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_QUANTITY"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có giá\
+    \ trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "actual_quantity"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Actual Price Amount"
+  description: "Giá chào bán thực tế (JSON giaThucTe)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PRICE_AMT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "actual_price_amt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Actual Value Amount"
+  description: "Giá trị chào bán thực tế (JSON giaTriThucTe)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_VAL_AMT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "actual_val_amt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Actual Participant Count"
+  description: "Số lượng nhà đầu tư tham gia thực tế (JSON soLuongNguoiThamGia)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PARTICIPANT_COUNT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "actual_participant_count"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Foreign Investor Participant Count"
+  description: "Số lượng nhà đầu tư nước ngoài tham gia (JSON slNdtnnThamGia)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_PARTICIPANT_COUNT"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "foreign_investor_participant_count"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "Foreign Investor Issuance Value"
+  description: "Giá trị phát hành cho nhà đầu tư nước ngoài (JSON giaTriPhatHanhNdtnn)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_ISSUANCE_VAL"
+  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
+    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
+    \ non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "foreign_investor_issuance_val"
+- bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
   atomic_attribute: "Securities Company Profile Change Id"
   description: "Khóa đại diện (surrogate key)."

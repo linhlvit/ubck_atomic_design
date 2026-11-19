@@ -27,12 +27,12 @@
 | MDDS | 7 | 0 |
 | MRMS | 3 | 0 |
 | NHNCK | 45 | 0 |
-| SCMS | 50 | 3 |
+| SCMS | 50 | 4 |
 | THANHTRA | 32 | 0 |
 | TMS | 5 | 2 |
 | TTHC | 2 | 3 |
 | VSDC | 9 | 0 |
-| **Tổng** | **335** | **19** |
+| **Tổng** | **335** | **20** |
 
 ## 3. Nhóm A — STG map 1:1 ODS (bảng `in_scope`)
 
@@ -657,6 +657,14 @@ Cột **Nguồn** là danh sách STG/ODS dùng để dựng bảng ODS (quan h�
 | `STG.SCMS.SC_FIRM_PROFILE_CHANGE` | ✅ in_scope |
 | `STG.SCMS.SC_FIRM_PERIODIC_REPORT` | ✅ in_scope |
 
+**20. `ODS.SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT`** → Atomic entity **Securities Company Disclosure Securities Offering Result** (`sc_disclosure_securities_offering_result`), table_type: Relative
+
+> Bảng ODS parsing mảng JSON `RESULT_JSON` (fallback `PLAN_JSON` cho `duKienTuNgay`/`duKienDenNgay`) của `DISCLOSURE_SECURITIES_OFFERING`. Grain: 1 dòng / phần tử mảng, khóa `id` ‖ `offering_target` ‖ `offering_method`. Mọi trường JSON giữ STRING raw, ép kiểu ở lớp Atomic. Không có BRD riêng — nguồn là bảng STG của bảng cha.
+
+| Nguồn | Trạng thái |
+|---|---|
+| `STG.SCMS.DISCLOSURE_SECURITIES_OFFERING` | ✅ in_scope |
+
 ## 5. Sơ đồ luồng nhóm B
 
 ### FIMS
@@ -826,6 +834,8 @@ flowchart LR
   n21["STG.SCMS.REPORT_INPUT_CELL_VALUE"]
   n22(["ODS.SCMS.ITEM_VALUE"])
   n23{{"ATM.dr_value"}}
+  n24(["ODS.SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT"])
+  n25{{"ATM.sc_disclosure_securities_offering_result"}}
   n0 --> n1
   n2 --> n1
   n3 --> n1
@@ -853,6 +863,8 @@ flowchart LR
   n19 --> n22
   n8 --> n22
   n22 --> n23
+  n18 --> n24
+  n24 --> n25
 ```
 
 ### TMS
