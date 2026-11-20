@@ -27927,7 +27927,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -66821,7 +66821,7 @@ entities:
     physical_name: sc_disclosure_securities_offering_result_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. Hash: hash_id('SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT',\
-      \ ID || OFFERING_TARGET || OFFERING_METHOD)."
+      \ ID || PJ_OFFERING_TARGET_CODE || PJ_OFFERING_METHOD_CODE)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -66835,15 +66835,17 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. Hash: hash_id('SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT',\
-          \ ID || OFFERING_TARGET || OFFERING_METHOD)."
+          \ ID || PJ_OFFERING_TARGET_CODE || PJ_OFFERING_METHOD_CODE)."
   - name: Securities Company Disclosure Securities Offering Result Code
     physical_name: sc_disclosure_securities_offering_result_code
     business_meaning_1st: Mã nghiệp vụ kết quả chào bán = ID đợt chào bán || mã đối
       tượng chào bán || phương thức chào bán. BK của entity.
-    comment_1st: "ETL-derived: nối 3 trường id, offering_target, offering_method của\
-      \ ODS (chỉ định Data Modeler 2026-11-19). Grain = 1 phần tử mảng RESULT_JSON.\
-      \ offering_target/offering_method có thể NULL trong JSON — ETL coalesce về chuỗi\
-      \ rỗng khi nối."
+    comment_1st: "ETL-derived: nối 3 trường id, pj_offering_target_code, pj_offering_method_code\
+      \ của ODS (lấy từ bộ plan_json, chỉ định Data Modeler 2026-11-20; Id hash từ\
+      \ Code này) (chỉ định Data Modeler 2026-11-19; ODS DDL đổi tên cột offering_target\
+      \ → offering_target_code ngày 2026-11-20). Grain = 1 phần tử mảng RESULT_JSON.\
+      \ pj_offering_target_code/pj_offering_method_code có thể NULL trong JSON — ETL\
+      \ coalesce về chuỗi rỗng khi nối."
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -66854,14 +66856,16 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID, SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET,
-          SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID, SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_CODE,
+          SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_METHOD_CODE
         business_meaning: Mã nghiệp vụ kết quả chào bán = ID đợt chào bán || mã đối
           tượng chào bán || phương thức chào bán. BK của entity.
-        comment: "ETL-derived: nối 3 trường id, offering_target, offering_method của\
-          \ ODS (chỉ định Data Modeler 2026-11-19). Grain = 1 phần tử mảng RESULT_JSON.\
-          \ offering_target/offering_method có thể NULL trong JSON — ETL coalesce\
-          \ về chuỗi rỗng khi nối."
+        comment: "ETL-derived: nối 3 trường id, pj_offering_target_code, pj_offering_method_code\
+          \ của ODS (lấy từ bộ plan_json, chỉ định Data Modeler 2026-11-20; Id hash\
+          \ từ Code này) (chỉ định Data Modeler 2026-11-19; ODS DDL đổi tên cột offering_target\
+          \ → offering_target_code ngày 2026-11-20). Grain = 1 phần tử mảng RESULT_JSON.\
+          \ pj_offering_target_code/pj_offering_method_code có thể NULL trong JSON\
+          \ — ETL coalesce về chuỗi rỗng khi nối."
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -66965,11 +66969,12 @@ entities:
         comment: "Lookup pair: securities_company.sc_code. Pair with Securities Company\
           \ Id. Giá trị lấy từ SCMS.SC_FIRM_INFO.CODE sau ETL crosswalk — chi tiết\
           \ xem comment Securities Company Id."
-  - name: Offering Target
-    physical_name: offering_target
-    business_meaning_1st: Đối tượng chào bán (JSON doiTuongChaoBan).
-    comment_1st: Thành phần của BK. Chưa profile tập giá trị (mã hữu hạn hay văn bản
-      tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi profile.
+  - name: RJ Offering Target Code
+    physical_name: rj_offering_target_code
+    business_meaning_1st: Đối tượng chào bán (result_json.doiTuongChaoBan).
+    comment_1st: Từ result_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu
+      hạn hay văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận
+      sau khi profile.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -66980,15 +66985,16 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET
-        business_meaning: Đối tượng chào bán (JSON doiTuongChaoBan).
-        comment: Thành phần của BK. Chưa profile tập giá trị (mã hữu hạn hay văn bản
-          tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi profile.
-  - name: Offering Method
-    physical_name: offering_method
-    business_meaning_1st: Loại/phương thức chào bán (JSON loaiChaoBan).
-    comment_1st: Thành phần của BK. Chưa profile tập giá trị — giữ Text, chưa đăng
-      ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_TARGET_CODE
+        business_meaning: Đối tượng chào bán (result_json.doiTuongChaoBan).
+        comment: Từ result_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu
+          hạn hay văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác
+          nhận sau khi profile.
+  - name: RJ Offering Method Code
+    physical_name: rj_offering_method_code
+    business_meaning_1st: Loại/phương thức chào bán (result_json.loaiChaoBan).
+    comment_1st: Từ result_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text,
+      chưa đăng ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -66999,16 +67005,16 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD
-        business_meaning: Loại/phương thức chào bán (JSON loaiChaoBan).
-        comment: Thành phần của BK. Chưa profile tập giá trị — giữ Text, chưa đăng
-          ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
-  - name: Par Value
-    physical_name: par_val
-    business_meaning_1st: Mệnh giá chứng khoán chào bán (JSON menhGia).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_METHOD_CODE
+        business_meaning: Loại/phương thức chào bán (result_json.loaiChaoBan).
+        comment: Từ result_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text,
+          chưa đăng ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
+  - name: RJ Par Value
+    physical_name: rj_par_val
+    business_meaning_1st: Mệnh giá chứng khoán chào bán (result_json.menhGia).
+    comment_1st: Từ result_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+      cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.
+      Cần validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67019,17 +67025,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PAR_VAL
-        business_meaning: Mệnh giá chứng khoán chào bán (JSON menhGia).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
-  - name: Planned Quantity
-    physical_name: planned_quantity
-    business_meaning_1st: Số lượng chứng khoán dự kiến chào bán (JSON soLuongCb).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có
-      giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PAR_VALUE
+        business_meaning: Mệnh giá chứng khoán chào bán (result_json.menhGia).
+        comment: Từ result_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+          cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng →
+          NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Planned Quantity
+    physical_name: rj_planned_quantity
+    business_meaning_1st: Số lượng chứng khoán dự kiến chào bán (result_json.soLuongCb).
+    comment_1st: Từ result_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+      cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng →
+      NULL. Cần validate không có giá trị non-numeric.
     data_domain_most: Large Counter
     data_type_most: bigint
     nullable_most: true
@@ -67040,17 +67046,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_QUANTITY
-        business_meaning: Số lượng chứng khoán dự kiến chào bán (JSON soLuongCb).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không
-          có giá trị non-numeric.
-  - name: Planned Price Amount
-    physical_name: planned_price_amt
-    business_meaning_1st: Giá chào bán dự kiến (JSON giaCb).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_QUANTITY
+        business_meaning: Số lượng chứng khoán dự kiến chào bán (result_json.soLuongCb).
+        comment: Từ result_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+          cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng
+          → NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Planned Price Amount
+    physical_name: rj_planned_price_amt
+    business_meaning_1st: Giá chào bán dự kiến (result_json.giaCb).
+    comment_1st: Từ result_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+      chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67061,17 +67067,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PRICE_AMT
-        business_meaning: Giá chào bán dự kiến (JSON giaCb).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
-  - name: Planned Value At Par
-    physical_name: planned_val_at_par
-    business_meaning_1st: Giá trị chào bán dự kiến theo mệnh giá (JSON giaTriCbTheoMenhGia).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_PRICE_AMOUNT
+        business_meaning: Giá chào bán dự kiến (result_json.giaCb).
+        comment: Từ result_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+          chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: RJ Planned Value At Par
+    physical_name: rj_planned_val_at_par
+    business_meaning_1st: Giá trị chào bán dự kiến theo mệnh giá (result_json.giaTriCbTheoMenhGia).
+    comment_1st: Từ result_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ
+      JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định
+      dạng → NULL. Cần validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67082,16 +67088,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_VALUE_AT_PAR
-        business_meaning: Giá trị chào bán dự kiến theo mệnh giá (JSON giaTriCbTheoMenhGia).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
-  - name: Planned Participant Count
-    physical_name: planned_participant_count
-    business_meaning_1st: Số lượng nhà đầu tư dự kiến chào bán (JSON soLuongNguoiCb).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_VALUE_AT_PAR
+        business_meaning: Giá trị chào bán dự kiến theo mệnh giá (result_json.giaTriCbTheoMenhGia).
+        comment: Từ result_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ
+          JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai
+          định dạng → NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Planned Participant Count
+    physical_name: rj_planned_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư dự kiến chào bán (result_json.soLuongNguoiCb).
+    comment_1st: Từ result_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON)
+      — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
     data_domain_most: Small Counter
     data_type_most: int
     nullable_most: true
@@ -67102,14 +67109,15 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PARTICIPANT_COUNT
-        business_meaning: Số lượng nhà đầu tư dự kiến chào bán (JSON soLuongNguoiCb).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
-  - name: Offering Target Description
-    physical_name: offering_target_description
-    business_meaning_1st: Mô tả đối tượng chào bán (JSON moTaDoiTuong).
-    comment_1st: null
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_PARTICIPANT_COUNT
+        business_meaning: Số lượng nhà đầu tư dự kiến chào bán (result_json.soLuongNguoiCb).
+        comment: Từ result_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON)
+          — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: RJ Offering Target Description
+    physical_name: rj_offering_target_description
+    business_meaning_1st: Mô tả đối tượng chào bán (result_json.moTaDoiTuong).
+    comment_1st: Từ result_json.moTaDoiTuong.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -67120,14 +67128,13 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET_DESCRIPTION
-        business_meaning: Mô tả đối tượng chào bán (JSON moTaDoiTuong).
-        comment: null
-  - name: Swap Purpose Description
-    physical_name: swap_purpose_description
-    business_meaning_1st: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (JSON
-      mucDichHoanDoi).
-    comment_1st: null
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_TARGET_DESCRIPTION
+        business_meaning: Mô tả đối tượng chào bán (result_json.moTaDoiTuong).
+        comment: Từ result_json.moTaDoiTuong.
+  - name: RJ Swap Purpose Description
+    physical_name: rj_swap_purpose_description
+    business_meaning_1st: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (result_json.mucDichHoanDoi).
+    comment_1st: Từ result_json.mucDichHoanDoi.
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -67138,16 +67145,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.SWAP_PURPOSE_DESCRIPTION
-        business_meaning: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (JSON
-          mucDichHoanDoi).
-        comment: null
-  - name: Expected Start Date
-    physical_name: expected_start_dt
-    business_meaning_1st: Ngày dự kiến bắt đầu chào bán (JSON duKienTuNgay).
-    comment_1st: ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng.
-      Nguồn ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng
-      → NULL.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_SWAP_PURPOSE_DESCRIPTION
+        business_meaning: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (result_json.mucDichHoanDoi).
+        comment: Từ result_json.mucDichHoanDoi.
+  - name: RJ Expected Start Date
+    physical_name: rj_expected_start_dt
+    business_meaning_1st: Ngày dự kiến bắt đầu chào bán (result_json.duKienTuNgay).
+    comment_1st: "Từ result_json.duKienTuNgay. Nguồn ODS lưu STRING (raw từ JSON)\
+      \ — ETL cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện chỉ\
+      \ ghi nguồn result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ có fallback\
+      \ plan_json cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL xác nhận còn\
+      \ áp dụng hay không."
     data_domain_most: Date
     data_type_most: date
     nullable_most: true
@@ -67158,17 +67166,21 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_START_DT
-        business_meaning: Ngày dự kiến bắt đầu chào bán (JSON duKienTuNgay).
-        comment: ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng.
-          Nguồn ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định
-          dạng → NULL.
-  - name: Expected End Date
-    physical_name: expected_end_dt
-    business_meaning_1st: Ngày dự kiến kết thúc chào bán (JSON duKienDenNgay).
-    comment_1st: ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng.
-      Nguồn ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng
-      → NULL.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_EXPECTED_START_DATE
+        business_meaning: Ngày dự kiến bắt đầu chào bán (result_json.duKienTuNgay).
+        comment: "Từ result_json.duKienTuNgay. Nguồn ODS lưu STRING (raw từ JSON)\
+          \ — ETL cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện\
+          \ chỉ ghi nguồn result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ\
+          \ có fallback plan_json cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL\
+          \ xác nhận còn áp dụng hay không."
+  - name: RJ Expected End Date
+    physical_name: rj_expected_end_dt
+    business_meaning_1st: Ngày dự kiến kết thúc chào bán (result_json.duKienDenNgay).
+    comment_1st: "Từ result_json.duKienDenNgay. Nguồn ODS lưu STRING (raw từ JSON)\
+      \ — ETL cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện chỉ\
+      \ ghi nguồn result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ có fallback\
+      \ plan_json cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL xác nhận còn\
+      \ áp dụng hay không."
     data_domain_most: Date
     data_type_most: date
     nullable_most: true
@@ -67179,17 +67191,19 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_END_DT
-        business_meaning: Ngày dự kiến kết thúc chào bán (JSON duKienDenNgay).
-        comment: ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng.
-          Nguồn ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định
-          dạng → NULL.
-  - name: Actual Quantity
-    physical_name: actual_quantity
-    business_meaning_1st: Số lượng chứng khoán chào bán thực tế (JSON soLuongThucTe).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có
-      giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_EXPECTED_END_DATE
+        business_meaning: Ngày dự kiến kết thúc chào bán (result_json.duKienDenNgay).
+        comment: "Từ result_json.duKienDenNgay. Nguồn ODS lưu STRING (raw từ JSON)\
+          \ — ETL cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện\
+          \ chỉ ghi nguồn result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ\
+          \ có fallback plan_json cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL\
+          \ xác nhận còn áp dụng hay không."
+  - name: RJ Actual Quantity
+    physical_name: rj_actual_quantity
+    business_meaning_1st: Số lượng chứng khoán chào bán thực tế (result_json.soLuongThucTe).
+    comment_1st: Từ result_json.soLuongThucTe. Nguồn ODS lưu STRING (raw từ JSON)
+      — ETL cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định
+      dạng → NULL. Cần validate không có giá trị non-numeric.
     data_domain_most: Large Counter
     data_type_most: bigint
     nullable_most: true
@@ -67200,17 +67214,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_QUANTITY
-        business_meaning: Số lượng chứng khoán chào bán thực tế (JSON soLuongThucTe).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không
-          có giá trị non-numeric.
-  - name: Actual Price Amount
-    physical_name: actual_price_amt
-    business_meaning_1st: Giá chào bán thực tế (JSON giaThucTe).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_QUANTITY
+        business_meaning: Số lượng chứng khoán chào bán thực tế (result_json.soLuongThucTe).
+        comment: Từ result_json.soLuongThucTe. Nguồn ODS lưu STRING (raw từ JSON)
+          — ETL cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định
+          dạng → NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Actual Price Amount
+    physical_name: rj_actual_price_amt
+    business_meaning_1st: Giá chào bán thực tế (result_json.giaThucTe).
+    comment_1st: Từ result_json.giaThucTe. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+      cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.
+      Cần validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67221,17 +67235,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PRICE_AMT
-        business_meaning: Giá chào bán thực tế (JSON giaThucTe).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
-  - name: Actual Value Amount
-    physical_name: actual_val_amt
-    business_meaning_1st: Giá trị chào bán thực tế (JSON giaTriThucTe).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_PRICE_AMOUNT
+        business_meaning: Giá chào bán thực tế (result_json.giaThucTe).
+        comment: Từ result_json.giaThucTe. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+          cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng →
+          NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Actual Value Amount
+    physical_name: rj_actual_val_amt
+    business_meaning_1st: Giá trị chào bán thực tế (result_json.giaTriThucTe).
+    comment_1st: Từ result_json.giaTriThucTe. Nguồn ODS lưu STRING (raw từ JSON) —
+      ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng →
+      NULL. Cần validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67242,16 +67256,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_VAL_AMT
-        business_meaning: Giá trị chào bán thực tế (JSON giaTriThucTe).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
-  - name: Actual Participant Count
-    physical_name: actual_participant_count
-    business_meaning_1st: Số lượng nhà đầu tư tham gia thực tế (JSON soLuongNguoiThamGia).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_VALUE_AMOUNT
+        business_meaning: Giá trị chào bán thực tế (result_json.giaTriThucTe).
+        comment: Từ result_json.giaTriThucTe. Nguồn ODS lưu STRING (raw từ JSON) —
+          ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng
+          → NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Actual Participant Count
+    physical_name: rj_actual_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư tham gia thực tế (result_json.soLuongNguoiThamGia).
+    comment_1st: Từ result_json.soLuongNguoiThamGia. Nguồn ODS lưu STRING (raw từ
+      JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL.
+      Cần validate không có giá trị non-numeric.
     data_domain_most: Small Counter
     data_type_most: int
     nullable_most: true
@@ -67262,15 +67277,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PARTICIPANT_COUNT
-        business_meaning: Số lượng nhà đầu tư tham gia thực tế (JSON soLuongNguoiThamGia).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
-  - name: Foreign Investor Participant Count
-    physical_name: foreign_investor_participant_count
-    business_meaning_1st: Số lượng nhà đầu tư nước ngoài tham gia (JSON slNdtnnThamGia).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_PARTICIPANT_COUNT
+        business_meaning: Số lượng nhà đầu tư tham gia thực tế (result_json.soLuongNguoiThamGia).
+        comment: Từ result_json.soLuongNguoiThamGia. Nguồn ODS lưu STRING (raw từ
+          JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng
+          → NULL. Cần validate không có giá trị non-numeric.
+  - name: RJ Foreign Investor Participant Count
+    physical_name: rj_foreign_investor_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư nước ngoài tham gia (result_json.slNdtnnThamGia).
+    comment_1st: Từ result_json.slNdtnnThamGia. Nguồn ODS lưu STRING (raw từ JSON)
+      — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
     data_domain_most: Small Counter
     data_type_most: int
     nullable_most: true
@@ -67281,16 +67298,17 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_PARTICIPANT_COUNT
-        business_meaning: Số lượng nhà đầu tư nước ngoài tham gia (JSON slNdtnnThamGia).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric.
-  - name: Foreign Investor Issuance Value
-    physical_name: foreign_investor_issuance_val
-    business_meaning_1st: Giá trị phát hành cho nhà đầu tư nước ngoài (JSON giaTriPhatHanhNdtnn).
-    comment_1st: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-      và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá
-      trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_FOREIGN_INVESTOR_PARTICIPANT_COUNT
+        business_meaning: Số lượng nhà đầu tư nước ngoài tham gia (result_json.slNdtnnThamGia).
+        comment: Từ result_json.slNdtnnThamGia. Nguồn ODS lưu STRING (raw từ JSON)
+          — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: RJ Foreign Investor Issuance Value
+    physical_name: rj_foreign_investor_issuance_val
+    business_meaning_1st: Giá trị phát hành cho nhà đầu tư nước ngoài (result_json.giaTriPhatHanhNdtnn).
+    comment_1st: Từ result_json.giaTriPhatHanhNdtnn. Nguồn ODS lưu STRING (raw từ
+      JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định
+      dạng → NULL. Cần validate không có giá trị non-numeric.
     data_domain_most: Currency Amount
     data_type_most: decimal(23,2)
     nullable_most: true
@@ -67301,11 +67319,190 @@ entities:
     - source_system: SCMS
       source_tables:
       - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
-        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_ISSUANCE_VAL
-        business_meaning: Giá trị phát hành cho nhà đầu tư nước ngoài (JSON giaTriPhatHanhNdtnn).
-        comment: Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách
-          và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có
-          giá trị non-numeric.
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_FOREIGN_INVESTOR_ISSUANCE_VALUE
+        business_meaning: Giá trị phát hành cho nhà đầu tư nước ngoài (result_json.giaTriPhatHanhNdtnn).
+        comment: Từ result_json.giaTriPhatHanhNdtnn. Nguồn ODS lưu STRING (raw từ
+          JSON) — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai
+          định dạng → NULL. Cần validate không có giá trị non-numeric.
+  - name: PJ Offering Target Code
+    physical_name: pj_offering_target_code
+    business_meaning_1st: Đối tượng chào bán (plan_json.doiTuongChaoBan).
+    comment_1st: Từ plan_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu hạn
+      hay văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau
+      khi profile.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_CODE
+        business_meaning: Đối tượng chào bán (plan_json.doiTuongChaoBan).
+        comment: Từ plan_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu hạn
+          hay văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận
+          sau khi profile.
+  - name: PJ Offering Method Code
+    physical_name: pj_offering_method_code
+    business_meaning_1st: Loại/phương thức chào bán (plan_json.loaiChaoBan).
+    comment_1st: Từ plan_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text, chưa
+      đăng ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_METHOD_CODE
+        business_meaning: Loại/phương thức chào bán (plan_json.loaiChaoBan).
+        comment: Từ plan_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text, chưa
+          đăng ký scheme. Khác Offering Type Code (số nguyên) của entity cha.
+  - name: PJ Par Value
+    physical_name: pj_par_val
+    business_meaning_1st: Mệnh giá chứng khoán chào bán (plan_json.menhGia).
+    comment_1st: Từ plan_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+      chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PAR_VALUE
+        business_meaning: Mệnh giá chứng khoán chào bán (plan_json.menhGia).
+        comment: Từ plan_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+          chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: PJ Planned Quantity
+    physical_name: pj_planned_quantity
+    business_meaning_1st: Số lượng chứng khoán dự kiến chào bán (plan_json.soLuongCb).
+    comment_1st: Từ plan_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+      cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng →
+      NULL. Cần validate không có giá trị non-numeric.
+    data_domain_most: Large Counter
+    data_type_most: bigint
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_QUANTITY
+        business_meaning: Số lượng chứng khoán dự kiến chào bán (plan_json.soLuongCb).
+        comment: Từ plan_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL
+          cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng
+          → NULL. Cần validate không có giá trị non-numeric.
+  - name: PJ Planned Price Amount
+    physical_name: pj_planned_price_amt
+    business_meaning_1st: Giá chào bán dự kiến (plan_json.giaCb).
+    comment_1st: Từ plan_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+      chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_PRICE_AMOUNT
+        business_meaning: Giá chào bán dự kiến (plan_json.giaCb).
+        comment: Từ plan_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần
+          chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: PJ Planned Value At Par
+    physical_name: pj_planned_val_at_par
+    business_meaning_1st: Giá trị chào bán dự kiến theo mệnh giá (plan_json.giaTriCbTheoMenhGia).
+    comment_1st: Từ plan_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ JSON)
+      — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng
+      → NULL. Cần validate không có giá trị non-numeric.
+    data_domain_most: Currency Amount
+    data_type_most: decimal(23,2)
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_VALUE_AT_PAR
+        business_meaning: Giá trị chào bán dự kiến theo mệnh giá (plan_json.giaTriCbTheoMenhGia).
+        comment: Từ plan_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ JSON)
+          — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng
+          → NULL. Cần validate không có giá trị non-numeric.
+  - name: PJ Planned Participant Count
+    physical_name: pj_planned_participant_count
+    business_meaning_1st: Số lượng nhà đầu tư dự kiến chào bán (plan_json.soLuongNguoiCb).
+    comment_1st: Từ plan_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON) —
+      ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần
+      validate không có giá trị non-numeric.
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_PARTICIPANT_COUNT
+        business_meaning: Số lượng nhà đầu tư dự kiến chào bán (plan_json.soLuongNguoiCb).
+        comment: Từ plan_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON) —
+          ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL.
+          Cần validate không có giá trị non-numeric.
+  - name: PJ Offering Target Description
+    physical_name: pj_offering_target_description
+    business_meaning_1st: Mô tả đối tượng chào bán (plan_json.moTaDoiTuong).
+    comment_1st: Từ plan_json.moTaDoiTuong.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_DESCRIPTION
+        business_meaning: Mô tả đối tượng chào bán (plan_json.moTaDoiTuong).
+        comment: Từ plan_json.moTaDoiTuong.
+  - name: PJ Swap Purpose Description
+    physical_name: pj_swap_purpose_description
+    business_meaning_1st: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (plan_json.mucDichHoanDoi).
+    comment_1st: Từ plan_json.mucDichHoanDoi.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: DISCLOSURE_SECURITIES_OFFERING_RESULT
+        source_column: SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_SWAP_PURPOSE_DESCRIPTION
+        business_meaning: Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (plan_json.mucDichHoanDoi).
+        comment: Từ plan_json.mucDichHoanDoi.
 - ldm:
     id: ATM-sc_profile_change
     logical_name_1st: Securities Company Profile Change
