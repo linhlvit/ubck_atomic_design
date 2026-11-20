@@ -363,7 +363,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Dynamic Report Value | Fact Append | new | Giá trị từng ô chỉ tiêu của lần nộp báo cáo động (Atomic `dr_value` ← FMS.ITEM_VALUE) kéo 1:1 — nạp APPEND theo delta `ds_snpst_dt` = ngày chạy; nguồn của 2 bảng khai thác Data Explorer [MỚI 2026-11-15, O_QLQ_91] | 1 ô chỉ tiêu × 1 lần nộp (× dòng động), PK `dr_val_id` = id dòng Atomic | — (chưa có KPI, O_QLQ_79) |
+| Fact Dynamic Report Value | Fact Append | new | Giá trị từng ô chỉ tiêu của lần nộp báo cáo động (Atomic `dr_value` ← FMS.ITEM_VALUE, SCMS.ITEM_VALUE — O_QLQ_94) kéo 1:1 — nạp APPEND theo delta `ds_snpst_dt` = ngày chạy; nguồn của 2 bảng khai thác Data Explorer [MỚI 2026-11-15, O_QLQ_91] | 1 ô chỉ tiêu × 1 lần nộp (× dòng động), PK `dr_val_id` = id dòng Atomic | — (chưa có KPI, O_QLQ_79) |
 | Dynamic Report Structure Dimension | Dimension | new | Cây chỉ tiêu mẫu báo cáo động (`dr_structure`) — mã/tên mẫu, sheet, đường dẫn cột-dòng, mã ô | 1 ô chỉ tiêu của 1 sheet (current state) | — |
 | Dynamic Report Submission History Dimension | Dimension | new | Lịch sử nộp báo cáo động (`dr_submission_history`) — đối tượng nộp, kỳ, ngày nộp, phiên bản | 1 lần nộp báo cáo của 1 đối tượng theo kỳ | — |
 

@@ -30898,6 +30898,51 @@ entities:
         description: "Mã chỉ tiêu của dòng nhãn gắn với ô động."
         source_atomic_table: "dr_structure"
         source_atomic_column: "dr_structure.dynamic_label_row"
+      - logical_name: "Form Report Code"
+        physical_name: "form_rpt_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã mẫu báo cáo (form report) — tham chiếu mềm tới FORM_REPORT của SCMS — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Version"
+        physical_name: "rpt_version"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Phiên bản mẫu báo cáo — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Dynamic Indicator"
+        physical_name: "dynamic_ind"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Cờ dòng động của ô chỉ tiêu: 1 = ô thuộc dòng động — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Data Type"
+        physical_name: "data_tp"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Kiểu dữ liệu của ô chỉ tiêu — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Active Indicator"
+        physical_name: "active_ind"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Trạng thái bản ghi mẫu: 1 = đang hoạt động, 0 = không hoạt động (RECORD_STATUS nguồn) — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -31074,6 +31119,51 @@ entities:
         description: "Phiên bản báo cáo."
         source_atomic_table: "dr_submission_history"
         source_atomic_column: "dr_submission_history.rpt_version"
+      - logical_name: "Form Report Code"
+        physical_name: "form_rpt_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã mẫu báo cáo (form report) của lần nộp — tham chiếu mềm tới FORM_REPORT của SCMS — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Report Year"
+        physical_name: "rpt_year"
+        data_domain: "Small Counter"
+        data_type: "int"
+        nullable: true
+        key: ""
+        description: "Năm của kỳ báo cáo — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Object Code"
+        physical_name: "object_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Mã đối tượng nộp báo cáo — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Listing Exchange"
+        physical_name: "listing_exchange"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Sàn niêm yết của đối tượng nộp báo cáo — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
+      - logical_name: "Business Lines"
+        physical_name: "business_lines"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Danh sách nghiệp vụ kinh doanh của đối tượng nộp báo cáo (có thể là chuỗi nhiều giá trị — cần profile trước khi tách) — chỉ áp dụng cho nguồn SCMS (bộ này thuộc nguồn FMS, không có giá trị)."
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Source System Code"
         physical_name: "src_stm_code"
         data_domain: "Classification Value"
@@ -31139,7 +31229,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — id dòng Atomic dr_value (Dạng A, A22): hash('FMS_ITEM_VALUE', ITEM_ID ‖ REPORT_LOG_ID ‖ ROW_ORDER); khóa chứa REPORT_LOG_ID (lần nộp) nên không đè qua kỳ (A39). Grain = 1 ô chỉ tiêu × 1 lần nộp (× dòng động). Fact append theo delta: mỗi ngày nạp thêm các dòng Atomic được ghi trong ngày (mới hoặc sửa); ô bị sửa ở nguồn xuất hiện lại cùng PK ở ngày sau — bản đọc là bản nạp sau cùng (flat ReplacingMergeTree theo PK). [CẬP NHẬT 2026-11-15, O_QLQ_91]"
+        description: "PK — id dòng Atomic dr_value (Dạng A, A22): hash('FMS_ITEM_VALUE' hoặc 'SCMS_ITEM_VALUE', ITEM_ID ‖ REPORT_LOG_ID ‖ ROW_ORDER); khóa chứa REPORT_LOG_ID (lần nộp) nên không đè qua kỳ (A39). Grain = 1 ô chỉ tiêu × 1 lần nộp (× dòng động). Fact append theo delta: mỗi ngày nạp thêm các dòng Atomic được ghi trong ngày (mới hoặc sửa); ô bị sửa ở nguồn xuất hiện lại cùng PK ở ngày sau — bản đọc là bản nạp sau cùng (flat ReplacingMergeTree theo PK). [CẬP NHẬT 2026-11-15, O_QLQ_91] Nhận cả nguồn SCMS (SCMS.ITEM_VALUE) [MỚI 2026-11-20, O_QLQ_94]."
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.dr_val_id"
       - logical_name: "Dynamic Report Structure Id"
@@ -31211,7 +31301,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Cờ cột nhãn: 1 = ô là cột nhãn (giá trị hiển thị lấy mã đối tượng)."
+        description: "Cờ cột nhãn: 1 = ô là cột nhãn (giá trị hiển thị lấy mã đối tượng). Chỉ có giá trị ở nguồn FMS; dòng SCMS để NULL (Atomic SCMS dr_value không có cột này; dynamic_ind/data_tp của SCMS nằm ở Dimension cấu trúc) [MỚI 2026-11-20, O_QLQ_94]."
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.label_column_ind"
       - logical_name: "Value"
@@ -31229,7 +31319,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Mã ngân hàng lưu ký hoặc tài khoản đi kèm giá trị ô (ACC_VALUE ở nguồn); không thuộc BK Atomic — Atomic khử trùng mỗi khóa giữ 1 dòng (O_QLQ_81)."
+        description: "Mã ngân hàng lưu ký hoặc tài khoản đi kèm giá trị ô (ACC_VALUE ở nguồn); không thuộc BK Atomic — Atomic khử trùng mỗi khóa giữ 1 dòng (O_QLQ_81). Chỉ có giá trị ở nguồn FMS; dòng SCMS để NULL (Atomic SCMS dr_value không có cột này; dynamic_ind/data_tp của SCMS nằm ở Dimension cấu trúc) [MỚI 2026-11-20, O_QLQ_94]."
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.custodian_bank_code"
       - logical_name: "Dynamic Indicator"
@@ -31238,7 +31328,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Cờ dòng động: 1 = ô thuộc dòng động; NULL = ô tĩnh."
+        description: "Cờ dòng động: 1 = ô thuộc dòng động; NULL = ô tĩnh. Chỉ có giá trị ở nguồn FMS; dòng SCMS để NULL (Atomic SCMS dr_value không có cột này; dynamic_ind/data_tp của SCMS nằm ở Dimension cấu trúc) [MỚI 2026-11-20, O_QLQ_94]."
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.dynamic_ind"
       - logical_name: "Data Type"
@@ -31247,7 +31337,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Kiểu dữ liệu của ô theo mẫu (string, datasource, numberic, number, numeric, percentage) — quyết định ô là chỉ tiêu số hay chữ."
+        description: "Kiểu dữ liệu của ô theo mẫu (string, datasource, numberic, number, numeric, percentage) — quyết định ô là chỉ tiêu số hay chữ. Chỉ có giá trị ở nguồn FMS; dòng SCMS để NULL (Atomic SCMS dr_value không có cột này; dynamic_ind/data_tp của SCMS nằm ở Dimension cấu trúc) [MỚI 2026-11-20, O_QLQ_94]."
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.data_tp"
       - logical_name: "Source System Code"
@@ -31256,7 +31346,7 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn: 'FMS_ITEM_VALUE'. Điều kiện nạp Fact append: chỉ các dòng Atomic được ghi trong ngày chạy (ds_snpst_dt = :etl_date); lần nạp đầu/backfill chạy từng ngày tăng dần (MERGE ở Atomic không so ngày sửa) [CẬP NHẬT 2026-11-15, O_QLQ_91]"
+        description: "Mã hệ thống nguồn: 'FMS_ITEM_VALUE' hoặc 'SCMS_ITEM_VALUE' (O_QLQ_94). Điều kiện nạp Fact append: chỉ các dòng Atomic được ghi trong ngày chạy (ds_snpst_dt = :etl_date); lần nạp đầu/backfill chạy từng ngày tăng dần (MERGE ở Atomic không so ngày sửa) [CẬP NHẬT 2026-11-15, O_QLQ_91]"
         source_atomic_table: "dr_value"
         source_atomic_column: "dr_value.dr_value.src_stm_code"
       - logical_name: "Snapshot Date"
