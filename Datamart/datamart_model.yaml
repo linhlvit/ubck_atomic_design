@@ -28111,7 +28111,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK — hash(snpst_dt_dim_id, security_symbol_code, market_id_code, investor_group_code, src_stm_code). Grain = 1 mã chứng khoán/hợp đồng × 1 ngày giao dịch × 1 sàn × 1 nhóm nhà đầu tư; src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL."
+        description: "PK — hash(snpst_dt_dim_id, security_symbol_code, market_id_code, investor_group_code, src_stm_code). Grain = 1 mã chứng khoán/hợp đồng × 1 ngày giao dịch × 1 sàn × 1 nhóm nhà đầu tư; src_stm_code cùng tham gia khóa để các nguồn khác nhau không trùng khóa; khóa MERGE của ETL. Mọi mã có bản tin MDDS cuối ngày đều có đủ 3 dòng nhóm (không giao dịch = 0). [SỬA 2026-11-20, O_VP_88]"
         source_atomic_table: null
         source_atomic_column: null
       - logical_name: "Snapshot Date Dimension Id"
@@ -28121,8 +28121,8 @@ entities:
         nullable: false
         key: "FK"
         description: "FK tới Calendar Date Dimension — ngày giao dịch."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.trade_dt"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.trading_dt"
       - logical_name: "Security Trading Snapshot Dimension Id"
         physical_name: "security_trading_snpst_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -28130,8 +28130,8 @@ entities:
         nullable: true
         key: "FK"
         description: "FK tới Security Trading Snapshot Dimension — hồ sơ mã chứng khoán/hợp đồng phái sinh; để trống khi mã chưa từng có trong dimension (giao dịch phái sinh nối LEFT theo SQL BA)."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.ticker_symbol"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.ticker_symbol"
       - logical_name: "Industry Dimension Id"
         physical_name: "industry_dim_id"
         data_domain: "Surrogate Dimension Key"
@@ -28147,9 +28147,9 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã chứng khoán/hợp đồng theo sổ lệnh: HOSE = mã giao dịch (Symbol), HNX = Issue Code (ISIN). Định danh dòng khi khóa ngoại dimension để trống."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.ticker_symbol"
+        description: "Mã chứng khoán/hợp đồng: HOSE = mã giao dịch (Symbol), HNX = Issue Code (ISIN). Lấy từ bản tin MDDS cuối ngày nên mọi mã có bản tin đều có dòng (không giao dịch = 0); riêng phái sinh không có bản tin lấy theo sổ khớp. Định danh dòng khi khóa ngoại dimension để trống."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.ticker_symbol / isin_code"
       - logical_name: "Market Id Code"
         physical_name: "market_id_code"
         data_domain: "Classification Value"
@@ -28157,8 +28157,8 @@ entities:
         nullable: false
         key: ""
         description: "Mã thị trường của giao dịch: STK = HOSE, STX = HNX, UPX = UPCoM, DVX = phái sinh (scheme ORDERTRADE_MARKET_ID)."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.market_code"
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.exchange_code"
       - logical_name: "Investor Group Code"
         physical_name: "investor_group_code"
         data_domain: "Classification Value"
@@ -28210,9 +28210,9 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn dữ liệu; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
-        source_atomic_table: "securities_trade"
-        source_atomic_column: "securities_trade.src_stm_code"
+        description: "Mã hệ thống nguồn sổ khớp của mã (HOSE_TRADE_BOOK/HNX_TRADE_BOOK), suy từ sàn của bản tin MDDS; cùng tham gia khóa PK (hash) để các nguồn khác nhau không trùng khóa."
+        source_atomic_table: "security_trading_snapshot"
+        source_atomic_column: "security_trading_snapshot.exchange_code"
       - logical_name: "Order Matching Volume"
         physical_name: "order_matching_vol"
         data_domain: "Large Counter"
