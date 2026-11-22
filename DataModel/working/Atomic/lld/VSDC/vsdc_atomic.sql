@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS atomic.uat_atm.listed_share_information (
   issuer_name STRING COMMENT 'Tổ chức phát hành',
   listed_share_quantity BIGINT COMMENT 'Số lượng cổ phiếu niêm yết',
   reference_price DECIMAL(23,2) COMMENT 'Giá tham chiếu',
-  transaction_dt DATE,
+  data_dt DATE,
   ds_snpst_dt              DATE,
   ds_etl_pcs_tms           TIMESTAMP)
 USING ICEBERG

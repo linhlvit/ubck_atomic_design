@@ -86,7 +86,7 @@
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | issuer_name | STRING | atomic.uat_atm | listed_share_information | issuer_nm | STRING | Bổ sung từ listed_securities_list |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | listed_shares | BIGINT | atomic.uat_atm | listed_share_information | listed_share_quantity | BIGINT | — |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | reference_price | DECIMAL(18,2) | atomic.uat_atm | listed_share_information | reference_price | DECIMAL(23,2) | Đổi precision |
-| uat_vsdc_stg | outstanding_shares | transaction_date | DATE | atomic.uat_atm | listed_share_information | transaction_dt | DATE | — |
+| uat_vsdc_stg | outstanding_shares | data_dt | DATE | atomic.uat_atm | listed_share_information | data_dt | DATE | Thay `transaction_dt`: nguồn đã bỏ `transaction_date` (DDL PROD 2026-11-22), map 1-1 `data_dt` = ngày cuối kỳ dữ liệu |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | report_date | DATE | atomic.uat_atm | listed_share_information | rpt_dt | DATE | — |
 | — | — | — | — | atomic.uat_atm | listed_share_information | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | listed_share_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |

@@ -30,7 +30,7 @@ erDiagram
         string isin_code
         bigint total_issued_shares
         bigint OUTSTANDING_SHARES
-        date transaction_date
+        date data_dt
     }
     FOREIGN_INVESTOR_INFO {
         string ticker_symbol
