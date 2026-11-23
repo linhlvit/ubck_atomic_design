@@ -1,0 +1,36 @@
+CREATE TABLE prod_staging.vsdc_stg.outstanding_shares (
+  ticker_symbol STRING COMMENT 'Nguồn: MA_CK',
+  isin_code STRING COMMENT 'Nguồn: MA_ISIN',
+  total_issued_shares BIGINT COMMENT 'Nguồn: CHUNG_KHOAN_PHAT_HANH',
+  treasury_shares BIGINT COMMENT 'Nguồn: CK_MUA_LAI',
+  outstanding_shares BIGINT COMMENT 'Nguồn: CK_DANG_LUU_HANH',
+  free_float_shares BIGINT COMMENT 'Nguồn: CK_TU_DO_CHUYEN_NHUONG',
+  restricted_shares BIGINT COMMENT 'Nguồn: CK_HAN_CHE_CHUYEN_NHUONG',
+  voting_shares BIGINT COMMENT 'Nguồn: CK_QUYEN_BIEU_QUYET',
+  report_year INT COMMENT 'Năm của kỳ báo cáo (từ data_dt)',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo (từ data_dt)',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date',
+  ds_snpst_dt DATE COMMENT 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn')
+USING iceberg
+PARTITIONED BY (data_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/outstanding_shares'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '813577028230730138',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.metrics.column.data_dt' = 'full',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')

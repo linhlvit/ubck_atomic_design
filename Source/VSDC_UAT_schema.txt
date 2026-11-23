@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: UAT_VSDC_STG
-Tong so bang: 10 | Materialized View: 0
+Tong so bang: 12 | Materialized View: 0
 ==============================================================================================================
 
 BANG: closed_investors
@@ -8,22 +8,28 @@ Mo ta: BM 6 (VSDC) - Thông tin và danh tính NĐT đóng tài khoản
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 customer_name                 STRING              YES                                      Tên khách hàng
-investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+investor_type                 INT                 YES                                      Loại hình (Cá nhân/Tổ chức)
 trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
 address                       STRING              YES                                      Địa chỉ
 id_number                     STRING              YES                                      Số đăng ký sở hữu (CMND/CCCD/ĐKKD)
 issue_date                    DATE                YES                                      Ngày cấp
 issue_place                   STRING              YES                                      Nơi cấp
 close_date                    DATE                YES                                      Ngày đóng tài khoản
-nationality                   STRING              YES                                      Quốc tịch
+nationality                   INT                 YES                                      Quốc tịch
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
 notes                         STRING              YES                                      Ghi chú đóng tài khoản
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-report_day                    INT                 YES                                      
-report_month                  INT                 YES                                      
-report_year                   INT                 YES                                      
+report_year                   INT                 YES                                      Năm của kỳ báo cáo
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: end_of_day_open_interest
 Mo ta: BM 2 (VSDC) - Báo cáo về khối lượng mở cuối ngày (Phái sinh)
@@ -32,11 +38,17 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 contract_code                 STRING              YES                                      Mã hợp đồng
 open_interest_volume          BIGINT              YES                                      Khối lượng hợp đồng mở OI
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      
-report_month                  INT                 YES                                      
-report_year                   INT                 YES                                      
+report_year                   INT                 YES
+report_month                  INT                 YES
+report_day                    INT                 YES
+_batch_id                     STRING              YES
+ds_snpst_dt                   DATE                YES
+ds_etl_pcs_tms                TIMESTAMP           YES
+_source_system                STRING              YES
+_source_table                 STRING              YES
+_source_file                  STRING              YES
+_file_checksum                STRING              YES
+_file_modified_at             TIMESTAMP           YES
 
 BANG: foreign_investor_bond_portfolio
 Mo ta: BM 64 (VSDC) - Dữ liệu danh mục NĐTNN đối với trái phiếu
@@ -58,7 +70,82 @@ ds_etl_pcs_tms                TIMESTAMP           YES
 report_day                    INT                 YES                                      Ngày báo cáo
 report_year                   INT                 YES                                      Năm báo cáo
 
-BANG: foreign_investor_info
+BANG: foreign_investor_info_bond
+Mo ta: BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+bond_code                     STRING              YES                                      Nguồn: Mã trong nước
+bond_type                     STRING              YES                                      Nguồn: Loại trái phiếu (trái phiếu chính phủ/trái phiếu doanh nghiệp niêm yết/trái phiếu doanh nghiệp riêng lẻ)
+total_issued_bonds            BIGINT              YES                                      Nguồn: Tổng số trái phiếu đăng ký tại VSDC
+current_bonds_foreign_hold    BIGINT              YES                                      Nguồn: Số lượng trái phiếu hiện đang nắm giữ bởi NĐTNN
+par_value                     DECIMAL(30,6)       YES                                      Nguồn: Mệnh giá
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
+
+BANG: foreign_investor_info_fund_certificate
+Mo ta: BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+fund_certificate_code         STRING              YES                                      Nguồn: Mã trong nước
+total_issued_fund_certificates BIGINT              YES                                      Nguồn: Tổng số chứng chỉ quỹ đăng ký tại VSDC
+current_fund_certificates_foreign_hold BIGINT              YES                                      Nguồn: Số lượng chứng chỉ quỹ hiện đang nắm giữ bởi NĐTNN
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
+
+BANG: foreign_investor_info_other_securities
+Mo ta: BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+security_code                 STRING              YES                                      Nguồn: Mã trong nước
+security_type                 STRING              YES                                      Nguồn: Loại chứng khoán (chứng quyền có bảo đảm, [chứng khoán khác khi có phát sinh sau này])
+total_issued_securities       BIGINT              YES                                      Nguồn: Tổng số lượng chứng khoán đăng ký tại VSDC
+current_securities_foreign_hold BIGINT              YES                                      Nguồn: Số lượng chứng khoán hiện đang nắm giữ bởi NĐTNN
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
+
+BANG: foreign_investor_info_stock
 Mo ta: BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
@@ -66,43 +153,57 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 ticker_symbol                 STRING              YES                                      Mã chứng khoán trong nước
 isin_code                     STRING              YES                                      Mã ISIN
 total_issued_shares           BIGINT              YES                                      Tổng số cổ phiếu phát hành
-max_foreign_ownership_ratio   DECIMAL(10,2)       YES                                      Tỷ lệ sở hữu nước ngoài tối đa (%)
+max_foreign_ownership_ratio   DECIMAL(20,10)      YES                                      Tỷ lệ sở hữu nước ngoài tối đa (%)
 max_shares_foreign_can_hold   BIGINT              YES                                      Số lượng CP tối đa NĐTNN được nắm giữ
 current_shares_foreign_hold   BIGINT              YES                                      Số lượng CP hiện NĐTNN đang nắm giữ
-remaining_shares_foreign_can_hold BIGINT              YES                                      Số lượng CP NĐTNN còn được phép nắm giữ
-ds_snpst_dt                   DATE                YES                                      Ngày báo cáo
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: major_shareholder
 Mo ta: BM 8 (VSDC) - Danh sách cổ đông lớn
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
+seq_no                        BIGINT              YES                                      Nguồn: STT
 ticker_symbol                 STRING              YES                                      Mã chứng khoán
-voting_shares                 DECIMAL(18,0)       YES                                      Số cổ phiếu có quyền biểu quyết
+isin_code                     STRING              YES                                      Mã ISIN
+voting_shares                 STRING              YES                                      Số cổ phiếu có quyền biểu quyết
 shareholder_name              STRING              YES                                      Tên cổ đông
 id_number                     STRING              YES                                      Số đăng ký sở hữu
 issue_date                    DATE                YES                                      Ngày cấp
 contact_address               STRING              YES                                      Địa chỉ liên hệ
-begin_period_date             DATE                YES                                      Ngày chốt số liệu đầu kỳ
-begin_period_shares           DECIMAL(18,0)       YES                                      Số lượng chứng khoán đầu kỳ
-begin_period_ratio            DECIMAL(10,2)       YES                                      Tỷ lệ đầu kỳ (%)
-end_period_date               DATE                YES                                      Ngày chốt số liệu cuối kỳ
-end_period_shares             DECIMAL(18,0)       YES                                      Số lượng chứng khoán cuối kỳ
-end_period_ratio              DECIMAL(10,2)       YES                                      Tỷ lệ cuối kỳ (%)
+begin_period_shares           BIGINT              YES                                      Số lượng chứng khoán đầu kỳ
+begin_period_ratio            FLOAT               YES                                      Tỷ lệ đầu kỳ (%)
+end_period_shares             BIGINT              YES                                      Số lượng chứng khoán cuối kỳ
+end_period_ratio              FLOAT               YES                                      Tỷ lệ cuối kỳ (%)
 notes                         STRING              YES                                      Ghi chú
-isin_code                     STRING              YES                                      Mã ISIN
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-from_day                      INT                 YES                                      
-from_month                    INT                 YES                                      
-from_year                     INT                 YES                                      
-to_day                        INT                 YES                                      
-to_month                      INT                 YES                                      
-to_year                       INT                 YES                                      
+from_year                     INT                 YES                                      Năm bắt đầu kỳ dữ liệu
+from_month                    INT                 YES                                      Tháng bắt đầu kỳ dữ liệu
+from_day                      INT                 YES                                      Ngày bắt đầu kỳ dữ liệu
+to_year                       INT                 YES                                      Năm kết thúc kỳ dữ liệu
+to_month                      INT                 YES                                      Tháng kết thúc kỳ dữ liệu
+to_day                        INT                 YES                                      Ngày kết thúc kỳ dữ liệu
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: nationality
 Mo ta: 
@@ -120,21 +221,28 @@ Mo ta: BM 5 (VSDC) - Thông tin và danh tính NĐT mở tài khoản
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 customer_name                 STRING              YES                                      Tên khách hàng
-investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+investor_type                 INT                 YES                                      Loại hình (Cá nhân/Tổ chức)
 trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
 address                       STRING              YES                                      Địa chỉ
 id_number                     STRING              YES                                      Số đăng ký sở hữu (CMND/CCCD/ĐKKD)
 issue_date                    DATE                YES                                      Ngày cấp
 issue_place                   STRING              YES                                      Nơi cấp
 open_date                     DATE                YES                                      Ngày mở tài khoản
-nationality                   STRING              YES                                      Quốc tịch
+nationality                   INT                 YES                                      Quốc tịch
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      
-report_month                  INT                 YES                                      
-report_year                   INT                 YES                                      
+notes                         STRING              YES                                      Nguồn: GHICHU
+report_year                   INT                 YES                                      Năm của kỳ báo cáo
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: outstanding_shares
 Mo ta: BM 1 (VSDC) - Báo cáo về khối lượng chứng khoán đang lưu hành
@@ -142,19 +250,25 @@ Mo ta: BM 1 (VSDC) - Báo cáo về khối lượng chứng khoán đang lưu h�
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ticker_symbol                 STRING              YES                                      Mã chứng khoán
+isin_code                     STRING              YES                                      Mã ISIN
 total_issued_shares           BIGINT              YES                                      Tổng khối lượng chứng khoán phát hành
 treasury_shares               BIGINT              YES                                      Khối lượng chứng khoán mua lại (Cổ phiếu quỹ)
 outstanding_shares            BIGINT              YES                                      Khối lượng chứng khoán đang lưu hành
 free_float_shares             BIGINT              YES                                      Khối lượng chứng khoán tự do chuyển nhượng
 restricted_shares             BIGINT              YES                                      Khối lượng chứng khoán hạn chế chuyển nhượng
 voting_shares                 BIGINT              YES                                      Khối lượng chứng khoán có quyền biểu quyết
-isin_code                     STRING              YES                                      Mã ISIN
-transaction_date              DATE                YES                                      Ngày dữ liệu
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-report_day                    INT                 YES                                      
-report_month                  INT                 YES                                      
-report_year                   INT                 YES                                      
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
 BANG: updated_investors
 Mo ta: BM 7 (VSDC) - Thông tin NĐT thay đổi thông tin tài khoản
@@ -162,22 +276,27 @@ Mo ta: BM 7 (VSDC) - Thông tin NĐT thay đổi thông tin tài khoản
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 customer_name                 STRING              YES                                      Tên khách hàng
-investor_type                 STRING              YES                                      Loại hình (Cá nhân/Tổ chức)
+investor_type                 INT                 YES                                      Loại hình (Cá nhân/Tổ chức)
 trading_account_no            STRING              YES                                      Mã tài khoản giao dịch
 address                       STRING              YES                                      Địa chỉ
 id_number                     STRING              YES                                      Số đăng ký sở hữu (CMND/CCCD/ĐKKD)
 issue_date                    DATE                YES                                      Ngày cấp
 issue_place                   STRING              YES                                      Nơi cấp
-update_date                   DATE                YES                                      Ngày thay đổi thông tin
-nationality                   STRING              YES                                      Quốc tịch
+nationality                   INT                 YES                                      Quốc tịch
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
 notes                         STRING              YES                                      Ghi chú thay đổi
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
-from_day                      INT                 YES                                      
-from_month                    INT                 YES                                      
-from_year                     INT                 YES                                      
-to_day                        INT                 YES                                      
-to_month                      INT                 YES                                      
-to_year                       INT                 YES
+from_year                     INT                 YES                                      Năm bắt đầu kỳ dữ liệu
+from_month                    INT                 YES                                      Tháng bắt đầu kỳ dữ liệu
+from_day                      INT                 YES                                      Ngày bắt đầu kỳ dữ liệu
+to_year                       INT                 YES                                      Năm kết thúc kỳ dữ liệu
+to_month                      INT                 YES                                      Tháng kết thúc kỳ dữ liệu
+to_day                        INT                 YES                                      Ngày kết thúc kỳ dữ liệu
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn

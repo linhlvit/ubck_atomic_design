@@ -99,9 +99,10 @@ original_order_id             STRING              YES                           
 foreign_investor_type_code    STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài
 report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
 report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
-report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu theo tháng)
 _batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+data_dt                       DATE                YES                                      Ngày batch data theo kỳ dùng để override partition
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -154,7 +155,7 @@ trade_time                    STRING              YES                           
 trade_price                   DECIMAL(38,4)       YES                                      Giá khớp của giao dịch
 trade_quantity                BIGINT              YES                                      Khối lượng giao dịch
 session_id                    STRING              YES                                      Mã phiên giao dịch
-sell_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên bán
+sell_replace_cancel_classification_code STRING              YES     YES                              Loại hành động sửa/hủy của lệnh bên bán
 sell_member_number            STRING              YES                                      Mã định danh công ty chứng khoán thực hiện lệnh bán
 sell_account_number           STRING              YES                                      Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
 sell_order_type_code          STRING              YES                                      Loại lệnh của phía bán
@@ -164,7 +165,7 @@ sell_investor_classification_code STRING              YES                       
 sell_order_quantity           DECIMAL(20,0)       YES                                      Khối lượng đặt bán
 sell_order_price              DECIMAL(38,4)       YES                                      Giá đặt bán
 buy_member_number             STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
-buy_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên mua
+buy_replace_cancel_classification_code STRING              YES     YES                              Loại hành động sửa/hủy của lệnh bên mua
 buy_account_number            STRING              YES                                      Mã tài khoản thực hiện giao dịch mua
 buy_order_type_code           STRING              YES                                      Loại lệnh mua
 buy_order_condition_code      STRING              YES                                      Điều kiện thực hiện lệnh mua
@@ -183,9 +184,10 @@ sell_foreign_investor_type_code STRING              YES                         
 buy_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua
 report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
 report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
-report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu theo tháng)
 _batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+data_dt                       DATE                YES                                      Ngày batch data theo kỳ dùng để override partition
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset

@@ -31,8 +31,8 @@
 | THANHTRA | 32 | 0 |
 | TMS | 5 | 2 |
 | TTHC | 2 | 3 |
-| VSDC | 9 | 0 |
-| **Tổng** | **335** | **20** |
+| VSDC | 12 | 0 |
+| **Tổng** | **338** | **20** |
 
 ## 3. Nhóm A — STG map 1:1 ODS (bảng `in_scope`)
 
@@ -447,19 +447,22 @@
 | 1 | `STG.TTHC.CONTENTITEMINDEX` | `ODS.TTHC.CONTENTITEMINDEX` | UID-01 Hồ sơ chào bán chứng khoán | Hồ sơ đăng ký chào bán / phát hành chứng khoán và kết quả xét duyệt (GCN / văn bản từ chối) — toàn bộ lưu trong cùng bảng ContentItemIndex, phân biệt bởi ContentType (Latest=1, Published=1) |
 | 2 | `STG.TTHC.DOCUMENT` | `ODS.TTHC.DOCUMENT` | UID-01 Hồ sơ chào bán chứng khoán | Raw JSON gốc của toàn bộ ContentItem — cột Content chứa JSON serialize toàn bộ nội dung chi tiết |
 
-### 3.VSDC. VSDC (9 bảng)
+### 3.VSDC. VSDC (12 bảng)
 
 | # | STG | ODS | Nhóm chức năng | Ý nghĩa bảng |
 |---:|---|---|---|---|
 | 1 | `STG.VSDC.CLOSED_INVESTORS` | `ODS.VSDC.CLOSED_INVESTORS` | Tài khoản nhà đầu tư | BM 6 (VSDC) - Thông tin và danh tính NĐT đóng tài khoản |
 | 2 | `STG.VSDC.END_OF_DAY_OPEN_INTEREST` | `ODS.VSDC.END_OF_DAY_OPEN_INTEREST` | Phái sinh | BM 2 (VSDC) - Báo cáo về khối lượng mở cuối ngày (Phái sinh) |
 | 3 | `STG.VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO` | `ODS.VSDC.FOREIGN_INVESTOR_BOND_PORTFOLIO` | Nhà đầu tư nước ngoài | BM 64 (VSDC) - Dữ liệu danh mục NĐTNN đối với trái phiếu |
-| 4 | `STG.VSDC.FOREIGN_INVESTOR_INFO` | `ODS.VSDC.FOREIGN_INVESTOR_INFO` | Nhà đầu tư nước ngoài | BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài |
-| 5 | `STG.VSDC.MAJOR_SHAREHOLDER` | `ODS.VSDC.MAJOR_SHAREHOLDER` | Cổ đông lớn | BM 8 (VSDC) - Danh sách cổ đông lớn |
-| 6 | `STG.VSDC.NATIONALITY` | `ODS.VSDC.NATIONALITY` | Danh mục dùng chung |  |
-| 7 | `STG.VSDC.OPEN_INVESTORS` | `ODS.VSDC.OPEN_INVESTORS` | Tài khoản nhà đầu tư | BM 5 (VSDC) - Thông tin và danh tính NĐT mở tài khoản |
-| 8 | `STG.VSDC.OUTSTANDING_SHARES` | `ODS.VSDC.OUTSTANDING_SHARES` | Cổ phiếu lưu hành | BM 1 (VSDC) - Báo cáo về khối lượng chứng khoán đang lưu hành |
-| 9 | `STG.VSDC.UPDATED_INVESTORS` | `ODS.VSDC.UPDATED_INVESTORS` | Tài khoản nhà đầu tư | BM 7 (VSDC) - Thông tin NĐT thay đổi thông tin tài khoản |
+| 4 | `STG.VSDC.FOREIGN_INVESTOR_INFO_BOND` | `ODS.VSDC.FOREIGN_INVESTOR_INFO_BOND` | Nhà đầu tư nước ngoài | BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài - nhóm trái phiếu |
+| 5 | `STG.VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE` | `ODS.VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE` | Nhà đầu tư nước ngoài | BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài - nhóm chứng chỉ quỹ |
+| 6 | `STG.VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES` | `ODS.VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES` | Nhà đầu tư nước ngoài | BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài - nhóm chứng khoán khác (chứng quyền có bảo đảm…) |
+| 7 | `STG.VSDC.FOREIGN_INVESTOR_INFO_STOCK` | `ODS.VSDC.FOREIGN_INVESTOR_INFO_STOCK` | Nhà đầu tư nước ngoài | BM 70 (VSDC) - Quản lý thông tin nhà đầu tư nước ngoài - nhóm cổ phiếu |
+| 8 | `STG.VSDC.MAJOR_SHAREHOLDER` | `ODS.VSDC.MAJOR_SHAREHOLDER` | Cổ đông lớn | BM 8 (VSDC) - Danh sách cổ đông lớn |
+| 9 | `STG.VSDC.NATIONALITY` | `ODS.VSDC.NATIONALITY` | Danh mục dùng chung |  |
+| 10 | `STG.VSDC.OPEN_INVESTORS` | `ODS.VSDC.OPEN_INVESTORS` | Tài khoản nhà đầu tư | BM 5 (VSDC) - Thông tin và danh tính NĐT mở tài khoản |
+| 11 | `STG.VSDC.OUTSTANDING_SHARES` | `ODS.VSDC.OUTSTANDING_SHARES` | Cổ phiếu lưu hành | BM 1 (VSDC) - Báo cáo về khối lượng chứng khoán đang lưu hành |
+| 12 | `STG.VSDC.UPDATED_INVESTORS` | `ODS.VSDC.UPDATED_INVESTORS` | Tài khoản nhà đầu tư | BM 7 (VSDC) - Thông tin NĐT thay đổi thông tin tài khoản |
 
 ## 4. Nhóm B — ODS tổng hợp từ `ODS.xlsx`
 

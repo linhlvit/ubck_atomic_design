@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|---|
 | T1 | Classification VSDC Nationality | Common | [Common] Nationality | Classification | VSDC.NATIONALITY | Danh mục quốc tịch VSDC (`autoid`, `name`) — tên theo chỉ định Data Modeler |
 | T1 | End Of Day Open Interest | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.END_OF_DAY_OPEN_INTEREST | Vị thế mở cuối ngày theo mã hợp đồng |
-| T1 | Foreign Ownership Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.FOREIGN_INVESTOR_INFO | Sở hữu NĐTNN theo mã |
+| T1 | Foreign Ownership Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.FOREIGN_INVESTOR_INFO_STOCK, VSDC.FOREIGN_INVESTOR_INFO_BOND, VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE, VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES | Sở hữu NĐTNN theo mã; gộp 4 bảng nguồn theo loại chứng khoán, phân biệt qua `src_stm_code` |
 | T1 | Listed Share Information | Documentation | [Documentation] Regulatory Report | Fact Snapshot | VSDC.OUTSTANDING_SHARES, HNX.LISTED_SECURITIES_LIST, HOSE.LISTED_SECURITIES_LIST | Entity dùng chung 3 nguồn, phân biệt qua `src_stm_code` |
 | T1 | Major Shareholder Ownership | Involved Party | [Involved Party] Organization Ownership | Fact Snapshot | VSDC.MAJOR_SHAREHOLDER | Cổ đông lớn theo mã × kỳ |
 | T2 | Closed Investor Account | Arrangement | [Arrangement] Trading Account Arrangement | Fact Append | VSDC.CLOSED_INVESTORS | Tài khoản đóng trong kỳ |
@@ -69,7 +69,10 @@ graph TD
 |---|---|---|---|---|---|---|---|---|---|
 | T1 | Common | [Common] Nationality | Common | nationality | Append | Danh mục quốc tịch VSDC (`autoid`, `name`) | Classification VSDC Nationality | Classification | Core Object Common theo chỉ định Data Modeler; BCV không có term "Nationality" |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | end_of_day_open_interest | Append | Vị thế mở cuối ngày theo mã hợp đồng phái sinh | End Of Day Open Interest | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO | Append | Sở hữu nước ngoài theo mã chứng khoán | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_STOCK | Append | Sở hữu nước ngoài theo mã chứng khoán — nhóm cổ phiếu | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_BOND | Append | Sở hữu nước ngoài theo mã chứng khoán — nhóm trái phiếu | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE | Append | Sở hữu nước ngoài theo mã chứng khoán — nhóm chứng chỉ quỹ | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_OTHER_SECURITIES | Append | Sở hữu nước ngoài theo mã chứng khoán — nhóm chứng khoán khác (chứng quyền có bảo đảm…) | Foreign Ownership Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | OUTSTANDING_SHARES | Append | Cơ cấu cổ phiếu theo mã và ngày chốt | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Involved Party | [Involved Party] Organization Ownership | Involved Party | MAJOR_SHAREHOLDER | Append | Cổ đông lớn theo mã chứng khoán và kỳ | Major Shareholder Ownership | Fact Snapshot | Organization Ownership (11558) — Core Object Involved Party theo chỉ định Data Modeler |
 | T2 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | CLOSED_INVESTORS | Append | Danh sách tài khoản đóng trong kỳ | Closed Investor Account | Fact Append | Trading Account Arrangement (7562) |
@@ -166,13 +169,13 @@ Không có junction table.
 **Attributes chính:** Mã hợp đồng (BK `ticker_symbol`), khối lượng vị thế mở, ETL-derived `src_stm_code`, `ds_snpst_dt`.
 
 ### 3. Foreign Ownership Information
-**Tier:** 1 | **Source:** `VSDC.FOREIGN_INVESTOR_INFO` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
+**Tier:** 1 | **Source:** `VSDC.FOREIGN_INVESTOR_INFO_STOCK`, `VSDC.FOREIGN_INVESTOR_INFO_BOND`, `VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE`, `VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
 **Domain Prefix:** (none)
-**Description:** Thông tin sở hữu của nhà đầu tư nước ngoài theo mã chứng khoán: tổng số cổ phiếu phát hành, tỷ lệ sở hữu nước ngoài tối đa, số cổ phiếu tối đa được nắm giữ, đang nắm giữ và còn lại.
+**Description:** Thông tin sở hữu của nhà đầu tư nước ngoài theo mã chứng khoán (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng khoán khác): tổng số đăng ký tại VSDC và số lượng đang nắm giữ bởi NĐTNN; riêng cổ phiếu có tỷ lệ sở hữu nước ngoài tối đa và số lượng tối đa được nắm giữ, riêng trái phiếu có mệnh giá.
 
-**Grain:** 1 dòng = 1 mã chứng khoán × 1 ngày báo cáo.
+**Grain:** 1 dòng = 1 mã chứng khoán × 1 kỳ báo cáo (`data_dt`) × 1 bảng nguồn (`src_stm_code`).
 
-**Attributes chính:** `ticker_symbol` (BK), `isin_code`, tỷ lệ sở hữu nước ngoài tối đa, các số lượng cổ phiếu, ETL-derived `src_stm_code`.
+**Attributes chính:** `ticker_symbol` (BK; lấy từ `BOND_CODE`/`FUND_CERTIFICATE_CODE`/`SECURITY_CODE`/`TICKER_SYMBOL` theo bảng nguồn), `ticker_symbol_tp_code`, `isin_code`, `total_issued_quantity`, `current_foreign_holding_quantity`, `max_foreign_ownership_ratio`, `max_shares_foreign_can_hold` (chỉ cổ phiếu), `par_val` (chỉ trái phiếu), `data_dt`, `rpt_year/month/day`, `rpt_period`, ETL-derived `src_stm_code`.
 
 ### 4. Listed Share Information
 **Tier:** 1 | **Source:** `VSDC.OUTSTANDING_SHARES`, `HNX.LISTED_SECURITIES_LIST`, `HOSE.LISTED_SECURITIES_LIST` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot

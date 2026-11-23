@@ -92,23 +92,58 @@
 | — | — | — | — | atomic.uat_atm | listed_share_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
 
-### Bảng 9: foreign_investor_info  →  foreign_ownership_information
+### Bảng 9: foreign_investor_info_stock + foreign_investor_info_bond + foreign_investor_info_fund_certificate + foreign_investor_info_other_securities  →  foreign_ownership_information
+
+Bảng nguồn `foreign_investor_info` đã tách thành 4 bảng theo loại chứng khoán (DDL PROD 2026-11); cả 4 gộp vào 1 entity, phân biệt qua `src_stm_code`. Cột chỉ có ở một bảng nguồn sẽ NULL ở các bảng còn lại. Bỏ `remaining_foreign_holding_quantity` (không còn ở nguồn). Metadata nạp file (`_batch_id`, `_source_*`, `_file_*`, `_row_number`, `_sheet_name`) không map lên Atomic.
 
 | Schema nguồn | Bảng nguồn | Trường nguồn | Kiểu DL nguồn | Schema atomic | Bảng atomic | Trường atomic | Kiểu DL atomic | Transformation / Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| — | — | (generated) | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | Surrogate key — Hash từ Business Key (xem mục Business Key & Filter) |
-| — | — | (system) | STRING | atomic.uat_atm | foreign_ownership_information | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
-| uat_vsdc_stg | foreign_investor_info | ticker_symbol | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key |
-| uat_vsdc_stg | foreign_investor_info | isin_code | STRING | atomic.uat_atm | foreign_ownership_information | isin_code | STRING | — |
-| uat_vsdc_stg | foreign_investor_info | total_issued_shares | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_share_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | max_foreign_ownership_ratio | DECIMAL(10,2) | atomic.uat_atm | foreign_ownership_information | max_foreign_ownership_ratio | DECIMAL(5,2) | Đổi precision |
-| uat_vsdc_stg | foreign_investor_info | max_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | max_foreign_holding_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | current_shares_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | remaining_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | remaining_foreign_holding_quantity | BIGINT | — |
-| uat_vsdc_stg | foreign_investor_info | report_date | DATE | atomic.uat_atm | foreign_ownership_information | rpt_dt | DATE | — |
+| — | — | (generated) | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | Surrogate key — Hash từ Business Key = mã chứng khoán của bảng nguồn tương ứng (BOND_CODE / FUND_CERTIFICATE_CODE / SECURITY_CODE / TICKER_SYMBOL); xem mục Business Key & Filter |
+| — | — | (system) | STRING | atomic.uat_atm | foreign_ownership_information | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline (VSDC_FOREIGN_INVESTOR_INFO_{BOND|FUND_CERTIFICATE|OTHER_SECURITIES|STOCK}) |
+| uat_vsdc_stg | foreign_investor_info_stock | ticker_symbol | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | — |
+| uat_vsdc_stg | foreign_investor_info_stock | ticker_symbol | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key — mã chứng khoán/trái phiếu/chứng chỉ quỹ theo bảng nguồn |
+| uat_vsdc_stg | foreign_investor_info_stock | total_issued_shares | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_quantity | BIGINT | Tổng số lượng đăng ký tại VSDC (đổi tên từ total_issued_share_quantity) |
+| uat_vsdc_stg | foreign_investor_info_stock | current_shares_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | Số lượng đang do NĐTNN nắm giữ |
+| uat_vsdc_stg | foreign_investor_info_stock | data_dt | DATE | atomic.uat_atm | foreign_ownership_information | data_dt | DATE | Ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
+| uat_vsdc_stg | foreign_investor_info_stock | report_year | INT | atomic.uat_atm | foreign_ownership_information | rpt_year | INT | — |
+| uat_vsdc_stg | foreign_investor_info_stock | report_month | INT | atomic.uat_atm | foreign_ownership_information | rpt_month | INT | — |
+| uat_vsdc_stg | foreign_investor_info_stock | report_day | INT | atomic.uat_atm | foreign_ownership_information | rpt_day | INT | — |
+| uat_vsdc_stg | foreign_investor_info_stock | report_period | STRING | atomic.uat_atm | foreign_ownership_information | rpt_period | STRING | Kỳ báo cáo |
+| uat_vsdc_stg | foreign_investor_info_stock | isin_code | STRING | atomic.uat_atm | foreign_ownership_information | isin_code | STRING | — |
+| uat_vsdc_stg | foreign_investor_info_stock | max_foreign_ownership_ratio | DECIMAL(20,10) | atomic.uat_atm | foreign_ownership_information | max_foreign_ownership_ratio | DECIMAL(5,2) | Chỉ có ở STOCK |
+| uat_vsdc_stg | foreign_investor_info_stock | max_shares_foreign_can_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | max_shares_foreign_can_hold | BIGINT | Chỉ có ở STOCK (đổi tên từ max_foreign_holding_quantity) |
+| uat_vsdc_stg | foreign_investor_info_bond | bond_code | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | — |
+| uat_vsdc_stg | foreign_investor_info_bond | bond_code | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key — mã chứng khoán/trái phiếu/chứng chỉ quỹ theo bảng nguồn |
+| uat_vsdc_stg | foreign_investor_info_bond | bond_type | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol_tp_code | STRING | Loại chứng khoán/trái phiếu (chỉ có ở BOND và OTHER_SECURITIES) |
+| uat_vsdc_stg | foreign_investor_info_bond | total_issued_bonds | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_quantity | BIGINT | Tổng số lượng đăng ký tại VSDC (đổi tên từ total_issued_share_quantity) |
+| uat_vsdc_stg | foreign_investor_info_bond | current_bonds_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | Số lượng đang do NĐTNN nắm giữ |
+| uat_vsdc_stg | foreign_investor_info_bond | par_value | DECIMAL(30,6) | atomic.uat_atm | foreign_ownership_information | par_val | DECIMAL(23,2) | Mệnh giá (chỉ có ở BOND) |
+| uat_vsdc_stg | foreign_investor_info_bond | data_dt | DATE | atomic.uat_atm | foreign_ownership_information | data_dt | DATE | Ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
+| uat_vsdc_stg | foreign_investor_info_bond | report_year | INT | atomic.uat_atm | foreign_ownership_information | rpt_year | INT | — |
+| uat_vsdc_stg | foreign_investor_info_bond | report_month | INT | atomic.uat_atm | foreign_ownership_information | rpt_month | INT | — |
+| uat_vsdc_stg | foreign_investor_info_bond | report_day | INT | atomic.uat_atm | foreign_ownership_information | rpt_day | INT | — |
+| uat_vsdc_stg | foreign_investor_info_bond | report_period | STRING | atomic.uat_atm | foreign_ownership_information | rpt_period | STRING | Kỳ báo cáo |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | fund_certificate_code | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | — |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | fund_certificate_code | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key — mã chứng khoán/trái phiếu/chứng chỉ quỹ theo bảng nguồn |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | total_issued_fund_certificates | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_quantity | BIGINT | Tổng số lượng đăng ký tại VSDC (đổi tên từ total_issued_share_quantity) |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | current_fund_certificates_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | Số lượng đang do NĐTNN nắm giữ |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | data_dt | DATE | atomic.uat_atm | foreign_ownership_information | data_dt | DATE | Ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | report_year | INT | atomic.uat_atm | foreign_ownership_information | rpt_year | INT | — |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | report_month | INT | atomic.uat_atm | foreign_ownership_information | rpt_month | INT | — |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | report_day | INT | atomic.uat_atm | foreign_ownership_information | rpt_day | INT | — |
+| uat_vsdc_stg | foreign_investor_info_fund_certificate | report_period | STRING | atomic.uat_atm | foreign_ownership_information | rpt_period | STRING | Kỳ báo cáo |
+| uat_vsdc_stg | foreign_investor_info_other_securities | security_code | STRING | atomic.uat_atm | foreign_ownership_information | foreign_ownership_information_id | STRING | — |
+| uat_vsdc_stg | foreign_investor_info_other_securities | security_code | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol | STRING | Business key — mã chứng khoán/trái phiếu/chứng chỉ quỹ theo bảng nguồn |
+| uat_vsdc_stg | foreign_investor_info_other_securities | security_type | STRING | atomic.uat_atm | foreign_ownership_information | ticker_symbol_tp_code | STRING | Loại chứng khoán/trái phiếu (chỉ có ở BOND và OTHER_SECURITIES) |
+| uat_vsdc_stg | foreign_investor_info_other_securities | total_issued_securities | BIGINT | atomic.uat_atm | foreign_ownership_information | total_issued_quantity | BIGINT | Tổng số lượng đăng ký tại VSDC (đổi tên từ total_issued_share_quantity) |
+| uat_vsdc_stg | foreign_investor_info_other_securities | current_securities_foreign_hold | BIGINT | atomic.uat_atm | foreign_ownership_information | current_foreign_holding_quantity | BIGINT | Số lượng đang do NĐTNN nắm giữ |
+| uat_vsdc_stg | foreign_investor_info_other_securities | data_dt | DATE | atomic.uat_atm | foreign_ownership_information | data_dt | DATE | Ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
+| uat_vsdc_stg | foreign_investor_info_other_securities | report_year | INT | atomic.uat_atm | foreign_ownership_information | rpt_year | INT | — |
+| uat_vsdc_stg | foreign_investor_info_other_securities | report_month | INT | atomic.uat_atm | foreign_ownership_information | rpt_month | INT | — |
+| uat_vsdc_stg | foreign_investor_info_other_securities | report_day | INT | atomic.uat_atm | foreign_ownership_information | rpt_day | INT | — |
+| uat_vsdc_stg | foreign_investor_info_other_securities | report_period | STRING | atomic.uat_atm | foreign_ownership_information | rpt_period | STRING | Kỳ báo cáo |
 | — | — | — | — | atomic.uat_atm | foreign_ownership_information | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | foreign_ownership_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
-
 
 ### Bảng 5: major_shareholder  →  major_shareholder_ownership
 

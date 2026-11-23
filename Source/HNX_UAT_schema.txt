@@ -1,5 +1,5 @@
 DATA DICTIONARY - SCHEMA: UAT_HNX_STG
-Tong so bang: 18 | Materialized View: 0
+Tong so bang: 20 | Materialized View: 0
 ==============================================================================================================
 
 BANG: brokerage_market_share
@@ -9,15 +9,23 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 --------------------------------------------------------------------------------------------------------------
 broker_name                   STRING              YES                                      Tên công ty chứng khoán
 member_code                   STRING              YES                                      Mã thành viên
-total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
-market_share_by_value         DECIMAL(10,2)       YES                                      Tỷ trọng theo tổng GTGD (%)
+total_trading_value           DECIMAL(30,6)       YES                                      Tổng giá trị giao dịch
+market_share_by_value         DECIMAL(24,12)      YES                                      Tỷ trọng theo tổng GTGD (%)
 classification                STRING              YES                                      Phân loại
-report_quarter                STRING              YES                                      Quý báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+begin_period_date             DATE                YES                                      Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng end_period_date)
+end_period_date               DATE                YES                                      Ngày cuối kỳ dữ liệu (= data_dt)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: gov_bond_additional_listing
 Mo ta: BM 27 (HNX) - Niêm yết bổ sung TPCP
@@ -28,13 +36,23 @@ bond_code                     STRING              YES                           
 bond_type                     STRING              YES                                      Loại trái phiếu
 status                        STRING              YES                                      Trạng thái
 volume                        BIGINT              YES                                      Khối lượng
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
+par_value                     DECIMAL(30,6)       YES                                      Mệnh giá trái phiếu
 listing_change_date           DATE                YES                                      Ngày thay đổi niêm yết
-report_month                  INT                 YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: gov_bond_listed_list
 Mo ta: BM 26 (HNX) - Danh sách TPCP niêm yết
@@ -47,23 +65,31 @@ bond_type                     STRING              YES                           
 listed_volume                 BIGINT              YES                                      Khối lượng niêm yết
 bond_term                     STRING              YES                                      Kỳ hạn trái phiếu
 remaining_term                STRING              YES                                      Kỳ hạn còn lại của trái phiếu
-interest_payment_method       STRING              YES                                      Hình thức trả lãi
 interest_payment_type         STRING              YES                                      Loại hình trả lãi
-interest_rate                 DECIMAL(10,2)       YES                                      Lãi suất (%)
+interest_rate                 DECIMAL(20,10)      YES                                      Lãi suất (%)
 first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
 status                        STRING              YES                                      Trạng thái
-report_month                  INT                 YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: gov_bond_offering
 Mo ta: BM 25 (HNX) - Dữ liệu các đợt chào bán TPCP
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-bidding_method                STRING              YES                                      Phương thức đấu thầu
 bidding_session               STRING              YES                                      Đợt đấu thầu
 bond_code                     STRING              YES                                      Mã trái phiếu
 issuer_name                   STRING              YES                                      Tên tổ chức phát hành
@@ -71,16 +97,26 @@ bond_type                     STRING              YES                           
 term                          STRING              YES                                      Kỳ hạn
 issue_date                    DATE                YES                                      Ngày phát hành
 issue_method                  STRING              YES                                      Phương thức phát hành
-calling_value                 DECIMAL(18,2)       YES                                      Giá trị gọi thầu
-bidding_value                 DECIMAL(18,2)       YES                                      Giá trị đặt thầu
-winning_value                 DECIMAL(18,2)       YES                                      Giá trị trúng thầu
-nominal_interest_rate         DECIMAL(10,2)       YES                                      Lãi suất danh nghĩa (%)
-winning_interest_rate         DECIMAL(10,2)       YES                                      Lãi suất trúng thầu (%)
-report_month                  INT                 YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+calling_value                 DECIMAL(30,6)       YES                                      Giá trị gọi thầu
+bidding_value                 DECIMAL(30,6)       YES                                      Giá trị đặt thầu
+winning_value                 DECIMAL(30,6)       YES                                      Giá trị trúng thầu
+nominal_interest_rate         DECIMAL(20,10)      YES                                      Lãi suất danh nghĩa (%)
+winning_interest_rate         DECIMAL(20,10)      YES                                      Lãi suất trúng thầu (%)
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: listed_securities_list
 Mo ta: BM 37 (HNX) - Danh sách CK niêm yết/ĐKGD
@@ -91,12 +127,22 @@ ticker_symbol                 STRING              YES                           
 issuer_name                   STRING              YES                                      Tổ chức phát hành
 listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
 outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
-reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+reference_price               DECIMAL(24,6)       YES                                      Giá tham chiếu
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: listing_status_change
 Mo ta: BM 35 (HNX) - Thay đổi niêm yết
@@ -161,9 +207,10 @@ original_order_id             STRING              YES                           
 foreign_investor_type_code    STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài
 report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
 report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
-report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu theo tháng)
 _batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+data_dt                       DATE                YES                                      Ngày batch data theo kỳ dùng để override partition
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -192,12 +239,12 @@ interest_rate_type            STRING              YES                           
 order_type                    STRING              YES                                      Loại lệnh
 order_side                    STRING              YES                                      M/B
 order_status                  STRING              YES                                      Trạng thái lệnh
-quoted_price                  DECIMAL(18,4)       YES                                      Giá yết
-yield_rate                    DECIMAL(10,4)       YES                                      Lợi suất
-discount_rate                 DECIMAL(10,4)       YES                                      Lãi suất CK
-execution_price               DECIMAL(18,4)       YES                                      Giá TH
+quoted_price                  DECIMAL(24,6)       YES                                      Giá yết
+yield_rate                    DECIMAL(20,10)      YES                                      Lợi suất
+discount_rate                 DECIMAL(20,10)      YES                                      Lãi suất CK
+execution_price               DECIMAL(24,6)       YES                                      Giá TH
 volume                        BIGINT              YES                                      Khối lượng
-trading_value                 DECIMAL(18,2)       YES                                      Giá trị TT
+trading_value                 DECIMAL(30,6)       YES                                      Giá trị TT
 trading_date                  DATE                YES                                      Ngày BĐGD
 settlement_date               DATE                YES                                      Ngày TT
 selling_member_code           STRING              YES                                      TV Bán
@@ -213,26 +260,75 @@ buying_proxy_entry            STRING              YES                           
 settlement_status             STRING              YES                                      Tình trạng TT
 settlement_bond_code          STRING              YES                                      Mã TP thanh toán
 settlement_volume             BIGINT              YES                                      KL thanh toán
-equivalent_bond_settlement_value DECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
+equivalent_bond_settlement_value DECIMAL(30,6)       YES                                      GTTT bằng TPTĐ
 settlement_method             STRING              YES                                      Phương thức TT
 order_creator_rep             STRING              YES                                      ĐDGD tạo lệnh
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
-BANG: private_corp_bond_offering
-Mo ta: BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL
+BANG: private_corp_bond_offering_domestic
+Mo ta: BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL (trong nước)
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
-market_type                   STRING              YES                                      Loại thị trường (Trong nước/Quốc tế)
 posting_date                  DATE                YES                                      Ngày đăng tin
 issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+business_no                   STRING              YES                                      Nguồn: MA_SO_DOANH_NGHIEP
+enterprise_type               STRING              YES                                      Loại hình doanh nghiệp
+business_sector               STRING              YES                                      Lĩnh vực hoạt động
+bond_code                     STRING              YES                                      Mã trái phiếu
+term_unit                     STRING              YES                                      Đơn vị kỳ hạn
+term                          INT                 YES                                      Kỳ hạn
+issue_date                    DATE                YES                                      Ngày phát hành
+maturity_date                 DATE                YES                                      Ngày đáo hạn
+remaining_term                INT                 YES                                      Kỳ hạn còn lại
+offering_volume               BIGINT              YES                                      Khối lượng chào bán
+par_value                     DECIMAL(30,6)       YES                                      Mệnh giá
+interest_payment_type         STRING              YES                                      Loại hình trả lãi
+interest_rate_type            STRING              YES                                      Loại lãi suất
+interest_payment_method       STRING              YES                                      Phương thức thanh toán lãi
+repurchase_and_swap           STRING              YES                                      Mua lại và hoán đổi
+issue_interest_rate           DECIMAL(20,10)      YES                                      Lãi suất phát hành (%)
+convertible_bond              STRING              YES                                      Trái phiếu chuyển đổi (Có/Không)
+warrant_linked_bond           STRING              YES                                      Trái phiếu kèm chứng quyền (Có/Không)
+secured_bond                  STRING              YES                                      Trái phiếu bảo đảm (Có/Không)
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
+
+BANG: private_corp_bond_offering_international
+Mo ta: BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL (quốc tế)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+posting_date                  DATE                YES                                      Ngày đăng tin
+issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+business_no                   STRING              YES                                      Nguồn: MA_SO_DOANH_NGHIEP
 enterprise_type               STRING              YES                                      Loại hình doanh nghiệp
 business_sector               STRING              YES                                      Lĩnh vực hoạt động
 bond_code                     STRING              YES                                      Mã trái phiếu
@@ -243,19 +339,31 @@ issue_date                    DATE                YES                           
 maturity_date                 DATE                YES                                      Ngày đáo hạn
 remaining_term                INT                 YES                                      Kỳ hạn còn lại
 offering_volume               BIGINT              YES                                      Khối lượng chào bán
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
+par_value                     DECIMAL(30,6)       YES                                      Mệnh giá
 interest_payment_type         STRING              YES                                      Loại hình trả lãi
 interest_rate_type            STRING              YES                                      Loại lãi suất
 interest_payment_method       STRING              YES                                      Phương thức thanh toán lãi
 repurchase_and_swap           STRING              YES                                      Mua lại và hoán đổi
 issue_market                  STRING              YES                                      Thị trường phát hành
-issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
+issue_interest_rate           DECIMAL(20,10)      YES                                      Lãi suất phát hành (%)
 convertible_bond              STRING              YES                                      Trái phiếu chuyển đổi (Có/Không)
 warrant_linked_bond           STRING              YES                                      Trái phiếu kèm chứng quyền (Có/Không)
 secured_bond                  STRING              YES                                      Trái phiếu bảo đảm (Có/Không)
-business_no                   STRING              YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: private_corp_bond_registration
 Mo ta: BM 31 (HNX) - Quy mô Đăng ký giao dịch TPDNRL
@@ -265,7 +373,8 @@ Cot                           Kieu du lieu        Null?   Khoa   Lien ket       
 bond_code                     STRING              YES                                      Mã trái phiếu
 currency                      STRING              YES                                      Tiền tệ
 issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá
+business_no                   STRING              YES                                      Nguồn: MA_SO_DOANH_NGHIEP
+par_value                     DECIMAL(30,6)       YES                                      Mệnh giá
 term_unit                     STRING              YES                                      Đơn vị kỳ hạn
 remaining_term                INT                 YES                                      Kỳ hạn còn lại
 issue_date                    DATE                YES                                      Ngày phát hành
@@ -273,28 +382,35 @@ maturity_date                 DATE                YES                           
 interest_payment_method       STRING              YES                                      Phương thức trả lãi
 interest_payment_term         STRING              YES                                      Kỳ hạn trả lãi
 issued_volume                 BIGINT              YES                                      Khối lượng phát hành
-repurchased_converted_swapped_volume BIGINT              YES                                      KL mua lại/chuyển đổi/hoán đổi
+repurchased_converted_swapped_volume BIGINT              YES     ES                               KL mua lại/chuyển đổi/hoán đổi
 registered_trading_volume     BIGINT              YES                                      Khối lượng đăng ký giao dịch
 outstanding_volume            BIGINT              YES                                      Khối lượng còn lưu hành
-issue_interest_rate           DECIMAL(10,2)       YES                                      Lãi suất phát hành (%)
+issue_interest_rate           DECIMAL(20,10)      YES                                      Lãi suất phát hành (%)
 first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
-business_no                   STRING              YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: private_corp_bond_service_orgs
 Mo ta: BM 34 (HNX) - Danh sách CTCK là tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH TPDNRL và thông tin TPDNRL tương ứng
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
 bond_code                     STRING              YES                                      Mã trái phiếu (Maxlength 50)
 issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
+business_no                   STRING              YES                                      Mã đăng ký kinh doanh công ty
 issued_volume                 BIGINT              YES                                      Khối lượng phát hành (Number, Maxlength 10)
 secured_asset                 STRING              YES                                      Tài sản bảo đảm (Có/Không) (Maxlength 50)
 collateral_type               STRING              YES                                      Hình thức bảo đảm (Maxlength 100)
@@ -303,10 +419,22 @@ registrar_depository_org      STRING              YES                           
 issuance_agent_org            STRING              YES                                      Tổ chức đại lý phát hành (Maxlength 100)
 bondholder_representative_org STRING              YES                                      Tổ chức đại diện người sở hữu trái phiếu (Maxlength 100)
 underwriting_guarantor_org    STRING              YES                                      Tổ chức bảo lãnh phát hành (Maxlength 100)
-collateral_value              DECIMAL(18,2)       YES                                      Giá trị tài sản bảo đảm (VND)
-business_no                   STRING              YES                                      Mã đăng ký kinh doanh công ty
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+collateral_value              DECIMAL(30,6)       YES                                      Giá trị tài sản bảo đảm (VND)
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: private_corp_bond_trading
 Mo ta: BM 11 (HNX) - Giao dịch TPDNRL
@@ -327,19 +455,30 @@ Mo ta: BM 32 (HNX) - Thống kê thay đổi trạng thái đăng ký giao dịc
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
+expected_change_date          DATE                YES                                      Nguồn: NGAY_DU_KIEN_THAY_DOI
 bond_code                     STRING              YES                                      Mã trái phiếu
 issuer_name                   STRING              YES                                      Tên doanh nghiệp phát hành
-par_value                     DECIMAL(18,2)       YES                                      Mệnh giá trái phiếu
-currently_registered_trading_volume BIGINT              YES                                      KL đang đăng ký giao dịch
+business_no                   STRING              YES                                      Nguồn: MA_SO_DOANH_NGHIEP
+par_value                     DECIMAL(30,6)       YES                                      Mệnh giá trái phiếu
+currently_registered_trading_volume BIGINT              YES     S                                KL đang đăng ký giao dịch
 first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
 last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
 trading_registration_status   STRING              YES                                      Trạng thái ĐKGD
-report_month                  INT                 YES                                      Tháng báo cáo
-business_no                   STRING              YES                                      
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: repo2_order_book
 Mo ta: Sổ lệnh Repo 2
@@ -362,22 +501,22 @@ interest_payment_method       STRING              YES                           
 interest_rate_type            STRING              YES                                      Loại lãi suất
 order_side                    STRING              YES                                      M/B
 order_status                  STRING              YES                                      Trạng thái lệnh
-risk_margin_ratio             DECIMAL(10,2)       YES                                      Tỷ lệ PVRR
-quoted_price                  DECIMAL(18,4)       YES                                      Giá yết
-yield_rate                    DECIMAL(10,4)       YES                                      Lợi suất
-discount_rate                 DECIMAL(10,4)       YES                                      Lãi suất CK
-execution_price               DECIMAL(18,4)       YES                                      Giá TH
+risk_margin_ratio             DECIMAL(20,10)      YES                                      Tỷ lệ PVRR
+quoted_price                  DECIMAL(24,6)       YES                                      Giá yết
+yield_rate                    DECIMAL(20,10)      YES                                      Lợi suất
+discount_rate                 DECIMAL(20,10)      YES                                      Lãi suất CK
+execution_price               DECIMAL(24,6)       YES                                      Giá TH
 volume                        BIGINT              YES                                      Khối lượng
-par_value                     DECIMAL(18,2)       YES                                      GTMG
-first_settlement_value        DECIMAL(18,2)       YES                                      GTTT lần 1
+par_value                     DECIMAL(30,6)       YES                                      GTMG
+first_settlement_value        DECIMAL(30,6)       YES                                      GTTT lần 1
 repo_term                     BIGINT              YES                                      KH Repos
-repo_interest                 DECIMAL(18,2)       YES                                      Lãi Repos
-repo_rate                     DECIMAL(10,4)       YES                                      LS Repos
-coupon_rate                   DECIMAL(10,4)       YES                                      LS/ lãi C
+repo_interest                 DECIMAL(30,6)       YES                                      Lãi Repos
+repo_rate                     DECIMAL(20,10)      YES                                      LS Repos
+coupon_rate                   DECIMAL(20,10)      YES                                      LS/ lãi C
 receive_coupon_interest       STRING              YES                                      Nhận lãi Coupon
-coupon_interest               DECIMAL(18,2)       YES                                      Lãi Coupon
-second_settlement_value       DECIMAL(18,2)       YES                                      GTTT lần 2
-interest_on_coupon            DECIMAL(18,2)       YES                                      Lãi/Lãi C
+coupon_interest               DECIMAL(30,6)       YES                                      Lãi Coupon
+second_settlement_value       DECIMAL(30,6)       YES                                      GTTT lần 2
+interest_on_coupon            DECIMAL(30,6)       YES                                      Lãi/Lãi C
 trading_date                  DATE                YES                                      Ngày BĐGD
 first_settlement_date         DATE                YES                                      Ngày TT lần 1
 end_trading_date              DATE                YES                                      Ngày KTGD
@@ -397,13 +536,23 @@ order_creator_rep             STRING              YES                           
 settlement_status             STRING              YES                                      Tình trạng TT
 settlement_bond_code          STRING              YES                                      Mã TP thanh toán
 settlement_volume             BIGINT              YES                                      KL thanh toán
-equivalent_bond_settlement_value DECIMAL(18,2)       YES                                      GTTT bằng TPTĐ
+equivalent_bond_settlement_value DECIMAL(30,6)       YES                                      GTTT bằng TPTĐ
 mark_settlement_bond          STRING              YES                                      Đánh dấu TPTT
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: repo_order_book
 Mo ta: Sổ lệnh Repo
@@ -426,26 +575,26 @@ interest_rate_type            STRING              YES                           
 order_type                    STRING              YES                                      Loại lệnh
 order_side                    STRING              YES                                      M/B
 order_status                  STRING              YES                                      Trạng thái lệnh
-quoted_price                  DECIMAL(18,4)       YES                                      Giá yết
-yield_rate                    DECIMAL(10,4)       YES                                      Lợi suất
-discount_rate                 DECIMAL(10,4)       YES                                      Lãi suất CK
-execution_price               DECIMAL(18,4)       YES                                      Giá TH
-par_value                     DECIMAL(18,2)       YES                                      GTMG
+quoted_price                  DECIMAL(24,6)       YES                                      Giá yết
+yield_rate                    DECIMAL(20,10)      YES                                      Lợi suất
+discount_rate                 DECIMAL(20,10)      YES                                      Lãi suất CK
+execution_price               DECIMAL(24,6)       YES                                      Giá TH
+par_value                     DECIMAL(30,6)       YES                                      GTMG
 volume                        BIGINT              YES                                      Khối lượng
-first_settlement_value        DECIMAL(18,2)       YES                                      GTTT lần 1
+first_settlement_value        DECIMAL(30,6)       YES                                      GTTT lần 1
 repo_term                     BIGINT              YES                                      KH Repos
-repo_rate                     DECIMAL(10,4)       YES                                      LS Repos
-coupon_rate                   DECIMAL(10,4)       YES                                      LS/ lãi C
-repo_interest                 DECIMAL(18,2)       YES                                      Lãi Repos
-coupon_interest               DECIMAL(18,2)       YES                                      Lãi Coupon
+repo_rate                     DECIMAL(20,10)      YES                                      LS Repos
+coupon_rate                   DECIMAL(20,10)      YES                                      LS/ lãi C
+repo_interest                 DECIMAL(30,6)       YES                                      Lãi Repos
+coupon_interest               DECIMAL(30,6)       YES                                      Lãi Coupon
 receive_coupon_interest       STRING              YES                                      Nhận lãi Coupon
-interest_on_coupon            DECIMAL(18,2)       YES                                      Lãi/Lãi C
-risk_margin_ratio             DECIMAL(10,2)       YES                                      Tỷ lệ PVRR
+interest_on_coupon            DECIMAL(30,6)       YES                                      Lãi/Lãi C
+risk_margin_ratio             DECIMAL(20,10)      YES                                      Tỷ lệ PVRR
 trading_date                  DATE                YES                                      Ngày BĐGD
 first_settlement_date         DATE                YES                                      Ngày TT lần 1
 second_settlement_date        DATE                YES                                      Ngày TT lần 2
 end_trading_date              DATE                YES                                      Ngày KTGD
-second_settlement_value       DECIMAL(18,2)       YES                                      GTTT lần 2
+second_settlement_value       DECIMAL(30,6)       YES                                      GTTT lần 2
 selling_member_code           STRING              YES                                      TV Bán
 selling_rep                   STRING              YES                                      ĐDGD Bán
 selling_account_no            STRING              YES                                      TKNĐT Bán
@@ -458,11 +607,21 @@ buying_broker_dealer          STRING              YES                           
 buying_proxy_entry            STRING              YES                                      Nhập hộ mua
 settlement_method             STRING              YES                                      Phương thức TT
 order_creator_rep             STRING              YES                                      ĐDGD tạo lệnh
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: share_auction
 Mo ta: BM 7 (HNX) - Đấu giá cổ phần
@@ -509,7 +668,7 @@ trade_time                    STRING              YES                           
 trade_price                   DECIMAL(38,4)       YES                                      Giá khớp của giao dịch
 trade_quantity                BIGINT              YES                                      Khối lượng giao dịch
 session_id                    STRING              YES                                      Mã phiên giao dịch
-sell_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên bán
+sell_replace_cancel_classification_code STRING              YES     YES                              Loại hành động sửa/hủy của lệnh bên bán
 sell_member_number            STRING              YES                                      Mã định danh công ty chứng khoán thực hiện lệnh bán
 sell_account_number           STRING              YES                                      Số tài khoản giao dịch của khách hàng thực hiện lệnh bán
 sell_order_type_code          STRING              YES                                      Loại lệnh của phía bán
@@ -519,7 +678,7 @@ sell_investor_classification_code STRING              YES                       
 sell_order_quantity           DECIMAL(20,0)       YES                                      Khối lượng đặt bán
 sell_order_price              DECIMAL(38,4)       YES                                      Giá đặt bán
 buy_member_number             STRING              YES                                      Mã/số công ty chứng khoán thực hiện giao dịch mua
-buy_replace_cancel_classification_code STRING              YES                                      Loại hành động sửa/hủy của lệnh bên mua
+buy_replace_cancel_classification_code STRING              YES     YES                              Loại hành động sửa/hủy của lệnh bên mua
 buy_account_number            STRING              YES                                      Mã tài khoản thực hiện giao dịch mua
 buy_order_type_code           STRING              YES                                      Loại lệnh mua
 buy_order_condition_code      STRING              YES                                      Điều kiện thực hiện lệnh mua
@@ -538,9 +697,10 @@ sell_foreign_investor_type_code STRING              YES                         
 buy_foreign_investor_type_code STRING              YES                                      Phân loại loại hình nhà đầu tư nước ngoài tham gia giao dịch mua
 report_year                   INT                 YES                                      Năm của ngày nghiệp vụ
 report_month                  INT                 YES                                      Tháng của ngày nghiệp vụ
-report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+report_day                    INT                 YES                                      Ngày của ngày nghiệp vụ (NULL nếu dữ liệu theo tháng)
 _batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch
+data_dt                       DATE                YES                                      Ngày batch data theo kỳ dùng để override partition
+ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -548,37 +708,91 @@ _source_file                  STRING              YES                           
 _file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
 _file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
 
-BANG: market_capitalization
-Mo ta: BM 42 (HNX) - Vốn hoá thị trường HNX
+BANG: market_capitalization_stx
+Mo ta: BM 42 (HNX) - Vốn hoá thị trường HNX (STX)
 --------------------------------------------------------------------------------------------------------------
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 ticker_symbol                 STRING              YES                                      Mã chứng khoán
-reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
-open_price                    DECIMAL(18,2)       YES                                      Giá mở cửa
-close_price                   DECIMAL(18,2)       YES                                      Giá đóng cửa
-average_price                 DECIMAL(18,2)       YES                                      Giá trung bình
-highest_price                 DECIMAL(18,2)       YES                                      Giá cao nhất
-lowest_price                  DECIMAL(18,2)       YES                                      Giá thấp nhất
-change_points                 DECIMAL(18,2)       YES                                      Thay đổi (điểm)
-change_percentage             DECIMAL(10,2)       YES                                      Thay đổi (%)
+reference_price               DECIMAL(24,6)       YES                                      Giá tham chiếu
+open_price                    DECIMAL(24,6)       YES                                      Giá mở cửa
+close_price                   DECIMAL(24,6)       YES                                      Giá đóng cửa
+highest_price                 DECIMAL(24,6)       YES                                      Giá cao nhất
+lowest_price                  DECIMAL(24,6)       YES                                      Giá thấp nhất
+change_points                 DECIMAL(24,6)       YES                                      Thay đổi (điểm)
+change_percentage             DECIMAL(30,18)      YES                                      Thay đổi (%)
 even_lot_match_volume         BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô chẵn)
-even_lot_match_value          DECIMAL(18,2)       YES                                      Giá trị giao dịch (Khớp lệnh lô chẵn)
+even_lot_match_value          DECIMAL(30,6)       YES                                      Giá trị giao dịch (Khớp lệnh lô chẵn)
 odd_lot_match_volume          BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô lẻ)
-odd_lot_match_value           DECIMAL(18,2)       YES                                      Giá trị giao dịch (Khớp lệnh lô lẻ)
+odd_lot_match_value           DECIMAL(30,6)       YES                                      Giá trị giao dịch (Khớp lệnh lô lẻ)
 even_lot_put_through_volume   BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô chẵn)
-even_lot_put_through_value    DECIMAL(18,2)       YES                                      Giá trị giao dịch (Thỏa thuận lô chẵn)
+even_lot_put_through_value    DECIMAL(30,6)       YES                                      Giá trị giao dịch (Thỏa thuận lô chẵn)
 odd_lot_put_through_volume    BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô lẻ)
-odd_lot_put_through_value     DECIMAL(18,2)       YES                                      Giá trị giao dịch (Thỏa thuận lô lẻ)
+odd_lot_put_through_value     DECIMAL(30,6)       YES                                      Giá trị giao dịch (Thỏa thuận lô lẻ)
 total_trading_volume          BIGINT              YES                                      Tổng khối lượng giao dịch
-volume_weight_percentage      DECIMAL(10,2)       YES                                      Tỷ trọng khối lượng (%)
-total_trading_value           DECIMAL(18,2)       YES                                      Tổng giá trị giao dịch
-value_weight_percentage       DECIMAL(10,2)       YES                                      Tỷ trọng giá trị (%)
+volume_weight_percentage      DECIMAL(30,18)      YES                                      Tỷ trọng khối lượng (%)
+total_trading_value           DECIMAL(30,6)       YES                                      Tổng giá trị giao dịch
+value_weight_percentage       DECIMAL(30,18)      YES                                      Tỷ trọng giá trị (%)
 outstanding_shares            BIGINT              YES                                      Khối lượng lưu hành
-market_capitalization         DECIMAL(18,2)       YES                                      Giá trị vốn hóa
-market_cap_weight_percentage  DECIMAL(10,4)       YES                                      Tỷ trọng giá trị vốn hóa (%)
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
-ds_snpst_dt                   DATE                YES                                      Ngày chốt số liệu
-ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời gian chạy ETL
+market_capitalization         DECIMAL(30,6)       YES                                      Giá trị vốn hóa
+market_cap_weight_percentage  DECIMAL(30,18)      YES                                      Tỷ trọng giá trị vốn hóa (%)
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
+
+BANG: market_capitalization_upx
+Mo ta: BM 42 (HNX) - Vốn hoá thị trường HNX (UPX)
+--------------------------------------------------------------------------------------------------------------
+Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
+--------------------------------------------------------------------------------------------------------------
+ticker_symbol                 STRING              YES                                      Mã chứng khoán
+reference_price               DECIMAL(24,6)       YES                                      Giá tham chiếu
+open_price                    DECIMAL(24,6)       YES                                      Giá mở cửa
+close_price                   DECIMAL(24,6)       YES                                      Giá đóng cửa
+average_price                 DECIMAL(24,6)       YES                                      Giá trung bình
+highest_price                 DECIMAL(24,6)       YES                                      Giá cao nhất
+lowest_price                  DECIMAL(24,6)       YES                                      Giá thấp nhất
+change_points                 DECIMAL(24,6)       YES                                      Thay đổi (điểm)
+change_percentage             DECIMAL(30,18)      YES                                      Thay đổi (%)
+even_lot_match_volume         BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô chẵn)
+even_lot_match_value          DECIMAL(30,6)       YES                                      Giá trị giao dịch (Khớp lệnh lô chẵn)
+odd_lot_match_volume          BIGINT              YES                                      Khối lượng giao dịch (Khớp lệnh lô lẻ)
+odd_lot_match_value           DECIMAL(30,6)       YES                                      Giá trị giao dịch (Khớp lệnh lô lẻ)
+even_lot_put_through_volume   BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô chẵn)
+even_lot_put_through_value    DECIMAL(30,6)       YES                                      Giá trị giao dịch (Thỏa thuận lô chẵn)
+odd_lot_put_through_volume    BIGINT              YES                                      Khối lượng giao dịch (Thỏa thuận lô lẻ)
+odd_lot_put_through_value     DECIMAL(30,6)       YES                                      Giá trị giao dịch (Thỏa thuận lô lẻ)
+total_trading_volume          BIGINT              YES                                      Tổng khối lượng giao dịch
+volume_weight_percentage      DECIMAL(30,18)      YES                                      Tỷ trọng khối lượng (%)
+total_trading_value           DECIMAL(30,6)       YES                                      Tổng giá trị giao dịch
+value_weight_percentage       DECIMAL(30,18)      YES                                      Tỷ trọng giá trị (%)
+outstanding_shares            BIGINT              YES                                      Khối lượng lưu hành
+market_capitalization         DECIMAL(30,6)       YES                                      Giá trị vốn hóa
+market_cap_weight_percentage  DECIMAL(30,18)      YES                                      Tỷ trọng giá trị vốn hóa (%)
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet

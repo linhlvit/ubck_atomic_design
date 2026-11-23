@@ -31925,9 +31925,9 @@ attributes:
   nullable: false
   is_primary_key: true
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO',TICKER_SYMBOL)"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_BOND',BOND_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -31941,11 +31941,11 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO'"
-  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO"
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_BOND'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_BOND"
   data_type: "string"
   atomic_table: "foreign_ownership_information"
   atomic_column: "src_stm_code"
@@ -31957,8 +31957,8 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_CODE"
   comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
   etl_derived_value: null
@@ -31967,78 +31967,48 @@ attributes:
   atomic_column: "ticker_symbol"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "ISIN Code"
-  description: "Mã ISIN"
+  atomic_attribute: "Ticker Symbol Type Code"
+  description: "Loại trái phiếu (trái phiếu chính phủ / trái phiếu doanh nghiệp niêm\
+    \ yết / trái phiếu doanh nghiệp riêng lẻ)"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.ISIN_CODE"
-  comment: null
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_TYPE"
+  comment: "Giữ Text — không đăng ký Classification Value scheme cho VSDC/HNX/HOSE\
+    \ (Data Modeler 2026-10-18). Chỉ có ở bảng nguồn BOND; các bảng khác NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "isin_code"
+  atomic_column: "ticker_symbol_tp_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Total Issued Share Quantity"
-  description: "Tổng số cổ phiếu phát hành"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số trái phiếu đăng ký tại VSDC"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TOTAL_ISSUED_SHARES"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.TOTAL_ISSUED_BONDS"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "total_issued_share_quantity"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Max Foreign Ownership Ratio"
-  description: "Tỷ lệ sở hữu nước ngoài tối đa (%)"
-  data_domain: "Percentage"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.MAX_FOREIGN_OWNERSHIP_RATIO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(5,2)"
-  atomic_table: "foreign_ownership_information"
-  atomic_column: "max_foreign_ownership_ratio"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Max Foreign Holding Quantity"
-  description: "Số lượng CP tối đa NĐTNN được nắm giữ"
-  data_domain: "Large Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.MAX_SHARES_FOREIGN_CAN_HOLD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "bigint"
-  atomic_table: "foreign_ownership_information"
-  atomic_column: "max_foreign_holding_quantity"
+  atomic_column: "total_issued_quantity"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
   atomic_attribute: "Current Foreign Holding Quantity"
-  description: "Số lượng CP hiện NĐTNN đang nắm giữ"
+  description: "Số lượng trái phiếu hiện đang nắm giữ bởi NĐTNN"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.CURRENT_SHARES_FOREIGN_HOLD"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.CURRENT_BONDS_FOREIGN_HOLD"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32047,20 +32017,38 @@ attributes:
   atomic_column: "current_foreign_holding_quantity"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Remaining Foreign Holding Quantity"
-  description: "Số lượng CP NĐTNN còn được phép nắm giữ"
-  data_domain: "Large Counter"
+  atomic_attribute: "Par Value"
+  description: "Mệnh giá"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REMAINING_SHARES_FOREIGN_CAN_HOLD"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.PAR_VALUE"
+  comment: "Nguồn DECIMAL(30,6) → đích decimal(23,2): ETL cần cast, kiểm tra không\
+    \ tràn/mất độ chính xác (mệnh giá có phần thập phân)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "par_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "date"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "remaining_foreign_holding_quantity"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
   atomic_attribute: "Report Year"
@@ -32069,8 +32057,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_YEAR"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32085,8 +32073,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_MONTH"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32101,14 +32089,585 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_DAY"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "foreign_ownership_information"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.FUND_CERTIFICATE_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE',FUND_CERTIFICATE_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.FUND_CERTIFICATE_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số chứng chỉ quỹ đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.TOTAL_ISSUED_FUND_CERTIFICATES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng chứng chỉ quỹ hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.CURRENT_FUND_CERTIFICATES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES',SECURITY_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol Type Code"
+  description: "Loại chứng khoán (chứng quyền có bảo đảm, [chứng khoán khác khi có\
+    \ phát sinh sau này])"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_TYPE"
+  comment: "Giữ Text — không đăng ký Classification Value scheme cho VSDC/HNX/HOSE\
+    \ (Data Modeler 2026-10-18). Chỉ có ở bảng nguồn OTHER_SECURITIES; các bảng khác\
+    \ NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol_tp_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số lượng chứng khoán đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.TOTAL_ISSUED_SECURITIES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng chứng khoán hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.CURRENT_SECURITIES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_STOCK',TICKER_SYMBOL)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_STOCK'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_STOCK"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "ISIN Code"
+  description: "Mã ISIN"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.ISIN_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "isin_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số lượng cổ phiếu đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TOTAL_ISSUED_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Max Foreign Ownership Ratio"
+  description: "Tỷ lệ sở hữu nước ngoài tối đa"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_FOREIGN_OWNERSHIP_RATIO"
+  comment: "Nguồn DECIMAL(20,10) → đích decimal(5,2): ETL cần cast/làm tròn; cần xác\
+    \ nhận đơn vị nguồn (0–1 hay %) trước khi nạp (BRD cũ ghi '%')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "max_foreign_ownership_ratio"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Max Shares Foreign Can Hold"
+  description: "Số lượng cổ phiếu tối đa được phép nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_SHARES_FOREIGN_CAN_HOLD"
+  comment: "Tên theo for_vsdc.txt (LLD cũ: Max Foreign Holding Quantity / max_foreign_holding_quantity)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "max_shares_foreign_can_hold"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.CURRENT_SHARES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
 - bcv_core_object: "Documentation"
   atomic_entity: "Fund Management Report"
   atomic_attribute: "Fund Management Report Id"
@@ -35345,7 +35904,8 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "Listed Share Information"
   atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch."
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
