@@ -88,7 +88,7 @@ attributes:
     source_system: HNX
     source_table: BROKERAGE_MARKET_SHARE
     source_column: HNX.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE
-    comment: null
+    comment: "Đơn vị nguồn: tỷ đồng. Nguồn DECIMAL(30,6) — domain Currency Amount (decimal(23,2)) làm tròn 6 → 2 chữ số thập phân; cần Data Modeler xác nhận độ chính xác."
     classification_context: null
     etl_derived_value: null
 
@@ -102,7 +102,7 @@ attributes:
     source_system: HNX
     source_table: BROKERAGE_MARKET_SHARE
     source_column: HNX.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE
-    comment: null
+    comment: "Nguồn DECIMAL(24,12) — domain Percentage (decimal(5,2)) làm tròn 12 → 2 chữ số thập phân; nếu nguồn lưu dạng tỷ lệ 0–1 thay vì phần trăm thì mất gần hết thông tin. Cần xác nhận thang đo với nguồn HNX."
     classification_context: null
     etl_derived_value: null
 
@@ -120,58 +120,58 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Report Quarter
-    physical_name: rpt_quarter
-    business_meaning: Quý báo cáo
+  - name: Report Period Begin Date
+    physical_name: rpt_period_begin_dt
+    business_meaning: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HNX.BROKERAGE_MARKET_SHARE.BEGIN_PERIOD_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period End Date
+    physical_name: rpt_period_end_dt
+    business_meaning: "Ngày cuối kỳ dữ liệu (= Data Date)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HNX
+    source_table: BROKERAGE_MARKET_SHARE
+    source_column: HNX.BROKERAGE_MARKET_SHARE.END_PERIOD_DATE
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: HNX
     source_table: BROKERAGE_MARKET_SHARE
-    source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER
+    source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_PERIOD
     comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: Report Year
-    physical_name: rpt_year
-    business_meaning: Năm báo cáo
-    data_domain: Small Counter
-    data_type: int
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: HNX
     source_table: BROKERAGE_MARKET_SHARE
-    source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Report Month
-    physical_name: rpt_month
-    business_meaning: Tháng báo cáo
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: HNX
-    source_table: BROKERAGE_MARKET_SHARE
-    source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: Report Day
-    physical_name: rpt_day
-    business_meaning: Ngày báo cáo
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: HNX
-    source_table: BROKERAGE_MARKET_SHARE
-    source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY
+    source_column: HNX.BROKERAGE_MARKET_SHARE.DATA_DT
     comment: null
     classification_context: null
     etl_derived_value: null

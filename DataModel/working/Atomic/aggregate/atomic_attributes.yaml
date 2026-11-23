@@ -22512,6 +22512,40 @@ attributes:
   atomic_table: "additional_gov_bond_listing"
   atomic_column: "rpt_day"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Additional Gov Bond Listing"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_ADDITIONAL_LISTING"
+  source_column: "HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "additional_gov_bond_listing"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Additional Gov Bond Listing"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_ADDITIONAL_LISTING"
+  source_column: "HNX.GOV_BOND_ADDITIONAL_LISTING.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "additional_gov_bond_listing"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
   atomic_entity: "Administrative Procedure Document"
   atomic_attribute: "Administrative Procedure Document Id"
   description: "Khóa đại diện (surrogate key)."
@@ -23681,6 +23715,56 @@ attributes:
   atomic_table: "bond_trading_registration_status"
   atomic_column: "business_nbr"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Bond Trading Registration Status"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REGISTRATION_STATUS_CHANGE"
+  source_column: "HNX.REGISTRATION_STATUS_CHANGE.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "bond_trading_registration_status"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Bond Trading Registration Status"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REGISTRATION_STATUS_CHANGE"
+  source_column: "HNX.REGISTRATION_STATUS_CHANGE.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "bond_trading_registration_status"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Bond Trading Registration Status"
+  atomic_attribute: "Expected Change Date"
+  description: "Ngày dự kiến thay đổi."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REGISTRATION_STATUS_CHANGE"
+  source_column: "HNX.REGISTRATION_STATUS_CHANGE.EXPECTED_CHANGE_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "bond_trading_registration_status"
+  atomic_column: "expected_change_dt"
+- bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
   atomic_attribute: "Brokerage Market Share Id"
   description: "Khóa đại diện (surrogate key)."
@@ -23754,7 +23838,8 @@ attributes:
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
   source_column: "HNX.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
-  comment: null
+  comment: "Đơn vị nguồn: tỷ đồng. Nguồn DECIMAL(30,6) — domain Currency Amount (decimal(23,2))\
+    \ làm tròn 6 → 2 chữ số thập phân; cần Data Modeler xác nhận độ chính xác."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
@@ -23770,7 +23855,9 @@ attributes:
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
   source_column: "HNX.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE"
-  comment: null
+  comment: "Nguồn DECIMAL(24,12) — domain Percentage (decimal(5,2)) làm tròn 12 →\
+    \ 2 chữ số thập phân; nếu nguồn lưu dạng tỷ lệ 0–1 thay vì phần trăm thì mất gần\
+    \ hết thông tin. Cần xác nhận thang đo với nguồn HNX."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
@@ -23794,68 +23881,70 @@ attributes:
   atomic_column: "security_tp_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
-  atomic_attribute: "Report Quarter"
-  description: "Quý báo cáo"
+  atomic_attribute: "Report Period Begin Date"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  source_column: "HNX.BROKERAGE_MARKET_SHARE.BEGIN_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "brokerage_market_share"
+  atomic_column: "rpt_period_begin_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Brokerage Market Share"
+  atomic_attribute: "Report Period End Date"
+  description: "Ngày cuối kỳ dữ liệu (= Data Date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "BROKERAGE_MARKET_SHARE"
+  source_column: "HNX.BROKERAGE_MARKET_SHARE.END_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "brokerage_market_share"
+  atomic_column: "rpt_period_end_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Brokerage Market Share"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
-  source_column: "HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+  source_column: "HNX.BROKERAGE_MARKET_SHARE.REPORT_PERIOD"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "brokerage_market_share"
-  atomic_column: "rpt_quarter"
+  atomic_column: "rpt_period"
 - bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
-  atomic_attribute: "Report Year"
-  description: "Năm báo cáo"
-  data_domain: "Small Counter"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
-  source_column: "HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
+  source_column: "HNX.BROKERAGE_MARKET_SHARE.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "date"
   atomic_table: "brokerage_market_share"
-  atomic_column: "rpt_year"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Brokerage Market Share"
-  atomic_attribute: "Report Month"
-  description: "Tháng báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "BROKERAGE_MARKET_SHARE"
-  source_column: "HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "brokerage_market_share"
-  atomic_column: "rpt_month"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Brokerage Market Share"
-  atomic_attribute: "Report Day"
-  description: "Ngày báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "BROKERAGE_MARKET_SHARE"
-  source_column: "HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "brokerage_market_share"
-  atomic_column: "rpt_day"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Brokerage Market Share"
   atomic_attribute: "Brokerage Market Share Id"
@@ -34469,22 +34558,6 @@ attributes:
   atomic_column: "bidding_session"
 - bcv_core_object: "Documentation"
   atomic_entity: "Gov Bond Bidding Result"
-  atomic_attribute: "Bidding Method"
-  description: "Phương thức đấu thầu"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "GOV_BOND_OFFERING"
-  source_column: "HNX.GOV_BOND_OFFERING.BIDDING_METHOD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "gov_bond_bidding_result"
-  atomic_column: "bidding_method"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Gov Bond Bidding Result"
   atomic_attribute: "Bond Code"
   description: "Mã trái phiếu"
   data_domain: "Text"
@@ -34708,6 +34781,40 @@ attributes:
   atomic_table: "gov_bond_bidding_result"
   atomic_column: "rpt_day"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Gov Bond Bidding Result"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_OFFERING"
+  source_column: "HNX.GOV_BOND_OFFERING.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "gov_bond_bidding_result"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Gov Bond Bidding Result"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_OFFERING"
+  source_column: "HNX.GOV_BOND_OFFERING.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "gov_bond_bidding_result"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
   atomic_entity: "Gov Bond Listing"
   atomic_attribute: "Gov Bond Listing Id"
   description: "Khóa đại diện (surrogate key)."
@@ -34837,22 +34944,6 @@ attributes:
   atomic_column: "remaining_bond_term"
 - bcv_core_object: "Documentation"
   atomic_entity: "Gov Bond Listing"
-  atomic_attribute: "Interest Payment Method"
-  description: "Hình thức trả lãi"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "GOV_BOND_LISTED_LIST"
-  source_column: "HNX.GOV_BOND_LISTED_LIST.INTEREST_PAYMENT_METHOD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "gov_bond_listing"
-  atomic_column: "interest_payment_method"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Gov Bond Listing"
   atomic_attribute: "Interest Payment Type"
   description: "Loại hình trả lãi"
   data_domain: "Text"
@@ -34963,6 +35054,40 @@ attributes:
   data_type: "int"
   atomic_table: "gov_bond_listing"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Gov Bond Listing"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_LISTED_LIST"
+  source_column: "HNX.GOV_BOND_LISTED_LIST.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "gov_bond_listing"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Gov Bond Listing"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "GOV_BOND_LISTED_LIST"
+  source_column: "HNX.GOV_BOND_LISTED_LIST.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "gov_bond_listing"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Inspection Conclusion"
   atomic_attribute: "Inspection Conclusion Id"
@@ -36126,6 +36251,40 @@ attributes:
   data_type: "int"
   atomic_table: "listed_share_information"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Listed Share Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTED_SECURITIES_LIST"
+  source_column: "HNX.LISTED_SECURITIES_LIST.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listed_share_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Listed Share Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTED_SECURITIES_LIST"
+  source_column: "HNX.LISTED_SECURITIES_LIST.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listed_share_information"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Listed Share Information"
   atomic_attribute: "Listed Share Information Id"
@@ -38264,6 +38423,40 @@ attributes:
   atomic_table: "private_corp_bond_registration"
   atomic_column: "rpt_day"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Private Corp Bond Registration"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_REGISTRATION"
+  source_column: "HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "private_corp_bond_registration"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Private Corp Bond Registration"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_REGISTRATION"
+  source_column: "HNX.PRIVATE_CORP_BOND_REGISTRATION.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "private_corp_bond_registration"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Service Organization"
   atomic_attribute: "Private Corp Bond Service Organization Id"
   description: "Khóa đại diện (surrogate key)."
@@ -38538,6 +38731,40 @@ attributes:
   data_type: "int"
   atomic_table: "private_corp_bond_service_organization"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Private Corp Bond Service Organization"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
+  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "private_corp_bond_service_organization"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Private Corp Bond Service Organization"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
+  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "private_corp_bond_service_organization"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Trading Summary"
   atomic_attribute: "Private Corp Bond Trading Summary Id"
@@ -78677,6 +78904,40 @@ attributes:
   atomic_column: "rpt_day"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "OUTRIGHT_ORDER_BOOK"
+  source_column: "HNX.OUTRIGHT_ORDER_BOOK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "bond_order_book"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "OUTRIGHT_ORDER_BOOK"
+  source_column: "HNX.OUTRIGHT_ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "bond_order_book"
+  atomic_column: "data_dt"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
   atomic_attribute: "Bond Order Book Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
@@ -79571,6 +79832,40 @@ attributes:
   data_type: "int"
   atomic_table: "bond_order_book"
   atomic_column: "rpt_day"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REPO_ORDER_BOOK"
+  source_column: "HNX.REPO_ORDER_BOOK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "bond_order_book"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REPO_ORDER_BOOK"
+  source_column: "HNX.REPO_ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "bond_order_book"
+  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Bond Order Book"
   atomic_attribute: "Bond Order Book Id"
@@ -80554,6 +80849,40 @@ attributes:
   atomic_table: "bond_order_book"
   atomic_column: "rpt_day"
 - bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REPO2_ORDER_BOOK"
+  source_column: "HNX.REPO2_ORDER_BOOK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "bond_order_book"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Bond Order Book"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "REPO2_ORDER_BOOK"
+  source_column: "HNX.REPO2_ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "bond_order_book"
+  atomic_column: "data_dt"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Id"
   description: "Khóa đại diện (surrogate key)."
@@ -81169,6 +81498,23 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_day"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Securities Order"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "ORDER_BOOK"
+  source_column: "HNX.ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "securities_order"
+  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Id"
@@ -82717,6 +83063,23 @@ attributes:
   data_type: "int"
   atomic_table: "securities_trade"
   atomic_column: "rpt_day"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Securities Trade"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "TRADE_BOOK"
+  source_column: "HNX.TRADE_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "securities_trade"
+  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Trade"
   atomic_attribute: "Securities Trade Id"

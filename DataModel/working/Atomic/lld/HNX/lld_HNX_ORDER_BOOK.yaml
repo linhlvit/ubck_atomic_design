@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế lại theo DDL nguồn mới (Data Modeler, 2026-11-03). Entity dùng chung HNX + HOSE: cột cùng ý nghĩa gộp thành 1 attribute Atomic, mỗi sàn trỏ về cột nguồn riêng trong source_columns. Fact Append: insert-only, bảng độc lập, không FK sang bảng khác (HLD D-08). Cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo (ghi pending_design.yaml). Cột có bộ mã dùng Classification Value, schema_code Data Modeler đặt sau."
+  notes: "Thiết kế lại theo DDL nguồn mới (Data Modeler, 2026-11-03). Entity dùng chung HNX + HOSE: cột cùng ý nghĩa gộp thành 1 attribute Atomic, mỗi sàn trỏ về cột nguồn riêng trong source_columns. Fact Append: insert-only, bảng độc lập, không FK sang bảng khác (HLD D-08). Cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo (ghi pending_design.yaml). Cột có bộ mã dùng Classification Value, schema_code Data Modeler đặt sau. Cập nhật 2026-11-23 theo DDL prod_staging.hnx_stg mới (BRD reconcile): thêm attribute từ cột mới DATA_DT; 6 cột lineage staging ghi pending_design.yaml."
 attributes:
 - attribute_name: "Securities Order Id"
   physical_name: "securities_order_id"
@@ -473,3 +473,17 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

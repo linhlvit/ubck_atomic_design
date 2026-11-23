@@ -21,7 +21,7 @@ columns:
   fk_note: null
 - name: ISSUE_CODE
   data_type: STRING
-  description: 'Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa.'
+  description: Mã định danh của loại chứng khoán đang được giao dịch, duy nhất; thường là mã ISIN, riêng thị trường Repo do nhân viên Sở tự định nghĩa.
   key: null
   fk_note: null
 - name: TRADE_NUMBER
@@ -66,7 +66,7 @@ columns:
   fk_note: null
 - name: SELL_ORDER_TYPE_CODE
   data_type: STRING
-  description: 'Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý theo cơ chế nào khi vào thị trường.'
+  description: Mã xác định loại lệnh của phía BÁN, tức là lệnh bán sẽ được xử lý theo cơ chế nào khi vào thị trường.
   key: null
   fk_note: null
 - name: SELL_ORDER_CONDITION_CODE
@@ -81,7 +81,7 @@ columns:
   fk_note: null
 - name: SELL_INVESTOR_CLASSIFICATION_CODE
   data_type: STRING
-  description: 'Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.'
+  description: Trường dùng để phân loại nhà đầu tư theo loại hình tổ chức/cá nhân, phục vụ giám sát, thống kê và quản lý thị trường.
   key: null
   fk_note: null
 - name: SELL_ORDER_QUANTITY
@@ -141,7 +141,7 @@ columns:
   fk_note: null
 - name: MESSAGE_SEQUENCE
   data_type: DECIMAL(20,0)
-  description: 'Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự'
+  description: Số thứ tự của message được gửi trong luồng dữ liệu, dùng để đảm bảo các message được xử lý đúng thứ tự
   key: null
   fk_note: null
 - name: SELL_ORDER_RECEPTION_NUMBER
@@ -201,7 +201,7 @@ columns:
   fk_note: null
 - name: _BATCH_ID
   data_type: STRING
-  description: 'Định danh batch nạp (dataset:ngày:dấu vân tay)'
+  description: Định danh batch nạp (dataset:ngày:dấu vân tay)
   key: null
   fk_note: null
 - name: DS_SNPST_DT
@@ -231,11 +231,16 @@ columns:
   fk_note: null
 - name: _FILE_CHECKSUM
   data_type: STRING
-  description: 'ETag của file nguồn (định danh phiên bản, không phải MD5)'
+  description: ETag của file nguồn (định danh phiên bản, không phải MD5)
   key: null
   fk_note: null
 - name: _FILE_MODIFIED_AT
   data_type: TIMESTAMP
   description: LastModified của file nguồn
+  key: null
+  fk_note: null
+- name: DATA_DT
+  data_type: DATE
+  description: Ngày batch data theo kỳ dùng để override partition
   key: null
   fk_note: null

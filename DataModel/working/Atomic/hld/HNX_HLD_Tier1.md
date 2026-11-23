@@ -73,7 +73,7 @@ erDiagram
     brokerage_market_share {
         string member_code
         decimal market_share_by_value
-        string report_quarter
+        string report_period
     }
     OUTRIGHT_ORDER_BOOK {
         string order_no

@@ -9,7 +9,7 @@ entity:
   etl_pattern: "Fact Append"
   consolidation_status: "approved"
   consolidated_by: null
-  consolidated_at: null
+  consolidated_at: "2026-11-23"
 sources:
 - source_system: "HNX"
   source_table: "ORDER_BOOK"
@@ -25,10 +25,10 @@ attributes:
   data_domain: "Surrogate Key"
   nullable: false
   is_primary_key: true
-  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh chứng\
-    \ khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản ghi\
-    \ Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business Key\
-    \ (cột ORDER_ID)."
+  comment: "PK surrogate. BCV: \"[Transaction] Financial Market Transaction\". Lệnh\
+    \ chứng khoán phát sinh từ hệ thống KRX — mỗi event lệnh (mới/sửa/hủy) là 1 bản\
+    \ ghi Fact Append. Hash: hash_id('HNX_ORDER_BOOK', ORDER_ID) — hash từ Business\
+    \ Key (cột ORDER_ID)."
   classification_context: null
   etl_derived_value: null
   source_mappings:
@@ -495,3 +495,16 @@ attributes:
   source_mappings:
     HNX.ORDER_BOOK: "HNX.ORDER_BOOK.REPORT_DAY"
     HOSE.ORDER_BOOK: "HOSE.ORDER_BOOK.REPORT_DAY"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.ORDER_BOOK: "HNX.ORDER_BOOK.DATA_DT"
+    HOSE.ORDER_BOOK: null

@@ -9,7 +9,7 @@ entity:
   etl_pattern: "Fact Snapshot"
   consolidation_status: "approved"
   consolidated_by: null
-  consolidated_at: "2026-11-08"
+  consolidated_at: "2026-11-23"
 sources:
 - source_system: "HNX"
   source_table: "OUTRIGHT_ORDER_BOOK"
@@ -635,6 +635,34 @@ attributes:
     HNX.OUTRIGHT_ORDER_BOOK: "HNX.OUTRIGHT_ORDER_BOOK.REPORT_DAY"
     HNX.REPO_ORDER_BOOK: "HNX.REPO_ORDER_BOOK.REPORT_DAY"
     HNX.REPO2_ORDER_BOOK: "HNX.REPO2_ORDER_BOOK.REPORT_DAY"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.OUTRIGHT_ORDER_BOOK: "HNX.OUTRIGHT_ORDER_BOOK.REPORT_PERIOD"
+    HNX.REPO_ORDER_BOOK: "HNX.REPO_ORDER_BOOK.REPORT_PERIOD"
+    HNX.REPO2_ORDER_BOOK: "HNX.REPO2_ORDER_BOOK.REPORT_PERIOD"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.OUTRIGHT_ORDER_BOOK: "HNX.OUTRIGHT_ORDER_BOOK.DATA_DT"
+    HNX.REPO_ORDER_BOOK: "HNX.REPO_ORDER_BOOK.DATA_DT"
+    HNX.REPO2_ORDER_BOOK: "HNX.REPO2_ORDER_BOOK.DATA_DT"
 - attribute_name: "Par Value"
   physical_name: "par_val"
   description: "GTMG - Giá trị mệnh giá."

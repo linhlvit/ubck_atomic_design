@@ -9,7 +9,7 @@ entity:
   etl_pattern: "Fact Snapshot"
   consolidation_status: "approved"
   consolidated_by: null
-  consolidated_at: "2026-11-08"
+  consolidated_at: "2026-11-23"
 sources:
 - source_system: "VSDC"
   source_table: "OUTSTANDING_SHARES"
@@ -154,7 +154,8 @@ attributes:
     HOSE.LISTED_SECURITIES_LIST: null
 - attribute_name: "Data Date"
   physical_name: "data_dt"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch."
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
@@ -163,7 +164,7 @@ attributes:
   etl_derived_value: null
   source_mappings:
     VSDC.OUTSTANDING_SHARES: "VSDC.OUTSTANDING_SHARES.DATA_DT"
-    HNX.LISTED_SECURITIES_LIST: null
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.DATA_DT"
     HOSE.LISTED_SECURITIES_LIST: null
 - attribute_name: "Report Year"
   physical_name: "rpt_year"
@@ -243,3 +244,17 @@ attributes:
     VSDC.OUTSTANDING_SHARES: null
     HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REFERENCE_PRICE"
     HOSE.LISTED_SECURITIES_LIST: "HOSE.LISTED_SECURITIES_LIST.REFERENCE_PRICE"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    VSDC.OUTSTANDING_SHARES: null
+    HNX.LISTED_SECURITIES_LIST: "HNX.LISTED_SECURITIES_LIST.REPORT_PERIOD"
+    HOSE.LISTED_SECURITIES_LIST: null

@@ -9,7 +9,7 @@ entity:
   etl_pattern: "Fact Snapshot"
   consolidation_status: "approved"
   consolidated_by: null
-  consolidated_at: "2026-11-08"
+  consolidated_at: "2026-11-23"
 sources:
 - source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
@@ -103,9 +103,34 @@ attributes:
   source_mappings:
     HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.CLASSIFICATION"
     HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.CLASSIFICATION"
-- attribute_name: "Report Quarter"
-  physical_name: "rpt_quarter"
-  description: "Quý báo cáo"
+- attribute_name: "Report Period Begin Date"
+  physical_name: "rpt_period_begin_dt"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.BEGIN_PERIOD_DATE"
+    HOSE.BROKERAGE_MARKET_SHARE: null
+- attribute_name: "Report Period End Date"
+  physical_name: "rpt_period_end_dt"
+  description: "Ngày cuối kỳ dữ liệu (= Data Date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.END_PERIOD_DATE"
+    HOSE.BROKERAGE_MARKET_SHARE: null
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
@@ -113,44 +138,21 @@ attributes:
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
-    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
-- attribute_name: "Report Year"
-  physical_name: "rpt_year"
-  description: "Năm báo cáo"
-  data_domain: "Small Counter"
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_PERIOD"
+    HOSE.BROKERAGE_MARKET_SHARE: null
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   comment: null
   classification_context: null
   etl_derived_value: null
   source_mappings:
-    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
-    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
-- attribute_name: "Report Month"
-  physical_name: "rpt_month"
-  description: "Tháng báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
-    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
-- attribute_name: "Report Day"
-  physical_name: "rpt_day"
-  description: "Ngày báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  source_mappings:
-    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY"
-    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY"
+    HNX.BROKERAGE_MARKET_SHARE: "HNX.BROKERAGE_MARKET_SHARE.DATA_DT"
+    HOSE.BROKERAGE_MARKET_SHARE: null
 - attribute_name: "Buy Trading Value"
   physical_name: "buy_trading_val"
   description: "Giá trị giao dịch mua (tỷ đồng)"
@@ -175,3 +177,51 @@ attributes:
   source_mappings:
     HNX.BROKERAGE_MARKET_SHARE: null
     HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE"
+- attribute_name: "Report Quarter"
+  physical_name: "rpt_quarter"
+  description: "Quý báo cáo"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+- attribute_name: "Report Year"
+  physical_name: "rpt_year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
+- attribute_name: "Report Month"
+  physical_name: "rpt_month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
+- attribute_name: "Report Day"
+  physical_name: "rpt_day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.BROKERAGE_MARKET_SHARE: null
+    HOSE.BROKERAGE_MARKET_SHARE: "HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY"
