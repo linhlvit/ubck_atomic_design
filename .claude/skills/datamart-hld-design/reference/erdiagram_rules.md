@@ -204,6 +204,7 @@ Fact_Securities_Company_Service_Registration {
 ✅ **Đúng — chỉ giữ FK + attribute có KPI tham chiếu:**
 ```
 Fact_Securities_Company_Service_Registration {
+    string Securities_Company_Service_Registration_Id PK
     int Registration_Date_Dimension_Id FK
     int Securities_Company_Dimension_Id FK
     int Service_Type_Dimension_Id FK
@@ -292,6 +293,7 @@ erDiagram
         string Source_System_Code
     }
     Fact_Fund_Management_Company_Snapshot {
+        string Fund_Management_Company_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Fund_Management_Company_Dimension_Id FK
         int Investment_Fund_Count

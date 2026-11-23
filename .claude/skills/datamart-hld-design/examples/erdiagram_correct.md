@@ -20,6 +20,7 @@ erDiagram
         string Life_Cycle_Status_Code
     }
     Fact_Fund_Management_Company_Snapshot {
+        string Fund_Management_Company_Snapshot_Id PK
         string Snapshot_Date_Dimension_Id FK
         string Fund_Management_Company_Dimension_Id FK
         int Investment_Fund_Count

@@ -97,6 +97,7 @@ Rà theo từng Section trước khi mở GATE Phase 1, và phần Phase 2 trư�
 - [ ] Mở bằng ` ```mermaid ` — KHÔNG phải ` ```erDiagram `
 - [ ] Types chỉ dùng: `int` / `float` / `decimal` / `string` / `varchar` / `boolean` / `date` / `datetime` — `decimal` viết TRẦN, dùng cho trường tiền tệ/tỷ lệ tài chính cần độ chính xác cao (xem `reference/erdiagram_rules.md`). Chỉ cấm dạng có ngoặc `decimal(23,2)` vì gây parse error Mermaid
 - [ ] Chỉ dùng label `PK` và `FK` — không có BK/DD
+- [ ] **Mỗi Fact block có đúng 1 `PK` đặt dòng đầu** (khóa dòng / khóa MERGE theo H15 & A22) và bảng grain Section 3/4 nêu rõ tên cột PK
 - [ ] `FK` chỉ xuất hiện trong Fact entity block và phải có `||--o{` tương ứng
 - [ ] Tên entity dùng underscore (không dấu cách)
 - [ ] Tên cột dùng Title_Case_With_Underscore

@@ -82,7 +82,13 @@ Mọi Fact bắt buộc có ít nhất 1 FK date đến Calendar Date Dimension 
 - ❌ **TUYỆT ĐỐI CẤM:** Không được dùng `Calendar Date Dimension Id` / `cdr_dt_dim_id` trên bất kỳ Fact table nào (`cdr_dt_dim_id` chỉ là PK của Dimension `cdr_dt_dim`).
 - ⚠️ **Cảnh báo lỗi thực tế điển hình:** Trong `DTM_QLKD_HLD.md` (dòng 1201), bảng `Fact_Securities_Company_Compliance_Report_Snapshot` chứa `int Calendar_Date_Dimension_Id FK` là lỗi vi phạm nghiêm trọng Role-Playing Date Key (`L1-DATE-FK-VIOLATION`), bắt buộc phải đổi thành `Snapshot_Date_Dimension_Id FK`.
 - **Degenerate Date Attributes:** Các ngày thuộc tính nghiệp vụ phụ (như ngày lập biên bản, ngày ký QĐ, ngày nộp, ngày cấp đầu tiên) giữ kiểu `date` thuần túy, đặt tên `<Concept> Date` (erDiagram: `<Concept>_Date`, physical: `<concept>_dt`), KHÔNG mang nhãn `FK`, KHÔNG thêm hậu tố `_Dimension_Id` / `_dim_id`.
-❌ Không thiết kế Surrogate key cho Fact table.
+✅ **Mọi Fact BẮT BUỘC có đúng 1 khóa dòng `PK`** (A22 `datamart-lld-design` — đảo quy ước cũ 2026-07-21/22 "Không thiết kế Surrogate key cho Fact table", đồng bộ HLD 2026-11-23):
+- Đặt `string <PK_Name> PK` ở **dòng đầu** block Fact trong `erDiagram`; physical name tuân theo `datamart-lld-design/reference/physical_naming.md`.
+- **Dạng A** (grain = 1 dòng Atomic driving, không GROUP BY / UNION / pivot): PK = cột id surrogate của entity Atomic driving (`direct`, giữ tên logical/physical tương ứng của id nguồn, VD `Report Input Value Id` / `rpt_input_val_id`). Với Fact Snapshot theo kỳ, chỉ dùng Dạng A khi comment `Hash:` của PK trong YAML Atomic đã chứa kỳ/ngày báo cáo — nếu chỉ băm BK thì chuyển sang Dạng B (A39).
+- **Dạng B** (Fact gộp/pivot/snapshot theo kỳ cần khóa mới): PK = surrogate key hash toàn bộ cột grain (+ `src_stm_code`, `Generated`); tên logical theo mẫu `<Tên Fact bỏ tiền tố "Fact"> Id` (VD `Fact Fund Management Company Snapshot` → `Fund Management Company Snapshot Id`), mô tả liệt kê đủ cột grain.
+- Grain ghi ở Section 3/4, `Entities.csv`, `datamart_model.yaml` phải nêu rõ **tên cột PK** và dạng A/B (H15). Flat ClickHouse `ORDER BY` phải chứa PK.
+- ❌ Không thêm cột surrogate `_id` thứ hai trên Fact (cột `_id` không phải PK là cột dư); `FK` vẫn chỉ trỏ tới Dimension.
+- Máy kiểm: Gate 8 `L2-FACT-NO-ROW-KEY`, `L2-FACT-PK-INVALID`, `L4-FLAT-ORDERBY-MISSING-PK`.
 ❌ Không dùng Snowflake schema.
 
 ---
