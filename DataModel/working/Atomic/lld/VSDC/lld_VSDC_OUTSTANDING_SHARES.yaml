@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_OUTSTANDING_SHARES.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity gộp 3 bảng nguồn (VSDC.OUTSTANDING_SHARES, HNX/HOSE.LISTED_SECURITIES_LIST) — phân biệt qua src_stm_code; cột chỉ có ở 1 phía sẽ NULL, union tại bước Entity Consolidation."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_OUTSTANDING_SHARES.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity gộp 3 bảng nguồn (VSDC.OUTSTANDING_SHARES, HNX/HOSE.LISTED_SECURITIES_LIST) — phân biệt qua src_stm_code; cột chỉ có ở 1 phía sẽ NULL, union tại bước Entity Consolidation. Cập nhật 2026-11-22 theo DDL PROD (prod_staging.vsdc_stg.outstanding_shares): nguồn TRANSACTION_DATE không còn; Data Modeler chốt bỏ attribute Transaction Date (transaction_dt) và thêm attribute Data Date (data_dt) map 1-1 từ DATA_DT (ngày nghiệp vụ = ngày cuối kỳ dữ liệu). Datamart đang tham chiếu listed_share_information.transaction_dt cần chuyển sang data_dt; 6 cột metadata nạp file (_BATCH_ID, _SOURCE_*, _FILE_*) không map lên Atomic, ghi vào pending_design.yaml."
 attributes:
 - attribute_name: "Listed Share Information Id"
   physical_name: "listed_share_information_id"
@@ -148,15 +148,15 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
-- attribute_name: "Transaction Date"
-  physical_name: "transaction_dt"
-  description: "Ngày giao dịch"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.OUTSTANDING_SHARES.TRANSACTION_DATE"
+  - "VSDC.OUTSTANDING_SHARES.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null

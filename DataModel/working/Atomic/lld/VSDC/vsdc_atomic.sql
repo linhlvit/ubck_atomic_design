@@ -90,26 +90,32 @@ CREATE TABLE IF NOT EXISTS atomic.uat_atm.listed_share_information (
   issuer_name STRING COMMENT 'Tổ chức phát hành',
   listed_share_quantity BIGINT COMMENT 'Số lượng cổ phiếu niêm yết',
   reference_price DECIMAL(23,2) COMMENT 'Giá tham chiếu',
-  transaction_dt DATE,
+  data_dt DATE,
   ds_snpst_dt              DATE,
   ds_etl_pcs_tms           TIMESTAMP)
 USING ICEBERG
 PARTITIONED BY (ds_snpst_dt, src_stm_code);
 
--- 9. Bảng: foreign_investor_info
-	Business key: ticker_symbol
+-- 9. Bảng: foreign_investor_info_{stock,bond,fund_certificate,other_securities}
+	Business key: ticker_symbol (BOND_CODE / FUND_CERTIFICATE_CODE / SECURITY_CODE / TICKER_SYMBOL theo bảng nguồn)
 	Lọc ds_snpst_dt
-	Concept Involved Party
+	Concept Documentation (Regulatory Report)
 CREATE TABLE IF NOT EXISTS atomic.uat_atm.foreign_ownership_information (
- foreign_ownership_information_id STRING,
-  ticker_symbol STRING,
+ foreign_ownership_information_id STRING,
   src_stm_code STRING,
-  isin_code STRING,
-  total_issued_share_quantity BIGINT,
-  max_foreign_ownership_ratio DECIMAL(5,2),
-  max_foreign_holding_quantity BIGINT,
+  ticker_symbol STRING,
+  ticker_symbol_tp_code STRING,
+  total_issued_quantity BIGINT,
   current_foreign_holding_quantity BIGINT,
-  remaining_foreign_holding_quantity BIGINT,
+  par_val DECIMAL(23,2),
+  data_dt DATE,
+  rpt_year INT,
+  rpt_month INT,
+  rpt_day INT,
+  rpt_period STRING,
+  isin_code STRING,
+  max_foreign_ownership_ratio DECIMAL(5,2),
+  max_shares_foreign_can_hold BIGINT,
   ds_snpst_dt              DATE,
   ds_etl_pcs_tms           TIMESTAMP)
 USING ICEBERG

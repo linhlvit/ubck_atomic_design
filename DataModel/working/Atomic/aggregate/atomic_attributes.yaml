@@ -31925,9 +31925,9 @@ attributes:
   nullable: false
   is_primary_key: true
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO',TICKER_SYMBOL)"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_BOND',BOND_CODE)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -31941,11 +31941,11 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
   source_column: null
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO'"
-  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO"
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_BOND'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_BOND"
   data_type: "string"
   atomic_table: "foreign_ownership_information"
   atomic_column: "src_stm_code"
@@ -31957,8 +31957,8 @@ attributes:
   nullable: false
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_CODE"
   comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
   etl_derived_value: null
@@ -31967,78 +31967,48 @@ attributes:
   atomic_column: "ticker_symbol"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "ISIN Code"
-  description: "Mã ISIN"
+  atomic_attribute: "Ticker Symbol Type Code"
+  description: "Loại trái phiếu (trái phiếu chính phủ / trái phiếu doanh nghiệp niêm\
+    \ yết / trái phiếu doanh nghiệp riêng lẻ)"
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.ISIN_CODE"
-  comment: null
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.BOND_TYPE"
+  comment: "Giữ Text — không đăng ký Classification Value scheme cho VSDC/HNX/HOSE\
+    \ (Data Modeler 2026-10-18). Chỉ có ở bảng nguồn BOND; các bảng khác NULL."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "isin_code"
+  atomic_column: "ticker_symbol_tp_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Total Issued Share Quantity"
-  description: "Tổng số cổ phiếu phát hành"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số trái phiếu đăng ký tại VSDC"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.TOTAL_ISSUED_SHARES"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.TOTAL_ISSUED_BONDS"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "total_issued_share_quantity"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Max Foreign Ownership Ratio"
-  description: "Tỷ lệ sở hữu nước ngoài tối đa (%)"
-  data_domain: "Percentage"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.MAX_FOREIGN_OWNERSHIP_RATIO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(5,2)"
-  atomic_table: "foreign_ownership_information"
-  atomic_column: "max_foreign_ownership_ratio"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Max Foreign Holding Quantity"
-  description: "Số lượng CP tối đa NĐTNN được nắm giữ"
-  data_domain: "Large Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.MAX_SHARES_FOREIGN_CAN_HOLD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "bigint"
-  atomic_table: "foreign_ownership_information"
-  atomic_column: "max_foreign_holding_quantity"
+  atomic_column: "total_issued_quantity"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
   atomic_attribute: "Current Foreign Holding Quantity"
-  description: "Số lượng CP hiện NĐTNN đang nắm giữ"
+  description: "Số lượng trái phiếu hiện đang nắm giữ bởi NĐTNN"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.CURRENT_SHARES_FOREIGN_HOLD"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.CURRENT_BONDS_FOREIGN_HOLD"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32047,20 +32017,38 @@ attributes:
   atomic_column: "current_foreign_holding_quantity"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
-  atomic_attribute: "Remaining Foreign Holding Quantity"
-  description: "Số lượng CP NĐTNN còn được phép nắm giữ"
-  data_domain: "Large Counter"
+  atomic_attribute: "Par Value"
+  description: "Mệnh giá"
+  data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REMAINING_SHARES_FOREIGN_CAN_HOLD"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.PAR_VALUE"
+  comment: "Nguồn DECIMAL(30,6) → đích decimal(23,2): ETL cần cast, kiểm tra không\
+    \ tràn/mất độ chính xác (mệnh giá có phần thập phân)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "par_val"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "date"
   atomic_table: "foreign_ownership_information"
-  atomic_column: "remaining_foreign_holding_quantity"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Foreign Ownership Information"
   atomic_attribute: "Report Year"
@@ -32069,8 +32057,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_YEAR"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32085,8 +32073,8 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_MONTH"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -32101,14 +32089,585 @@ attributes:
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
-  source_column: "VSDC.FOREIGN_INVESTOR_INFO.REPORT_DAY"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "foreign_ownership_information"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_BOND"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_BOND.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.FUND_CERTIFICATE_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE',FUND_CERTIFICATE_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.FUND_CERTIFICATE_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số chứng chỉ quỹ đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.TOTAL_ISSUED_FUND_CERTIFICATES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng chứng chỉ quỹ hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.CURRENT_FUND_CERTIFICATES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_CODE"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES',SECURITY_CODE)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_CODE"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol Type Code"
+  description: "Loại chứng khoán (chứng quyền có bảo đảm, [chứng khoán khác khi có\
+    \ phát sinh sau này])"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.SECURITY_TYPE"
+  comment: "Giữ Text — không đăng ký Classification Value scheme cho VSDC/HNX/HOSE\
+    \ (Data Modeler 2026-10-18). Chỉ có ở bảng nguồn OTHER_SECURITIES; các bảng khác\
+    \ NULL."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol_tp_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số lượng chứng khoán đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.TOTAL_ISSUED_SECURITIES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng chứng khoán hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.CURRENT_SECURITIES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_OTHER_SECURITIES"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_OTHER_SECURITIES.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Foreign Ownership Information Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_STOCK',TICKER_SYMBOL)"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "foreign_ownership_information_id"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_STOCK'"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_STOCK"
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Ticker Symbol"
+  description: "Mã chứng khoán trong nước"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
+  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "ticker_symbol"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "ISIN Code"
+  description: "Mã ISIN"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.ISIN_CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "isin_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Total Issued Quantity"
+  description: "Tổng số lượng cổ phiếu đăng ký tại VSDC"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TOTAL_ISSUED_SHARES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "total_issued_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Max Foreign Ownership Ratio"
+  description: "Tỷ lệ sở hữu nước ngoài tối đa"
+  data_domain: "Percentage"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_FOREIGN_OWNERSHIP_RATIO"
+  comment: "Nguồn DECIMAL(20,10) → đích decimal(5,2): ETL cần cast/làm tròn; cần xác\
+    \ nhận đơn vị nguồn (0–1 hay %) trước khi nạp (BRD cũ ghi '%')."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(5,2)"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "max_foreign_ownership_ratio"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Max Shares Foreign Can Hold"
+  description: "Số lượng cổ phiếu tối đa được phép nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_SHARES_FOREIGN_CAN_HOLD"
+  comment: "Tên theo for_vsdc.txt (LLD cũ: Max Foreign Holding Quantity / max_foreign_holding_quantity)."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "max_shares_foreign_can_hold"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Current Foreign Holding Quantity"
+  description: "Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN"
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.CURRENT_SHARES_FOREIGN_HOLD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "current_foreign_holding_quantity"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Year"
+  description: "Năm báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_YEAR"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_year"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Month"
+  description: "Tháng báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_MONTH"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_month"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Day"
+  description: "Ngày báo cáo"
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_DAY"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Foreign Ownership Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
+  source_column: "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "foreign_ownership_information"
+  atomic_column: "rpt_period"
 - bcv_core_object: "Documentation"
   atomic_entity: "Fund Management Report"
   atomic_attribute: "Fund Management Report Id"
@@ -35344,20 +35903,21 @@ attributes:
   atomic_column: "voting_share_quantity"
 - bcv_core_object: "Documentation"
   atomic_entity: "Listed Share Information"
-  atomic_attribute: "Transaction Date"
-  description: "Ngày giao dịch"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng) — khóa ghi đè của batch."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "OUTSTANDING_SHARES"
-  source_column: "VSDC.OUTSTANDING_SHARES.TRANSACTION_DATE"
+  source_column: "VSDC.OUTSTANDING_SHARES.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "date"
   atomic_table: "listed_share_information"
-  atomic_column: "transaction_dt"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Listed Share Information"
   atomic_attribute: "Report Year"
@@ -54038,7 +54598,7 @@ attributes:
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
   source_column: null
   comment: "PK surrogate. Hash: hash_id('SCMS_DISCLOSURE_SECURITIES_OFFERING_RESULT',\
-    \ ID || OFFERING_TARGET || OFFERING_METHOD)."
+    \ ID || PJ_OFFERING_TARGET_CODE || PJ_OFFERING_METHOD_CODE)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -54054,11 +54614,14 @@ attributes:
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID, SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET,\
-    \ SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD"
-  comment: "ETL-derived: nối 3 trường id, offering_target, offering_method của ODS\
-    \ (chỉ định Data Modeler 2026-11-19). Grain = 1 phần tử mảng RESULT_JSON. offering_target/offering_method\
-    \ có thể NULL trong JSON — ETL coalesce về chuỗi rỗng khi nối."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ID, SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_CODE,\
+    \ SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_METHOD_CODE"
+  comment: "ETL-derived: nối 3 trường id, pj_offering_target_code, pj_offering_method_code\
+    \ của ODS (lấy từ bộ plan_json, chỉ định Data Modeler 2026-11-20; Id hash từ Code\
+    \ này) (chỉ định Data Modeler 2026-11-19; ODS DDL đổi tên cột offering_target\
+    \ → offering_target_code ngày 2026-11-20). Grain = 1 phần tử mảng RESULT_JSON.\
+    \ pj_offering_target_code/pj_offering_method_code có thể NULL trong JSON — ETL\
+    \ coalesce về chuỗi rỗng khi nối."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -54154,299 +54717,466 @@ attributes:
   atomic_column: "sc_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Offering Target"
-  description: "Đối tượng chào bán (JSON doiTuongChaoBan)."
+  atomic_attribute: "RJ Offering Target Code"
+  description: "Đối tượng chào bán (result_json.doiTuongChaoBan)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET"
-  comment: "Thành phần của BK. Chưa profile tập giá trị (mã hữu hạn hay văn bản tự\
-    \ do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi profile."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_TARGET_CODE"
+  comment: "Từ result_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu hạn hay\
+    \ văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi\
+    \ profile."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "offering_target"
+  atomic_column: "rj_offering_target_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Offering Method"
-  description: "Loại/phương thức chào bán (JSON loaiChaoBan)."
+  atomic_attribute: "RJ Offering Method Code"
+  description: "Loại/phương thức chào bán (result_json.loaiChaoBan)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_METHOD"
-  comment: "Thành phần của BK. Chưa profile tập giá trị — giữ Text, chưa đăng ký scheme.\
-    \ Khác Offering Type Code (số nguyên) của entity cha."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_METHOD_CODE"
+  comment: "Từ result_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text, chưa\
+    \ đăng ký scheme. Khác Offering Type Code (số nguyên) của entity cha."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "offering_method"
+  atomic_column: "rj_offering_method_code"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Par Value"
-  description: "Mệnh giá chứng khoán chào bán (JSON menhGia)."
+  atomic_attribute: "RJ Par Value"
+  description: "Mệnh giá chứng khoán chào bán (result_json.menhGia)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PAR_VAL"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PAR_VALUE"
+  comment: "Từ result_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn\
+    \ hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "par_val"
+  atomic_column: "rj_par_val"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Planned Quantity"
-  description: "Số lượng chứng khoán dự kiến chào bán (JSON soLuongCb)."
+  atomic_attribute: "RJ Planned Quantity"
+  description: "Số lượng chứng khoán dự kiến chào bán (result_json.soLuongCb)."
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_QUANTITY"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có giá\
-    \ trị non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_QUANTITY"
+  comment: "Từ result_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần\
+    \ chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng → NULL.\
+    \ Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "planned_quantity"
+  atomic_column: "rj_planned_quantity"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Planned Price Amount"
-  description: "Giá chào bán dự kiến (JSON giaCb)."
+  atomic_attribute: "RJ Planned Price Amount"
+  description: "Giá chào bán dự kiến (result_json.giaCb)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PRICE_AMT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_PRICE_AMOUNT"
+  comment: "Từ result_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn\
+    \ hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "planned_price_amt"
+  atomic_column: "rj_planned_price_amt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Planned Value At Par"
-  description: "Giá trị chào bán dự kiến theo mệnh giá (JSON giaTriCbTheoMenhGia)."
+  atomic_attribute: "RJ Planned Value At Par"
+  description: "Giá trị chào bán dự kiến theo mệnh giá (result_json.giaTriCbTheoMenhGia)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_VALUE_AT_PAR"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_VALUE_AT_PAR"
+  comment: "Từ result_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ JSON)\
+    \ — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng\
+    \ → NULL. Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "planned_val_at_par"
+  atomic_column: "rj_planned_val_at_par"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Planned Participant Count"
-  description: "Số lượng nhà đầu tư dự kiến chào bán (JSON soLuongNguoiCb)."
+  atomic_attribute: "RJ Planned Participant Count"
+  description: "Số lượng nhà đầu tư dự kiến chào bán (result_json.soLuongNguoiCb)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PLANNED_PARTICIPANT_COUNT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_PLANNED_PARTICIPANT_COUNT"
+  comment: "Từ result_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "planned_participant_count"
+  atomic_column: "rj_planned_participant_count"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Offering Target Description"
-  description: "Mô tả đối tượng chào bán (JSON moTaDoiTuong)."
+  atomic_attribute: "RJ Offering Target Description"
+  description: "Mô tả đối tượng chào bán (result_json.moTaDoiTuong)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.OFFERING_TARGET_DESCRIPTION"
-  comment: null
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_OFFERING_TARGET_DESCRIPTION"
+  comment: "Từ result_json.moTaDoiTuong."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "offering_target_description"
+  atomic_column: "rj_offering_target_description"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Swap Purpose Description"
-  description: "Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (JSON mucDichHoanDoi)."
+  atomic_attribute: "RJ Swap Purpose Description"
+  description: "Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (result_json.mucDichHoanDoi)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.SWAP_PURPOSE_DESCRIPTION"
-  comment: null
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_SWAP_PURPOSE_DESCRIPTION"
+  comment: "Từ result_json.mucDichHoanDoi."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "swap_purpose_description"
+  atomic_column: "rj_swap_purpose_description"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Expected Start Date"
-  description: "Ngày dự kiến bắt đầu chào bán (JSON duKienTuNgay)."
+  atomic_attribute: "RJ Expected Start Date"
+  description: "Ngày dự kiến bắt đầu chào bán (result_json.duKienTuNgay)."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_START_DT"
-  comment: "ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng. Nguồn\
-    \ ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng → NULL."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_EXPECTED_START_DATE"
+  comment: "Từ result_json.duKienTuNgay. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện chỉ ghi nguồn\
+    \ result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ có fallback plan_json\
+    \ cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL xác nhận còn áp dụng hay\
+    \ không."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "expected_start_dt"
+  atomic_column: "rj_expected_start_dt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Expected End Date"
-  description: "Ngày dự kiến kết thúc chào bán (JSON duKienDenNgay)."
+  atomic_attribute: "RJ Expected End Date"
+  description: "Ngày dự kiến kết thúc chào bán (result_json.duKienDenNgay)."
   data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.EXPECTED_END_DT"
-  comment: "ODS lấy từ RESULT_JSON, fallback PLAN_JSON cùng vị trí phần tử mảng. Nguồn\
-    \ ODS lưu STRING (raw từ JSON) — ETL cần try_cast sang DATE; sai định dạng → NULL."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_EXPECTED_END_DATE"
+  comment: "Từ result_json.duKienDenNgay. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần try_cast sang DATE; sai định dạng → NULL. Lưu ý: ODS DDL hiện chỉ ghi nguồn\
+    \ result_json (pj_ không có cột ngày dự kiến); ETL ODS cũ có fallback plan_json\
+    \ cho duKienTuNgay/duKienDenNgay — cần Data Modeler/ETL xác nhận còn áp dụng hay\
+    \ không."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "expected_end_dt"
+  atomic_column: "rj_expected_end_dt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Actual Quantity"
-  description: "Số lượng chứng khoán chào bán thực tế (JSON soLuongThucTe)."
+  atomic_attribute: "RJ Actual Quantity"
+  description: "Số lượng chứng khoán chào bán thực tế (result_json.soLuongThucTe)."
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_QUANTITY"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang số nguyên (bigint); sai định dạng → NULL. Cần validate không có giá\
-    \ trị non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_QUANTITY"
+  comment: "Từ result_json.soLuongThucTe. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần chuẩn hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng →\
+    \ NULL. Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "actual_quantity"
+  atomic_column: "rj_actual_quantity"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Actual Price Amount"
-  description: "Giá chào bán thực tế (JSON giaThucTe)."
+  atomic_attribute: "RJ Actual Price Amount"
+  description: "Giá chào bán thực tế (result_json.giaThucTe)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PRICE_AMT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_PRICE_AMOUNT"
+  comment: "Từ result_json.giaThucTe. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần\
+    \ chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần\
+    \ validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "actual_price_amt"
+  atomic_column: "rj_actual_price_amt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Actual Value Amount"
-  description: "Giá trị chào bán thực tế (JSON giaTriThucTe)."
+  atomic_attribute: "RJ Actual Value Amount"
+  description: "Giá trị chào bán thực tế (result_json.giaTriThucTe)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_VAL_AMT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_VALUE_AMOUNT"
+  comment: "Từ result_json.giaTriThucTe. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL.\
+    \ Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "actual_val_amt"
+  atomic_column: "rj_actual_val_amt"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Actual Participant Count"
-  description: "Số lượng nhà đầu tư tham gia thực tế (JSON soLuongNguoiThamGia)."
+  atomic_attribute: "RJ Actual Participant Count"
+  description: "Số lượng nhà đầu tư tham gia thực tế (result_json.soLuongNguoiThamGia)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.ACTUAL_PARTICIPANT_COUNT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_ACTUAL_PARTICIPANT_COUNT"
+  comment: "Từ result_json.soLuongNguoiThamGia. Nguồn ODS lưu STRING (raw từ JSON)\
+    \ — ETL cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần\
+    \ validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "actual_participant_count"
+  atomic_column: "rj_actual_participant_count"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Foreign Investor Participant Count"
-  description: "Số lượng nhà đầu tư nước ngoài tham gia (JSON slNdtnnThamGia)."
+  atomic_attribute: "RJ Foreign Investor Participant Count"
+  description: "Số lượng nhà đầu tư nước ngoài tham gia (result_json.slNdtnnThamGia)."
   data_domain: "Small Counter"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_PARTICIPANT_COUNT"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang INT; sai định dạng → NULL. Cần validate không có giá trị non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_FOREIGN_INVESTOR_PARTICIPANT_COUNT"
+  comment: "Từ result_json.slNdtnnThamGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "int"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "foreign_investor_participant_count"
+  atomic_column: "rj_foreign_investor_participant_count"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Disclosure Securities Offering Result"
-  atomic_attribute: "Foreign Investor Issuance Value"
-  description: "Giá trị phát hành cho nhà đầu tư nước ngoài (JSON giaTriPhatHanhNdtnn)."
+  atomic_attribute: "RJ Foreign Investor Issuance Value"
+  description: "Giá trị phát hành cho nhà đầu tư nước ngoài (result_json.giaTriPhatHanhNdtnn)."
   data_domain: "Currency Amount"
   nullable: true
   is_primary_key: false
   source_system: "SCMS"
   source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
-  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.FOREIGN_INVESTOR_ISSUANCE_VAL"
-  comment: "Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn hóa dấu phân cách và\
-    \ cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate không có giá trị\
-    \ non-numeric."
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.RJ_FOREIGN_INVESTOR_ISSUANCE_VALUE"
+  comment: "Từ result_json.giaTriPhatHanhNdtnn. Nguồn ODS lưu STRING (raw từ JSON)\
+    \ — ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng\
+    \ → NULL. Cần validate không có giá trị non-numeric."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
   atomic_table: "sc_disclosure_securities_offering_result"
-  atomic_column: "foreign_investor_issuance_val"
+  atomic_column: "rj_foreign_investor_issuance_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Offering Target Code"
+  description: "Đối tượng chào bán (plan_json.doiTuongChaoBan)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_CODE"
+  comment: "Từ plan_json.doiTuongChaoBan. Chưa profile tập giá trị (mã hữu hạn hay\
+    \ văn bản tự do) — giữ Text, chưa đăng ký scheme; Data Modeler xác nhận sau khi\
+    \ profile."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_offering_target_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Offering Method Code"
+  description: "Loại/phương thức chào bán (plan_json.loaiChaoBan)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_METHOD_CODE"
+  comment: "Từ plan_json.loaiChaoBan. Chưa profile tập giá trị — giữ Text, chưa đăng\
+    \ ký scheme. Khác Offering Type Code (số nguyên) của entity cha."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_offering_method_code"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Par Value"
+  description: "Mệnh giá chứng khoán chào bán (plan_json.menhGia)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PAR_VALUE"
+  comment: "Từ plan_json.menhGia. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn\
+    \ hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_par_val"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Planned Quantity"
+  description: "Số lượng chứng khoán dự kiến chào bán (plan_json.soLuongCb)."
+  data_domain: "Large Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_QUANTITY"
+  comment: "Từ plan_json.soLuongCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn\
+    \ hóa dấu phân cách và cast sang số nguyên (bigint); sai định dạng → NULL. Cần\
+    \ validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "bigint"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_planned_quantity"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Planned Price Amount"
+  description: "Giá chào bán dự kiến (plan_json.giaCb)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_PRICE_AMOUNT"
+  comment: "Từ plan_json.giaCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL cần chuẩn\
+    \ hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_planned_price_amt"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Planned Value At Par"
+  description: "Giá trị chào bán dự kiến theo mệnh giá (plan_json.giaTriCbTheoMenhGia)."
+  data_domain: "Currency Amount"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_VALUE_AT_PAR"
+  comment: "Từ plan_json.giaTriCbTheoMenhGia. Nguồn ODS lưu STRING (raw từ JSON) —\
+    \ ETL cần chuẩn hóa dấu phân cách và cast sang DECIMAL(23,2); sai định dạng →\
+    \ NULL. Cần validate không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "decimal(23,2)"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_planned_val_at_par"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Planned Participant Count"
+  description: "Số lượng nhà đầu tư dự kiến chào bán (plan_json.soLuongNguoiCb)."
+  data_domain: "Small Counter"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_PLANNED_PARTICIPANT_COUNT"
+  comment: "Từ plan_json.soLuongNguoiCb. Nguồn ODS lưu STRING (raw từ JSON) — ETL\
+    \ cần chuẩn hóa dấu phân cách và cast sang INT; sai định dạng → NULL. Cần validate\
+    \ không có giá trị non-numeric."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "int"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_planned_participant_count"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Offering Target Description"
+  description: "Mô tả đối tượng chào bán (plan_json.moTaDoiTuong)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_OFFERING_TARGET_DESCRIPTION"
+  comment: "Từ plan_json.moTaDoiTuong."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_offering_target_description"
+- bcv_core_object: "Event"
+  atomic_entity: "Securities Company Disclosure Securities Offering Result"
+  atomic_attribute: "PJ Swap Purpose Description"
+  description: "Mục đích hoán đổi trong chào bán cổ phiếu hoán đổi (plan_json.mucDichHoanDoi)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "SCMS"
+  source_table: "DISCLOSURE_SECURITIES_OFFERING_RESULT"
+  source_column: "SCMS.DISCLOSURE_SECURITIES_OFFERING_RESULT.PJ_SWAP_PURPOSE_DESCRIPTION"
+  comment: "Từ plan_json.mucDichHoanDoi."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "sc_disclosure_securities_offering_result"
+  atomic_column: "pj_swap_purpose_description"
 - bcv_core_object: "Event"
   atomic_entity: "Securities Company Profile Change"
   atomic_attribute: "Securities Company Profile Change Id"

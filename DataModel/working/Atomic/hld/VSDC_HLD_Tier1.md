@@ -11,7 +11,10 @@
 |---|---|---|---|---|---|---|---|---|
 | Common | [Common] Nationality | Common | nationality | Append | Danh mục quốc tịch của VSDC: `autoid` (Id), `name` (tên quốc gia) | Classification VSDC Nationality | Classification | (1) Core Object Common theo chỉ định Data Modeler (2026-10-18); BCV không có term "Nationality" — gần nhất `Country` (Location, id 11719) và `Citizenship` (Involved Party). (2) Cấu trúc chỉ có `autoid` + `name` — danh mục thuần, không có instance data → reference data set, promote thành entity thật vì được nhiều entity tham chiếu (investor account, foreign bond portfolio). (3) Table Type Classification; tên entity `Classification VSDC Nationality` theo chỉ định tường minh (ngoại lệ quy tắc #7 — xem 6f T1-01). |
 | Documentation | [Documentation] Regulatory Report | Documentation | OUTSTANDING_SHARES | Append | Cơ cấu cổ phiếu theo mã chứng khoán và ngày chốt: tổng phát hành, quỹ, lưu hành, tự do chuyển nhượng, hạn chế chuyển nhượng, biểu quyết, ISIN. Atomic cũng nhận `LISTED_SECURITIES_LIST` của HNX/HOSE (số lượng niêm yết, giá tham chiếu) | Listed Share Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: cơ cấu số lượng cổ phiếu theo mã/ngày (VSDC) và số lượng niêm yết, giá tham chiếu (HNX/HOSE) — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
-| Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO | Append | Sở hữu nước ngoài theo mã chứng khoán và ngày báo cáo: tỷ lệ tối đa, số cổ phiếu tối đa NĐTNN được sở hữu, đang sở hữu, còn lại | Foreign Ownership Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: số cổ phiếu và tỷ lệ sở hữu nước ngoài tối đa/hiện tại/còn lại theo mã — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
+| Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_STOCK | Append | Sở hữu nước ngoài theo mã chứng khoán và kỳ báo cáo — nhóm cổ phiếu: số lượng đăng ký tại VSDC, số lượng NĐTNN đang nắm giữ, tỷ lệ/số lượng tối đa được sở hữu | Foreign Ownership Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: số cổ phiếu và tỷ lệ sở hữu nước ngoài tối đa/hiện tại/còn lại theo mã — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
+| Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_BOND | Append | Sở hữu nước ngoài theo mã chứng khoán và kỳ báo cáo — nhóm trái phiếu: số lượng đăng ký tại VSDC, số lượng NĐTNN đang nắm giữ, mệnh giá | Foreign Ownership Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: số cổ phiếu và tỷ lệ sở hữu nước ngoài tối đa/hiện tại/còn lại theo mã — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
+| Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE | Append | Sở hữu nước ngoài theo mã chứng khoán và kỳ báo cáo — nhóm chứng chỉ quỹ: số lượng đăng ký tại VSDC, số lượng NĐTNN đang nắm giữ | Foreign Ownership Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: số cổ phiếu và tỷ lệ sở hữu nước ngoài tối đa/hiện tại/còn lại theo mã — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
+| Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_INFO_OTHER_SECURITIES | Append | Sở hữu nước ngoài theo mã chứng khoán và kỳ báo cáo — nhóm chứng khoán khác (chứng quyền có bảo đảm…): số lượng đăng ký tại VSDC, số lượng NĐTNN đang nắm giữ | Foreign Ownership Information | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: số cổ phiếu và tỷ lệ sở hữu nước ngoài tối đa/hiện tại/còn lại theo mã — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
 | Involved Party | [Involved Party] Organization Ownership | Involved Party | MAJOR_SHAREHOLDER | Append | Cổ đông lớn theo mã chứng khoán: tên, số giấy tờ, địa chỉ liên hệ, số cổ phiếu và tỷ lệ sở hữu đầu kỳ/cuối kỳ | Major Shareholder Ownership | Fact Snapshot | (1) BCV term: **Organization Ownership** (Involved Party, id 11558) — *"Involved Party who has financial control or administrative control over the Organization"*; ứng viên `Organization Shareholder` (10990). (2) Cấu trúc trường: cổ đông (tên, số giấy tờ, địa chỉ liên hệ) + số cổ phiếu/tỷ lệ sở hữu đầu–cuối kỳ của 1 mã. (3) Core Object Involved Party theo chỉ định Data Modeler (2026-10-18); grain là khoản sở hữu × kỳ nên không tách shared IP entity (Bước 5). |
 | Documentation | [Documentation] Regulatory Report | Documentation | end_of_day_open_interest | Append | Khối lượng vị thế mở cuối ngày theo mã hợp đồng phái sinh | End Of Day Open Interest | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: khối lượng vị thế mở cuối ngày theo mã hợp đồng phái sinh — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
 
@@ -30,13 +33,37 @@ erDiagram
         string isin_code
         bigint total_issued_shares
         bigint OUTSTANDING_SHARES
-        date transaction_date
+        date data_dt
     }
-    FOREIGN_INVESTOR_INFO {
+    FOREIGN_INVESTOR_INFO_STOCK {
         string ticker_symbol
+        string isin_code
+        bigint total_issued_shares
         decimal max_foreign_ownership_ratio
+        bigint max_shares_foreign_can_hold
         bigint current_shares_foreign_hold
-        date report_date
+        date data_dt
+    }
+    FOREIGN_INVESTOR_INFO_BOND {
+        string bond_code
+        string bond_type
+        bigint total_issued_bonds
+        bigint current_bonds_foreign_hold
+        decimal par_value
+        date data_dt
+    }
+    FOREIGN_INVESTOR_INFO_FUND_CERTIFICATE {
+        string fund_certificate_code
+        bigint total_issued_fund_certificates
+        bigint current_fund_certificates_foreign_hold
+        date data_dt
+    }
+    FOREIGN_INVESTOR_INFO_OTHER_SECURITIES {
+        string security_code
+        string security_type
+        bigint total_issued_securities
+        bigint current_securities_foreign_hold
+        date data_dt
     }
     MAJOR_SHAREHOLDER {
         string ticker_symbol

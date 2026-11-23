@@ -1,0 +1,145 @@
+CREATE TABLE prod_staging.vsdc_stg.foreign_investor_info_bond (
+  bond_code STRING COMMENT 'Nguồn: Mã trong nước',
+  bond_type STRING COMMENT 'Nguồn: Loại trái phiếu (trái phiếu chính phủ/trái phiếu doanh nghiệp niêm yết/trái phiếu doanh nghiệp riêng lẻ)',
+  total_issued_bonds BIGINT COMMENT 'Nguồn: Tổng số trái phiếu đăng ký tại VSDC',
+  current_bonds_foreign_hold BIGINT COMMENT 'Nguồn: Số lượng trái phiếu hiện đang nắm giữ bởi NĐTNN',
+  par_value DECIMAL(30,6) COMMENT 'Nguồn: Mệnh giá',
+  report_year INT COMMENT 'Năm của kỳ báo cáo (từ data_dt)',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo (từ data_dt)',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)',
+  report_period STRING COMMENT 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date',
+  ds_snpst_dt DATE COMMENT 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn',
+  _row_number BIGINT COMMENT 'Số dòng trong sheet',
+  _sheet_name STRING COMMENT 'Tên sheet')
+USING iceberg
+PARTITIONED BY (data_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/foreign_investor_info_bond'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '4957533880722181624',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.metrics.column.data_dt' = 'full',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.foreign_investor_info_fund_certificate (
+  fund_certificate_code STRING COMMENT 'Nguồn: Mã trong nước',
+  total_issued_fund_certificates BIGINT COMMENT 'Nguồn: Tổng số chứng chỉ quỹ đăng ký tại VSDC',
+  current_fund_certificates_foreign_hold BIGINT COMMENT 'Nguồn: Số lượng chứng chỉ quỹ hiện đang nắm giữ bởi NĐTNN',
+  report_year INT COMMENT 'Năm của kỳ báo cáo (từ data_dt)',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo (từ data_dt)',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)',
+  report_period STRING COMMENT 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date',
+  ds_snpst_dt DATE COMMENT 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn',
+  _row_number BIGINT COMMENT 'Số dòng trong sheet',
+  _sheet_name STRING COMMENT 'Tên sheet')
+USING iceberg
+PARTITIONED BY (data_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/foreign_investor_info_fund_certificate'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '6347587819274649267',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.metrics.column.data_dt' = 'full',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.foreign_investor_info_other_securities (
+  security_code STRING COMMENT 'Nguồn: Mã trong nước',
+  security_type STRING COMMENT 'Nguồn: Loại chứng khoán (chứng quyền có bảo đảm, [chứng khoán khác khi có phát sinh sau này])',
+  total_issued_securities BIGINT COMMENT 'Nguồn: Tổng số lượng chứng khoán đăng ký tại VSDC',
+  current_securities_foreign_hold BIGINT COMMENT 'Nguồn: Số lượng chứng khoán hiện đang nắm giữ bởi NĐTNN',
+  report_year INT COMMENT 'Năm của kỳ báo cáo (từ data_dt)',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo (từ data_dt)',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)',
+  report_period STRING COMMENT 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date',
+  ds_snpst_dt DATE COMMENT 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn',
+  _row_number BIGINT COMMENT 'Số dòng trong sheet',
+  _sheet_name STRING COMMENT 'Tên sheet')
+USING iceberg
+PARTITIONED BY (data_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/foreign_investor_info_other_securities'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '5095597484853310928',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.metrics.column.data_dt' = 'full',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')
+
+CREATE TABLE prod_staging.vsdc_stg.foreign_investor_info_stock (
+  ticker_symbol STRING COMMENT 'Nguồn: Mã trong nước',
+  isin_code STRING COMMENT 'Nguồn: Mã ISIN',
+  total_issued_shares BIGINT COMMENT 'Nguồn: Tổng số lượng cổ phiếu đăng ký tại VSDC',
+  max_foreign_ownership_ratio DECIMAL(20,10) COMMENT 'Nguồn: Tỷ lệ sở hữu nước ngoài tối đa',
+  max_shares_foreign_can_hold BIGINT COMMENT 'Nguồn: Số lượng cổ phiếu tối đa được phép nắm giữ bởi NĐTNN',
+  current_shares_foreign_hold BIGINT COMMENT 'Nguồn: Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN',
+  report_year INT COMMENT 'Năm của kỳ báo cáo (từ data_dt)',
+  report_month INT COMMENT 'Tháng của kỳ báo cáo (từ data_dt)',
+  report_day INT COMMENT 'Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)',
+  report_period STRING COMMENT 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)',
+  _batch_id STRING COMMENT 'Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date',
+  ds_snpst_dt DATE COMMENT 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)',
+  ds_etl_pcs_tms TIMESTAMP COMMENT 'Thời điểm ETL (Spark job) ghi dòng',
+  _source_system STRING COMMENT 'source_id trong registry',
+  _source_table STRING COMMENT 'bucket/prefix của dataset',
+  _source_file STRING COMMENT 'Object key của file nguồn (bucket/key)',
+  _file_checksum STRING COMMENT 'ETag của file nguồn (định danh phiên bản, không phải MD5)',
+  _file_modified_at TIMESTAMP COMMENT 'LastModified của file nguồn',
+  _row_number BIGINT COMMENT 'Số dòng trong sheet',
+  _sheet_name STRING COMMENT 'Tên sheet')
+USING iceberg
+PARTITIONED BY (data_dt)
+LOCATION 's3a://prod-staging/vsdc_stg.db/foreign_investor_info_stock'
+TBLPROPERTIES (
+  'commit.retry.min-wait-ms' = '1000',
+  'commit.retry.num-retries' = '10',
+  'current-snapshot-id' = '59479985427293715',
+  'format' = 'iceberg/parquet',
+  'format-version' = '2',
+  'write.distribution-mode' = 'none',
+  'write.metadata.delete-after-commit.enabled' = 'true',
+  'write.metadata.metrics.column.data_dt' = 'full',
+  'write.metadata.previous-versions-max' = '50',
+  'write.parquet.compression-codec' = 'zstd',
+  'write.target-file-size-bytes' = '268435456')

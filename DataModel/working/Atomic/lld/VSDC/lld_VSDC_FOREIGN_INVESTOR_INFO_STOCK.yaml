@@ -2,7 +2,7 @@ schema_type: "lld_source_table"
 schema_version: "2.0"
 metadata:
   source_system: "VSDC"
-  source_table: "FOREIGN_INVESTOR_INFO"
+  source_table: "FOREIGN_INVESTOR_INFO_STOCK"
   atomic_entity: "Foreign Ownership Information"
   entity_physical_name: "foreign_ownership_information"
   bcv_core_object: "Documentation"
@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_FOREIGN_INVESTOR_INFO.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+  notes: "Thiết kế lại 2026-11-22: bảng nguồn VSDC.FOREIGN_INVESTOR_INFO đã tách thành 4 bảng theo loại chứng khoán (FOREIGN_INVESTOR_INFO_BOND / _FUND_CERTIFICATE / _OTHER_SECURITIES / _STOCK; DDL PROD prod_staging.vsdc_stg) — cả 4 cùng map vào entity Foreign Ownership Information (giữ nguyên tên entity, table_type, BCV so với LLD cũ). Mapping theo for_vsdc.txt. Nguồn: BRD/Source/VSDC/brd_VSDC_FOREIGN_INVESTOR_INFO_FOREIGN_INVESTOR_INFO_STOCK.yaml. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key (mã chứng khoán của bảng nguồn tương ứng); BK không gồm kỳ báo cáo nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms và metadata nạp file (_batch_id, _source_*, _file_*, _row_number, _sheet_name) không khai báo trong LLD; ghi vào pending_design.yaml. Entity gộp 4 bảng nguồn — phân biệt qua src_stm_code; cột chỉ có ở 1 bảng nguồn sẽ NULL ở các bảng còn lại, union tại bước Entity Consolidation. Cột REMAINING_SHARES_FOREIGN_CAN_HOLD của bảng cũ không còn ở nguồn và không có trong for_vsdc.txt → bỏ attribute Remaining Foreign Holding Quantity."
 attributes:
 - attribute_name: "Foreign Ownership Information Id"
   physical_name: "foreign_ownership_information_id"
@@ -27,8 +27,8 @@ attributes:
   is_primary_key: true
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO',TICKER_SYMBOL)"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
+  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_STOCK',TICKER_SYMBOL)"
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -41,8 +41,8 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "SOURCE_SYSTEM=VSDC_FOREIGN_INVESTOR_INFO"
-  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO"
+  classification_context: "SOURCE_SYSTEM=VSDC_FOREIGN_INVESTOR_INFO_STOCK"
+  etl_derived_value: "VSDC_FOREIGN_INVESTOR_INFO_STOCK"
   data_type: "string"
 - attribute_name: "Ticker Symbol"
   physical_name: "ticker_symbol"
@@ -52,7 +52,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL"
   comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
   classification_context: null
   etl_derived_value: null
@@ -65,76 +65,76 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.ISIN_CODE"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.ISIN_CODE"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Total Issued Share Quantity"
-  physical_name: "total_issued_share_quantity"
-  description: "Tổng số cổ phiếu phát hành"
+- attribute_name: "Total Issued Quantity"
+  physical_name: "total_issued_quantity"
+  description: "Tổng số lượng cổ phiếu đăng ký tại VSDC"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.TOTAL_ISSUED_SHARES"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.TOTAL_ISSUED_SHARES"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
 - attribute_name: "Max Foreign Ownership Ratio"
   physical_name: "max_foreign_ownership_ratio"
-  description: "Tỷ lệ sở hữu nước ngoài tối đa (%)"
+  description: "Tỷ lệ sở hữu nước ngoài tối đa"
   data_domain: "Percentage"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.MAX_FOREIGN_OWNERSHIP_RATIO"
-  comment: null
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_FOREIGN_OWNERSHIP_RATIO"
+  comment: "Nguồn DECIMAL(20,10) → đích decimal(5,2): ETL cần cast/làm tròn; cần xác nhận đơn vị nguồn (0–1 hay %) trước khi nạp (BRD cũ ghi '%')."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(5,2)"
-- attribute_name: "Max Foreign Holding Quantity"
-  physical_name: "max_foreign_holding_quantity"
-  description: "Số lượng CP tối đa NĐTNN được nắm giữ"
+- attribute_name: "Max Shares Foreign Can Hold"
+  physical_name: "max_shares_foreign_can_hold"
+  description: "Số lượng cổ phiếu tối đa được phép nắm giữ bởi NĐTNN"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.MAX_SHARES_FOREIGN_CAN_HOLD"
-  comment: null
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_SHARES_FOREIGN_CAN_HOLD"
+  comment: "Tên theo for_vsdc.txt (LLD cũ: Max Foreign Holding Quantity / max_foreign_holding_quantity)."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
 - attribute_name: "Current Foreign Holding Quantity"
   physical_name: "current_foreign_holding_quantity"
-  description: "Số lượng CP hiện NĐTNN đang nắm giữ"
+  description: "Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN"
   data_domain: "Large Counter"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.CURRENT_SHARES_FOREIGN_HOLD"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.CURRENT_SHARES_FOREIGN_HOLD"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
-- attribute_name: "Remaining Foreign Holding Quantity"
-  physical_name: "remaining_foreign_holding_quantity"
-  description: "Số lượng CP NĐTNN còn được phép nắm giữ"
-  data_domain: "Large Counter"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.REMAINING_SHARES_FOREIGN_CAN_HOLD"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "bigint"
+  data_type: "date"
 - attribute_name: "Report Year"
   physical_name: "rpt_year"
   description: "Năm báo cáo"
@@ -143,7 +143,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.REPORT_YEAR"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_YEAR"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -156,7 +156,7 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.REPORT_MONTH"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_MONTH"
   comment: null
   classification_context: null
   etl_derived_value: null
@@ -169,8 +169,21 @@ attributes:
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.FOREIGN_INVESTOR_INFO.REPORT_DAY"
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_DAY"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"

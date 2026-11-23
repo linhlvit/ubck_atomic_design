@@ -2,7 +2,7 @@ schema_type: data_model
 schema_version: "1.0"
 
 ldm:
-  id: ATM-foreign_ownership_information-VSDC.FOREIGN_INVESTOR_INFO
+  id: ATM-foreign_ownership_information-VSDC.FOREIGN_INVESTOR_INFO_STOCK
   logical_name: Foreign Ownership Information
   physical_name: foreign_ownership_information
   layer: Atomic
@@ -14,12 +14,12 @@ ldm:
   etl_pattern: Fact Snapshot
   source: VSDC
   description: |
-    Thông tin sở hữu của nhà đầu tư nước ngoài theo mã chứng khoán: tổng số cổ phiếu phát hành, tỷ lệ sở hữu nước ngoài tối đa, số cổ phiếu tối đa được nắm giữ, đang nắm giữ và còn lại.
+    Thông tin sở hữu của nhà đầu tư nước ngoài theo mã chứng khoán (cổ phiếu, trái phiếu, chứng chỉ quỹ, chứng khoán khác): tổng số đăng ký tại VSDC và số lượng đang nắm giữ bởi NĐTNN; riêng cổ phiếu có tỷ lệ sở hữu nước ngoài tối đa và số lượng tối đa được nắm giữ, riêng trái phiếu có mệnh giá.
   owner:
     steward: username@ubck.com.vn
     data_modeler: username@fssc.com.vn
   references:
-    brd: BRD-SRC-VSDC-FOREIGN_INVESTOR_INFO
+    brd: BRD-SRC-VSDC-FOREIGN_INVESTOR_INFO_STOCK
 
 attributes:
   - name: Foreign Ownership Information Id
@@ -30,9 +30,9 @@ attributes:
     nullable: false
     is_primary_key: true
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL
-    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO',TICKER_SYMBOL)"
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL
+    comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('VSDC_FOREIGN_INVESTOR_INFO_STOCK',TICKER_SYMBOL)"
     classification_context: null
     etl_derived_value: null
 
@@ -44,11 +44,11 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
     source_column: null
     comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-    classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO'"
-    etl_derived_value: VSDC_FOREIGN_INVESTOR_INFO
+    classification_context: "Source System Code = 'VSDC_FOREIGN_INVESTOR_INFO_STOCK'"
+    etl_derived_value: VSDC_FOREIGN_INVESTOR_INFO_STOCK
 
   - name: Ticker Symbol
     physical_name: ticker_symbol
@@ -58,8 +58,8 @@ attributes:
     nullable: false
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.TICKER_SYMBOL
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.TICKER_SYMBOL
     comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
     classification_context: null
     etl_derived_value: null
@@ -72,78 +72,78 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.ISIN_CODE
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.ISIN_CODE
     comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: Total Issued Share Quantity
-    physical_name: total_issued_share_quantity
-    business_meaning: Tổng số cổ phiếu phát hành
+  - name: Total Issued Quantity
+    physical_name: total_issued_quantity
+    business_meaning: Tổng số lượng cổ phiếu đăng ký tại VSDC
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.TOTAL_ISSUED_SHARES
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.TOTAL_ISSUED_SHARES
     comment: null
     classification_context: null
     etl_derived_value: null
 
   - name: Max Foreign Ownership Ratio
     physical_name: max_foreign_ownership_ratio
-    business_meaning: "Tỷ lệ sở hữu nước ngoài tối đa (%)"
+    business_meaning: Tỷ lệ sở hữu nước ngoài tối đa
     data_domain: Percentage
     data_type: decimal(5,2)
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.MAX_FOREIGN_OWNERSHIP_RATIO
-    comment: null
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_FOREIGN_OWNERSHIP_RATIO
+    comment: "Nguồn DECIMAL(20,10) → đích decimal(5,2): ETL cần cast/làm tròn; cần xác nhận đơn vị nguồn (0–1 hay %) trước khi nạp (BRD cũ ghi '%')."
     classification_context: null
     etl_derived_value: null
 
-  - name: Max Foreign Holding Quantity
-    physical_name: max_foreign_holding_quantity
-    business_meaning: Số lượng CP tối đa NĐTNN được nắm giữ
+  - name: Max Shares Foreign Can Hold
+    physical_name: max_shares_foreign_can_hold
+    business_meaning: Số lượng cổ phiếu tối đa được phép nắm giữ bởi NĐTNN
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.MAX_SHARES_FOREIGN_CAN_HOLD
-    comment: null
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.MAX_SHARES_FOREIGN_CAN_HOLD
+    comment: "Tên theo for_vsdc.txt (LLD cũ: Max Foreign Holding Quantity / max_foreign_holding_quantity)."
     classification_context: null
     etl_derived_value: null
 
   - name: Current Foreign Holding Quantity
     physical_name: current_foreign_holding_quantity
-    business_meaning: Số lượng CP hiện NĐTNN đang nắm giữ
+    business_meaning: Số lượng cổ phiếu hiện đang nắm giữ bởi NĐTNN
     data_domain: Large Counter
     data_type: bigint
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.CURRENT_SHARES_FOREIGN_HOLD
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.CURRENT_SHARES_FOREIGN_HOLD
     comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: Remaining Foreign Holding Quantity
-    physical_name: remaining_foreign_holding_quantity
-    business_meaning: Số lượng CP NĐTNN còn được phép nắm giữ
-    data_domain: Large Counter
-    data_type: bigint
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch."
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.REMAINING_SHARES_FOREIGN_CAN_HOLD
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.DATA_DT
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -156,8 +156,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.REPORT_YEAR
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_YEAR
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -170,8 +170,8 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.REPORT_MONTH
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_MONTH
     comment: null
     classification_context: null
     etl_derived_value: null
@@ -184,8 +184,22 @@ attributes:
     nullable: true
     is_primary_key: false
     source_system: VSDC
-    source_table: FOREIGN_INVESTOR_INFO
-    source_column: VSDC.FOREIGN_INVESTOR_INFO.REPORT_DAY
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: VSDC
+    source_table: FOREIGN_INVESTOR_INFO_STOCK
+    source_column: VSDC.FOREIGN_INVESTOR_INFO_STOCK.REPORT_PERIOD
     comment: null
     classification_context: null
     etl_derived_value: null
