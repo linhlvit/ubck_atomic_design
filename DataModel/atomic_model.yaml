@@ -201,9 +201,9 @@ entities:
     business_meaning_1st: FK đến Classification VSDC Nationality — Quốc tịch.
     comment_1st: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
       \ sang VSDC.NATIONALITY: CLOSED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để\
-      \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING,\
-      \ AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không\
-      \ khớp AUTOID."
+      \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn đổi sang\
+      \ INT theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần validate giá\
+      \ trị khớp AUTOID."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -219,8 +219,8 @@ entities:
         comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
           \ sang VSDC.NATIONALITY: CLOSED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID\
           \ để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn\
-          \ lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị\
-          \ non-numeric/không khớp AUTOID."
+          \ đổi sang INT theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần\
+          \ validate giá trị khớp AUTOID."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc tịch (denormalized) — Quốc tịch.
@@ -345,6 +345,25 @@ entities:
       - source_table: CLOSED_INVESTORS
         source_column: VSDC.CLOSED_INVESTORS.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: VSDC
+      source_tables:
+      - source_table: CLOSED_INVESTORS
+        source_column: VSDC.CLOSED_INVESTORS.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-discretionary_investment_account
@@ -1502,9 +1521,9 @@ entities:
     business_meaning_1st: FK đến Classification VSDC Nationality — Quốc tịch.
     comment_1st: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
       \ sang VSDC.NATIONALITY: OPEN_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để\
-      \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING,\
-      \ AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không\
-      \ khớp AUTOID."
+      \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn đổi sang\
+      \ INT theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần validate giá\
+      \ trị khớp AUTOID."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -1520,8 +1539,8 @@ entities:
         comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
           \ sang VSDC.NATIONALITY: OPEN_INVESTORS.NATIONALITY = NATIONALITY.AUTOID\
           \ để xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn\
-          \ lưu STRING, AUTOID là BIGINT — ETL cần CAST và validate không có giá trị\
-          \ non-numeric/không khớp AUTOID."
+          \ đổi sang INT theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần\
+          \ validate giá trị khớp AUTOID."
   - name: Nationality Code
     physical_name: nationality_code
     business_meaning_1st: Mã quốc tịch (denormalized) — Quốc tịch.
@@ -1579,6 +1598,23 @@ entities:
         source_column: VSDC.OPEN_INVESTORS.EMAIL
         business_meaning: Địa chỉ email
         comment: null
+  - name: Open Note
+    physical_name: open_note
+    business_meaning_1st: Ghi chú mở tài khoản
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: VSDC
+      source_tables:
+      - source_table: OPEN_INVESTORS
+        source_column: VSDC.OPEN_INVESTORS.NOTES
+        business_meaning: Ghi chú mở tài khoản
+        comment: null
   - name: Report Year
     physical_name: rpt_year
     business_meaning_1st: Năm báo cáo
@@ -1629,6 +1665,25 @@ entities:
       - source_table: OPEN_INVESTORS
         source_column: VSDC.OPEN_INVESTORS.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: VSDC
+      source_tables:
+      - source_table: OPEN_INVESTORS
+        source_column: VSDC.OPEN_INVESTORS.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-pc_share_statistics
@@ -3621,23 +3676,6 @@ entities:
         source_column: VSDC.UPDATED_INVESTORS.ISSUE_PLACE
         business_meaning: Nơi cấp
         comment: null
-  - name: Update Date
-    physical_name: update_dt
-    business_meaning_1st: Ngày thay đổi thông tin
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.UPDATE_DATE
-        business_meaning: Ngày thay đổi thông tin
-        comment: null
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning_1st: FK đến Classification VSDC Nationality — Quốc tịch.
@@ -3713,7 +3751,9 @@ entities:
   - name: Update Note
     physical_name: update_note
     business_meaning_1st: Ghi chú thay đổi
-    comment_1st: null
+    comment_1st: "Nguồn đổi sang kiểu DATE theo DDL PROD 2026-11-24 (comment nguồn:\
+      \ NOTE — ghi chú) nhưng mô tả là ghi chú văn bản — ETL cần convert sang string;\
+      \ cần profile dữ liệu xác nhận cột có chứa ghi chú hay ngày thật."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -3726,13 +3766,15 @@ entities:
       - source_table: UPDATED_INVESTORS
         source_column: VSDC.UPDATED_INVESTORS.NOTES
         business_meaning: Ghi chú thay đổi
-        comment: null
-  - name: From Year
-    physical_name: from_year
-    business_meaning_1st: Năm bắt đầu
+        comment: "Nguồn đổi sang kiểu DATE theo DDL PROD 2026-11-24 (comment nguồn:\
+          \ NOTE — ghi chú) nhưng mô tả là ghi chú văn bản — ETL cần convert sang\
+          \ string; cần profile dữ liệu xác nhận cột có chứa ghi chú hay ngày thật."
+  - name: Data Period Start Date
+    physical_name: data_period_start_dt
+    business_meaning_1st: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -3741,15 +3783,15 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.FROM_YEAR
-        business_meaning: Năm bắt đầu
+        source_column: VSDC.UPDATED_INVESTORS.BEGIN_PERIOD_DATE
+        business_meaning: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
         comment: null
-  - name: From Month
-    physical_name: from_month
-    business_meaning_1st: Tháng bắt đầu
+  - name: Data Period End Date
+    physical_name: data_period_end_dt
+    business_meaning_1st: Ngày cuối kỳ dữ liệu.
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -3758,15 +3800,16 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.FROM_MONTH
-        business_meaning: Tháng bắt đầu
+        source_column: VSDC.UPDATED_INVESTORS.END_PERIOD_DATE
+        business_meaning: Ngày cuối kỳ dữ liệu.
         comment: null
-  - name: From Day
-    physical_name: from_day
-    business_meaning_1st: Ngày bắt đầu
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -3775,59 +3818,9 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.FROM_DAY
-        business_meaning: Ngày bắt đầu
-        comment: null
-  - name: To Year
-    physical_name: to_year
-    business_meaning_1st: Năm kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.TO_YEAR
-        business_meaning: Năm kết thúc
-        comment: null
-  - name: To Month
-    physical_name: to_month
-    business_meaning_1st: Tháng kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.TO_MONTH
-        business_meaning: Tháng kết thúc
-        comment: null
-  - name: To Day
-    physical_name: to_day
-    business_meaning_1st: Ngày kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: UPDATED_INVESTORS
-        source_column: VSDC.UPDATED_INVESTORS.TO_DAY
-        business_meaning: Ngày kết thúc
+        source_column: VSDC.UPDATED_INVESTORS.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-af_auditor_status_history
@@ -31753,6 +31746,44 @@ entities:
         source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_ADDITIONAL_LISTING
+        source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_ADDITIONAL_LISTING
+        source_column: HNX.GOV_BOND_ADDITIONAL_LISTING.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
 - ldm:
     id: ATM-af_approval
     logical_name_1st: Audit Firm Approval
@@ -33160,6 +33191,61 @@ entities:
         source_column: HNX.REGISTRATION_STATUS_CHANGE.BUSINESS_NO
         business_meaning: Mã số doanh nghiệp
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: REGISTRATION_STATUS_CHANGE
+        source_column: HNX.REGISTRATION_STATUS_CHANGE.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: REGISTRATION_STATUS_CHANGE
+        source_column: HNX.REGISTRATION_STATUS_CHANGE.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+  - name: Expected Change Date
+    physical_name: expected_change_dt
+    business_meaning_1st: Ngày dự kiến thay đổi.
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: REGISTRATION_STATUS_CHANGE
+        source_column: HNX.REGISTRATION_STATUS_CHANGE.EXPECTED_CHANGE_DATE
+        business_meaning: Ngày dự kiến thay đổi.
+        comment: null
 - ldm:
     id: ATM-brokerage_market_share
     logical_name_1st: Brokerage Market Share
@@ -33305,11 +33391,11 @@ entities:
     business_meaning_1st: Tỷ trọng theo tổng GTGD (%)
     comment_1st: null
     data_domain_most: Percentage
-    data_type_most: decimal(5,2)
+    data_type_most: decimal(8,5)
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: null
+    conflict_review: "data_type: ['decimal(8,5)', 'decimal(5,2)']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -33346,9 +33432,44 @@ entities:
         source_column: HOSE.BROKERAGE_MARKET_SHARE.CLASSIFICATION
         business_meaning: Phân loại
         comment: null
-  - name: Report Quarter
-    physical_name: rpt_quarter
-    business_meaning_1st: Quý báo cáo
+  - name: Report Period Begin Date
+    physical_name: rpt_period_begin_dt
+    business_meaning_1st: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HNX.BROKERAGE_MARKET_SHARE.BEGIN_PERIOD_DATE
+        business_meaning: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+        comment: null
+  - name: Report Period End Date
+    physical_name: rpt_period_end_dt
+    business_meaning_1st: Ngày cuối kỳ dữ liệu (= Data Date).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HNX.BROKERAGE_MARKET_SHARE.END_PERIOD_DATE
+        business_meaning: Ngày cuối kỳ dữ liệu (= Data Date).
+        comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
     comment_1st: null
     data_domain_most: Text
     data_type_most: string
@@ -33360,21 +33481,17 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER
-        business_meaning: Quý báo cáo
+        source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
         comment: null
-    - source_system: HOSE
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER
-        business_meaning: Quý báo cáo
-        comment: null
-  - name: Report Year
-    physical_name: rpt_year
-    business_meaning_1st: Năm báo cáo
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -33383,60 +33500,9 @@ entities:
     - source_system: HNX
       source_tables:
       - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR
-        business_meaning: Năm báo cáo
-        comment: null
-    - source_system: HOSE
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_YEAR
-        business_meaning: Năm báo cáo
-        comment: null
-  - name: Report Month
-    physical_name: rpt_month
-    business_meaning_1st: Tháng báo cáo
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: HNX
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH
-        business_meaning: Tháng báo cáo
-        comment: null
-    - source_system: HOSE
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_MONTH
-        business_meaning: Tháng báo cáo
-        comment: null
-  - name: Report Day
-    physical_name: rpt_day
-    business_meaning_1st: Ngày báo cáo
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: HNX
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY
-        business_meaning: Ngày báo cáo
-        comment: null
-    - source_system: HOSE
-      source_tables:
-      - source_table: BROKERAGE_MARKET_SHARE
-        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY
-        business_meaning: Ngày báo cáo
+        source_column: HNX.BROKERAGE_MARKET_SHARE.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
   - name: Buy Trading Value
     physical_name: buy_trading_val
@@ -33472,6 +33538,74 @@ entities:
         source_column: HOSE.BROKERAGE_MARKET_SHARE.SELL_TRADING_VALUE
         business_meaning: Giá trị giao dịch bán (tỷ đồng)
         comment: Chỉ HOSE có cột này; HNX/VSDC để NULL.
+  - name: Report Quarter
+    physical_name: rpt_quarter
+    business_meaning_1st: Quý báo cáo
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_QUARTER
+        business_meaning: Quý báo cáo
+        comment: null
+  - name: Report Year
+    physical_name: rpt_year
+    business_meaning_1st: Năm báo cáo
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_YEAR
+        business_meaning: Năm báo cáo
+        comment: null
+  - name: Report Month
+    physical_name: rpt_month
+    business_meaning_1st: Tháng báo cáo
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_MONTH
+        business_meaning: Tháng báo cáo
+        comment: null
+  - name: Report Day
+    physical_name: rpt_day
+    business_meaning_1st: Ngày báo cáo
+    comment_1st: null
+    data_domain_most: Small Counter
+    data_type_most: int
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: BROKERAGE_MARKET_SHARE
+        source_column: HOSE.BROKERAGE_MARKET_SHARE.REPORT_DAY
+        business_meaning: Ngày báo cáo
+        comment: null
 - ldm:
     id: ATM-cr_structure
     logical_name_1st: Compliance Report Structure
@@ -44989,23 +45123,6 @@ entities:
         source_column: HNX.GOV_BOND_OFFERING.BIDDING_SESSION
         business_meaning: Đợt đấu thầu
         comment: BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter).
-  - name: Bidding Method
-    physical_name: bidding_method
-    business_meaning_1st: Phương thức đấu thầu
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: HNX
-      source_tables:
-      - source_table: GOV_BOND_OFFERING
-        source_column: HNX.GOV_BOND_OFFERING.BIDDING_METHOD
-        business_meaning: Phương thức đấu thầu
-        comment: null
   - name: Bond Code
     physical_name: bond_code
     business_meaning_1st: Mã trái phiếu
@@ -45244,6 +45361,44 @@ entities:
         source_column: HNX.GOV_BOND_OFFERING.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_OFFERING
+        source_column: HNX.GOV_BOND_OFFERING.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_OFFERING
+        source_column: HNX.GOV_BOND_OFFERING.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
 - ldm:
     id: ATM-gov_bond_listing
     logical_name_1st: Gov Bond Listing
@@ -45406,23 +45561,6 @@ entities:
         source_column: HNX.GOV_BOND_LISTED_LIST.REMAINING_TERM
         business_meaning: Kỳ hạn còn lại của trái phiếu
         comment: null
-  - name: Interest Payment Method
-    physical_name: interest_payment_method
-    business_meaning_1st: Hình thức trả lãi
-    comment_1st: null
-    data_domain_most: Text
-    data_type_most: string
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: HNX
-      source_tables:
-      - source_table: GOV_BOND_LISTED_LIST
-        source_column: HNX.GOV_BOND_LISTED_LIST.INTEREST_PAYMENT_METHOD
-        business_meaning: Hình thức trả lãi
-        comment: null
   - name: Interest Payment Type
     physical_name: interest_payment_tp
     business_meaning_1st: Loại hình trả lãi
@@ -45541,6 +45679,44 @@ entities:
       - source_table: GOV_BOND_LISTED_LIST
         source_column: HNX.GOV_BOND_LISTED_LIST.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_LISTED_LIST
+        source_column: HNX.GOV_BOND_LISTED_LIST.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: GOV_BOND_LISTED_LIST
+        source_column: HNX.GOV_BOND_LISTED_LIST.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-inspection_conclusion
@@ -46756,6 +46932,65 @@ entities:
         source_column: VSDC.OUTSTANDING_SHARES.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: LISTED_SECURITIES_LIST
+        source_column: HNX.LISTED_SECURITIES_LIST.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+    - source_system: HOSE
+      source_tables:
+      - source_table: LISTED_SECURITIES_LIST
+        source_column: HOSE.LISTED_SECURITIES_LIST.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: LISTED_SECURITIES_LIST
+        source_column: HNX.LISTED_SECURITIES_LIST.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+    - source_system: HOSE
+      source_tables:
+      - source_table: LISTED_SECURITIES_LIST
+        source_column: HOSE.LISTED_SECURITIES_LIST.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+    - source_system: VSDC
+      source_tables:
+      - source_table: OUTSTANDING_SHARES
+        source_column: VSDC.OUTSTANDING_SHARES.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng) — khóa ghi đè của batch.
+        comment: null
   - name: ISIN Code
     physical_name: isin_code
     business_meaning_1st: Mã ISIN
@@ -46857,25 +47092,6 @@ entities:
       - source_table: OUTSTANDING_SHARES
         source_column: VSDC.OUTSTANDING_SHARES.VOTING_SHARES
         business_meaning: Khối lượng chứng khoán có quyền biểu quyết
-        comment: null
-  - name: Data Date
-    physical_name: data_dt
-    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
-      tháng / quý / khoảng) — khóa ghi đè của batch.
-    comment_1st: null
-    data_domain_most: Date
-    data_type_most: date
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: OUTSTANDING_SHARES
-        source_column: VSDC.OUTSTANDING_SHARES.DATA_DT
-        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
-          tháng / quý / khoảng) — khóa ghi đè của batch.
         comment: null
 - ldm:
     id: ATM-listing_status_change
@@ -47004,7 +47220,8 @@ entities:
       - source_table: LISTING_STATUS_CHANGE
         source_column: HOSE.LISTING_STATUS_CHANGE.DECISION_DATE
         business_meaning: Ngày quyết định
-        comment: BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter).
+        comment: Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+          sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ.
   - name: Ticker Symbol
     physical_name: ticker_symbol
     business_meaning_1st: Mã CK
@@ -47234,7 +47451,8 @@ entities:
       - source_table: LISTING_STATUS_CHANGE
         source_column: HOSE.LISTING_STATUS_CHANGE.EFFECTIVE_DATE
         business_meaning: Ngày hiệu lực
-        comment: null
+        comment: Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+          sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ.
   - name: First Trading Date
     physical_name: first_trading_dt
     business_meaning_1st: Ngày giao dịch đầu tiên
@@ -47257,7 +47475,8 @@ entities:
       - source_table: LISTING_STATUS_CHANGE
         source_column: HOSE.LISTING_STATUS_CHANGE.FIRST_TRADING_DATE
         business_meaning: Ngày giao dịch đầu tiên
-        comment: null
+        comment: Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+          sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ.
   - name: Last Trading Date
     physical_name: last_trading_dt
     business_meaning_1st: Ngày giao dịch cuối cùng
@@ -47280,7 +47499,8 @@ entities:
       - source_table: LISTING_STATUS_CHANGE
         source_column: HOSE.LISTING_STATUS_CHANGE.LAST_TRADING_DATE
         business_meaning: Ngày giao dịch cuối cùng
-        comment: null
+        comment: Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+          sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ.
   - name: Delist Transfer Reason
     physical_name: delist_transfer_reason
     business_meaning_1st: Lý do hủy, chuyển sàn
@@ -47372,6 +47592,44 @@ entities:
       - source_table: LISTING_STATUS_CHANGE
         source_column: HOSE.LISTING_STATUS_CHANGE.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: LISTING_STATUS_CHANGE
+        source_column: HOSE.LISTING_STATUS_CHANGE.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HOSE
+      source_tables:
+      - source_table: LISTING_STATUS_CHANGE
+        source_column: HOSE.LISTING_STATUS_CHANGE.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-pc_cancellation
@@ -50132,6 +50390,44 @@ entities:
         source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: PRIVATE_CORP_BOND_REGISTRATION
+        source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: PRIVATE_CORP_BOND_REGISTRATION
+        source_column: HNX.PRIVATE_CORP_BOND_REGISTRATION.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
 - ldm:
     id: ATM-private_corp_bond_service_organization
     logical_name_1st: Private Corp Bond Service Organization
@@ -50451,6 +50747,44 @@ entities:
       - source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
         source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+        source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: PRIVATE_CORP_BOND_SERVICE_ORGS
+        source_column: HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-private_corp_bond_trading_summary
@@ -85890,8 +86224,8 @@ entities:
   - name: Voting Share Quantity
     physical_name: voting_share_quantity
     business_meaning_1st: Số cổ phiếu có quyền biểu quyết
-    comment_1st: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-      phần thập phân.
+    comment_1st: Nguồn đổi sang STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+      sang BIGINT; cần validate không có giá trị non-numeric/định dạng phân tách nghìn.
     data_domain_most: Large Counter
     data_type_most: bigint
     nullable_most: true
@@ -85904,8 +86238,9 @@ entities:
       - source_table: MAJOR_SHAREHOLDER
         source_column: VSDC.MAJOR_SHAREHOLDER.VOTING_SHARES
         business_meaning: Số cổ phiếu có quyền biểu quyết
-        comment: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-          phần thập phân.
+        comment: Nguồn đổi sang STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse
+          sang BIGINT; cần validate không có giá trị non-numeric/định dạng phân tách
+          nghìn.
   - name: Opening Balance Date
     physical_name: opening_balance_dt
     business_meaning_1st: Ngày chốt số liệu đầu kỳ
@@ -85926,8 +86261,7 @@ entities:
   - name: Opening Share Quantity
     physical_name: opening_share_quantity
     business_meaning_1st: Số lượng chứng khoán đầu kỳ
-    comment_1st: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-      phần thập phân.
+    comment_1st: null
     data_domain_most: Large Counter
     data_type_most: bigint
     nullable_most: true
@@ -85940,14 +86274,15 @@ entities:
       - source_table: MAJOR_SHAREHOLDER
         source_column: VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_SHARES
         business_meaning: Số lượng chứng khoán đầu kỳ
-        comment: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-          phần thập phân.
+        comment: null
   - name: Opening Ratio
     physical_name: opening_ratio
     business_meaning_1st: Tỷ lệ đầu kỳ (%)
     comment_1st: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4)\
       \ (domain Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ\
-      \ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+      \ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN].\
+      \ Nguồn đổi sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang decimal(7,4),\
+      \ cần kiểm tra sai số làm tròn."
     data_domain_most: Percentage
     data_type_most: decimal(7,4)
     nullable_most: true
@@ -85963,7 +86298,8 @@ entities:
         comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4)\
           \ (domain Percentage mặc định decimal(5,2)). transform_physical_names.py\
           \ sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW\
-          \ DOMAIN]."
+          \ DOMAIN]. Nguồn đổi sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang\
+          \ decimal(7,4), cần kiểm tra sai số làm tròn."
   - name: Closing Balance Date
     physical_name: closing_balance_dt
     business_meaning_1st: Ngày chốt số liệu cuối kỳ
@@ -85984,8 +86320,7 @@ entities:
   - name: Closing Share Quantity
     physical_name: closing_share_quantity
     business_meaning_1st: Số lượng chứng khoán cuối kỳ
-    comment_1st: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-      phần thập phân.
+    comment_1st: null
     data_domain_most: Large Counter
     data_type_most: bigint
     nullable_most: true
@@ -85998,14 +86333,15 @@ entities:
       - source_table: MAJOR_SHAREHOLDER
         source_column: VSDC.MAJOR_SHAREHOLDER.END_PERIOD_SHARES
         business_meaning: Số lượng chứng khoán cuối kỳ
-        comment: Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có
-          phần thập phân.
+        comment: null
   - name: Closing Ratio
     physical_name: closing_ratio
     business_meaning_1st: Tỷ lệ cuối kỳ (%)
     comment_1st: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4)\
       \ (domain Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ\
-      \ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+      \ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN].\
+      \ Nguồn đổi sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang decimal(7,4),\
+      \ cần kiểm tra sai số làm tròn."
     data_domain_most: Percentage
     data_type_most: decimal(7,4)
     nullable_most: true
@@ -86021,7 +86357,8 @@ entities:
         comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4)\
           \ (domain Percentage mặc định decimal(5,2)). transform_physical_names.py\
           \ sẽ ghi đè về mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW\
-          \ DOMAIN]."
+          \ DOMAIN]. Nguồn đổi sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang\
+          \ decimal(7,4), cần kiểm tra sai số làm tròn."
   - name: Note
     physical_name: note
     business_meaning_1st: Ghi chú
@@ -86039,12 +86376,13 @@ entities:
         source_column: VSDC.MAJOR_SHAREHOLDER.NOTES
         business_meaning: Ghi chú
         comment: null
-  - name: From Year
-    physical_name: from_year
-    business_meaning_1st: Năm bắt đầu
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
     comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
+    data_domain_most: Date
+    data_type_most: date
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
@@ -86053,93 +86391,9 @@ entities:
     - source_system: VSDC
       source_tables:
       - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.FROM_YEAR
-        business_meaning: Năm bắt đầu
-        comment: null
-  - name: From Month
-    physical_name: from_month
-    business_meaning_1st: Tháng bắt đầu
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.FROM_MONTH
-        business_meaning: Tháng bắt đầu
-        comment: null
-  - name: From Day
-    physical_name: from_day
-    business_meaning_1st: Ngày bắt đầu
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.FROM_DAY
-        business_meaning: Ngày bắt đầu
-        comment: null
-  - name: To Year
-    physical_name: to_year
-    business_meaning_1st: Năm kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.TO_YEAR
-        business_meaning: Năm kết thúc
-        comment: null
-  - name: To Month
-    physical_name: to_month
-    business_meaning_1st: Tháng kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.TO_MONTH
-        business_meaning: Tháng kết thúc
-        comment: null
-  - name: To Day
-    physical_name: to_day
-    business_meaning_1st: Ngày kết thúc
-    comment_1st: null
-    data_domain_most: Small Counter
-    data_type_most: int
-    nullable_most: true
-    is_primary_key_most: false
-    etl_derived_value: null
-    conflict_review: null
-    source_mappings:
-    - source_system: VSDC
-      source_tables:
-      - source_table: MAJOR_SHAREHOLDER
-        source_column: VSDC.MAJOR_SHAREHOLDER.TO_DAY
-        business_meaning: Ngày kết thúc
+        source_column: VSDC.MAJOR_SHAREHOLDER.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-pc_entity_role
@@ -104281,6 +104535,64 @@ entities:
         source_column: HNX.REPO_ORDER_BOOK.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning_1st: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+      \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    comment_1st: null
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: OUTRIGHT_ORDER_BOOK
+        source_column: HNX.OUTRIGHT_ORDER_BOOK.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+      - source_table: REPO2_ORDER_BOOK
+        source_column: HNX.REPO2_ORDER_BOOK.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+      - source_table: REPO_ORDER_BOOK
+        source_column: HNX.REPO_ORDER_BOOK.REPORT_PERIOD
+        business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609\
+          \ (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: OUTRIGHT_ORDER_BOOK
+        source_column: HNX.OUTRIGHT_ORDER_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+      - source_table: REPO2_ORDER_BOOK
+        source_column: HNX.REPO2_ORDER_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+      - source_table: REPO_ORDER_BOOK
+        source_column: HNX.REPO_ORDER_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
   - name: Par Value
     physical_name: par_val
     business_meaning_1st: GTMG - Giá trị mệnh giá.
@@ -105661,6 +105973,32 @@ entities:
         source_column: HOSE.ORDER_BOOK.REPORT_DAY
         business_meaning: Ngày báo cáo
         comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: ORDER_BOOK
+        source_column: HNX.ORDER_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+    - source_system: HOSE
+      source_tables:
+      - source_table: ORDER_BOOK
+        source_column: HOSE.ORDER_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
 - ldm:
     id: ATM-securities_trade
     logical_name_1st: Securities Trade
@@ -106736,6 +107074,32 @@ entities:
       - source_table: TRADE_BOOK
         source_column: HOSE.TRADE_BOOK.REPORT_DAY
         business_meaning: Ngày báo cáo
+        comment: null
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning_1st: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+      tháng / quý / khoảng).
+    comment_1st: null
+    data_domain_most: Date
+    data_type_most: date
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: HNX
+      source_tables:
+      - source_table: TRADE_BOOK
+        source_column: HNX.TRADE_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
+        comment: null
+    - source_system: HOSE
+      source_tables:
+      - source_table: TRADE_BOOK
+        source_column: HOSE.TRADE_BOOK.DATA_DT
+        business_meaning: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO /
+          tháng / quý / khoảng).
         comment: null
 - ldm:
     id: ATM-security_match_log

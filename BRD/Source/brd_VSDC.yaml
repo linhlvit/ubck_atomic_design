@@ -32,7 +32,7 @@ brd_entries:
     scope_reason: null
     table: OPEN_INVESTORS
     related_tables: null
-    notes: null
+    notes: 'DDL PROD 2026-11-24 (prod_staging.vsdc_stg, Iceberg, PARTITIONED BY data_dt): thêm NOTES, DATA_DT, thêm 6 cột metadata nạp file (_BATCH_ID, _SOURCE_SYSTEM, _SOURCE_TABLE, _SOURCE_FILE, _FILE_CHECKSUM, _FILE_MODIFIED_AT); INVESTOR_TYPE/NATIONALITY đổi STRING→INT (mã số).'
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -51,7 +51,7 @@ brd_entries:
     scope_reason: null
     table: CLOSED_INVESTORS
     related_tables: null
-    notes: null
+    notes: 'DDL PROD 2026-11-24 (prod_staging.vsdc_stg, Iceberg, PARTITIONED BY data_dt): thêm DATA_DT, thêm 6 cột metadata nạp file (_BATCH_ID, _SOURCE_SYSTEM, _SOURCE_TABLE, _SOURCE_FILE, _FILE_CHECKSUM, _FILE_MODIFIED_AT); INVESTOR_TYPE/NATIONALITY đổi STRING→INT (mã số).'
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -70,7 +70,7 @@ brd_entries:
     scope_reason: null
     table: UPDATED_INVESTORS
     related_tables: null
-    notes: null
+    notes: 'DDL PROD 2026-11-24 (prod_staging.vsdc_stg, Iceberg, PARTITIONED BY data_dt): đã xóa khỏi file cột UPDATE_DATE và FROM_/TO_ DAY/MONTH/YEAR (không còn ở nguồn); thêm BEGIN_PERIOD_DATE, END_PERIOD_DATE, DATA_DT, thêm 6 cột metadata nạp file (_BATCH_ID, _SOURCE_SYSTEM, _SOURCE_TABLE, _SOURCE_FILE, _FILE_CHECKSUM, _FILE_MODIFIED_AT); INVESTOR_TYPE/NATIONALITY đổi STRING→INT (mã số); NOTES đổi STRING→DATE.'
     data_volume_hint: null
     refresh_frequency: null
     ingestion:
@@ -89,7 +89,7 @@ brd_entries:
     scope_reason: null
     table: MAJOR_SHAREHOLDER
     related_tables: null
-    notes: null
+    notes: 'DDL PROD 2026-11-24 (prod_staging.vsdc_stg, Iceberg, PARTITIONED BY data_dt): đã xóa khỏi file cột FROM_/TO_ DAY/MONTH/YEAR (không còn ở nguồn); thêm SEQ_NO, DATA_DT, thêm 6 cột metadata nạp file (_BATCH_ID, _SOURCE_SYSTEM, _SOURCE_TABLE, _SOURCE_FILE, _FILE_CHECKSUM, _FILE_MODIFIED_AT); VOTING_SHARES đổi STRING; BEGIN/END_PERIOD_SHARES BIGINT; BEGIN/END_PERIOD_RATIO FLOAT.'
     data_volume_hint: null
     refresh_frequency: null
     ingestion:

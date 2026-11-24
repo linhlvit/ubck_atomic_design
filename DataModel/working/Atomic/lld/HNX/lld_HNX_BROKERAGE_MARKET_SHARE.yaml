@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_BROKERAGE_MARKET_SHARE.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HNX/brd_HNX_BROKERAGE_MARKET_SHARE.yaml. HLD: HNX_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Cập nhật 2026-11-23 theo DDL prod_staging.hnx_stg mới (BRD reconcile): bỏ attribute Report Quarter (cột nguồn REPORT_QUARTER không còn trong DDL); bỏ attribute Report Year (cột nguồn REPORT_YEAR không còn trong DDL); bỏ attribute Report Month (cột nguồn REPORT_MONTH không còn trong DDL); bỏ attribute Report Day (cột nguồn REPORT_DAY không còn trong DDL); thêm attribute từ cột mới BEGIN_PERIOD_DATE, END_PERIOD_DATE, REPORT_PERIOD, DATA_DT; ghi chú conversion risk cho Total Trading Value; ghi chú conversion risk cho Market Share By Value; 8 cột lineage staging ghi pending_design.yaml."
 attributes:
 - attribute_name: "Brokerage Market Share Id"
   physical_name: "brokerage_market_share_id"
@@ -95,7 +95,7 @@ attributes:
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(8,5)"
 - attribute_name: "Security Type Code"
   physical_name: "security_tp_code"
   description: "Phân loại"
@@ -109,55 +109,55 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Quarter"
-  physical_name: "rpt_quarter"
-  description: "Quý báo cáo"
+- attribute_name: "Report Period Begin Date"
+  physical_name: "rpt_period_begin_dt"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.BROKERAGE_MARKET_SHARE.BEGIN_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Period End Date"
+  physical_name: "rpt_period_end_dt"
+  description: "Ngày cuối kỳ dữ liệu (= Data Date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.BROKERAGE_MARKET_SHARE.END_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.BROKERAGE_MARKET_SHARE.REPORT_QUARTER"
+  - "HNX.BROKERAGE_MARKET_SHARE.REPORT_PERIOD"
   comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Report Year"
-  physical_name: "rpt_year"
-  description: "Năm báo cáo"
-  data_domain: "Small Counter"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "HNX.BROKERAGE_MARKET_SHARE.REPORT_YEAR"
+  - "HNX.BROKERAGE_MARKET_SHARE.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Report Month"
-  physical_name: "rpt_month"
-  description: "Tháng báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.BROKERAGE_MARKET_SHARE.REPORT_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "Report Day"
-  physical_name: "rpt_day"
-  description: "Ngày báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "HNX.BROKERAGE_MARKET_SHARE.REPORT_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
+  data_type: "date"

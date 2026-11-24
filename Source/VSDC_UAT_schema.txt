@@ -19,11 +19,12 @@ nationality                   INT                 YES                           
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
 notes                         STRING              YES                                      Ghi chú đóng tài khoản
-report_year                   INT                 YES                                      Năm của kỳ báo cáo
-report_month                  INT                 YES                                      Tháng của kỳ báo cáo
-report_day                    INT                 YES                                      Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)
-_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -190,14 +191,11 @@ begin_period_ratio            FLOAT               YES                           
 end_period_shares             BIGINT              YES                                      Số lượng chứng khoán cuối kỳ
 end_period_ratio              FLOAT               YES                                      Tỷ lệ cuối kỳ (%)
 notes                         STRING              YES                                      Ghi chú
-from_year                     INT                 YES                                      Năm bắt đầu kỳ dữ liệu
-from_month                    INT                 YES                                      Tháng bắt đầu kỳ dữ liệu
-from_day                      INT                 YES                                      Ngày bắt đầu kỳ dữ liệu
-to_year                       INT                 YES                                      Năm kết thúc kỳ dữ liệu
-to_month                      INT                 YES                                      Tháng kết thúc kỳ dữ liệu
-to_day                        INT                 YES                                      Ngày kết thúc kỳ dữ liệu
-_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+begin_period_date             DATE                YES                                      Ngày chốt số liệu đầu kỳ
+end_period_date               DATE                YES                                      Ngày chốt số liệu cuối kỳ
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -232,11 +230,12 @@ nationality                   INT                 YES                           
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
 notes                         STRING              YES                                      Nguồn: GHICHU
-report_year                   INT                 YES                                      Năm của kỳ báo cáo
-report_month                  INT                 YES                                      Tháng của kỳ báo cáo
-report_day                    INT                 YES                                      Ngày của kỳ báo cáo (NULL nếu dữ liệu theo tháng)
-_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset
@@ -285,15 +284,12 @@ issue_place                   STRING              YES                           
 nationality                   INT                 YES                                      Quốc tịch
 phone_number                  STRING              YES                                      Số điện thoại
 email                         STRING              YES                                      Địa chỉ email
-notes                         STRING              YES                                      Ghi chú thay đổi
-from_year                     INT                 YES                                      Năm bắt đầu kỳ dữ liệu
-from_month                    INT                 YES                                      Tháng bắt đầu kỳ dữ liệu
-from_day                      INT                 YES                                      Ngày bắt đầu kỳ dữ liệu
-to_year                       INT                 YES                                      Năm kết thúc kỳ dữ liệu
-to_month                      INT                 YES                                      Tháng kết thúc kỳ dữ liệu
-to_day                        INT                 YES                                      Ngày kết thúc kỳ dữ liệu
-_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày:dấu vân tay)
-ds_snpst_dt                   DATE                YES                                      Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
+notes                         DATE                YES                                      Ghi chú thay đổi
+begin_period_date             DATE                YES                                      Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng end_period_date)
+end_period_date               DATE                YES                                      Ngày cuối kỳ dữ liệu (= data_dt)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
 ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
 _source_system                STRING              YES                                      source_id trong registry
 _source_table                 STRING              YES                                      bucket/prefix của dataset

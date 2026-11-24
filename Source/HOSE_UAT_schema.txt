@@ -29,12 +29,22 @@ ticker_symbol                 STRING              YES                           
 issuer_name                   STRING              YES                                      Tổ chức phát hành
 listed_shares                 BIGINT              YES                                      Số lượng cổ phiếu niêm yết
 outstanding_shares            BIGINT              YES                                      Số lượng chứng khoán lưu hành
-reference_price               DECIMAL(18,2)       YES                                      Giá tham chiếu
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_month                  INT                 YES                                      Tháng báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+reference_price               DECIMAL(24,6)       YES                                      Giá tham chiếu
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: listing_status_change
 Mo ta: BM 13 (HOSE)
@@ -42,25 +52,35 @@ Mo ta: BM 13 (HOSE)
 Cot                           Kieu du lieu        Null?   Khoa   Lien ket                  Mo ta
 --------------------------------------------------------------------------------------------------------------
 decision_no                   STRING              YES                                      Số quyết định
-decision_date                 DATE                YES                                      Ngày quyết định
+decision_date                 STRING              YES                                      Ngày quyết định
 new_listed_shares             BIGINT              YES                                      Số lượng CK niêm yết mới
 additional_listed_shares      BIGINT              YES                                      Số lượng CK niêm yết bổ sung
 delisted_shares               BIGINT              YES                                      Số lượng CK hủy niêm yết
 exchange_transfer             STRING              YES                                      Chuyển sàn
-listed_value                  DECIMAL(18,2)       YES                                      Giá trị CK niêm yết
-additional_listed_value       DECIMAL(18,2)       YES                                      Giá trị CK niêm yết bổ sung
-delisted_value                DECIMAL(18,2)       YES                                      Giá trị chứng khoán huỷ niêm yết
+listed_value                  DECIMAL(30,6)       YES                                      Giá trị CK niêm yết
+additional_listed_value       DECIMAL(30,6)       YES                                      Giá trị CK niêm yết bổ sung
+delisted_value                DECIMAL(30,6)       YES                                      Giá trị chứng khoán huỷ niêm yết
 ticker_symbol                 STRING              YES                                      Mã CK
 issuer_name                   STRING              YES                                      Tên Tổ chức phát hành / Tên công ty
-effective_date                DATE                YES                                      Ngày hiệu lực
-first_trading_date            DATE                YES                                      Ngày giao dịch đầu tiên
-last_trading_date             DATE                YES                                      Ngày giao dịch cuối cùng
+effective_date                STRING              YES                                      Ngày hiệu lực
+first_trading_date            STRING              YES                                      Ngày giao dịch đầu tiên
+last_trading_date             STRING              YES                                      Ngày giao dịch cuối cùng
 delist_transfer_reason        STRING              YES                                      Lý do hủy, chuyển sàn
-report_month                  INT                 YES                                      Tháng báo cáo
-ds_snpst_dt                   DATE                YES                                      
-ds_etl_pcs_tms                TIMESTAMP           YES                                      
-report_day                    INT                 YES                                      Ngày báo cáo
-report_year                   INT                 YES                                      Năm báo cáo
+report_year                   INT                 YES                                      Năm của kỳ báo cáo (từ data_dt)
+report_month                  INT                 YES                                      Tháng của kỳ báo cáo (từ data_dt)
+report_day                    INT                 YES                                      Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+report_period                 STRING              YES                                      Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)
+_batch_id                     STRING              YES                                      Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+data_dt                       DATE                YES                                      Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+ds_snpst_dt                   DATE                YES                                      Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)
+ds_etl_pcs_tms                TIMESTAMP           YES                                      Thời điểm ETL (Spark job) ghi dòng
+_source_system                STRING              YES                                      source_id trong registry
+_source_table                 STRING              YES                                      bucket/prefix của dataset
+_source_file                  STRING              YES                                      Object key của file nguồn (bucket/key)
+_file_checksum                STRING              YES                                      ETag của file nguồn (định danh phiên bản, không phải MD5)
+_file_modified_at             TIMESTAMP           YES                                      LastModified của file nguồn
+_row_number                   BIGINT              YES                                      Số dòng trong sheet
+_sheet_name                   STRING              YES                                      Tên sheet
 
 BANG: order_book
 Mo ta: Sổ lệnh HOSE — ghi nhận toàn bộ lifecycle của từng lệnh giao dịch trên sàn HOSE (cổ phiếu / trái phiếu / repo). Mỗi bản ghi là một event: lệnh mới / sửa / hủy. Đối tượng trung tâm của phân hệ ORDERTRADE.

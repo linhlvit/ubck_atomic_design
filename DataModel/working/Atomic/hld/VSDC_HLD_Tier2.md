@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|---|---|---|
 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | OPEN_INVESTORS | Append | Danh sách tài khoản giao dịch mở mới trong kỳ: tên khách hàng, loại hình, mã tài khoản, địa chỉ, số đăng ký sở hữu, ngày cấp, nơi cấp, ngày mở, quốc tịch, điện thoại, email | Open Investor Account | Fact Append | (1) BCV term: **Trading Account Arrangement** (Arrangement, id 7562) — *"Account Arrangement storing information on a group of securities"*; khớp với Concept `Arrangement` đã ghi chú trong `vsdc_atomic.sql`. (2) Cấu trúc: mã tài khoản giao dịch là BK, kèm thông tin chủ tài khoản denormalized và `open_date`. (3) Chọn Trading Account Arrangement; grain = 1 tài khoản × kỳ báo cáo (Fact Snapshot). Tách thành 3 entity độc lập theo trạng thái (xem D-01 Overview). |
 | Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | CLOSED_INVESTORS | Append | Danh sách tài khoản giao dịch đóng trong kỳ — cùng cấu trúc, thay `open_date` bằng `close_date`, thêm `notes` (ghi chú đóng tài khoản) | Closed Investor Account | Fact Append | Như `Open Investor Account`: Trading Account Arrangement (7562); trạng thái "đóng" nằm ở tên entity, ngày đóng `close_dt`, ghi chú `close_note`. |
-| Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | UPDATED_INVESTORS | Append | Danh sách tài khoản có thay đổi thông tin trong kỳ — cùng cấu trúc, `update_date` (ngày thay đổi) và `notes` (ghi chú thay đổi) | Updated Investor Account | Fact Append | Như `Open Investor Account`: Trading Account Arrangement (7562); ngày thay đổi `update_dt`, ghi chú `update_note`. |
+| Arrangement | [Arrangement] Trading Account Arrangement | Arrangement | UPDATED_INVESTORS | Append | Danh sách tài khoản có thay đổi thông tin trong kỳ — cùng cấu trúc, `begin_period_date`/`end_period_date` (kỳ dữ liệu; nguồn đã bỏ `update_date` — DDL PROD 2026-11-24) và `notes` (ghi chú thay đổi) | Updated Investor Account | Fact Append | Như `Open Investor Account`: Trading Account Arrangement (7562); ngày thay đổi `update_dt`, ghi chú `update_note`. |
 | Documentation | [Documentation] Regulatory Report | Documentation | FOREIGN_INVESTOR_BOND_PORTFOLIO | Append | Danh mục trái phiếu nắm giữ của nhà đầu tư nước ngoài theo tháng: nhà đầu tư, loại, mã giao dịch, quốc tịch, địa chỉ, đại diện giao dịch, loại NĐT tổ chức, mã trái phiếu, khối lượng sở hữu | Foreign Bond Portfolio | Fact Snapshot | (1) BCV term: **Regulatory Report** (Documentation, id 9297) — *"Regulatory Information which is a report on regulations"*. (2) Cấu trúc trường: danh mục trái phiếu nắm giữ của NĐTNN theo tháng — bảng báo cáo do Sở/VSDC cung cấp. (3) Theo chỉ định Data Modeler (2026-10-18): Core Object Documentation, table_type Fact Snapshot cho toàn bộ bảng báo cáo VSDC/HNX/HOSE. |
 
 ---
@@ -37,7 +37,8 @@ erDiagram
     UPDATED_INVESTORS {
         string trading_account_no
         string nationality FK
-        date update_date
+        date begin_period_date
+        date end_period_date
     }
     FOREIGN_INVESTOR_BOND_PORTFOLIO {
         string trading_code

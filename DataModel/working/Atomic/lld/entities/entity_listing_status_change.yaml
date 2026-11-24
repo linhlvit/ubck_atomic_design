@@ -260,3 +260,29 @@ attributes:
   source_mappings:
     HNX.LISTING_STATUS_CHANGE: "HNX.LISTING_STATUS_CHANGE.REPORT_DAY"
     HOSE.LISTING_STATUS_CHANGE: "HOSE.LISTING_STATUS_CHANGE.REPORT_DAY"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.LISTING_STATUS_CHANGE: null
+    HOSE.LISTING_STATUS_CHANGE: "HOSE.LISTING_STATUS_CHANGE.REPORT_PERIOD"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  source_mappings:
+    HNX.LISTING_STATUS_CHANGE: null
+    HOSE.LISTING_STATUS_CHANGE: "HOSE.LISTING_STATUS_CHANGE.DATA_DT"
