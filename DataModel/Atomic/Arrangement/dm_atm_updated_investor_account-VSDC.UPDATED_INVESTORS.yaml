@@ -148,20 +148,6 @@ attributes:
     classification_context: null
     etl_derived_value: null
 
-  - name: Update Date
-    physical_name: update_dt
-    business_meaning: Ngày thay đổi thông tin
-    data_domain: Date
-    data_type: date
-    nullable: true
-    is_primary_key: false
-    source_system: VSDC
-    source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.UPDATE_DATE
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
   - name: Nationality Id
     physical_name: nationality_id
     business_meaning: FK đến Classification VSDC Nationality — Quốc tịch.
@@ -228,90 +214,48 @@ attributes:
     source_system: VSDC
     source_table: UPDATED_INVESTORS
     source_column: VSDC.UPDATED_INVESTORS.NOTES
-    comment: null
+    comment: "Nguồn đổi sang kiểu DATE theo DDL PROD 2026-11-24 (comment nguồn: NOTE — ghi chú) nhưng mô tả là ghi chú văn bản — ETL cần convert sang string; cần profile dữ liệu xác nhận cột có chứa ghi chú hay ngày thật."
     classification_context: null
     etl_derived_value: null
 
-  - name: From Year
-    physical_name: from_year
-    business_meaning: Năm bắt đầu
-    data_domain: Small Counter
-    data_type: int
+  - name: Data Period Start Date
+    physical_name: data_period_start_dt
+    business_meaning: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: VSDC
     source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.FROM_YEAR
+    source_column: VSDC.UPDATED_INVESTORS.BEGIN_PERIOD_DATE
     comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: From Month
-    physical_name: from_month
-    business_meaning: Tháng bắt đầu
-    data_domain: Small Counter
-    data_type: int
+  - name: Data Period End Date
+    physical_name: data_period_end_dt
+    business_meaning: Ngày cuối kỳ dữ liệu.
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: VSDC
     source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.FROM_MONTH
+    source_column: VSDC.UPDATED_INVESTORS.END_PERIOD_DATE
     comment: null
     classification_context: null
     etl_derived_value: null
 
-  - name: From Day
-    physical_name: from_day
-    business_meaning: Ngày bắt đầu
-    data_domain: Small Counter
-    data_type: int
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+    data_domain: Date
+    data_type: date
     nullable: true
     is_primary_key: false
     source_system: VSDC
     source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.FROM_DAY
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: To Year
-    physical_name: to_year
-    business_meaning: Năm kết thúc
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: VSDC
-    source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.TO_YEAR
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: To Month
-    physical_name: to_month
-    business_meaning: Tháng kết thúc
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: VSDC
-    source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.TO_MONTH
-    comment: null
-    classification_context: null
-    etl_derived_value: null
-
-  - name: To Day
-    physical_name: to_day
-    business_meaning: Ngày kết thúc
-    data_domain: Small Counter
-    data_type: int
-    nullable: true
-    is_primary_key: false
-    source_system: VSDC
-    source_table: UPDATED_INVESTORS
-    source_column: VSDC.UPDATED_INVESTORS.TO_DAY
+    source_column: VSDC.UPDATED_INVESTORS.DATA_DT
     comment: null
     classification_context: null
     etl_derived_value: null

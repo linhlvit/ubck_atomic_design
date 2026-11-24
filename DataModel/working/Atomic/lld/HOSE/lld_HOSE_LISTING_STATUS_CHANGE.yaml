@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HOSE/brd_HOSE_LISTING_STATUS_CHANGE.yaml. HLD: HOSE_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity định nghĩa ở HLD của source đầu tiên (HNX/VSDC); HOSE bổ sung source_table."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/HOSE/brd_HOSE_LISTING_STATUS_CHANGE.yaml. HLD: HOSE_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. Entity định nghĩa ở HLD của source đầu tiên (HNX/VSDC); HOSE bổ sung source_table. [Sửa 2026-11-24 theo DDL PROD] 4 cột ngày nguồn đổi DATE→STRING, 3 cột *_VALUE đổi DECIMAL(30,6); thêm Report Period (REPORT_PERIOD) và Data Date (DATA_DT) theo chuẩn HNX; metadata nạp file (_BATCH_ID, _SOURCE_*, _FILE_*, _ROW_NUMBER, _SHEET_NAME) ghi pending_design.yaml."
 attributes:
 - attribute_name: "Listing Status Change Id"
   physical_name: "listing_status_change_id"
@@ -68,7 +68,7 @@ attributes:
   status: "draft"
   source_columns:
   - "HOSE.LISTING_STATUS_CHANGE.DECISION_DATE"
-  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -198,7 +198,7 @@ attributes:
   status: "draft"
   source_columns:
   - "HOSE.LISTING_STATUS_CHANGE.EFFECTIVE_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -211,7 +211,7 @@ attributes:
   status: "draft"
   source_columns:
   - "HOSE.LISTING_STATUS_CHANGE.FIRST_TRADING_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -224,7 +224,7 @@ attributes:
   status: "draft"
   source_columns:
   - "HOSE.LISTING_STATUS_CHANGE.LAST_TRADING_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -280,3 +280,29 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "int"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.LISTING_STATUS_CHANGE.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HOSE.LISTING_STATUS_CHANGE.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

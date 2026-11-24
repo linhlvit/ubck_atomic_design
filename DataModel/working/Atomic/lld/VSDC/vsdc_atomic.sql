@@ -19,6 +19,8 @@ CREATE TABLE atomic.uat_atm.open_investor_account (
   nationality_code INT COMMENT 'Quốc tịch',
   phone_nbr STRING COMMENT 'Số điện thoại',
   email STRING COMMENT 'Địa chỉ email',
+  open_note STRING COMMENT 'Ghi chú mở tài khoản',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu',
   ds_snpst_dt DATE,
   ds_etl_pcs_tms TIMESTAMP)
 USING ICEBERG
@@ -43,6 +45,7 @@ CREATE TABLE atomic.uat_atm.closed_investor_account (
   phone_nbr STRING COMMENT 'Số điện thoại',
   email STRING COMMENT 'Địa chỉ email',
   close_note STRING COMMENT 'Ghi chú đóng tài khoản',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu',
   ds_snpst_dt DATE,
   ds_etl_pcs_tms TIMESTAMP)
 USING ICEBERG
@@ -62,11 +65,13 @@ CREATE TABLE atomic.uat_atm.updated_investor_account (
   identification_nbr STRING COMMENT 'Số đăng ký sở hữu',
   issue_dt DATE COMMENT 'Ngày cấp',
   issue_place STRING COMMENT 'Nơi cấp',
-  update_dt DATE COMMENT 'Ngày thay đổi thông tin',
   nationality_code INT COMMENT 'Quốc tịch',
   phone_nbr STRING COMMENT 'Số điện thoại',
   email STRING COMMENT 'Địa chỉ email',
   update_note STRING COMMENT 'Ghi chú thay đổi',
+  data_period_start_dt DATE COMMENT 'Ngày đầu kỳ dữ liệu',
+  data_period_end_dt DATE COMMENT 'Ngày cuối kỳ dữ liệu',
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu',
   ds_snpst_dt DATE,
   ds_etl_pcs_tms TIMESTAMP)
 USING ICEBERG
@@ -90,6 +95,7 @@ CREATE TABLE IF NOT EXISTS atomic.uat_atm.listed_share_information (
   issuer_name STRING COMMENT 'Tổ chức phát hành',
   listed_share_quantity BIGINT COMMENT 'Số lượng cổ phiếu niêm yết',
   reference_price DECIMAL(23,2) COMMENT 'Giá tham chiếu',
+  rpt_period STRING COMMENT 'Mã kỳ báo cáo',
   data_dt DATE,
   ds_snpst_dt              DATE,
   ds_etl_pcs_tms           TIMESTAMP)
@@ -142,6 +148,7 @@ CREATE TABLE atomic.uat_atm.major_shareholder_ownership (
   closing_share_quantity BIGINT,
   closing_ratio DECIMAL(7,4),
   note STRING,
+  data_dt DATE COMMENT 'Ngày nghiệp vụ = ngày cuối kỳ dữ liệu',
   ds_snpst_dt              DATE,
   ds_etl_pcs_tms           TIMESTAMP)
 USING ICEBERG

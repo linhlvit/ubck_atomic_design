@@ -74,7 +74,7 @@ attributes:
     source_system: HOSE
     source_table: LISTING_STATUS_CHANGE
     source_column: HOSE.LISTING_STATUS_CHANGE.DECISION_DATE
-    comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+    comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
     classification_context: null
     etl_derived_value: null
 
@@ -214,7 +214,7 @@ attributes:
     source_system: HOSE
     source_table: LISTING_STATUS_CHANGE
     source_column: HOSE.LISTING_STATUS_CHANGE.EFFECTIVE_DATE
-    comment: null
+    comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
     classification_context: null
     etl_derived_value: null
 
@@ -228,7 +228,7 @@ attributes:
     source_system: HOSE
     source_table: LISTING_STATUS_CHANGE
     source_column: HOSE.LISTING_STATUS_CHANGE.FIRST_TRADING_DATE
-    comment: null
+    comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
     classification_context: null
     etl_derived_value: null
 
@@ -242,7 +242,7 @@ attributes:
     source_system: HOSE
     source_table: LISTING_STATUS_CHANGE
     source_column: HOSE.LISTING_STATUS_CHANGE.LAST_TRADING_DATE
-    comment: null
+    comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
     classification_context: null
     etl_derived_value: null
 
@@ -298,6 +298,34 @@ attributes:
     source_system: HOSE
     source_table: LISTING_STATUS_CHANGE
     source_column: HOSE.LISTING_STATUS_CHANGE.REPORT_DAY
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Report Period
+    physical_name: rpt_period
+    business_meaning: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+    data_domain: Text
+    data_type: string
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTING_STATUS_CHANGE
+    source_column: HOSE.LISTING_STATUS_CHANGE.REPORT_PERIOD
+    comment: null
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Data Date
+    physical_name: data_dt
+    business_meaning: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+    data_domain: Date
+    data_type: date
+    nullable: true
+    is_primary_key: false
+    source_system: HOSE
+    source_table: LISTING_STATUS_CHANGE
+    source_column: HOSE.LISTING_STATUS_CHANGE.DATA_DT
     comment: null
     classification_context: null
     etl_derived_value: null

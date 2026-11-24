@@ -55,7 +55,7 @@ graph TD
 
 | # | Quyết định | Lý do |
 |---|---|---|
-| D-01 | `OPEN_INVESTORS`, `CLOSED_INVESTORS`, `UPDATED_INVESTORS` map thành 3 entity độc lập `<trạng thái>_investor_account`, không gộp thành 1 entity `investor_account` + `investor_account_hstr` | Quyết định Data Modeler 2026-10-17: mỗi bảng nguồn có cột đặc thù riêng (`open_date` / `close_date` + `notes` / `update_date` + `notes`) |
+| D-01 | `OPEN_INVESTORS`, `CLOSED_INVESTORS`, `UPDATED_INVESTORS` map thành 3 entity độc lập `<trạng thái>_investor_account`, không gộp thành 1 entity `investor_account` + `investor_account_hstr` | Quyết định Data Modeler 2026-10-17: mỗi bảng nguồn có cột đặc thù riêng (`open_date` + `notes` / `close_date` + `notes` / `begin_period_date`/`end_period_date` + `notes` (UPDATED_INVESTORS đã bỏ `update_date` — DDL PROD 2026-11-24)) |
 | D-02 | `nationality` nâng cấp từ Classification Value lên entity thật `Classification VSDC Nationality`; cột `nationality` ở các bảng tiêu thụ crosswalk theo `nationality = autoid` | Chỉ định Data Modeler; `autoid` là khóa nội bộ nên cần join qua bảng danh mục trước khi lấy mã |
 | D-03 | Entity gộp từ nhiều nguồn (`Listed Share Information`) định nghĩa ở source đầu tiên (VSDC); HNX/HOSE chỉ bổ sung `source_table` | Quy tắc không tạo dòng trùng trong `atomic_entities.yaml` |
 | D-04 | Không dùng FK giữa các entity cùng mức theo `ticker_symbol` | Staging VSDC không có bảng master mã chứng khoán; join thực hiện ở Gold (tương tự MDDS D-02) |
@@ -229,4 +229,4 @@ Không có junction table.
 
 **Grain:** 1 dòng = 1 tài khoản thay đổi × 1 kỳ báo cáo.
 
-**Attributes chính:** `investor_account_nbr` (BK), tên, loại hình, giấy tờ, `update_dt`, `update_note`, FK `nationality_code` → Classification VSDC Nationality.
+**Attributes chính:** `investor_account_nbr` (BK), tên, loại hình, giấy tờ, `data_period_start_dt`, `data_period_end_dt`, `update_note`, FK `nationality_code` → Classification VSDC Nationality.

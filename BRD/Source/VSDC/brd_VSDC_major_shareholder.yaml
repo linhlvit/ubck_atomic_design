@@ -4,13 +4,23 @@ source: VSDC
 table: MAJOR_SHAREHOLDER
 brd_ref: BRD-SRC-VSDC-MAJOR_SHAREHOLDER
 columns:
+- name: SEQ_NO
+  data_type: BIGINT
+  description: 'Nguồn: STT'
+  key: null
+  fk_note: null
 - name: TICKER_SYMBOL
   data_type: STRING
   description: Mã chứng khoán
   key: null
   fk_note: null
+- name: ISIN_CODE
+  data_type: STRING
+  description: Mã ISIN
+  key: null
+  fk_note: null
 - name: VOTING_SHARES
-  data_type: DECIMAL(18,0)
+  data_type: STRING
   description: Số cổ phiếu có quyền biểu quyết
   key: null
   fk_note: null
@@ -34,33 +44,23 @@ columns:
   description: Địa chỉ liên hệ
   key: null
   fk_note: null
-- name: BEGIN_PERIOD_DATE
-  data_type: DATE
-  description: Ngày chốt số liệu đầu kỳ
-  key: null
-  fk_note: null
 - name: BEGIN_PERIOD_SHARES
-  data_type: DECIMAL(18,0)
+  data_type: BIGINT
   description: Số lượng chứng khoán đầu kỳ
   key: null
   fk_note: null
 - name: BEGIN_PERIOD_RATIO
-  data_type: DECIMAL(10,2)
+  data_type: FLOAT
   description: Tỷ lệ đầu kỳ (%)
   key: null
   fk_note: null
-- name: END_PERIOD_DATE
-  data_type: DATE
-  description: Ngày chốt số liệu cuối kỳ
-  key: null
-  fk_note: null
 - name: END_PERIOD_SHARES
-  data_type: DECIMAL(18,0)
+  data_type: BIGINT
   description: Số lượng chứng khoán cuối kỳ
   key: null
   fk_note: null
 - name: END_PERIOD_RATIO
-  data_type: DECIMAL(10,2)
+  data_type: FLOAT
   description: Tỷ lệ cuối kỳ (%)
   key: null
   fk_note: null
@@ -69,48 +69,58 @@ columns:
   description: Ghi chú
   key: null
   fk_note: null
-- name: ISIN_CODE
+- name: BEGIN_PERIOD_DATE
+  data_type: DATE
+  description: Ngày chốt số liệu đầu kỳ
+  key: null
+  fk_note: null
+- name: END_PERIOD_DATE
+  data_type: DATE
+  description: Ngày chốt số liệu cuối kỳ
+  key: null
+  fk_note: null
+- name: _BATCH_ID
   data_type: STRING
-  description: Mã ISIN
+  description: Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+  key: null
+  fk_note: null
+- name: DATA_DT
+  data_type: DATE
+  description: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
   key: null
   fk_note: null
 - name: DS_SNPST_DT
   data_type: DATE
-  description: Ngày chốt số liệu
+  description: 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)'
   key: null
   fk_note: null
 - name: DS_ETL_PCS_TMS
   data_type: TIMESTAMP
-  description: Thời gian chạy ETL
+  description: Thời điểm ETL (Spark job) ghi dòng
   key: null
   fk_note: null
-- name: FROM_DAY
-  data_type: INT
-  description: null
+- name: _SOURCE_SYSTEM
+  data_type: STRING
+  description: source_id trong registry
   key: null
   fk_note: null
-- name: FROM_MONTH
-  data_type: INT
-  description: null
+- name: _SOURCE_TABLE
+  data_type: STRING
+  description: bucket/prefix của dataset
   key: null
   fk_note: null
-- name: FROM_YEAR
-  data_type: INT
-  description: null
+- name: _SOURCE_FILE
+  data_type: STRING
+  description: Object key của file nguồn (bucket/key)
   key: null
   fk_note: null
-- name: TO_DAY
-  data_type: INT
-  description: null
+- name: _FILE_CHECKSUM
+  data_type: STRING
+  description: ETag của file nguồn (định danh phiên bản, không phải MD5)
   key: null
   fk_note: null
-- name: TO_MONTH
-  data_type: INT
-  description: null
-  key: null
-  fk_note: null
-- name: TO_YEAR
-  data_type: INT
-  description: null
+- name: _FILE_MODIFIED_AT
+  data_type: TIMESTAMP
+  description: LastModified của file nguồn
   key: null
   fk_note: null

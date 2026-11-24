@@ -12,15 +12,17 @@
 | — | — | (system) | STRING | atomic.uat_atm | open_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | open_investors | trading_account_no | STRING | atomic.uat_atm | open_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | open_investors | customer_name | STRING | atomic.uat_atm | open_investor_account | investor_nm | STRING | — |
-| uat_vsdc_stg | open_investors | investor_type | STRING | atomic.uat_atm | open_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
+| uat_vsdc_stg | open_investors | investor_type | INT | atomic.uat_atm | open_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
 | uat_vsdc_stg | open_investors | address | STRING | atomic.uat_atm | open_investor_account | address | STRING | — |
 | uat_vsdc_stg | open_investors | id_number | STRING | atomic.uat_atm | open_investor_account | identification_nbr | STRING | — |
 | uat_vsdc_stg | open_investors | issue_date | DATE | atomic.uat_atm | open_investor_account | issue_dt | DATE | — |
 | uat_vsdc_stg | open_investors | issue_place | STRING | atomic.uat_atm | open_investor_account | issue_place | STRING | — |
 | uat_vsdc_stg | open_investors | open_date | DATE | atomic.uat_atm | open_investor_account | open_dt | DATE | — |
-| uat_vsdc_stg | open_investors | nationality | STRING | atomic.uat_atm | open_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
+| uat_vsdc_stg | open_investors | nationality | INT | atomic.uat_atm | open_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
 | uat_vsdc_stg | open_investors | phone_number | STRING | atomic.uat_atm | open_investor_account | phone_nbr | STRING | — |
 | uat_vsdc_stg | open_investors | email | STRING | atomic.uat_atm | open_investor_account | email | STRING | — |
+| uat_vsdc_stg | open_investors | notes | STRING | atomic.uat_atm | open_investor_account | open_note | STRING | Thêm mới (DDL PROD 2026-11-24) |
+| uat_vsdc_stg | open_investors | data_dt | DATE | atomic.uat_atm | open_investor_account | data_dt | DATE | Thêm mới (DDL PROD 2026-11-24): ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
 | — | — | — | — | atomic.uat_atm | open_investor_account | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | open_investor_account | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -33,16 +35,17 @@
 | — | — | (system) | STRING | atomic.uat_atm | closed_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | closed_investors | trading_account_no | STRING | atomic.uat_atm | closed_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | closed_investors | customer_name | STRING | atomic.uat_atm | closed_investor_account | investor_nm | STRING | — |
-| uat_vsdc_stg | closed_investors | investor_type | STRING | atomic.uat_atm | closed_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
+| uat_vsdc_stg | closed_investors | investor_type | INT | atomic.uat_atm | closed_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
 | uat_vsdc_stg | closed_investors | address | STRING | atomic.uat_atm | closed_investor_account | address | STRING | — |
 | uat_vsdc_stg | closed_investors | id_number | STRING | atomic.uat_atm | closed_investor_account | identification_nbr | STRING | — |
 | uat_vsdc_stg | closed_investors | issue_date | DATE | atomic.uat_atm | closed_investor_account | issue_dt | DATE | — |
 | uat_vsdc_stg | closed_investors | issue_place | STRING | atomic.uat_atm | closed_investor_account | issue_place | STRING | — |
 | uat_vsdc_stg | closed_investors | close_date | DATE | atomic.uat_atm | closed_investor_account | close_dt | DATE | — |
-| uat_vsdc_stg | closed_investors | nationality | STRING | atomic.uat_atm | closed_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
+| uat_vsdc_stg | closed_investors | nationality | INT | atomic.uat_atm | closed_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
 | uat_vsdc_stg | closed_investors | phone_number | STRING | atomic.uat_atm | closed_investor_account | phone_nbr | STRING | — |
 | uat_vsdc_stg | closed_investors | email | STRING | atomic.uat_atm | closed_investor_account | email | STRING | — |
 | uat_vsdc_stg | closed_investors | notes | STRING | atomic.uat_atm | closed_investor_account | close_note | STRING | — |
+| uat_vsdc_stg | closed_investors | data_dt | DATE | atomic.uat_atm | closed_investor_account | data_dt | DATE | Thêm mới (DDL PROD 2026-11-24): ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
 | — | — | — | — | atomic.uat_atm | closed_investor_account | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | closed_investor_account | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -55,16 +58,18 @@
 | — | — | (system) | STRING | atomic.uat_atm | updated_investor_account | src_stm_code | STRING | Mã hệ thống nguồn — hardcode per pipeline |
 | uat_vsdc_stg | updated_investors | trading_account_no | STRING | atomic.uat_atm | updated_investor_account | investor_account_nbr | STRING | Business key |
 | uat_vsdc_stg | updated_investors | customer_name | STRING | atomic.uat_atm | updated_investor_account | investor_nm | STRING | — |
-| uat_vsdc_stg | updated_investors | investor_type | STRING | atomic.uat_atm | updated_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
+| uat_vsdc_stg | updated_investors | investor_type | INT | atomic.uat_atm | updated_investor_account | investor_tp_code | INT | LOOKUP Classification Value (Cá nhân/Tổ chức) → code; CAST INT |
 | uat_vsdc_stg | updated_investors | address | STRING | atomic.uat_atm | updated_investor_account | address | STRING | — |
 | uat_vsdc_stg | updated_investors | id_number | STRING | atomic.uat_atm | updated_investor_account | identification_nbr | STRING | — |
 | uat_vsdc_stg | updated_investors | issue_date | DATE | atomic.uat_atm | updated_investor_account | issue_dt | DATE | — |
 | uat_vsdc_stg | updated_investors | issue_place | STRING | atomic.uat_atm | updated_investor_account | issue_place | STRING | — |
-| uat_vsdc_stg | updated_investors | update_date | DATE | atomic.uat_atm | updated_investor_account | update_dt | DATE | — |
-| uat_vsdc_stg | updated_investors | nationality | STRING | atomic.uat_atm | updated_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
+| uat_vsdc_stg | updated_investors | nationality | INT | atomic.uat_atm | updated_investor_account | nationality_code | INT | Crosswalk: LEFT JOIN uat_vsdc_stg.nationality ON nationality = autoid (CAST BIGINT); CAST INT |
 | uat_vsdc_stg | updated_investors | phone_number | STRING | atomic.uat_atm | updated_investor_account | phone_nbr | STRING | — |
 | uat_vsdc_stg | updated_investors | email | STRING | atomic.uat_atm | updated_investor_account | email | STRING | — |
-| uat_vsdc_stg | updated_investors | notes | STRING | atomic.uat_atm | updated_investor_account | update_note | STRING | — |
+| uat_vsdc_stg | updated_investors | notes | DATE | atomic.uat_atm | updated_investor_account | update_note | STRING | Nguồn đổi sang DATE (DDL PROD 2026-11-24) — ETL convert sang string, cần profile dữ liệu |
+| uat_vsdc_stg | updated_investors | begin_period_date | DATE | atomic.uat_atm | updated_investor_account | data_period_start_dt | DATE | Thêm mới (DDL PROD 2026-11-24) |
+| uat_vsdc_stg | updated_investors | end_period_date | DATE | atomic.uat_atm | updated_investor_account | data_period_end_dt | DATE | Thêm mới (DDL PROD 2026-11-24); nguồn đã bỏ update_date và from_/to_ day/month/year |
+| uat_vsdc_stg | updated_investors | data_dt | DATE | atomic.uat_atm | updated_investor_account | data_dt | DATE | Thêm mới (DDL PROD 2026-11-24): ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
 | — | — | — | — | atomic.uat_atm | updated_investor_account | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | updated_investor_account | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -86,8 +91,9 @@
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | issuer_name | STRING | atomic.uat_atm | listed_share_information | issuer_nm | STRING | Bổ sung từ listed_securities_list |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | listed_shares | BIGINT | atomic.uat_atm | listed_share_information | listed_share_quantity | BIGINT | — |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | reference_price | DECIMAL(18,2) | atomic.uat_atm | listed_share_information | reference_price | DECIMAL(23,2) | Đổi precision |
-| uat_vsdc_stg | outstanding_shares | data_dt | DATE | atomic.uat_atm | listed_share_information | data_dt | DATE | Thay `transaction_dt`: nguồn đã bỏ `transaction_date` (DDL PROD 2026-11-22), map 1-1 `data_dt` = ngày cuối kỳ dữ liệu |
+| uat_vsdc_stg / uat_hnx_stg / uat_hose_stg | outstanding_shares + listed_securities_list | data_dt | DATE | atomic.uat_atm | listed_share_information | data_dt | DATE | Thay `transaction_dt`: nguồn đã bỏ `transaction_date` (DDL PROD 2026-11-22), map 1-1 `data_dt` = ngày cuối kỳ dữ liệu |
 | uat_hnx_stg / uat_hose_stg | listed_securities_list | report_date | DATE | atomic.uat_atm | listed_share_information | rpt_dt | DATE | — |
+| uat_hnx_stg / uat_hose_stg | listed_securities_list | report_period | STRING | atomic.uat_atm | listed_share_information | rpt_period | STRING | Thêm mới (DDL PROD 2026-11-24): mã kỳ báo cáo D/W/M/Q |
 | — | — | — | — | atomic.uat_atm | listed_share_information | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | listed_share_information | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 
@@ -157,14 +163,15 @@ Bảng nguồn `foreign_investor_info` đã tách thành 4 bảng theo loại ch
 | uat_vsdc_stg | major_shareholder | id_number | STRING | atomic.uat_atm | major_shareholder_ownership | identification_nbr | STRING | Business key |
 | uat_vsdc_stg | major_shareholder | issue_date | DATE | atomic.uat_atm | major_shareholder_ownership | issue_dt | DATE | — |
 | uat_vsdc_stg | major_shareholder | contact_address | STRING | atomic.uat_atm | major_shareholder_ownership | address | STRING | — |
-| uat_vsdc_stg | major_shareholder | voting_shares | DECIMAL(18,0) | atomic.uat_atm | major_shareholder_ownership | voting_share_quantity | BIGINT | CAST DECIMAL→BIGINT |
+| uat_vsdc_stg | major_shareholder | voting_shares | STRING | atomic.uat_atm | major_shareholder_ownership | voting_share_quantity | BIGINT | CAST STRING→BIGINT (nguồn đổi sang STRING, DDL PROD 2026-11-24) |
 | uat_vsdc_stg | major_shareholder | begin_period_date | DATE | atomic.uat_atm | major_shareholder_ownership | opening_balance_date | DATE | — |
-| uat_vsdc_stg | major_shareholder | begin_period_shares | DECIMAL(18,0) | atomic.uat_atm | major_shareholder_ownership | opening_share_quantity | BIGINT | CAST |
-| uat_vsdc_stg | major_shareholder | begin_period_ratio | DECIMAL(10,2) | atomic.uat_atm | major_shareholder_ownership | opening_ratio | DECIMAL(7,4) | Đổi precision |
+| uat_vsdc_stg | major_shareholder | begin_period_shares | BIGINT | atomic.uat_atm | major_shareholder_ownership | opening_share_quantity | BIGINT | — |
+| uat_vsdc_stg | major_shareholder | begin_period_ratio | FLOAT | atomic.uat_atm | major_shareholder_ownership | opening_ratio | DECIMAL(7,4) | CAST FLOAT→DECIMAL(7,4) |
 | uat_vsdc_stg | major_shareholder | end_period_date | DATE | atomic.uat_atm | major_shareholder_ownership | closing_balance_date | DATE | — |
-| uat_vsdc_stg | major_shareholder | end_period_shares | DECIMAL(18,0) | atomic.uat_atm | major_shareholder_ownership | closing_share_quantity | BIGINT | CAST |
-| uat_vsdc_stg | major_shareholder | end_period_ratio | DECIMAL(10,2) | atomic.uat_atm | major_shareholder_ownership | closing_ratio | DECIMAL(7,4) | Đổi precision |
+| uat_vsdc_stg | major_shareholder | end_period_shares | BIGINT | atomic.uat_atm | major_shareholder_ownership | closing_share_quantity | BIGINT | — |
+| uat_vsdc_stg | major_shareholder | end_period_ratio | FLOAT | atomic.uat_atm | major_shareholder_ownership | closing_ratio | DECIMAL(7,4) | CAST FLOAT→DECIMAL(7,4) |
 | uat_vsdc_stg | major_shareholder | notes | STRING | atomic.uat_atm | major_shareholder_ownership | note | STRING | — |
+| uat_vsdc_stg | major_shareholder | data_dt | DATE | atomic.uat_atm | major_shareholder_ownership | data_dt | DATE | Thêm mới (DDL PROD 2026-11-24): ngày nghiệp vụ = ngày cuối kỳ dữ liệu |
 | — | — | — | — | atomic.uat_atm | major_shareholder_ownership | ds_snpst_dt | DATE | ⚙ Dev xử lý — không map từ nguồn |
 | — | — | — | — | atomic.uat_atm | major_shareholder_ownership | ds_etl_pcs_tms | TIMESTAMP | ⚙ Dev xử lý — không map từ nguồn |
 

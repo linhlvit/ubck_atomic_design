@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_UPDATED_INVESTORS.yaml. HLD: VSDC_HLD_Tier2.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_UPDATED_INVESTORS.yaml. HLD: VSDC_HLD_Tier2.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. [Sửa 2026-11-24 theo DDL PROD] Nguồn bỏ UPDATE_DATE và FROM_/TO_ DAY/MONTH/YEAR — Data Modeler chỉ định xóa attribute Update Date + From/To Year/Month/Day; thêm Data Period Start/End Date từ BEGIN_PERIOD_DATE/END_PERIOD_DATE. Thêm Data Date (DATA_DT); metadata nạp file (_BATCH_ID, _SOURCE_*, _FILE_*) ghi pending_design.yaml."
 attributes:
 - attribute_name: "Updated Investor Account Id"
   physical_name: "updated_investor_account_id"
@@ -135,19 +135,6 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Update Date"
-  physical_name: "update_dt"
-  description: "Ngày thay đổi thông tin"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "VSDC.UPDATED_INVESTORS.UPDATE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
 - attribute_name: "Nationality Id"
   physical_name: "nationality_id"
   description: "FK đến Classification VSDC Nationality — Quốc tịch."
@@ -209,85 +196,46 @@ attributes:
   status: "draft"
   source_columns:
   - "VSDC.UPDATED_INVESTORS.NOTES"
-  comment: null
+  comment: "Nguồn đổi sang kiểu DATE theo DDL PROD 2026-11-24 (comment nguồn: NOTE — ghi chú) nhưng mô tả là ghi chú văn bản — ETL cần convert sang string; cần profile dữ liệu xác nhận cột có chứa ghi chú hay ngày thật."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "From Year"
-  physical_name: "from_year"
-  description: "Năm bắt đầu"
-  data_domain: "Small Counter"
+- attribute_name: "Data Period Start Date"
+  physical_name: "data_period_start_dt"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.UPDATED_INVESTORS.FROM_YEAR"
+  - "VSDC.UPDATED_INVESTORS.BEGIN_PERIOD_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
-- attribute_name: "From Month"
-  physical_name: "from_month"
-  description: "Tháng bắt đầu"
-  data_domain: "Small Counter"
+  data_type: "date"
+- attribute_name: "Data Period End Date"
+  physical_name: "data_period_end_dt"
+  description: "Ngày cuối kỳ dữ liệu."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.UPDATED_INVESTORS.FROM_MONTH"
+  - "VSDC.UPDATED_INVESTORS.END_PERIOD_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
-- attribute_name: "From Day"
-  physical_name: "from_day"
-  description: "Ngày bắt đầu"
-  data_domain: "Small Counter"
+  data_type: "date"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "VSDC.UPDATED_INVESTORS.FROM_DAY"
+  - "VSDC.UPDATED_INVESTORS.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
-- attribute_name: "To Year"
-  physical_name: "to_year"
-  description: "Năm kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "VSDC.UPDATED_INVESTORS.TO_YEAR"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "To Month"
-  physical_name: "to_month"
-  description: "Tháng kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "VSDC.UPDATED_INVESTORS.TO_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-- attribute_name: "To Day"
-  physical_name: "to_day"
-  description: "Ngày kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "VSDC.UPDATED_INVESTORS.TO_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
+  data_type: "date"

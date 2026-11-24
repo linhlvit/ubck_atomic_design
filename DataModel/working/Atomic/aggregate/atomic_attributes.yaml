@@ -174,9 +174,9 @@ attributes:
   source_column: "VSDC.CLOSED_INVESTORS.NATIONALITY"
   comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
     \ sang VSDC.NATIONALITY: CLOSED_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để\
-    \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING,\
-    \ AUTOID là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không\
-    \ khớp AUTOID."
+    \ xác nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn đổi sang\
+    \ INT theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần validate giá\
+    \ trị khớp AUTOID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -297,6 +297,23 @@ attributes:
   data_type: "int"
   atomic_table: "closed_investor_account"
   atomic_column: "rpt_day"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Closed Investor Account"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "CLOSED_INVESTORS"
+  source_column: "VSDC.CLOSED_INVESTORS.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "closed_investor_account"
+  atomic_column: "data_dt"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Discretionary Investment Account"
   atomic_attribute: "Discretionary Investment Account Id"
@@ -1261,9 +1278,9 @@ attributes:
   source_column: "VSDC.OPEN_INVESTORS.NATIONALITY"
   comment: "FK target: cl_vsdc_nationality.cl_vsdc_nationality_id. Cần ETL crosswalk\
     \ sang VSDC.NATIONALITY: OPEN_INVESTORS.NATIONALITY = NATIONALITY.AUTOID để xác\
-    \ nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn lưu STRING, AUTOID\
-    \ là BIGINT — ETL cần CAST và validate không có giá trị non-numeric/không khớp\
-    \ AUTOID."
+    \ nhận AUTOID sau đó hash_id('VSDC_NATIONALITY', AUTOID) | Nguồn đổi sang INT\
+    \ theo DDL PROD 2026-11-24, AUTOID là BIGINT — widening, cần validate giá trị\
+    \ khớp AUTOID."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -1322,6 +1339,22 @@ attributes:
   atomic_column: "email"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Open Investor Account"
+  atomic_attribute: "Open Note"
+  description: "Ghi chú mở tài khoản"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "OPEN_INVESTORS"
+  source_column: "VSDC.OPEN_INVESTORS.NOTES"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "open_investor_account"
+  atomic_column: "open_note"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Open Investor Account"
   atomic_attribute: "Report Year"
   description: "Năm báo cáo"
   data_domain: "Small Counter"
@@ -1368,6 +1401,23 @@ attributes:
   data_type: "int"
   atomic_table: "open_investor_account"
   atomic_column: "rpt_day"
+- bcv_core_object: "Arrangement"
+  atomic_entity: "Open Investor Account"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "VSDC"
+  source_table: "OPEN_INVESTORS"
+  source_column: "VSDC.OPEN_INVESTORS.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "open_investor_account"
+  atomic_column: "data_dt"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Public Company Share Statistics"
   atomic_attribute: "Public Company Share Statistics Id"
@@ -3045,22 +3095,6 @@ attributes:
   atomic_column: "issue_place"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Updated Investor Account"
-  atomic_attribute: "Update Date"
-  description: "Ngày thay đổi thông tin"
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.UPDATE_DATE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "updated_investor_account"
-  atomic_column: "update_dt"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Updated Investor Account"
   atomic_attribute: "Nationality Id"
   description: "FK đến Classification VSDC Nationality — Quốc tịch."
   data_domain: "Surrogate Key"
@@ -3135,7 +3169,9 @@ attributes:
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
   source_column: "VSDC.UPDATED_INVESTORS.NOTES"
-  comment: null
+  comment: "Nguồn đổi sang kiểu DATE theo DDL PROD 2026-11-24 (comment nguồn: NOTE\
+    \ — ghi chú) nhưng mô tả là ghi chú văn bản — ETL cần convert sang string; cần\
+    \ profile dữ liệu xác nhận cột có chứa ghi chú hay ngày thật."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -3143,100 +3179,53 @@ attributes:
   atomic_column: "update_note"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Updated Investor Account"
-  atomic_attribute: "From Year"
-  description: "Năm bắt đầu"
-  data_domain: "Small Counter"
+  atomic_attribute: "Data Period Start Date"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.FROM_YEAR"
+  source_column: "VSDC.UPDATED_INVESTORS.BEGIN_PERIOD_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "date"
   atomic_table: "updated_investor_account"
-  atomic_column: "from_year"
+  atomic_column: "data_period_start_dt"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Updated Investor Account"
-  atomic_attribute: "From Month"
-  description: "Tháng bắt đầu"
-  data_domain: "Small Counter"
+  atomic_attribute: "Data Period End Date"
+  description: "Ngày cuối kỳ dữ liệu."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.FROM_MONTH"
+  source_column: "VSDC.UPDATED_INVESTORS.END_PERIOD_DATE"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "date"
   atomic_table: "updated_investor_account"
-  atomic_column: "from_month"
+  atomic_column: "data_period_end_dt"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Updated Investor Account"
-  atomic_attribute: "From Day"
-  description: "Ngày bắt đầu"
-  data_domain: "Small Counter"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.FROM_DAY"
+  source_column: "VSDC.UPDATED_INVESTORS.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "date"
   atomic_table: "updated_investor_account"
-  atomic_column: "from_day"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Updated Investor Account"
-  atomic_attribute: "To Year"
-  description: "Năm kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.TO_YEAR"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "updated_investor_account"
-  atomic_column: "to_year"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Updated Investor Account"
-  atomic_attribute: "To Month"
-  description: "Tháng kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.TO_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "updated_investor_account"
-  atomic_column: "to_month"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Updated Investor Account"
-  atomic_attribute: "To Day"
-  description: "Ngày kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.TO_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "updated_investor_account"
-  atomic_column: "to_day"
+  atomic_column: "data_dt"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Audit Firm Auditor Status History"
   atomic_attribute: "Audit Firm Auditor Status History Id"
@@ -23838,8 +23827,7 @@ attributes:
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
   source_column: "HNX.BROKERAGE_MARKET_SHARE.TOTAL_TRADING_VALUE"
-  comment: "Đơn vị nguồn: tỷ đồng. Nguồn DECIMAL(30,6) — domain Currency Amount (decimal(23,2))\
-    \ làm tròn 6 → 2 chữ số thập phân; cần Data Modeler xác nhận độ chính xác."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(23,2)"
@@ -23855,12 +23843,10 @@ attributes:
   source_system: "HNX"
   source_table: "BROKERAGE_MARKET_SHARE"
   source_column: "HNX.BROKERAGE_MARKET_SHARE.MARKET_SHARE_BY_VALUE"
-  comment: "Nguồn DECIMAL(24,12) — domain Percentage (decimal(5,2)) làm tròn 12 →\
-    \ 2 chữ số thập phân; nếu nguồn lưu dạng tỷ lệ 0–1 thay vì phần trăm thì mất gần\
-    \ hết thông tin. Cần xác nhận thang đo với nguồn HNX."
+  comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "decimal(5,2)"
+  data_type: "decimal(8,5)"
   atomic_table: "brokerage_market_share"
   atomic_column: "market_share_by_val"
 - bcv_core_object: "Documentation"
@@ -36446,6 +36432,40 @@ attributes:
   atomic_table: "listed_share_information"
   atomic_column: "rpt_day"
 - bcv_core_object: "Documentation"
+  atomic_entity: "Listed Share Information"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "LISTED_SECURITIES_LIST"
+  source_column: "HOSE.LISTED_SECURITIES_LIST.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listed_share_information"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Listed Share Information"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "LISTED_SECURITIES_LIST"
+  source_column: "HOSE.LISTED_SECURITIES_LIST.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listed_share_information"
+  atomic_column: "data_dt"
+- bcv_core_object: "Documentation"
   atomic_entity: "Listing Status Change"
   atomic_attribute: "Listing Status Change Id"
   description: "Khóa đại diện (surrogate key)."
@@ -36827,7 +36847,8 @@ attributes:
   source_system: "HOSE"
   source_table: "LISTING_STATUS_CHANGE"
   source_column: "HOSE.LISTING_STATUS_CHANGE.DECISION_DATE"
-  comment: "BK nghiệp vụ — tham gia hash Id (theo mục Business Key & Filter)."
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang\
+    \ DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -36987,7 +37008,8 @@ attributes:
   source_system: "HOSE"
   source_table: "LISTING_STATUS_CHANGE"
   source_column: "HOSE.LISTING_STATUS_CHANGE.EFFECTIVE_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang\
+    \ DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -37003,7 +37025,8 @@ attributes:
   source_system: "HOSE"
   source_table: "LISTING_STATUS_CHANGE"
   source_column: "HOSE.LISTING_STATUS_CHANGE.FIRST_TRADING_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang\
+    \ DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -37019,7 +37042,8 @@ attributes:
   source_system: "HOSE"
   source_table: "LISTING_STATUS_CHANGE"
   source_column: "HOSE.LISTING_STATUS_CHANGE.LAST_TRADING_DATE"
-  comment: null
+  comment: "Nguồn lưu dạng STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang\
+    \ DATE; cần chốt định dạng chuỗi ngày và validate giá trị không hợp lệ."
   classification_context: null
   etl_derived_value: null
   data_type: "date"
@@ -37089,6 +37113,40 @@ attributes:
   data_type: "int"
   atomic_table: "listing_status_change"
   atomic_column: "rpt_day"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Listing Status Change"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "LISTING_STATUS_CHANGE"
+  source_column: "HOSE.LISTING_STATUS_CHANGE.REPORT_PERIOD"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_status_change"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Documentation"
+  atomic_entity: "Listing Status Change"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "LISTING_STATUS_CHANGE"
+  source_column: "HOSE.LISTING_STATUS_CHANGE.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listing_status_change"
+  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Offering"
   atomic_attribute: "Private Corp Bond Offering Id"
@@ -64540,8 +64598,8 @@ attributes:
   source_system: "VSDC"
   source_table: "MAJOR_SHAREHOLDER"
   source_column: "VSDC.MAJOR_SHAREHOLDER.VOTING_SHARES"
-  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần\
-    \ thập phân."
+  comment: "Nguồn đổi sang STRING theo DDL PROD 2026-11-24 — ETL cần cast/parse sang\
+    \ BIGINT; cần validate không có giá trị non-numeric/định dạng phân tách nghìn."
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
@@ -64573,8 +64631,7 @@ attributes:
   source_system: "VSDC"
   source_table: "MAJOR_SHAREHOLDER"
   source_column: "VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_SHARES"
-  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần\
-    \ thập phân."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
@@ -64592,7 +64649,9 @@ attributes:
   source_column: "VSDC.MAJOR_SHAREHOLDER.BEGIN_PERIOD_RATIO"
   comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain\
     \ Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ ghi đè về\
-    \ mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+    \ mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]. Nguồn đổi\
+    \ sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang decimal(7,4), cần kiểm tra\
+    \ sai số làm tròn."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(7,4)"
@@ -64624,8 +64683,7 @@ attributes:
   source_system: "VSDC"
   source_table: "MAJOR_SHAREHOLDER"
   source_column: "VSDC.MAJOR_SHAREHOLDER.END_PERIOD_SHARES"
-  comment: "Nguồn DECIMAL(18,0) — ETL cần CAST sang BIGINT; validate không có phần\
-    \ thập phân."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "bigint"
@@ -64643,7 +64701,9 @@ attributes:
   source_column: "VSDC.MAJOR_SHAREHOLDER.END_PERIOD_RATIO"
   comment: "data_type chốt theo DDL atomic đã khảo sát dữ liệu: decimal(7,4) (domain\
     \ Percentage mặc định decimal(5,2)). transform_physical_names.py sẽ ghi đè về\
-    \ mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]."
+    \ mặc định nếu chưa có domain/ngoại lệ tương ứng [PROPOSE NEW DOMAIN]. Nguồn đổi\
+    \ sang FLOAT theo DDL PROD 2026-11-24 — ETL cast sang decimal(7,4), cần kiểm tra\
+    \ sai số làm tròn."
   classification_context: null
   etl_derived_value: null
   data_type: "decimal(7,4)"
@@ -64667,100 +64727,21 @@ attributes:
   atomic_column: "note"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "From Year"
-  description: "Năm bắt đầu"
-  data_domain: "Small Counter"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
   nullable: true
   is_primary_key: false
   source_system: "VSDC"
   source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.FROM_YEAR"
+  source_column: "VSDC.MAJOR_SHAREHOLDER.DATA_DT"
   comment: null
   classification_context: null
   etl_derived_value: null
-  data_type: "int"
+  data_type: "date"
   atomic_table: "major_shareholder_ownership"
-  atomic_column: "from_year"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "From Month"
-  description: "Tháng bắt đầu"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.FROM_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "from_month"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "From Day"
-  description: "Ngày bắt đầu"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.FROM_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "from_day"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "To Year"
-  description: "Năm kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.TO_YEAR"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "to_year"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "To Month"
-  description: "Tháng kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.TO_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "to_month"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "To Day"
-  description: "Ngày kết thúc"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.TO_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "to_day"
+  atomic_column: "data_dt"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Pension Fund"
   atomic_attribute: "Pension Fund Id"
@@ -82116,6 +82097,23 @@ attributes:
   atomic_table: "securities_order"
   atomic_column: "rpt_day"
 - bcv_core_object: "Transaction"
+  atomic_entity: "Securities Order"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "ORDER_BOOK"
+  source_column: "HOSE.ORDER_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "securities_order"
+  atomic_column: "data_dt"
+- bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
   atomic_attribute: "Securities Practitioner License Application Fee Id"
   description: "Surrogate primary key"
@@ -83757,6 +83755,23 @@ attributes:
   data_type: "int"
   atomic_table: "securities_trade"
   atomic_column: "rpt_day"
+- bcv_core_object: "Transaction"
+  atomic_entity: "Securities Trade"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HOSE"
+  source_table: "TRADE_BOOK"
+  source_column: "HOSE.TRADE_BOOK.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "securities_trade"
+  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Security Match Log Id"

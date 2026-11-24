@@ -25,32 +25,82 @@ columns:
   key: null
   fk_note: null
 - name: REFERENCE_PRICE
-  data_type: DECIMAL(18,2)
+  data_type: DECIMAL(24,6)
   description: Giá tham chiếu
-  key: null
-  fk_note: null
-- name: DS_SNPST_DT
-  data_type: DATE
-  description: Ngày chốt số liệu
-  key: null
-  fk_note: null
-- name: DS_ETL_PCS_TMS
-  data_type: TIMESTAMP
-  description: Thời gian chạy ETL
-  key: null
-  fk_note: null
-- name: REPORT_DAY
-  data_type: INT
-  description: Ngày báo cáo
-  key: null
-  fk_note: null
-- name: REPORT_MONTH
-  data_type: INT
-  description: Tháng báo cáo
   key: null
   fk_note: null
 - name: REPORT_YEAR
   data_type: INT
-  description: Năm báo cáo
+  description: Năm của kỳ báo cáo (từ data_dt)
+  key: null
+  fk_note: null
+- name: REPORT_MONTH
+  data_type: INT
+  description: Tháng của kỳ báo cáo (từ data_dt)
+  key: null
+  fk_note: null
+- name: REPORT_DAY
+  data_type: INT
+  description: Ngày của kỳ báo cáo (từ data_dt; NULL nếu dữ liệu theo tháng)
+  key: null
+  fk_note: null
+- name: REPORT_PERIOD
+  data_type: STRING
+  description: 'Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)'
+  key: null
+  fk_note: null
+- name: _BATCH_ID
+  data_type: STRING
+  description: Định danh batch nạp (dataset:ngày cuối kỳ:dấu vân tay)
+  key: null
+  fk_note: null
+- name: DATA_DT
+  data_type: DATE
+  description: Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — khóa ghi đè của batch; dataset snapshot = run_date
+  key: null
+  fk_note: null
+- name: DS_SNPST_DT
+  data_type: DATE
+  description: 'Ngày ETL: daily = run_date (ngày chạy − end_offset_days); backdate = ngày truyền vào ứng với batch (Excel: ngày gửi của file được nạp)'
+  key: null
+  fk_note: null
+- name: DS_ETL_PCS_TMS
+  data_type: TIMESTAMP
+  description: Thời điểm ETL (Spark job) ghi dòng
+  key: null
+  fk_note: null
+- name: _SOURCE_SYSTEM
+  data_type: STRING
+  description: source_id trong registry
+  key: null
+  fk_note: null
+- name: _SOURCE_TABLE
+  data_type: STRING
+  description: bucket/prefix của dataset
+  key: null
+  fk_note: null
+- name: _SOURCE_FILE
+  data_type: STRING
+  description: Object key của file nguồn (bucket/key)
+  key: null
+  fk_note: null
+- name: _FILE_CHECKSUM
+  data_type: STRING
+  description: ETag của file nguồn (định danh phiên bản, không phải MD5)
+  key: null
+  fk_note: null
+- name: _FILE_MODIFIED_AT
+  data_type: TIMESTAMP
+  description: LastModified của file nguồn
+  key: null
+  fk_note: null
+- name: _ROW_NUMBER
+  data_type: BIGINT
+  description: Số dòng trong sheet
+  key: null
+  fk_note: null
+- name: _SHEET_NAME
+  data_type: STRING
+  description: Tên sheet
   key: null
   fk_note: null

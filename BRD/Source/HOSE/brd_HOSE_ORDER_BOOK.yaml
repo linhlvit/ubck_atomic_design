@@ -166,7 +166,7 @@ columns:
   fk_note: null
 - name: REPORT_DAY
   data_type: INT
-  description: Ngày của ngày nghiệp vụ (NULL nếu dữ liệu cấp tháng)
+  description: Ngày của ngày nghiệp vụ (NULL nếu dữ liệu theo tháng)
   key: null
   fk_note: null
 - name: _BATCH_ID
@@ -174,9 +174,14 @@ columns:
   description: 'Định danh batch nạp (dataset:ngày:dấu vân tay)'
   key: null
   fk_note: null
+- name: DATA_DT
+  data_type: DATE
+  description: Ngày batch data theo kỳ dùng để override partition
+  key: null
+  fk_note: null
 - name: DS_SNPST_DT
   data_type: DATE
-  description: 'Ngày ELT: daily = run_date; from_date/to_date, dates = ngày được chạy của batch'
+  description: Ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng) — cột partition, ghi đè theo cột này; dataset snapshot = run_date
   key: null
   fk_note: null
 - name: DS_ETL_PCS_TMS
