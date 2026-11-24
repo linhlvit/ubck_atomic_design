@@ -121,14 +121,17 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_71-83,112-114 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Danh mục TPDN niêm yết theo mã và ngày: kỳ hạn, KL lưu hành, dư nợ, lợi suất, sàn, ngành (Nhóm 7, 8, 27, 29, 52.2) — không chứa giao dịch | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83,114 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_71-82,112,113 |
 
 ---
 
@@ -137,14 +140,19 @@ erDiagram
 ```mermaid
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
+    Security_Trading_Snapshot_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83-88 |
+| Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Danh mục TPDN niêm yết theo mã và ngày: kỳ hạn, KL lưu hành, dư nợ, lợi suất, sàn, ngành (Nhóm 7, 8, 27, 29, 52.2) — không chứa giao dịch | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83-85,87,88 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_84-86 |
 
 ---
 
@@ -152,8 +160,8 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
-    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
 ```
 
@@ -161,7 +169,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_73 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_73 |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | new | Giá trị giao dịch và giá trị mua/bán NĐTNN TPDN riêng lẻ theo ngày báo cáo HNX09 (Nhóm 9, 11, 12, 13) | 1 ngày báo cáo HNX09 (PK private_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, src_stm_code)) | K_VP_89 |
 
 ---
@@ -170,15 +178,15 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
-    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
+    Industry_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
 ```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Giao dịch, kỳ hạn, ngành và khối lượng lưu hành của TPDN niêm yết theo mã trái phiếu (Nhóm 7, 8, 9, 10) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_84,86,90 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_84,86,90 |
 
 ---
 
@@ -407,7 +415,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — mốc cuối kỳ (dư nợ) và trục kỳ Tháng/Quý/Năm tại kỳ tra cứu + kỳ liền trước | 1 ngày dương lịch | K_VP_449 |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 8) | Dư nợ TPDN niêm yết theo KL niêm yết MDDS × mệnh giá và kỳ hạn còn lại (ngày) — thêm 2 cột `listed_bond_val`, `remaining_term_days` [MỚI 2026-11-16, O_VP_81] | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_451, 453, 454, 455, 462 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 7/8) | Dư nợ TPDN niêm yết theo KL niêm yết MDDS × mệnh giá và kỳ hạn còn lại (ngày) — thêm 2 cột `listed_bond_val`, `remaining_term_days` [MỚI 2026-11-16, O_VP_81]; Fact danh mục, bỏ `listed_indicator` [O_VP_89, 2026-11-23] | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS | K_VP_451, 453, 454, 455, 462 |
 | Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse (Nhóm 11) | Dư nợ TPDN riêng lẻ (KL lưu hành × mệnh giá) và kỳ hạn còn lại — thêm 2 cột `outstanding_bond_quantity`, `remaining_bond_term` [MỚI 2026-11-16, O_VP_81] | 1 mã trái phiếu × 1 tháng báo cáo (PK hash Dạng B) | K_VP_452, 453, 454, 455, 462 |
 | Fact Securities Offering Event | Fact Event | reuse (Nhóm 23) | GT phát hành thành công TPDN do UBCK quản lý (huy động vốn, loại CK TP/TPCD/TPKCQ), kỳ hạn và lãi suất phát hành — thêm 2 cột `bond_term_years`, `issue_interest_rate` [MỚI 2026-11-16, O_VP_81] | 1 đợt × 1 hình thức | K_VP_390, 456–461 |
 | Fact Private Corporate Bond Offering Snapshot | Fact Snapshot | reuse (Nhóm 26) | GT chào bán TPDN riêng lẻ lũy kế (phát sinh tháng bằng LAG ở Detail Mapping), kỳ hạn và lãi suất phát hành — thêm 2 cột `bond_term_years`, `issue_interest_rate` [MỚI 2026-11-16, O_VP_81] | 1 mã × thị trường × ngày đăng tin × 1 tháng báo cáo (PK hash Dạng B) | K_VP_456–461 |
@@ -425,7 +433,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày — mốc cuối kỳ tra cứu (một kỳ) | 1 ngày dương lịch | K_VP_449 |
 | Industry Dimension | Dimension | reuse | Ngành nghề kinh tế cấp 1 của tổ chức phát hành (CTCK/CTQLQ mặc định '07000'); TPDN riêng lẻ không có ngành | 1 ngành | K_VP_463 |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 27) | Dư nợ TPDN niêm yết theo ngành (`listed_bond_val`, `industry_dim_id`) | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_464, 465 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse (Nhóm 27) | Dư nợ TPDN niêm yết theo ngành (`listed_bond_val`, `industry_dim_id`); Fact danh mục [O_VP_89, 2026-11-23] | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS | K_VP_464, 465 |
 | Fact Private Corporate Bond Registration Snapshot | Fact Snapshot | reuse (Nhóm 27) | Dư nợ TPDN riêng lẻ gán nhóm cố định 'TPDNRL - Chưa phân ngành' (`outstanding_bond_quantity`, `par_val`) | 1 mã trái phiếu × 1 tháng báo cáo (PK hash Dạng B) | K_VP_464, 465 |
 
 ## Nhóm 30 - Huy động vốn >> TPCP >> Chỉ tiêu tổng hợp
@@ -462,7 +470,7 @@ erDiagram
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
 ```
@@ -472,7 +480,7 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | reuse | Giá trị/khối lượng mua/bán theo nhóm NĐT (NĐTNN / Tự doanh / Toàn bộ) — đã thiết kế Nhóm 1–6; Nhóm 32 đọc `Buy Value`/`Sell Value` với Investor Group Code = 'FOREIGN' | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT × 1 nguồn Sổ lệnh | K_VP_115–134 |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — Nhóm 32 lọc/cắt theo `Stock Type Name` (Cổ phiếu / Chứng quyền / Chứng chỉ quỹ·ETF / Phái sinh) | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_115–134 |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10); Nhóm 32 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_115–134 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10, tách Fact giao dịch — O_VP_89, 2026-11-23); Nhóm 32 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' | K_VP_115–134 |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 32 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_115–134 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 32 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_115–134 |
 
@@ -482,7 +490,7 @@ erDiagram
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
 ```
@@ -492,7 +500,7 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | reuse | Giá trị/khối lượng mua/bán theo nhóm NĐT (NĐTNN / Tự doanh / Toàn bộ) — đã thiết kế Nhóm 1–6; Nhóm 33 đọc `Buy Value`/`Sell Value` với Investor Group Code = 'FOREIGN' | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT × 1 nguồn Sổ lệnh | K_VP_135–140 |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — Nhóm 33 lọc/cắt theo `Stock Type Name` (Cổ phiếu / Chứng quyền / Chứng chỉ quỹ·ETF / Phái sinh) | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_135–140 |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10); Nhóm 33 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_135–140 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10, tách Fact giao dịch — O_VP_89, 2026-11-23); Nhóm 33 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' | K_VP_135–140 |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 33 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_135–140 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 33 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_135–140 |
 
@@ -502,7 +510,7 @@ erDiagram
 erDiagram
     Calendar_Date_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
     Security_Trading_Snapshot_Dimension ||--o{ Fact_Investor_Group_Trading_Snapshot : " "
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
 ```
@@ -512,7 +520,7 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | reuse | Giá trị/khối lượng mua/bán theo nhóm NĐT (NĐTNN / Tự doanh / Toàn bộ) — đã thiết kế Nhóm 1–6; Nhóm 34 đọc `Buy Value`/`Sell Value` với Investor Group Code = 'FOREIGN' | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT × 1 nguồn Sổ lệnh | K_VP_141 |
 | Security Trading Snapshot Dimension | Dimension | reuse (partial) | Hồ sơ chứng khoán (GSTT sở hữu) — Nhóm 34 lọc/cắt theo `Stock Type Name` (Cổ phiếu / Chứng quyền / Chứng chỉ quỹ·ETF / Phái sinh) | 1 mã chứng khoán (bản ghi mới nhất) | K_VP_141 |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10); Nhóm 34 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_141 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10, tách Fact giao dịch — O_VP_89, 2026-11-23); Nhóm 34 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' | K_VP_141 |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 34 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_141 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 34 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_141 |
 
@@ -550,7 +558,7 @@ erDiagram
 
 ```mermaid
 erDiagram
-    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Listed_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Private_Corporate_Bond_Trading_Snapshot : " "
     Calendar_Date_Dimension ||--o{ Fact_Government_Bond_Trading_Snapshot : " "
 ```
@@ -558,7 +566,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày giao dịch | K_VP_147–159 |
+| Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN niêm yết (đã thiết kế Nhóm 7–10, tách Fact giao dịch — O_VP_89, 2026-11-23); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' | K_VP_147–159 |
 | Fact Private Corporate Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPDN riêng lẻ (đã thiết kế Nhóm 11–13); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày × 1 nguồn báo cáo HNX09 | K_VP_147–159 |
 | Fact Government Bond Trading Snapshot | Fact Snapshot | reuse | Giao dịch TPCP (đã thiết kế Nhóm 14–16); Nhóm 37 đọc `Foreign Buy Value`/`Foreign Sell Value` | 1 ngày giao dịch × 1 loại sổ lệnh OUTRIGHT / REPO | K_VP_147–159 |
 

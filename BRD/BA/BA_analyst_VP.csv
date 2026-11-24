@@ -14534,11 +14534,11 @@ ORDER BY
   a.marketcap DESC,
   a.symbol
 ;"
-52.4,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Sàn,"Danh sách sàn giao dịch/niêm yết: 
+52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Sàn,"Danh sách sàn giao dịch/niêm yết: 
 HOSE
 HNX
 UPCOM",Data Explorer,Chiều,Trùng,Sàn,MDDS,,X,,Done,,uat_mdds_stg.jad_stockinfor (s),s.floorcode,"MAP('02','HNX','04','UPCOM','10','HOSE')[floorcode]",
-52.4,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Ngành,Ngành nghề kinh tế cấp 1,Data Explorer,Chiều,Trùng,Ngành,"IDS, SCMS, FMS",,X,,Done,,"uat_ids_stg.categories (c),
+52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Ngành,Ngành nghề kinh tế cấp 1,Data Explorer,Chiều,Trùng,Ngành,"IDS, SCMS, FMS",,X,,Done,,"uat_ids_stg.categories (c),
 ids.company_profiles (cp)
 uat_scms_stg.sc_firm_info (sc),
 uat_fms_stg.securities (f)","c.industry_cd,
@@ -14550,7 +14550,7 @@ Link bảng ids.company_profiles (cp) và bảng ids.categories (c): cp.category
 * Nếu CTCK/CTQLQ là CTĐC -> Mặc định ngành = 07000 (Tài chính ngân hàng):
 Link mã CP với thông tin CTCK: Bảng uat_scms_stg.SC_FIRM_INFO (sc) với điều kiện sc.deleted = '0' AND sc.securities_code IS NOT NULL AND s.symbol = sc.securities_code
 Link mã CP với thông tin CTQLQ: Bảng uat_fms_stg.securities (f) với điều kiện f.deleted = 0 AND f.stock_code IS NOT NULL AND s.symbol = f.stock_code",
-52.4,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Chỉ số,"Chỉ số Index gồm: 
+52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Chỉ số,"Chỉ số Index gồm: 
 VNIndex
 HNX Index
 UPCOM Index
@@ -14951,11 +14951,11 @@ ORDER BY
   COALESCE(MAP('HOSE',1, 'HNX',2, 'UPCOM',3)[r.san], 9),
   MAP('CP',1, 'CCQ',2, 'ETF',3, 'CQ',4, 'TPCP',5, 'TPDNNY',6, 'TPDNRL',7)[r.loai_ck]
 ;"
-52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Sàn,"Danh sách sàn giao dịch/niêm yết: 
+52.4,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Sàn,"Danh sách sàn giao dịch/niêm yết: 
 HOSE
 HNX
 UPCOM",Data Explorer,Chiều,TB,Sàn,MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.floorcode,"MAP('02','HNX','04','UPCOM','10','HOSE')[floorcode]",
-52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Loại chứng khoán,"Gồm các loại:
+52.4,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Loại chứng khoán,"Gồm các loại:
 Cổ phiếu
 Chứng chỉ quỹ
 ETF
@@ -15553,8 +15553,8 @@ params AS (
     kyhanbq_tuso_ytd    - COALESCE(LAG(kyhanbq_tuso_ytd)    OVER w, 0) AS kyhanbq_tuso,
     kyhanbq_mauso_ytd   - COALESCE(LAG(kyhanbq_mauso_ytd)   OVER w, 0) AS kyhanbq_mauso,
     laisuatbq_tuso_ytd  - COALESCE(LAG(laisuatbq_tuso_ytd)  OVER w, 0) AS laisuatbq_tuso,
-    laisuatbq_mauso_ytd - COALESCE(LAG(laisuatbq_mauso_ytd) OVER w, 0) AS laisuatbq_mauso
-    gt_ndtnn_ytd        - COALESCE(LAG(gt_ndtnn_ytd) OVER w, 0) AS gt_ndtnn,
+    laisuatbq_mauso_ytd - COALESCE(LAG(laisuatbq_mauso_ytd) OVER w, 0) AS laisuatbq_mauso,
+    gt_ndtnn_ytd        - COALESCE(LAG(gt_ndtnn_ytd) OVER w, 0) AS gt_ndtnn
   FROM private_corpbond_ytd
   WINDOW w AS (PARTITION BY report_year, loai_ck, market_type, enterprise_type, business_sector, business_sector ORDER BY report_month)
 )

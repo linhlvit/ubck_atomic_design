@@ -2431,11 +2431,11 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 
 ## VP
 
-**6 bảng flat** (6 fact + 0 operational) · **KPI unique**: Fact Derivative Contract Snapshot 11, Fact Investor Group Trading Snapshot 50, Fact Listed Corporate Bond Snapshot 22, Fact Private Corporate Bond Trading Snapshot 10, Fact Government Bond Trading Snapshot 10, Fact Private Corporate Bond Registration Snapshot 2 (chưa kể Chiều và KPI reuse Fact Market Index Snapshot)
+**7 bảng flat** (7 fact + 0 operational) · **KPI unique**: Fact Derivative Contract Snapshot 11, Fact Investor Group Trading Snapshot 50, Fact Listed Corporate Bond Snapshot 8 (Nhóm 7, 8, 27, 52.2 — Fact danh mục, O_VP_89), Fact Listed Corporate Bond Trading Snapshot 15 (Nhóm 7–10, 32–34, 37, 52.2, 56 — Fact giao dịch, O_VP_89), Fact Private Corporate Bond Trading Snapshot 10, Fact Government Bond Trading Snapshot 10, Fact Private Corporate Bond Registration Snapshot 2 (chưa kể Chiều và KPI reuse Fact Market Index Snapshot)
 
 > **[MỚI 2026-10-25]** Thiết kế lại phân hệ VP từ đầu (đợt 1: Nhóm 1–6). Hai flat cũ `vp_fact_otc_bond_snapshot_flat`, `vp_fact_share_auction_snapshot_flat` đã bỏ (DEPRECATED, HLD Section 4). Fact Market Index Snapshot (reuse từ QLKD) dùng bảng flat của QLKD; lịch ngày dùng `datamart.cdr_dt_flat` (Common).
 
-> **[MỚI 2026-10-25 — Lô 1, Nhóm 7–10]** Thêm 2 flat TPDN: `vp_fct_listed_corporate_bond_snpst_flat` (TPDN niêm yết theo mã × ngày; Industry Dimension của GSDC chỉ denormalize `industry_code`, `industry_nm`) và `vp_fct_private_corporate_bond_trading_snpst_flat` (TPDN riêng lẻ, báo cáo HNX09 theo ngày). Cả hai Fact không FK sang Security Trading Snapshot Dimension.
+> **[MỚI 2026-10-25 — Lô 1, Nhóm 7–10]** Thêm 2 flat TPDN: `vp_fct_listed_corporate_bond_snpst_flat` (TPDN niêm yết theo mã × ngày; Industry Dimension của GSDC chỉ denormalize `industry_code`, `industry_nm`) và `vp_fct_private_corporate_bond_trading_snpst_flat` (TPDN riêng lẻ, báo cáo HNX09 theo ngày). Cả hai Fact không FK sang Security Trading Snapshot Dimension. *(Từ 2026-11-23 — O_VP_89: Fact danh mục tách thành 2 Fact; Fact giao dịch mới có FK nullable sang Security Trading Snapshot Dimension — xem mục flat bên dưới.)*
 
 > **[MỚI 2026-10-25 — Lô 2, Nhóm 11–16]** Thêm 2 flat: `vp_fct_government_bond_trading_snpst_flat` (TPCP theo ngày × loại sổ lệnh OUTRIGHT / REPO, Bond Order Book HNX, chỉ lệnh đã thực hiện — Nhóm 14, 15, 16) và `vp_fct_private_corporate_bond_registration_snpst_flat` (TPDN riêng lẻ đăng ký giao dịch theo mã × tháng báo cáo HNX, factless; FK ngày = ngày cuối tháng báo cáo nên chỉ nạp khi `:etl_date` là ngày cuối tháng — Nhóm 11). Flat TPDN riêng lẻ HNX09 (`vp_fct_private_corporate_bond_trading_snpst_flat`) dùng thêm cho Nhóm 11, 12, 13 — không đổi cột. Cả hai Fact mới chỉ join Calendar Date Dimension.
 
@@ -2502,8 +2502,10 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 | **Loại** | `fact` |
 | **Entity nguồn** | Fact Listed Corporate Bond Snapshot |
 | **Bảng fact/operational** | `datamart.fct_listed_corporate_bond_snpst` |
-| **PK** | `listed_corporate_bond_snpst_id` (hash(snpst_dt_dim_id, security_symbol_code) — 1 mã trái phiếu (ISIN) × 1 ngày giao dịch) |
+| **PK** | `listed_corporate_bond_snpst_id` (hash(snpst_dt_dim_id, security_symbol_code) — 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS, Stock Type '1') |
 | **Số dim join** | 2 |
+
+> **[CẬP NHẬT 2026-11-23 — O_VP_89]** Fact danh mục: chỉ còn 13 cột (KL lưu hành, giá trị lưu hành/niêm yết, kỳ hạn, YTM, sàn, mã) — đã tách toàn bộ cột giao dịch sang flat `vp_fct_listed_corporate_bond_trading_snpst_flat` (bên dưới). Detail Mapping đã chuyển xong (phiên 2–3, 2026-11-23): KPI giao dịch của Nhóm 32/33/34/37/52.2/56 đọc Fact giao dịch; Fact danh mục chỉ còn Nhóm 7, 8, 27, 29 và 52.2 (K_VP_541, 542 + dòng Chiều Sàn/Mã/Ngành cho nhánh danh mục). Điều kiện `listed_indicator = 1` đã bỏ — Fact danh mục chỉ nạp mã có bản tin MDDS `stocktype = '1'`.
 
 **Joins (FK → PK)**
 
@@ -2516,10 +2518,49 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 7 — TPDN niêm yết >> Chỉ tiêu tổng hợp | 16 |
-| Nhóm 8 — TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành | 6 |
+| Nhóm 7 — TPDN niêm yết >> Chỉ tiêu tổng hợp | 1 |
+| Nhóm 8 — TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành | 3 |
+| Nhóm 27 — Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp | 1 |
+| Nhóm 52.2 — Data Explorer >> Giao dịch/Thanh khoản & Phái sinh *(dòng Chiều Sàn/Mã/Ngành nhánh danh mục; KPI K_VP_541, 542 đọc Fact này)* | 4 |
+
+*(Nhóm 29 — Dư nợ theo ngành đọc `listed_bond_val`, `industry_dim_id` của Fact này qua công thức DERIVED trong Detail Mapping nên không có dòng `mart_table` riêng.)*
+
+---
+
+### `datamart.vp_fct_listed_corporate_bond_trading_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Listed Corporate Bond Trading Snapshot |
+| **Bảng fact/operational** | `datamart.fct_listed_corporate_bond_trading_snpst` |
+| **PK** | `listed_corporate_bond_trading_snpst_id` (hash(snpst_dt_dim_id, security_symbol_code) — 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX, `market_code = 'HCX'`) |
+| **Số dim join** | 3 |
+
+> **[MỚI 2026-11-23 — O_VP_89]** Tách từ Fact danh mục `fct_listed_corporate_bond_snpst`: bảng dẫn = `securities_trade` (HNX_TRADE_BOOK, `GROUP BY ticker_symbol, trade_dt`); 14 measure KLGD/GTGD (tổng, NĐTNN mua/bán, tự doanh mua/bán, khớp lệnh, thỏa thuận). `security_trading_snpst_dim_id` và `industry_dim_id` nullable (LEFT JOIN bản tin MDDS theo `issue_code = symbolisin` — giao dịch không có bản tin cùng ngày ⇒ NULL). Kỳ hạn phát hành của KPI giao dịch tính ở Detail Mapping từ `security_trading_snpst_dim` (`issue_dt`, `maturity_dt`), không nối Fact–Fact.
+
+**Joins (FK → PK)**
+
+| Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
+|-----------------|----------|-----------|----------|:----:|
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Security Trading Snapshot Dimension | `datamart.security_trading_snpst_dim` | `security_trading_snpst_dim_id` | `security_trading_snpst_dim_id` | ✗ |
+| Industry Dimension | `datamart.industry_dim` | `industry_dim_id` | `industry_dim_id` | ✗ |
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 7 — TPDN niêm yết >> Chỉ tiêu tổng hợp | 4 |
+| Nhóm 8 — TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành | 1 |
 | Nhóm 9 — TPDN niêm yết >> Biểu đồ Thống kê GTGD TPDN niêm yết và TPDN riêng lẻ | 1 |
-| Nhóm 10 — TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành | 3 |
+| Nhóm 10 — TPDN niêm yết >> Biểu đồ Giá trị giao dịch TPDN theo ngành | 1 |
+| Nhóm 32 — Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp | 2 |
+| Nhóm 33 — Mua/Bán ròng NĐTNN >> Chi tiết giao dịch | 1 |
+| Nhóm 34 — Mua/Bán ròng NĐTNN >> Chỉ tiêu tổng hợp (GT bán theo loại tài sản) | 1 |
+| Nhóm 37 — Mua/Bán ròng NĐTNN >> Biểu đồ Giá trị giao dịch Trái phiếu của NĐTNN | 2 |
+| Nhóm 52.2 — Data Explorer >> Giao dịch/Thanh khoản & Phái sinh *(KPI giao dịch K_VP_521–540 + dòng Chiều Sàn/Mã/Ngành nhánh giao dịch)* | 4 |
+| Nhóm 56 — Cổ phiếu >> Thống kê giao dịch toàn thị trường *(K_VP_508–511 nhánh TPDNNY; lọc `security_trading_snpst_dim_id IS NOT NULL`)* | 2 |
 
 ---
 

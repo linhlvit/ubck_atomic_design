@@ -182,27 +182,12 @@ SELECT
     f.snpst_dt_dim_id,
     f.industry_dim_id,
     f.security_symbol_code,
-    f.listed_indicator,
     f.issue_term_years,
     f.remaining_term_years,
-    f.trading_vol,
-    f.trading_val,
-    f.foreign_buy_val,
-    f.foreign_sell_val,
     f.outstanding_bond_quantity,
     f.bond_outstanding_val,
     f.listed_bond_val,
     f.remaining_term_days,
-    f.foreign_buy_vol,
-    f.proprietary_buy_vol,
-    f.proprietary_buy_val,
-    f.foreign_sell_vol,
-    f.proprietary_sell_vol,
-    f.proprietary_sell_val,
-    f.order_matching_vol,
-    f.order_matching_val,
-    f.negotiated_trade_vol,
-    f.negotiated_trade_val,
     f.yield_to_maturity_rate,
     f.floor_code,
     f.ticker_symbol,
@@ -844,5 +829,95 @@ SELECT
 FROM datamart.fct_private_corporate_bond_offering_snpst f
 JOIN datamart.cdr_dt_dim cal
     ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 19. FACT: vp_fct_listed_corporate_bond_trading_snpst_flat
+-- ==========================================================
+DELETE FROM datamart.vp_fct_listed_corporate_bond_trading_snpst_flat ON CLUSTER 'my_cluster'
+WHERE cdr_dt = :etl_date;
+INSERT INTO datamart.vp_fct_listed_corporate_bond_trading_snpst_flat
+SELECT
+    -- From: FCT_LISTED_CORPORATE_BOND_TRADING_SNPST
+    f.listed_corporate_bond_trading_snpst_id,
+    f.snpst_dt_dim_id,
+    f.security_trading_snpst_dim_id,
+    f.industry_dim_id,
+    f.security_symbol_code,
+    f.trading_vol,
+    f.trading_val,
+    f.foreign_buy_val,
+    f.foreign_sell_val,
+    f.foreign_buy_vol,
+    f.foreign_sell_vol,
+    f.proprietary_buy_vol,
+    f.proprietary_buy_val,
+    f.proprietary_sell_vol,
+    f.proprietary_sell_val,
+    f.order_matching_vol,
+    f.order_matching_val,
+    f.negotiated_trade_vol,
+    f.negotiated_trade_val,
+
+    -- From: CALENDAR DATE DIMENSION
+    cal.cdr_dt AS cdr_dt,
+    cal.year AS year,
+    cal.quarter AS quarter,
+    cal.month AS month,
+    cal.day_of_week AS day_of_week,
+    cal.is_weekend AS is_weekend,
+    cal.holiday_flag AS holiday_flag,
+    cal.is_trading_date AS is_trading_date,
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    sts_dim.symbol AS symbol,
+    sts_dim.security_full_nm AS security_full_nm,
+    sts_dim.floor_code AS floor_code,
+    sts_dim.stock_tp_code AS stock_tp_code,
+    sts_dim.stock_tp_nm AS stock_tp_nm,
+    sts_dim.underlying_symbol AS underlying_symbol,
+    sts_dim.isin_code AS isin_code,
+    sts_dim.issuer_nm AS issuer_nm,
+    sts_dim.listed_share_count AS listed_share_count,
+    sts_dim.first_trading_dt AS first_trading_dt,
+    sts_dim.last_trading_dt AS last_trading_dt,
+    sts_dim.issue_dt AS issue_dt,
+    sts_dim.maturity_dt AS maturity_dt,
+    sts_dim.fund_tp_code AS fund_tp_code,
+    sts_dim.covered_warrant_tp_code AS covered_warrant_tp_code,
+    sts_dim.exercise_price AS exercise_price,
+    sts_dim.exercise_ratio AS exercise_ratio,
+    sts_dim.exercise_style_code AS exercise_style_code,
+    sts_dim.put_or_call_code AS put_or_call_code,
+    sts_dim.contract_multiplier AS contract_multiplier,
+    sts_dim.maturity_month_year AS maturity_month_year,
+    sts_dim.coupon_rate AS coupon_rate,
+    sts_dim.yield AS yield,
+    sts_dim.open_price AS open_price,
+    sts_dim.high_price AS high_price,
+    sts_dim.low_price AS low_price,
+    sts_dim.ceiling_price AS ceiling_price,
+    sts_dim.floor_price AS floor_price,
+    sts_dim.reference_price AS reference_price,
+    sts_dim.close_price AS close_price,
+    sts_dim.price_change AS price_change,
+    sts_dim.product_group_id AS product_group_id,
+    sts_dim.src_stm_code AS sts_dim_src_stm_code,
+    sts_dim.product_id AS product_id,
+
+    -- From: INDUSTRY DIMENSION
+    industry_dim.industry_code AS industry_code,
+    industry_dim.industry_nm AS industry_nm,
+    industry_dim.src_stm_code AS industry_dim_src_stm_code
+
+FROM datamart.fct_listed_corporate_bond_trading_snpst f
+JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt_dim_id = f.snpst_dt_dim_id
+LEFT JOIN datamart.security_trading_snpst_dim sts_dim
+    ON sts_dim.security_trading_snpst_dim_id = f.security_trading_snpst_dim_id
+LEFT JOIN datamart.industry_dim industry_dim
+    ON industry_dim.industry_dim_id = f.industry_dim_id
 WHERE cal.cdr_dt = :etl_date
 ;

@@ -5,7 +5,7 @@
 -- 6 bảng:
 --   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5)
 --   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6)
---   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 7, 8, 9, 10)
+--   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 7, 8, 27, 29, 52.2 — Fact danh mục; giao dịch tách sang vp_fct_listed_corporate_bond_trading_snpst_flat, O_VP_89)
 --   4. vp_fct_private_corporate_bond_trading_snpst_flat (Nhóm 9, 11, 12, 13)
 --   5. vp_fct_government_bond_trading_snpst_flat (Nhóm 14, 15, 16)
 --   6. vp_fct_private_corporate_bond_registration_snpst_flat (Nhóm 11)
@@ -168,40 +168,25 @@ COMMENT 'Flat table — fct_investor_group_trading_snpst — sinh tự động t
 
 -- ==========================================================
 -- 3. FACT: vp_fct_listed_corporate_bond_snpst_flat
---    fct_listed_corporate_bond_snpst — Grain: 1 mã trái phiếu (ISIN) × 1 ngày giao dịch; PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)
+--    fct_listed_corporate_bond_snpst — Fact DANH MỤC (O_VP_89) — Grain: 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS; PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)
 --    Joins: Calendar Date Dimension, Industry Dimension
 -- ==========================================================
 CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_corporate_bond_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_LISTED_CORPORATE_BOND_SNPST
-    listed_corporate_bond_snpst_id               String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_symbol_code). Grain = 1 mã trái phiếu (ISIN) × 1 ngày giao dịch; dòng là m',
-    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày giao dịch.',
-    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của tổ chức phát hành (3 ký tự đầu mã trái phiếu = mã cổ ',
-    security_symbol_code                         String                  COMMENT 'Mã trái phiếu theo ISIN (Issue Code của Sổ lệnh HNX = ISIN Code của bản tin MDDS). Khóa nghiệp vụ của dòng cùn',
-    listed_indicator                             UInt8                   COMMENT 'Cờ mã trái phiếu có bản tin cuối ngày MDDS (Stock Type Code = 1) trong ngày; TRUE khi có bản tin, FALSE khi ch',
-    issue_term_years                             Nullable(Decimal(23,2)) COMMENT 'Kỳ hạn phát hành (năm) = làm tròn 2 chữ số của số tháng giữa ngày phát hành và ngày đáo hạn chia 12, theo bản ',
-    remaining_term_years                         Nullable(Decimal(23,6)) COMMENT 'Kỳ hạn còn lại (năm) tại ngày giao dịch = số tháng từ ngày giao dịch đến ngày đáo hạn chia 12, không làm tròn;',
-    trading_vol                                  Nullable(Int64)         COMMENT 'Khối lượng giao dịch TPDN niêm yết trong ngày theo mã (Sổ lệnh HNX, Market Id Code = HCX); để trống khi mã khô',
-    trading_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch TPDN niêm yết trong ngày theo mã = Σ giá trị khớp của Sổ lệnh HNX (Market Id Code = HCX); để',
-    foreign_buy_val                              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài trong ngày theo mã: giá trị khớp của giao dịch có ký tự thứ 4 của số tài',
-    foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong ngày theo mã: giá trị khớp của giao dịch có ký tự thứ 4 của số tài',
-    outstanding_bond_quantity                    Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đang lưu hành tại ngày của bản tin theo danh mục chứng khoán niêm yết HNX (nối theo mã v',
+    listed_corporate_bond_snpst_id               String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_symbol_code). Grain = 1 mã trái phiếu (ISIN) × 1 ngày giao dịch có bản tin cuối ngày MDDS (Stock Type Code = 1) — Fact DANH MỤC (chỉ tiêu theo mã niêm yết, không chứa giao dịch; giao dịch ở fct_listed_corporate_bond_trading_snpst, O_VP_89); không đưa src_stm_code vào khóa vì mỗi dòng gộp bản tin MDDS với danh sách chứng khoán niêm yết HNX theo (ISIN, ngày); khóa MERGE của ETL.',
+    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày của bản tin cuối ngày MDDS.',
+    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của tổ chức phát hành (3 ký tự đầu mã trái phiếu = mã cổ phiếu); CTCK/CTQLQ mặc định ngành 07000; để trống khi không xác định được ngành (nhóm NA).',
+    security_symbol_code                         String                  COMMENT 'Mã trái phiếu theo ISIN (ISIN Code của bản tin MDDS; khớp Issue Code của Sổ lệnh HNX ở Fact giao dịch). Khóa nghiệp vụ của dòng cùng ngày.',
+    issue_term_years                             Nullable(Decimal(23,2)) COMMENT 'Kỳ hạn phát hành (năm) = làm tròn 2 chữ số của số tháng giữa ngày phát hành và ngày đáo hạn chia 12, theo bản tin cuối ngày MDDS.',
+    remaining_term_years                         Nullable(Decimal(23,6)) COMMENT 'Kỳ hạn còn lại (năm) tại ngày giao dịch = số tháng từ ngày giao dịch đến ngày đáo hạn chia 12, không làm tròn.',
+    outstanding_bond_quantity                    Nullable(Int64)         COMMENT 'Khối lượng trái phiếu đang lưu hành tại ngày của bản tin theo danh mục chứng khoán niêm yết HNX (nối theo mã và ngày báo cáo = ngày giao dịch); để trống khi không có dòng danh mục cùng ngày.',
     bond_outstanding_val                         Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu = khối lượng lưu hành × mệnh giá. Mệnh giá không có ở nguồn nên tính ngược từ giá tham chiếu ',
-    listed_bond_val                              Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu niêm yết theo KL niêm yết MDDS = KL niêm yết (LISTEDSHARE) × mệnh giá; mệnh giá suy ngược từ giá tham chiếu (100000 × 10^ROUND(LOG10(giá tham chiếu / 100000))), chỉ là trung gian. Khác bond_outstanding_val (KL lưu hành HNX); để trống khi dòng không có bản tin MDDS cùng ngày. [MỚI 2026-11-16, O_VP_81]',
-    remaining_term_days                          Nullable(Int64)         COMMENT 'Số ngày từ ngày giao dịch đến ngày đáo hạn (DATEDIFF); âm khi đã quá hạn; để trống khi dòng không có bản tin MDDS cùng ngày hoặc không có ngày đáo hạn. BI chia 365.0 ra năm khi tính kỳ hạn còn lại bình quân (Nhóm 27). [MỚI 2026-11-16, O_VP_81]',
-    foreign_buy_vol                              Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 của số tài khoản mua thuộc (E,F); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    proprietary_buy_vol                          Nullable(Int64)         COMMENT 'Khối lượng mua của khối tự doanh trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 của số tài khoản mua thuộc (P,E,A); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    proprietary_buy_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của khối tự doanh trong ngày theo mã trái phiếu: giá trị khớp của giao dịch có ký tự thứ 4 của số tài khoản mua thuộc (P, E, A); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    foreign_sell_vol                             Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 của số tài khoản bán thuộc (E,F); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    proprietary_sell_vol                         Nullable(Int64)         COMMENT 'Khối lượng bán của khối tự doanh trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 của số tài khoản bán thuộc (P,E,A); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    proprietary_sell_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của khối tự doanh trong ngày theo mã trái phiếu: giá trị khớp của giao dịch có ký tự thứ 4 của số tài khoản bán thuộc (P, E, A); để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    order_matching_vol                           Nullable(Int64)         COMMENT 'Khối lượng giao dịch khớp lệnh của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm khớp lệnh theo SQL BA; để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    order_matching_val                           Nullable(Decimal(23,2)) COMMENT 'Giá trị (giá khớp × khối lượng khớp) giao dịch khớp lệnh của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm khớp lệnh theo SQL BA; để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    negotiated_trade_vol                         Nullable(Int64)         COMMENT 'Khối lượng giao dịch thỏa thuận của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm thỏa thuận theo SQL BA; để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    negotiated_trade_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị (giá khớp × khối lượng khớp) giao dịch thỏa thuận của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm thỏa thuận theo SQL BA; để trống khi mã không có giao dịch trong ngày. [MỚI 2026-11-17, O_VP_87]',
-    yield_to_maturity_rate                       Nullable(Decimal(8,5))  COMMENT 'Lợi suất đáo hạn (YTM) của mã trái phiếu theo bản tin cuối ngày MDDS tại ngày giao dịch (BA Data Explorer 52.2 dòng 562: YTM = IF(yield là giá trị -9999 thì NULL, ngược lại giá trị yield)); để trống khi dòng không có bản tin cùng ngày hoặc nguồn không có YTM. Đơn vị giữ nguyên như nguồn (BA không quy đổi). [MỚI 2026-11-17, O_VP_87]',
-    floor_code                                   Nullable(String)        COMMENT 'Mã sàn của mã trái phiếu theo bản tin cuối ngày MDDS (10 = HOSE, 02 = HNX, 04 = UPCOM); để trống khi dòng chỉ có giao dịch Sổ lệnh không có bản tin cùng ngày. Dùng cho chiều Sàn của Data Explorer 52.2 (BA dòng 535: MAP floorcode, không có thì lấy theo market_id của giao dịch = HNX). [MỚI 2026-11-17, O_VP_87]',
-    ticker_symbol                                Nullable(String)        COMMENT 'Mã giao dịch (Symbol) của trái phiếu theo bản tin cuối ngày MDDS — khác Security Symbol Code là mã ISIN; để trống khi dòng chỉ có giao dịch Sổ lệnh không có bản tin cùng ngày. Dùng cho chiều Mã chứng khoán của Data Explorer 52.2 (BA SQL xuất s.symbol). [MỚI 2026-11-17, O_VP_87]',
+    listed_bond_val                              Nullable(Decimal(23,2)) COMMENT 'Dư nợ trái phiếu niêm yết theo KL niêm yết MDDS = KL niêm yết (LISTEDSHARE) × mệnh giá; mệnh giá suy ngược từ giá tham chiếu (100000 × 10^ROUND(LOG10(giá tham chiếu / 100000))), chỉ là trung gian. Khác bond_outstanding_val (KL lưu hành HNX); để trống khi thiếu giá tham chiếu hoặc KL niêm yết. [MỚI 2026-11-16, O_VP_81]',
+    remaining_term_days                          Nullable(Int64)         COMMENT 'Số ngày từ ngày giao dịch đến ngày đáo hạn (DATEDIFF); âm khi đã quá hạn; để trống khi không có ngày đáo hạn. BI chia 365.0 ra năm khi tính kỳ hạn còn lại bình quân (Nhóm 27). [MỚI 2026-11-16, O_VP_81]',
+    yield_to_maturity_rate                       Nullable(Decimal(8,5))  COMMENT 'Lợi suất đáo hạn (YTM) của mã trái phiếu theo bản tin cuối ngày MDDS tại ngày giao dịch (BA Data Explorer 52.2 dòng 562: YTM = IF(yield là giá trị -9999 thì NULL, ngược lại giá trị yield)); để trống khi nguồn không có YTM. Đơn vị giữ nguyên như nguồn (BA không quy đổi). [MỚI 2026-11-17, O_VP_87]',
+    floor_code                                   Nullable(String)        COMMENT 'Mã sàn của mã trái phiếu theo bản tin cuối ngày MDDS (10 = HOSE, 02 = HNX, 04 = UPCOM); để trống khi bản tin không có mã sàn. Dùng cho chiều Sàn của Data Explorer 52.2 (BA dòng 535: MAP floorcode; nhánh giao dịch không có bản tin thì lấy sàn HNX theo market_id — xử lý ở Detail Mapping của Fact giao dịch). [MỚI 2026-11-17, O_VP_87]',
+    ticker_symbol                                Nullable(String)        COMMENT 'Mã giao dịch (Symbol) của trái phiếu theo bản tin cuối ngày MDDS — khác Security Symbol Code là mã ISIN. Dùng cho chiều Mã chứng khoán của Data Explorer 52.2 (BA SQL xuất s.symbol). [MỚI 2026-11-17, O_VP_87]',
 
     -- From: CALENDAR DATE DIMENSION
     cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
@@ -220,7 +205,7 @@ CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_corporate_bond_snpst_flat ON C
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), listed_corporate_bond_snpst_id)
-COMMENT 'Flat table — fct_listed_corporate_bond_snpst × Calendar Date × Industry; grain 1 mã trái phiếu (ISIN) × 1 ngày, PK listed_corporate_bond_snpst_id'
+COMMENT 'Flat table — fct_listed_corporate_bond_snpst (danh mục) × Calendar Date × Industry; grain 1 mã trái phiếu (ISIN) × 1 ngày có bản tin MDDS, PK listed_corporate_bond_snpst_id'
 ;
 
 
@@ -837,4 +822,90 @@ ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
 ORDER BY (assumeNotNull(cdr_dt), private_corporate_bond_offering_snpst_id)
 COMMENT 'Flat table — fct_private_corporate_bond_offering_snpst — sinh tự động từ master registry + Entities.csv'
+;
+
+
+-- ==========================================================
+-- 19. FACT: vp_fct_listed_corporate_bond_trading_snpst_flat
+--    fct_listed_corporate_bond_trading_snpst — sinh tự động từ master registry + Entities.csv
+--    Joins: Calendar Date Dimension, Security Trading Snapshot Dimension, Industry Dimension
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_corporate_bond_trading_snpst_flat ON CLUSTER 'my_cluster'
+(
+    -- From: FCT_LISTED_CORPORATE_BOND_TRADING_SNPST
+    listed_corporate_bond_trading_snpst_id       String                  COMMENT 'PK — hash(snpst_dt_dim_id, security_symbol_code). Grain = 1 mã trái phiếu (ISIN) × 1 ngày giao dịch có ít nhất',
+    snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày giao dịch.',
+    security_trading_snpst_dim_id                Nullable(String)        COMMENT 'FK tới Security Trading Snapshot Dimension — hồ sơ trái phiếu (mã, ngày phát hành, ngày đáo hạn, sàn…). Dùng đ',
+    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của tổ chức phát hành (3 ký tự đầu mã giao dịch của bản t',
+    security_symbol_code                         String                  COMMENT 'Mã trái phiếu theo ISIN (Issue Code của Sổ lệnh HNX = ISIN Code của bản tin MDDS). Khóa nghiệp vụ của dòng cùn',
+    trading_vol                                  Nullable(Int64)         COMMENT 'Khối lượng giao dịch TPDN niêm yết trong ngày theo mã (Sổ lệnh HNX, Market Id Code = HCX).',
+    trading_val                                  Nullable(Decimal(23,2)) COMMENT 'Giá trị giao dịch TPDN niêm yết trong ngày theo mã = Σ giá trị khớp của Sổ lệnh HNX (Market Id Code = HCX); mỗ',
+    foreign_buy_val                              Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của nhà đầu tư nước ngoài trong ngày theo mã: giá trị khớp của giao dịch có ký tự thứ 4 của số tài',
+    foreign_sell_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của nhà đầu tư nước ngoài trong ngày theo mã: giá trị khớp của giao dịch có ký tự thứ 4 của số tài',
+    foreign_buy_vol                              Nullable(Int64)         COMMENT 'Khối lượng mua của nhà đầu tư nước ngoài trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự',
+    foreign_sell_vol                             Nullable(Int64)         COMMENT 'Khối lượng bán của nhà đầu tư nước ngoài trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự',
+    proprietary_buy_vol                          Nullable(Int64)         COMMENT 'Khối lượng mua của khối tự doanh trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 c',
+    proprietary_buy_val                          Nullable(Decimal(23,2)) COMMENT 'Giá trị mua của khối tự doanh trong ngày theo mã trái phiếu: giá trị khớp của giao dịch có ký tự thứ 4 của số ',
+    proprietary_sell_vol                         Nullable(Int64)         COMMENT 'Khối lượng bán của khối tự doanh trong ngày theo mã trái phiếu: khối lượng khớp của giao dịch có ký tự thứ 4 c',
+    proprietary_sell_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị bán của khối tự doanh trong ngày theo mã trái phiếu: giá trị khớp của giao dịch có ký tự thứ 4 của số ',
+    order_matching_vol                           Nullable(Int64)         COMMENT 'Khối lượng giao dịch khớp lệnh của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm khớp lệnh',
+    order_matching_val                           Nullable(Decimal(23,2)) COMMENT 'Giá trị (giá khớp × khối lượng khớp) giao dịch khớp lệnh của mã trái phiếu trong ngày: chỉ các giao dịch có mã',
+    negotiated_trade_vol                         Nullable(Int64)         COMMENT 'Khối lượng giao dịch thỏa thuận của mã trái phiếu trong ngày: chỉ các giao dịch có mã bảng thuộc nhóm thỏa thu',
+    negotiated_trade_val                         Nullable(Decimal(23,2)) COMMENT 'Giá trị (giá khớp × khối lượng khớp) giao dịch thỏa thuận của mã trái phiếu trong ngày: chỉ các giao dịch có m',
+
+    -- From: CALENDAR DATE DIMENSION
+    cdr_dt                                       Nullable(Date)          COMMENT 'NK — ngày lịch dùng để join từ Fact — từ Calendar Date Dimension',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension',
+    is_weekend                                   Nullable(String)        COMMENT '(Sửa 2026-07-17) Y nếu là ngày cuối tuần (thứ 7 hoặc CN), N nếu không — từ Calendar Date Dimension',
+    holiday_flag                                 Nullable(String)        COMMENT '(Sửa 2026-07-20) Cờ đánh dấu ngày nghỉ — Y nếu là ngày nghỉ, N nếu không. Chỉ đánh dấu nghỉ/không nghỉ, không  — từ Calendar Date Dimension',
+    is_trading_date                              Nullable(String)        COMMENT '(Sửa 2026-10-12, BA đổi rule lần 2 — thay rule 2026-10-09 "cả hai nguồn") Y nếu ngày lịch có bản ghi ở ÍT NHẤT — từ Calendar Date Dimension',
+
+    -- From: SECURITY TRADING SNAPSHOT DIMENSION
+    symbol                                       Nullable(String)        COMMENT 'Khóa nghiệp vụ — mã chứng khoán — từ Security Trading Snapshot Dimension',
+    security_full_nm                             Nullable(String)        COMMENT 'Tên chứng khoán (tiếng Việt) — từ Security Trading Snapshot Dimension',
+    floor_code                                   Nullable(String)        COMMENT 'Mã sàn — scheme MDDS_FLOOR_CODE (10-HOSE, 02-HNX, 04-UPCOM, 03-FDS) — từ Security Trading Snapshot Dimension',
+    stock_tp_code                                Nullable(String)        COMMENT 'Loại chứng khoán — scheme MDDS_STOCK_TYPE — từ Security Trading Snapshot Dimension',
+    stock_tp_nm                                  Nullable(String)        COMMENT '[SỬA 2026-10-08, BA GSTT cập nhật CASE] Loại chứng khoán — dẫn xuất theo mã sàn (`10` HOSE; `02` HNX, `03` DVX — từ Security Trading Snapshot Dimension',
+    underlying_symbol                            Nullable(String)        COMMENT 'Chứng khoán cơ sở — dành cho CW/phái sinh — từ Security Trading Snapshot Dimension',
+    isin_code                                    Nullable(String)        COMMENT 'Mã ISIN của CK — từ Security Trading Snapshot Dimension',
+    issuer_nm                                    Nullable(String)        COMMENT 'Tổ chức phát hành — từ Security Trading Snapshot Dimension',
+    listed_share_count                           Nullable(Int64)         COMMENT 'Khối lượng CK niêm yết — từ Security Trading Snapshot Dimension',
+    first_trading_dt                             Nullable(Date)          COMMENT 'Ngày giao dịch đầu tiên — dành cho phái sinh/CW — từ Security Trading Snapshot Dimension',
+    last_trading_dt                              Nullable(Date)          COMMENT 'Ngày giao dịch cuối cùng — dành cho phái sinh/CW — từ Security Trading Snapshot Dimension',
+    issue_dt                                     Nullable(Date)          COMMENT 'Ngày phát hành — từ Security Trading Snapshot Dimension',
+    maturity_dt                                  Nullable(Date)          COMMENT 'Ngày đáo hạn — từ Security Trading Snapshot Dimension',
+    fund_tp_code                                 Nullable(String)        COMMENT 'Loại quỹ — chỉ có giá trị khi Stock Type Code = MF — từ Security Trading Snapshot Dimension',
+    covered_warrant_tp_code                      Nullable(String)        COMMENT 'Kiểu chứng quyền — scheme MDDS_COVERED_WARRANT_TYPE — từ Security Trading Snapshot Dimension',
+    exercise_price                               Nullable(Decimal(23,2)) COMMENT 'Giá thực hiện CW — từ Security Trading Snapshot Dimension',
+    exercise_ratio                               Nullable(String)        COMMENT 'Tỉ lệ thực hiện CW — từ Security Trading Snapshot Dimension',
+    exercise_style_code                          Nullable(String)        COMMENT 'Kiểu thực hiện phái sinh — scheme MDDS_EXERCISE_STYLE (A/E/B/Z) — từ Security Trading Snapshot Dimension',
+    put_or_call_code                             Nullable(String)        COMMENT 'Loại quyền phái sinh — scheme MDDS_PUT_OR_CALL (P/C) — từ Security Trading Snapshot Dimension',
+    contract_multiplier                          Nullable(String)        COMMENT 'Hệ số nhân HĐTL — chỉ có giá trị khi Stock Type Code = FU — từ Security Trading Snapshot Dimension',
+    maturity_month_year                          Nullable(String)        COMMENT 'Năm tháng đáo hạn HĐTL — từ Security Trading Snapshot Dimension',
+    coupon_rate                                  Nullable(Decimal(8,5))  COMMENT 'Lãi suất trái phiếu — từ Security Trading Snapshot Dimension',
+    yield                                        Nullable(Decimal(8,5))  COMMENT 'YTM (Yield to Maturity) — từ Security Trading Snapshot Dimension',
+    open_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá mở cửa — từ Security Trading Snapshot Dimension',
+    high_price                                   Nullable(Decimal(23,2)) COMMENT 'Giá cao nhất — từ Security Trading Snapshot Dimension',
+    low_price                                    Nullable(Decimal(23,2)) COMMENT 'Giá thấp nhất — từ Security Trading Snapshot Dimension',
+    ceiling_price                                Nullable(Decimal(23,2)) COMMENT '[MOI 2026-09-22, BA bo sung gap STT 23] Gia tran — từ Security Trading Snapshot Dimension',
+    floor_price                                  Nullable(Decimal(23,2)) COMMENT '[MOI 2026-09-22, BA bo sung gap STT 23] Gia san — từ Security Trading Snapshot Dimension',
+    reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu — từ Security Trading Snapshot Dimension',
+    close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá khớp gần nhất (giá đóng cửa) — từ Security Trading Snapshot Dimension',
+    price_change                                 Nullable(Decimal(23,2)) COMMENT 'Thay đổi giữa giá khớp gần nhất và giá tham chiếu — từ Security Trading Snapshot Dimension',
+    product_group_id                             Nullable(String)        COMMENT 'Mã nhóm sản phẩm của chứng khoán theo Sở (VD FBX = hợp đồng tương lai trái phiếu Chính phủ) — dùng nhận diện s — từ Security Trading Snapshot Dimension',
+    sts_dim_src_stm_code                         Nullable(String)        COMMENT 'Mã hệ thống nguồn dữ liệu — từ Security Trading Snapshot Dimension',
+    product_id                                   Nullable(String)        COMMENT 'Mã bộ sản phẩm của chứng khoán theo Sở (Tag 20003 — MDDS JAD_STOCKINFOR.PRODUCTID, xác định chứng khoán thuộc  — từ Security Trading Snapshot Dimension',
+
+    -- From: INDUSTRY DIMENSION
+    industry_code                                Nullable(String)        COMMENT 'BK — mã ngành nghề cấp 1 (Classification IDS Business Line Code). Chỉ lấy ngành cấp 1 hiện hành (parent_cl_ids — từ Industry Dimension',
+    industry_nm                                  Nullable(String)        COMMENT 'Tên ngành nghề cấp 1 — từ Industry Dimension',
+    industry_dim_src_stm_code                    Nullable(String)        COMMENT 'src_stm_code — Driving: cl_ids_business_line, current-state SCD4A lấy bản ghi mới nhất theo Industry Code — từ Industry Dimension'
+)
+ENGINE = ReplicatedReplacingMergeTree()
+PARTITION BY toYYYYMM(assumeNotNull(cdr_dt))
+ORDER BY (assumeNotNull(cdr_dt), listed_corporate_bond_trading_snpst_id)
+COMMENT 'Flat table — fct_listed_corporate_bond_trading_snpst — sinh tự động từ master registry + Entities.csv'
 ;
