@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Cập nhật 2026-11-25 (Data Modeler yêu cầu): BK của TAX_REPORT đổi từ DECLARATION_CODE sang ID nguồn — bỏ crosswalk, FK hash trực tiếp theo TAX_REPORT_ID; Code lấy trực tiếp từ TAX_REPORT_ID."
 attributes:
 - attribute_name: "External Tax Declaration Report Detail Id"
   physical_name: "et_declaration_rpt_detail_id"
@@ -68,20 +68,20 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
-  comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE)"
+  comment: "FK target: et_declaration_report.et_declaration_rpt_id. Hash: hash_id('KNT_TAX_REPORT', TAX_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External Tax Declaration Report Code"
   physical_name: "et_declaration_rpt_code"
-  description: "Mã tờ khai báo cáo tài chính liên quan."
+  description: "Mã định danh báo cáo tài chính liên quan (TAX_REPORT.ID)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "KNT.TAX_REPORT.DECLARATION_CODE"
-  comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with External Tax Declaration Report Id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
+  - "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
+  comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with External Tax Declaration Report Id. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

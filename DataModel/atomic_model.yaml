@@ -33380,7 +33380,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_type: ['decimal(8,5)', 'decimal(5,2)']"
+    conflict_review: "data_type: ['decimal(5,2)', 'decimal(8,5)']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -35649,8 +35649,8 @@ entities:
     physical_name: et_declaration_rpt_id
     business_meaning_1st: Khóa đại diện (surrogate key).
     comment_1st: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ\
-      \ khai/báo cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT_TAX_REPORT',\
-      \ DECLARATION_CODE)."
+      \ khai/báo cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Id hash:\
+      \ hash_id('KNT_TAX_REPORT', ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: false
@@ -35664,14 +35664,33 @@ entities:
         source_column: null
         business_meaning: Khóa đại diện (surrogate key).
         comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ\
-          \ khai/báo cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash:\
-          \ hash_id('KNT_TAX_REPORT', DECLARATION_CODE)."
+          \ khai/báo cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Id hash:\
+          \ hash_id('KNT_TAX_REPORT', ID)."
   - name: External Tax Declaration Report Code
     physical_name: et_declaration_rpt_code
-    business_meaning_1st: Mã tờ khai thuế trong hệ thống Cục Thuế. BK.
-    comment_1st: BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép
-      nộp bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa các
-      lần nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key trước go-live.
+    business_meaning_1st: Mã định danh báo cáo tài chính/tờ khai (PK nguồn TAX_REPORT.ID).
+      BK của entity.
+    comment_1st: BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần
+      convert sang string.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: false
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: KNT
+      source_tables:
+      - source_table: TAX_REPORT
+        source_column: KNT.TAX_REPORT.ID
+        business_meaning: Mã định danh báo cáo tài chính/tờ khai (PK nguồn TAX_REPORT.ID).
+          BK của entity.
+        comment: BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần
+          convert sang string.
+  - name: Declaration Code
+    physical_name: declaration_code
+    business_meaning_1st: Mã tờ khai thuế trong hệ thống Cục Thuế.
+    comment_1st: null
     data_domain_most: Text
     data_type_most: string
     nullable_most: false
@@ -35683,11 +35702,8 @@ entities:
       source_tables:
       - source_table: TAX_REPORT
         source_column: KNT.TAX_REPORT.DECLARATION_CODE
-        business_meaning: Mã tờ khai thuế trong hệ thống Cục Thuế. BK.
-        comment: BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép
-          nộp bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa
-          các lần nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key
-          trước go-live.
+        business_meaning: Mã tờ khai thuế trong hệ thống Cục Thuế.
+        comment: null
   - name: Source System Code
     physical_name: src_stm_code
     business_meaning_1st: Mã hệ thống nguồn dữ liệu.
@@ -36751,9 +36767,8 @@ entities:
   - name: External Tax Declaration Report Id
     physical_name: et_declaration_rpt_id
     business_meaning_1st: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
-    comment_1st: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL\
-      \ crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID\
-      \ để xác nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE)"
+    comment_1st: "FK target: et_declaration_report.et_declaration_rpt_id. Hash: hash_id('KNT_TAX_REPORT',\
+      \ TAX_REPORT_ID)."
     data_domain_most: Surrogate Key
     data_type_most: string
     nullable_most: true
@@ -36766,15 +36781,14 @@ entities:
       - source_table: TAX_REPORT_DETAIL
         source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
         business_meaning: "FK -> tax_report: Báo cáo tài chính TCT liên quan."
-        comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL\
-          \ crosswalk sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID\
-          \ để xác nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE)"
+        comment: "FK target: et_declaration_report.et_declaration_rpt_id. Hash: hash_id('KNT_TAX_REPORT',\
+          \ TAX_REPORT_ID)."
   - name: External Tax Declaration Report Code
     physical_name: et_declaration_rpt_code
-    business_meaning_1st: Mã tờ khai báo cáo tài chính liên quan.
+    business_meaning_1st: Mã định danh báo cáo tài chính liên quan (TAX_REPORT.ID).
     comment_1st: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair\
-      \ with External Tax Declaration Report Id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE\
-      \ sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
+      \ with External Tax Declaration Report Id. Nguồn lưu dạng số (NUMBER) — ETL\
+      \ cần convert sang string."
     data_domain_most: Text
     data_type_most: string
     nullable_most: true
@@ -36785,12 +36799,11 @@ entities:
     - source_system: KNT
       source_tables:
       - source_table: TAX_REPORT_DETAIL
-        source_column: KNT.TAX_REPORT.DECLARATION_CODE
-        business_meaning: Mã tờ khai báo cáo tài chính liên quan.
+        source_column: KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID
+        business_meaning: Mã định danh báo cáo tài chính liên quan (TAX_REPORT.ID).
         comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair\
-          \ with External Tax Declaration Report Id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE\
-          \ sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report\
-          \ Id."
+          \ with External Tax Declaration Report Id. Nguồn lưu dạng số (NUMBER) —\
+          \ ETL cần convert sang string."
   - name: Indicator Code
     physical_name: ind_code
     business_meaning_1st: Mã chỉ tiêu trong biểu mẫu báo cáo.

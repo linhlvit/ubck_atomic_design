@@ -26401,8 +26401,8 @@ attributes:
   source_table: "TAX_REPORT"
   source_column: null
   comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ khai/báo\
-    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT_TAX_REPORT',\
-    \ DECLARATION_CODE)."
+    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Id hash: hash_id('KNT_TAX_REPORT',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -26411,21 +26411,37 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "External Tax Declaration Report Code"
-  description: "Mã tờ khai thuế trong hệ thống Cục Thuế. BK."
+  description: "Mã định danh báo cáo tài chính/tờ khai (PK nguồn TAX_REPORT.ID). BK\
+    \ của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_REPORT"
+  source_column: "KNT.TAX_REPORT.ID"
+  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "et_declaration_report"
+  atomic_column: "et_declaration_rpt_code"
+- bcv_core_object: "Documentation"
+  atomic_entity: "External Tax Declaration Report"
+  atomic_attribute: "Declaration Code"
+  description: "Mã tờ khai thuế trong hệ thống Cục Thuế."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.DECLARATION_CODE"
-  comment: "BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép nộp\
-    \ bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa các lần\
-    \ nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key trước go-live."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "et_declaration_report"
-  atomic_column: "et_declaration_rpt_code"
+  atomic_column: "declaration_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Source System Code"
@@ -27393,9 +27409,8 @@ attributes:
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
   source_column: "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
-  comment: "FK target: et_declaration_report.et_declaration_rpt_id. Cần ETL crosswalk\
-    \ sang KNT.TAX_REPORT: TAX_REPORT_DETAIL.TAX_REPORT_ID = TAX_REPORT.ID để xác\
-    \ nhận DECLARATION_CODE sau đó hash_id('KNT_TAX_REPORT', DECLARATION_CODE)"
+  comment: "FK target: et_declaration_report.et_declaration_rpt_id. Hash: hash_id('KNT_TAX_REPORT',\
+    \ TAX_REPORT_ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -27404,16 +27419,16 @@ attributes:
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report Detail"
   atomic_attribute: "External Tax Declaration Report Code"
-  description: "Mã tờ khai báo cáo tài chính liên quan."
+  description: "Mã định danh báo cáo tài chính liên quan (TAX_REPORT.ID)."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REPORT_DETAIL"
-  source_column: "KNT.TAX_REPORT.DECLARATION_CODE"
+  source_column: "KNT.TAX_REPORT_DETAIL.TAX_REPORT_ID"
   comment: "Lookup pair: et_declaration_report.et_declaration_rpt_code. Pair with\
-    \ External Tax Declaration Report Id. Giá trị lấy từ KNT.TAX_REPORT.DECLARATION_CODE\
-    \ sau ETL crosswalk — chi tiết xem comment External Tax Declaration Report Id."
+    \ External Tax Declaration Report Id. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

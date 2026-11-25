@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Cập nhật 2026-11-25 (Data Modeler yêu cầu): bỏ cặp FK External Tax Registration Id/Code; TAX_CODE map 1:1 sang attribute Tax Code (không FK về et_registration)."
+  notes: "Cập nhật 2026-11-25 (Data Modeler yêu cầu): bỏ cặp FK External Tax Registration Id/Code; TAX_CODE map 1:1 sang attribute Tax Code (không FK về et_registration). Cập nhật 2026-11-25 (Data Modeler yêu cầu): Id hash từ ID nguồn (TAX_REPORT.ID) thay vì DECLARATION_CODE; External Tax Declaration Report Code đổi BK sang ID nguồn; DECLARATION_CODE map sang thuộc tính riêng Declaration Code (declaration_code). Bảng con TAX_REPORT_DETAIL hash FK trực tiếp theo TAX_REPORT_ID (bỏ crosswalk)."
 attributes:
 - attribute_name: "External Tax Declaration Report Id"
   physical_name: "et_declaration_rpt_id"
@@ -28,23 +28,34 @@ attributes:
   status: "draft"
   source_columns: []
   comment: "PK surrogate. BCV: \"[Documentation] Declaration Document\". Tờ khai/báo\
-    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Hash: hash_id('KNT_TAX_REPORT',\
-    \ DECLARATION_CODE)."
+    \ cáo tài chính do Cục Thuế cung cấp theo từng kỳ kê khai. Id hash: hash_id('KNT_TAX_REPORT',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "External Tax Declaration Report Code"
   physical_name: "et_declaration_rpt_code"
-  description: "Mã tờ khai thuế trong hệ thống Cục Thuế. BK."
+  description: "Mã định danh báo cáo tài chính/tờ khai (PK nguồn TAX_REPORT.ID). BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "KNT.TAX_REPORT.ID"
+  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Declaration Code"
+  physical_name: "declaration_code"
+  description: "Mã tờ khai thuế trong hệ thống Cục Thuế."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   status: "draft"
   source_columns:
   - "KNT.TAX_REPORT.DECLARATION_CODE"
-  comment: "BK chính. Cần profile dữ liệu xác nhận unique — Fact Append cho phép nộp\
-    \ bổ sung nhiều lần (ATTEMPT_COUNT); nếu DECLARATION_CODE không đổi giữa các lần\
-    \ nộp bổ sung, có thể cần ghép thêm ATTEMPT_COUNT vào business key trước go-live."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
