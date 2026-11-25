@@ -64,22 +64,8 @@ attributes:
     classification_context: "Source System Code = 'KNT_TAX_VIOLATION_HANDLING'"
     etl_derived_value: KNT_TAX_VIOLATION_HANDLING
 
-  - name: External Tax Registration Id
-    physical_name: et_registration_id
-    business_meaning: FK đến hồ sơ đăng ký thuế của doanh nghiệp vi phạm.
-    data_domain: Surrogate Key
-    data_type: string
-    nullable: true
-    is_primary_key: false
-    source_system: KNT
-    source_table: TAX_VIOLATION_HANDLING
-    source_column: KNT.TAX_VIOLATION_HANDLING.TAX_CODE
-    comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
-    classification_context: null
-    etl_derived_value: null
-
-  - name: External Tax Registration Code
-    physical_name: et_registration_code
+  - name: Tax Code
+    physical_name: tax_code
     business_meaning: Mã số thuế doanh nghiệp vi phạm.
     data_domain: Text
     data_type: string
@@ -88,7 +74,7 @@ attributes:
     source_system: KNT
     source_table: TAX_VIOLATION_HANDLING
     source_column: KNT.TAX_VIOLATION_HANDLING.TAX_CODE
-    comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
+    comment: null
     classification_context: null
     etl_derived_value: null
 

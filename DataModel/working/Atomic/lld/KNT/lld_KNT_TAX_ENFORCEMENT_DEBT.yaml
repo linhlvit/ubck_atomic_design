@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: null
+  notes: "Cập nhật 2026-11-25 (Data Modeler yêu cầu): bỏ cặp FK External Tax Registration Id/Code; TAXPAYER_TAX_CODE map 1:1 sang attribute Taxpayer Tax Code (không FK về et_registration)."
 attributes:
 - attribute_name: "External Tax Enforcement Debt Decision Id"
   physical_name: "et_enforcement_debt_decision_id"
@@ -58,21 +58,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=KNT_TAX_ENFORCEMENT_DEBT"
   etl_derived_value: "KNT_TAX_ENFORCEMENT_DEBT"
   data_type: "string"
-- attribute_name: "External Tax Registration Id"
-  physical_name: "et_registration_id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "External Tax Registration Code"
-  physical_name: "et_registration_code"
+- attribute_name: "Taxpayer Tax Code"
+  physical_name: "taxpayer_tax_code"
   description: "Mã số thuế người nộp thuế bị cưỡng chế."
   data_domain: "Text"
   nullable: true
@@ -80,7 +67,7 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

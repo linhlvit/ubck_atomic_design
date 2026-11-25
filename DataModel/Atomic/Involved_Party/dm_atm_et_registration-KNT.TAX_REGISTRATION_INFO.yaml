@@ -32,13 +32,27 @@ attributes:
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
     source_column: null
-    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
+    comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Id hash: hash_id('KNT_TAX_REGISTRATION_INFO', ID)."
     classification_context: null
     etl_derived_value: null
 
   - name: External Tax Registration Code
     physical_name: et_registration_code
-    business_meaning: Mã số thuế doanh nghiệp. BK.
+    business_meaning: Mã định danh hồ sơ đăng ký thuế (PK nguồn TAX_REGISTRATION_INFO.ID). BK của entity.
+    data_domain: Text
+    data_type: string
+    nullable: false
+    is_primary_key: false
+    source_system: KNT
+    source_table: TAX_REGISTRATION_INFO
+    source_column: KNT.TAX_REGISTRATION_INFO.ID
+    comment: BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần convert sang string.
+    classification_context: null
+    etl_derived_value: null
+
+  - name: Tax Code
+    physical_name: tax_code
+    business_meaning: Mã số thuế doanh nghiệp.
     data_domain: Text
     data_type: string
     nullable: false
@@ -46,7 +60,7 @@ attributes:
     source_system: KNT
     source_table: TAX_REGISTRATION_INFO
     source_column: KNT.TAX_REGISTRATION_INFO.TAX_CODE
-    comment: BK chính.
+    comment: null
     classification_context: null
     etl_derived_value: null
 

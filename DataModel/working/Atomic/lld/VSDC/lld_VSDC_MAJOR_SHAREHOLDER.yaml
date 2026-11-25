@@ -17,7 +17,7 @@ metadata:
   reviewed_at: null
   approved_by: null
   approved_at: null
-  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_MAJOR_SHAREHOLDER.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. [Sửa 2026-11-24 theo DDL PROD] Nguồn bỏ FROM_/TO_ DAY/MONTH/YEAR — xóa 6 attribute from/to (Data Modeler chỉ định); VOTING_SHARES đổi STRING, BEGIN/END_PERIOD_SHARES BIGINT, BEGIN/END_PERIOD_RATIO FLOAT. Thêm Data Date (DATA_DT); SEQ_NO và metadata nạp file ghi pending_design.yaml."
+  notes: "Thiết kế 2026-10-19 từ mapping_vsdc_ods_atm.md + DDL VSDC_HNX_HOSE_schema.txt + BRD/Source/VSDC/brd_VSDC_MAJOR_SHAREHOLDER.yaml. HLD: VSDC_HLD_Tier1.md. Domain Prefix: không có (Data Modeler 2026-10-18). Không đăng ký Classification Value scheme cho 3 phân hệ VSDC/HNX/HOSE — các cột phân loại giữ Text. Id hash từ Business Key theo mục Business Key & Filter của mapping (không còn UUID); BK không gồm ds_snpst_dt nên Id lặp lại giữa các kỳ snapshot. Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms không khai báo trong LLD (chỉ định Data Modeler 2026-10-19); cột nguồn tương ứng ghi vào pending_design.yaml. [Sửa 2026-11-24 theo DDL PROD] Nguồn bỏ FROM_/TO_ DAY/MONTH/YEAR — xóa 6 attribute from/to (Data Modeler chỉ định); VOTING_SHARES đổi STRING, BEGIN/END_PERIOD_SHARES BIGINT, BEGIN/END_PERIOD_RATIO FLOAT. Thêm Data Date (DATA_DT); SEQ_NO và metadata nạp file ghi pending_design.yaml. [Sửa 2026-11-25 theo Data Modeler] Data Modeler chỉ định bỏ thiết kế attribute Data Date (data_dt); cột nguồn DATA_DT ghi vào pending_design.yaml."
 attributes:
 - attribute_name: "Major Shareholder Ownership Id"
   physical_name: "major_shareholder_ownership_id"
@@ -227,16 +227,3 @@ attributes:
   classification_context: null
   etl_derived_value: null
   data_type: "string"
-- attribute_name: "Data Date"
-  physical_name: "data_dt"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "VSDC.MAJOR_SHAREHOLDER.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"

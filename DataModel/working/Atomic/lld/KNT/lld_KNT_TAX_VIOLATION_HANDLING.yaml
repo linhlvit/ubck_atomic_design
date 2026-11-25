@@ -18,7 +18,8 @@ metadata:
   approved_by: null
   approved_at: null
   notes: "Reopened 2026-08-07 tu approved -> draft de bo sung 2 attribute Start Year/End\
-    \ Year (NAM_BAT_DAU/NAM_KET_THUC) phat hien qua post_check_source_coverage.py."
+    \ Year (NAM_BAT_DAU/NAM_KET_THUC) phat hien qua post_check_source_coverage.py.\
+    \ Cập nhật 2026-11-25 (Data Modeler yêu cầu): bỏ cặp FK External Tax Registration Id/Code; TAX_CODE map 1:1 sang attribute Tax Code (không FK về et_registration)."
 attributes:
 - attribute_name: "External Tax Violation Handling Id"
   physical_name: "et_violation_handling_id"
@@ -59,21 +60,8 @@ attributes:
   classification_context: "SOURCE_SYSTEM=KNT_TAX_VIOLATION_HANDLING"
   etl_derived_value: "KNT_TAX_VIOLATION_HANDLING"
   data_type: "string"
-- attribute_name: "External Tax Registration Id"
-  physical_name: "et_registration_id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp vi phạm."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  status: "draft"
-  source_columns:
-  - "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO', TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-- attribute_name: "External Tax Registration Code"
-  physical_name: "et_registration_code"
+- attribute_name: "Tax Code"
+  physical_name: "tax_code"
   description: "Mã số thuế doanh nghiệp vi phạm."
   data_domain: "Text"
   nullable: true
@@ -81,7 +69,7 @@ attributes:
   status: "draft"
   source_columns:
   - "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External Tax Registration Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"

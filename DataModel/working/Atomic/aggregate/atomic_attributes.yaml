@@ -298,23 +298,6 @@ attributes:
   atomic_table: "closed_investor_account"
   atomic_column: "rpt_day"
 - bcv_core_object: "Arrangement"
-  atomic_entity: "Closed Investor Account"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "CLOSED_INVESTORS"
-  source_column: "VSDC.CLOSED_INVESTORS.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "closed_investor_account"
-  atomic_column: "data_dt"
-- bcv_core_object: "Arrangement"
   atomic_entity: "Discretionary Investment Account"
   atomic_attribute: "Discretionary Investment Account Id"
   description: "Khóa đại diện (surrogate key)."
@@ -1401,23 +1384,6 @@ attributes:
   data_type: "int"
   atomic_table: "open_investor_account"
   atomic_column: "rpt_day"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Open Investor Account"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "OPEN_INVESTORS"
-  source_column: "VSDC.OPEN_INVESTORS.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "open_investor_account"
-  atomic_column: "data_dt"
 - bcv_core_object: "Arrangement"
   atomic_entity: "Public Company Share Statistics"
   atomic_attribute: "Public Company Share Statistics Id"
@@ -3209,23 +3175,6 @@ attributes:
   data_type: "date"
   atomic_table: "updated_investor_account"
   atomic_column: "data_period_end_dt"
-- bcv_core_object: "Arrangement"
-  atomic_entity: "Updated Investor Account"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "UPDATED_INVESTORS"
-  source_column: "VSDC.UPDATED_INVESTORS.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "updated_investor_account"
-  atomic_column: "data_dt"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Audit Firm Auditor Status History"
   atomic_attribute: "Audit Firm Auditor Status History Id"
@@ -26462,24 +26411,7 @@ attributes:
   atomic_column: "src_stm_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp nộp báo cáo."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_REPORT"
-  source_column: "KNT.TAX_REPORT.TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "et_declaration_report"
-  atomic_column: "et_registration_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Declaration Report"
-  atomic_attribute: "External Tax Registration Code"
+  atomic_attribute: "Tax Code"
   description: "Mã số thuế doanh nghiệp nộp báo cáo."
   data_domain: "Text"
   nullable: true
@@ -26487,13 +26419,12 @@ attributes:
   source_system: "KNT"
   source_table: "TAX_REPORT"
   source_column: "KNT.TAX_REPORT.TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "et_declaration_report"
-  atomic_column: "et_registration_code"
+  atomic_column: "tax_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Declaration Report"
   atomic_attribute: "Service Code"
@@ -27923,24 +27854,7 @@ attributes:
   atomic_column: "src_stm_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Enforcement Debt Decision"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp bị cưỡng chế."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_ENFORCEMENT_DEBT"
-  source_column: "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "et_enforcement_debt_decision"
-  atomic_column: "et_registration_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Enforcement Debt Decision"
-  atomic_attribute: "External Tax Registration Code"
+  atomic_attribute: "Taxpayer Tax Code"
   description: "Mã số thuế người nộp thuế bị cưỡng chế."
   data_domain: "Text"
   nullable: true
@@ -27948,13 +27862,12 @@ attributes:
   source_system: "KNT"
   source_table: "TAX_ENFORCEMENT_DEBT"
   source_column: "KNT.TAX_ENFORCEMENT_DEBT.TAXPAYER_TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "et_enforcement_debt_decision"
-  atomic_column: "et_registration_code"
+  atomic_column: "taxpayer_tax_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Enforcement Debt Decision"
   atomic_attribute: "Taxpayer Name"
@@ -28417,24 +28330,7 @@ attributes:
   atomic_column: "src_stm_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
-  atomic_attribute: "External Tax Registration Id"
-  description: "FK đến hồ sơ đăng ký thuế của doanh nghiệp vi phạm."
-  data_domain: "Surrogate Key"
-  nullable: true
-  is_primary_key: false
-  source_system: "KNT"
-  source_table: "TAX_VIOLATION_HANDLING"
-  source_column: "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
-  comment: "FK target: et_registration.et_registration_id. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "et_violation_handling"
-  atomic_column: "et_registration_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "External Tax Violation Handling"
-  atomic_attribute: "External Tax Registration Code"
+  atomic_attribute: "Tax Code"
   description: "Mã số thuế doanh nghiệp vi phạm."
   data_domain: "Text"
   nullable: true
@@ -28442,13 +28338,12 @@ attributes:
   source_system: "KNT"
   source_table: "TAX_VIOLATION_HANDLING"
   source_column: "KNT.TAX_VIOLATION_HANDLING.TAX_CODE"
-  comment: "Lookup pair: et_registration.et_registration_code. Pair with External\
-    \ Tax Registration Id."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "et_violation_handling"
-  atomic_column: "et_registration_code"
+  atomic_column: "tax_code"
 - bcv_core_object: "Documentation"
   atomic_entity: "External Tax Violation Handling"
   atomic_attribute: "Subject Name"
@@ -36012,23 +35907,6 @@ attributes:
   data_type: "bigint"
   atomic_table: "listed_share_information"
   atomic_column: "voting_share_quantity"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Listed Share Information"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng) — khóa ghi đè của batch."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "OUTSTANDING_SHARES"
-  source_column: "VSDC.OUTSTANDING_SHARES.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "listed_share_information"
-  atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
   atomic_entity: "Listed Share Information"
   atomic_attribute: "Report Year"
@@ -57878,8 +57756,8 @@ attributes:
   source_table: "TAX_REGISTRATION_INFO"
   source_column: null
   comment: "PK surrogate. BCV: \"[Involved Party] Organization\". Hồ sơ đăng ký thuế\
-    \ của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
-    \ TAX_CODE)."
+    \ của 1 doanh nghiệp/hộ kinh doanh trên TTCK. Id hash: hash_id('KNT_TAX_REGISTRATION_INFO',\
+    \ ID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57888,19 +57766,37 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "External Tax Registration"
   atomic_attribute: "External Tax Registration Code"
-  description: "Mã số thuế doanh nghiệp. BK."
+  description: "Mã định danh hồ sơ đăng ký thuế (PK nguồn TAX_REGISTRATION_INFO.ID).\
+    \ BK của entity."
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "KNT"
+  source_table: "TAX_REGISTRATION_INFO"
+  source_column: "KNT.TAX_REGISTRATION_INFO.ID"
+  comment: "BK chính. Map từ PK nguồn ID. Nguồn lưu dạng số (NUMBER) — ETL cần convert\
+    \ sang string."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "et_registration"
+  atomic_column: "et_registration_code"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "External Tax Registration"
+  atomic_attribute: "Tax Code"
+  description: "Mã số thuế doanh nghiệp."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "KNT"
   source_table: "TAX_REGISTRATION_INFO"
   source_column: "KNT.TAX_REGISTRATION_INFO.TAX_CODE"
-  comment: "BK chính."
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "et_registration"
-  atomic_column: "et_registration_code"
+  atomic_column: "tax_code"
 - bcv_core_object: "Involved Party"
   atomic_entity: "External Tax Registration"
   atomic_attribute: "Source System Code"
@@ -64725,23 +64621,6 @@ attributes:
   data_type: "string"
   atomic_table: "major_shareholder_ownership"
   atomic_column: "note"
-- bcv_core_object: "Involved Party"
-  atomic_entity: "Major Shareholder Ownership"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "VSDC"
-  source_table: "MAJOR_SHAREHOLDER"
-  source_column: "VSDC.MAJOR_SHAREHOLDER.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "major_shareholder_ownership"
-  atomic_column: "data_dt"
 - bcv_core_object: "Involved Party"
   atomic_entity: "Pension Fund"
   atomic_attribute: "Pension Fund Id"
@@ -81481,23 +81360,6 @@ attributes:
   atomic_column: "rpt_day"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Order"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "ORDER_BOOK"
-  source_column: "HNX.ORDER_BOOK.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "securities_order"
-  atomic_column: "data_dt"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Order"
   atomic_attribute: "Securities Order Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
@@ -82096,23 +81958,6 @@ attributes:
   data_type: "int"
   atomic_table: "securities_order"
   atomic_column: "rpt_day"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Order"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "HOSE"
-  source_table: "ORDER_BOOK"
-  source_column: "HOSE.ORDER_BOOK.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "securities_order"
-  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Practitioner License Application Fee"
   atomic_attribute: "Securities Practitioner License Application Fee Id"
@@ -83063,23 +82908,6 @@ attributes:
   atomic_column: "rpt_day"
 - bcv_core_object: "Transaction"
   atomic_entity: "Securities Trade"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "TRADE_BOOK"
-  source_column: "HNX.TRADE_BOOK.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "securities_trade"
-  atomic_column: "data_dt"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Trade"
   atomic_attribute: "Securities Trade Id"
   description: "Khóa đại diện (surrogate key)."
   data_domain: "Surrogate Key"
@@ -83755,23 +83583,6 @@ attributes:
   data_type: "int"
   atomic_table: "securities_trade"
   atomic_column: "rpt_day"
-- bcv_core_object: "Transaction"
-  atomic_entity: "Securities Trade"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "HOSE"
-  source_table: "TRADE_BOOK"
-  source_column: "HOSE.TRADE_BOOK.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "securities_trade"
-  atomic_column: "data_dt"
 - bcv_core_object: "Transaction"
   atomic_entity: "Security Match Log"
   atomic_attribute: "Security Match Log Id"
