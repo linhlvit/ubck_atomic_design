@@ -13366,6 +13366,48 @@ entities:
           Chờ duyệt; Đã duyệt; Từ chối).
         comment: SCHEMA_CODE=IDS.SO_APPROVAL_STATUS. Values load từ LOOKUP_VALUES
           (LOOKUP_GROUP='SO_APPROVAL_STATUS').
+  - name: Approver User Name
+    physical_name: approver_user_nm
+    business_meaning_1st: Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn,
+      độc lập với Approver User Code).
+    comment_1st: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
+      đi kèm.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: SECURITIES_OFFERING
+        source_column: IDS.SECURITIES_OFFERING.APPROVER_USER_NAME
+        business_meaning: Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn,
+          độc lập với Approver User Code).
+        comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
+          đi kèm.
+  - name: Processor User Name
+    physical_name: processor_user_nm
+    business_meaning_1st: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
+      tại IDS).
+    comment_1st: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
+      đi kèm.
+    data_domain_most: Text
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: IDS
+      source_tables:
+      - source_table: SECURITIES_OFFERING
+        source_column: IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME
+        business_meaning: Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công
+          tại IDS).
+        comment: Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code
+          đi kèm.
   - name: Revision Reason
     physical_name: revision_reason
     business_meaning_1st: Lý do chỉnh sửa.

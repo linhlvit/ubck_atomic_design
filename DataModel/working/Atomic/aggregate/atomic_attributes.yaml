@@ -11309,6 +11309,39 @@ attributes:
   atomic_column: "approval_status_code"
 - bcv_core_object: "Business Activity"
   atomic_entity: "Public Company Securities Offering"
+  atomic_attribute: "Approver User Name"
+  description: "Tên lãnh đạo phê duyệt (snapshot text tại thời điểm chọn, độc lập\
+    \ với Approver User Code)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "SECURITIES_OFFERING"
+  source_column: "IDS.SECURITIES_OFFERING.APPROVER_USER_NAME"
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "pc_securities_offering"
+  atomic_column: "approver_user_nm"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Public Company Securities Offering"
+  atomic_attribute: "Processor User Name"
+  description: "Tên chuyên viên xử lý (đồng bộ từ TTHC hoặc chọn thủ công tại IDS)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "IDS"
+  source_table: "SECURITIES_OFFERING"
+  source_column: "IDS.SECURITIES_OFFERING.PROCESSOR_USER_NAME"
+  comment: "Denormalized snapshot — nguồn lưu tên tự do, không có cặp Id/Code đi kèm."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "pc_securities_offering"
+  atomic_column: "processor_user_nm"
+- bcv_core_object: "Business Activity"
+  atomic_entity: "Public Company Securities Offering"
   atomic_attribute: "Revision Reason"
   description: "Lý do chỉnh sửa."
   data_domain: "Text"
