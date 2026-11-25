@@ -2,13 +2,18 @@
 -- VP Flat Tables — POPULATE
 -- Module: Thống kê thị trường chứng khoán (VP)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng:
---   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5)
+-- 19 bảng (danh sách đầy đủ theo thứ tự khối bên dưới; chỉ #1–#6 và #19 có chú thích Nhóm ở header):
+--   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5, 52.6)
 --   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6, 32, 33, 34, 36)
---   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 7, 8, 9, 10)
+--   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 8, 27, 29, 52.5 — Fact danh mục; giao dịch tách sang #19, O_VP_89; 52.5 từ BA tách nhóm 2026-11-25, O_VP_91; Nhóm 7 Số mã TP niêm yết đọc #7 vp_fct_listed_equity_snpst_flat, O_VP_92)
 --   4. vp_fct_private_corporate_bond_trading_snpst_flat (Nhóm 9, 11, 12, 13)
 --   5. vp_fct_government_bond_trading_snpst_flat (Nhóm 14, 15, 16)
 --   6. vp_fct_private_corporate_bond_registration_snpst_flat (Nhóm 11)
+--   7–18. vp_fct_listed_equity_snpst_flat, vp_fct_listing_status_change_snpst_flat, vp_fct_investor_account_movement_snpst_flat,
+--         vp_fct_government_bond_bidding_result_snpst_flat, vp_fct_share_auction_result_snpst_flat, vp_fct_derivatives_account_snpst_flat,
+--         vp_fct_foreign_capital_flow_summary_snpst_flat, vp_fct_government_bond_listing_snpst_flat, vp_fct_government_bond_listing_change_snpst_flat,
+--         vp_fct_private_corporate_bond_registration_status_snpst_flat, vp_fct_securities_offering_event_flat, vp_fct_private_corporate_bond_offering_snpst_flat
+--   19. vp_fct_listed_corporate_bond_trading_snpst_flat (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56 — Fact giao dịch, O_VP_89)
 -- Ghi chú: Fact Market Index Snapshot (reuse QLKD) dùng bảng flat của QLKD; lịch ngày dùng datamart.cdr_dt_flat (Datamart/flat-table/Common).
 -- Thiết kế lại VP 2026-10-25: bỏ 2 flat cũ vp_fact_otc_bond_snapshot_flat, vp_fact_share_auction_snapshot_flat (DEPRECATED, HLD Section 4).
 -- ============================================================

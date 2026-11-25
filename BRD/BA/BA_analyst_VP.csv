@@ -13455,7 +13455,7 @@ uat_hose_stg.trade_book (t)
 * TPDNRL: uat_iss_ods.flat_report (fr)
 * TPCP: uat_hnx_stg.outright_order_book (o), uat_hnx_stg.repo_order_book (r): ","h.trade_date, t.trade_date, 
 o.trading_date, r.trading_date, 
-MAKE_DATE(fr.report_year, fr.report_month, fr.report_day)",,"-- DATA EXPLORER - GIAO DỊCH: KLGD, GTGD, NĐTNN, TỰ DOANH, GTGD BÌNH QUÂN/PHIÊN, KỲ HẠN CÒN LẠI & YTM BÌNH QUÂN TPDNNY
+MAKE_DATE(fr.report_year, fr.report_month, fr.report_day)",,"-- [52.2] DATA EXPLORER - GIAO DỊCH: KLGD, GTGD, NĐTNN, TỰ DOANH, GTGD BÌNH QUÂN/PHIÊN, KỲ HẠN CÒN LẠI & YTM BÌNH QUÂN TPDNNY
 /* Tham số:
  *  :period_type  D | M | Q | Y
  *  :period_from, :period_to  Từ kỳ - Đến kỳ: D = yyyy-MM-dd | M = yyyy-MM | Q = yyyy-Q[1-4] | Y = yyyy
@@ -13506,7 +13506,7 @@ params_base AS (
   FROM (
     SELECT 
       tradingdate, symbol, symbolisin, issue_code, stocktype, floorcode, loai_ck, 
-      derivative_product, derivative_product_detail, maturitymonthyear, maturitydate, yield, closeprice,
+      derivative_product, derivative_product_detail, maturitymonthyear, maturitydate, 
       -- PHÂN LOẠI KỲ HẠN PHÁI SINH
       CASE 
         WHEN maturity_month IS NULL OR derivative_product_detail IS NULL THEN NULL -- Chỉ HĐ phái sinh
@@ -13528,13 +13528,7 @@ params_base AS (
             WHEN 2 THEN 'Tháng cuối quý tiếp theo 1'
           END
       END AS derivative_term, -- Kỳ hạn phái sinh
-      contractmultiplier, listedshare, par_value,
-      listedshare * par_value AS listedvalue,
-      -- TPDNNY: Dư nợ = KL niêm yết x Mệnh giá; Kỳ hạn còn lại (năm) = (Ngày đáo hạn - Ngày) / 12 tháng; YTM = yield
-      ---- Mã thiếu ngày đáo hạn hoặc YTM: không tính vào cả tử số và mẫu số
-      CASE WHEN loai_ck = 'TPDNNY' THEN listedshare * par_value END AS duno, -- TPDN niêm yết Dư nợ tính bằng GT niêm yết
-      CASE WHEN loai_ck = 'TPDNNY' AND maturitydate IS NOT NULL AND yield IS NOT NULL THEN listedshare * par_value * MONTHS_BETWEEN(maturitydate, tradingdate) / 12 END AS duno_x_kyhan,
-      CASE WHEN loai_ck = 'TPDNNY' AND maturitydate IS NOT NULL AND yield IS NOT NULL THEN listedshare * par_value * yield END AS duno_x_ytm
+      contractmultiplier
     FROM ( 
       -- 1.1. Bản ghi cuối ngày của từng mã + tháng đáo hạn gần nhất (m1) của sản phẩm phái sinh trong ngày
       SELECT
@@ -13569,14 +13563,6 @@ params_base AS (
           s.maturitymonthyear, 
           IF(s.floorcode = '03', TO_DATE(s.maturitymonthyear, 'yyyyMM'), NULL) AS maturity_month, -- Tháng đáo hạn (ngày 01)
           CAST(s.contractmultiplier AS DOUBLE) AS contractmultiplier,
-          CAST(s.listedshare AS DECIMAL(38,10)) AS listedshare,
-          CASE 
-            WHEN s.stocktype = '1' THEN 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) -- TPDNNY: Mệnh giá suy ngược từ giá tham chiếu (bội số 100000, bước nhảy x10)
-            WHEN s.stocktype IN ('2','3','6') THEN 10000 -- CP, CCQ, ETF: 10000đ
-            -- CQ: Không có thông tin Mệnh giá
-          END AS par_value, -- Mệnh giá
-          IF(s.yield IN ('-9999','-9999.0000'), NULL, CAST(s.yield AS DOUBLE)) AS yield, -- YTM trái phiếu
-          s.closeprice,
           ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn
         FROM uat_mdds_stg.jad_stockinfor s
         JOIN params p ON s.tradingdate BETWEEN p.ytd_from AND p.todate
@@ -13612,12 +13598,6 @@ params_base AS (
     WHERE f.deleted = 0 AND f.stock_code IS NOT NULL AND f.ds_snpst_dt = '2026-10-21'
   ) f ON st.issue_code = f.stock_code
 )
--- Khối lượng mở CK phái sinh
-, oi_eod AS (
-  SELECT oi.contract_code, oi.open_interest_volume, oi.report_date
-  FROM uat_vsdc_stg.end_of_day_open_interest oi
-  JOIN params p ON oi.report_date BETWEEN p.fromdate AND p.todate
-) 
 -- 1.3. Rổ chỉ số Index của mã chứng khoán theo ngày 
 , stock_index AS (
   SELECT 
@@ -13791,8 +13771,8 @@ params_base AS (
   SELECT 
     trade_date, market_id, symbol,
     NULL klgd, gtgd, NULL klgd_khoplenh, NULL gtgd_khoplenh, NULL klgd_thoathuan, NULL gtgd_thoathuan,
-    NULL klgd_ndtnn_mua, NULL klgd_ndtnn_ban, NULL klgd_ndtnn_rong, gtgd_ndtnn_mua, gtgd_ndtnn_ban,
-    NULL klgd_tudoanh_mua, NULL klgd_tudoanh_ban, NULL klgd_tudoanh_rong, gtgd_tudoanh_mua, gtgd_tudoanh_ban
+    NULL klgd_ndtnn_mua, NULL klgd_ndtnn_ban, gtgd_ndtnn_mua, gtgd_ndtnn_ban,
+    NULL klgd_tudoanh_mua, NULL klgd_tudoanh_ban, gtgd_tudoanh_mua, gtgd_tudoanh_ban
   FROM corpbond_trade_daily
 )
 -- 3.1. Phiên giao dịch của thị trường, theo từng ngày:
@@ -13851,52 +13831,7 @@ params_base AS (
   GROUP BY ss.period_code, 2, i.index_codes, 4, s.derivative_product, s.derivative_product_detail, s.derivative_term, s.industry_cd, s.industry_name, t.symbol
 )
 -- =========================
--- 5. KẾT QUẢ: Kỳ x Chiều x Mã (giao dịch + TPDNNY tại phiên cuối kỳ)
-, result AS (
-  SELECT 
-    period_code, san, index_codes, industry_cd, industry_name, loai_ck, 
-    derivative_product, derivative_product_detail, derivative_term, symbol,
-    SUM(klgd) AS klgd, SUM(gtgd) AS gtgd,
-    SUM(klgd_khoplenh) AS klgd_khoplenh, SUM(gtgd_khoplenh) AS gtgd_khoplenh,
-    SUM(klgd_thoathuan) AS klgd_thoathuan, SUM(gtgd_thoathuan) AS gtgd_thoathuan,
-    SUM(klgd_ndtnn_mua) AS klgd_ndtnn_mua, SUM(klgd_ndtnn_ban) AS klgd_ndtnn_ban, 
-    SUM(gtgd_ndtnn_mua) AS gtgd_ndtnn_mua, SUM(gtgd_ndtnn_ban) AS gtgd_ndtnn_ban, 
-    SUM(klgd_tudoanh_mua) AS klgd_tudoanh_mua, SUM(klgd_tudoanh_ban) AS klgd_tudoanh_ban,
-    SUM(gtgd_tudoanh_mua) AS gtgd_tudoanh_mua, SUM(gtgd_tudoanh_ban) AS gtgd_tudoanh_ban,
-    SUM(duno) AS duno, SUM(duno_x_kyhan) AS duno_x_kyhan, SUM(duno_x_ytm) AS duno_x_ytm,
-    MAX(closeprice) AS closeprice, MAX(open_interest_volume) AS open_interest_volume
-  FROM (
-    SELECT 
-      period_code, san, index_codes, industry_cd, industry_name, loai_ck, 
-      derivative_product, derivative_product_detail, derivative_term, symbol,
-      klgd, gtgd, klgd_khoplenh, gtgd_khoplenh, klgd_thoathuan, gtgd_thoathuan,
-      klgd_ndtnn_mua, klgd_ndtnn_ban, gtgd_ndtnn_mua, gtgd_ndtnn_ban,
-      klgd_tudoanh_mua, klgd_tudoanh_ban, gtgd_tudoanh_mua, gtgd_tudoanh_ban,
-      NULL AS duno, NULL AS duno_x_kyhan, NULL AS duno_x_ytm, 
-      NULL AS closeprice, NULL AS open_interest_volume
-    FROM trade_period
-    UNION ALL
-    -- TPDNNY tại phiên cuối kỳ: toàn bộ mã có bản ghi jad_stockinfor ngày đó (kể cả mã không GD)
-    SELECT 
-      ss.period_code, 
-      MAP('10','HOSE', '02','HNX', '03','HNX', '04','UPCOM')[s.floorcode] AS san, 
-      i.index_codes, s.industry_cd, s.industry_name, s.loai_ck, 
-      s.derivative_product, s.derivative_product_detail, s.derivative_term, s.symbol,
-      NULL, NULL, NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL,
-      NULL, NULL, NULL, NULL,
-      s.duno, s.duno_x_kyhan, s.duno_x_ytm,
-      s.closeprice, oi.open_interest_volume
-    FROM stock_eod s
-    LEFT JOIN oi_eod oi ON oi.report_date = s.tradingdate AND oi.contract_code = s.symbol 
-    JOIN sessions ss ON ss.trade_date = s.tradingdate AND ss.is_period_end = 'Y'
-    LEFT JOIN stock_index i ON i.symbol = s.symbol AND i.tradingdate = s.tradingdate
-    WHERE s.duno > 0 OR (s.floorcode = '03' AND s.closeprice IS NOT NULL) OR oi.open_interest_volume IS NOT NULL -- Lọc dữ liệu lên data explorer
-  )
-  GROUP BY 
-    period_code, san, index_codes, industry_cd, industry_name, loai_ck, 
-    derivative_product, derivative_product_detail, derivative_term, symbol
-)
+-- 5. KẾT QUẢ: Kỳ x Chiều x Mã
 SELECT
   p.period_type,
   r.period_code, -- Kỳ
@@ -13919,13 +13854,8 @@ SELECT
   -- GTGD bình quân/phiên: của kỳ = SUM(gtgd) / so_phien_ky (kỳ D: không tính); YTD = SUM(gtgd từ đầu năm) / so_phien_ytd (cộng dồn sau khi gom nhóm)
   pi.so_phien_ky,  -- Số phiên của kỳ (tại phiên cuối kỳ)
   pi.so_phien_ytd, -- Số phiên từ đầu năm đến phiên cuối kỳ
-  IF(p.period_type = 'D', NULL, r.gtgd / pi.so_phien_ky) AS gtgd_bq_phien_ky,
-  -- TPDNNY tại phiên cuối kỳ: Kỳ hạn còn lại BQ = SUM(duno_x_kyhan) / SUM(duno); YTM BQ = SUM(duno_x_ytm) / SUM(duno)
-  r.duno, r.duno_x_kyhan, r.duno_x_ytm, 
-  r.duno_x_kyhan / NULLIF(r.duno, 0) AS tp_kyhan_bq,
-  r.duno_x_ytm / NULLIF(r.duno, 0) AS tp_ytm_bq,
-  r.closeprice, r.open_interest_volume
-FROM result r
+  IF(p.period_type = 'D', NULL, r.gtgd / pi.so_phien_ky) AS gtgd_bq_phien_ky
+FROM trade_period r
 JOIN sessions pi ON pi.period_code = r.period_code AND pi.is_period_end = 'Y' -- Lấy số phiên của kỳ
 CROSS JOIN params p
 ORDER BY r.period_code, r.san, r.loai_ck, r.symbol
@@ -14272,16 +14202,296 @@ uat_hose_stg.trade_book (t)
 o.trading_value, r.first_settlement_value, 
 fr.field_value","GTGD: Điều kiện theo chỉ tiêu ""GTGD""
 Số phiên trong kỳ: COUNT(DISTINCT t.trade_date) với t.trade_date tính từ 01/01/ năm của kỳ đến ngày cuối kỳ",
-52.2,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Kỳ hạn còn lại bình quân (TP),"Tính cho trái phiếu, bình quân gia quyền theo khối lượng TP lưu hành",Data Explorer,Chỉ tiêu phái sinh,TB,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,TPDN niêm yết: uat_mdds_stg.jad_stockinfor (s),"s.listedshare, s.reference, s.maturitydate, s.tradingdate","Dư nợ: CASE WHEN s.stocktype = '1' THEN CAST(s.listedshare AS DECIMAL(38,10)) * (100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10)))) END
+52.5,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Kỳ,"Từ kỳ, Đến kỳ: Gồm Ngày/Tháng/Quý/Năm",Data Explorer,Chiều,Trùng,Ngày/Tháng/Quý/Năm,MDDS,,X,X,Done,,uat_mdds_stg.jad_stockinfor (s),s.tradingdate,,"-- [52.5] DATA EXPLORER - KỲ HẠN CÒN LẠI & YTM BÌNH QUÂN TPDNNY
+/* Tham số:
+ *  :period_type  D | M | Q | Y
+ *  :period_from, :period_to  Từ kỳ - Đến kỳ: D = yyyy-MM-dd | M = yyyy-MM | Q = yyyy-Q[1-4] | Y = yyyy
+ */
+WITH
+-- =========================
+-- 0. THAM SỐ: ngày đầu của Từ kỳ, ngày cuối của Đến kỳ
+params_base AS (
+  SELECT
+    UPPER(:period_type) AS period_type,
+    CASE UPPER(:period_type)
+      WHEN 'D' THEN TO_DATE(:period_from)
+      WHEN 'M' THEN TO_DATE(CONCAT(:period_from, '-01'))
+      WHEN 'Q' THEN MAKE_DATE(CAST(SUBSTR(:period_from, 1, 4) AS INT), (CAST(SUBSTR(:period_from, 7, 1) AS INT) - 1) * 3 + 1, 1)
+      WHEN 'Y' THEN MAKE_DATE(CAST(:period_from AS INT), 1, 1)
+    END AS fromdate,
+    CASE UPPER(:period_type)
+      WHEN 'D' THEN TO_DATE(:period_to)
+      WHEN 'M' THEN LAST_DAY(TO_DATE(CONCAT(:period_to, '-01')))
+      WHEN 'Q' THEN LAST_DAY(MAKE_DATE(CAST(SUBSTR(:period_to, 1, 4) AS INT), CAST(SUBSTR(:period_to, 7, 1) AS INT) * 3, 1))
+      WHEN 'Y' THEN MAKE_DATE(CAST(:period_to AS INT), 12, 31)
+    END AS todate
+)
+-- Ngành mặc định cho CTCK, CTQLQ là CTĐC: Tài chính ngân hàng
+, industry_fix_ctck_ctqlq AS (
+  SELECT DISTINCT industry_cd, industry_name
+  FROM uat_ids_stg.categories
+  WHERE industry_cd = '07000' AND active_flg = '1' AND ds_snpst_dt = '2026-11-11'
+  LIMIT 1
+)
+-- =========================
+-- 1. Thông tin chứng khoán (bản ghi cuối ngày trong jad_stockinfor) + Map ngành nghề cho từng mã CP/TPDNNY/CQ
+, stock_eod AS (
+  SELECT 
+    st.*,
+    -- Ngành nghề với TPDN niêm yết, Cổ phiếu, Chứng quyền + CTCK/CTQLQ mặc định ngành = Tài chính ngân hàng
+    CASE WHEN loai_ck IN ('TPDNNY', 'CP', 'CQ') THEN COALESCE(p.industry_cd, sc.industry_cd, f.industry_cd, 'NA') END AS industry_cd,
+    CASE WHEN loai_ck IN ('TPDNNY', 'CP', 'CQ') THEN COALESCE(p.industry_name, sc.industry_name, f.industry_name, 'Chưa phân ngành') END AS industry_name
+  FROM (
+    SELECT 
+      tradingdate, symbol, symbolisin, issue_code, stocktype, floorcode, loai_ck, 
+      maturitydate, remain_term, yield, par_value, 
+      listedshare, 
+      listedshare * par_value AS listedvalue, -- GT niêm yết
+      -- TPDNNY: 
+      CASE WHEN loai_ck = 'TPDNNY' THEN listedshare END AS bond_outstanding_shares, -- KL lưu hành tính bằng KL niêm yết
+      CASE WHEN loai_ck = 'TPDNNY' THEN listedshare * par_value END AS bond_outstanding_value -- Dư nợ tính bằng GT niêm yết = KL niêm yết x Mệnh giá
+    FROM ( 
+      -- 1.1. Bản ghi cuối ngày của từng mã
+      SELECT x.*
+      FROM (
+        SELECT
+          s.tradingdate,
+          s.symbol,
+          s.symbolisin,
+          s.stocktype,
+          s.floorcode,
+          s.productgrpid,
+          CASE 
+            WHEN s.stocktype = '1' AND s.floorcode <> '03' THEN SUBSTR(s.symbol,1,3)
+            WHEN s.stocktype = '2' THEN s.symbol
+            WHEN s.stocktype = '4' AND SUBSTR(s.productid, 6, 2) = 'EW' THEN s.underlyingsymbol
+          END issue_code, -- Mã TCPH của Cổ phiếu, TPDN niêm yết, Chứng quyền (mã CK cơ sở)
+          CASE
+            WHEN s.floorcode = '03' AND s.stocktype IN ('4', '5') THEN 'PS' -- Phái sinh (HĐTL, HĐ quyền chọn)
+            WHEN s.stocktype = '1' THEN 'TPDNNY'                            -- TPDN niêm yết
+            WHEN s.stocktype = '2' THEN 'CP'                                -- Cổ phiếu
+            WHEN s.stocktype IN ('3', '6') AND s.fundtype = 'M' THEN 'CCQ'  -- Chứng chỉ quỹ (Không gồm ETF)
+            WHEN s.stocktype IN ('3', '6') AND s.fundtype = 'E' THEN 'ETF'  -- Chứng chỉ quỹ ETF
+            WHEN SUBSTR(s.productid, 6, 2) = 'EW' THEN 'CQ'                 -- Chứng quyền
+          END AS loai_ck,
+          TO_DATE(s.maturitydate, 'dd/MM/yyyy') AS maturitydate, -- Ngày đáo hạn (string dd/MM/yyyy -> date)
+          MONTHS_BETWEEN(TO_DATE(s.maturitydate, 'dd/MM/yyyy'), tradingdate) / 12 AS remain_term, -- Kỳ hạn còn lại (năm) = (Ngày đáo hạn - Ngày) / 12 tháng
+          CAST(s.listedshare AS DECIMAL(38,2)) AS listedshare,
+          CASE 
+            WHEN s.stocktype = '1' THEN 100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10))) -- TPDNNY: Mệnh giá suy ngược từ giá tham chiếu (bội số 100000, bước nhảy x10)
+            WHEN s.stocktype IN ('2','3','6') THEN 10000 -- CP, CCQ, ETF: 10000đ
+            -- CQ: Không có thông tin Mệnh giá
+          END AS par_value, -- Mệnh giá
+          IF(s.yield IN ('-9999','-9999.0000','-9999.9999'), NULL, CAST(s.yield AS DOUBLE)) AS yield, -- YTM trái phiếu
+          ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn
+        FROM uat_mdds_stg.jad_stockinfor s
+        JOIN params_base p ON s.tradingdate BETWEEN p.fromdate AND p.todate
+      ) x
+      WHERE x.rn = 1 -- Bản ghi cuối mỗi ngày
+    )
+  ) st 
+  -- Thông tin hồ sơ Công ty đại chúng + phân ngành
+  LEFT JOIN (
+    SELECT cp.equity_ticker, cp.category_l1_id, c.industry_cd, c.industry_name
+    FROM (
+      SELECT equity_ticker, category_l1_id,
+        ROW_NUMBER() OVER(PARTITION BY equity_ticker ORDER BY id) rn -- Lấy bản ghi cũ hơn (lọc dữ liệu test trùng)
+      FROM uat_ids_stg.company_profiles
+      WHERE delete_flg <> '1' AND (approval_status_cd <> 'REJECTED' OR approval_status_cd IS NULL)
+        AND ds_snpst_dt = '2026-09-02'
+    ) cp
+    LEFT JOIN uat_ids_stg.categories c ON cp.category_l1_id = c.id AND ds_snpst_dt = '2026-09-02' -- Thông tin ngành nghề kinh tế 
+    WHERE cp.rn = 1
+  ) p ON st.issue_code = p.equity_ticker 
+  -- CTCK là CTĐC đã niêm yết/ĐKGD 
+  LEFT JOIN (
+    SELECT DISTINCT sc.securities_code, i.industry_cd, i.industry_name 
+    FROM uat_scms_stg.SC_FIRM_INFO sc
+    CROSS JOIN industry_fix_ctck_ctqlq i --> Fix ngành nghề là Tài chính ngân hàng với CTCK, CTQLQ là CTĐC
+    WHERE sc.deleted = '0' AND sc.securities_code IS NOT NULL AND sc.ds_snpst_dt = '2026-11-17'
+  ) sc ON st.issue_code = sc.securities_code
+  -- CTQLQ là CTĐC đã niêm yết/ĐKGD 
+  LEFT JOIN (
+    SELECT DISTINCT f.stock_code, i.industry_cd, i.industry_name 
+    FROM uat_fms_stg.securities f
+    CROSS JOIN industry_fix_ctck_ctqlq i --> Fix ngành nghề là Tài chính ngân hàng với CTCK, CTQLQ là CTĐC
+    WHERE f.deleted = 0 AND f.stock_code IS NOT NULL AND f.ds_snpst_dt = '2026-10-09'
+  ) f ON st.issue_code = f.stock_code
+)
+-- =========================
+-- 5. KẾT QUẢ: Kỳ x Chiều x Mã (Thông tin TPDNNY tại ngày cuối kỳ)
+, stock_result AS (
+  -- Tính tại ngày cuối kỳ: toàn bộ mã có bản ghi jad_stockinfor ngày đó
+  SELECT t.*
+  FROM (
+    SELECT 
+      i.*, 
+      MAX(tradingdate) OVER(PARTITION BY period_code) AS period_enddate -- Ngày cuối cùng có dữ liệu từng kỳ
+    FROM (
+      SELECT 
+        p.period_type,
+        CASE p.period_type
+          WHEN 'D' THEN DATE_FORMAT(s.tradingdate, 'yyyy-MM-dd')
+          WHEN 'M' THEN DATE_FORMAT(s.tradingdate, 'yyyy-MM')
+          WHEN 'Q' THEN CONCAT(YEAR(s.tradingdate), '-Q', QUARTER(s.tradingdate))
+          WHEN 'Y' THEN CAST(YEAR(s.tradingdate) AS STRING)
+        END AS period_code, -- Thông tin kỳ theo tham số
+        -- Chiều dữ liệu trên Data Explorer
+        MAP('10','HOSE', '02','HNX', '03','HNX', '04','UPCOM')[s.floorcode] AS san,
+        s.floorcode, s.loai_ck, 
+        s.industry_cd, s.industry_name,
+        -- Thông tin chi tiết từng mã TP
+        s.symbol, s.symbolisin, s.issue_code, s.maturitydate, s.remain_term, s.yield, s.listedshare, s.par_value, s.listedvalue, s.tpdnny_duno, 
+        s.tradingdate
+      FROM stock_eod s
+      CROSS JOIN params_base p 
+      WHERE s.stocktype = '1' -- TPDN niêm yết
+    ) i
+  ) t
+  WHERE t.tradingdate = t.period_enddate
+)
+-- Data Explorer: Tính Kỳ hạn còn lại BQ = SUM(duno x kyhan) / SUM(duno); YTM BQ = SUM(duno x ytm) / SUM(duno)
+SELECT 
+  period_type, period_code,
+  floorcode, san, loai_ck,
+  industry_cd, industry_name,
+  SUM(bond_outstanding_value * remain_term) / SUM(bond_outstanding_value) AS tpdnny_kyhanconlai_bq, 
+  SUM(bond_outstanding_value * yield) / SUM(bond_outstanding_value) AS tpdnny_ytm_bq
+FROM stock_result
+GROUP BY 1,2,3,4,5,6,7
+;"
+52.5,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Kỳ hạn còn lại bình quân (TP),"Tính cho trái phiếu, bình quân gia quyền theo khối lượng TP lưu hành",Data Explorer,Chỉ tiêu phái sinh,TB,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),"s.listedshare, s.reference, s.maturitydate, s.tradingdate","Dư nợ: CASE WHEN s.stocktype = '1' THEN CAST(s.listedshare AS DECIMAL(38,10)) * (100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10)))) END
 Kỳ hạn còn lại (năm): MONTHS_BETWEEN(maturitydate, tradingdate) / 12
 -> Tính tử số: Dư nợ * Kỳ hạn còn lại (năm)
 -> Tính mẫu số: Dư nợ",
-52.2,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",YTM bình quân (TP),"Tính cho trái phiếu chính phủ, bình quân gia quyền theo khối lượng TP niêm yết",Data Explorer,Chỉ tiêu phái sinh,TB,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,TPDN niêm yết: uat_mdds_stg.jad_stockinfor (s),"s.listedshare, s.yield, s.maturitydate, s.tradingdate","Dư nợ: CASE WHEN s.stocktype = '1' THEN CAST(s.listedshare AS DECIMAL(38,10)) * (100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10)))) END
+52.5,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",YTM bình quân (TP),"Tính cho trái phiếu chính phủ, bình quân gia quyền theo khối lượng TP niêm yết",Data Explorer,Chỉ tiêu phái sinh,TB,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),"s.listedshare, s.yield, s.maturitydate, s.tradingdate","Dư nợ: CASE WHEN s.stocktype = '1' THEN CAST(s.listedshare AS DECIMAL(38,10)) * (100000 * POWER(10, ROUND(LN(NULLIF(s.reference, 0) / 100000) / LN(10)))) END
 YTM: IF(s.yield IN ('-9999','-9999.0000'), NULL, CAST(s.yield AS DOUBLE))
 -> Tính tử số: Dư nợ * YTM
 -> Tính mẫu số: Dư nợ",
-52.2,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Giá của CK Phái sinh,Giá HĐTL của tất cả các kỳ hạn trái phiếu: Lấy giá đóng cửa tại ngày cuối kỳ báo cáo.,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,TPDN niêm yết: uat_mdds_stg.jad_stockinfor (s),s.closeprice,Lấy tradingdate = MAX(tradingdate) của kỳ,
-52.2,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Khối lượng mở (OI),Σ khối lượng mở,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",VSDC,,,,Done,,uat_vsdc_stg.end_of_day_open_interest (oi),oi.open_interest_volume,Link với bảng uat_mdds_stg.jad_stockinfor (s): s.symbol = oi.contract_code AND s.tradingdate = oi.report_date,
+52.6,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Kỳ,"Từ kỳ, Đến kỳ: Gồm Ngày/Tháng/Quý/Năm",Data Explorer,Chỉ tiêu cơ sở,Trùng,Ngày/Tháng/Quý/Năm,"MDDS, VSDC",,,,Done,,"uat_mdds_stg.jad_stockinfor (s), 
+uat_vsdc_stg.end_of_day_open_interest (oi)","s.tradingdate,
+oi.transaction_date",,"-- [52.6] DATA EXPLORER - CK PHÁI SINH: GIÁ, KHỐI LƯỢNG MỞ
+/* Tham số:
+ *  :period_type  D | M | Q | Y
+ *  :period_from, :period_to  Từ kỳ - Đến kỳ: D = yyyy-MM-dd | M = yyyy-MM | Q = yyyy-Q[1-4] | Y = yyyy
+ * Độ chi tiết: Kỳ x Chiều x Mã chứng khoán
+ * Chiều: Sản phẩm phái sinh (derivative_product, derivative_product_detail) | Kỳ hạn phái sinh (derivative_term) | Mã chứng khoán (symbol)
+ */
+WITH
+-- 0. THAM SỐ: ngày đầu của Từ kỳ, ngày cuối của Đến kỳ
+params_base AS (
+  SELECT
+    UPPER(:period_type) AS period_type,
+    CASE UPPER(:period_type)
+      WHEN 'D' THEN TO_DATE(:period_from)
+      WHEN 'M' THEN TO_DATE(CONCAT(:period_from, '-01'))
+      WHEN 'Q' THEN MAKE_DATE(CAST(SUBSTR(:period_from, 1, 4) AS INT), (CAST(SUBSTR(:period_from, 7, 1) AS INT) - 1) * 3 + 1, 1)
+      WHEN 'Y' THEN MAKE_DATE(CAST(:period_from AS INT), 1, 1)
+    END AS fromdate,
+    CASE UPPER(:period_type)
+      WHEN 'D' THEN TO_DATE(:period_to)
+      WHEN 'M' THEN LAST_DAY(TO_DATE(CONCAT(:period_to, '-01')))
+      WHEN 'Q' THEN LAST_DAY(MAKE_DATE(CAST(SUBSTR(:period_to, 1, 4) AS INT), CAST(SUBSTR(:period_to, 7, 1) AS INT) * 3, 1))
+      WHEN 'Y' THEN MAKE_DATE(CAST(:period_to AS INT), 12, 31)
+    END AS todate
+)
+-- 1. Thông tin chứng khoán (bản ghi cuối ngày trong jad_stockinfor) + Map ngành nghề cho từng mã CP/TPDNNY/CQ
+, stock_eod AS (
+  SELECT 
+    tradingdate, symbol, symbolisin, stocktype, floorcode, loai_ck, 
+    derivative_product, derivative_product_detail, maturitymonthyear, closeprice,
+    -- PHÂN LOẠI KỲ HẠN PHÁI SINH
+    CASE 
+      WHEN maturity_month IS NULL OR derivative_product_detail IS NULL THEN NULL -- Chỉ HĐ phái sinh
+      -- 1) HĐ TPCP: 03 tháng cuối 03 Quý gần nhất.
+      WHEN productgrpid = 'FBX' THEN 
+        CASE DENSE_RANK() OVER(PARTITION BY tradingdate, derivative_product_detail ORDER BY maturity_month)
+          WHEN 1 THEN 'Tháng cuối quý gần nhất'
+          WHEN 2 THEN 'Tháng cuối quý tiếp theo 1'
+          WHEN 3 THEN 'Tháng cuối quý tiếp theo 2'
+        END
+      -- 2) HĐ chỉ số: Tháng hiện tại, tháng kế tiếp, hai tháng cuối 02 quý tiếp theo.
+      WHEN maturity_month = m1 THEN 'Tháng gần nhất'
+      WHEN maturity_month = ADD_MONTHS(m1, 1) THEN 'Tháng tiếp theo'
+      WHEN MONTH(maturity_month) % 3 = 0 THEN 
+        CASE DENSE_RANK() OVER(
+            PARTITION BY tradingdate, derivative_product_detail, (maturity_month = m1 OR maturity_month = ADD_MONTHS(m1, 1) OR MONTH(maturity_month) % 3 <> 0) 
+            ORDER BY maturity_month) -- Tách nhóm tháng cuối quý còn lại
+          WHEN 1 THEN 'Tháng cuối quý gần nhất'
+          WHEN 2 THEN 'Tháng cuối quý tiếp theo 1'
+        END
+    END AS derivative_term -- Kỳ hạn phái sinh
+  FROM ( 
+    -- 1.1. Bản ghi cuối ngày của từng mã + tháng đáo hạn gần nhất (m1) của sản phẩm phái sinh trong ngày
+    SELECT
+      x.*,
+      MIN(x.maturity_month) OVER(PARTITION BY x.tradingdate, x.derivative_product_detail) AS m1 -- Tháng đáo hạn gần nhất của sản phẩm trong ngày
+    FROM (
+      SELECT
+        s.tradingdate,
+        s.symbol,
+        s.symbolisin,
+        s.stocktype,
+        s.floorcode,
+        s.productgrpid,
+        CASE
+          WHEN s.floorcode = '03' AND s.stocktype IN ('4', '5') THEN 'PS' -- Phái sinh (HĐTL, HĐ quyền chọn)
+          WHEN s.stocktype = '1' THEN 'TPDNNY'                            -- TPDN niêm yết
+          WHEN s.stocktype = '2' THEN 'CP'                                -- Cổ phiếu
+          WHEN s.stocktype IN ('3', '6') AND s.fundtype = 'M' THEN 'CCQ'  -- Chứng chỉ quỹ (Không gồm ETF)
+          WHEN s.stocktype IN ('3', '6') AND s.fundtype = 'E' THEN 'ETF'  -- Chứng chỉ quỹ ETF
+          WHEN SUBSTR(s.productid, 6, 2) = 'EW' THEN 'CQ'                 -- Chứng quyền
+        END AS loai_ck,
+        -- Sản phẩm phái sinh: HĐTL VN30, HĐTL VN100, HĐTL TPCP, HĐ quyền chọn VN30, ...
+        IF(s.floorcode = '03', CONCAT(MAP('4','HĐTL','5','HĐ quyền chọn')[s.stocktype], ' ', IF(s.productgrpid = 'FBX', 'TPCP', s.underlyingsymbol)), NULL) AS derivative_product,
+        -- Sản phẩm phái sinh chi tiết: HĐTL VN30, HĐTL TPCP VGB05, HĐTL TPCP VGB10, ...
+        IF(s.floorcode = '03', CONCAT(MAP('4','HĐTL','5','HĐ quyền chọn')[s.stocktype], IF(s.productgrpid = 'FBX', ' TPCP', ''), ' ', s.underlyingsymbol), NULL) AS derivative_product_detail,
+        s.maturitymonthyear, 
+        IF(s.floorcode = '03', TO_DATE(s.maturitymonthyear, 'yyyyMM'), NULL) AS maturity_month, -- Tháng đáo hạn (ngày 01)
+        s.closeprice,
+        ROW_NUMBER() OVER(PARTITION BY s.symbol, s.tradingdate ORDER BY s.tradingtime DESC, s.`sequence` DESC) rn
+      FROM uat_mdds_stg.jad_stockinfor s
+      JOIN params_base p ON s.tradingdate BETWEEN p.fromdate AND p.todate
+    ) x
+    WHERE x.rn = 1 -- Bản ghi cuối mỗi ngày
+  )
+)
+-- Khối lượng mở CK phái sinh
+, oi_eod AS (
+  SELECT oi.contract_code, oi.open_interest_volume, oi.report_date
+  FROM uat_vsdc_stg.end_of_day_open_interest oi
+  JOIN params_base p ON oi.report_date BETWEEN p.fromdate AND p.todate
+) 
+-- =========================
+-- 5. KẾT QUẢ: Kỳ x Chiều x Mã (giao dịch + TPDNNY tại phiên cuối kỳ)
+SELECT 
+  period_type, period_code, tradingdate, san, loai_ck, derivative_product, derivative_product_detail, derivative_term, closeprice, open_interest_volume 
+FROM (
+  SELECT 
+    i.*,
+    MAX(tradingdate) OVER(PARTITION BY period_code) AS period_enddate -- Ngày cuối cùng có dữ liệu từng kỳ
+  FROM (
+    SELECT 
+      p.period_type,
+      CASE p.period_type
+        WHEN 'D' THEN DATE_FORMAT(s.tradingdate, 'yyyy-MM-dd')
+        WHEN 'M' THEN DATE_FORMAT(s.tradingdate, 'yyyy-MM')
+        WHEN 'Q' THEN CONCAT(YEAR(s.tradingdate), '-Q', QUARTER(s.tradingdate))
+        WHEN 'Y' THEN CAST(YEAR(s.tradingdate) AS STRING)
+      END AS period_code, -- Thông tin kỳ theo tham số
+      s.tradingdate, 
+      MAP('10','HOSE', '02','HNX', '03','HNX', '04','UPCOM')[s.floorcode] AS san, 
+      s.loai_ck, s.derivative_product, s.derivative_product_detail, s.derivative_term, 
+      s.closeprice, oi.open_interest_volume
+    FROM stock_eod s
+    LEFT JOIN oi_eod oi ON oi.report_date = s.tradingdate AND oi.contract_code = s.symbol
+    CROSS JOIN params_base p 
+    WHERE floorcode = '03'
+  ) i 
+) t WHERE t.tradingdate = t.period_enddate
+;"
+52.6,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Giá của CK Phái sinh,Giá HĐTL của tất cả các kỳ hạn trái phiếu: Lấy giá đóng cửa tại ngày cuối kỳ báo cáo.,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",MDDS,,,,Done,,uat_mdds_stg.jad_stockinfor (s),s.closeprice,Lấy tradingdate = MAX(tradingdate) của kỳ,
+52.6,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Khối lượng mở (OI),Σ khối lượng mở,Data Explorer,Chỉ tiêu cơ sở,Trùng,"Sàn, Loại chứng khoán, Sản phẩm phái sinh, Kỳ hạn phái sinh, Ngành, Chỉ số, Mã chứng khoán, Ngày/Tháng/Quý/Năm",VSDC,,,,Done,,uat_vsdc_stg.end_of_day_open_interest (oi),oi.open_interest_volume,Link với bảng uat_mdds_stg.jad_stockinfor (s): s.symbol = oi.contract_code AND s.tradingdate = oi.report_date,
 52.3,,"Data Explorer Thống kê giao dịch, vốn hóa thị trường và quy mô niêm yết",Kỳ,"Từ kỳ, Đến kỳ: Gồm Ngày/Tháng/Quý/Năm",Data Explorer,Chiều,Trùng,Ngày/Tháng/Quý/Năm,"MDDS, VSDC",,X,X,Done,,"uat_mdds_stg.jad_stockinfor (s), 
 uat_vsdc_stg.outstanding_shares (os)","s.tradingdate, 
 os.transaction_date ",,"-- DATA EXPLORER - VỐN HÓA THỊ TRƯỜNG: VỐN HÓA CỔ PHIẾU CHI TIẾT THEO KỲ x MÃ CK (SÀN, CHỈ SỐ INDEX - MẢNG, NGÀNH) + DÒNG TỔNG (TỶ LỆ VỐN HÓA/GDP)

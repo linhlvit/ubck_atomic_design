@@ -2,6 +2,7 @@
 -- QLKD Flat Tables — POPULATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
+-- Sửa 2026-11-25 (O_QLKD_80): 13 bảng Operational thêm 8 cột lịch ở cuối SELECT = LEFT JOIN datamart.cdr_dt_dim cal ON cal.cdr_dt = <cột ngày nghiệp vụ> (danh sách bảng/cột join + lệnh ALTER ở 01_create_qlkd_flat_tables.sql)
 -- 22 bảng flat: 7 fact + 14 operational + 1 dimension bộ lọc (khối 21)
 -- ETL daily: fact lọc theo WHERE cal.cdr_dt = :etl_date
 -- ============================================================
@@ -332,9 +333,20 @@ SELECT
     o.work_start_dt,
     o.dismissal_dt,
     o.personnel_status_code,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.work_start_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_personnel_profile o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.work_start_dt
 ;
 
 
@@ -354,9 +366,20 @@ SELECT
     fn_pii_encrypt(o.director_nm, :aes_key_hex) AS director_nm,
     o.cl_firm_status_code,
     o.business_line_nm_list,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.decision_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_organization_unit_profile o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.decision_dt
 ;
 
 
@@ -378,9 +401,20 @@ SELECT
     o.remedial_measure_nm,
     o.sc_code,
     o.src_stm_code,
-    o.event_dt
+    o.event_dt,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.event_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_compliance_hist o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.event_dt
 ;
 
 
@@ -398,9 +432,20 @@ SELECT
     fn_pii_encrypt(o.identification_nbr, :aes_key_hex) AS identification_nbr,
     o.license_certificate_nbr,
     o.src_stm_code,
-    o.appointment_dt
+    o.appointment_dt,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.appointment_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_profile o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.appointment_dt
 ;
 
 
@@ -425,9 +470,20 @@ SELECT
     o.relation_start_dt,
     o.effective_from_dt,
     o.effective_to_dt,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.effective_from_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_related_party_network o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.effective_from_dt
 ;
 
 
@@ -449,9 +505,20 @@ SELECT
     o.status_nm,
     o.effective_from_dt,
     o.effective_to_dt,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.effective_from_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_listed_company_role o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.effective_from_dt
 ;
 
 
@@ -470,9 +537,20 @@ SELECT
     fn_pii_encrypt(o.shareholder_nm, :aes_key_hex) AS shareholder_nm,
     o.shareholder_tp_code,
     o.src_stm_code,
-    o.created_dt
+    o.created_dt,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.created_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_trading_account o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.created_dt
 ;
 
 
@@ -492,9 +570,20 @@ SELECT
     o.resignation_dt,
     o.employment_status_code,
     o.personnel_status_code,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.work_start_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_work_hist o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.work_start_dt
 ;
 
 
@@ -514,9 +603,20 @@ SELECT
     o.violation_behavior_nm,
     o.penalty_tp_nm,
     o.decision_status_code,
-    o.src_stm_code
+    o.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo o.issued_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_individual_violation_hist o
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = o.issued_dt
 ;
 
 
@@ -626,9 +726,20 @@ SELECT
     f.submission_dt,
     f.submission_deadline_dt,
     f.submission_status_code,
-    f.src_stm_code
+    f.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo f.submission_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_report_data f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = f.submission_dt
 ;
 
 
@@ -653,9 +764,20 @@ SELECT
     f.submission_dt,
     f.submission_status_code,
     f.src_stm_code,
-    f.preferred_report_ind
+    f.preferred_report_ind,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo f.submission_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_financial_report_hist f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = f.submission_dt
 ;
 
 
@@ -687,9 +809,20 @@ SELECT
     f.submission_dt,
     f.end_dt,
     f.submission_status_code,
-    f.src_stm_code
+    f.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo f.end_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_practitioner_profile f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = f.end_dt
 ;
 
 
@@ -707,9 +840,20 @@ SELECT
     f.ou_tp_code,
     f.catalog_code,
     f.decision_dt,
-    f.src_stm_code
+    f.src_stm_code,
+    -- [MỚI 2026-11-25, O_QLKD_80] LEFT JOIN cdr_dt_dim theo f.decision_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
 
 FROM datamart.opr_securities_company_organization_unit_service f
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = f.decision_dt
 ;
 
 

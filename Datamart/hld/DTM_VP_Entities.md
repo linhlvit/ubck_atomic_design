@@ -60,7 +60,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
-| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19-20,29-30,39-40,49-50,59-60 |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5, 52.6) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19-20,29-30,39-40,49-50,59-60 |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_21-28,31-38,41-48,51-58,61-68 |
 
 ---
@@ -77,7 +77,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
-| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_70 |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5, 52.6) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_70 |
 
 ---
 
@@ -95,7 +95,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
-| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19,29,39,49,59 |
+| Fact Derivative Contract Snapshot | Fact Snapshot | new | Khối lượng mở (OI) và giá đóng cửa hợp đồng phái sinh (Nhóm 3, 4, 5, 52.6) | 1 mã hợp đồng phái sinh × 1 ngày giao dịch (PK derivative_contract_snpst_id = hash(ngày, mã hợp đồng)) | K_VP_19,29,39,49,59 |
 | Fact Investor Group Trading Snapshot | Fact Snapshot | new | Khối lượng và giá trị mua/bán theo nhóm nhà đầu tư NĐTNN / Tự doanh / Toàn bộ (Nhóm 1, 2, 3, 5, 6) | 1 mã × 1 ngày × 1 sàn × 1 nhóm NĐT (PK investor_group_trading_snpst_id = hash cột grain) | K_VP_21,31,41,51,61 |
 
 ---
@@ -130,7 +130,7 @@ erDiagram
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Danh mục TPDN niêm yết theo mã và ngày: kỳ hạn, KL lưu hành, dư nợ, lợi suất, sàn, ngành (Nhóm 7, 8, 27, 29, 52.2) — không chứa giao dịch | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83,114 |
+| Fact Listed Equity Snapshot | Fact Snapshot | reuse | Số mã TP niêm yết (K_VP_83, 114) = COUNT(DISTINCT ticker_symbol) lọc Stock Type Code '1' (TPDN niêm yết) — theo BA 2026-11-23, O_VP_92 (Fact danh mục chỉ còn phục vụ Nhóm 8, 27, 29, 52.5) | 1 mã chứng khoán × 1 ngày giao dịch (PK hash cột grain) | K_VP_83,114 |
 | Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_71-82,112,113 |
 
 ---
@@ -151,7 +151,7 @@ erDiagram
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày dương lịch | — |
 | Industry Dimension | Dimension | reuse | Danh mục ngành nghề kinh doanh cấp 1 (Classification IDS Business Line) | 1 ngành nghề cấp 1 hiện hành | — |
 | Security Trading Snapshot Dimension | Dimension | partial | Hồ sơ chứng khoán / hợp đồng phái sinh (SCD4A current-state) | 1 mã chứng khoán / hợp đồng phái sinh | — |
-| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Danh mục TPDN niêm yết theo mã và ngày: kỳ hạn, KL lưu hành, dư nợ, lợi suất, sàn, ngành (Nhóm 7, 8, 27, 29, 52.2) — không chứa giao dịch | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83-85,87,88 |
+| Fact Listed Corporate Bond Snapshot | Fact Snapshot | new | Danh mục TPDN niêm yết theo mã và ngày: kỳ hạn, KL lưu hành, dư nợ, lợi suất, sàn, ngành (Nhóm 8, 27, 29, 52.5) — không chứa giao dịch | 1 mã trái phiếu (ISIN) × 1 ngày có bản tin cuối ngày MDDS (PK listed_corporate_bond_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_83-85,87,88 |
 | Fact Listed Corporate Bond Trading Snapshot | Fact Snapshot | new | Giao dịch TPDN niêm yết theo mã và ngày: KLGD, GTGD, mua/bán NĐTNN, tự doanh, khớp lệnh/thỏa thuận (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56) — không chứa chỉ tiêu danh mục | 1 mã trái phiếu (ISIN) × 1 ngày có ít nhất 1 giao dịch Sổ lệnh HNX 'HCX' (PK listed_corporate_bond_trading_snpst_id = hash(snpst_dt_dim_id, security_symbol_code)) | K_VP_84-86 |
 
 ---

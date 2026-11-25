@@ -2,13 +2,18 @@
 -- VP Flat Tables — CREATE
 -- Module: Thống kê thị trường chứng khoán (VP)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng:
---   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5)
---   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6)
---   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 7, 8, 27, 29, 52.2 — Fact danh mục; giao dịch tách sang vp_fct_listed_corporate_bond_trading_snpst_flat, O_VP_89)
+-- 19 bảng (danh sách đầy đủ theo thứ tự khối bên dưới; chỉ #1–#6 và #19 có chú thích Nhóm ở header):
+--   1. vp_fct_derivative_contract_snpst_flat (Nhóm 3, 4, 5, 52.6)
+--   2. vp_fct_investor_group_trading_snpst_flat (Nhóm 1, 2, 3, 5, 6, 32, 33, 34, 36)
+--   3. vp_fct_listed_corporate_bond_snpst_flat (Nhóm 8, 27, 29, 52.5 — Fact danh mục; giao dịch tách sang #19, O_VP_89; 52.5 từ BA tách nhóm 2026-11-25, O_VP_91; Nhóm 7 Số mã TP niêm yết đọc #7 vp_fct_listed_equity_snpst_flat, O_VP_92)
 --   4. vp_fct_private_corporate_bond_trading_snpst_flat (Nhóm 9, 11, 12, 13)
 --   5. vp_fct_government_bond_trading_snpst_flat (Nhóm 14, 15, 16)
 --   6. vp_fct_private_corporate_bond_registration_snpst_flat (Nhóm 11)
+--   7–18. vp_fct_listed_equity_snpst_flat, vp_fct_listing_status_change_snpst_flat, vp_fct_investor_account_movement_snpst_flat,
+--         vp_fct_government_bond_bidding_result_snpst_flat, vp_fct_share_auction_result_snpst_flat, vp_fct_derivatives_account_snpst_flat,
+--         vp_fct_foreign_capital_flow_summary_snpst_flat, vp_fct_government_bond_listing_snpst_flat, vp_fct_government_bond_listing_change_snpst_flat,
+--         vp_fct_private_corporate_bond_registration_status_snpst_flat, vp_fct_securities_offering_event_flat, vp_fct_private_corporate_bond_offering_snpst_flat
+--   19. vp_fct_listed_corporate_bond_trading_snpst_flat (Nhóm 7, 8, 9, 10, 32, 33, 34, 37, 52.2, 56 — Fact giao dịch, O_VP_89)
 -- Ghi chú: Fact Market Index Snapshot (reuse QLKD) dùng bảng flat của QLKD; Fact Macro Indicator Snapshot (reuse PTTT) dùng bảng flat datamart.pttt_fct_macro_indicator_snpst_flat của PTTT; lịch ngày dùng datamart.cdr_dt_flat (Datamart/flat-table/Common).
 --   Lô 1 (Nhóm 7-10, 2026-10-25): thêm 2 flat TPDN; Industry Dimension (GSDC) chỉ denormalize industry_code, industry_nm vào flat Fact TPDN niêm yết.
 --   Lô 2 (Nhóm 11-16, 2026-10-25): thêm 2 flat — TPCP (Bond Order Book HNX, OUTRIGHT/REPO) và TPDN riêng lẻ đăng ký giao dịch (báo cáo tháng HNX); flat TPDN riêng lẻ HNX09 của Lô 1 dùng thêm cho Nhóm 11-13 (không đổi cột).
@@ -329,16 +334,16 @@ COMMENT 'Flat table — fct_private_corporate_bond_registration_snpst × Calenda
 CREATE TABLE IF NOT EXISTS datamart.vp_fct_listed_equity_snpst_flat ON CLUSTER 'my_cluster'
 (
     -- From: FCT_LISTED_EQUITY_SNPST
-    listed_equity_snpst_id                       String                  COMMENT 'PK — hash(snpst_dt_dim_id, ticker_symbol, src_stm_code). Grain = 1 mã cổ phiếu/chứng chỉ quỹ (stock_tp_code 2/',
+    listed_equity_snpst_id                       String                  COMMENT 'PK — hash(snpst_dt_dim_id, ticker_symbol, src_stm_code). Grain = 1 mã chứng khoán niêm yết/đăng ký giao dịch (',
     snpst_dt_dim_id                              String                  COMMENT 'FK tới Calendar Date Dimension — ngày giao dịch của bản tin cuối ngày (BA: Vốn hóa/số mã/giá trị niêm yết tính',
-    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của CỔ PHIẾU (BA Nhóm 22); CTCK/CTQLQ đại chúng = 07000; NULL với CCQ/mã chưa có ngành',
+    industry_dim_id                              Nullable(String)        COMMENT 'FK tới Industry Dimension — ngành nghề kinh tế cấp 1 của CỔ PHIẾU (BA Nhóm 22: jad_stockinfor stocktype = 2 → ',
     ticker_symbol                                String                  COMMENT 'Mã chứng khoán (SYMBOL của MDDS) — định danh dòng. Fact KHÔNG có khóa ngoại tới Security Trading Snapshot Dime',
-    floor_code                                   String                  COMMENT 'Mã sàn của mã tại ngày giao dịch: 02 = HNX, 10 = HOSE, 04 = UPCoM (BA Nhóm 55: floorcode IN (02,04,10)). Lưu T',
-    stock_tp_code                                String                  COMMENT 'Loại chứng khoán tại ngày giao dịch: 2 = cổ phiếu, 3/6 = chứng chỉ quỹ (gồm ETF) — Fact chỉ nạp loại 2, 3, 6 (',
-    fund_tp_code                                 Nullable(String)        COMMENT 'Loại quỹ của chứng chỉ quỹ tại ngày giao dịch (FUNDTYPE của MDDS): M = chứng chỉ quỹ (CCQ), E = quỹ ETF — phân biệt CCQ và ETF khi stock_tp_code IN (3,6) (BA Nhóm 17: CCQ = fundtype M, ETF = E); để trống với loại chứng khoán khác. [MỚI 2026-11-08, O_VP_68]',
-    outstanding_share_quantity                   Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu đang lưu hành cuối ngày (VSDC OUTSTANDING_SHARES) — nối ĐÚNG ngày: BA `os.transaction_date',
-    listed_share_quantity                        Nullable(Decimal(38,10)) COMMENT 'Khối lượng niêm yết/đăng ký giao dịch cuối ngày giao dịch (LISTEDSHARE của MDDS) — dùng đếm quy mô niêm yết và tính giá trị niêm yết.',
-    listed_share_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị niêm yết/đăng ký giao dịch (VND) = khối lượng niêm yết × mệnh giá 10.000 đồng (mệnh giá cổ phiếu, chứng chỉ quỹ).',
+    floor_code                                   String                  COMMENT 'Mã sàn của mã tại ngày giao dịch: 02 = HNX, 10 = HOSE, 04 = UPCoM (Fact nạp mọi mã sàn trừ 03 = phái sinh — BA',
+    stock_tp_code                                String                  COMMENT 'Loại chứng khoán tại ngày giao dịch: 1 = TPDN niêm yết, 2 = cổ phiếu, 3/6 = chứng chỉ quỹ (gồm ETF; phân biệt ',
+    fund_tp_code                                 Nullable(String)        COMMENT 'Loại quỹ của chứng chỉ quỹ tại ngày giao dịch (FUNDTYPE của MDDS): M = chứng chỉ quỹ (CCQ), E = quỹ ETF — phân',
+    outstanding_share_quantity                   Nullable(Int64)         COMMENT 'Khối lượng cổ phiếu đang lưu hành cuối ngày (VSDC OUTSTANDING_SHARES) — lấy bản ghi có `data_dt` bằng đúng ngà',
+    listed_share_quantity                        Nullable(Decimal(38,10)) COMMENT 'Khối lượng niêm yết/đăng ký giao dịch cuối ngày giao dịch (LISTEDSHARE của MDDS; cổ phiếu, CCQ/ETF, chứng quyề',
+    listed_share_val                             Nullable(Decimal(23,2)) COMMENT 'Giá trị niêm yết/đăng ký giao dịch (VND) = khối lượng niêm yết × mệnh giá: cổ phiếu, chứng chỉ quỹ/ETF 10.000 ',
     close_price                                  Nullable(Decimal(23,2)) COMMENT 'Giá đóng cửa cuối ngày giao dịch (VND) — giá tính vốn hóa HOSE/HNX theo BA Nhóm 55.',
     reference_price                              Nullable(Decimal(23,2)) COMMENT 'Giá tham chiếu cuối ngày giao dịch (VND) — thay cho VWAP khi VWAP ngày T+1 bằng 0 (mã UPCoM không có giao dịch',
     next_day_vol_weighted_average_price          Nullable(Decimal(23,2)) COMMENT 'VWAP của ngày giao dịch T do Sở gửi trong bản tin MDDS của ngày giao dịch LIỀN SAU (T+1) — BA Nhóm 55: VWAP ng',
