@@ -2,6 +2,22 @@
 -- QLKD Flat Tables — CREATE
 -- Module: Quản lý kinh doanh (Hoạt động CTCK) — QLKD
 -- Generated: Phase 3 LLD Datamart
+-- Sửa 2026-11-25 (O_QLKD_80): 13 bảng Operational flat bổ sung 8 cột lịch (cdr_dt, year, quarter, month, day_of_week, is_weekend, holiday_flag, is_trading_date),
+--   đặt CUỐI bảng, lấy từ LEFT JOIN datamart.cdr_dt_dim theo cột ngày nghiệp vụ có sẵn của từng bảng; cdr_dt KHÔNG phải ngày snapshot (bảng vẫn TRUNCATE + INSERT).
+--   Bảng đã tạo: chạy ALTER (mỗi bảng 1 lệnh; bỏ '-- ' đầu dòng) trước khi nạp lại bằng 02_populate_qlkd_flat_tables.sql:
+--   ALTER TABLE datamart.qlkd_opr_securities_company_personnel_profile_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo work_start_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_organization_unit_profile_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo decision_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_compliance_hist_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo event_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_profile_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo appointment_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_related_party_network_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo effective_from_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_listed_company_role_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo effective_from_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_trading_account_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo created_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_work_hist_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo work_start_dt
+--   ALTER TABLE datamart.qlkd_opr_individual_violation_hist_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo issued_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_report_data_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo submission_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_financial_report_hist_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo submission_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_practitioner_profile_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo end_dt
+--   ALTER TABLE datamart.qlkd_opr_securities_company_organization_unit_service_flat ON CLUSTER 'my_cluster' ADD COLUMN IF NOT EXISTS cdr_dt Nullable(Date), ADD COLUMN IF NOT EXISTS year Nullable(Int64), ADD COLUMN IF NOT EXISTS quarter Nullable(Int64), ADD COLUMN IF NOT EXISTS month Nullable(Int64), ADD COLUMN IF NOT EXISTS day_of_week Nullable(Int64), ADD COLUMN IF NOT EXISTS is_weekend Nullable(String), ADD COLUMN IF NOT EXISTS holiday_flag Nullable(String), ADD COLUMN IF NOT EXISTS is_trading_date Nullable(String);  -- join theo decision_dt
 -- 22 bảng flat: 7 fact + 14 operational + 1 dimension bộ lọc (khối 21)
 -- ============================================================
 
@@ -297,7 +313,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_personnel_profil
     work_start_dt                   Nullable(Date)          COMMENT 'Ngày bắt đầu làm việc tại CTCK',
     dismissal_dt                    Nullable(Date)          COMMENT 'Ngày miễn nhiệm (NULL = đương nhiệm)',
     personnel_status_code           Nullable(String)        COMMENT 'Trạng thái nhân sự',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo work_start_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột work_start_dt (Nhóm 31 — ngày bắt đầu làm việc); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi work_start_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo work_start_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo work_start_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo work_start_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo work_start_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
@@ -322,7 +347,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     director_nm                     Nullable(String)        COMMENT 'Giám đốc/Trưởng đơn vị — BRANCH dùng Director Name, TRANSACTION_OFFICE/REP_OFFICE dùng Representative Name [PII mã hóa AES-256-CBC Base64 - PA1]',
     cl_firm_status_code             Nullable(String)        COMMENT 'Trạng thái pháp lý đơn vị',
     business_line_nm_list           Nullable(String)        COMMENT 'Danh sách tên nghiệp vụ kinh doanh chứng khoán được cấp phép cho đơn vị, nối bằng dấu phẩy (VPĐD = NULL)',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ (SC_FIRM_BRANCH/SC_FIRM_TRANSACTION_OFFICE/SC_FIRM_REP_OFFICE)',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo decision_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột decision_dt (Nhóm 32 — ngày thành lập); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi decision_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo decision_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo decision_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo decision_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo decision_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo decision_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo decision_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo decision_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
@@ -349,7 +383,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_compliance_hist_
     remedial_measure_nm             Nullable(String)        COMMENT 'Biện pháp khắc phục (nếu có). NULL cho bộ Admin Penalty Decision.',
     sc_code                         Nullable(String)        COMMENT 'Mã CTCK. Bộ Admin Penalty Decision: direct. Bộ Inspection/Examination: GAP — text-match qua Team Target.target_reference_id, chưa có FK surrogate chính thức, có thể NULL. [SỬA 2026-09-19] JOIN securities_company nay là LEFT JOIN (xem O_QLKD_29) — không còn loại bỏ dòng khi không resolve được sc_code.',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 3 giá trị khác nhau theo bộ',
-    event_dt                        Date                    COMMENT '[MỚI 2026-09-19, review Nhóm 40, xem O_QLKD_29] Ngày sự kiện chuẩn hóa = COALESCE(issued_dt, insp_decision_dt) — dùng làm PARTITION BY/ORDER BY thay issued_dt (nullable, gây lỗi assumeNotNull khi đợt thanh tra/kiểm tra sạch không có ngày xử phạt)'
+    event_dt                        Date                    COMMENT '[MỚI 2026-09-19, review Nhóm 40, xem O_QLKD_29] Ngày sự kiện chuẩn hóa = COALESCE(issued_dt, insp_decision_dt) — dùng làm PARTITION BY/ORDER BY thay issued_dt (nullable, gây lỗi assumeNotNull khi đợt thanh tra/kiểm tra sạch không có ngày xử phạt)',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo event_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột event_dt (Nhóm 38/40/44 — ngày sự kiện chuẩn hóa); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi event_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo event_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo event_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo event_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo event_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo event_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo event_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo event_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(event_dt)
@@ -372,7 +415,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_profile_flat ON CLUSTER 
     identification_nbr              Nullable(String)        COMMENT 'Số CCCD — merge key với nguồn còn lại (ETL, không phải FK Atomic) [PII mã hóa AES-256-CBC Base64 - PA1]',
     license_certificate_nbr         Nullable(String)        COMMENT 'Số GCN hành nghề — chỉ áp dụng nguồn NHNCK',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn — 2 giá trị khác nhau theo bộ (SC_FIRM_SENIOR_PERSONNEL/NHNCK.PROFESSIONALS)',
-    appointment_dt                               Nullable(Date)          COMMENT 'Ngày bổ nhiệm — không áp dụng cho nguồn NHNCK (người hành nghề không có ngày bổ nhiệm tại CTCK); chỉ có ở nguồn SCMS_SC_FIRM_SENIOR_PERSONNEL.'
+    appointment_dt                               Nullable(Date)          COMMENT 'Ngày bổ nhiệm — không áp dụng cho nguồn NHNCK (người hành nghề không có ngày bổ nhiệm tại CTCK); chỉ có ở nguồn SCMS_SC_FIRM_SENIOR_PERSONNEL.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo appointment_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột appointment_dt (Nhóm 41/42 — ngày bổ nhiệm); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi appointment_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo appointment_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo appointment_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo appointment_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo appointment_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo appointment_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo appointment_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo appointment_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -402,7 +454,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_related_party_network_fl
     relation_start_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu quan hệ (nguồn SC_FIRM_INSIDER_RELATION.RELATION_START_DATE) — mốc đầu cho trục Chiều thời gian theo Ngày của Nhóm 41/42 (K_QLKD_203; BA dòng 223, 226 Query 2).',
     effective_from_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực để as-of (BA: TRUNC(r.CREATED_AT) <= ngày VÀ sp.APPOINTMENT_DATE <= ngày) = lớn hơn của ngày tạo quan hệ và ngày bổ nhiệm cá nhân; NULL nếu thiếu 1 trong 2 (bản ghi bị loại ở as-of như BA).',
     effective_to_dt                 Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực để as-of (BA: sp.DISMISSAL_DATE IS NULL OR sp.DISMISSAL_DATE > ngày) — ngày miễn nhiệm cá nhân chính.',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo effective_from_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột effective_from_dt (Nhóm 41/42 — ngày bắt đầu hiệu lực as-of); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi effective_from_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -429,7 +490,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_listed_company_role_flat
     status_nm                       String                  COMMENT 'Trạng thái (BA: trang_thai) — Đang hoạt động / Ngừng hoạt động suy từ trạng thái bản ghi Atomic (ds_rcrd_st); Atomic không map RECORD_STATUS/ACTIVE_FLG của nguồn (O_QLKD_60).',
     effective_from_dt               Nullable(Date)          COMMENT 'Ngày bắt đầu hiệu lực của vai trò — cận dưới as-of (<= ngày trên trục) và mốc đầu trục ngày Nhóm 41/42.',
     effective_to_dt                 Nullable(Date)          COMMENT 'Ngày kết thúc hiệu lực — cận trên as-of (IS NULL OR > ngày trên trục); NULL nếu nguồn không có ngày kết thúc.',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo effective_from_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột effective_from_dt (Nhóm 41/42 — ngày bắt đầu hiệu lực vai trò); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi effective_from_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo effective_from_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo effective_from_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -453,7 +523,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_trading_account_flat ON 
     shareholder_nm                  Nullable(String)        COMMENT 'Tên chủ tài khoản. [PII mã hóa AES-256-CBC Base64 - PA1]',
     shareholder_tp_code             Nullable(String)        COMMENT 'Loại cổ đông (BA: loai_co_dong = SHAREHOLDER_TYPE).',
     src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    created_dt                      Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_rcrd_isrt_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.'
+    created_dt                      Nullable(Date)          COMMENT 'Ngày tạo bản ghi cổ đông (nguồn SC_FIRM_SHAREHOLDER.CREATED_AT → Atomic sc_shareholder.src_rcrd_isrt_tms) — một trong 7 mốc đầu của trục Chiều thời gian theo Ngày Nhóm 41/42 (BA dòng 223) và as-of cổ đông.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo created_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột created_dt (Nhóm 41/42 — ngày tạo tài khoản); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi created_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo created_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo created_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo created_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo created_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo created_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo created_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo created_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY tuple()
@@ -478,7 +557,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_work_hist_flat ON CLUSTE
     resignation_dt                  Nullable(Date)          COMMENT 'Ngày nghỉ việc (NULL = hiện tại)',
     employment_status_code          Nullable(String)        COMMENT 'Trạng thái công tác (CURRENT/PAST) — derive từ Resignation Date',
     personnel_status_code                        Nullable(String)        COMMENT 'Trạng thái nhân sự (nguồn PERSONNEL_STATUS): 1 = Đương nhiệm → BA STT 43 hiển thị Hiện tại, giá trị khác → Quá khứ (`CASE WHEN p.PERSONNEL_STATUS = 1`). Khác `employment_status_code` (suy từ `resignation_dt`, BA STT 43 không dùng).',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo work_start_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                          Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột work_start_dt (Nhóm 43 — ngày bắt đầu làm việc); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi work_start_dt NULL hoặc ngoài phạm vi lịch',
+    year                            Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo work_start_dt)',
+    quarter                         Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo work_start_dt)',
+    month                           Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo work_start_dt)',
+    day_of_week                     Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo work_start_dt)',
+    is_weekend                      Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)',
+    holiday_flag                    Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)',
+    is_trading_date                 Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo work_start_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(work_start_dt))
@@ -503,7 +591,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_individual_violation_hist_flat ON C
     violation_behavior_nm           Nullable(String)        COMMENT 'Tên hành vi (VIOLATION_BEHAVIOR.NAME) — từ 2026-11-06 trùng nội dung với violation_description (cùng nguồn Atomic); thuộc tính phụ',
     penalty_tp_nm                   Nullable(String)        COMMENT 'Hình thức xử phạt chính',
     decision_status_code            Nullable(String)        COMMENT 'Trạng thái quyết định — LEFT JOIN Violation Case',
-    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn'
+    src_stm_code                    String                  COMMENT 'Mã hệ thống nguồn',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo issued_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                                       Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột issued_dt (Nhóm 40/44 — ngày ban hành quyết định xử phạt); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi issued_dt NULL hoặc ngoài phạm vi lịch',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo issued_dt)',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo issued_dt)',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo issued_dt)',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo issued_dt)',
+    is_weekend                                   Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo issued_dt)',
+    holiday_flag                                 Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo issued_dt)',
+    is_trading_date                              Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo issued_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(issued_dt))
@@ -604,7 +701,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_report_data_flat
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
     submission_deadline_dt                       Nullable(Date)          COMMENT 'Hạn nộp báo cáo định kỳ theo quy định.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo định kỳ.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo submission_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                                       Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột submission_dt (Nhóm 31 — ngày nộp báo cáo); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi submission_dt NULL hoặc ngoài phạm vi lịch',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo submission_dt)',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo submission_dt)',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo submission_dt)',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo submission_dt)',
+    is_weekend                                   Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo submission_dt)',
+    holiday_flag                                 Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo submission_dt)',
+    is_trading_date                              Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo submission_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (rpt_cell_val_id)
@@ -635,7 +741,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_financial_report
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo.',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái báo cáo: 1=Đã gửi/Đúng hạn, 2=Đã duyệt/Gửi muộn.',
     src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
-    preferred_report_ind                         Nullable(String)        COMMENT 'Cờ báo cáo được ưu tiên theo logic BA: 1 = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ; 0 = BCTCRL của CTCK đã có BCTCHN cùng kỳ (BA: chỉ lấy BCTCRL cho CTCK không nộp BCTCHN — CTE ctck_co_hn). KPI đo/lịch sử lọc = 1 để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng cùng CTCK + năm + loại kỳ + kỳ.'
+    preferred_report_ind                         Nullable(String)        COMMENT 'Cờ báo cáo được ưu tiên theo logic BA: 1 = dòng thuộc BCTCHN, hoặc BCTCRL của CTCK KHÔNG có BCTCHN (trạng thái 1/2) cùng kỳ; 0 = BCTCRL của CTCK đã có BCTCHN cùng kỳ (BA: chỉ lấy BCTCRL cho CTCK không nộp BCTCHN — CTE ctck_co_hn). KPI đo/lịch sử lọc = 1 để không cộng đôi HN và RL. ETL: cửa sổ trên các dòng cùng CTCK + năm + loại kỳ + kỳ.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo submission_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                                       Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột submission_dt (Nhóm 27 — ngày nộp báo cáo); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi submission_dt NULL hoặc ngoài phạm vi lịch',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo submission_dt)',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo submission_dt)',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo submission_dt)',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo submission_dt)',
+    is_weekend                                   Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo submission_dt)',
+    holiday_flag                                 Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo submission_dt)',
+    is_trading_date                              Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo submission_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (fin_rpt_hist_id)
@@ -673,7 +788,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_practitioner_pro
     submission_dt                                Nullable(Date)          COMMENT 'Ngày nộp báo cáo (TRUNC(SENT_AT)) — chỉ dùng khử trùng khi nhiều báo cáo định kỳ cùng khóa. Không còn là trục as-of của KPI Nhóm 28–30 (BA 24/10 đổi sang END_DATE, xem end_dt).',
     end_dt                                       Nullable(Date)          COMMENT 'Ngày kết thúc kỳ báo cáo (BA 24/10: TRUNC(END_DATE)) — trục as-of của KPI Nhóm 28–30: lấy báo cáo có ngày kết thúc kỳ gần nhất <= ngày chọn của từng CTCK (CTE latest_per_ctck: ORDER BY END_DATE DESC, FORM_REPORT_ID DESC).',
     submission_status_code                       Nullable(String)        COMMENT 'Trạng thái nộp báo cáo: 1 = Đã gửi/Đúng hạn, 2 = Đã duyệt/Gửi muộn (BA: RECORD_STATUS IN (1,2)) — cùng từ điển với Fact Securities Company Financial Structure Snapshot.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu. ETL: chỉ BCTHHD_CTCK/BCHDPS, khử trùng bản nộp mới nhất (xem LLD).'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu. ETL: chỉ BCTHHD_CTCK/BCHDPS, khử trùng bản nộp mới nhất (xem LLD).',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo end_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                                       Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột end_dt (Nhóm 28–30 — ngày kết thúc kỳ báo cáo (trục as-of)); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi end_dt NULL hoặc ngoài phạm vi lịch',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo end_dt)',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo end_dt)',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo end_dt)',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo end_dt)',
+    is_weekend                                   Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo end_dt)',
+    holiday_flag                                 Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo end_dt)',
+    is_trading_date                              Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo end_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (prac_profile_id)
@@ -696,7 +820,16 @@ CREATE TABLE IF NOT EXISTS datamart.qlkd_opr_securities_company_organization_uni
     ou_tp_code                                   String                  COMMENT 'Loại đơn vị: BRANCH=Chi nhánh; TRANSACTION_OFFICE=Phòng giao dịch — BK 2/3, phân biệt các đơn vị trùng ID giữa hai loại.',
     catalog_code                                 Nullable(String)        COMMENT 'Mã danh mục của dịch vụ (phân loại nghiệp vụ cơ sở, dịch vụ tài chính, phái sinh).',
     decision_dt                                  Nullable(Date)          COMMENT 'Ngày thành lập của đơn vị (ngày ban hành quyết định) — mốc xác định đơn vị đã tồn tại tại một ngày báo cáo.',
-    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.'
+    src_stm_code                                 String                  COMMENT 'Mã hệ thống nguồn dữ liệu.',
+    -- [MỚI 2026-11-25, O_QLKD_80] 8 cột lịch từ LEFT JOIN cdr_dt_dim theo decision_dt, đặt CUỐI để khớp ALTER TABLE ADD COLUMN
+    cdr_dt                                       Nullable(Date)          COMMENT 'Ngày lịch (Calendar Date Dimension) join theo cột decision_dt (Nhóm 33/34 — ngày quyết định chấp thuận); không phải ngày snapshot — bảng vẫn nạp TRUNCATE + INSERT toàn bộ; NULL khi decision_dt NULL hoặc ngoài phạm vi lịch',
+    year                                         Nullable(Int64)         COMMENT 'Năm (YYYY) — từ Calendar Date Dimension (join theo decision_dt)',
+    quarter                                      Nullable(Int64)         COMMENT 'Quý (1–4) — từ Calendar Date Dimension (join theo decision_dt)',
+    month                                        Nullable(Int64)         COMMENT 'Tháng (1–12) — từ Calendar Date Dimension (join theo decision_dt)',
+    day_of_week                                  Nullable(Int64)         COMMENT 'Thứ trong tuần (1=Chủ nhật, 7=Thứ bảy) — từ Calendar Date Dimension (join theo decision_dt)',
+    is_weekend                                   Nullable(String)        COMMENT 'Y nếu là ngày cuối tuần, N nếu không — từ Calendar Date Dimension (join theo decision_dt)',
+    holiday_flag                                 Nullable(String)        COMMENT 'Cờ ngày nghỉ — Y nếu là ngày nghỉ, N nếu không — từ Calendar Date Dimension (join theo decision_dt)',
+    is_trading_date                              Nullable(String)        COMMENT 'Cờ ngày giao dịch — Y nếu là ngày giao dịch, N nếu không — từ Calendar Date Dimension (join theo decision_dt)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 ORDER BY (organization_unit_service_id)

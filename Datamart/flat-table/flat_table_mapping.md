@@ -1050,6 +1050,8 @@ _Không có dim join (operational / self-contained table)._
 
 **18 bảng flat** · **3175 KPI unique**
 
+> **[MỚI 2026-11-25, O_QLKD_80]** 13 bảng flat `qlkd_opr_*_flat` (Operational, TRUNCATE + INSERT) thêm 8 cột lịch ở cuối bảng (`cdr_dt`, `year`, `quarter`, `month`, `day_of_week`, `is_weekend`, `holiday_flag`, `is_trading_date`) lấy từ `LEFT JOIN datamart.cdr_dt_dim cal ON cal.cdr_dt = <cột ngày nghiệp vụ>` (`work_start_dt`/`decision_dt`/`event_dt`/`appointment_dt`/`effective_from_dt`/`created_dt`/`issued_dt`/`submission_dt`/`end_dt` tùy bảng — `cdr_dt` không phải ngày snapshot; không khớp → NULL); danh sách `ALTER TABLE … ADD COLUMN` ở đầu `01_create_qlkd_flat_tables.sql`. Dimension `qlkd_securities_service_cl_dim_flat` chưa có cột lịch (không có cột ngày). Mục này chưa liệt kê đầy đủ 22 bảng flat hiện hành (tên bảng cũ ở dưới là lịch sử) — nguồn đúng là `01_create_qlkd_flat_tables.sql`.
+
 ---
 
 ### `datamart.qlkd_fact_securities_company_status_snapshot_flat`
@@ -2431,7 +2433,7 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 
 ## VP
 
-**7 bảng flat** (7 fact + 0 operational) · **KPI unique**: Fact Derivative Contract Snapshot 11, Fact Investor Group Trading Snapshot 50, Fact Listed Corporate Bond Snapshot 8 (Nhóm 7, 8, 27, 52.2 — Fact danh mục, O_VP_89), Fact Listed Corporate Bond Trading Snapshot 15 (Nhóm 7–10, 32–34, 37, 52.2, 56 — Fact giao dịch, O_VP_89), Fact Private Corporate Bond Trading Snapshot 10, Fact Government Bond Trading Snapshot 10, Fact Private Corporate Bond Registration Snapshot 2 (chưa kể Chiều và KPI reuse Fact Market Index Snapshot)
+**7 bảng flat** (7 fact + 0 operational) · **KPI unique**: Fact Derivative Contract Snapshot 11, Fact Investor Group Trading Snapshot 50, Fact Listed Corporate Bond Snapshot 8 (Nhóm 8, 27, 52.5 — Fact danh mục, O_VP_89; 52.5 từ BA tách nhóm 2026-11-25, O_VP_91), Fact Listed Corporate Bond Trading Snapshot 15 (Nhóm 7–10, 32–34, 37, 52.2, 56 — Fact giao dịch, O_VP_89), Fact Private Corporate Bond Trading Snapshot 10, Fact Government Bond Trading Snapshot 10, Fact Private Corporate Bond Registration Snapshot 2 (chưa kể Chiều và KPI reuse Fact Market Index Snapshot)
 
 > **[MỚI 2026-10-25]** Thiết kế lại phân hệ VP từ đầu (đợt 1: Nhóm 1–6). Hai flat cũ `vp_fact_otc_bond_snapshot_flat`, `vp_fact_share_auction_snapshot_flat` đã bỏ (DEPRECATED, HLD Section 4). Fact Market Index Snapshot (reuse từ QLKD) dùng bảng flat của QLKD; lịch ngày dùng `datamart.cdr_dt_flat` (Common).
 
@@ -2465,6 +2467,7 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 | Nhóm 3 — Phái sinh >> Chỉ tiêu tổng hợp | 10 |
 | Nhóm 4 — Phái sinh >> Giá HĐTL | 1 |
 | Nhóm 5 — Phái sinh >> Biểu đồ Diễn biến giao dịch thị trường phái sinh | 5 |
+| Nhóm 52.6 — Data Explorer >> Giá và khối lượng mở phái sinh *(K_VP_543 Giá, K_VP_544 OI + dòng Chiều Sàn/Loại CK; từ BA tách nhóm 2026-11-25, O_VP_91)* | 4 |
 
 ---
 
@@ -2518,10 +2521,9 @@ _Không có dim join (operational / self-contained table). Serve cả KPI aggreg
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 7 — TPDN niêm yết >> Chỉ tiêu tổng hợp | 1 |
 | Nhóm 8 — TPDN niêm yết >> Thống kê giao dịch TPDN niêm yết theo ngành | 3 |
 | Nhóm 27 — Huy động vốn >> TPDN >> Chỉ tiêu tổng hợp | 1 |
-| Nhóm 52.2 — Data Explorer >> Giao dịch/Thanh khoản & Phái sinh *(dòng Chiều Sàn/Mã/Ngành nhánh danh mục; KPI K_VP_541, 542 đọc Fact này)* | 4 |
+| Nhóm 52.5 — Data Explorer >> Kỳ hạn và lãi suất bình quân của TP *(dòng Chiều Sàn/Loại CK/Mã/Ngành nhánh danh mục; KPI K_VP_541, 542 đọc Fact này — từ BA tách nhóm 2026-11-25, O_VP_91)* | 4 |
 
 *(Nhóm 29 — Dư nợ theo ngành đọc `listed_bond_val`, `industry_dim_id` của Fact này qua công thức DERIVED trong Detail Mapping nên không có dòng `mart_table` riêng.)*
 
