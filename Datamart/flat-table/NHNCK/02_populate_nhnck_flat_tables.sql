@@ -222,7 +222,9 @@ SELECT
     o.practitioner_department_at_rpt,
     o.hire_dt,
     o.termination_dt,
-    o.src_stm_code
+    o.src_stm_code,
+    o.rpt_status_code,
+    o.organization_status_code_at_rpt
 FROM datamart.opr_practitioner_employment_hist o
 ;
 
