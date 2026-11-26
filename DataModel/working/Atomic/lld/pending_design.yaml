@@ -4504,13 +4504,6 @@ entries:
     action: "Excluded — không map lên lld_SCMS_LNK_SC_FIRM_SERVICE.yaml theo quyết định Data Modeler."
 
   - source_system: "SCMS"
-    source_table: "LNK_SC_FIRM_SERVICE"
-    source_column: "RECORD_STATUS"
-    description: "Trạng thái bản ghi liên kết CTCK - Dịch vụ: 1 = Đang hoạt động; 0 = Ngừng hoạt động."
-    reason: "Theo yêu cầu tường minh của Data Modeler (2026-09-15) — không cần thiết kế attribute này; START_DATE/END_DATE cùng ds_rcrd_eff_dt/ds_rcrd_end_dt (SCD2 bundle) đã đủ phản ánh vòng đời hiệu lực của bản ghi."
-    action: "Excluded — không map lên lld_SCMS_LNK_SC_FIRM_SERVICE.yaml theo quyết định Data Modeler."
-
-  - source_system: "SCMS"
     source_table: "LNK_TRANSACTION_OFFICE_SERVICE"
     source_column: "ID"
     description: "Khóa chính của bản ghi (ID tự tăng hoặc UUID)."
@@ -4527,7 +4520,7 @@ entries:
   - source_system: "SCMS"
     source_table: "LNK_TRANSACTION_OFFICE_SERVICE"
     source_column: "RECORD_STATUS"
-    description: "Trạng thái bản ghi liên kết PGD - Dịch vụ: 1 = Đang hoạt động; 0 = Ngừng hoạt động."
+    description: "Trạng thái bản ghi liên kết PGD - Dịch vụ."
     reason: "Theo yêu cầu tường minh của Data Modeler (2026-09-23) — cờ kỹ thuật của bảng junction, không thiết kế attribute — nhất quán với lld_SCMS_LNK_SC_FIRM_SERVICE.yaml. Bảng này không có START_DATE/END_DATE nhưng entity vẫn không khai báo ds_* field, theo cùng convention với entity cha Securities Company Organization Unit."
     action: "Excluded — không map lên lld_SCMS_LNK_TRANSACTION_OFFICE_SERVICE.yaml theo quyết định Data Modeler."
 

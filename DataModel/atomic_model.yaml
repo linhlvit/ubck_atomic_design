@@ -27925,7 +27925,7 @@ entities:
     bcv_concept_most: "[Classification] Common"
     table_type_most: Relative
     etl_pattern_most: SCD2
-    conflict_review: "status: ['approved', 'draft']"
+    conflict_review: "status: ['draft', 'approved']"
     sources:
     - AUDIT
     - FMS
@@ -33400,7 +33400,7 @@ entities:
     nullable_most: true
     is_primary_key_most: false
     etl_derived_value: null
-    conflict_review: "data_type: ['decimal(5,2)', 'decimal(8,5)']"
+    conflict_review: "data_type: ['decimal(8,5)', 'decimal(5,2)']"
     source_mappings:
     - source_system: HNX
       source_tables:
@@ -95492,6 +95492,23 @@ entities:
         source_column: SCMS.LNK_SC_FIRM_SERVICE.APPROVAL_FILE
         business_meaning: Hồ sơ phê duyệt.
         comment: Mô tả gốc BRD trống.
+  - name: Record Status Code
+    physical_name: record_status_code
+    business_meaning_1st: "Trạng thái bản ghi liên kết CTCK - Dịch vụ."
+    comment_1st: "SCHEMA_CODE=SCMS.LNK_SC_FIRM_SERVICE.RECORD_STATUS"
+    data_domain_most: Classification Value
+    data_type_most: string
+    nullable_most: true
+    is_primary_key_most: false
+    etl_derived_value: null
+    conflict_review: null
+    source_mappings:
+    - source_system: SCMS
+      source_tables:
+      - source_table: LNK_SC_FIRM_SERVICE
+        source_column: SCMS.LNK_SC_FIRM_SERVICE.RECORD_STATUS
+        business_meaning: "Trạng thái bản ghi liên kết CTCK - Dịch vụ."
+        comment: "SCHEMA_CODE=SCMS.LNK_SC_FIRM_SERVICE.RECORD_STATUS"
 - ldm:
     id: ATM-securities_company
     logical_name_1st: Securities Company
