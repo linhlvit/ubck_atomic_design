@@ -3747,7 +3747,32 @@ SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME like '%BCTaiSan%'
 lower(RPT_TEMP.ITEM_NAME) LIKE '%hoạt động% and
 RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 7
 RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
-13,,Dashboard >> Tổng quan QĐT >> Danh sách các quỹ đầu tư,KL CCQ đang lưu hành,Khối lượng CCQ đang lưu hành của quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Quỹ đầu tư",FMS,,X,,Done,,,FMS_UAT.FUNDS,FUNDS.TOTAL_QTTY,"TRUNC(LAST_DAY(FUNDS.ID_DATE)) <= LAST_DAY(TO_DATE(:filter_month, 'MM/YYYY')) and FUNDS.DELETED = 0 ",
+13,,Dashboard >> Tổng quan QĐT >> Danh sách các quỹ đầu tư,KL CCQ đang lưu hành,Khối lượng CCQ đang lưu hành của quỹ,Dashboard,Chỉ tiêu phái sinh,Trùng,"Tháng, Quỹ đầu tư",FMS,,X,,Done,,,"FMS_UAT.RPT_TEMP
+FMS_UAT.SHEET
+FMS_UAT.RPT_VALUES
+FMS_UAT.RPT_MEMBER
+FMS_UAT.RPT_PERIOD","SHEET.ID
+RPT_TEMP.ID
+RPT_TEMP.ITEM_NAME
+RPT_TEMP.LEGAL_BASIS
+RPT_TEMP.CODE
+SHEET.ITEM_NAME
+RPT_TEMP.DELETED
+RPT_TEMP.RECORD_STATUS
+RPT_TEMP.VERSION
+SHEET.DATA_LABEL
+SHEET.CELLS_META
+RPT_MEMBER.PERIOD_TYPE
+RPT_PERIOD.PERIOD_TYPE
+RPT_MEMBER.PERIOD_VALUE
+RPT_MEMBER.YEAR_VALUE
+RPT_VALUES.""VALUES""
+RPT_MEMBER.RPT_NAME
+RPT_MEMBER.FND_ID","RPT_TEMP.DELETED = 0 AND RPT_TEMP.RECORD_STATUS = 1
+SHEET.RECORD_STATUS = 1 AND SHEET.ITEM_NAME like '%BCTaiSan%'
+lower(RPT_TEMP.ITEM_NAME) LIKE '%hoạt động% and
+RPT_MEMBER.DELETED = 0 AND RPT_MEMBER.RECORD_STATUS IN (2,3,5,10) AND RPT_MEMBER.RECORD_TYPE = 7
+RPT_PERIOD.DELETED = 0 AND RPT_PERIOD.RECORD_STATUS = 1",
 13,,Dashboard >> Tổng quan QĐT >> Danh sách các quỹ đầu tư,Lợi nhuận YTD,Lợi nhuận lũy kế của quỹ tính từ đầu năm đến nay.,Dashboard,Chỉ tiêu phái sinh,TB,"Tháng, Quỹ đầu tư",FMS,X,X,,Done,Chỉ tiêu BC,"1. BCTC các loại quỹ >> BCThuNhap_06203 >> VIII. LỢI NHUẬN KẾ TOÁN SAU THUẾ TNDN (41 = 30 - 40)
 2. BCTC các loại quỹ >> BCKetQuaHoạtDongKinhDoanh >> III. Kết quả hoạt động ròng đã thực hiện được phân phối trong kỳ","FMS_UAT.RPT_TEMP
 FMS_UAT.SHEET
