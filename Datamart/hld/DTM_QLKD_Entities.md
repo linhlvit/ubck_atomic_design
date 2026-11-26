@@ -49,7 +49,7 @@ erDiagram
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
 | Fact Securities Company License Condition Snapshot | Fact (1 dòng Atomic) | new | Cảnh báo/vi phạm duy trì điều kiện cấp phép — dùng chung 4 nhóm, phân biệt nhóm tham số bằng FK Securities Company Alert Indicator Dimension (lọc `ALERT_INDICATOR.ID` theo BA — sửa 2026-11-10, O_QLKD_75); xếp loại duy trì tính ở Detail Mapping | 1 dòng Atomic Securities Company Alert Violation (PK Securities Company Alert Violation Id): 1 đối tượng cảnh báo × 1 tham số × 1 kỳ dữ liệu × 1 bản ghi | K_QLKD_30, 32–40, 178–180 |
-| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
+| Securities Company Dimension | Dimension | new | CTCK — mã, tên, loại hình, trạng thái, ngày giấy phép (`business_license_dt` — mới 2026-11-26, O_QLKD_81: mẫu CTCK hoạt động bình thường có giấy phép của Nhóm 5/6/7) | 1 CTCK (SCD4A) | — |
 | Securities Company Alert Indicator Dimension | Dimension | new | Danh mục tham số cảnh báo SCMS (ALERT_INDICATOR): BK `sc_alert_ind_code` = `ALERT_INDICATOR.ID`, mã nghiệp vụ `alert_ind_code` = `INDICATOR_CODE`, tên `alert_ind_nm`, loại, cấp độ — mới 2026-11-10 (O_QLKD_75), thay lọc `Indicator_Code` tự đặt | 1 chỉ tiêu cảnh báo (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày (role: Snapshot Date = ngày cảnh báo; không phải trục thời gian của KPI) | 1 ngày | — |
 
@@ -143,6 +143,14 @@ erDiagram
 | Securities Company Financial Report History | Tác nghiệp | new | Lịch sử báo cáo tài chính qua các kỳ (doanh thu, lợi nhuận, ROA, ROE, ngày nộp, trạng thái) | 1 CTCK × 1 kỳ báo cáo tài chính | K_QLKD_130–141 |
 | Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên, loại hình, trạng thái | 1 CTCK (SCD4A) | — |
 | Calendar Date Dimension | Dimension | reuse | Lịch ngày | 1 ngày | — |
+
+### Sub-tab Hồ sơ CTCK — Nhóm 25.1/25.2 (K_QLKD_228–229) — mới 2026-11-26 (O_QLKD_82)
+
+| Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
+|---|---|---|---|---|---|
+| Operational Securities Company Provided Service | Tác nghiệp | new | Danh sách dịch vụ CTCK được cấp phép/cung cấp — cả dịch vụ tạm dừng/chấm dứt, kèm trạng thái, số/ngày quyết định, file văn bản chấp thuận (Bảng Dịch vụ cung cấp) | 1 CTCK × 1 dịch vụ | K_QLKD_228 |
+| Operational Securities Company Profile Change | Tác nghiệp | new | Lịch sử thay đổi hồ sơ CTCK và đơn vị trực thuộc — đối tượng, sự vụ, thông tin trước/sau, số GP/QĐ/CV, ngày hiệu lực (insert-only, nạp tăng dần theo ngày thực hiện) | 1 lần thay đổi hồ sơ | K_QLKD_229 |
+| Securities Company Dimension | Dimension | reuse (Nhóm 1) | CTCK — mã, tên (nối Operational qua `sc_code`) | 1 CTCK (SCD4A) | — |
 
 ### Sub-tab NHNCK — Nhóm 28–30 (K_QLKD_142–154)
 

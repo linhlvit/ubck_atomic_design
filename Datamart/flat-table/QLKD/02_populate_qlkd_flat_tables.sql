@@ -145,6 +145,7 @@ SELECT
     sc_dim.is_listed_indicator         AS is_listed_indicator,
     sc_dim.stock_exchange_nm           AS stock_exchange_nm,
     sc_dim.provisional_ind             AS provisional_ind,
+    sc_dim.business_license_dt         AS business_license_dt,
     sc_dim.src_stm_code                AS securities_company_src_stm_code,
 
     -- From: SECURITIES COMPANY ALERT INDICATOR DIMENSION
@@ -926,4 +927,85 @@ JOIN datamart.cdr_dt_dim cal
 LEFT JOIN datamart.securities_company_dim securities_c_dim
     ON securities_c_dim.securities_company_dim_id = f.securities_company_dim_id
 WHERE cal.cdr_dt = :etl_date
+;
+
+
+-- ==========================================================
+-- 23. OPERATIONAL: qlkd_opr_securities_company_profile_change_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_profile_change_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_profile_change_flat
+SELECT
+    -- From: OPR_SECURITIES_COMPANY_PROFILE_CHANGE
+    f.profile_change_id,
+    f.sc_profile_change_code,
+    f.sc_code,
+    f.ou_tp_code,
+    f.subject_display_nm,
+    f.cl_sc_event_tp_nm,
+    f.event_tp_nm,
+    f.before_change_information,
+    f.after_change_information,
+    f.license_decision_document_nbr,
+    f.effective_dt,
+    f.execution_tms,
+    f.src_stm_code,
+
+    -- From: SECURITIES COMPANY DIMENSION [MỚI 2026-11-26, O_QLKD_82] nối theo sc_code; join_use_nulls=0 trả '' khi không khớp → nullIf về NULL
+    nullIf(sc_dim.sc_nm, '')            AS sc_nm,
+    nullIf(sc_dim.sc_short_nm, '')      AS sc_short_nm,
+    -- [MỚI 2026-11-26, O_QLKD_82] LEFT JOIN cdr_dt_dim theo toDate(execution_tms), đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL, cùng khối 20)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
+
+FROM datamart.opr_securities_company_profile_change f
+LEFT JOIN datamart.securities_company_dim sc_dim
+    ON sc_dim.sc_code = f.sc_code
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = toDate(f.execution_tms)
+;
+
+
+-- ==========================================================
+-- 24. OPERATIONAL: qlkd_opr_securities_company_provided_service_flat
+-- ==========================================================
+TRUNCATE TABLE IF EXISTS datamart.qlkd_opr_securities_company_provided_service_flat ON CLUSTER 'my_cluster';
+INSERT INTO datamart.qlkd_opr_securities_company_provided_service_flat
+SELECT
+    -- From: OPR_SECURITIES_COMPANY_PROVIDED_SERVICE
+    f.provided_service_id,
+    f.sc_code,
+    f.cl_sc_firm_service_code,
+    f.cl_sc_firm_service_nm,
+    f.start_dt,
+    f.record_status_code,
+    f.license_nbr,
+    f.license_dt,
+    f.approval_file,
+    f.src_stm_code,
+
+    -- From: SECURITIES COMPANY DIMENSION [MỚI 2026-11-26, O_QLKD_82] nối theo sc_code; join_use_nulls=0 trả '' khi không khớp → nullIf về NULL
+    nullIf(sc_dim.sc_nm, '')            AS sc_nm,
+    nullIf(sc_dim.sc_short_nm, '')      AS sc_short_nm,
+    -- [MỚI 2026-11-26, O_QLKD_82] LEFT JOIN cdr_dt_dim theo start_dt, đặt CUỐI (không khớp trả 1970-01-01 khi join_use_nulls=0 → ép về NULL, cùng khối 20)
+    nullIf(cal.cdr_dt, toDate('1970-01-01')) AS cdr_dt,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.year) AS year,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.quarter) AS quarter,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.month) AS month,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.day_of_week) AS day_of_week,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_weekend) AS is_weekend,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.holiday_flag) AS holiday_flag,
+    if(cal.cdr_dt = toDate('1970-01-01'), NULL, cal.is_trading_date) AS is_trading_date
+
+FROM datamart.opr_securities_company_provided_service f
+LEFT JOIN datamart.securities_company_dim sc_dim
+    ON sc_dim.sc_code = f.sc_code
+LEFT JOIN datamart.cdr_dt_dim cal
+    ON cal.cdr_dt = f.start_dt
 ;
