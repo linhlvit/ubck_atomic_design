@@ -1306,18 +1306,6 @@ entities:
   status: "draft"
 - bcv_core_object: "Documentation"
   bcv_concept: "[Documentation] Regulatory Report"
-  atomic_entity: "Private Corp Bond Service Organization"
-  table_type: "Relative"
-  domain_prefix: ""
-  entity_physical_name: "private_corp_bond_service_organization"
-  description: "Báo cáo BM 34 về các tổ chức dịch vụ của trái phiếu doanh nghiệp riêng\
-    \ lẻ: tổ chức tư vấn, đăng ký lưu ký, đại lý phát hành, đại diện người sở hữu\
-    \ trái phiếu, bảo lãnh phát hành, cùng thông tin trái phiếu, khối lượng phát hành\
-    \ và tài sản bảo đảm tương ứng."
-  source_table: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS"
-  status: "draft"
-- bcv_core_object: "Documentation"
-  bcv_concept: "[Documentation] Regulatory Report"
   atomic_entity: "Private Corp Bond Trading Summary"
   table_type: "Fact Snapshot"
   domain_prefix: ""
@@ -2798,7 +2786,8 @@ entities:
   description: "Danh mục tình trạng hoạt động của đối tượng thành viên thị trường\
     \ / nhà đầu tư nước ngoài (FIMS) kèm loại đối tượng áp dụng và mã tham chiếu eCatalog.\
     \ Promote từ Classification Value (scheme FIMS_ACTIVITY_STATUS) lên entity riêng;\
-    \ Id hash từ Code, Code map từ cột Code."
+    \ Id hash từ ID kỹ thuật nguồn, Classification FIMS Status Code map từ cột ID (BK);\
+    \ cột CODE nguồn tách thành attribute thường Status Code."
   source_table: "FIMS.STATUS"
   status: "draft"
 - bcv_core_object: "Common"

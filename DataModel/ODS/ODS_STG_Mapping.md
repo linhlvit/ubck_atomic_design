@@ -18,7 +18,7 @@
 | ECAT | 9 | 0 |
 | FIMS | 21 | 4 |
 | FMS | 47 | 5 |
-| HNX | 20 | 0 |
+| HNX | 19 | 0 |
 | HOSE | 6 | 0 |
 | IAM | 1 | 0 |
 | IDS | 54 | 0 |
@@ -32,7 +32,7 @@
 | TMS | 5 | 2 |
 | TTHC | 2 | 3 |
 | VSDC | 12 | 0 |
-| **Tổng** | **338** | **20** |
+| **Tổng** | **337** | **20** |
 
 ## 3. Nhóm A — STG map 1:1 ODS (bảng `in_scope`)
 
@@ -146,7 +146,7 @@
 | 46 | `STG.FMS.TRANSFER_AGENT` | `ODS.FMS.TRANSFER_AGENT` | FMS.9 Đại lý và quỹ hưu trí | Đại lý chuyển nhượng CCQ (VSDC hoặc tổ chức khác): thông tin giấy phép, loại tổ chức, trạng thái |
 | 47 | `STG.FMS.WARD` | `ODS.FMS.WARD` | FMS.2 Danh mục dùng riêng | Xa/phuong moi — dong bo tu eCAT DMDC ward-news |
 
-### 3.HNX. HNX (20 bảng)
+### 3.HNX. HNX (19 bảng)
 
 | # | STG | ODS | Nhóm chức năng | Ý nghĩa bảng |
 |---:|---|---|---|---|
@@ -163,13 +163,12 @@
 | 11 | `STG.HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL` | `ODS.HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL` | Trái phiếu doanh nghiệp | BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL (quốc tế) |
 | 12 | `STG.HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC` | `ODS.HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC` | Trái phiếu doanh nghiệp | BM 29 & BM 30 (HNX) - Tình hình chào bán TPDNRL (trong nước) |
 | 13 | `STG.HNX.PRIVATE_CORP_BOND_REGISTRATION` | `ODS.HNX.PRIVATE_CORP_BOND_REGISTRATION` | Trái phiếu doanh nghiệp | BM 31 (HNX) - Quy mô Đăng ký giao dịch TPDNRL |
-| 14 | `STG.HNX.PRIVATE_CORP_BOND_SERVICE_ORGS` | `ODS.HNX.PRIVATE_CORP_BOND_SERVICE_ORGS` | CHƯA PHÂN NHÓM | BM 34 (HNX) - Danh sách CTCK là tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH TPDNRL và thông tin TPDNRL tương ứng |
-| 15 | `STG.HNX.PRIVATE_CORP_BOND_TRADING` | `ODS.HNX.PRIVATE_CORP_BOND_TRADING` | Trái phiếu doanh nghiệp | BM 11 (HNX) - Giao dịch TPDNRL |
-| 16 | `STG.HNX.REGISTRATION_STATUS_CHANGE` | `ODS.HNX.REGISTRATION_STATUS_CHANGE` | Đăng ký & niêm yết | BM 32 (HNX) - Thống kê thay đổi trạng thái đăng ký giao dịch |
-| 17 | `STG.HNX.REPO2_ORDER_BOOK` | `ODS.HNX.REPO2_ORDER_BOOK` | Sổ lệnh giao dịch | Sổ lệnh Repo 2 |
-| 18 | `STG.HNX.REPO_ORDER_BOOK` | `ODS.HNX.REPO_ORDER_BOOK` | Sổ lệnh giao dịch | Sổ lệnh Repo |
-| 19 | `STG.HNX.SHARE_AUCTION` | `ODS.HNX.SHARE_AUCTION` | Đấu giá cổ phần | BM 7 (HNX) - Đấu giá cổ phần |
-| 20 | `STG.HNX.TRADE_BOOK` | `ODS.HNX.TRADE_BOOK` | CHƯA PHÂN NHÓM | Sổ khớp HNX — tương đương TRADE_BOOK_HOSE nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế. |
+| 14 | `STG.HNX.PRIVATE_CORP_BOND_TRADING` | `ODS.HNX.PRIVATE_CORP_BOND_TRADING` | Trái phiếu doanh nghiệp | BM 11 (HNX) - Giao dịch TPDNRL |
+| 15 | `STG.HNX.REGISTRATION_STATUS_CHANGE` | `ODS.HNX.REGISTRATION_STATUS_CHANGE` | Đăng ký & niêm yết | BM 32 (HNX) - Thống kê thay đổi trạng thái đăng ký giao dịch |
+| 16 | `STG.HNX.REPO2_ORDER_BOOK` | `ODS.HNX.REPO2_ORDER_BOOK` | Sổ lệnh giao dịch | Sổ lệnh Repo 2 |
+| 17 | `STG.HNX.REPO_ORDER_BOOK` | `ODS.HNX.REPO_ORDER_BOOK` | Sổ lệnh giao dịch | Sổ lệnh Repo |
+| 18 | `STG.HNX.SHARE_AUCTION` | `ODS.HNX.SHARE_AUCTION` | Đấu giá cổ phần | BM 7 (HNX) - Đấu giá cổ phần |
+| 19 | `STG.HNX.TRADE_BOOK` | `ODS.HNX.TRADE_BOOK` | CHƯA PHÂN NHÓM | Sổ khớp HNX — tương đương TRADE_BOOK_HOSE nhưng cho sàn HNX. Bổ sung trường Spread trade legs (Execution Price of Spread First/Second) cho giao dịch phái sinh/repo có 2 vế. |
 
 ### 3.HOSE. HOSE (6 bảng)
 

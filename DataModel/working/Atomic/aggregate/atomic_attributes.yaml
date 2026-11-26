@@ -38441,315 +38441,6 @@ attributes:
   atomic_table: "private_corp_bond_registration"
   atomic_column: "data_dt"
 - bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Private Corp Bond Service Organization Id"
-  description: "Khóa đại diện (surrogate key)."
-  data_domain: "Surrogate Key"
-  nullable: false
-  is_primary_key: true
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BOND_CODE"
-  comment: "PK surrogate. BCV: \"[Documentation] Regulatory Report\". Hash: hash_id('HNX_PRIVATE_CORP_BOND_SERVICE_ORGS',\
-    \ BOND_CODE). Business Key của entity = BOND_CODE + DS_SNPST_DT (Data Modeler\
-    \ chốt 2026-10-30); DS_SNPST_DT chỉ dùng làm Business Key, không tham gia hash\
-    \ Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "private_corp_bond_service_organization_id"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Source System Code"
-  description: "Mã hệ thống nguồn dữ liệu."
-  data_domain: "Classification Value"
-  nullable: false
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: null
-  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
-  classification_context: "Source System Code = 'HNX_PRIVATE_CORP_BOND_SERVICE_ORGS'"
-  etl_derived_value: "HNX_PRIVATE_CORP_BOND_SERVICE_ORGS"
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "src_stm_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Bond Code"
-  description: "Mã trái phiếu"
-  data_domain: "Text"
-  nullable: false
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BOND_CODE"
-  comment: "BK nghiệp vụ — tham gia hash Id."
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "bond_code"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Issuer Name"
-  description: "Tên doanh nghiệp phát hành"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUER_NAME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "issuer_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Issued Bond Volume"
-  description: "Khối lượng phát hành"
-  data_domain: "Large Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUED_VOLUME"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "bigint"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "issued_bond_vol"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Secured Asset"
-  description: "Tài sản bảo đảm (Có/Không)"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.SECURED_ASSET"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "secured_asset"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Collateral Type"
-  description: "Hình thức bảo đảm"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.COLLATERAL_TYPE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "collateral_tp"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Advisory Organization Name"
-  description: "Tổ chức tư vấn"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ADVISORY_ORG"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "advisory_organization_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Registrar Depository Organization Name"
-  description: "Tổ chức đăng ký, lưu ký"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REGISTRAR_DEPOSITORY_ORG"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "registrar_depository_organization_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Issuance Agent Organization Name"
-  description: "Tổ chức đại lý phát hành"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.ISSUANCE_AGENT_ORG"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "issuance_agent_organization_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Bondholder Representative Organization Name"
-  description: "Tổ chức đại diện người sở hữu trái phiếu"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BONDHOLDER_REPRESENTATIVE_ORG"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "bondholder_representative_organization_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Underwriting Guarantor Organization Name"
-  description: "Tổ chức bảo lãnh phát hành"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.UNDERWRITING_GUARANTOR_ORG"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "underwriting_guarantor_organization_nm"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Collateral Value"
-  description: "Giá trị tài sản bảo đảm (VND)"
-  data_domain: "Currency Amount"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.COLLATERAL_VALUE"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "decimal(23,2)"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "collateral_val"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Business Registration Number"
-  description: "Mã đăng ký kinh doanh công ty"
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.BUSINESS_NO"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "business_registration_nbr"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Report Year"
-  description: "Năm báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_YEAR"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "rpt_year"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Report Month"
-  description: "Tháng báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_MONTH"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "rpt_month"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Report Day"
-  description: "Ngày báo cáo"
-  data_domain: "Small Counter"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_DAY"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "int"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "rpt_day"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Report Period"
-  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
-    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
-  data_domain: "Text"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.REPORT_PERIOD"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "string"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "rpt_period"
-- bcv_core_object: "Documentation"
-  atomic_entity: "Private Corp Bond Service Organization"
-  atomic_attribute: "Data Date"
-  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
-    \ / khoảng)."
-  data_domain: "Date"
-  nullable: true
-  is_primary_key: false
-  source_system: "HNX"
-  source_table: "PRIVATE_CORP_BOND_SERVICE_ORGS"
-  source_column: "HNX.PRIVATE_CORP_BOND_SERVICE_ORGS.DATA_DT"
-  comment: null
-  classification_context: null
-  etl_derived_value: null
-  data_type: "date"
-  atomic_table: "private_corp_bond_service_organization"
-  atomic_column: "data_dt"
-- bcv_core_object: "Documentation"
   atomic_entity: "Private Corp Bond Trading Summary"
   atomic_attribute: "Private Corp Bond Trading Summary Id"
   description: "Khóa đại diện (surrogate key)."
@@ -57199,9 +56890,8 @@ attributes:
   source_system: "FIMS"
   source_table: "BANKMONI"
   source_column: "FIMS.BANKMONI.STATUSID"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ CODE)."
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Hash: hash_id('FIMS_STATUS',\
+    \ STATUSID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -57210,17 +56900,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Custodian Bank"
   atomic_attribute: "Classification FIMS Status Code"
-  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
-    \ mục STATUS)."
+  description: "Mã trạng thái hoạt động của đối tượng."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "FIMS"
   source_table: "BANKMONI"
-  source_column: "FIMS.STATUS.CODE"
+  source_column: "FIMS.BANKMONI.STATUSID"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Classification FIMS Status Id."
+    \ FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59841,9 +59529,8 @@ attributes:
   source_system: "FIMS"
   source_table: "INVESTOR"
   source_column: "FIMS.INVESTOR.STATUSID"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ INVESTOR.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ CODE) | Thay scheme FIMS_ACTIVITY_STATUS bằng FK tới entity cl_fims_status (2026-10-05)."
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Hash: hash_id('FIMS_STATUS',\
+    \ STATUSID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -59858,10 +59545,9 @@ attributes:
   is_primary_key: false
   source_system: "FIMS"
   source_table: "INVESTOR"
-  source_column: "FIMS.STATUS.CODE"
+  source_column: "FIMS.INVESTOR.STATUSID"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Classification FIMS Status Id."
+    \ FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -67810,9 +67496,8 @@ attributes:
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
   source_column: "FIMS.SECURITIESCOMPANY.STATUSID"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS:\
-    \ SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS',\
-    \ CODE)."
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Hash: hash_id('FIMS_STATUS',\
+    \ STATUSID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -67821,17 +67506,15 @@ attributes:
 - bcv_core_object: "Involved Party"
   atomic_entity: "Securities Company"
   atomic_attribute: "Classification FIMS Status Code"
-  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh\
-    \ mục STATUS)."
+  description: "Mã trạng thái hoạt động của đối tượng."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   source_system: "FIMS"
   source_table: "SECURITIESCOMPANY"
-  source_column: "FIMS.STATUS.CODE"
+  source_column: "FIMS.SECURITIESCOMPANY.STATUSID"
   comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification\
-    \ FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết\
-    \ xem comment Classification FIMS Status Id."
+    \ FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -84782,10 +84465,13 @@ attributes:
   is_primary_key: true
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.CODE"
-  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', CODE). BCV: \"[Common] Involved\
-    \ Party Life Cycle Status\" (không có term trần \"Status\" trong Common). Danh\
-    \ mục tình trạng hoạt động của đối tượng thành viên thị trường / nhà đầu tư."
+  source_column: "FIMS.STATUS.ID"
+  comment: "PK surrogate. Hash: hash_id('FIMS_STATUS', ID) — ID cũng chính là giá\
+    \ trị Classification FIMS Status Code (BK). Nguồn ID là NUMBER(18,2) — ETL chuẩn\
+    \ hóa định dạng số (cast về chuỗi số nguyên) giống phía FK StatusId trước khi\
+    \ hash. BCV: \"[Common] Involved Party Life Cycle Status\" (không có term trần\
+    \ \"Status\" trong Common). Danh mục tình trạng hoạt động của đối tượng thành\
+    \ viên thị trường / nhà đầu tư."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
@@ -84794,20 +84480,35 @@ attributes:
 - bcv_core_object: "Common"
   atomic_entity: "Classification FIMS Status"
   atomic_attribute: "Classification FIMS Status Code"
-  description: "Mã trạng thái (khóa mapping đồng bộ). BK."
+  description: "Mã định danh bản ghi trạng thái. BK."
   data_domain: "Text"
   nullable: false
   is_primary_key: false
   source_system: "FIMS"
   source_table: "STATUS"
-  source_column: "FIMS.STATUS.CODE"
-  comment: "BK duy nhất của entity, đầu vào hash Id. Nguồn nullable (NVARCHAR2(100))\
-    \ — cần profile dữ liệu xác nhận NOT NULL/unique trước go-live."
+  source_column: "FIMS.STATUS.ID"
+  comment: null
   classification_context: null
   etl_derived_value: null
   data_type: "string"
   atomic_table: "cl_fims_status"
   atomic_column: "cl_fims_status_code"
+- bcv_core_object: "Common"
+  atomic_entity: "Classification FIMS Status"
+  atomic_attribute: "Status Code"
+  description: "Mã trạng thái (khóa mapping đồng bộ)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "FIMS"
+  source_table: "STATUS"
+  source_column: "FIMS.STATUS.CODE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "cl_fims_status"
+  atomic_column: "status_code"
 - bcv_core_object: "Common"
   atomic_entity: "Classification FIMS Status"
   atomic_attribute: "Source System Code"

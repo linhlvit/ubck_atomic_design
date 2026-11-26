@@ -65,20 +65,20 @@ attributes:
   status: "draft"
   source_columns:
   - "FIMS.SECURITIESCOMPANY.STATUSID"
-  comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: SECURITIESCOMPANY.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS', CODE)."
+  comment: "FK target: cl_fims_status.cl_fims_status_id. Hash: hash_id('FIMS_STATUS', STATUSID)."
   classification_context: null
   etl_derived_value: null
   data_type: "string"
 - attribute_name: "Classification FIMS Status Code"
   physical_name: "cl_fims_status_code"
-  description: "Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS)."
+  description: "Mã trạng thái hoạt động của đối tượng."
   data_domain: "Text"
   nullable: true
   is_primary_key: false
   status: "draft"
   source_columns:
-  - "FIMS.STATUS.CODE"
-  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+  - "FIMS.SECURITIESCOMPANY.STATUSID"
+  comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id."
   classification_context: null
   etl_derived_value: null
   data_type: "string"

@@ -74,21 +74,21 @@ attributes:
     source_system: FIMS
     source_table: BANKMONI
     source_column: FIMS.BANKMONI.STATUSID
-    comment: "FK target: cl_fims_status.cl_fims_status_id. Cần ETL crosswalk sang FIMS.STATUS: BANKMONI.STATUSID = STATUS.ID để xác nhận Code sau đó hash_id('FIMS_STATUS', CODE)."
+    comment: "FK target: cl_fims_status.cl_fims_status_id. Hash: hash_id('FIMS_STATUS', STATUSID)."
     classification_context: null
     etl_derived_value: null
 
   - name: Classification FIMS Status Code
     physical_name: cl_fims_status_code
-    business_meaning: Mã trạng thái hoạt động của đối tượng (mã nghiệp vụ trong bảng danh mục STATUS).
+    business_meaning: Mã trạng thái hoạt động của đối tượng.
     data_domain: Text
     data_type: string
     nullable: true
     is_primary_key: false
     source_system: FIMS
     source_table: BANKMONI
-    source_column: FIMS.STATUS.CODE
-    comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id. Giá trị lấy từ FIMS.STATUS.CODE sau ETL crosswalk — chi tiết xem comment Classification FIMS Status Id."
+    source_column: FIMS.BANKMONI.STATUSID
+    comment: "Lookup pair: cl_fims_status.cl_fims_status_code. Pair with Classification FIMS Status Id."
     classification_context: null
     etl_derived_value: null
 

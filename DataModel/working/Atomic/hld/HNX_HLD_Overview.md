@@ -18,14 +18,13 @@
 | T1 | Listing Status Change | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.LISTING_STATUS_CHANGE, HOSE.LISTING_STATUS_CHANGE | Dùng chung HNX + HOSE |
 | T1 | Private Corp Bond Offering | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL, HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC | Chào bán trái phiếu doanh nghiệp riêng lẻ |
 | T1 | Private Corp Bond Registration | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_REGISTRATION | Đăng ký giao dịch trái phiếu doanh nghiệp |
-| T1 | Private Corp Bond Service Organization | Documentation | [Documentation] Regulatory Report | Relative | HNX.PRIVATE_CORP_BOND_SERVICE_ORGS | BM 34 — tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH và thông tin TPDNRL tương ứng |
 | T1 | Private Corp Bond Trading Summary | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_TRADING | Chỉ tiêu giao dịch thị trường |
 | T1 | Securities Order | Transaction | [Transaction] Financial Market Transaction | Fact Append | HNX.ORDER_BOOK, HOSE.ORDER_BOOK | Sổ lệnh chi tiết từng event lệnh. Dùng chung HNX + HOSE, tham khảo thiết kế ORDERTRADE |
 | T1 | Security Market Capitalization | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.MARKET_CAPITALIZATION_STX, HNX.MARKET_CAPITALIZATION_UPX | BM 42 — giá, giao dịch và vốn hóa theo mã chứng khoán |
 | T1 | Share Auction Result | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.SHARE_AUCTION, HOSE.SHARE_AUCTION | Dùng chung HNX + HOSE |
 | T2 | Securities Trade | Transaction | [Transaction] Financial Market Transaction | Fact Append | HNX.TRADE_BOOK, HOSE.TRADE_BOOK | Sổ khớp chi tiết từng lần khớp. Dùng chung HNX + HOSE, liên kết BK về `Securities Order` |
 
-**Tổng: 15 Atomic entities** (14 Tier 1, 1 Tier 2)
+**Tổng: 14 Atomic entities** (13 Tier 1, 1 Tier 2)
 *(Trong đó: 1 bảng nguồn extend entity của source khác — `HNX.LISTED_SECURITIES_LIST` → entity `Listed Share Information` (định nghĩa ở VSDC) — không tạo mới)*
 
 ---
@@ -46,7 +45,6 @@ graph TD
         E9["Listing Status Change"]
         E10["Brokerage Market Share"]
         E11["Bond Order Book"]
-        E12["Private Corp Bond Service Organization"]
         E13["Security Market Capitalization"]
         E14["Securities Order"]
     end
@@ -92,7 +90,6 @@ graph TD
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | private_corp_bond_registration | Append | Đăng ký giao dịch trái phiếu doanh nghiệp riêng lẻ | Private Corp Bond Registration | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | PRIVATE_CORP_BOND_TRADING | Append | Chỉ tiêu thống kê giao dịch trái phiếu doanh nghiệp | Private Corp Bond Trading Summary | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | SHARE_AUCTION | Append | Kết quả đấu giá cổ phiếu | Share Auction Result | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
-| T1 | Documentation | [Documentation] Regulatory Report | Documentation | PRIVATE_CORP_BOND_SERVICE_ORGS | Update | BM 34 — danh sách CTCK là tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện người sở hữu trái phiếu và thông tin TPDNRL tương ứng | Private Corp Bond Service Organization | Relative | (1) Regulatory Report (9297) — báo cáo theo quy định, cùng nhóm với các báo cáo TPDNRL HNX khác. (2) Cấu trúc trường: mã trái phiếu, tổ chức phát hành, khối lượng, tài sản bảo đảm và các cột tên tổ chức dịch vụ — grain là 1 trái phiếu theo kỳ báo cáo, không phải Involved Party. (3) Chọn Regulatory Report; không tách Involved Party vì các cột tổ chức dịch vụ là Text trong báo cáo |
 | T1 | Transaction | [Transaction] Financial Market Transaction | Transaction | ORDER_BOOK | Update | Sổ lệnh chi tiết HNX — mỗi bản ghi là 1 event lệnh trên sàn HNX (cổ phiếu/UPCOM/TPCP/TPDN/phái sinh); có Iceberg order, Stop order và Quote Request theo chuẩn KRX. Kèm sổ lệnh HOSE (`HOSE.ORDER_BOOK`) cùng cấu trúc | Securities Order | Fact Append | (1) BCV term: **Financial Market Transaction** (Transaction, id 13339) — *"transaction that represents the adjustment of a holding in a Financial Market Instrument"*; ứng viên `Financial Market Order` (Communication, 8539) bị loại theo chỉ định Core Object Transaction của Data Modeler (2026-11-15). (2) Cột nguồn: mã lệnh, loại/điều kiện lệnh, giá, khối lượng, thành viên, tài khoản, trạng thái — mỗi dòng là 1 event lệnh. (3) Chọn Financial Market Transaction (cùng term với `Bond Order Book`, `Securities Trade`); phân biệt sàn qua `src_stm_code` |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | MARKET_CAPITALIZATION_STX, MARKET_CAPITALIZATION_UPX | Update | BM 42 — giá tham chiếu/mở/đóng/cao/thấp, khối lượng và giá trị giao dịch (khớp lệnh, thỏa thuận; lô chẵn, lô lẻ), khối lượng lưu hành, vốn hóa và tỷ trọng theo mã chứng khoán | Security Market Capitalization | Fact Snapshot | (1) Regulatory Report (9297). BCV không có term "Market Capitalization" riêng. (2) Cột nguồn tổng hợp theo mã chứng khoán × ngày báo cáo, dạng báo cáo thống kê. (3) Chọn Regulatory Report theo chỉ định Data Modeler cho báo cáo sàn |
 | T2 | Transaction | [Transaction] Financial Market Transaction | Financial Markets Trading | TRADE_BOOK | Update | Sổ khớp chi tiết HNX — mỗi bản ghi là 1 lần khớp thành công, chứa đồng thời thông tin bên mua và bên bán; có Spread legs cho giao dịch 2 vế. Kèm sổ khớp HOSE (`HOSE.TRADE_BOOK`) cùng cấu trúc | Securities Trade | Fact Append | (1) Financial Market Transaction (13339) — giao dịch điều chỉnh vị thế nắm giữ công cụ tài chính. (2) Cột nguồn: số hiệu khớp, giá, khối lượng, thông tin bên mua/bán — mỗi dòng là 1 lần khớp. (3) Chọn Financial Market Transaction (cùng term đã dùng cho ORDERTRADE) |
@@ -133,9 +130,6 @@ erDiagram
     }
     Bond_Order_Book {
         string bond_order_book_id PK
-    }
-    Private_Corp_Bond_Service_Organization {
-        string private_corp_bond_service_organization_id PK
     }
     Security_Market_Capitalization {
         string security_market_capitalization_id PK
@@ -180,6 +174,7 @@ Không có junction table.
 
 | Nhóm | Source Table | Mô tả bảng nguồn | Lý do ngoài scope |
 |---|---|---|---|
+| Documentation | PRIVATE_CORP_BOND_SERVICE_ORGS | BM 34 (HNX) - Danh sách CTCK là tổ chức tư vấn, đại lý phát hành, đại lý lưu ký, đại diện NSH TPDNRL và thông tin TPDNRL tương ứng | Quyết định Data Modeler (2026-11-26) — bỏ thiết kế bảng Atomic `Private Corp Bond Service Organization`; LLD chuyển sang `DataModel/working/Backup/`. |
 
 ---
 
@@ -268,16 +263,7 @@ Không có junction table.
 
 **Attributes chính:** `bond_code` (BK), tổ chức phát hành, mệnh giá, kỳ hạn, ngày phát hành/đáo hạn, các khối lượng, lãi suất phát hành, ngày giao dịch đầu tiên.
 
-### 10. Private Corp Bond Service Organization
-**Tier:** 1 | **Source:** `HNX.PRIVATE_CORP_BOND_SERVICE_ORGS` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Relative
-**Domain Prefix:** (none)
-**Description:** Báo cáo BM 34 về các tổ chức dịch vụ của trái phiếu doanh nghiệp riêng lẻ: tổ chức tư vấn, đăng ký lưu ký, đại lý phát hành, đại diện người sở hữu trái phiếu, bảo lãnh phát hành, cùng thông tin trái phiếu, khối lượng phát hành và tài sản bảo đảm tương ứng.
-
-**Grain:** 1 dòng = 1 mã trái phiếu × 1 kỳ báo cáo (ngày/tháng/năm).
-
-**Attributes chính:** `bond_code` (BK), tên doanh nghiệp phát hành, mã đăng ký kinh doanh, khối lượng phát hành, tài sản/hình thức/giá trị bảo đảm, các cột tổ chức dịch vụ (tư vấn, đăng ký lưu ký, đại lý phát hành, đại diện NSH, bảo lãnh phát hành), ngày/tháng/năm báo cáo.
-
-### 11. Private Corp Bond Trading Summary
+### 10. Private Corp Bond Trading Summary
 **Tier:** 1 | **Source:** `HNX.PRIVATE_CORP_BOND_TRADING` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
 **Domain Prefix:** (none)
 **Description:** Chỉ tiêu thống kê giao dịch trái phiếu doanh nghiệp riêng lẻ theo ngày báo cáo: tên chỉ tiêu, đơn vị tính và giá trị.
@@ -286,7 +272,7 @@ Không có junction table.
 
 **Attributes chính:** `indicator_name` (BK), đơn vị tính, giá trị chỉ tiêu, ngày báo cáo.
 
-### 12. Securities Order
+### 11. Securities Order
 **Tier:** 1 | **Source:** `HNX.ORDER_BOOK`, `HOSE.ORDER_BOOK` | **BCV Concept:** [Transaction] Financial Market Transaction | **BCO:** Transaction | **Table Type:** Fact Append
 **Domain Prefix:** (none)
 **Description:** Sổ lệnh chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 event lệnh (mới/sửa/hủy) với thị trường, bảng giao dịch, mã chứng khoán, thời điểm nhận lệnh, thành viên, tài khoản, loại và điều kiện lệnh, giá, khối lượng, trạng thái và các thuộc tính đặc thù (Iceberg, Stop order, báo giá RFQ).
@@ -295,7 +281,7 @@ Không có junction table.
 
 **Attributes chính:** `order_id` (BK), số hiệu nhận lệnh (BK phụ; reset mỗi ngày), `trade_date`, `market_id`, `board_id`, mã chứng khoán, chiều mua/bán, loại/điều kiện lệnh, giá, khối lượng, khối lượng còn lại, thành viên, số tài khoản (và PIN — cần quyết định mask), loại nhà đầu tư, loại nhà đầu tư nước ngoài, ETL-derived `src_stm_code`.
 
-### 13. Security Market Capitalization
+### 12. Security Market Capitalization
 **Tier:** 1 | **Source:** `HNX.MARKET_CAPITALIZATION_STX`, `HNX.MARKET_CAPITALIZATION_UPX` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
 **Domain Prefix:** (none)
 **Description:** Báo cáo BM 42 về vốn hóa thị trường HNX theo mã chứng khoán: giá tham chiếu, mở cửa, đóng cửa, trung bình, cao nhất, thấp nhất, thay đổi, khối lượng và giá trị giao dịch (khớp lệnh, thỏa thuận; lô chẵn, lô lẻ), khối lượng lưu hành, giá trị vốn hóa và tỷ trọng.
@@ -304,7 +290,7 @@ Không có junction table.
 
 **Attributes chính:** `ticker_symbol` (BK), các mức giá, thay đổi (điểm/%), khối lượng/giá trị giao dịch theo phương thức và loại lô, tổng khối lượng/giá trị, khối lượng lưu hành, giá trị vốn hóa, các tỷ trọng (%), ngày/tháng/năm báo cáo.
 
-### 14. Share Auction Result
+### 13. Share Auction Result
 **Tier:** 1 | **Source:** `HNX.SHARE_AUCTION`, `HOSE.SHARE_AUCTION` | **BCV Concept:** [Documentation] Regulatory Report | **BCO:** Documentation | **Table Type:** Fact Snapshot
 **Domain Prefix:** (none)
 **Description:** Kết quả đấu giá cổ phiếu theo tổ chức phát hành và loại đấu giá: số cổ phiếu chào bán, số nhà đầu tư đăng ký và trúng giá (trong nước/nước ngoài, tổ chức/cá nhân), giá khởi điểm, giá trúng bình quân, khối lượng và giá trị trúng giá/bán thực tế.
@@ -313,7 +299,7 @@ Không có junction table.
 
 **Attributes chính:** `issuer_name`, `auction_tp` (BK ghép), số nhà đầu tư/khối lượng/giá trị theo nhóm NĐT, giá khởi điểm, giá trúng bình quân, tháng/năm báo cáo, ETL-derived `src_stm_code`.
 
-### 15. Securities Trade
+### 14. Securities Trade
 **Tier:** 2 | **Source:** `HNX.TRADE_BOOK`, `HOSE.TRADE_BOOK` | **BCV Concept:** [Transaction] Financial Market Transaction | **BCO:** Transaction | **Table Type:** Fact Append
 **Domain Prefix:** (none)
 **Description:** Sổ khớp chi tiết trên sàn HNX và HOSE: mỗi bản ghi là 1 lần khớp thành công với thị trường, bảng giao dịch, mã chứng khoán, giá, khối lượng, giá trị khớp và đồng thời thông tin bên mua và bên bán (thành viên, tài khoản, loại nhà đầu tư, giá/khối lượng lệnh), kèm số hiệu lệnh để liên kết về sổ lệnh.
