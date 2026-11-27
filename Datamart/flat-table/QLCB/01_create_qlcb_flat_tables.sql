@@ -2,8 +2,9 @@
 -- QLCB Flat Tables — CREATE
 -- Module: Quản lý Chào bán (QLCB)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 4 fact (snapshot: Offering/Plan/Result/Detail) + 1 fact phẳng (fct_tthc_ap_document) + 1 operational
+-- 6 bảng: 4 fact (snapshot: Offering/Plan/Result/Detail) + 1 fact phẳng (fct_ap_document) + 1 operational
 -- [ĐỒNG BỘ code dev 2026-11-27] 4 Fact snapshot: giữ FK snpst_dt_dim_id (luật Fact _snpst) + thêm cột kỹ thuật ds_snpst_dt của dev làm khóa partition/xóa-nạp theo ngày; bỏ cột snpst_cdr_dt (không JOIN Calendar ngày snapshot) (O_QLCB_28 (b))
+-- [ĐỒNG BỘ code dev 2026-11-27] Fact TTHC + Operational 360 Profile cũng nạp snapshot theo ngày: thêm cột ds_snpst_dt (partition/xóa-nạp theo ngày), thay TRUNCATE (O_QLCB_28 (i), (j))
 -- ============================================================
 
 
@@ -215,81 +216,89 @@ COMMENT 'Flat table — Fact Securities Offering Result Snapshot × Calendar Dat
 
 
 -- ============================================================
--- 4. FACT (PHẲNG): qlcb_fct_tthc_ap_document_flat
+-- 4. FACT (PHẲNG): qlcb_fct_ap_document_flat
 --    Hồ sơ đăng ký chào bán nộp qua TTHC — đếm/phân tích theo nhóm trạng thái xử lý, hình thức, tổ chức, mã CK
 --    [SỬA 2026-10-15] Fact phẳng theo SQL dbt dtm_fct_tthc_ap_document — thay 2 Dimension (trạng thái, hình thức)
 --    + Fact snapshot cũ. Tên nhóm trạng thái / hình thức / người nộp lưu sẵn trên Fact (denormalized) nên flat table
---    là bản sao 1-1 của Fact: KHÔNG còn JOIN Calendar Date / Dimension, KHÔNG còn cột ngày snapshot.
---    Grain: 1 hồ sơ TTHC tại ngày chạy ETL (snapshot Atomic ACTIVE của ngày chạy; cơ quan xử lý
---    'Ban Quản lý chào bán chứng khoán'; trạng thái thuộc 5 nhóm — hồ sơ ngoài 5 nhóm bị loại khỏi Fact)
---    Nạp lại theo ngày chạy (trạng thái hiện hành) — xem O_QLCB_26 DTM_QLCB_HLD.md
+--    là bản sao 1-1 của Fact: KHÔNG JOIN Calendar Date / Dimension.
+--    [ĐỒNG BỘ code dev 2026-11-27] Đổi tên fct_tthc_ap_document → fct_ap_document (dbt dev dtm_fct_ap_document, flat qlcb_fct_ap_document_flat);
+--    thêm cột kỹ thuật ds_snpst_dt (partition + DELETE/INSERT theo ngày, thay TRUNCATE); nhánh ELSE của nhóm trạng thái
+--    trả 'Chưa xác định' (hồ sơ ngoài 5 nhóm không còn bị loại) — O_QLCB_28 (j).
+--    Grain: 1 hồ sơ TTHC × 1 ngày snapshot (snapshot Atomic ACTIVE của ngày chạy; cơ quan xử lý
+--    'Ban Quản lý chào bán chứng khoán'; ORDER BY (ds_snpst_dt, ap_document_code) giữ lịch sử theo ngày)
 -- ============================================================
-CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_tthc_ap_document_flat ON CLUSTER 'my_cluster'
+CREATE TABLE IF NOT EXISTS datamart.qlcb_fct_ap_document_flat ON CLUSTER 'my_cluster'
 (
-    -- From: FACT TTHC AP Document
-    ap_document_code                     String                  COMMENT 'Degenerate Dimension — BK hồ sơ TTHC (ap_document.ap_document_code); grain đếm đơn nhất, COUNT không cần DISTINCT',
-    ap_document_applicant_nm             Nullable(String)        COMMENT 'Tên tổ chức/cá nhân đăng ký (K_QLCB_66) — ap_document_applicant.display_nm; NULL với hồ sơ schema mới (O_QLCB_24)',
-    securities_code                      Nullable(String)        COMMENT 'Mã chứng khoán trên hồ sơ (K_QLCB_67) — ap_document.securities_code; NULL với loại hồ sơ không có mã',
-    offering_method_nm                   Nullable(String)        COMMENT 'Hình thức chào bán (K_QLCB_36) — tên loại hồ sơ TTHC.DOCUMENT_TYPE (cl_nm); chiều hiển thị',
-    submission_dt                        Nullable(Date)          COMMENT 'Ngày gửi hồ sơ (K_QLCB_37) — CAST(submission_tms AS DATE); cột ngày thường, không còn FK Calendar Date',
-    document_status_group_nm             String                  COMMENT 'Nhóm trạng thái xử lý — 5 giá trị tiếng Việt: Hồ sơ đăng ký / Hồ sơ đang xử lý / Hồ sơ đã được chấp thuận / Hồ sơ bị từ chối / Hồ sơ quá hạn bổ sung. Cột đếm của K_QLCB_32-35, K_QLCB_38-42, K_QLCB_71'
+    -- From: FACT TTHC AP Document (fct_ap_document)
+    ap_document_code          String           COMMENT 'Degenerate Dimension — BK hồ sơ TTHC (ap_document.ap_document_code); grain đếm đơn nhất trong 1 ngày snapshot, COUNT không cần DISTINCT',
+    ap_document_applicant_nm  Nullable(String) COMMENT 'Tên tổ chức/cá nhân đăng ký (K_QLCB_66) — ap_document_applicant.display_nm; NULL với hồ sơ schema mới (O_QLCB_24)',
+    securities_code           Nullable(String) COMMENT 'Mã chứng khoán trên hồ sơ (K_QLCB_67) — ap_document.securities_code; NULL với loại hồ sơ không có mã',
+    offering_method_nm        Nullable(String) COMMENT 'Hình thức chào bán (K_QLCB_36) — tên loại hồ sơ TTHC.DOCUMENT_TYPE (cl_nm); chiều hiển thị',
+    submission_dt             Nullable(Date)   COMMENT 'Ngày gửi hồ sơ (K_QLCB_37) — CAST(submission_tms AS DATE); cột ngày thường, không còn FK Calendar Date',
+    document_status_group_nm  String           COMMENT 'Nhóm trạng thái xử lý — Hồ sơ đăng ký / Hồ sơ đang xử lý / Hồ sơ đã được chấp thuận / Hồ sơ bị từ chối / Hồ sơ quá hạn bổ sung / Chưa xác định (nhánh ELSE, không còn loại hồ sơ). Cột đếm của K_QLCB_32-35, K_QLCB_38-42, K_QLCB_71',
+    ds_snpst_dt               Date             COMMENT 'Ngày snapshot ETL (etl_date) — cột kỹ thuật, partition + khóa xóa/nạp lại theo ngày; BI lọc cột này (mặc định ngày mới nhất)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-ORDER BY (ap_document_code)
-COMMENT 'Flat table — Fact TTHC AP Document (Fact phẳng, không JOIN Dimension)'
+PARTITION BY toYYYYMM(ds_snpst_dt)
+ORDER BY (ds_snpst_dt, ap_document_code)
+COMMENT 'Flat table — Fact TTHC AP Document Snapshot (Fact phẳng, không JOIN Dimension)'
 ;
 
 
 -- ============================================================
 -- 5. OPERATIONAL: qlcb_opr_securities_offering_360_profile_flat
---    Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình
---    Grain: 1 đợt chào bán × 1 loại hình
---    Không JOIN dim, không lọc theo ngày (bảng tác nghiệp)
+--    Hồ sơ 360° tra cứu chi tiết từng đợt chào bán (Nhóm 7-10) — đồng bộ dbt dev dtm_opr_securities_offering_360_profile
+--    [ĐỒNG BỘ code dev 2026-11-27] Grain: 1 đợt chào bán APPROVED × 1 hình thức × 1 giá cấp phép × 1 giá thực tế × 1 ngày snapshot (ds_snpst_dt)
+--    Composite BK 4 thành phần (securities_offering_code, offering_method_code, offering_price, actual_offering_price);
+--    2 cột giá nullable nên ORDER BY dùng ifNull(…, 0) — khóa có thể trùng khi giá NULL (O_QLCB_28 (i))
+--    Không JOIN dim; nạp snapshot theo ngày (DELETE + INSERT đúng ds_snpst_dt), thay TRUNCATE
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlcb_opr_securities_offering_360_profile_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL Securities Offering 360 Profile
-    securities_offering_code            String                  COMMENT 'Composite BK component 1 — BK đợt chào bán',
-    offering_method_code                 String                  COMMENT 'Composite BK component 2 — mã hình thức chào bán',
-    offering_method_nm                   Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — gom offering_method_code vào 6 nhóm',
-    public_company_code                  Nullable(String)        COMMENT 'Mã công ty đại chúng',
-    public_company_nm                    Nullable(String)        COMMENT 'Tên doanh nghiệp',
-    equity_ticker_symbol                 Nullable(String)        COMMENT 'Mã chứng khoán',
-    securities_tp_code                   Nullable(String)        COMMENT '[ĐỔI NGUỒN 2026-09-10] Loại chứng khoán của đợt chào bán/kết quả (nguồn Result, không phải Public Company)',
-    securities_tp_nm                     Nullable(String)        COMMENT '[MỚI 2026-10-08] Tên loại chứng khoán chào bán (lookup SO_SECURITY_TYPE) — BA STT 4/7 "Loại chứng khoán"',
-    total_registered_quantity            Nullable(Int64)         COMMENT 'Số lượng cấp phép (bảng cha, tổng toàn hồ sơ)',
-    total_expected_amt                   Nullable(Decimal(23,2)) COMMENT 'Giá trị cấp phép (bảng cha)',
-    total_successful_quantity            Nullable(Int64)         COMMENT 'Số lượng CK chào bán thành công',
-    total_collected_amt                  Nullable(Decimal(23,2)) COMMENT 'Giá trị chào bán thành công',
-    certificate_nbr                      Nullable(String)        COMMENT 'Số giấy chứng nhận',
-    certificate_dt                       Nullable(Date)          COMMENT 'Ngày cấp giấy chứng nhận',
-    official_letter_nbr                  Nullable(String)        COMMENT 'Số công văn gửi công ty',
-    official_letter_dt                   Nullable(Date)          COMMENT 'Ngày công văn',
-    offering_purpose                     Nullable(String)        COMMENT 'Mục đích sử dụng vốn',
-    business_line_level_1_code           Nullable(String)        COMMENT 'Ngành kinh tế cấp 1',
-    classification_business_line_nm      Nullable(String)        COMMENT 'Tên ngành (đệm sẵn)',
-    equity_listing_exchange_code         Nullable(String)        COMMENT 'Sàn niêm yết',
-    consulting_organization_nm           Nullable(String)        COMMENT 'Đơn vị tư vấn',
-    audit_organization_nm                Nullable(String)        COMMENT 'Tổ chức kiểm toán',
-    underwriting_organization_nm         Nullable(String)        COMMENT 'Đơn vị bảo lãnh',
-    credit_rating_organization_nm        Nullable(String)        COMMENT 'Đơn vị xếp hạng tín nhiệm',
-    processor_user_nm_snpst              Nullable(String)        COMMENT 'Chuyên viên xử lý (snapshot)',
-    successful_ratio_percentage          Nullable(Decimal(7,4))  COMMENT 'Tỷ lệ chào bán thành công',
-    offering_price                       Nullable(Decimal(23,2)) COMMENT 'Giá cấp phép (kế hoạch)',
-    employee_quantity                    Nullable(Int64)         COMMENT 'Số lượng người lao động (kế hoạch)',
-    swap_target                          Nullable(String)        COMMENT 'Đối tượng (kế hoạch)',
-    actual_offering_price                Nullable(Decimal(23,2)) COMMENT 'Giá thực tế',
-    employee_quantity_result             Nullable(Int64)         COMMENT 'Số lượng người lao động (thực tế)',
-    capital_src                          Nullable(String)        COMMENT 'Đối tượng (thực tế) — giữ lại, không còn KPI dùng (xem result_single_object)',
-    result_rpt_dt                        Nullable(Date)          COMMENT '[ĐỔI NGUỒN 2026-09-10 lần 2] Thời điểm báo cáo (nguồn Result, trước là Submission Date trên Offering cha) — dùng ở Nhóm 7',
-    plan_single_object                   Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng cấp phép — thay CASE WHEN cũ, dùng ở Nhóm 9',
-    offering_end_dt                      Nullable(Date)          COMMENT '[SỬA NGUỒN 2026-09-10] Ngày kết thúc đợt chào bán (thực tế, nguồn Result) — dùng ở Nhóm 10 (K_QLCB_69)',
-    result_single_object                 Nullable(String)        COMMENT '[MỚI 2026-09-10] Đối tượng kết quả — thay CASE WHEN cũ, dùng ở Nhóm 10',
-    foreign_collected_amt                Nullable(Decimal(23,2)) COMMENT '[MỚI 2026-09-10] Giá trị chào bán cho NĐTNN — dùng ở Nhóm 10',
-    src_stm_code                         String                  COMMENT 'Mã hệ thống nguồn — hardcode IDS.SECURITIES_OFFERING_PLAN'
+    securities_offering_code         String                  COMMENT 'PK — Composite BK component 1 — BK đợt chào bán',
+    offering_method_code             String                  COMMENT 'Composite BK component 2 — mã hình thức chào bán',
+    offering_method_nm               Nullable(String)        COMMENT 'Tên hiển thị hình thức chào bán — cl_value SO_OFFERING_METHOD theo offering_method_code (Nhóm 8)',
+    public_company_code              Nullable(String)        COMMENT 'Mã công ty đại chúng',
+    public_company_nm                Nullable(String)        COMMENT 'Tên doanh nghiệp (Nhóm 7)',
+    equity_ticker_symbol             Nullable(String)        COMMENT 'Mã chứng khoán (Nhóm 7)',
+    securities_tp_code               Nullable(String)        COMMENT 'Mã loại chứng khoán lấy từ Public Company (dev); tên lấy theo Result nên mã và tên có thể lệch — O_QLCB_28 (h)',
+    securities_tp_nm                 Nullable(String)        COMMENT 'Tên loại chứng khoán chào bán (lookup SO_SECURITY_TYPE theo security_tp_code của Result) — BA STT 7',
+    total_registered_quantity        Nullable(Int64)         COMMENT 'Số lượng cấp phép (SUM trong nhóm Plan gộp)',
+    total_expected_amt               Nullable(Decimal(23,2)) COMMENT 'Giá trị cấp phép (SUM trong nhóm Plan gộp)',
+    certificate_nbr                  Nullable(String)        COMMENT 'Số giấy chứng nhận',
+    certificate_dt                   Nullable(Date)          COMMENT 'Ngày cấp giấy chứng nhận',
+    official_letter_nbr              Nullable(String)        COMMENT 'Số công văn gửi công ty',
+    official_letter_dt               Nullable(Date)          COMMENT 'Ngày công văn',
+    offering_purpose                 Nullable(String)        COMMENT 'Mục đích sử dụng vốn',
+    consulting_organization_nm       Nullable(String)        COMMENT 'Đơn vị tư vấn',
+    audit_organization_nm            Nullable(String)        COMMENT 'Tổ chức kiểm toán',
+    underwriting_organization_nm     Nullable(String)        COMMENT 'Đơn vị bảo lãnh',
+    credit_rating_organization_nm    Nullable(String)        COMMENT 'Đơn vị xếp hạng tín nhiệm',
+    processor_user_nm_snpst          Nullable(String)        COMMENT 'Chuyên viên xử lý (snapshot) — PENDING O_QLCB_27, luôn NULL',
+    business_line_level_1_code       Nullable(String)        COMMENT 'Ngành kinh tế cấp 1',
+    classification_business_line_nm  Nullable(String)        COMMENT 'Tên ngành (đệm sẵn; fallback 'Chưa phân ngành')',
+    equity_listing_exchange_code     Nullable(String)        COMMENT 'Sàn niêm yết',
+    total_successful_quantity        Nullable(Int64)         COMMENT 'Số lượng CK chào bán thành công (SUM trong nhóm Result gộp)',
+    total_collected_amt              Nullable(Decimal(23,2)) COMMENT 'Giá trị chào bán thành công (SUM trong nhóm Result gộp)',
+    offering_price                   Nullable(Decimal(23,2)) COMMENT 'Giá cấp phép — khóa nhóm Plan gộp, Composite BK component 3 (nullable)',
+    employee_quantity                Nullable(Int64)         COMMENT 'Số lượng người lao động (kế hoạch)',
+    actual_offering_price            Nullable(Decimal(23,2)) COMMENT 'Giá thực tế — khóa nhóm Result gộp, Composite BK component 4 (nullable); Result chỉ nối Plan khi bằng offering_price',
+    employee_quantity_result         Nullable(Int64)         COMMENT 'Số lượng người lao động (thực tế)',
+    capital_src                      Nullable(String)        COMMENT 'Đối tượng chào bán (thực tế) — giữ lại, không còn KPI dùng (xem outcome_object)',
+    result_report_dt                 Nullable(Date)          COMMENT 'Thời điểm báo cáo (nguồn Result; đổi tên từ result_rpt_dt theo dev) — Nhóm 7',
+    offering_end_date                Nullable(Date)          COMMENT 'Ngày kết thúc đợt chào bán (thực tế, nguồn Result; đổi tên từ offering_end_dt theo dev) — Nhóm 10 (K_QLCB_69)',
+    foreign_collected_amt            Nullable(Decimal(23,2)) COMMENT 'Giá trị chào bán cho NĐTNN — Nhóm 10',
+    licensed_object                  Nullable(String)        COMMENT 'Đối tượng cấp phép — CASE hình thức '6' THEN swap_target ELSE single_offering_object (thay plan_single_object) — Nhóm 9',
+    outcome_object                   Nullable(String)        COMMENT 'Đối tượng kết quả — CASE hình thức Result '6' THEN swap_target của Plan ELSE result_single_object (thay result_single_object) — Nhóm 10',
+    submission_dt                    Nullable(Date)          COMMENT 'Ngày gửi hồ sơ chào bán (pc_securities_offering.submission_dt)',
+    cdr_dt                           Nullable(Date)          COMMENT 'Ngày báo cáo = COALESCE(certificate_dt, official_letter_dt) — cột lọc kỳ Nhóm 7-10',
+    src_stm_code                     String                  COMMENT 'Mã hệ thống nguồn — hardcode IDS.SECURITIES_OFFERING',
+    ds_snpst_dt                      Date                    COMMENT 'Ngày snapshot ETL (etl_date) — cột kỹ thuật, partition + khóa xóa/nạp lại theo ngày; BI lọc cột này (mặc định ngày mới nhất)'
 )
 ENGINE = ReplicatedReplacingMergeTree()
-ORDER BY (securities_offering_code, offering_method_code)
+PARTITION BY toYYYYMM(ds_snpst_dt)
+ORDER BY (ds_snpst_dt, securities_offering_code, offering_method_code, ifNull(offering_price, 0), ifNull(actual_offering_price, 0))
 COMMENT 'Flat table — Operational Securities Offering 360 Profile (tra cứu chi tiết, không join dim)'
 ;
 

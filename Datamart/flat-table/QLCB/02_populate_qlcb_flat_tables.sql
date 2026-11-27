@@ -2,13 +2,13 @@
 -- QLCB Flat Tables — POPULATE
 -- Module: Quản lý Chào bán (QLCB)
 -- Generated: Phase 3 LLD Datamart
--- 6 bảng: 4 fact (snapshot: Offering/Plan/Result/Detail) + 1 fact phẳng (fct_tthc_ap_document) + 1 operational
+-- 6 bảng: 4 fact (snapshot: Offering/Plan/Result/Detail) + 1 fact phẳng (fct_ap_document) + 1 operational
 -- ETL daily — 4 Fact snapshot grain APPEND theo Snapshot Date (ETL full-scan toàn bộ
 -- hồ sơ/đợt mỗi lần chạy để measure động — Total Collected Amount — luôn phản ánh
 -- đúng trạng thái mới nhất).
--- 4 Fact snapshot KHÔNG TRUNCATE — chỉ DELETE đúng ngày :etl_date (idempotent re-run) rồi
+-- 6 bảng KHÔNG TRUNCATE — chỉ DELETE đúng ngày :etl_date (idempotent re-run) rồi
 -- INSERT lại, giữ nguyên lịch sử các ngày snapshot khác.
--- Fact phẳng fct_tthc_ap_document (2026-10-15) + bảng tác nghiệp: TRUNCATE + INSERT (không có ngày snapshot).
+-- [ĐỒNG BỘ code dev 2026-11-27] Fact phẳng fct_ap_document + bảng tác nghiệp 360 Profile cũng nạp snapshot theo ngày (DELETE đúng :etl_date rồi INSERT, không TRUNCATE) — O_QLCB_28 (i), (j).
 -- [ĐỒNG BỘ code dev 2026-11-27] 4 Fact snapshot nạp/xóa theo f.ds_snpst_dt = :etl_date (không JOIN Calendar ngày snapshot — snpst_dt_dim_id lấy thẳng từ Fact, cùng ngày ds_snpst_dt); ngày báo cáo cdr_dt = COALESCE(certificate_dt, official_letter_dt) từ 2 JOIN Calendar role-playing (O_QLCB_28).
 -- ============================================================
 
@@ -208,35 +208,40 @@ WHERE f.ds_snpst_dt = :etl_date
 
 
 -- ============================================================
--- 4. FACT (PHẲNG): qlcb_fct_tthc_ap_document_flat
+-- 4. FACT (PHẲNG): qlcb_fct_ap_document_flat
 --    [SỬA 2026-10-15] Fact phẳng theo SQL dbt dtm_fct_tthc_ap_document — Fact đã chứa sẵn tên nhóm trạng thái,
---    hình thức, người nộp, mã CK, ngày gửi nên KHÔNG JOIN Dimension / Calendar Date; không có cột ngày snapshot.
---    Bảng phản ánh trạng thái hiện hành (như bảng tác nghiệp) → TRUNCATE rồi INSERT lại mỗi lần chạy
---    (giả định — O_QLCB_26: nếu cần giữ lịch sử theo ngày chạy thì phải thêm cột ngày snapshot ở Fact)
+--    hình thức, người nộp, mã CK, ngày gửi nên KHÔNG JOIN Dimension / Calendar Date.
+--    [ĐỒNG BỘ code dev 2026-11-27] Đổi tên fct_tthc_ap_document → fct_ap_document; nạp snapshot theo ngày — DELETE đúng ngày :etl_date (không TRUNCATE)
+--    rồi INSERT, giữ lịch sử các ngày khác (dev: partition ds_snpst_dt, WHERE ds_snpst_dt = etl_date) — O_QLCB_28 (j).
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlcb_fct_tthc_ap_document_flat ON CLUSTER 'my_cluster';
-INSERT INTO datamart.qlcb_fct_tthc_ap_document_flat
+DELETE FROM datamart.qlcb_fct_ap_document_flat ON CLUSTER 'my_cluster'
+WHERE ds_snpst_dt = :etl_date;
+INSERT INTO datamart.qlcb_fct_ap_document_flat
 SELECT
     f.ap_document_code,
     f.ap_document_applicant_nm,
     f.securities_code,
     f.offering_method_nm,
     f.submission_dt,
-    f.document_status_group_nm
-FROM datamart.fct_tthc_ap_document f
+    f.document_status_group_nm,
+    f.ds_snpst_dt
+FROM datamart.fct_ap_document f
+WHERE f.ds_snpst_dt = :etl_date
 ;
 
 
 -- ============================================================
 -- 5. OPERATIONAL: qlcb_opr_securities_offering_360_profile_flat
---    Không JOIN dim, không lọc theo ngày (bảng tác nghiệp)
+--    [ĐỒNG BỘ code dev 2026-11-27] Bản sao 1-1 bảng tác nghiệp (offering_method_nm đã có sẵn trên bảng nên bỏ LEFT JOIN cl_value cũ);
+--    nạp snapshot theo ngày — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT — O_QLCB_28 (i)
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlcb_opr_securities_offering_360_profile_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlcb_opr_securities_offering_360_profile_flat ON CLUSTER 'my_cluster'
+WHERE ds_snpst_dt = :etl_date;
 INSERT INTO datamart.qlcb_opr_securities_offering_360_profile_flat
 SELECT
     o.securities_offering_code,
     o.offering_method_code,
-    cl.cl_nm                            AS offering_method_nm,
+    o.offering_method_nm,
     o.public_company_code,
     o.public_company_nm,
     o.equity_ticker_symbol,
@@ -244,37 +249,37 @@ SELECT
     o.securities_tp_nm,
     o.total_registered_quantity,
     o.total_expected_amt,
-    o.total_successful_quantity,
-    o.total_collected_amt,
     o.certificate_nbr,
     o.certificate_dt,
     o.official_letter_nbr,
     o.official_letter_dt,
     o.offering_purpose,
-    o.business_line_level_1_code,
-    o.classification_business_line_nm,
-    o.equity_listing_exchange_code,
     o.consulting_organization_nm,
     o.audit_organization_nm,
     o.underwriting_organization_nm,
     o.credit_rating_organization_nm,
     o.processor_user_nm_snpst,
-    o.successful_ratio_percentage,
+    o.business_line_level_1_code,
+    o.classification_business_line_nm,
+    o.equity_listing_exchange_code,
+    o.total_successful_quantity,
+    o.total_collected_amt,
     o.offering_price,
     o.employee_quantity,
-    o.swap_target,
     o.actual_offering_price,
     o.employee_quantity_result,
     o.capital_src,
-    o.result_rpt_dt,
-    o.plan_single_object,
-    o.offering_end_dt,
-    o.result_single_object,
+    o.result_report_dt,
+    o.offering_end_date,
     o.foreign_collected_amt,
-    o.src_stm_code
+    o.licensed_object,
+    o.outcome_object,
+    o.submission_dt,
+    o.cdr_dt,
+    o.src_stm_code,
+    o.ds_snpst_dt
 FROM datamart.opr_securities_offering_360_profile o
-LEFT JOIN datamart.cl_value cl
-    ON cl.cl_code = o.offering_method_code AND cl.schema_code = 'SO_OFFERING_METHOD'
+WHERE o.ds_snpst_dt = :etl_date
 ;
 
 

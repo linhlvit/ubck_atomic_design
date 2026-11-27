@@ -1023,17 +1023,17 @@ _Không có dim join (Fact phẳng — [ĐỒNG BỘ code dev 2026-11-27]: tên 
 
 ---
 
-### `datamart.qlcb_fct_tthc_ap_document_flat`
+### `datamart.qlcb_fct_ap_document_flat`
 
 | Thuộc tính | Giá trị |
 |------------|---------|
 | **Loại** | `fact` |
 | **Entity nguồn** | Fact TTHC AP Document |
-| **Bảng fact/operational** | `datamart.fct_tthc_ap_document` |
+| **Bảng fact/operational** | `datamart.fct_ap_document` |
 | **PK** | `—` |
 | **Số dim join** | 0 |
 
-_Không có dim join (Fact phẳng — tên nhóm trạng thái/hình thức/người nộp lưu sẵn trên Fact; nạp TRUNCATE + INSERT)._
+_Không có dim join (Fact phẳng — tên nhóm trạng thái/hình thức/người nộp lưu sẵn trên Fact). [ĐỒNG BỘ code dev 2026-11-27] Nạp snapshot theo ngày: DELETE đúng `ds_snpst_dt = :etl_date` rồi INSERT (partition `ds_snpst_dt`, ORDER BY `ds_snpst_dt, ap_document_code`), thay TRUNCATE; đổi tên từ `fct_tthc_ap_document`; nhánh ELSE → 'Chưa xác định' — O_QLCB_28 (j)._
 
 **Nhóm KPI**
 
@@ -1051,10 +1051,10 @@ _Không có dim join (Fact phẳng — tên nhóm trạng thái/hình thức/ng�
 | **Loại** | `operational` |
 | **Entity nguồn** | Operational Securities Offering 360 Profile |
 | **Bảng fact/operational** | `datamart.opr_securities_offering_360_profile` |
-| **PK** | `securities_offering_code, offering_method_code` |
+| **PK** | `securities_offering_code` (BK: `offering_method_code`, `offering_price`, `actual_offering_price`) |
 | **Số dim join** | 0 |
 
-_Không có dim join (operational / self-contained table)._
+_Không có dim join (operational / self-contained table). [ĐỒNG BỘ code dev 2026-11-27] 38 cột Mart + `ds_snpst_dt`; nạp snapshot theo ngày (DELETE đúng `ds_snpst_dt = :etl_date` rồi INSERT; partition `ds_snpst_dt`, ORDER BY `ds_snpst_dt, securities_offering_code, offering_method_code, ifNull(offering_price, 0), ifNull(actual_offering_price, 0)`), thay TRUNCATE — O_QLCB_28 (i)._
 
 **Nhóm KPI**
 
