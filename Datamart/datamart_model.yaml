@@ -9244,43 +9244,43 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK (ghép với violation_behavior_nm) — mã lượt đoàn×đối tượng, unique per lượt đối tượng (PK nguồn VARCHAR2 UUID); 1 lượt có thể có nhiều dòng theo hành vi. ETL hàng ngày lọc theo Decision_Date của Inspection Team (xem dòng Form Type Code)"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.inspection_team_target_code"
+        description: "PK (ghép với inspection_team_code, violation_behavior_nm, inspection_conclusion_code) — Nguồn đoàn thanh tra không có đối tượng: không có lượt đối tượng nên mã là chuỗi rỗng; khóa dòng dựa trên inspection_team_code"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Inspection Team Code"
         physical_name: "inspection_team_code"
         data_domain: "Text"
         data_type: "string"
         nullable: false
-        key: ""
-        description: "Mã vụ việc — mã đoàn thanh tra (hiển thị Mã vụ việc)"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.inspection_team_code"
+        key: "PK"
+        description: "PK (ghép) — Mã vụ việc — mã đoàn thanh tra, driving của Nguồn đoàn thanh tra không có đối tượng (hiển thị Mã vụ việc); ETL hàng ngày lọc theo Decision_Date của Inspection Team"
+        source_atomic_table: "inspection_team"
+        source_atomic_column: "inspection_team.inspection_team_code"
       - logical_name: "Target Name"
         physical_name: "target_nm"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Tên đối tượng được thanh tra"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.target_nm"
+        description: "Tên đối tượng — NULL ở Nguồn đoàn thanh tra không có đối tượng (LEFT JOIN đối tượng)"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Target Type Code"
         physical_name: "target_tp_code"
         data_domain: "Text"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Phân loại đối tượng — map 1:1 từ nguồn, không qua Classification Value"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.target_tp_code"
+        description: "Phân loại đối tượng — NULL ở Nguồn đoàn thanh tra không có đối tượng; nhãn 'Không xác định' ánh xạ ở Detail Mapping"
+        source_atomic_table: null
+        source_atomic_column: null
       - logical_name: "Form Type Code"
         physical_name: "form_tp_code"
         data_domain: "Classification Value"
         data_type: "string"
         nullable: true
         key: ""
-        description: "Loại hình — scheme TT_REVIEW_FORM_TYPE (PERIODIC/UNSCHEDULED → Định kỳ/Đột xuất)"
+        description: "Loại hình — scheme TT_REVIEW_FORM_TYPE (PERIODIC/UNSCHEDULED); Nguồn đoàn không có đối tượng lấy trực tiếp từ Inspection Team"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.form_tp_code"
       - logical_name: "Status Code"
@@ -9289,7 +9289,7 @@ entities:
         data_type: "string"
         nullable: true
         key: ""
-        description: "Trạng thái — ETL-derived (Sửa 2026-10-01 theo BA STT 5): start = COALESCE(Start Date; kỳ thanh tra từ ngày), end = COALESCE(End Date; kỳ thanh tra đến ngày); cả 2 NULL→Chưa thực hiện; có start và (end NULL hoặc end > ngày ETL)→Đang thực hiện; có start và end ≤ ngày ETL→Đã hoàn thành. Giá trị phụ thuộc ngày ETL (sysdate trong SQL BA) — cần nạp lại hằng ngày"
+        description: "Trạng thái — ETL-derived từ Start Date/End Date (kỳ thanh tra từ–đến khi thiếu), cùng quy tắc Nguồn đoàn×đối tượng; Nguồn đoàn không có đối tượng lấy trực tiếp từ Inspection Team"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.start_dt / end_dt"
       - logical_name: "Decision Date"
@@ -9298,7 +9298,7 @@ entities:
         data_type: "date"
         nullable: true
         key: ""
-        description: "Ngày ban hành quyết định thanh tra — date key"
+        description: "Ngày ban hành quyết định thanh tra — date key (Nguồn đoàn không có đối tượng)"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.decision_dt"
       - logical_name: "Decision Year"
@@ -9307,7 +9307,7 @@ entities:
         data_type: "int"
         nullable: true
         key: ""
-        description: "Năm ban hành quyết định — slicer Year=selected_year"
+        description: "Năm ban hành quyết định — slicer Year=selected_year (Nguồn đoàn không có đối tượng)"
         source_atomic_table: "inspection_team"
         source_atomic_column: "inspection_team.decision_dt"
       - logical_name: "Violation Behavior Name"
@@ -9316,7 +9316,7 @@ entities:
         data_type: "string"
         nullable: false
         key: "PK"
-        description: "PK (ghép với inspection_team_target_code) — Hành vi vi phạm: tên hành vi ACTIVE của đoàn (gộp 2 nguồn: biên bản trực tiếp / qua hồ sơ vụ việc), 'Không xác định' khi không có tên hành vi. Mỗi lượt đối tượng có thể có nhiều dòng, 1 dòng/hành vi (BA 2026-11-03)"
+        description: "PK (ghép với inspection_team_code, inspection_team_target_code, inspection_conclusion_code) — Hành vi vi phạm: tên hành vi ACTIVE của đoàn (gộp 2 nguồn: biên bản trực tiếp / qua hồ sơ vụ việc), 'Không xác định' khi không có tên hành vi; Nguồn đoàn không có đối tượng"
         source_atomic_table: "violation_behavior"
         source_atomic_column: "violation_behavior.violation_behavior_nm"
       - logical_name: "Source System Code"
@@ -9325,9 +9325,36 @@ entities:
         data_type: "string"
         nullable: false
         key: ""
-        description: "Mã hệ thống nguồn"
-        source_atomic_table: "inspection_team_target"
-        source_atomic_column: "inspection_team_target.src_stm_code"
+        description: "Mã hệ thống nguồn — Nguồn đoàn thanh tra không có đối tượng (THANHTRA_INSPECTION_TEAM)"
+        source_atomic_table: "inspection_team"
+        source_atomic_column: "inspection_team.src_stm_code"
+      - logical_name: "Inspection Conclusion Code"
+        physical_name: "inspection_conclusion_code"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: false
+        key: "PK"
+        description: "PK (ghép với inspection_team_code, inspection_team_target_code, violation_behavior_nm) — mã kết luận thanh tra của đoàn (BK nguồn: INSPECTION_CONCLUSION.ID); chuỗi rỗng khi đoàn chưa có kết luận. 1 đoàn có thể có nhiều kết luận → nhiều dòng"
+        source_atomic_table: "inspection_conclusion"
+        source_atomic_column: "inspection_conclusion.inspection_conclusion_code"
+      - logical_name: "Conclusion Number"
+        physical_name: "conclusion_nbr"
+        data_domain: "Text"
+        data_type: "string"
+        nullable: true
+        key: ""
+        description: "Số kết luận thanh tra (hiển thị Số KLTT); NULL khi đoàn chưa có kết luận"
+        source_atomic_table: "inspection_conclusion"
+        source_atomic_column: "inspection_conclusion.conclusion_nbr"
+      - logical_name: "Conclusion Issued Date"
+        physical_name: "conclusion_issued_dt"
+        data_domain: "Date"
+        data_type: "date"
+        nullable: true
+        key: ""
+        description: "Ngày ban hành kết luận thanh tra (hiển thị Ngày KL); NULL khi đoàn chưa có kết luận"
+        source_atomic_table: "inspection_conclusion"
+        source_atomic_column: "inspection_conclusion.issued_dt"
 
   - id: "DTM-examination_team_dim"
     logical_name: "Examination Team Dimension"

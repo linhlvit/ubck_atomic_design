@@ -2357,7 +2357,7 @@ _Cập nhật 2026-07-22: thiết kế lại theo `DTM_TT_HLD.md` hiện hành (
 | **Loại** | `operational` |
 | **Entity nguồn** | Operational Inspection Case List |
 | **Bảng fact/operational** | `datamart.opr_inspection_case_list` |
-| **PK** | `inspection_team_target_code` |
+| **PK** | `inspection_team_code` + `inspection_team_target_code` + `violation_behavior_nm` + `inspection_conclusion_code` (PK ghép 4 cột — 2026-11-27) |
 | **Số dim join** | 0 |
 
 _Không có dim join (operational / self-contained table)._
@@ -2366,7 +2366,7 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 5 — Danh sách vụ việc Thanh tra | 5 |
+| Nhóm 5 — Danh sách vụ việc Thanh tra | 8 |
 
 ---
 

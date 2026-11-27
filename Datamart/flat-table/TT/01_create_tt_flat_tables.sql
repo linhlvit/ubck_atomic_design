@@ -236,20 +236,23 @@ COMMENT 'Flat table — Fact Penalty Decision Subject × Calendar Date Dimension
 CREATE TABLE IF NOT EXISTS datamart.tt_opr_inspection_case_list_flat ON CLUSTER 'my_cluster'
 (
     -- From: OPERATIONAL INSPECTION CASE LIST
-    inspection_team_target_code   String              COMMENT 'PK — mã lượt đoàn×đối tượng, unique per dòng',
-    inspection_team_code          String              COMMENT 'Mã vụ việc — mã đoàn thanh tra',
+    inspection_team_target_code   String              COMMENT 'PK ghép — mã lượt đoàn×đối tượng; chuỗi rỗng ở nguồn đoàn không có đối tượng',
+    inspection_team_code          String              COMMENT 'PK ghép — Mã vụ việc — mã đoàn thanh tra',
     target_nm                     Nullable(String)    COMMENT 'Tên đối tượng được thanh tra',
     target_tp_code                Nullable(String)    COMMENT 'Phân loại đối tượng',
     form_tp_code                  Nullable(String)    COMMENT 'Loại hình — scheme TT_REVIEW_FORM_TYPE',
     status_code                   Nullable(String)    COMMENT 'Trạng thái — ETL-derived từ Start_Date/End_Date',
     decision_dt                   Nullable(Date)      COMMENT 'Ngày ban hành quyết định thanh tra',
     decision_year                 Nullable(Int64)     COMMENT 'Năm ban hành quyết định — slicer',
-    violation_behavior_nm     String              COMMENT 'PK ghép — hành vi vi phạm; \'Không xác định\' khi không có tên hành vi (BA 2026-11-03)',
-    src_stm_code                  String              COMMENT 'Mã hệ thống nguồn'
+    violation_behavior_nm         String              COMMENT 'PK ghép — hành vi vi phạm; \'Không xác định\' khi không có tên hành vi (BA 2026-11-03)',
+    src_stm_code                  String              COMMENT 'Mã hệ thống nguồn',
+    inspection_conclusion_code    String              COMMENT 'PK ghép — mã kết luận thanh tra của đoàn; chuỗi rỗng khi đoàn chưa có kết luận (BA 2026-11-27)',
+    conclusion_nbr                Nullable(String)    COMMENT 'Số kết luận thanh tra (hiển thị Số KLTT); NULL khi đoàn chưa có kết luận',
+    conclusion_issued_dt          Nullable(Date)      COMMENT 'Ngày ban hành kết luận thanh tra (hiển thị Ngày KL); NULL khi đoàn chưa có kết luận'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(decision_dt))
-ORDER BY (assumeNotNull(decision_dt), inspection_team_target_code, violation_behavior_nm)
+ORDER BY (assumeNotNull(decision_dt), inspection_team_code, inspection_team_target_code, violation_behavior_nm, inspection_conclusion_code)
 COMMENT 'Flat table — Operational Inspection Case List'
 ;
 
