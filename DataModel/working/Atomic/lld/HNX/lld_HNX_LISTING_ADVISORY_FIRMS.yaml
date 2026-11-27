@@ -1,0 +1,179 @@
+schema_type: "lld_source_table"
+schema_version: "2.0"
+metadata:
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  atomic_entity: "Listing Advisory Firm"
+  entity_physical_name: "listing_advisory_firm"
+  bcv_core_object: "Involved Party"
+  bcv_concept: "[Involved Party] Advising Involved Party"
+  table_type: "Fact Snapshot"
+  group: "T1"
+  design_status: "approved"
+  version: "1.0"
+  designed_by: null
+  designed_at: null
+  reviewed_by: null
+  reviewed_at: null
+  approved_by: null
+  approved_at: null
+  notes: "Thiết kế 2026-11-26 từ DDL uat_hnx_stg.listing_advisory_firms (Source/HNX_UAT_schema.txt) + BRD/Source/HNX/brd_HNX_LISTING_ADVISORY_FIRMS.yaml. Tên entity/Core Object/table_type theo chỉ định Data Modeler (2026-11-26): Listing Advisory Firm, Involved Party, Fact Snapshot. BCV Term: Advising Involved Party (id 11142 — Involved Party Relationship trong đó Involved Party chủ thể tư vấn cho Involved Party đối tượng) — CTCK là bên tư vấn, tổ chức được tư vấn là bên nhận tư vấn. Domain Prefix: không có (cùng quy ước các entity HNX/VSDC/HOSE). Không đăng ký Classification Value scheme — mã số doanh nghiệp giữ Text. Id hash từ BK ghép (mã số DN CTCK + mã số DN tổ chức được tư vấn + số hợp đồng + mã kỳ báo cáo report_period — Data Modeler chỉ định 2026-11-27) — nguồn không có PK/ID kỹ thuật; BK không gồm ds_snpst_dt, mỗi kỳ báo cáo có Id riêng. Mã số doanh nghiệp của 2 bên giữ dạng Text denormalized, CHƯA tạo cặp FK Id+Code về Securities Company / Public Company vì BK của 2 entity đó không phải mã số doanh nghiệp (xem Điểm cần xác nhận trong HLD). Các cột kỹ thuật ds_snpst_dt/ds_etl_pcs_tms và 8 cột lineage staging (_batch_id, _source_*, _file_*, _row_number, _sheet_name) không khai báo trong LLD (cùng nguyên tắc Data Modeler 2026-10-19 / 2026-11-18) — ghi vào pending_design.yaml."
+attributes:
+- attribute_name: "Listing Advisory Firm Id"
+  physical_name: "listing_advisory_firm_id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_BUSINESS_NO"
+  - "HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_BUSINESS_NO"
+  - "HNX.LISTING_ADVISORY_FIRMS.CONTRACT_NO"
+  - "HNX.LISTING_ADVISORY_FIRMS.REPORT_PERIOD"
+  comment: "PK surrogate. BCV: \"[Involved Party] Advising Involved Party\". Nguồn không có PK/ID kỹ thuật — hash từ BK ghép gồm cả kỳ báo cáo nên mỗi kỳ snapshot có Id riêng. Hash: hash_id('HNX_LISTING_ADVISORY_FIRMS',\"concat_ws('-', SECURITIES_COMPANY_BUSINESS_NO, ADVISED_COMPANY_BUSINESS_NO, CONTRACT_NO, REPORT_PERIOD)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Source System Code"
+  physical_name: "src_stm_code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns: []
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "SOURCE_SYSTEM=HNX_LISTING_ADVISORY_FIRMS"
+  etl_derived_value: "HNX_LISTING_ADVISORY_FIRMS"
+  data_type: "string"
+- attribute_name: "Securities Company Name"
+  physical_name: "sc_nm"
+  description: "Tên CTCK"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_NAME"
+  comment: "Công ty chứng khoán đóng vai trò tư vấn niêm yết (subject của Advising Involved Party). Giữ Text denormalized — chưa có FK về Securities Company."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Securities Company Business Number"
+  physical_name: "sc_business_nbr"
+  description: "Mã số doanh nghiệp CTCK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_BUSINESS_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu xác nhận NOT NULL trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Advised Company Name"
+  physical_name: "advised_company_nm"
+  description: "Tên tổ chức (khách hàng) được tư vấn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_NAME"
+  comment: "Tổ chức nhận tư vấn niêm yết (object của Advising Involved Party). Giữ Text denormalized — chưa có FK về entity tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Advised Company Business Number"
+  physical_name: "advised_company_business_nbr"
+  description: "Mã số doanh nghiệp của tổ chức được tư vấn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_BUSINESS_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu xác nhận NOT NULL trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Contract Number"
+  physical_name: "contract_nbr"
+  description: "Số hợp đồng"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.CONTRACT_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu xác nhận NOT NULL và duy nhất theo cặp (CTCK, tổ chức được tư vấn) trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Contract Date"
+  physical_name: "contract_dt"
+  description: "Ngày hợp đồng"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.CONTRACT_DATE"
+  comment: "Nguồn lưu dạng STRING (file Excel) — ETL cần parse sang DATE; cần profile định dạng ngày (dd/MM/yyyy hoặc yyyy-MM-dd) và xử lý giá trị không hợp lệ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Period Begin Date"
+  physical_name: "rpt_period_begin_dt"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.BEGIN_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Period End Date"
+  physical_name: "rpt_period_end_dt"
+  description: "Ngày cuối kỳ dữ liệu (= Data Date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.END_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+- attribute_name: "Report Period"
+  physical_name: "rpt_period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng) / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.REPORT_PERIOD"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn NULL khi kỳ là khoảng ngày (range) — concat_ws bỏ qua NULL nên Id vẫn sinh được nhưng 2 kỳ range khác nhau có thể trùng Id; cần xác nhận nguồn có nạp kỳ range cho bảng này không, và profile dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+- attribute_name: "Data Date"
+  physical_name: "data_dt"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  status: "draft"
+  source_columns:
+  - "HNX.LISTING_ADVISORY_FIRMS.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"

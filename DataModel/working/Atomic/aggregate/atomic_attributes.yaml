@@ -64089,6 +64089,213 @@ attributes:
   atomic_table: "legal_entity_position"
   atomic_column: "dismissal_dt"
 - bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Listing Advisory Firm Id"
+  description: "Khóa đại diện (surrogate key)."
+  data_domain: "Surrogate Key"
+  nullable: false
+  is_primary_key: true
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_BUSINESS_NO, HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_BUSINESS_NO,\
+    \ HNX.LISTING_ADVISORY_FIRMS.CONTRACT_NO, HNX.LISTING_ADVISORY_FIRMS.REPORT_PERIOD"
+  comment: "PK surrogate. BCV: \"[Involved Party] Advising Involved Party\". Nguồn\
+    \ không có PK/ID kỹ thuật — hash từ BK ghép gồm cả kỳ báo cáo nên mỗi kỳ snapshot\
+    \ có Id riêng. Hash: hash_id('HNX_LISTING_ADVISORY_FIRMS',\"concat_ws('-', SECURITIES_COMPANY_BUSINESS_NO,\
+    \ ADVISED_COMPANY_BUSINESS_NO, CONTRACT_NO, REPORT_PERIOD)\")"
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "listing_advisory_firm_id"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Source System Code"
+  description: "Mã hệ thống nguồn dữ liệu."
+  data_domain: "Classification Value"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: null
+  comment: "Scheme: SOURCE_SYSTEM. Hardcode."
+  classification_context: "Source System Code = 'HNX_LISTING_ADVISORY_FIRMS'"
+  etl_derived_value: "HNX_LISTING_ADVISORY_FIRMS"
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "src_stm_code"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Securities Company Name"
+  description: "Tên CTCK"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_NAME"
+  comment: "Công ty chứng khoán đóng vai trò tư vấn niêm yết (subject của Advising\
+    \ Involved Party). Giữ Text denormalized — chưa có FK về Securities Company."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "sc_nm"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Securities Company Business Number"
+  description: "Mã số doanh nghiệp CTCK"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.SECURITIES_COMPANY_BUSINESS_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu\
+    \ xác nhận NOT NULL trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "sc_business_nbr"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Advised Company Name"
+  description: "Tên tổ chức (khách hàng) được tư vấn"
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_NAME"
+  comment: "Tổ chức nhận tư vấn niêm yết (object của Advising Involved Party). Giữ\
+    \ Text denormalized — chưa có FK về entity tổ chức."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "advised_company_nm"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Advised Company Business Number"
+  description: "Mã số doanh nghiệp của tổ chức được tư vấn"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.ADVISED_COMPANY_BUSINESS_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu\
+    \ xác nhận NOT NULL trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "advised_company_business_nbr"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Contract Number"
+  description: "Số hợp đồng"
+  data_domain: "Text"
+  nullable: false
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.CONTRACT_NO"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn nullable — cần profile dữ liệu\
+    \ xác nhận NOT NULL và duy nhất theo cặp (CTCK, tổ chức được tư vấn) trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "contract_nbr"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Contract Date"
+  description: "Ngày hợp đồng"
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.CONTRACT_DATE"
+  comment: "Nguồn lưu dạng STRING (file Excel) — ETL cần parse sang DATE; cần profile\
+    \ định dạng ngày (dd/MM/yyyy hoặc yyyy-MM-dd) và xử lý giá trị không hợp lệ."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "contract_dt"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Report Period Begin Date"
+  description: "Ngày đầu kỳ dữ liệu (kỳ một ngày: bằng ngày cuối kỳ)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.BEGIN_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "rpt_period_begin_dt"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Report Period End Date"
+  description: "Ngày cuối kỳ dữ liệu (= Data Date)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.END_PERIOD_DATE"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "rpt_period_end_dt"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Report Period"
+  description: "Mã kỳ báo cáo: D20261019 (ngày) / W12026 (tuần ISO) / M202609 (tháng)\
+    \ / Q12026 (quý); NULL nếu kỳ khoảng ngày (range)."
+  data_domain: "Text"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.REPORT_PERIOD"
+  comment: "BK nghiệp vụ — tham gia hash Id. Nguồn NULL khi kỳ là khoảng ngày (range)\
+    \ — concat_ws bỏ qua NULL nên Id vẫn sinh được nhưng 2 kỳ range khác nhau có thể\
+    \ trùng Id; cần xác nhận nguồn có nạp kỳ range cho bảng này không, và profile\
+    \ dữ liệu trước go-live."
+  classification_context: null
+  etl_derived_value: null
+  data_type: "string"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "rpt_period"
+- bcv_core_object: "Involved Party"
+  atomic_entity: "Listing Advisory Firm"
+  atomic_attribute: "Data Date"
+  description: "Ngày nghiệp vụ = ngày cuối kỳ dữ liệu (ngày / tuần ISO / tháng / quý\
+    \ / khoảng)."
+  data_domain: "Date"
+  nullable: true
+  is_primary_key: false
+  source_system: "HNX"
+  source_table: "LISTING_ADVISORY_FIRMS"
+  source_column: "HNX.LISTING_ADVISORY_FIRMS.DATA_DT"
+  comment: null
+  classification_context: null
+  etl_derived_value: null
+  data_type: "date"
+  atomic_table: "listing_advisory_firm"
+  atomic_column: "data_dt"
+- bcv_core_object: "Involved Party"
   atomic_entity: "Major Shareholder Ownership"
   atomic_attribute: "Major Shareholder Ownership Id"
   description: "Khóa đại diện (surrogate key)."

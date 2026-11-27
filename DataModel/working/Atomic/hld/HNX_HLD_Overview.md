@@ -15,6 +15,7 @@
 | T1 | Brokerage Market Share | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.BROKERAGE_MARKET_SHARE, HOSE.BROKERAGE_MARKET_SHARE | Dùng chung HNX + HOSE |
 | T1 | Gov Bond Bidding Result | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.GOV_BOND_OFFERING | Kết quả đấu thầu trái phiếu Chính phủ |
 | T1 | Gov Bond Listing | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.GOV_BOND_LISTED_LIST | Danh sách trái phiếu Chính phủ niêm yết |
+| T1 | Listing Advisory Firm | Involved Party | [Involved Party] Advising Involved Party | Fact Snapshot | HNX.LISTING_ADVISORY_FIRMS | Quan hệ tư vấn niêm yết giữa CTCK và tổ chức được tư vấn theo hợp đồng |
 | T1 | Listing Status Change | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.LISTING_STATUS_CHANGE, HOSE.LISTING_STATUS_CHANGE | Dùng chung HNX + HOSE |
 | T1 | Private Corp Bond Offering | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_OFFERING_INTERNATIONAL, HNX.PRIVATE_CORP_BOND_OFFERING_DOMESTIC | Chào bán trái phiếu doanh nghiệp riêng lẻ |
 | T1 | Private Corp Bond Registration | Documentation | [Documentation] Regulatory Report | Fact Snapshot | HNX.PRIVATE_CORP_BOND_REGISTRATION | Đăng ký giao dịch trái phiếu doanh nghiệp |
@@ -82,6 +83,7 @@ graph TD
 | T1 | Transaction | [Transaction] Financial Market Transaction | Transaction | OUTRIGHT_ORDER_BOOK, REPO_ORDER_BOOK, REPO2_ORDER_BOOK | Append | Sổ lệnh trái phiếu Outright/Repo/Repo2 | Bond Order Book | Fact Snapshot | Financial Market Transaction (13339) — Core Object Transaction theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | REGISTRATION_STATUS_CHANGE | Append | Trạng thái đăng ký giao dịch trái phiếu | Bond Trading Registration Status | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | brokerage_market_share | Append | Thị phần môi giới theo quý | Brokerage Market Share | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
+| T1 | Involved Party | [Involved Party] Advising Involved Party | Involved Party | LISTING_ADVISORY_FIRMS | Append | Danh sách CTCK tư vấn niêm yết và tổ chức được tư vấn: tên, mã số doanh nghiệp, số và ngày hợp đồng | Listing Advisory Firm | Fact Snapshot | Advising Involved Party (11142) — Involved Party Relationship: Involved Party chủ thể (CTCK) tư vấn cho Involved Party đối tượng (tổ chức được tư vấn). Core Object Involved Party + table_type Fact Snapshot theo chỉ định Data Modeler (2026-11-26). |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | GOV_BOND_OFFERING | Append | Kết quả đấu thầu trái phiếu Chính phủ | Gov Bond Bidding Result | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 | Documentation | [Documentation] Regulatory Report | Documentation | GOV_BOND_LISTED_LIST | Append | Danh sách trái phiếu Chính phủ niêm yết | Gov Bond Listing | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
 | T1 (extend) | Documentation | [Documentation] Regulatory Report | Documentation | LISTED_SECURITIES_LIST | Append | Danh sách chứng khoán niêm yết HNX (số lượng niêm yết, giá tham chiếu) — entity `Listed Share Information` định nghĩa ở VSDC | Listed Share Information | Fact Snapshot | Regulatory Report (9297) — Core Object Documentation theo chỉ định Data Modeler |
@@ -169,6 +171,7 @@ Không có junction table.
 | 7 | T1 | `Securities Order`/`Securities Trade` dùng chung HNX + HOSE, nhiều cột chỉ có ở 1 sàn (nullable); cột Account PIN (`PIN`) cần quyết định mask | Có thể phải tách entity theo sàn; ảnh hưởng ETL và governance |
 | 8 | T1 | `Security Market Capitalization` (HNX) có nội dung giá/giao dịch theo mã × ngày gần với `Security Trading Snapshot` của MDDS | Cần xác nhận không trùng; hiện giữ riêng vì là báo cáo BM 42 |
 | 9 | T2 | `Securities Trade` (khớp lệnh HNX/HOSE từ sổ khớp) cùng BCV Concept `Financial Market Transaction` và cùng `Fact Append` với `Security Match Log` của MDDS (tick khớp lệnh) | Cần xác nhận hai nguồn là hai entity độc lập (sổ khớp có thông tin bên mua/bán) hay hợp nhất |
+| 10 | T1 | `Listing Advisory Firm` (từ `HNX.LISTING_ADVISORY_FIRMS`): CTCK và tổ chức được tư vấn chỉ có tên + mã số doanh nghiệp nên giữ Text denormalized, chưa có cặp FK Id+Code về `Securities Company` / `Public Company` vì BK của 2 entity đó không phải mã số doanh nghiệp. BK ghép của entity (mã số DN CTCK + mã số DN tổ chức được tư vấn + số hợp đồng + mã kỳ báo cáo) nguồn đều nullable và không có PK kỹ thuật | Cần xác nhận (a) có tạo FK về `Securities Company` / `Public Company` hay không — nếu có, ETL phải crosswalk mã số DN sang BK của entity đích; (b) BK ghép NOT NULL và duy nhất sau khi profile dữ liệu (`report_period` NULL khi kỳ là khoảng ngày — cần xác nhận bảng này có nạp kỳ range không); (c) nhãn BCV `Advising Involved Party` (quan hệ tư vấn) hay `Regulatory Report` như các bảng báo cáo HNX khác |
 
 #### 7f. Bảng ngoài scope
 
@@ -307,3 +310,12 @@ Không có junction table.
 **Grain:** 1 dòng = 1 lần khớp × 1 ngày giao dịch × 1 sàn (nguồn).
 
 **Attributes chính:** số hiệu khớp (BK ghép với `trade_date`, thị trường, mã chứng khoán), giá khớp, khối lượng khớp, giá trị khớp, thông tin bên mua/bán, số hiệu lệnh mua/bán (FK-BK về `Securities Order`), Spread legs (chỉ HNX), ETL-derived `src_stm_code`.
+
+### 15. Listing Advisory Firm
+**Tier:** 1 | **Source:** `HNX.LISTING_ADVISORY_FIRMS` | **BCV Concept:** [Involved Party] Advising Involved Party | **BCO:** Involved Party | **Table Type:** Fact Snapshot
+**Domain Prefix:** (none)
+**Description:** Danh sách công ty chứng khoán đóng vai trò tư vấn niêm yết và tổ chức (khách hàng) được tư vấn: tên và mã số doanh nghiệp của hai bên, số và ngày hợp đồng tư vấn, theo kỳ báo cáo.
+
+**Grain:** 1 dòng = 1 hợp đồng tư vấn niêm yết (CTCK × tổ chức được tư vấn × số hợp đồng) × 1 kỳ báo cáo.
+
+**Attributes chính:** `sc_business_nbr`, `advised_company_business_nbr`, `contract_nbr`, `rpt_period` (BK ghép), tên CTCK, tên tổ chức được tư vấn, ngày hợp đồng, ETL-derived `src_stm_code`.
