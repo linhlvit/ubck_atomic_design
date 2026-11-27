@@ -241,7 +241,10 @@ SELECT
     o.decision_dt,
     o.decision_year,
     o.violation_behavior_nm,
-    o.src_stm_code
+    o.src_stm_code,
+    o.inspection_conclusion_code,
+    o.conclusion_nbr,
+    o.conclusion_issued_dt
 FROM datamart.opr_inspection_case_list o
 ;
 

@@ -6,6 +6,7 @@
 -- Sửa 2026-10-14: thêm #18 qlq_opr_foreign_fund_management_organization_unit_contract_list_flat (Nhóm 27) và #19 qlq_fund_management_company_staff_trade_rpt_flat (Nhóm 28) — trước đó PENDING
 -- Sửa 2026-10-14: thêm #17 qlq_fct_fund_management_rpt_cell_val_flat (Dashboard RPT, 51 KPI READY) — bị bỏ sót ở commit 2f62880d
 -- Sửa 2026-10-27: 4 Fact snapshot (#1, #2, #4, #5) nạp ĐỦ mọi tháng — bỏ điều kiện khóa 1 ngày chạy ETL (O_QLQ_53)
+-- Sửa 2026-11-27: #19 qlq_fund_management_company_staff_trade_rpt_flat đổi TRUNCATE + INSERT toàn bộ → nạp theo ngày (DELETE trade_dt của ngày chạy rồi INSERT đúng ngày đó), cùng mẫu Fact report NDTNN (O_QLQ_99)
 -- Tham số ETL hàng ngày: :etl_date (không dùng {etl_date}/$etl_date/hardcode)
 -- Sửa 2026-11-15: thêm #25 qlq_fct_dynamic_report_val_flat (Fact Dynamic Report Value — append theo delta ds_snpst_dt) và GỠ #21, #22 (2 bảng khai thác Data Explorer, logic biến đổi của job ODS cũ); bản cũ nằm ở commit 10c76c41 (O_QLQ_91)
 -- Sửa 2026-11-08: #21 + #22 thay #21 cũ — logic biến đổi của job Data Explorer ODS cũ chuyển thành INSERT...SELECT từ 3 bảng Datamart (fct_dynamic_report_val, dynamic_report_structure_dim, dynamic_report_submission_history_dim); nạp ĐỦ (TRUNCATE + INSERT), #22 phải chạy SAU #21 (O_QLQ_80)
@@ -382,8 +383,12 @@ FROM datamart.opr_foreign_fund_management_organization_unit_contract_list o
 
 -- ============================================================
 -- 19. FACT (report): qlq_fund_management_company_staff_trade_rpt_flat
+--    Không FK Calendar Date — lọc trực tiếp trên trade_dt
+--    [SỬA 2026-11-27 — O_QLQ_99] Nạp theo ngày: xóa dòng của ngày chạy ETL rồi chèn đúng ngày đó; chạy lại cùng ngày không nhân đôi dòng,
+--    ngày khác giữ nguyên. Trước đó TRUNCATE + INSERT toàn bộ mỗi lần chạy (mẫu Operational còn sót từ lúc bảng chưa đổi sang Fact report, O_QLQ_38).
 -- ============================================================
-TRUNCATE TABLE IF EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster';
+DELETE FROM datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
+WHERE trade_dt = :etl_date;
 INSERT INTO datamart.qlq_fund_management_company_staff_trade_rpt_flat
 SELECT
     o.fmc_employee_code,
@@ -401,6 +406,7 @@ SELECT
     o.order_amt,
     o.src_stm_code
 FROM datamart.fund_management_company_staff_trade_rpt o
+WHERE o.trade_dt = :etl_date
 ;
 
 

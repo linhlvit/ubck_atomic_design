@@ -204,7 +204,7 @@ modules:
     expect_header_contains: ["STT", "Mã dashboard/BC", "Dashboard/báo cáo", "Trạng thái mapping"]
 
   QLKD:
-    expect_columns: 19
+    expect_columns: 20
     ma_column: "PIC"
     sql_columns: ["Câu lệnh tham khảo (SIT)"]
     expect_header_contains:
@@ -242,6 +242,9 @@ modules:
       BA BỎ cột cuối 'Trạng thái' (index 19) → 19 cột; cột cuối nay là 'Câu lệnh tham khảo (SIT)' (index 18). STT index 0, PIC 1,
       'Trạng thái mapping' 13. Số dòng 8105 → 8125 (HEAD 164f0667 → working). Parser tra theo TÊN ('Trạng thái mapping' được ưu tiên
       trong datamart_progress_analyzer) nên chỉ đổi expect_columns 20 → 19.
+      [CẬP NHẬT 2026-11-27 14:05, xác minh qua header sống: 8127 dòng đều 20 cột (HEAD cũng 8127 dòng nhưng 19 cột), delimiter ',', header dòng 1, legend dòng 2]
+      BA THÊM LẠI cột cuối 'Kết quả SIT' (index 19) sau 'Câu lệnh tham khảo (SIT)' (index 18) → 20 cột. STT index 0, PIC 1,
+      'Trạng thái mapping' 13. Số dòng không đổi. Parser tra theo TÊN nên chỉ đổi expect_columns 19 → 20.
 
   TKNB:
     expect_columns: 29

@@ -88,7 +88,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Inspection Case List | Tác nghiệp | new | Danh sách đoàn thanh tra × đối tượng — latest state. Không reuse `opr_securities_company_compliance_hist` (module QLKD, khác table_type/mục đích) | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) × hành vi vi phạm (**[SỬA 2026-11-03]**) | Nhóm 5 (TT) |
+| Operational Inspection Case List | Tác nghiệp | new | Danh sách đoàn thanh tra × đối tượng — latest state. Không reuse `opr_securities_company_compliance_hist` (module QLKD, khác table_type/mục đích) | 1 row per `INSPECTION_TEAM` × `INSPECTION_TEAM_TARGET` (N:1) × hành vi vi phạm (**[SỬA 2026-11-03]**) × kết luận (**[SỬA 2026-11-27]**; đoàn không có đối tượng vào qua Nguồn C) | Nhóm 5 (TT) |
 
 ---
 
@@ -215,7 +215,7 @@ erDiagram
 | Fact Penalty Decision | Fact — Event | partial | 1 QĐXP | `penalty_decision` | K_TT_81–85, K_TT_86–87 |
 | Fact Penalty Decision Subject Behavior | Fact — Event | partial | 1 QĐ × 1 đối tượng × 1 hành vi | `penalty_decision` / `penalty_decision_subject` / `pd_subject_behavior` / `violation_behavior` | K_TT_88–110, K_TT_136–150 |
 | Fact Penalty Decision Subject | Fact — Event | partial | 1 QĐ × 1 đối tượng | `penalty_decision` / `penalty_decision_subject` | K_TT_111–115 |
-| Operational Inspection Case List | Tác nghiệp | new | 1 đoàn × 1 đối tượng × 1 hành vi (latest) | `inspection_team` / `inspection_team_target` / `violation_behavior` | Nhóm 5 |
+| Operational Inspection Case List | Tác nghiệp | new | 1 đoàn × 1 đối tượng × 1 hành vi × 1 kết luận (latest) | `inspection_team` / `inspection_team_target` / `violation_behavior` / `inspection_conclusion` | Nhóm 5 |
 | Operational Examination Case List | Tác nghiệp | new | 1 vụ × 1 đối tượng × 1 hành vi (latest) | `examination_team` / `examination_team_target` / `violation_behavior` | Nhóm 10 |
 | Operational Penalty Decision List | Tác nghiệp | new | 1 QĐ × 1 đối tượng × 1 hành vi (latest) | `penalty_decision` / `penalty_decision_subject` / `violation_case` / `violation_behavior` | Nhóm 15 |
 | Operational Petition List | Tác nghiệp | new | 1 đơn thư (latest) | `petition` | Nhóm 16–19, K_TT_121–131 |

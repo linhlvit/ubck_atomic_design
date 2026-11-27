@@ -222,7 +222,9 @@ CREATE TABLE IF NOT EXISTS datamart.nhnck_opr_practitioner_employment_hist_flat 
     practitioner_department_at_rpt    Nullable(String)    COMMENT 'Phòng ban tại thời điểm báo cáo',
     hire_dt             Nullable(Date)      COMMENT 'Ngày bắt đầu làm việc',
     termination_dt              Nullable(Date)      COMMENT 'Ngày kết thúc làm việc — NULL nếu hiện tại',
-    src_stm_code        String              COMMENT 'Mã hệ thống nguồn'
+    src_stm_code        String              COMMENT 'Mã hệ thống nguồn',
+    rpt_status_code                              Nullable(String)        COMMENT '[MỚI 2026-11-26, O_NHNCK_50] Trạng thái báo cáo tổ chức (ORGANIZATION_REPORTS.STATUS); 2 = đã xác nhận — dùng lọc báo cáo hợp lệ khi tính chỉ tiêu cảnh báo NHN tại Detail Mapping',
+    organization_status_code_at_rpt              Nullable(String)        COMMENT '[MỚI 2026-11-26, O_NHNCK_50] Trạng thái tổ chức tại thời điểm báo cáo (ORGANIZATION_REPORTS.STATUS_ORGANIZATION); 2 = đã duyệt — đi cặp với cột trạng thái báo cáo để lọc báo cáo đã xác nhận'
 )
 ENGINE = ReplicatedReplacingMergeTree()
 PARTITION BY toYYYYMM(assumeNotNull(hire_dt))
