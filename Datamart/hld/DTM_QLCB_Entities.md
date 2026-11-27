@@ -1,8 +1,10 @@
-# DTM_QLCB_Entities — v2.5
+# DTM_QLCB_Entities — v2.6
 
-**Phiên bản:** 2.5
-**Ngày:** 15/10/2026
+**Phiên bản:** 2.6
+**Ngày:** 27/11/2026
 **Phạm vi:** Star schema diagram per nhóm báo cáo — QLCB module (Phase 2, dựa trên Section 3/4 của `DTM_QLCB_HLD.md`)
+
+> **Cập nhật v2.6 (2026-11-27) — đồng bộ code dev (đợt 1: Nhóm 1–4; zip `QLCB.zip` + `qlcb (1).zip`, Data Modeler "đồng ý" theo dev):** (1) **Entity mới** `Fact Securities Offering Detail Snapshot` (`fct_securities_offering_detail_snpst`, 20 cột gồm PK hash theo A22) — Nhóm 4 chuyển từ Operational 360 Profile sang Fact này; (2) 3 Fact Nhóm 1–3 giữ FK ngày snapshot (`snpst_dt_dim_id`, luật Fact `_snpst`; dev chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày), tách thêm 2 FK role-playing `certificate_dt_dim_id` + `official_letter_dt_dim_id`, thêm `security_tp_nm`, chỉ lấy hồ sơ APPROVED (Plan/Result), FK Public Company/Certificate nullable ở Fact Offering; (3) `Offering Method Dimension.offering_method_group_nm` đổi CASE gom nhóm. Điểm lệch BA/rủi ro dữ liệu ghi ở O_QLCB_28. Đợt 2 (Operational 360 Profile Nhóm 7–10, `Fact TTHC AP Document` đổi tên `fct_ap_document`) chưa áp.
 
 > **Cập nhật v2.5 (2026-10-15) — Fact phẳng `Fact TTHC AP Document` (SQL dbt `dtm_fct_tthc_ap_document`, Data Modeler):** thay 3 entity (`Fact Securities Offering Application Snapshot`, `Administrative Procedure Application Status Dimension`, `Administrative Procedure Application Type Dimension`) bằng **1 Fact phẳng** `Fact TTHC AP Document` (`fct_tthc_ap_document`, 6 cột, không FK Dimension, không Calendar Date). Nhóm trạng thái là tên tiếng Việt (5 nhóm, bỏ `UNDEFINED`). CSV 10 → 8 dòng. Xem O_QLCB_26.
 
@@ -26,9 +28,9 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Snapshot | Fact Event | new | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ | 1 row / hồ sơ chào bán | K_QLCB_1–5 |
+| Fact Securities Offering Snapshot | Fact Event | new | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (2 FK ngày role-playing: giấy chứng nhận, công văn; ngày báo cáo = COALESCE) | 1 row / hồ sơ chào bán × loại chứng khoán (`security_tp_nm`) | K_QLCB_1–5 |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN, sàn, ngành (reuse `public_company_dim`, module GSDC) | 1 row / công ty đại chúng | Slicer Ngành |
-| Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer Ngày |
+| Calendar Date Dimension | Dimension | reuse | Ngày snapshot / ngày giấy chứng nhận / ngày công văn UBCKNN (role-playing — `snpst_dt_dim_id`, `certificate_dt_dim_id`, `official_letter_dt_dim_id`) | 1 row / ngày (Conformed) | Slicer Ngày |
 
 ---
 
@@ -43,10 +45,10 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Plan Snapshot | Fact Event | new | Giá trị cấp phép theo loại hình chào bán | 1 row / đợt × 1 loại hình kế hoạch | K_QLCB_6–12 |
+| Fact Securities Offering Plan Snapshot | Fact Event | new | Giá trị cấp phép theo loại hình chào bán (chỉ hồ sơ APPROVED; SUM theo hồ sơ × hình thức × loại CK) | 1 row / đợt × 1 hình thức × 1 loại chứng khoán | K_QLCB_6–12 |
 | Offering Method Dimension | Dimension | new | Hình thức chào bán (ETL-derived DISTINCT từ `offering_method_code`) | 1 row / mã hình thức | Slicer Loại hình |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN (reuse `public_company_dim`) | 1 row / công ty đại chúng | Slicer |
-| Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Ngày snapshot / ngày giấy chứng nhận / ngày công văn UBCKNN (role-playing) | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
@@ -61,20 +63,25 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Fact Securities Offering Result Snapshot | Fact Event | new | Giá trị huy động theo loại hình chào bán | 1 row / đợt × 1 loại hình kết quả | K_QLCB_13–19 |
+| Fact Securities Offering Result Snapshot | Fact Event | new | Giá trị huy động theo loại hình chào bán (chỉ hồ sơ APPROVED; SUM theo hồ sơ × hình thức × loại CK) | 1 row / đợt × 1 hình thức × 1 loại chứng khoán | K_QLCB_13–19 |
 | Offering Method Dimension | Dimension | new | Hình thức chào bán (reuse từ Nhóm 2, cùng scheme) | 1 row / mã hình thức | Slicer |
 | Public Company Dimension | Dimension | reuse | Mã CK, tên DN (reuse `public_company_dim`) | 1 row / công ty đại chúng | Slicer |
-| Calendar Date Dimension | Dimension | reuse | Ngày công văn UBCKNN | 1 row / ngày (Conformed) | Slicer |
+| Calendar Date Dimension | Dimension | reuse | Ngày snapshot / ngày giấy chứng nhận / ngày công văn UBCKNN (role-playing) | 1 row / ngày (Conformed) | Slicer |
 
 ---
 
 ### Nhóm 4 — Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành
 
-> Bảng Tác nghiệp — lấy dữ liệu trực tiếp từ Atomic, không join qua Dimension. Không vẽ erDiagram relationship.
+> **[SỬA 2026-11-27 — đồng bộ code dev]** Nhóm 4 đọc **Fact Securities Offering Detail Snapshot** (thay Operational 360 Profile). Fact phẳng — thuộc tính mô tả (tên công ty, ngành, mã CK, loại CK, hình thức, các tổ chức liên quan) lưu sẵn trên Fact, lấy trực tiếp từ Atomic, không FK Dimension khác; chỉ giữ FK ngày snapshot `snpst_dt_dim_id` → `Calendar Date Dimension` (luật Fact `_snpst`, dev chỉ có cột kỹ thuật `ds_snpst_dt`). Operational 360 Profile chỉ còn phục vụ Nhóm 7–10.
+
+```mermaid
+erDiagram
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Detail_Snapshot : " "
+```
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Operational Securities Offering 360 Profile | Operational | new | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (đơn vị tư vấn/kiểm toán/bảo lãnh/XHTN) | 1 row / đợt chào bán × 1 loại hình | K_QLCB_20–31 |
+| Fact Securities Offering Detail Snapshot | Fact Event | new | Chi tiết số lượng chứng khoán chào bán & phát hành — gom Plan (hình thức, giá cấp phép, mệnh giá) nối Result (loại CK, giá thực tế) theo hình thức; gồm đơn vị tư vấn/kiểm toán/bảo lãnh/XHTN, số lượng/giá trị cấp phép và thành công, tỷ lệ thành công. PK hash theo A22 (code dev chưa có cột PK — O_QLCB_28 (g)) | 1 row / hồ sơ chào bán × 1 dòng Plan gộp × 1 dòng Result gộp | K_QLCB_20–31, 70 |
 
 ---
 

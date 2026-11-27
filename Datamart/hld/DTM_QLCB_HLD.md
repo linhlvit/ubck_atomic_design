@@ -62,6 +62,8 @@ flowchart LR
 
 > **Ghi chú:** Ngành (`Business Line Level 1/2 Code`) lấy trực tiếp từ cột có sẵn trên `public_company_dim` (reuse) — không có Dimension ETL-derived riêng. `Public Company Securities Offering Result` feed thẳng vào Fact (không qua Dimension) vì cần aggregate SUM `total_collected_amt` GROUP BY hồ sơ.
 
+> **[ĐỒNG BỘ code dev 2026-11-27] (O_QLCB_28):** Fact đồng bộ theo dbt `dtm_fct_securities_offering_snpst` — INNER JOIN Result (gộp theo hồ sơ × loại CK) và INNER JOIN Plan (gộp theo hồ sơ; `total_expected_amt`), lọc hồ sơ `APPROVED`; thêm nguồn `Classification Value` (scheme `SO_SECURITY_TYPE`) cho `Security_Type_Name`; hai FK ngày role-playing (`certificate_dt`, `official_letter_dt`), giữ FK ngày snapshot (`Snapshot_Date_Dimension_Id`, luật Fact `_snpst`) cùng cột kỹ thuật `ds_snpst_dt` của dev. `Public Company Securities Offering Plan` tham gia Fact nhưng chưa vẽ trong flowchart trên (đã tham gia từ 2026-09-10).
+
 ---
 
 ##### Cụm 1b: Chào bán phát hành — giá trị cấp phép theo loại hình (Fact Securities Offering Plan Snapshot)
@@ -110,6 +112,8 @@ flowchart LR
 ```
 
 > **Ghi chú:** `Public Company Securities Offering` (Offering cha) feed vào Fact vì `Certificate_Date` (FK date) và `Public Company Code` (FK company) chỉ tồn tại trên bảng cha — Plan phải JOIN ngược lên cha để lấy 2 giá trị này.
+
+> **[ĐỒNG BỘ code dev 2026-11-27] (O_QLCB_28):** chỉ Plan của hồ sơ `APPROVED`, SUM theo (hồ sơ, hình thức, loại CK); 2 FK ngày role-playing (`certificate_dt`, `official_letter_dt`), giữ FK ngày snapshot (`Snapshot_Date_Dimension_Id`, luật Fact `_snpst`) cùng cột kỹ thuật `ds_snpst_dt` của dev; thêm `Security_Type_Name` (CASE LIKE `%CP%`/`%TP%`); `Offering_Method_Group_Name` đổi CASE gom nhóm (O_QLCB_28 (d)).
 
 ---
 
@@ -163,11 +167,13 @@ flowchart LR
 
 > **Ghi chú:** `Offering Method Code Snapshot` trên Result là denormalized snapshot từ Plan — `Offering Method Dimension` seed (DISTINCT) trực tiếp từ `Public Company Securities Offering Plan.offering_method_code` (dùng chung Cụm 1b, `Offering_Method_Name` join `Classification Value`), ETL populate FK trên Fact Result join qua Plan (`offering_method_code`) rồi snapshot sang Result.
 
+> **[ĐỒNG BỘ code dev 2026-11-27] (O_QLCB_28):** chỉ Result của hồ sơ `APPROVED`, SUM theo (hồ sơ, hình thức, loại CK) với fallback `10000 × SL thành công` khi giá thực tế 0/NULL (O_QLCB_28 (e)); 2 FK ngày role-playing, giữ FK ngày snapshot (`Snapshot_Date_Dimension_Id`, luật Fact `_snpst`) cùng cột kỹ thuật `ds_snpst_dt` của dev; thêm `Security_Type_Name`.
+
 ---
 
 ##### Cụm 2: Chi tiết đợt chào bán (Bảng Tác nghiệp — Operational Securities Offering 360 Profile)
 
-Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lượng CK chào bán & phát hành) và Tab CHÀO BÁN VÀ PHÁT HÀNH — Nhóm 7–10 (tra cứu chi tiết đợt chào bán theo 4 nhóm chỉ số). Bảng tác nghiệp nhận dữ liệu trực tiếp từ Atomic, không qua Dimension.
+**[ĐỒNG BỘ code dev 2026-11-27] Nhóm 4 đã chuyển sang `Fact Securities Offering Detail Snapshot` (Cụm 2b).** Cụm này chỉ còn phục vụ Tab CHÀO BÁN VÀ PHÁT HÀNH — Nhóm 7–10 (tra cứu chi tiết đợt chào bán theo 4 nhóm chỉ số). Bảng tác nghiệp nhận dữ liệu trực tiếp từ Atomic, không qua Dimension.
 
 ```mermaid
 flowchart LR
@@ -198,6 +204,51 @@ flowchart LR
     Public_Company_Securities_Offering_Plan --> opr_securities_offering_360_profile
     Public_Company_Securities_Offering_Result --> opr_securities_offering_360_profile
     Public_Company --> opr_securities_offering_360_profile
+```
+
+---
+
+##### Cụm 2b: Chi tiết số lượng chứng khoán chào bán & phát hành (Fact Securities Offering Detail Snapshot)
+
+Phục vụ Tab CHÀO BÁN PHÁT HÀNH — Nhóm 4 (bảng chi tiết số lượng CK chào bán & phát hành, K_QLCB_20–31, 70). [ĐỒNG BỘ code dev 2026-11-27] Fact phẳng theo dbt `dtm_fct_securities_offering_detail_snpst` — nhận dữ liệu trực tiếp từ Atomic, không qua Dimension: tên công ty/ngành/mã CK/loại CK/hình thức/4 tổ chức lưu sẵn trên Fact. Plan LEFT JOIN Result theo hình thức; PK hash theo A22 (dev chưa có cột PK — O_QLCB_28 (g)).
+
+```mermaid
+flowchart LR
+    subgraph SRC["Staging"]
+        IDS_SECURITIES_OFFERING["IDS.SECURITIES_OFFERING"]
+        IDS_SECURITIES_OFFERING_PLAN["IDS.SECURITIES_OFFERING_PLAN"]
+        IDS_SECURITIES_OFFERING_RESULT["IDS.SECURITIES_OFFERING_RESULT"]
+        IDS_COMPANY_PROFILES["IDS.COMPANY_PROFILES"]
+        IDS_LOOKUP_VALUES["IDS.LOOKUP_VALUES"]
+        IDS_CATEGORIES["IDS.CATEGORIES"]
+    end
+
+    subgraph SIL["Atomic"]
+        Public_Company_Securities_Offering["Public Company Securities Offering"]
+        Public_Company_Securities_Offering_Plan["Public Company Securities Offering Plan"]
+        Public_Company_Securities_Offering_Result["Public Company Securities Offering Result"]
+        Public_Company["Public Company"]
+        Classification_Value["Classification Value"]
+        Classification_IDS_Business_Line["Classification IDS Business Line"]
+    end
+
+    subgraph GOLD["Datamart"]
+        fct_securities_offering_detail_snpst["Fact Securities Offering Detail Snapshot"]
+    end
+
+    IDS_SECURITIES_OFFERING --> Public_Company_Securities_Offering
+    IDS_SECURITIES_OFFERING_PLAN --> Public_Company_Securities_Offering_Plan
+    IDS_SECURITIES_OFFERING_RESULT --> Public_Company_Securities_Offering_Result
+    IDS_COMPANY_PROFILES --> Public_Company
+    IDS_LOOKUP_VALUES --> Classification_Value
+    IDS_CATEGORIES --> Classification_IDS_Business_Line
+
+    Public_Company_Securities_Offering --> fct_securities_offering_detail_snpst
+    Public_Company_Securities_Offering_Plan --> fct_securities_offering_detail_snpst
+    Public_Company_Securities_Offering_Result --> fct_securities_offering_detail_snpst
+    Public_Company --> fct_securities_offering_detail_snpst
+    Classification_Value --> fct_securities_offering_detail_snpst
+    Classification_IDS_Business_Line --> fct_securities_offering_detail_snpst
 ```
 
 ---
@@ -301,6 +352,8 @@ flowchart LR
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft) — [CẬP NHẬT 2026-09-10] nguồn mới cho "Giá trị Cấp phép" (K_QLCB_3), xem ghi chú dưới
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft)
 > Atomic: `Public Company` ← IDS.COMPANY_PROFILES — **READY**
+> Atomic: `Classification Value` (scheme `SO_SECURITY_TYPE`) — **READY** — [ĐỒNG BỘ code dev 2026-11-27] tên loại chứng khoán cho `Security_Type_Name`
+> **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28:** Fact đồng bộ theo dbt `dtm_fct_securities_offering_snpst` của dev (Data Modeler "đồng ý" theo dev): giữ FK ngày snapshot `Snapshot_Date_Dimension_Id` (luật Fact `_snpst` — Gate 1 Rule 2; dev bỏ FK này, chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày, dev bổ sung khi triển khai) và bỏ cột `Official_Letter_Date`; tách 2 FK role-playing `Certificate_Date_Dimension_Id` (chỉ `certificate_dt`) + `Official_Letter_Date_Dimension_Id`, ngày báo cáo = `COALESCE(certificate_dt, official_letter_dt)`; thêm `Security_Type_Name` nên grain = hồ sơ × loại chứng khoán; `Public_Company_Dimension_Id` và `Certificate_Date_Dimension_Id` nullable (LEFT JOIN); bỏ loại trừ hình thức 6,7,8,10 ở measure và thêm fallback giá (mệnh giá × SL cấp phép, 10.000 × SL thành công). Điểm lệch BA và rủi ro dữ liệu: xem O_QLCB_28.
 
 **Mockup:**
 
@@ -310,16 +363,16 @@ flowchart LR
 | Bất động sản | 8,700 | 7,100 | 1,600 |
 | Công nghiệp | 5,300 | 4,800 | 500 |
 
-**Source:** `Fact Securities Offering Snapshot` → `Public Company Dimension` (reuse), `Calendar Date Dimension`
+**Source:** `Fact Securities Offering Snapshot` → `Public Company Dimension` (reuse), `Calendar Date Dimension` (role-playing: ngày snapshot, ngày giấy chứng nhận, ngày công văn)
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date trên Fact, dùng làm slicer/period cho toàn Nhóm — `Public Company Securities Offering.certificate_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN). **[CẬP NHẬT 2026-09-10]** phạm vi lọc kỳ báo cáo mở rộng thành `NVL(Certificate Date, Official Letter Date)` — hồ sơ chưa có Certificate Date nhưng đã có Official Letter Date vẫn vào phạm vi; FK ngày trên Fact (`Certificate_Date_Dimension_Id`, giữ nguyên tên cột) nay populate theo `NVL(certificate_dt, official_letter_dt)` thay vì chỉ `certificate_dt` | READY |
+| K_QLCB_1 | Ngày | — | Chiều | `GROUP BY Certificate Date` — FK date role-playing trên Fact (`Certificate_Date_Dimension_Id`, `Official_Letter_Date_Dimension_Id`), dùng làm slicer/period cho toàn Nhóm; ngày báo cáo = `COALESCE(Certificate Date, Official Letter Date)` — `Public Company Securities Offering.certificate_dt` / `official_letter_dt` | BA cập nhật 2026-08-11: đổi field lọc kỳ báo cáo từ Official Letter Date (ngày công văn) sang Certificate Date (ngày cấp GCN). **[CẬP NHẬT 2026-09-10]** phạm vi lọc kỳ báo cáo mở rộng thành `NVL(Certificate Date, Official Letter Date)` — hồ sơ chưa có Certificate Date nhưng đã có Official Letter Date vẫn vào phạm vi; FK ngày trên Fact (`Certificate_Date_Dimension_Id`, giữ nguyên tên cột) nay populate theo `NVL(certificate_dt, official_letter_dt)` thay vì chỉ `certificate_dt`. **[ĐỒNG BỘ code dev 2026-11-27]** FK `Certificate_Date_Dimension_Id` quay về CHỈ `certificate_dt`; thêm FK role-playing `Official_Letter_Date_Dimension_Id` — slicer kỳ báo cáo lọc `COALESCE` của 2 ngày (cột `cdr_dt` ở flat), không còn gộp vào 1 FK | READY |
 | K_QLCB_2 | Ngành | — | Chiều | `GROUP BY Business Line Level 1 Code` — FK Public Company Dimension (reuse `public_company_dim`), dùng làm slicer ngành cho toàn Nhóm | — | READY |
-| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount Snapshot) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — `Public Company Securities Offering Plan.total_expected_amt_snpst` GROUP BY `pc_securities_offering_id` (CTE `plan_agg`) | **[ĐỔI NGUỒN 2026-09-10]** đổi nguồn từ bảng cha `Public Company Securities Offering.total_expected_amt` (giá trị đơn/hồ sơ) sang SUM `Public Company Securities Offering Plan.total_expected_amt_snpst` (aggregate theo `plan_agg`, cùng cơ chế gom nhóm-trước-JOIN-sau đã áp dụng ở Nhóm 2). Danh sách mã loại trừ đổi từ `(6,7,8,9)` → `(6,7,8,10)` (mã 9-ESOP nay được tính, mã 10-Khác bị loại). Thêm điều kiện bắt buộc `Approval Status Code = 'APPROVED'` (trước đây không lọc theo trạng thái duyệt) | READY |
-| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` (CTE `result_agg`) trước khi cộng vào Fact | **[ĐỔI 2026-09-10]** cùng điều kiện lọc mới với K_QLCB_3 (mã loại trừ + `APPROVAL_STATUS_CD='APPROVED'`). **Đổi kiểu JOIN — chốt với người thiết kế 2026-09-10:** BA đổi `LEFT JOIN result_agg` → `JOIN result_agg` (INNER) — theo đúng BA, chấp nhận thu hẹp phạm vi: hồ sơ **chưa có bất kỳ dòng Result nào** (chưa công bố kết quả huy động) sẽ **không xuất hiện** trong Nhóm 1 nữa (trước đây LEFT JOIN vẫn hiện với Giá trị Huy động = 0). Ảnh hưởng cả K_QLCB_3 vì cùng 1 SELECT — Giá trị Cấp phép của các hồ sơ này cũng biến mất khỏi tổng theo ngành, không chỉ Giá trị Huy động | READY |
+| K_QLCB_3 | Giá trị Cấp phép | Tỷ VNĐ | Cơ sở | `SUM(Total Expected Amount Snapshot) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — `Public Company Securities Offering Plan.total_expected_amt_snpst` GROUP BY `pc_securities_offering_id` (CTE `plan_agg`) | **[ĐỔI NGUỒN 2026-09-10]** đổi nguồn từ bảng cha `Public Company Securities Offering.total_expected_amt` (giá trị đơn/hồ sơ) sang SUM `Public Company Securities Offering Plan.total_expected_amt_snpst` (aggregate theo `plan_agg`, cùng cơ chế gom nhóm-trước-JOIN-sau đã áp dụng ở Nhóm 2). Danh sách mã loại trừ đổi từ `(6,7,8,9)` → `(6,7,8,10)` (mã 9-ESOP nay được tính, mã 10-Khác bị loại). Thêm điều kiện bắt buộc `Approval Status Code = 'APPROVED'` (trước đây không lọc theo trạng thái duyệt). **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (a), (c), (e):** dbt dev đã comment bỏ `offering_method_code NOT IN (6,7,8,10)` ở `plan_agg`/`result_agg`, trong khi SQL BA N1 vẫn còn → Detail Mapping giữ FILTER qua `Fact Securities Offering Plan Snapshot` (EXISTS) nhưng flat Offering không có cột hình thức nên không áp được; `total_expected_amt` = SUM Plan theo hồ sơ (fallback mệnh giá × SL cấp phép khi giá cấp phép 0/NULL) và bị nhân khi Fact tách theo loại CK; chờ BA/dev xác nhận | READY |
+| K_QLCB_4 | Giá trị Huy động thành công | Tỷ VNĐ | Cơ sở | `SUM(Total Collected Amount) WHERE Approval Status Code = 'APPROVED' AND Offering Method Code NOT IN (6,7,8,10)` per ngành × kỳ — aggregate từ `Public Company Securities Offering Result.total_collected_amt` GROUP BY `pc_securities_offering_id` (CTE `result_agg`) trước khi cộng vào Fact | **[ĐỔI 2026-09-10]** cùng điều kiện lọc mới với K_QLCB_3 (mã loại trừ + `APPROVAL_STATUS_CD='APPROVED'`). **Đổi kiểu JOIN — chốt với người thiết kế 2026-09-10:** BA đổi `LEFT JOIN result_agg` → `JOIN result_agg` (INNER) — theo đúng BA, chấp nhận thu hẹp phạm vi: hồ sơ **chưa có bất kỳ dòng Result nào** (chưa công bố kết quả huy động) sẽ **không xuất hiện** trong Nhóm 1 nữa (trước đây LEFT JOIN vẫn hiện với Giá trị Huy động = 0). Ảnh hưởng cả K_QLCB_3 vì cùng 1 SELECT — Giá trị Cấp phép của các hồ sơ này cũng biến mất khỏi tổng theo ngành, không chỉ Giá trị Huy động. **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (a), (e):** dev giữ INNER JOIN Result + Plan, nhưng bỏ loại trừ hình thức 6,7,8,10; `total_collected_amt` = SUM Result gộp theo (hồ sơ, loại CK), fallback `10000 × SL thành công` khi giá thực tế 0/NULL (BA không có) | READY |
 | K_QLCB_5 | Chưa thành công | Tỷ VNĐ | Derived | `K_QLCB_3 − K_QLCB_4` — tính ở presentation layer | — | READY |
 
 > **Lưu ý:** K_QLCB_1/2 là Chiều — cùng dùng chung FK date/ngành đã có sẵn trên `Fact Securities Offering Snapshot` (không tạo cột mới), khai sinh KPI_ID theo rule "mọi dòng BA Phân loại = Chiều phải có KPI_ID". **[CẬP NHẬT 2026-09-10]** K_QLCB_3 nay SUM từ `Public Company Securities Offering Plan` (trước đó lấy trực tiếp `total_expected_amt` trên bảng cha, 1 giá trị/hồ sơ — không còn đúng theo BA mới). K_QLCB_4 cần SUM `total_collected_amt` từ `Public Company Securities Offering Result` GROUP BY `pc_securities_offering_id` — quan hệ 1-N vì 1 hồ sơ có thể có nhiều dòng Result theo từng đợt báo cáo kết quả (`Offering Phase Name`). K_QLCB_5 là Derived — tính ở presentation layer, không lưu mart.
@@ -355,18 +408,23 @@ erDiagram
     Fact_Securities_Offering_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
+        string Security_Type_Name
+        string Official_Letter_Date_Dimension_Id FK
         string Certificate_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         float Total_Expected_Amount
         float Total_Collected_Amount
-        date Official_Letter_Date
     }
 
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Snapshot : "Snapshot Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Snapshot : "Certificate Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Snapshot : "Official Letter Date"
     Public_Company_Dimension ||--o{ Fact_Securities_Offering_Snapshot : " "
 ```
 
 > **Ghi chú Phase 2 — reuse `Public_Company_Dimension` (= `public_company_dim`):** Dùng nguyên schema đã approved trong `datamart_model.yaml` (module GSDC). Key convention theo entity gốc: `Public_Company_Dimension_Id` = PK, `Public_Company_Code` = NK (ETL join từ `Public Company Securities Offering.Public Company Code` để resolve Surrogate Dimension Key).
+>
+> **[ĐỒNG BỘ code dev 2026-11-27]** Fact GIỮ `Snapshot_Date_Dimension_Id` (FK Calendar ngày chạy ETL — luật Fact snapshot; dev bỏ FK này và chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày, dev bổ sung khi triển khai — O_QLCB_28 (b)) và bỏ cột `Official_Letter_Date`; `Security_Type_Name` = `cl_nm` (scheme `SO_SECURITY_TYPE`) theo `security_tp_code` của Result; `Public_Company_Dimension_Id`/`Certificate_Date_Dimension_Id` nullable.
 >
 > **[CẬP NHẬT 2026-09-10]** `Certificate_Date_Dimension_Id` — nguồn ETL đổi từ `certificate_dt` sang `NVL(certificate_dt, official_letter_dt)`, giữ nguyên tên cột (không đổi thành role khác vì vẫn cùng 1 vai trò nghiệp vụ "ngày báo cáo/kỳ"). `Total_Expected_Amount`/`Total_Collected_Amount` — không đổi kiểu dữ liệu/tên cột, chỉ đổi nguồn ETL populate (xem K_QLCB_3/4): `Total_Expected_Amount` nay SUM từ `Public Company Securities Offering Plan` thay vì lấy trực tiếp từ Offering cha; cả 2 measure chỉ populate cho hồ sơ có `APPROVAL_STATUS_CD='APPROVED'` + tồn tại ≥1 dòng Result (INNER JOIN).
 
@@ -391,9 +449,9 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK đã duyệt (`APPROVAL_STATUS_CD='APPROVED'`) và đã có ≥1 kết quả huy động (INNER JOIN Result), của 1 công ty đại chúng × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; `NVL(Certificate Date, Official Letter Date)` giữ vai trò Chiều/slicer) — **[CẬP NHẬT 2026-09-10]** thu hẹp phạm vi so với thiết kế trước (LEFT JOIN Result, không lọc APPROVAL_STATUS_CD) |
+| Fact Securities Offering Snapshot | 1 row = 1 hồ sơ chào bán/phát hành CK đã duyệt (`APPROVAL_STATUS_CD='APPROVED'`) và đã có ≥1 kết quả huy động (INNER JOIN Result + Plan), của 1 công ty đại chúng × 1 loại chứng khoán (`Security_Type_Name`) × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; `COALESCE(Certificate Date, Official Letter Date)` giữ vai trò Chiều/slicer) — **[CẬP NHẬT 2026-09-10]** thu hẹp phạm vi so với thiết kế trước (LEFT JOIN Result, không lọc APPROVAL_STATUS_CD). **[ĐỒNG BỘ code dev 2026-11-27]** grain mịn hơn 1 hồ sơ khi Result có ≥2 loại CK — rủi ro nhân `Total_Expected_Amount`, xem O_QLCB_28 (c) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng (SCD4A — theo quy ước module GSDC) |
-| Calendar Date Dimension | 1 row = 1 ngày (Certificate Date — ngày cấp giấy chứng nhận) |
+| Calendar Date Dimension | 1 row = 1 ngày (role-playing: Snapshot Date — ngày chạy ETL; Certificate Date — ngày cấp giấy chứng nhận; Official Letter Date — ngày công văn) |
 
 ---
 
@@ -402,6 +460,7 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
+> **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28:** Plan đồng bộ theo dbt `dtm_fct_securities_offering_plan_snpst` của dev: chỉ Plan của hồ sơ `APPROVED` (join ngược Offering cha), SUM theo (hồ sơ, hình thức, loại CK), giữ FK ngày snapshot `Snapshot_Date_Dimension_Id` (luật Fact `_snpst` — Gate 1 Rule 2; dev bỏ FK này, chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày, dev bổ sung khi triển khai), tách 2 FK role-playing `Certificate_Date_Dimension_Id` + `Official_Letter_Date_Dimension_Id`, thêm `Security_Type_Name` (CASE LIKE '%CP%' → Cổ phiếu, '%TP%' → Trái phiếu), `Total_Expected_Amount_Snapshot` fallback mệnh giá × SL khi giá cấp phép 0/NULL; `Offering_Method_Group_Name` đổi CASE gom nhóm (xem bảng mapping dưới).
 > [CẬP NHẬT 2026-09-10] BA đổi filter kỳ báo cáo sang `NVL(certificate_dt, official_letter_dt)` (đồng bộ với Nhóm 1) — không đổi logic measure K_QLCB_6-12, chỉ mở rộng phạm vi hồ sơ theo ngày. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
@@ -415,7 +474,7 @@ flowchart LR
 | Tăng vốn từ VCSH | 1,500 | 8% |
 | Khác | 600 | 3% |
 
-**Source:** `Fact Securities Offering Plan Snapshot` → `Offering Method Dimension`, `Public Company Dimension` (reuse), `Calendar Date Dimension`
+**Source:** `Fact Securities Offering Plan Snapshot` → `Offering Method Dimension`, `Public Company Dimension` (reuse), `Calendar Date Dimension` (role-playing: ngày snapshot, ngày giấy chứng nhận, ngày công văn)
 
 **Bảng KPI:**
 
@@ -440,6 +499,8 @@ flowchart LR
 > | 7 | Trả cổ tức |
 > | 8 | Tăng vốn từ VCSH |
 > | khác (kể cả NULL) | Khác |
+>
+> **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (d):** CASE gom nhóm của `Offering Method Dimension.Offering_Method_Group_Name` đổi theo dbt `dtm_offering_method_dim`: 1, 2, 3, 13 → "Đang IPO hoặc công chúng"; 5 → "Riêng lẻ"; 9, 10 → "ESOP"; 7 → "Trả cổ tức"; 8 → "Tăng vốn từ VCSH"; 11 → "chào bán TP ra quốc tế"; NULL → "Khác"; mã còn lại → `cl_nm`. Bảng trên là mapping của BA mà filter K_QLCB_7–12 (Detail Mapping) vẫn dùng theo mã — lệch với Dimension ở mã 4 (BA: Công chúng; dev: hiển thị `cl_nm`) và mã 13 (BA: Khác; dev: Đang IPO hoặc công chúng); K_QLCB_13 (Nhóm 3) hiển thị nhóm theo CASE của dev.
 
 > **Lưu ý:** `Public Company Securities Offering Plan` có **1 dòng riêng cho mỗi loại hình** (`offering_method_code`) của cùng 1 hồ sơ chào bán. K_QLCB_7–12 là **Cơ sở** (SUM trực tiếp có filter theo mã), không phải Derived. `Total Expected Amount Snapshot` là cột denormalized trên Plan (snapshot từ bảng cha).
 >
@@ -477,13 +538,17 @@ erDiagram
     Fact_Securities_Offering_Plan_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
+        string Security_Type_Name
         string Certificate_Date_Dimension_Id FK
+        string Official_Letter_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
         float Total_Expected_Amount_Snapshot
     }
 
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : "Snapshot Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : "Certificate Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : "Official Letter Date"
     Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
     Public_Company_Dimension ||--o{ Fact_Securities_Offering_Plan_Snapshot : " "
 ```
@@ -492,7 +557,8 @@ erDiagram
 > - `Securities_Offering_Code` — BK đợt chào bán (degenerate dimension), denormalized sẵn trên Plan (`pc_securities_offering_code`) — bổ sung khi Phase 3 phát hiện 2 FK dim hiện có (Public Company + Offering Method) không đủ phân biệt các đợt chào bán khác nhau của cùng 1 công ty cùng loại hình; dùng làm grain key cho ORDER BY flat table
 > - `Offering_Method_Dimension` — `Offering_Method_Dimension_Id` = PK, `Offering_Method_Code` = NK, ETL-derived (DISTINCT) trực tiếp từ `Public Company Securities Offering Plan.offering_method_code`; `Offering_Method_Name` JOIN `Classification Value` (`cl_value.cl_code = offering_method_code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` (tên gốc); `Offering_Method_Group_Name` computed CASE WHEN theo `offering_method_code` gom vào 6 nhóm (Công chúng/Riêng lẻ/ESOP/Trả cổ tức/Tăng vốn từ VCSH/Khác) — cả 2 cột tính 1 lần ngay trên Dimension (dùng chung Nhóm 2/3/6), flat table chỉ SELECT thẳng, không tự CASE WHEN lại. Nhóm 2/6 hiển thị tên gốc (`Offering_Method_Name`); Nhóm 3 hiển thị nhóm (`Offering_Method_Group_Name`).
 > - `Public_Company_Dimension` = reuse `public_company_dim` (schema đầy đủ xem Nhóm 1) — FK join qua `Public Company Securities Offering.Public Company Code` (JOIN từ Offering cha, vì Plan không có trực tiếp Public Company Code — cần JOIN 2 tầng Plan → Offering → Public Company)
-> - `Certificate_Date_Dimension_Id` — cùng FK date với Nhóm 1, join từ `Public Company Securities Offering.certificate_dt` (Plan không có ngày riêng)
+> - `Certificate_Date_Dimension_Id` / `Official_Letter_Date_Dimension_Id` — cùng 2 FK date role-playing với Nhóm 1, join từ `Public Company Securities Offering.certificate_dt` / `official_letter_dt` (Plan không có ngày riêng); [ĐỒNG BỘ code dev 2026-11-27] `Snapshot_Date_Dimension_Id` giữ (FK ngày chạy ETL, role-playing của Calendar; dev chỉ có cột kỹ thuật `ds_snpst_dt`)
+> - `Public_Company_Dimension_Id` NOT NULL (INNER JOIN Public Company Dimension), `Offering_Method_Dimension_Id` nullable (LEFT JOIN) — [ĐỒNG BỘ code dev 2026-11-27]
 
 **Lineage Mart → Báo cáo:**
 
@@ -515,10 +581,10 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Plan Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kế hoạch × 1 ngày snapshot (ETL full-scan hàng ngày; Certificate Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Plan Snapshot | 1 row = 1 đợt chào bán (APPROVED) × 1 loại hình kế hoạch × 1 loại chứng khoán × 1 ngày snapshot (ETL full-scan hàng ngày; COALESCE(Certificate Date, Official Letter Date) giữ vai trò Chiều/slicer) — **[ĐỒNG BỘ code dev 2026-11-27]** thêm trục loại chứng khoán (`Security_Type_Name`) |
 | Offering Method Dimension | 1 row = 1 mã hình thức chào bán (scheme `IDS_SO_OFFERING_METHOD`) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng |
-| Calendar Date Dimension | 1 row = 1 ngày |
+| Calendar Date Dimension | 1 row = 1 ngày (role-playing: Snapshot Date — ngày chạy ETL; Certificate Date; Official Letter Date) |
 
 ---
 
@@ -527,6 +593,7 @@ flowchart LR
 > Phân loại: **Phân tích**
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft, dùng để lấy `certificate_dt` FK date)
+> **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28:** Result đồng bộ theo dbt `dtm_fct_securities_offering_result_snpst` của dev: chỉ Result của hồ sơ `APPROVED`, SUM theo (hồ sơ, hình thức, loại CK), giữ FK ngày snapshot `Snapshot_Date_Dimension_Id` (luật Fact `_snpst` — Gate 1 Rule 2; dev bỏ FK này, chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày, dev bổ sung khi triển khai), tách 2 FK role-playing `Certificate_Date_Dimension_Id` + `Official_Letter_Date_Dimension_Id`, thêm `Security_Type_Name` (CASE LIKE '%CP%'/'%TP%'), `Total_Collected_Amount` fallback `10000 × SL thành công` khi giá thực tế 0/NULL; K_QLCB_13 hiển thị nhóm theo CASE mới của `Offering_Method_Group_Name` (xem Nhóm 2, O_QLCB_28 (d)).
 > [CẬP NHẬT 2026-09-10] Cùng thay đổi filter ngày với Nhóm 2 — `NVL(certificate_dt, official_letter_dt)`. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
@@ -537,7 +604,7 @@ flowchart LR
 | Bất động sản | 2,100 | 1,800 | 500 | 400 | 700 | 100 |
 | Công nghiệp | 1,800 | 950 | 300 | 200 | 150 | 100 |
 
-**Source:** `Fact Securities Offering Result Snapshot` → `Offering Method Dimension`, `Public Company Dimension` (reuse), `Calendar Date Dimension`
+**Source:** `Fact Securities Offering Result Snapshot` → `Offering Method Dimension`, `Public Company Dimension` (reuse), `Calendar Date Dimension` (role-playing: ngày snapshot, ngày giấy chứng nhận, ngày công văn)
 
 **Bảng KPI:**
 
@@ -590,18 +657,22 @@ erDiagram
     Fact_Securities_Offering_Result_Snapshot {
         string Securities_Offering_Code
         string Snapshot_Date_Dimension_Id FK
+        string Security_Type_Name
         string Certificate_Date_Dimension_Id FK
+        string Official_Letter_Date_Dimension_Id FK
         string Public_Company_Dimension_Id FK
         string Offering_Method_Dimension_Id FK
         float Total_Collected_Amount
     }
 
-    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : "Snapshot Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : "Certificate Date"
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : "Official Letter Date"
     Offering_Method_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
     Public_Company_Dimension ||--o{ Fact_Securities_Offering_Result_Snapshot : " "
 ```
 
-> **Ghi chú Phase 2:** Cùng `Calendar_Date_Dimension`, `Offering_Method_Dimension`, `Public_Company_Dimension` (reuse `public_company_dim`, schema đầy đủ xem Nhóm 1/2) với Nhóm 2 — không thiết kế lại logic, chỉ lặp lại block để Star Schema Nhóm 3 tự đứng độc lập, không có node rỗng.
+> **Ghi chú Phase 2:** Cùng `Calendar_Date_Dimension`, `Offering_Method_Dimension`, `Public_Company_Dimension` (reuse `public_company_dim`, schema đầy đủ xem Nhóm 1/2) với Nhóm 2 — không thiết kế lại logic, chỉ lặp lại block để Star Schema Nhóm 3 tự đứng độc lập, không có node rỗng. [ĐỒNG BỘ code dev 2026-11-27] `Snapshot_Date_Dimension_Id` giữ (dev chỉ có cột kỹ thuật `ds_snpst_dt`), thêm FK role-playing `Official_Letter_Date_Dimension_Id` và `Security_Type_Name`; `Public_Company_Dimension_Id` NOT NULL (INNER JOIN), `Offering_Method_Dimension_Id` nullable (LEFT JOIN).
 
 **Lineage Mart → Báo cáo:**
 
@@ -624,20 +695,22 @@ flowchart LR
 
 | Tên bảng | Grain |
 |---|---|
-| Fact Securities Offering Result Snapshot | 1 row = 1 đợt chào bán × 1 loại hình kết quả thực tế × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; Certificate Date giữ nguyên vai trò Chiều/slicer) |
+| Fact Securities Offering Result Snapshot | 1 row = 1 đợt chào bán (APPROVED) × 1 loại hình kết quả thực tế × 1 loại chứng khoán × 1 ngày snapshot (ETL full-scan hàng ngày để Total Collected Amount luôn phản ánh đúng kết quả huy động mới nhất; COALESCE(Certificate Date, Official Letter Date) giữ vai trò Chiều/slicer) — **[ĐỒNG BỘ code dev 2026-11-27]** thêm trục loại chứng khoán (`Security_Type_Name`) |
 | Offering Method Dimension | 1 row = 1 mã hình thức chào bán (reuse từ Nhóm 2) |
 | Public Company Dimension (reuse `public_company_dim`) | 1 row = 1 công ty đại chúng |
-| Calendar Date Dimension | 1 row = 1 ngày |
+| Calendar Date Dimension | 1 row = 1 ngày (role-playing: Snapshot Date — ngày chạy ETL; Certificate Date; Official Letter Date) |
 
 ---
 
 #### Nhóm 4 — Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành
 
-> Phân loại: **Tác nghiệp**
+> Phân loại: **Tác nghiệp** (phân loại BA) — [ĐỒNG BỘ code dev 2026-11-27] đọc từ Fact phẳng, không còn bảng Operational
 > Atomic: `Public Company Securities Offering` ← IDS.SECURITIES_OFFERING — **READY** (Atomic draft — chưa approved chính thức)
 > Atomic: `Public Company Securities Offering Plan` ← IDS.SECURITIES_OFFERING_PLAN — **READY** (Atomic draft)
 > Atomic: `Public Company Securities Offering Result` ← IDS.SECURITIES_OFFERING_RESULT — **READY** (Atomic draft)
 > Atomic: `Public Company` ← IDS.COMPANY_PROFILES — **READY**
+> Atomic: `Classification Value` (scheme `SO_OFFERING_METHOD`, `SO_SECURITY_TYPE`) và `Classification IDS Business Line` — **READY** — [ĐỒNG BỘ code dev 2026-11-27] tên hình thức, tên loại CK, tên ngành cho Fact Detail
+> **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28:** Nhóm 4 chuyển từ `Operational Securities Offering 360 Profile` sang **`Fact Securities Offering Detail Snapshot`** (`fct_securities_offering_detail_snpst`, theo dbt `dtm_fct_securities_offering_detail_snpst` của dev — bộ cột = đúng K_QLCB_20–31, 70 + `cdr_dt`). 360 Profile chỉ còn phục vụ Nhóm 7–10. Fact bổ sung PK `Securities_Offering_Detail_Snapshot_Id` (hash, A22) — dev chưa có cột PK (O_QLCB_28 (g)). Detail LEFT JOIN Plan và Result (khác Fact Offering INNER JOIN). Fact GIỮ FK ngày snapshot `Snapshot_Date_Dimension_Id` (luật Fact `_snpst`; dev chỉ có cột kỹ thuật `ds_snpst_dt` cùng ngày — O_QLCB_28 (b)); mọi thuộc tính mô tả khác lưu sẵn trên Fact, không FK Dimension.
 > [CẬP NHẬT 2026-09-10] Cùng thay đổi filter ngày với Nhóm 1/2/3 — `NVL(certificate_dt, official_letter_dt)`. Không có thay đổi nguồn/công thức nào khác cho Nhóm này.
 
 **Mockup:**
@@ -647,91 +720,80 @@ flowchart LR
 | ABC | Công ty ABC | Công chúng | — | — | — | — | 10,000,000 | 9,500,000 | 500 | 475 | 95% |
 | DEF | Công ty DEF | Riêng lẻ | — | — | — | — | 5,000,000 | 5,000,000 | 250 | 250 | 100% |
 
-**Source:** `Operational Securities Offering 360 Profile` — lookup theo đợt chào bán / công ty
+**Source:** `Fact Securities Offering Detail Snapshot` → `Calendar Date Dimension` (chỉ FK ngày snapshot) — Fact phẳng (thuộc tính mô tả lưu sẵn, không FK Dimension khác), lookup theo đợt chào bán / công ty
 
 **Bảng KPI:**
 
 | KPI ID | Tên KPI | Đơn vị | Tính chất | Công thức | Ghi chú | Trạng thái |
 |---|---|---|---|---|---|---|
-| K_QLCB_20 | Tên doanh nghiệp | — | Attribute | `SELECT Public Company Name` — `Public Company.public_company_nm` (IDS.COMPANY_PROFILES, cột `COMPANY_NAME_VN`) | — | READY |
+| K_QLCB_20 | Tên doanh nghiệp | — | Attribute | `SELECT Public Company Name` — `Public Company.public_company_nm` (IDS.COMPANY_PROFILES, cột `COMPANY_NAME_VN`) | [ĐỒNG BỘ code dev 2026-11-27] đọc cột `public_company_nm` trên `Fact Securities Offering Detail Snapshot` (INNER JOIN Public Company lúc ETL) | READY |
 | K_QLCB_21 | Mã chứng khoán | Text | Attribute | `SELECT Equity Ticker Symbol` — `Public Company.equity_ticker_symbol` (IDS.COMPANY_PROFILES, cột `equity_ticker`) | — | READY |
-| K_QLCB_70 | Loại chứng khoán | Text | Attribute | `securities_tp_nm` ← `Classification Value.cl_nm` (`cl_code = Public Company Securities Offering Result.security_tp_code`, `schema_code = 'SO_SECURITY_TYPE'`) | **[MỚI 2026-10-08]** BA STT 4 thêm dòng 'Loại chứng khoán' (UAT bổ sung; `ck.LOOKUP_VALUE_VN`, `LOOKUP_GROUP = 'SO_SECURITY_TYPE'`). Cột mới `securities_tp_nm` trên `opr_securities_offering_360_profile` (cùng pattern `offering_method_nm`); `securities_tp_code` giữ nguyên | READY (Atomic draft) |
-| K_QLCB_22 | Hình thức chào bán | — | Attribute | `SELECT Offering Method Name` — tên gốc, JOIN `Classification Value` (`cl_value.cl_code = Offering Method Code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` | — | READY |
+| K_QLCB_70 | Loại chứng khoán | Text | Attribute | `securities_tp_nm` ← `Classification Value.cl_nm` (`cl_code = Public Company Securities Offering Result.security_tp_code`, `schema_code = 'SO_SECURITY_TYPE'`) | **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (h):** cột `securities_tp_nm` trên `Fact Securities Offering Detail Snapshot`; `securities_tp_code` cùng Fact lấy từ `Public Company` (không phải Result) nên mã và tên có thể lệch nhau. **[MỚI 2026-10-08]** BA STT 4 thêm dòng 'Loại chứng khoán' (UAT bổ sung; `ck.LOOKUP_VALUE_VN`, `LOOKUP_GROUP = 'SO_SECURITY_TYPE'`). Cột mới `securities_tp_nm` trên `opr_securities_offering_360_profile` (cùng pattern `offering_method_nm`); `securities_tp_code` giữ nguyên | READY (Atomic draft) |
+| K_QLCB_22 | Hình thức chào bán | — | Attribute | `SELECT Offering Method Name` — tên gốc, JOIN `Classification Value` (`cl_value.cl_code = Offering Method Code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm` | [ĐỒNG BỘ code dev 2026-11-27] Fact Detail chỉ có `offering_method_nm` (không có cột mã hình thức) — Detail Mapping đọc tên | READY |
 | K_QLCB_23 | Đơn vị tư vấn | Text | Attribute | `Public Company Securities Offering.consulting_organization_nm` — IDS.SECURITIES_OFFERING.CONSULTING_ORG — direct map | — | READY |
 | K_QLCB_24 | Tổ chức kiểm toán | Text | Attribute | `Public Company Securities Offering.audit_organization_nm` — IDS.SECURITIES_OFFERING.AUDIT_ORG — direct map | — | READY |
 | K_QLCB_25 | Đơn vị bảo lãnh | Text | Attribute | `Public Company Securities Offering.underwriting_organization_nm` — IDS.SECURITIES_OFFERING.UNDERWWRITING_ORG (tên cột nguồn có lỗi chính tả, giữ nguyên) — direct map | — | READY |
 | K_QLCB_26 | Đơn vị xếp hạng tín nhiệm | Text | Attribute | `Public Company Securities Offering.credit_rating_organization_nm` — IDS.SECURITIES_OFFERING.CREDIT_RATING_ORG — direct map | — | READY |
-| K_QLCB_27 | Số lượng CK được cấp phép | CK | Attribute | `SUM(Public Company Securities Offering Plan.total_registered_quantity)` theo đợt × hình thức | **[SỬA 2026-10-08]** BA đổi Bảng nguồn `SECURITIES_OFFERING` → `SECURITIES_OFFERING_PLAN` (BA SQL `p.total_registered_qty` từ `plan_agg`, không còn `t.total_registered_qty` của bảng cha). Mỗi dòng 360 là 1 đợt × 1 hình thức nên lấy theo plan của đúng hình thức — tổng theo đợt vì thế có thể khác bản cũ khi 1 đợt có nhiều hình thức | READY |
+| K_QLCB_27 | Số lượng CK được cấp phép | CK | Attribute | `SUM(Public Company Securities Offering Plan.total_registered_quantity)` theo đợt × hình thức | **[SỬA 2026-10-08]** BA đổi Bảng nguồn `SECURITIES_OFFERING` → `SECURITIES_OFFERING_PLAN` (BA SQL `p.total_registered_qty` từ `plan_agg`, không còn `t.total_registered_qty` của bảng cha). Mỗi dòng 360 là 1 đợt × 1 hình thức nên lấy theo plan của đúng hình thức — tổng theo đợt vì thế có thể khác bản cũ khi 1 đợt có nhiều hình thức. **[ĐỒNG BỘ code dev 2026-11-27]:** cột `total_registered_quantity` trên Fact Detail = SUM Plan gộp theo (hồ sơ, hình thức, giá cấp phép, mệnh giá) | READY |
 | K_QLCB_28 | Số lượng CK chào bán thành công | CK | Attribute | `Public Company Securities Offering Result.total_successful_quantity` — join theo `offering_method_code` khớp với Plan | — | READY |
-| K_QLCB_29 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering Plan.total_expected_amt_snpst` — join theo `(pc_securities_offering_id, offering_method_code)` | **BA cập nhật 2026-08-25 (Dũng):** đổi nguồn từ bảng cha `Public Company Securities Offering` (`total_expected_amt`) sang `Public Company Securities Offering Plan` — khớp grain (Securities Offering Code, Offering Method Code) của Operational này. Atomic ghi cột này là "denormalized snapshot từ Offering cha" — cần Data Modeler xác nhận lại ý nghĩa trước go-live | READY |
-| K_QLCB_30 | Giá trị chào bán thành công | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.total_collected_amt` | — | READY |
+| K_QLCB_29 | Giá trị cấp phép | Tỷ VNĐ | Attribute | `Public Company Securities Offering Plan.total_expected_amt_snpst` — join theo `(pc_securities_offering_id, offering_method_code)` | **[ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (e):** fallback `par_val × total_registered_quantity` khi giá cấp phép 0/NULL (BA không có). **BA cập nhật 2026-08-25 (Dũng):** đổi nguồn từ bảng cha `Public Company Securities Offering` (`total_expected_amt`) sang `Public Company Securities Offering Plan` — khớp grain (Securities Offering Code, Offering Method Code) của Operational này. Atomic ghi cột này là "denormalized snapshot từ Offering cha" — cần Data Modeler xác nhận lại ý nghĩa trước go-live | READY |
+| K_QLCB_30 | Giá trị chào bán thành công | Tỷ VNĐ | Attribute | `Public Company Securities Offering Result.total_collected_amt` | [ĐỒNG BỘ code dev 2026-11-27] — O_QLCB_28 (c), (e): fallback `par_val × SL thành công` (mệnh giá của Plan, khác `10000` ở Fact Result) khi giá thực tế 0/NULL; Plan LEFT JOIN Result theo hình thức nên 1 dòng Plan nhân bản khi Result có nhiều dòng (giá thực tế/loại CK khác nhau) | READY |
 | K_QLCB_31 | Tỷ lệ chào bán thành công | % | Attribute | `ROUND(SUM(Total Successful Quantity) / NULLIF(Total Registered Quantity, 0) * 100, 2)` — tính theo 2 trường số lượng (K_QLCB_27/28), không theo giá trị tiền | **BA cập nhật 2026-08-25 (Dũng):** đổi công thức từ `total_collected_amt / total_expected_amt` (giá trị tiền) sang tính theo 2 trường số lượng cấp phép/thành công | READY |
+
+> **[ĐỒNG BỘ code dev 2026-11-27] — K_QLCB_20–31, 70 đọc `Fact Securities Offering Detail Snapshot`:** mọi KPI Nhóm 4 là Attribute/Measure đọc trực tiếp cột trên Fact (không GROUP BY/SUM thêm); `cdr_dt` = `COALESCE(certificate_dt, official_letter_dt)` làm cột lọc kỳ `[:pdate1, :pdate2]` của Nhóm 4.
 
 > **Ghi chú K_QLCB_23–26:** 4 cột tổ chức có sẵn trực tiếp trên bảng cha `Public Company Securities Offering`, `etl_logic_type = direct`.
 
-> **Ghi chú grain:** `Operational Securities Offering 360 Profile` join tự nhiên theo `offering_method_code` — `Public Company Securities Offering Plan` (1 row/loại hình kế hoạch) LEFT JOIN `Public Company Securities Offering Result` (1 row/loại hình kết quả) theo `(pc_securities_offering_id, offering_method_code)`. K_QLCB_27 lấy từ bảng cha Offering (`total_registered_quantity`, tổng toàn hồ sơ — không GROUP BY loại hình theo đúng BA SQL). K_QLCB_28 lấy trực tiếp từ Result (không cần SUM vì Result Quantity đã snapshot per-loại-hình sẵn).
+> **Ghi chú grain:** `Fact Securities Offering Detail Snapshot` — `Public Company Securities Offering` (APPROVED) LEFT JOIN `Public Company Securities Offering Plan` (gộp theo hồ sơ, hình thức, giá cấp phép, mệnh giá) LEFT JOIN `Public Company Securities Offering Result` (gộp theo hồ sơ, hình thức, loại CK, giá thực tế) theo `(pc_securities_offering_id, offering_method_code)`. **[ĐỒNG BỘ code dev 2026-11-27]** K_QLCB_27 lấy từ Plan gộp (đã đổi nguồn 2026-10-08); K_QLCB_28 lấy từ Result gộp. Khi Plan/Result có nhiều dòng cùng hình thức, các dòng nhân chéo (fan-out) — O_QLCB_28 (c).
 
-**Schema bảng tác nghiệp:**
+**Schema Fact Detail:**
 
 ```mermaid
 erDiagram
-    Securities_Offering_360_Profile {
+    Calendar_Date_Dimension {
+        string Calendar_Date_Dimension_Id PK
+        date Calendar_Date
+        int Year
+        int Quarter
+        int Month
+        boolean Holiday_Flag
+        string Source_System_Code
+    }
+    Fact_Securities_Offering_Detail_Snapshot {
+        string Securities_Offering_Detail_Snapshot_Id PK
         string Securities_Offering_Code
-        string Offering_Method_Code
-        string Offering_Method_Name
-        string Public_Company_Code
+        string Snapshot_Date_Dimension_Id FK
         string Public_Company_Name
+        string Classification_Business_Line_Name
         string Equity_Ticker_Symbol
         string Securities_Type_Code
-        int Total_Registered_Quantity
-        float Total_Expected_Amount
-        int Total_Successful_Quantity
-        float Total_Collected_Amount
-        string Certificate_Number
+        string Securities_Type_Name
         date Certificate_Date
-        string Official_Letter_Number
         date Official_Letter_Date
-        string Offering_Purpose
-        string Business_Line_Level_1_Code
-        string Classification_Business_Line_Name
-        string Equity_Listing_Exchange_Code
+        date Calendar_Date
+        string Offering_Method_Name
         string Consulting_Organization_Name
         string Audit_Organization_Name
         string Underwriting_Organization_Name
         string Credit_Rating_Organization_Name
-        string Processor_User_Name_Snapshot
+        int Total_Registered_Quantity
+        int Total_Successful_Quantity
+        float Total_Collected_Amount
+        float Total_Expected_Amount
         float Successful_Ratio_Percentage
-        float Offering_Price
-        int Employee_Quantity
-        string Swap_Target
-        string Plan_Single_Object
-        float Actual_Offering_Price
-        int Employee_Quantity_Result
-        string Capital_Source
-        string Result_Single_Object
-        float Foreign_Collected_Amount
-        date Offering_End_Date
-        date Result_Report_Date
-        string Source_System_Code
     }
+
+    Calendar_Date_Dimension ||--o{ Fact_Securities_Offering_Detail_Snapshot : "Snapshot Date"
 ```
 
-> **Ghi chú Phase 2 — Key labels cho `Operational Securities Offering 360 Profile`:**
-> - `Securities_Offering_Code` → `key = BK` — Business key đợt chào bán (`Public Company Securities Offering.pc_securities_offering_code`), ETL debug anchor
-> - `Offering_Method_Code` → `key = BK` — Business key component 2 (từ Plan), cùng với `Securities_Offering_Code` tạo thành Composite BK định nghĩa grain (1 row = 1 đợt × 1 loại hình)
-> - `Offering_Method_Name` — tên gốc hình thức chào bán, JOIN `Classification Value` (`cl_value.cl_code = Offering_Method_Code AND cl_value.schema_code = 'SO_OFFERING_METHOD'`) lấy `cl_nm`; dùng ở Nhóm 4 (K_QLCB_22) và Nhóm 8 (K_QLCB_53)
-> - Mermaid không hỗ trợ label `BK` trong erDiagram — chỉ ghi trong Attributes CSV cột `key`
-> - Không có surrogate PK riêng cho 360 Profile — dùng Composite BK thay thế
->
-> **Cột dùng ở Nhóm 7/9/10 (mọi cột dùng ở bất kỳ Nhóm nào của `Operational Securities Offering 360 Profile` phải xuất hiện đủ trong erDiagram này):**
-> - `Classification_Business_Line_Name` (nguồn `Classification IDS Business Line.cl_ids_business_line_nm`, JOIN qua `Public Company.cl_ids_business_line_level_1_id` — giữ nguyên tên cột như `public_company_dim.classification_business_line_nm`) — dùng ở Nhóm 7 (K_QLCB_65), đệm sẵn tên ngành cho mockup cột "Ngành"
-> - `Processor_User_Name_Snapshot` (`processor_user_nm_snpst` — **PENDING** từ 2026-11-25, O_QLCB_27: Atomic `pc_securities_offering.processor_user_nm` đã bị gỡ ở commit `7d8ff27e`) — dùng ở Nhóm 7 (K_QLCB_44)
-> - `Result_Report_Date` (nguồn `Public Company Securities Offering Result.result_rpt_dt`) — **[ĐỔI NGUỒN 2026-09-10 lần 2]** dùng ở Nhóm 7 (K_QLCB_43, thay thế `Certificate_Date` làm "Thời điểm báo cáo"). BA đổi 2 lần trong cùng ngày: Certificate Date → Submission Date (Offering cha) → Result Report Date (Result) — cột `Submission_Date` đã thêm trước đó bị thay thế hoàn toàn, không giữ lại vì chưa có KPI nào khác dùng. BA ghi Bảng nguồn = SECURITIES_OFFERING nhưng SQL thực tế lấy `result_agg.RESULT_REPORT_DATE` — xem O_QLCB_21. `Certificate_Date`/`Official_Letter_Date` vẫn giữ trên schema cho Nhóm 8
-> - `Total_Registered_Quantity` (nguồn bảng cha Offering `total_registered_quantity`) — dùng ở Nhóm 4 (K_QLCB_27) và Nhóm 9 (K_QLCB_54) — Nhóm 4 sửa lại theo BA (trước đó sai map vào Plan snapshot) khi review cross-check phát hiện gap
-> - `Securities_Type_Code` — **[ĐỔI NGUỒN 2026-09-10]** nguồn `Public Company Securities Offering Result.security_tp_code` (trước đây `Public Company.securities_tp_code`) — dùng ở Nhóm 7 (K_QLCB_48), xem O_QLCB_17
-> - `Offering_Price` (nguồn Plan `offering_price`), `Employee_Quantity` (nguồn Plan `employee_quantity`), `Swap_Target` (nguồn Plan `swap_target`, giữ lại trên schema dù không còn KPI nào dùng — xem `Plan_Single_Object`), `Plan_Single_Object` (nguồn Plan `single_offering_object` — **[MỚI 2026-09-10]**, thay thế logic CASE WHEN cũ của K_QLCB_58) — dùng ở Nhóm 9 (K_QLCB_55, 57, 58)
-> - `Actual_Offering_Price` (nguồn Result `actual_offering_price`), `Employee_Quantity_Result` (nguồn Result `employee_quantity`), `Capital_Source` (nguồn Result `capital_src`, giữ lại trên schema dù không còn KPI nào dùng — xem `Result_Single_Object`), `Result_Single_Object` (nguồn Result `result_single_object` — **[MỚI 2026-09-10]**, thay thế logic CASE WHEN cũ của K_QLCB_64), `Foreign_Collected_Amount` (nguồn Result `foreign_collected_amt` — **[MỚI 2026-09-10]**, KPI mới K_QLCB_68; BA ghi nhầm Bảng nguồn = `SECURITIES_OFFERING` nhưng SQL thực tế dùng `result_agg`/Result, xem O_QLCB_19 — **Closed**), `Offering_End_Date` (nguồn Result `offering_end_dt`, **KHÔNG PHẢI Plan** — **[SỬA NGUỒN 2026-09-10, xác nhận qua issue Dũng 2026-09-09]**: bản nháp trước gán nhầm sang `pc_securities_offering_plan.offering_end_dt` khiến cột "mồ côi" không KPI nào dùng; Dũng xác nhận đây là chỉ tiêu thật "Ngày kết thúc đợt chào bán" cần lên Data Explorer, nguồn đúng là Result — cấp KPI mới K_QLCB_69, xem O_QLCB_18 — **Closed**) — dùng ở Nhóm 10 (K_QLCB_61, 63, 64, 68, 69)
-> - `Source_System_Code` — mã hệ thống nguồn, hardcode `IDS.SECURITIES_OFFERING` (driving table `Public Company Securities Offering`, bảng cha Offering — không phải Plan), bắt buộc cho mọi bảng Operational
+> **Ghi chú Phase 2 — `Fact Securities Offering Detail Snapshot` ([ĐỒNG BỘ code dev 2026-11-27]):**
+> - `Securities_Offering_Detail_Snapshot_Id` → `key = PK`, `Generated` — hash(`Securities_Offering_Code`, mã hình thức, mệnh giá, giá cấp phép, mã loại CK, giá thực tế, `src_stm_code`) theo A22 Dạng B; flat ClickHouse `ORDER BY` phải chứa PK. Code dev chưa có cột PK — O_QLCB_28 (g).
+> - `Securities_Offering_Code` → `key = DD` (degenerate dimension, BK đợt chào bán).
+> - `Snapshot_Date_Dimension_Id` → `key = FK` (role-playing Calendar Date Dimension = ngày chạy ETL, `LOOKUP cdr_dt_dim ON cdr_dt = :etl_date`); luật Fact `_snpst` (Gate 1 Rule 2). Code dev không có cột này, chỉ có cột kỹ thuật `ds_snpst_dt` (partition) cùng ngày — O_QLCB_28 (b).
+> - Thuộc tính mô tả (`Public_Company_Name`, `Classification_Business_Line_Name` COALESCE "Chưa phân ngành", `Equity_Ticker_Symbol`, `Securities_Type_Code/Name`, `Offering_Method_Name`, 4 tên tổ chức) lưu sẵn trên Fact — không FK Dimension khác (Nhóm 4 là bảng chi tiết tác nghiệp).
+> - `Calendar_Date` = `COALESCE(Certificate_Date, Official_Letter_Date)` — cột lọc kỳ; `Certificate_Date`/`Official_Letter_Date` giữ để hiển thị.
+> - `Successful_Ratio_Percentage` = `ROUND(SL thành công / NULLIF(SL cấp phép, 0) × 100, 2)` (K_QLCB_31).
+> - Cột 360 Profile dùng ở Nhóm 7–10 (`Result_Report_Date`, `Offering_Price`, `Plan_Single_Object`, …) **không** nằm trên Fact này — vẫn ở `Operational Securities Offering 360 Profile` (đợt 2 đồng bộ dev, O_QLCB_28).
 
 **Lineage Mart → Báo cáo:**
 
@@ -744,7 +806,8 @@ flowchart LR
         SV2["Public Company"]
     end
     subgraph Datamart["Datamart"]
-        G1["Operational Securities Offering 360 Profile"]
+        G1["Fact Securities Offering Detail Snapshot"]
+        G2["Calendar Date Dimension"]
     end
     subgraph RPT["Báo cáo"]
         R4["Tab CHAO BAN PHAT HANH - Nhom 4 - K_QLCB_20-31"]
@@ -754,13 +817,15 @@ flowchart LR
     SV1b --> G1
     SV2 --> G1
     G1 --> R4
+    G2 --> R4
 ```
 
 **Bảng grain:**
 
 | Tên bảng | Grain |
 |---|---|
-| `Operational Securities Offering 360 Profile` | 1 row = 1 đợt chào bán × 1 loại hình (Plan LEFT JOIN Result theo `offering_method_code`). Composite BK: (Securities Offering Code, Offering Method Code) |
+| `Fact Securities Offering Detail Snapshot` | 1 row = 1 đợt chào bán (APPROVED) × 1 dòng Plan gộp (hình thức, giá cấp phép, mệnh giá) × 1 dòng Result gộp (loại CK, giá thực tế) × 1 ngày snapshot (Plan LEFT JOIN Result theo `offering_method_code`). PK hash (A22) — O_QLCB_28 (g) |
+| Calendar Date Dimension | 1 row = 1 ngày (role-playing: Snapshot Date — ngày chạy ETL) |
 
 ---
 
@@ -1156,6 +1221,7 @@ graph TB
     FACT_OFF["Fact Securities Offering Snapshot"]:::fact
     FACT_PLAN["Fact Securities Offering Plan Snapshot"]:::fact
     FACT_RESULT["Fact Securities Offering Result Snapshot"]:::fact
+    FACT_DETAIL["Fact Securities Offering Detail Snapshot"]:::fact
     FACT_APP["Fact TTHC AP Document"]:::fact
 
     OPR_OFF["Operational Securities Offering 360 Profile"]:::oper
@@ -1177,16 +1243,17 @@ graph TB
 
 | Tên bảng Datamart | Mô tả | Fact Pattern | Grain | Nguồn Atomic chính | Trạng thái |
 |---|---|---|---|---|---|
-| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result | READY (Atomic draft) |
-| Fact Securities Offering Plan Snapshot | Giá trị cấp phép theo loại hình chào bán (Nhóm 2) | Fact Event | 1 đợt × 1 loại hình kế hoạch | Public Company Securities Offering Plan | READY (Atomic draft) |
-| Fact Securities Offering Result Snapshot | Giá trị huy động theo loại hình chào bán (Nhóm 3) | Fact Event | 1 đợt × 1 loại hình kết quả | Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Snapshot | Hồ sơ chào bán/phát hành CK — tổng giá trị cấp phép/huy động theo ngành, kỳ (Nhóm 1) | Fact Event | 1 hồ sơ chào bán × 1 loại chứng khoán (APPROVED; INNER JOIN Plan + Result) | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Plan Snapshot | Giá trị cấp phép theo loại hình chào bán (Nhóm 2) | Fact Event | 1 đợt (APPROVED) × 1 loại hình kế hoạch × 1 loại chứng khoán | Public Company Securities Offering Plan | READY (Atomic draft) |
+| Fact Securities Offering Result Snapshot | Giá trị huy động theo loại hình chào bán (Nhóm 3) | Fact Event | 1 đợt (APPROVED) × 1 loại hình kết quả × 1 loại chứng khoán | Public Company Securities Offering Result | READY (Atomic draft) |
+| Fact Securities Offering Detail Snapshot | Chi tiết số lượng chứng khoán chào bán & phát hành — **Fact phẳng** (denormalized: tên công ty, ngành, mã CK, loại CK, hình thức, 4 tổ chức lưu sẵn trên Fact) (Nhóm 4). **[ĐỒNG BỘ code dev 2026-11-27]** thay Operational 360 Profile ở Nhóm 4 | Fact Event | 1 hồ sơ (APPROVED) × 1 dòng Plan gộp × 1 dòng Result gộp × 1 ngày snapshot | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company | READY (Atomic draft) |
 | Fact TTHC AP Document | Hồ sơ đăng ký chào bán nộp lên TTHC — **Fact phẳng** (denormalized: nhóm trạng thái, hình thức chào bán, tên người nộp, mã chứng khoán, ngày gửi lưu sẵn trên Fact), đếm và phân tích theo nhóm trạng thái xử lý (Nhóm 5-6). **Thay 2 Dimension + Fact snapshot cũ 2026-10-15** | Fact Event | 1 hồ sơ TTHC tại ngày chạy ETL | Administrative Procedure Document / Administrative Procedure Document Applicant / Classification Value | READY (Atomic draft) |
 
 ### Bảng Tác nghiệp (Denormalized)
 
 | Tên bảng Datamart | Mô tả | Grain | Nguồn Atomic chính | Trạng thái |
 |---|---|---|---|---|
-| Operational Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 4, 7-10) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company | READY (Atomic draft) |
+| Operational Securities Offering 360 Profile | Hồ sơ 360° tra cứu chi tiết từng đợt chào bán — pivot theo loại hình, gồm thông tin tổ chức liên quan (Nhóm 7-10; Nhóm 4 chuyển sang `Fact Securities Offering Detail Snapshot` từ 2026-11-27) | 1 đợt chào bán × 1 loại hình | Public Company Securities Offering / Public Company Securities Offering Plan / Public Company Securities Offering Result / Public Company | READY (Atomic draft) |
 
 ### Bảng Dimension
 
@@ -1196,7 +1263,7 @@ graph TB
 |---|---|---|---|---|---|
 | Calendar Date Dimension | Lịch ngày — ETL tự sinh | 1 ngày | Generated | Có | READY |
 | Public Company Dimension | Công ty đại chúng — mã CK, tên, ngành, sàn (reuse `public_company_dim`, module GSDC) | 1 công ty đại chúng | Public Company | Có | READY (Atomic draft) |
-| Offering Method Dimension | Hình thức chào bán/phát hành — ETL-derived (DISTINCT) từ cột `offering_method_code`, scheme mô tả `IDS_SO_OFFERING_METHOD`. Phục vụ Nhóm 2/3 (K_QLCB_6–19); **không** còn dùng ở Nhóm 6 sau khi đổi nguồn 2026-08-24 | 1 mã hình thức | Public Company Securities Offering Plan | Không | READY (Atomic draft) |
+| Offering Method Dimension | Hình thức chào bán/phát hành — ETL-derived (DISTINCT) từ cột `offering_method_code`, scheme mô tả `IDS_SO_OFFERING_METHOD`. Phục vụ Nhóm 2/3 (K_QLCB_6–19); **không** còn dùng ở Nhóm 6 sau khi đổi nguồn 2026-08-24. **[ĐỒNG BỘ code dev 2026-11-27]** `offering_method_group_nm` đổi CASE gom nhóm theo dev (O_QLCB_28 (d)) | 1 mã hình thức | Public Company Securities Offering Plan | Không | READY (Atomic draft) |
 
 ---
 
@@ -1210,6 +1277,7 @@ graph TB
 | Fact Securities Offering Snapshot | fct_securities_offering_snpst (đề xuất) | new | Chưa có Fact nào cùng nguồn `pc_securities_offering` trong registry |
 | Fact Securities Offering Plan Snapshot | fct_securities_offering_plan_snpst (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_plan` |
 | Fact Securities Offering Result Snapshot | fct_securities_offering_result_snpst (đề xuất) | new | Chưa có Fact nào cùng grain/nguồn `pc_securities_offering_result` |
+| Fact Securities Offering Detail Snapshot | fct_securities_offering_detail_snpst | new | **[MỚI 2026-11-27 — đồng bộ code dev]** Fact phẳng cho Nhóm 4 (K_QLCB_20–31, 70) — thay Operational 360 Profile ở Nhóm 4. Cùng nguồn Atomic với `Fact Securities Offering Snapshot` nhưng grain và mục đích khác (chi tiết hình thức × giá, không tổng hợp theo ngành) nên không reuse; PK hash theo A22 (dev chưa có cột PK — O_QLCB_28 (g)) |
 | Fact TTHC AP Document | fct_tthc_ap_document | new | **[SỬA 2026-10-15] Fact phẳng theo SQL dbt `dtm_fct_tthc_ap_document` (Data Modeler)** — thay `fct_securities_offering_application_snpst` + `ap_application_status_dim` + `ap_application_tp_dim`. Registry chưa có entity nào cùng nguồn `ap_document` nên `new` (không còn `partial` vì bỏ tên bảng cũ). Chỉ phục vụ K_QLCB_32–42, 66, 67, 71 nên không ảnh hưởng Nhóm nào khác. Không dùng Calendar Date Dimension (`submission_dt` là cột ngày thường) và không reuse `offering_method_dim` (khác nguồn Atomic — O_QLCB_13); `cl_dim` (GSDC) cũng không dùng vì tên trạng thái/hình thức lưu thẳng trên Fact |
 | Operational Securities Offering 360 Profile | opr_securities_offering_360_profile (đề xuất) | new | Bảng tác nghiệp, chưa có tương đương trong registry |
 
@@ -1239,3 +1307,4 @@ graph TB
 | O_QLCB_25 | **[ĐÓNG 2026-10-15 — hết hiệu lực: SQL dbt lấy trực tiếp `ap_document.securities_code`, không parse `eform_data`] [MỚI 2026-10-08] K_QLCB_67 'Mã chứng khoán' — parse Eform JSON.** `ap_document.eform_data` lưu nguyên Eform.ContentItems[0] (≥ 6 ContentType Eform khác nhau); BA đọc `$.*.Macophieu.Text` (dự phòng `MaCoPhieu`) bằng wildcard `$.*`. Cần dev xác nhận hàm Spark/Iceberg parse được wildcard theo khóa động (nếu không: `get_json_object` theo từng Eform cụ thể) và rằng `ap_document.securities_code` (`MaChungKhoan`) KHÔNG thay thế được. | K_QLCB_67 | **Closed 2026-10-15** |
 | O_QLCB_26 | **[MỚI 2026-10-15] Fact phẳng `fct_tthc_ap_document` lệch BA/thiết kế cũ ở 3 điểm.** (1) **Mất lát 'Chưa xác định'**: SQL dbt chỉ giữ hồ sơ có `document_status_group_nm IS NOT NULL` nên hồ sơ có trạng thái ngoài 5 nhóm bị loại khỏi Fact; BA Nhóm 5 (SQL `ELSE 'Chưa xác định…'` + mẫu số `SUM(COUNT(*)) OVER ()`) tính cả nhóm này → % Nhóm 5 và 'Tổng hồ sơ' Nhóm 6 có thể lệch BA khi xuất hiện trạng thái mới chưa phân loại. (2) **Không có lịch sử/ngày snapshot**: SQL dbt đọc snapshot Atomic ACTIVE của ngày chạy (`_hstr`) và Fact không có cột ngày snapshot → Fact phẳng chỉ phản ánh trạng thái hiện hành; flat table nạp lại theo ngày chạy (TRUNCATE + INSERT — giả định, cần dev/BI xác nhận cách lọc kỳ `:tu_ngay`/`:den_ngay` theo `submission_dt`). (3) **Nguồn `securities_code`**: lấy `ap_document.securities_code` thay cho parse `eform_data` (K_QLCB_67); BA vẫn mô tả Eform `Macophieu`. Ngoài ra `ap_document_applicant_nm` có thể NULL (O_QLCB_24) và `offering_method_nm` dùng INNER JOIN `cl_value` nên hồ sơ có `document_tp_code` không resolve ra tên cũng bị loại. | Thiết kế theo SQL dbt do Data Modeler cung cấp 2026-10-15; chưa đối chiếu lại số liệu với SQL BA. Đề xuất: so khớp tổng hồ sơ Fact vs SQL BA (có/không nhóm 'Chưa xác định') trên dữ liệu thật trước khi chốt dashboard; nếu cần giữ lát 'Chưa xác định' thì đổi `ELSE NULL` thành 'Chưa xác định' và bỏ filter `IS NOT NULL`. | K_QLCB_32–35, K_QLCB_42, K_QLCB_66, K_QLCB_67 | **Open — chờ BA/dev xác nhận** |
 | O_QLCB_27 | **[MỚI 2026-11-25 — Atomic commit `7d8ff27e` gỡ `pc_securities_offering.processor_user_nm`]** Gate 0 QLCB FAIL 1 CRITICAL trên `opr_securities_offering_360_profile.processor_user_nm_snpst` vì Atomic `pc_securities_offering` không còn cột `processor_user_nm`. | **Chuyển cột Mart sang `pending` và K_QLCB_44 sang `PENDING` (giữ tên cột Mart nullable = true và giữ flat DDL `qlcb_opr_securities_offering_360_profile_flat` để không gãy schema; như tiền lệ K_GSTT_184 / O_GSTT_86):** (1) LLD `DTM_QLCB_opr_securities_offering_360_profile_IDS_SECURITIES_OFFERING.csv` dòng `processor_user_nm_snpst` đổi `etl_logic_type = pending`, xóa `etl_logic`/`source_entity`/`atomic_table`/`source_attribute`/`atomic_column`, ETL tạm gán NULL; (2) Detail Mapping `K_QLCB_44` xóa ánh xạ mart (`mart_table`/`mart_column`/`column_role`/`logic`), ghi chú lý do pending; (3) HLD Nhóm 7 & Section 3 cập nhật trạng thái PENDING. Gate 0 QLCB còn 0 CRITICAL. Cần Atomic/dev xác nhận bổ sung lại nguồn hoặc bỏ chỉ tiêu K_QLCB_44. | K_QLCB_44 (Nhóm 7) | **Open — chờ Atomic/dev bổ sung nguồn cho `processor_user_nm`** |
+| O_QLCB_28 | **[MỚI 2026-11-27] Đồng bộ code dev QLCB (zip `QLCB.zip` dbt Datamart + `qlcb (1).zip` flat ClickHouse) — Data Modeler "đồng ý" theo dev; điểm lệch BA và rủi ro dữ liệu.** Đợt 1 đã áp (Nhóm 1–4: Fact Offering/Plan/Result, Fact Detail mới, `offering_method_dim`); đợt 2 chưa áp (360 Profile Nhóm 7–10, TTHC). **(a) Bỏ loại trừ hình thức 6,7,8,10:** dbt dev comment `offering_method_code NOT IN (6,7,8,10)` ở `plan_agg`/`result_agg`; SQL BA Nhóm 1 và Detail Mapping K_QLCB_3/4 (FILTER qua Fact Plan) vẫn còn điều kiện; flat Offering không có cột hình thức nên không áp được. **(b) Snapshot/flat:** dev bỏ FK ngày snapshot `snpst_dt_dim_id` (partition và lọc theo `ds_snpst_dt`); thiết kế GIỮ `snpst_dt_dim_id` (luật Fact snapshot `_snpst` — Gate 1 Rule 2 / Gate 5 #13; Data Modeler chọn khôi phục 2026-11-27) và thêm cột kỹ thuật `ds_snpst_dt` của dev vào 4 Fact — dev cần thêm cột `snpst_dt_dim_id` (LOOKUP `cdr_dt_dim` theo ngày ETL, cùng ngày với `ds_snpst_dt`) khi triển khai; flat dev INNER JOIN `public_company_dim` (hồ sơ không có công ty bị loại dù `public_company_dim_id` ở Fact Offering nullable); alias loại CK lệch: flat Plan/Result `securities_tp_nm`, flat Offering và LLD `security_tp_nm`. **(c) Nhân bản số liệu:** `security_tp_nm` nâng grain Fact Offering thành hồ sơ × loại CK nhưng Plan gộp theo hồ sơ nên `total_expected_amt` nhân khi Result có từ 2 loại CK; Fact Detail LEFT JOIN Plan với Result theo hình thức nên fan-out khi Result có nhiều dòng (giá thực tế/loại CK khác nhau); `ORDER BY` flat ReplacingMergeTree phải chứa `security_tp_nm` và hình thức kẻo dedup mất dòng (đã thêm vào ORDER BY). **(d) Nhóm hình thức:** `offering_method_group_nm` của dev: 1,2,3,13 → "Đang IPO hoặc công chúng"; 5 → Riêng lẻ; 9,10 → ESOP; 7 → Trả cổ tức; 8 → Tăng vốn từ VCSH; 11 → "chào bán TP ra quốc tế"; NULL → Khác; mã còn lại → `cl_nm`; K_QLCB_7–12 và K_QLCB_14–19 vẫn lọc theo mã BA nên lệch ở mã 4 và 13. **(e) Fallback giá cứng:** giá cấp phép 0/NULL → `par_val × SL` (Plan, Detail); giá thực tế 0/NULL → `10000 × SL` (Fact Result, Fact Offering) hoặc `par_val × SL` (Detail) — BA không có, hai mệnh giá khác nhau. **(f) `security_tp_nm` tính 2 cách:** Fact Offering lấy `cl_value` scheme SO_SECURITY_TYPE theo `security_tp_code` của Result; Fact Plan/Result dùng `CASE LIKE '%CP%'/'%TP%'` (Cổ phiếu/Trái phiếu/NULL) — cùng tên cột, khác tập giá trị. **(g) Fact Detail thiếu PK:** dev không có cột khóa dòng; thiết kế bổ sung `securities_offering_detail_snpst_id` = hash(mã hồ sơ, hình thức, mệnh giá, giá cấp phép, loại CK, giá thực tế, nguồn) theo A22 Dạng B — dev cần thêm khi triển khai. **(h) Fact Detail:** `securities_tp_code` lấy từ `public_company`, `securities_tp_nm` lấy từ Result nên mã và tên có thể lệch nhau. **(i) [Đợt 2 — chưa áp] 360 Profile Nhóm 7–10:** dev nối Result với Plan thêm `actual_offering_price = offering_price` (BA chỉ nối theo hình thức) nên kết quả NULL khi giá thực tế khác giá cấp phép; `licensed_object`/`outcome_object` (hình thức 6 → `swap_target`) thay `plan_single_object`/`result_single_object`; unique_key chứa cột nullable; đổi tên `result_report_dt`/`offering_end_date`; INNER JOIN `public_company`. **(j) [Đợt 2 — chưa áp] TTHC:** dev đổi tên `fct_ap_document` và thêm `ELSE 'Chưa xác định'` (khép O_QLCB_26 (1)). | Thiết kế theo dev cho Nhóm 1–4 (đã áp; riêng FK ngày snapshot `snpst_dt_dim_id` giữ theo luật Fact snapshot); Detail Mapping K_QLCB_3/4 giữ FILTER theo BA và K_QLCB_7–19 giữ lọc theo mã, kèm ghi chú O_QLCB_28; rủi ro (a)(c)(d)(e) ghi nhận, không tự sửa BA/dev. Đề nghị: BA xác nhận bỏ hay giữ loại trừ 6,7,8,10 và nhóm hình thức mã 4/13; dev xác nhận fallback giá, thêm PK cho Fact Detail, sửa nhân bản Plan × loại CK, thống nhất alias `security_tp_nm` ở flat, thêm cột `snpst_dt_dim_id` cho 4 Fact snapshot (cùng giá trị `ds_snpst_dt`). | K_QLCB_1–19, K_QLCB_20–31, K_QLCB_70 (đợt 1); Nhóm 7–10 (đợt 2) | **Open — chờ BA/dev xác nhận** |

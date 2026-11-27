@@ -920,7 +920,9 @@ _Không có dim join (operational / self-contained table)._
 
 ## QLCB
 
-**5 bảng flat** · **70 KPI unique**
+**6 bảng flat** · **70 KPI unique**
+
+> **[ĐỒNG BỘ code dev 2026-11-27] (O_QLCB_28):** 4 Fact snapshot (Offering/Plan/Result/Detail) giữ FK ngày snapshot `snpst_dt_dim_id` (luật Fact `_snpst`) nhưng flat KHÔNG JOIN Calendar ngày snapshot (bỏ cột `snpst_cdr_dt`) → khóa ngày snapshot ở flat là cột kỹ thuật `ds_snpst_dt` của dev (nạp DELETE + INSERT theo `:etl_date`), tách 2 FK role-playing `certificate_dt_dim_id` + `official_letter_dt_dim_id`, thêm `security_tp_nm`; thêm Fact phẳng `fct_securities_offering_detail_snpst` cho Nhóm 4 (thay Operational 360 Profile, còn Nhóm 7–10).
 
 ---
 
@@ -938,7 +940,7 @@ _Không có dim join (operational / self-contained table)._
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `official_letter_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
 | Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
 
 **Nhóm KPI**
@@ -963,7 +965,7 @@ _Không có dim join (operational / self-contained table)._
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `certificate_dt_dim_id`, `official_letter_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
 | Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
 | Offering Method Dimension | `datamart.offering_method_dim` | `offering_method_dim_id` | `offering_method_dim_id` | ✗ |
 
@@ -989,7 +991,7 @@ _Không có dim join (operational / self-contained table)._
 
 | Dimension Entity | Bảng Dim | FK (Fact) | PK (Dim) | SCD2 |
 |-----------------|----------|-----------|----------|:----:|
-| Calendar Date Dimension | `datamart.cdr_dt_dim` | `snpst_dt_dim_id`, `certificate_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
+| Calendar Date Dimension | `datamart.cdr_dt_dim` | `certificate_dt_dim_id`, `official_letter_dt_dim_id` | `cdr_dt_dim_id` | ✗ |
 | Public Company Dimension | `datamart.public_company_dim` | `public_company_dim_id` | `public_company_dim_id` | ✗ |
 | Offering Method Dimension | `datamart.offering_method_dim` | `offering_method_dim_id` | `offering_method_dim_id` | ✗ |
 
@@ -998,6 +1000,26 @@ _Không có dim join (operational / self-contained table)._
 | Nhóm | Số KPI unique |
 |------|:-------------:|
 | Nhóm 3 — Giá trị phát hành theo hình thức phát hành và nhóm ngành | 7 |
+
+---
+
+### `datamart.qlcb_fct_securities_offering_detail_snpst_flat`
+
+| Thuộc tính | Giá trị |
+|------------|---------|
+| **Loại** | `fact` |
+| **Entity nguồn** | Fact Securities Offering Detail Snapshot |
+| **Bảng fact/operational** | `datamart.fct_securities_offering_detail_snpst` |
+| **PK** | `securities_offering_detail_snpst_id` |
+| **Số dim join** | 0 |
+
+_Không có dim join (Fact phẳng — [ĐỒNG BỘ code dev 2026-11-27]: tên công ty/ngành/mã CK/loại CK/hình thức/4 tổ chức lưu sẵn trên Fact; nạp DELETE + INSERT theo `ds_snpst_dt = :etl_date`)._
+
+**Nhóm KPI**
+
+| Nhóm | Số KPI unique |
+|------|:-------------:|
+| Nhóm 4 — Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành | 12 |
 
 ---
 
@@ -1038,7 +1060,6 @@ _Không có dim join (operational / self-contained table)._
 
 | Nhóm | Số KPI unique |
 |------|:-------------:|
-| Nhóm 4 — Bảng Chi tiết số lượng chứng khoán Chào bán & Phát hành | 12 |
 | Nhóm 7 — Thông tin cơ sở | 6 |
 | Nhóm 8 — Công văn cấp phép | 5 |
 | Nhóm 9 — Cấp phép chào bán | 6 |

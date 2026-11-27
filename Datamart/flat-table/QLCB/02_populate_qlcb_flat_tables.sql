@@ -2,14 +2,14 @@
 -- QLCB Flat Tables — POPULATE
 -- Module: Quản lý Chào bán (QLCB)
 -- Generated: Phase 3 LLD Datamart
--- 5 bảng: 3 fact (snapshot) + 1 fact phẳng (fct_tthc_ap_document) + 1 operational
--- ETL daily — 3 Fact snapshot grain APPEND theo Snapshot Date (ETL full-scan toàn bộ
+-- 6 bảng: 4 fact (snapshot: Offering/Plan/Result/Detail) + 1 fact phẳng (fct_tthc_ap_document) + 1 operational
+-- ETL daily — 4 Fact snapshot grain APPEND theo Snapshot Date (ETL full-scan toàn bộ
 -- hồ sơ/đợt mỗi lần chạy để measure động — Total Collected Amount — luôn phản ánh
 -- đúng trạng thái mới nhất).
--- 3 Fact snapshot KHÔNG TRUNCATE — chỉ DELETE đúng ngày :etl_date (idempotent re-run) rồi
+-- 4 Fact snapshot KHÔNG TRUNCATE — chỉ DELETE đúng ngày :etl_date (idempotent re-run) rồi
 -- INSERT lại, giữ nguyên lịch sử các ngày snapshot khác.
 -- Fact phẳng fct_tthc_ap_document (2026-10-15) + bảng tác nghiệp: TRUNCATE + INSERT (không có ngày snapshot).
--- Certificate Date giữ nguyên vai trò Chiều/slicer (JOIN riêng, không đổi).
+-- [ĐỒNG BỘ code dev 2026-11-27] 4 Fact snapshot nạp/xóa theo f.ds_snpst_dt = :etl_date (không JOIN Calendar ngày snapshot — snpst_dt_dim_id lấy thẳng từ Fact, cùng ngày ds_snpst_dt); ngày báo cáo cdr_dt = COALESCE(certificate_dt, official_letter_dt) từ 2 JOIN Calendar role-playing (O_QLCB_28).
 -- ============================================================
 
 
@@ -18,20 +18,22 @@
 --    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 -- ============================================================
 DELETE FROM datamart.qlcb_fct_securities_offering_snpst_flat ON CLUSTER 'my_cluster'
-WHERE snpst_cdr_dt = :etl_date;
+WHERE ds_snpst_dt = :etl_date;
 INSERT INTO datamart.qlcb_fct_securities_offering_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
+    f.security_tp_nm,
+    f.official_letter_dt_dim_id,
     f.certificate_dt_dim_id,
     f.public_company_dim_id,
     f.total_expected_amt,
     f.total_collected_amt,
-    f.official_letter_dt,
+    f.ds_snpst_dt,
 
-    snpst_cal.cdr_dt                    AS snpst_cdr_dt,
-
-    cal.cdr_dt                          AS cdr_dt,
+    cert_cal.cdr_dt                     AS certificate_dt,
+    ol_cal.cdr_dt                       AS official_letter_dt,
+    COALESCE(cert_cal.cdr_dt, ol_cal.cdr_dt) AS cdr_dt,
 
     pc.public_company_code,
     pc.equity_ticker_symbol,
@@ -40,7 +42,7 @@ SELECT
     pc.business_line_level_1_code,
     pc.ids_registration_dt,
     pc.public_company_status_code,
-    pc.classification_business_line_nm     AS classification_business_line_nm,
+    COALESCE(pc.classification_business_line_nm, 'Chưa phân ngành') AS classification_business_line_nm,
     pc.public_company_english_nm           AS public_company_english_nm,
     pc.enterprise_tp_code                  AS enterprise_tp_code,
     pc.public_company_tp_code              AS public_company_tp_code,
@@ -61,13 +63,13 @@ SELECT
     pc.ipo_company_indicator               AS ipo_company_indicator,
     pc.src_stm_code                        AS public_company_src_stm_code
 FROM datamart.fct_securities_offering_snpst f
-JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
-LEFT JOIN datamart.public_company_dim pc
+LEFT JOIN datamart.cdr_dt_dim cert_cal
+    ON cert_cal.cdr_dt_dim_id = f.certificate_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim ol_cal
+    ON ol_cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+WHERE f.ds_snpst_dt = :etl_date
 ;
 
 
@@ -76,19 +78,22 @@ WHERE snpst_cal.cdr_dt = :etl_date
 --    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 -- ============================================================
 DELETE FROM datamart.qlcb_fct_securities_offering_plan_snpst_flat ON CLUSTER 'my_cluster'
-WHERE snpst_cdr_dt = :etl_date;
+WHERE ds_snpst_dt = :etl_date;
 INSERT INTO datamart.qlcb_fct_securities_offering_plan_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
+    f.security_tp_nm,
     f.certificate_dt_dim_id,
+    f.official_letter_dt_dim_id,
     f.public_company_dim_id,
     f.offering_method_dim_id,
     f.total_expected_amt_snpst,
+    f.ds_snpst_dt,
 
-    snpst_cal.cdr_dt                    AS snpst_cdr_dt,
-
-    cal.cdr_dt                          AS cdr_dt,
+    cert_cal.cdr_dt                     AS certificate_dt,
+    ol_cal.cdr_dt                       AS official_letter_dt,
+    COALESCE(cert_cal.cdr_dt, ol_cal.cdr_dt) AS cdr_dt,
 
     pc.public_company_code,
     pc.equity_ticker_symbol,
@@ -97,7 +102,7 @@ SELECT
     pc.business_line_level_1_code,
     pc.ids_registration_dt,
     pc.public_company_status_code,
-    pc.classification_business_line_nm     AS classification_business_line_nm,
+    COALESCE(pc.classification_business_line_nm, 'Chưa phân ngành') AS classification_business_line_nm,
     pc.public_company_english_nm           AS public_company_english_nm,
     pc.enterprise_tp_code                  AS enterprise_tp_code,
     pc.public_company_tp_code              AS public_company_tp_code,
@@ -123,15 +128,15 @@ SELECT
     om.offering_method_group_nm,
     om.src_stm_code                        AS offering_method_src_stm_code
 FROM datamart.fct_securities_offering_plan_snpst f
-JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
-LEFT JOIN datamart.public_company_dim pc
+LEFT JOIN datamart.cdr_dt_dim cert_cal
+    ON cert_cal.cdr_dt_dim_id = f.certificate_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim ol_cal
+    ON ol_cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
 LEFT JOIN datamart.offering_method_dim om
     ON om.offering_method_dim_id = f.offering_method_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+WHERE f.ds_snpst_dt = :etl_date
 ;
 
 
@@ -140,19 +145,22 @@ WHERE snpst_cal.cdr_dt = :etl_date
 --    Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT
 -- ============================================================
 DELETE FROM datamart.qlcb_fct_securities_offering_result_snpst_flat ON CLUSTER 'my_cluster'
-WHERE snpst_cdr_dt = :etl_date;
+WHERE ds_snpst_dt = :etl_date;
 INSERT INTO datamart.qlcb_fct_securities_offering_result_snpst_flat
 SELECT
     f.securities_offering_code,
     f.snpst_dt_dim_id,
+    f.security_tp_nm,
     f.certificate_dt_dim_id,
+    f.official_letter_dt_dim_id,
     f.public_company_dim_id,
     f.offering_method_dim_id,
     f.total_collected_amt,
+    f.ds_snpst_dt,
 
-    snpst_cal.cdr_dt                    AS snpst_cdr_dt,
-
-    cal.cdr_dt                          AS cdr_dt,
+    cert_cal.cdr_dt                     AS certificate_dt,
+    ol_cal.cdr_dt                       AS official_letter_dt,
+    COALESCE(cert_cal.cdr_dt, ol_cal.cdr_dt) AS cdr_dt,
 
     pc.public_company_code,
     pc.equity_ticker_symbol,
@@ -161,7 +169,7 @@ SELECT
     pc.business_line_level_1_code,
     pc.ids_registration_dt,
     pc.public_company_status_code,
-    pc.classification_business_line_nm     AS classification_business_line_nm,
+    COALESCE(pc.classification_business_line_nm, 'Chưa phân ngành') AS classification_business_line_nm,
     pc.public_company_english_nm           AS public_company_english_nm,
     pc.enterprise_tp_code                  AS enterprise_tp_code,
     pc.public_company_tp_code              AS public_company_tp_code,
@@ -187,15 +195,15 @@ SELECT
     om.offering_method_group_nm,
     om.src_stm_code                        AS offering_method_src_stm_code
 FROM datamart.fct_securities_offering_result_snpst f
-JOIN datamart.cdr_dt_dim snpst_cal
-    ON snpst_cal.cdr_dt_dim_id = f.snpst_dt_dim_id
-JOIN datamart.cdr_dt_dim cal
-    ON cal.cdr_dt_dim_id = f.certificate_dt_dim_id
-LEFT JOIN datamart.public_company_dim pc
+LEFT JOIN datamart.cdr_dt_dim cert_cal
+    ON cert_cal.cdr_dt_dim_id = f.certificate_dt_dim_id
+LEFT JOIN datamart.cdr_dt_dim ol_cal
+    ON ol_cal.cdr_dt_dim_id = f.official_letter_dt_dim_id
+JOIN datamart.public_company_dim pc
     ON pc.public_company_dim_id = f.public_company_dim_id
 LEFT JOIN datamart.offering_method_dim om
     ON om.offering_method_dim_id = f.offering_method_dim_id
-WHERE snpst_cal.cdr_dt = :etl_date
+WHERE f.ds_snpst_dt = :etl_date
 ;
 
 
@@ -267,4 +275,40 @@ SELECT
 FROM datamart.opr_securities_offering_360_profile o
 LEFT JOIN datamart.cl_value cl
     ON cl.cl_code = o.offering_method_code AND cl.schema_code = 'SO_OFFERING_METHOD'
+;
+
+
+-- ==========================================================
+-- 6. FACT: qlcb_fct_securities_offering_detail_snpst_flat
+--    [ĐỒNG BỘ code dev 2026-11-27] Grain APPEND — DELETE đúng ngày :etl_date (không TRUNCATE) rồi INSERT; bản sao 1-1 Fact, không JOIN
+-- ==========================================================
+DELETE FROM datamart.qlcb_fct_securities_offering_detail_snpst_flat ON CLUSTER 'my_cluster'
+WHERE ds_snpst_dt = :etl_date;
+INSERT INTO datamart.qlcb_fct_securities_offering_detail_snpst_flat
+SELECT
+    -- From: FCT_SECURITIES_OFFERING_DETAIL_SNPST
+    f.securities_offering_detail_snpst_id,
+    f.securities_offering_code,
+    f.snpst_dt_dim_id,
+    f.public_company_nm,
+    f.classification_business_line_nm,
+    f.equity_ticker_symbol,
+    f.securities_tp_code,
+    f.securities_tp_nm,
+    f.certificate_dt,
+    f.official_letter_dt,
+    f.cdr_dt,
+    f.offering_method_nm,
+    f.consulting_organization_nm,
+    f.audit_organization_nm,
+    f.underwriting_organization_nm,
+    f.credit_rating_organization_nm,
+    f.total_registered_quantity,
+    f.total_successful_quantity,
+    f.total_collected_amt,
+    f.total_expected_amt,
+    f.successful_ratio_percentage,
+    f.ds_snpst_dt
+FROM datamart.fct_securities_offering_detail_snpst f
+WHERE f.ds_snpst_dt = :etl_date
 ;
