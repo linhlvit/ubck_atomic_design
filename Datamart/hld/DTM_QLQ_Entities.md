@@ -152,7 +152,7 @@ erDiagram
 
 | Datamart Entity | Loại | Reuse | Mô tả | Grain | KPI |
 |---|---|---|---|---|---|
-| Investment Fund Distribution Agent List | Operational | new | Bảng con drill-down đại lý phân phối của quỹ (junction FUD_AG_AGT draft — dùng tạm, O_QLQ_9) | 1 đại lý × 1 quỹ | K_QLQ_103 |
+| Investment Fund Distribution Agent List | Operational | new | Bảng con drill-down đại lý phân phối của quỹ (junction FUD_AG_AGT draft — dùng tạm, O_QLQ_9; từ 2026-11-27 tên đại lý lấy từ DISTRIBUTOR_AGENT — O_QLQ_97) | 1 đại lý × 1 quỹ | K_QLQ_103 |
 
 ---
 

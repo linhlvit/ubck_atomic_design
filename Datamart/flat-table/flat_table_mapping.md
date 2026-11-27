@@ -2132,8 +2132,9 @@ _Không có dim join (operational / self-contained table; popup drill-down từ 
 | **Bảng fact/operational** | `datamart.fund_management_company_staff_trade_rpt` |
 | **Grain (DD)** | `fmc_employee_code, trade_dt, securities_account_nbr, trade_direction_code, security_symbol_code, trade_method_nm` (khử trùng thêm theo `securities_company_code, order_vol, order_price` như UNION của BA) |
 | **Số dim join** | 0 |
+| **Cách nạp** | Theo ngày: `DELETE … WHERE trade_dt = :etl_date` rồi `INSERT … WHERE o.trade_dt = :etl_date` — không TRUNCATE; chạy lại cùng ngày không nhân đôi dòng, các ngày khác giữ nguyên. Lần đầu/backfill phải chạy từng ngày (O_QLQ_99) |
 
-_Không có dim join (fact report / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; **[SỬA 2026-10-15 — làm theo BA]** nối nhân viên qua CCCD → `discretionary_investment_account` (O_QLQ_35/36/39). Đổi Operational (SCD4A) → Fact report append cùng ngày (O_QLQ_38)._
+_Không có dim join (fact report / self-contained table). Thiết kế 2026-10-14, trước đó PENDING; **[SỬA 2026-10-15 — làm theo BA]** nối nhân viên qua CCCD → `discretionary_investment_account` (O_QLQ_35/36/39). Đổi Operational (SCD4A) → Fact report append cùng ngày (O_QLQ_38). **[SỬA 2026-11-27, O_QLQ_99]** Bản nạp trước đó là TRUNCATE + INSERT toàn bộ (mẫu Operational còn sót) — đã đổi sang nạp theo ngày._
 
 **Nhóm KPI**
 

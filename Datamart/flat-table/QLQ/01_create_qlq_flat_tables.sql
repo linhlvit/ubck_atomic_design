@@ -478,6 +478,7 @@ COMMENT 'Flat table — Operational Foreign Fund Management Organization Unit Co
 --    Fund Management Company Staff Trade Report
 --    Grain: 1 dòng khử trùng (UNION của BA) của nhân viên CTQLQ × ngày × tài khoản × bên mua/bán × mã CK × phương thức × CTCK × số lượng lệnh × giá lệnh (Nhóm 28)
 --    [SỬA 2026-10-14 — O_QLQ_38] Operational (SCD4A) -> Fact report append, partition theo trade_dt
+--    [SỬA 2026-11-27 — O_QLQ_99] Nạp theo ngày trade_dt (DELETE + INSERT của ngày chạy ETL), không TRUNCATE; ORDER BY đã chứa đủ grain nên chạy lại cùng ngày không nhân đôi dòng
 -- ============================================================
 CREATE TABLE IF NOT EXISTS datamart.qlq_fund_management_company_staff_trade_rpt_flat ON CLUSTER 'my_cluster'
 (
